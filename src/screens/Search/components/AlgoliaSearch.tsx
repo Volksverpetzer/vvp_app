@@ -1,0 +1,181 @@
+import { searchClient } from "@algolia/client-search";
+import { useRouter } from "expo-router";
+import debounce from "lodash/debounce";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  Pressable,
+  StyleSheet,
+} from "react-native";
+import RenderHtml from "react-native-render-html";
+
+import Space from "../../../components/design/Space";
+import Text from "../../../components/design/Text";
+import View from "../../../components/design/View";
+import Colors from "../../../constants/Colors";
+import { onLinkPress } from "../../../helpers/Linking";
+import useColorScheme, {
+  useCorporateColor,
+} from "../../../hooks/useColorScheme";
+
+interface AlgoliaSearchProperties {
+  searchString: string;
+  maxResults?: number;
+}
+
+const AlgoliaSearchResults = ({
+  searchString,
+  maxResults = 10,
+}: AlgoliaSearchProperties) => {
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { width } = Dimensions.get("window");
+  const router = useRouter();
+
+  // Initialize Algolia client
+  const client = searchClient("W8YO8C6SIN", "f8211e7620b2d30da0d73f451fe36634");
+  const highlightColor = useCorporateColor();
+  const colorScheme = useColorScheme();
+  const textColor = Colors[colorScheme].text;
+
+  // Create a debounced search function to avoid too many API calls
+  const debouncedSearch = useRef(
+    debounce(async (query: string) => {
+      if (!query || query.length < 2) {
+        setResults([]);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        // Search across multiple indices
+        const { hits } = await client.searchSingleIndex({
+          indexName: "wp_searchable_posts",
+          searchParams: {
+            query,
+            hitsPerPage: maxResults,
+          },
+        });
+        setResults(hits);
+      } catch (error) {
+        console.error("Algolia search error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300),
+  ).current;
+
+  useEffect(() => {
+    // If there's no search string, clear the results
+    if (!searchString) {
+      setResults([]);
+      return;
+    }
+
+    setIsLoading(true);
+    debouncedSearch(searchString);
+
+    // Cleanup function to cancel debounced search on unmount
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [searchString, debouncedSearch]);
+
+  const handleResultPress = useCallback(
+    (item) => {
+      onLinkPress(item.permalink, router);
+    },
+    [router],
+  );
+
+  const renderItem = useCallback(
+    ({ item }) => {
+      const _date = new Date(item.post_date * 1000);
+      const date =
+        _date.getDate() +
+        "." +
+        (_date.getMonth() + 1) +
+        "." +
+        _date.getFullYear();
+      return (
+        <Pressable
+          accessibilityRole="button"
+          style={itemStyles.itemContainer}
+          onPress={() => handleResultPress(item)}
+        >
+          <Text style={itemStyles.itemText}>{item.post_title}</Text>
+          <Space size={5} />
+          <RenderHtml
+            contentWidth={width}
+            baseStyle={{ color: textColor }}
+            tagsStyles={{
+              em: {
+                fontWeight: "bold",
+                color: highlightColor,
+              },
+            }}
+            source={{
+              html: `<div>${item._highlightResult?.content?.value?.slice(0, 200) || ""}...</div>`,
+            }}
+          />
+          <Text style={{ textAlign: "right" }}>{date}</Text>
+        </Pressable>
+      );
+    },
+    [width, textColor, highlightColor, handleResultPress],
+  );
+
+  if (isLoading) {
+    return (
+      <View style={itemStyles.loadingContainer}>
+        <ActivityIndicator size="small" color={highlightColor} />
+      </View>
+    );
+  }
+
+  if (results.length === 0 && searchString.length >= 2) {
+    return (
+      <View style={itemStyles.emptyContainer}>
+        <Text>Keine Ergebnisse gefunden</Text>
+      </View>
+    );
+  }
+
+  return (
+    <FlatList
+      data={results}
+      contentContainerStyle={{ paddingBottom: 100 }}
+      keyExtractor={(item) => item.objectID}
+      renderItem={renderItem}
+      initialNumToRender={5}
+      maxToRenderPerBatch={10}
+      windowSize={5}
+      keyboardDismissMode="on-drag"
+    />
+  );
+};
+
+const itemStyles = StyleSheet.create({
+  emptyContainer: {
+    alignItems: "center",
+    padding: 20,
+  },
+  loadingContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  itemContainer: {
+    borderBottomColor: "#ccc",
+    borderBottomWidth: 1,
+    padding: 20,
+  },
+  itemText: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+});
+
+export default AlgoliaSearchResults;

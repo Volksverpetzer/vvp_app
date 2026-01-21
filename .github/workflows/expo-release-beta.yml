@@ -1,0 +1,73 @@
+name: Expo Release Beta
+
+on:
+  push:
+    branches:
+      - "prerelease"
+    tags:
+      - "v*.*.*-beta.*" # Match tags like v1.2.3-beta.1, v2.3.0-beta.2, etc.
+
+jobs:
+  test-and-lint:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-node: "false"
+
+      - name: 🏃‍♀️ Run composite test-and-lint
+        uses: ./.github/actions/test-and-lint
+
+  build-and-release-stores:
+    needs: test-and-lint
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-expo-token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 🚀 EAS Build - android
+        run: APP=volksverpetzer eas build --profile internal --platform android --clear-cache --non-interactive --auto-submit --no-wait
+
+      - name: 🚀 EAS Build - ios
+        run: APP=volksverpetzer eas build --profile internal --platform ios --clear-cache --non-interactive --auto-submit --no-wait
+
+  build-and-release-apk:
+    needs: build-and-release-stores
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-expo-token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 🚀 EAS Build - android apk
+        run: APP=volksverpetzer eas build --profile preview --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
+
+      - name: 🎂 Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          draft: false
+          prerelease: true
+          generate_release_notes: true
+          files: ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk

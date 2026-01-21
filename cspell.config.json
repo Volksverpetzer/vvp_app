@@ -1,0 +1,33 @@
+{
+  "import": ["@cspell/dict-de-de/cspell-ext.json"],
+  "language": "de, de_DE, en, en_GB",
+  "words": [
+    "bsky",
+    "cmplz",
+    "connaisseur",
+    "Desinformationstechniken",
+    "facadesrc",
+    "fakten",
+    "faktenbot",
+    "favs",
+    "insta",
+    "konfig",
+    "mimikama",
+    "misinfo",
+    "prio",
+    "rechercheur",
+    "rerank",
+    "schedulable",
+    "tiktok",
+    "tnode",
+    "tracken",
+    "volksverpetzer",
+    "yoast"
+  ],
+  "allowCompoundWords": true,
+  "files": ["src/**/*"],
+  "ignorePaths": ["src/screens/Settings/components/licenses/data.tsx"],
+  "ignoreRandomStrings": true,
+  "ignoreRegExpList": ["/from\\s+(['\"]).*\\1/"],
+  "useGitignore": true
+}

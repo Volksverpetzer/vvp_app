@@ -1,0 +1,23 @@
+name: Expo Preview
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  expo-preview:
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-expo-token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 🚀 Publish preview
+        run: APP=volksverpetzer eas update --non-interactive --auto

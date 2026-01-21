@@ -1,0 +1,48 @@
+name: Setup Node Pnpm and Expo
+description: Composite action to install pnpm and optional setup node, pnpm install and expo setup
+inputs:
+  setup-node:
+    description: "Setup Node (true/false)"
+    required: false
+    default: "true"
+  install-deps:
+    description: "Run pnpm install (true/false)"
+    required: false
+    default: "true"
+  setup-expo-token:
+    description: "Run expo setup (pass secret to set to true)"
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: 📦 Install pnpm
+      uses: pnpm/action-setup@v4
+
+    - name: 🏗 Setup Node
+      if: ${{ inputs.setup-node == 'true' }}
+      uses: actions/setup-node@v6
+      with:
+        node-version: "24"
+        cache: "pnpm"
+
+    - name: 🏗 Setup Expo and EAS
+      if: ${{ inputs.setup-expo-token }}
+      uses: expo/expo-github-action@v8
+      with:
+        eas-version: latest
+        packager: pnpm
+        token: ${{ inputs.setup-expo-token }}
+
+    - name: ♻️ Cache pnpm store
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.pnpm-store
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: 📦 Install dependencies
+      if: ${{ inputs.install-deps == 'true' && steps.cache.outputs.cache-hit != 'true' }}
+      run: pnpm install --frozen-lockfile
+      shell: bash

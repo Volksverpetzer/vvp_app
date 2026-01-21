@@ -1,0 +1,12 @@
+name: Test and Lint
+description: Composite action to run lint and tests
+runs:
+  using: composite
+  steps:
+    - name: 🔍 Run lint
+      run: pnpm lint
+      shell: bash
+
+    - name: ✅ Run tests
+      run: pnpm test --silent
+      shell: bash

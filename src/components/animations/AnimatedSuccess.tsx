@@ -1,0 +1,129 @@
+import { useEffect, useRef } from "react";
+import { Animated, Dimensions } from "react-native";
+
+import Party from "../../../assets/images/Party.png";
+import Colors from "../../constants/Colors";
+import useColorScheme from "../../hooks/useColorScheme";
+import Text from "../design/Text";
+
+interface AnimatedSuccessProperties {
+  animated: boolean;
+}
+
+const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
+  const { animated } = properties;
+  const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+  const animation = useRef(new Animated.Value(0)).current;
+  const colorScheme = useColorScheme();
+  const radius = animation.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, screenWidth * 2],
+  });
+  const textPosition = animation.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -screenHeight * 0.8],
+  });
+
+  const spinAnimation = useRef(new Animated.Value(0)).current;
+  const opacity = spinAnimation.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, 1],
+  });
+  const spin = spinAnimation.interpolate({
+    inputRange: [0, 100],
+    outputRange: ["-70deg", "0deg"],
+  });
+
+  useEffect(() => {
+    if (animated) animate();
+  }, [animated]);
+
+  const animate = () => {
+    Animated.parallel([
+      Animated.spring(animation, {
+        toValue: 100,
+        useNativeDriver: true,
+        speed: 6,
+      }),
+      Animated.spring(spinAnimation, {
+        toValue: 100,
+        useNativeDriver: true,
+        speed: 1,
+      }),
+    ]).start(cleanUpSubmit);
+  };
+
+  const cleanUpSubmit = () => {
+    Animated.parallel([
+      Animated.spring(animation, {
+        toValue: 0,
+        useNativeDriver: true,
+        speed: 20,
+      }),
+      Animated.spring(spinAnimation, {
+        toValue: 0,
+        useNativeDriver: true,
+        speed: 20,
+      }),
+    ]).start();
+  };
+
+  if (!animated) return;
+
+  return (
+    <>
+      <Animated.View
+        style={[
+          {
+            backgroundColor: Colors[colorScheme].highlight,
+            borderRadius: 10,
+            position: "absolute",
+            left: screenWidth / 2,
+            top: screenHeight * 0.75,
+            width: 1,
+            height: 1,
+            zIndex: 999,
+          },
+          {
+            transform: [{ scale: radius }],
+          },
+        ]}
+      ></Animated.View>
+      <Animated.View
+        style={[
+          {
+            padding: 20,
+            position: "absolute",
+            top: screenHeight * 1.33,
+            zIndex: 9999,
+          },
+          {
+            transform: [{ translateY: textPosition }],
+          },
+        ]}
+      >
+        <Text style={{ color: "#fff", fontSize: 50 }}>Danke</Text>
+        <Text style={{ color: "#fff", fontSize: 20 }}>
+          Du hast einen wichtigen Beitrag geleistet!
+        </Text>
+      </Animated.View>
+      <Animated.Image
+        style={[
+          {
+            opacity: opacity,
+            position: "absolute",
+            top: screenHeight * 0.3,
+            left: screenWidth / 4,
+            zIndex: 9999,
+          },
+          {
+            transform: [{ rotate: spin }, { scale: 0.75 }],
+          },
+        ]}
+        source={Party}
+      />
+    </>
+  );
+};
+
+export default AnimatedSuccess;

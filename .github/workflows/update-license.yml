@@ -1,0 +1,51 @@
+name: Update licenses on prerelease
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - prerelease
+
+jobs:
+  update-licenses:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-node: "false"
+
+      - name: 🖊️ Generate license JSON
+        run: |
+          pnpm install -g npm-license-crawler
+          npm-license-crawler \
+            --json src/screens/Settings/components/licenses/licenseData.json \
+            --onlyDirectDependencies \
+            --onlyProdDependencies
+
+      - name: 👷 Build license data.tsx
+        run: |
+          echo "export default " > src/screens/Settings/components/licenses/data.tsx
+          cat src/screens/Settings/components/licenses/licenseData.json >> src/screens/Settings/components/licenses/data.tsx
+          echo ";" >> src/screens/Settings/components/licenses/data.tsx
+          rm src/screens/Settings/components/licenses/licenseData.json
+          pnpm exec prettier --write src/screens/Settings/components/licenses/data.tsx
+
+      - name: 🫸 Pushing license data changes
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "actions@github.com"
+          git add src/screens/Settings/components/licenses/data.tsx
+          if git diff --cached --quiet HEAD; then
+            echo "No changes to commit"
+          else
+            git commit -m "Bump license data"
+            git push --force-with-lease
+          fi

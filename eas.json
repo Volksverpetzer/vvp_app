@@ -1,0 +1,92 @@
+{
+  "cli": {
+    "version": ">=16.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development",
+      "env": {
+        "APP": "volksverpetzer"
+      }
+    },
+    "internal": {
+      "autoIncrement": true,
+      "channel": "preview",
+      "android": {
+        "image": "latest"
+      },
+      "env": {
+        "APP": "volksverpetzer"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview"
+    },
+    "production": {
+      "autoIncrement": true,
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "android": {
+        "image": "latest"
+      },
+      "channel": "production",
+      "env": {
+        "APP": "volksverpetzer"
+      }
+    },
+    "local-apk": {
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "distribution": "internal",
+      "env": {
+        "APP": "volksverpetzer"
+      }
+    },
+    "mimikama": {
+      "autoIncrement": true,
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "android": {
+        "image": "latest"
+      },
+      "channel": "production",
+      "env": {
+        "APP": "mimikama"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6444314080"
+      },
+      "android": {
+        "track": "beta"
+      }
+    },
+    "internal": {
+      "ios": {
+        "ascAppId": "6444314080"
+      },
+      "android": {
+        "track": "internal"
+      }
+    },
+    "mimikama": {
+      "ios": {
+        "ascAppId": "6455988008"
+      },
+      "android": {
+        "track": "internal"
+      }
+    }
+  }
+}

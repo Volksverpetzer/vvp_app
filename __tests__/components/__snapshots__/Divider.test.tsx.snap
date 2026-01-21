@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Divider matches snapshot 1`] = `
+<View
+  style={
+    [
+      {
+        "width": "100%",
+      },
+      {
+        "paddingLeft": 12,
+        "paddingRight": 12,
+      },
+      {
+        "marginVertical": 8,
+      },
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "width": "100%",
+        },
+        {
+          "backgroundColor": "#1b7194",
+          "height": 4,
+        },
+      ]
+    }
+  />
+</View>
+`;

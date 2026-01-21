@@ -1,0 +1,33 @@
+name: Check Test and Lint
+
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  check-test-and-lint:
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-node: "false"
+
+      - name: ✅ Check code
+        run: pnpm check
+        shell: bash
+
+      - name: 🔍 Check for secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+      - name: 🏃‍♀️ Run tests and linter
+        uses: ./.github/actions/test-and-lint

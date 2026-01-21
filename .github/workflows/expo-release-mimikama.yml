@@ -1,0 +1,91 @@
+name: Expo Release Mimikama
+
+on:
+  push:
+    branches:
+      - "main-mimikama"
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-node: "false"
+
+      - name: 🏃‍♀️ Run composite test-and-lint
+        uses: ./.github/actions/test-and-lint
+
+  release-prepare:
+    needs: test-and-lint
+    runs-on: ubuntu-slim
+    outputs:
+      commit: ${{ steps.get_sha.outputs.commit_sha }}
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-node: "false"
+
+      - name: 📄 Generate license JSON
+        run: |
+          pnpm install -g npm-license-crawler
+          npm-license-crawler \
+            --json src/screens/Settings/components/licenses/licenseData.json \
+            --onlyDirectDependencies \
+            --onlyProdDependencies
+
+      - name: Build license data.tsx
+        run: |
+          echo "export default " > src/screens/Settings/components/licenses/data.tsx
+          cat src/screens/Settings/components/licenses/licenseData.json >> src/screens/Settings/components/licenses/data.tsx
+          echo ";" >> src/screens/Settings/components/licenses/data.tsx
+
+      - name: Pushing license data changes
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "actions@github.com"
+          git add src/screens/Settings/components/licenses/data.tsx
+          if git diff --cached --quiet HEAD; then
+            echo "No changes to commit"
+          else
+            git commit -m "Bump license data"
+            git push --force-with-lease
+          fi
+
+      - name: Get prepared commit SHA
+        id: get_sha
+        run: echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_STATE
+
+  release-build:
+    needs: release-prepare
+    runs-on: ubuntu-slim
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [android, ios]
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.release-prepare.outputs.commit || github.sha }}
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-expo-token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 🚀 EAS Build - mimikama
+        run: APP=mimikama eas build --profile mimikama --platform ${{ matrix.platform }} --clear-cache --non-interactive  --auto-submit --no-wait
