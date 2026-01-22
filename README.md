@@ -18,7 +18,7 @@ Run eas build for native binaries, see https://docs.expo.dev/build/introduction/
 
 # How to debug
 
-## In Webstorm
+## In WebStorm
 
 ### Start your Expo App
 
@@ -52,13 +52,3 @@ Now, you can start the debugging session from within WebStorm:
 4.  On your physical device or emulator, open the Developer Menu (shake the device, press Ctrl + Cmd + Z on iOS simulator, or Ctrl + M on Android emulator).
 5.  Select "Enable Local DevTools" or "Open JS Debugger" from the menu to connect the app to the WebStorm debugger session.
 6.  Once connected, your breakpoints should be triggered, and you can inspect variables, the call stack, and step through your code in the WebStorm Debug tool window.
-
-# Wichtige Dateien:
-
-> src/helpers/Analytics
-
-Funktionen, um Analytics Daten abzurufen oder zu senden
-
-> src/helpers/FeedFetcher
-
-Funktionen, die APIs anzapfen, und Content vereinheitlicht als Array aus "Posts" zurückgeben
