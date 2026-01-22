@@ -1,5 +1,5 @@
 export default {
-  "@algolia/client-search@5.46.3": {
+  "@algolia/client-search@5.47.0": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
@@ -158,7 +158,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-font@14.0.10": {
+  "expo-font@14.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -206,7 +206,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-router@6.0.21": {
+  "expo-router@6.0.22": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
