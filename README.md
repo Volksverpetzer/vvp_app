@@ -1,6 +1,6 @@
 # Volksverpetzer App
 
-[![Check Test and Lint](https://github.com/Volksverpetzer/vvp_App/actions/workflows/check-test-and-lint.yml/badge.svg)](https://github.com/Volksverpetzer/vvp_App/actions/workflows/check-test-and-lint.yml)
+[![Check Test and Lint](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml/badge.svg)](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml)
 <img alt="gitleaks badge" src="https://img.shields.io/badge/protected%20by-gitleaks-blue">
 
 Die offizielle App für den Volksverpetzer.
