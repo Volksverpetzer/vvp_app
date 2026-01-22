@@ -3,15 +3,15 @@ import { useShareIntentContext } from "expo-share-intent";
 import { useCallback, useRef } from "react";
 import { StyleProp, TextInput, TextStyle } from "react-native";
 
-import NavBar from "../components/bars/NavBar";
-import View from "../components/design/View";
-import Colors from "../constants/Colors";
-import useColorScheme from "../hooks/useColorScheme";
-import AISearch from "../screens/Search/components/AISearch";
-import AlgoliaSearchResults from "../screens/Search/components/AlgoliaSearch";
-import SearchHeader from "../screens/Search/components/SearchHeader";
-import SearchManager from "../screens/Search/components/SearchManager";
-import SearchTutorial from "../screens/Search/components/SearchTutorial";
+import NavBar from "#/components/bars/NavBar";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import useColorScheme from "#/hooks/useColorScheme";
+import AISearch from "#/screens/Search/components/AISearch";
+import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";
+import SearchHeader from "#/screens/Search/components/SearchHeader";
+import SearchManager from "#/screens/Search/components/SearchManager";
+import SearchTutorial from "#/screens/Search/components/SearchTutorial";
 
 const SearchScreen = () => {
   const { shareIntent } = useShareIntentContext();

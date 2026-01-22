@@ -7,8 +7,18 @@ module.exports = function (api) {
       "@babel/preset-typescript",
     ],
     plugins: [
-      "react-native-reanimated/plugin",
       "@babel/plugin-transform-flow-strip-types",
+      [
+        "module-resolver",
+        {
+          root: ["./"],
+          alias: {
+            "#assets": "./assets",
+            "#": "./src",
+          },
+        },
+      ],
+      "react-native-reanimated/plugin",
     ],
   };
 };

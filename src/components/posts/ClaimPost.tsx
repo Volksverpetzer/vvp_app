@@ -1,10 +1,10 @@
 import * as WebBrowser from "expo-web-browser";
 import { TouchableOpacity } from "react-native";
 
-import Colors from "../../constants/Colors";
-import useColorScheme from "../../hooks/useColorScheme";
-import Text from "../design/Text";
-import View from "../design/View";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import useColorScheme from "#/hooks/useColorScheme";
 
 interface Review {
   publisher: {

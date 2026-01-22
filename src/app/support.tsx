@@ -1,12 +1,12 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 
-import { Heart } from "../components/Icons";
-import NavBar from "../components/bars/NavBar";
-import Support from "../components/views/Support";
-import Colors from "../constants/Colors";
-import Config from "../constants/Config";
-import { styles as globalStyles } from "../constants/Styles";
-import useColorScheme from "../hooks/useColorScheme";
+import { Heart } from "#/components/Icons";
+import NavBar from "#/components/bars/NavBar";
+import Support from "#/components/views/Support";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles as globalStyles } from "#/constants/Styles";
+import useColorScheme from "#/hooks/useColorScheme";
 
 const SupportScreen = () => {
   const wpUrl = Config.wpUrl;

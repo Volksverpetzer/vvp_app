@@ -4,13 +4,13 @@ import { decode } from "html-entities";
 import { TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
-import Colors from "../../constants/Colors";
-import { styles } from "../../constants/Styles";
-import { onLinkPress } from "../../helpers/Linking";
-import useColorScheme, { useCorporateColor } from "../../hooks/useColorScheme";
-import Space from "../design/Space";
-import Text from "../design/Text";
-import View from "../design/View";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import { onLinkPress } from "#/helpers/Linking";
+import useColorScheme, { useCorporateColor } from "#/hooks/useColorScheme";
 
 export interface MastodonPostProperties {
   id: number;

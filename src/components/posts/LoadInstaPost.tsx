@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 
-import API from "../../helpers/Networking/ServerAPI";
-import ContentStore from "../../helpers/Stores/ContentStore";
-import AnimatedLoading from "../animations/AnimatedLoading";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import API from "#/helpers/Networking/ServerAPI";
+import ContentStore from "#/helpers/Stores/ContentStore";
+
 import InstaPost, { InstaPostProperties } from "./InstaPost";
 
 type LoadProperties = {

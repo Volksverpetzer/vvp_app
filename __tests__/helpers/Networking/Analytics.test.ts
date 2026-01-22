@@ -3,8 +3,9 @@ import * as Application from "expo-application";
 import * as Linking from "expo-linking";
 import { Platform } from "react-native";
 
+import * as Networking from "#/helpers/utils/networking";
+
 import Config from "../../../src/constants/Config";
-import * as Networking from "../../../src/helpers/Networking";
 import * as AnalyticsModule from "../../../src/helpers/Networking/Analytics";
 
 const { getViews, getRegions, getShares, getFavs, getLinks, registerEvent } =
@@ -31,7 +32,7 @@ jest.mock("expo-linking", () => ({
   parse: jest.fn(),
 }));
 
-jest.mock("../../../src/helpers/Networking", () => ({
+jest.mock("#/helpers/utils/networking", () => ({
   __esModule: true,
   createClient: jest.fn().mockReturnValue({}),
   get: jest.fn(),

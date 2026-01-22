@@ -1,4 +1,4 @@
-import BaseStore from "../Storage";
+import BaseStore from "#/helpers/Storage";
 
 const AchievementStore = {
   /**

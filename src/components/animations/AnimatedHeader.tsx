@@ -3,12 +3,12 @@ import { useRouter } from "expo-router";
 import React, { PropsWithChildren, ReactNode, useMemo } from "react";
 import { Animated, Pressable } from "react-native";
 
-import Colors from "../../constants/Colors";
-import { styles } from "../../constants/Styles";
-import { hexToRgb } from "../../helpers/utils/color";
-import useColorScheme from "../../hooks/useColorScheme";
-import { Heart } from "../Icons";
-import Space from "../design/Space";
+import { Heart } from "#/components/Icons";
+import Space from "#/components/design/Space";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import { hexToRgb } from "#/helpers/utils/color";
+import useColorScheme from "#/hooks/useColorScheme";
 
 /**
  * Props for the AnimatedHeader component.

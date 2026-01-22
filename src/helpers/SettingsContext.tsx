@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 
-import { AdvancedSettingType, ContentSettingType } from "../types";
+import { AdvancedSettingType, ContentSettingType } from "#/types";
+
 import SettingsStore from "./Stores/SettingsStore";
 
 interface SettContextInterface {

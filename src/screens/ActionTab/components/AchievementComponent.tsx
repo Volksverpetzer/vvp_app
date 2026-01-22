@@ -3,17 +3,18 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
-import Space from "../../../components/design/Space";
-import Colors from "../../../constants/Colors";
-import { styles } from "../../../constants/Styles";
+import Space from "#/components/design/Space";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
 import {
   AchievementConfig,
   Achievements,
   LevelType,
   TaskType,
-} from "../../../helpers/Achievements";
-import { updateBadgeState } from "../../../helpers/BadgeContext";
-import useColorScheme from "../../../hooks/useColorScheme";
+} from "#/helpers/Achievements";
+import { updateBadgeState } from "#/helpers/BadgeContext";
+import useColorScheme from "#/hooks/useColorScheme";
+
 import Parallelogram from "./Parallelogram";
 
 const AchievementComponent = () => {

@@ -1,6 +1,7 @@
-import TiktokPost from "../../../components/posts/TiktokPost";
-import API from "../../../helpers/Networking/ServerAPI";
-import Post from "../../../helpers/Post";
+import TiktokPost from "#/components/posts/TiktokPost";
+import API from "#/helpers/Networking/ServerAPI";
+import Post from "#/helpers/Post";
+
 import FetcherUtilities from "./FetcherUtilities";
 
 export const TikTokFetcher = {

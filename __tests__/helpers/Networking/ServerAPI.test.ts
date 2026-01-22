@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import * as Networking from "../../../src/helpers/Networking";
+import * as Networking from "#/helpers/utils/networking";
+
 import API from "../../../src/helpers/Networking/ServerAPI";
 
 // Mock dependencies
-jest.mock("../../../src/helpers/Networking", () => ({
+jest.mock("#/helpers/utils/networking", () => ({
   __esModule: true,
   createClient: jest.fn(() => ({
     defaults: {

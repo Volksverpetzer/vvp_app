@@ -1,10 +1,11 @@
 import { ActivityIndicator, Image } from "react-native";
 
-import LogoAnimation from "../../../assets/images/LogoAnimation4_1.gif";
-import { styles } from "../../constants/Styles";
-import { isVolksverpetzer } from "../../helpers/utils/variant";
-import { useCorporateColor } from "../../hooks/useColorScheme";
-import View from "../design/View";
+import View from "#/components/design/View";
+import { styles } from "#/constants/Styles";
+import { isVolksverpetzer } from "#/helpers/utils/variant";
+import { useCorporateColor } from "#/hooks/useColorScheme";
+
+import LogoAnimation from "#assets/images/LogoAnimation4_1.gif";
 
 /**
  * AnimatedLoading renders a loading indicator or animated image

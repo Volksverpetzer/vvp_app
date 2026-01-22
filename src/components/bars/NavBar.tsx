@@ -3,15 +3,15 @@ import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import Colors from "../../constants/Colors";
-import { styles } from "../../constants/Styles";
-import { ShareableType, onShare } from "../../helpers/Sharing";
-import { hexToRgb } from "../../helpers/utils/color";
-import useColorScheme from "../../hooks/useColorScheme";
-import { FaveableType } from "../../types";
-import { ChevronLeft, Share } from "../Icons";
-import FavCounter from "../counter/FavCounter";
-import ShareCounter from "../counter/ShareCounter";
+import { ChevronLeft, Share } from "#/components/Icons";
+import FavCounter from "#/components/counter/FavCounter";
+import ShareCounter from "#/components/counter/ShareCounter";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import { ShareableType, onShare } from "#/helpers/Sharing";
+import { hexToRgb } from "#/helpers/utils/color";
+import useColorScheme from "#/hooks/useColorScheme";
+import { FaveableType } from "#/types";
 
 interface NavBarProperties {
   link?: string;

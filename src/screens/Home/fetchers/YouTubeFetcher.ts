@@ -1,6 +1,7 @@
-import YTPost from "../../../components/posts/YTPost";
-import API from "../../../helpers/Networking/ServerAPI";
-import Post from "../../../helpers/Post";
+import YTPost from "#/components/posts/YTPost";
+import API from "#/helpers/Networking/ServerAPI";
+import Post from "#/helpers/Post";
+
 import FetcherUtilities from "./FetcherUtilities";
 
 export const YouTubeFetcher = {

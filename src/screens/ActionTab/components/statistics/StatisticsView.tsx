@@ -2,12 +2,13 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Animated, ScrollView, View } from "react-native";
 
-import AnimatedPageDots from "../../../../components/animations/AnimatedPageDots";
-import Colors from "../../../../constants/Colors";
-import { styles } from "../../../../constants/Styles";
-import Statistics from "../../../../helpers/Statistics";
-import { useFeedDimensions } from "../../../../hooks/useFeedDimensions";
-import { StatisticsType } from "../../../../types";
+import AnimatedPageDots from "#/components/animations/AnimatedPageDots";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import Statistics from "#/helpers/Statistics";
+import { useFeedDimensions } from "#/hooks/useFeedDimensions";
+import { StatisticsType } from "#/types";
+
 import StatisticsPanel from "./StatisticsPanel";
 
 const descriptionMap: Record<string, string> = {

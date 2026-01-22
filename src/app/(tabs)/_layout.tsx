@@ -8,12 +8,12 @@ import {
   Pokal,
   Report,
   Settings,
-} from "../../components/Icons";
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import { useBadge } from "../../helpers/BadgeContext";
-import useColorScheme from "../../hooks/useColorScheme";
+} from "#/components/Icons";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { useBadge } from "#/helpers/BadgeContext";
+import useColorScheme from "#/hooks/useColorScheme";
 
 /**
  * The layout for the tab navigator.

@@ -1,6 +1,6 @@
-import { StoredSources } from "../../types";
-import { Achievements } from "../Achievements";
-import BaseStore from "../Storage";
+import { Achievements } from "#/helpers/Achievements";
+import BaseStore from "#/helpers/Storage";
+import { StoredSources } from "#/types";
 
 /**
  * Manages stored sources in a persistent storage.

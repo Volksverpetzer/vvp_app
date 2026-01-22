@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
 import { Text, TextProps, TextStyle } from "react-native";
 
-import Colors from "../../constants/Colors";
-import { styles as _styles } from "../../constants/Styles";
-import useColorScheme from "../../hooks/useColorScheme";
+import Colors from "#/constants/Colors";
+import { styles as _styles } from "#/constants/Styles";
+import useColorScheme from "#/hooks/useColorScheme";
 
 interface HeadingProperties extends TextProps {
   children: ReactNode;

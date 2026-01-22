@@ -11,16 +11,16 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import { Achievements } from "../../helpers/Achievements";
-import { registerViews } from "../../helpers/Networking/Analytics";
-import { onShare } from "../../helpers/Sharing";
-import ContentStore from "../../helpers/Stores/ContentStore";
-import { useCorporateColor } from "../../hooks/useColorScheme";
-import { useFeedDimensions } from "../../hooks/useFeedDimensions";
-import Text from "../design/Text";
-import View from "../design/View";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { Achievements } from "#/helpers/Achievements";
+import { registerViews } from "#/helpers/Networking/Analytics";
+import { onShare } from "#/helpers/Sharing";
+import ContentStore from "#/helpers/Stores/ContentStore";
+import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 
 /**
  * Represents the props for an Instagram post component as fetched from the Instagram API

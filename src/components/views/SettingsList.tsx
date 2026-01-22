@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Switch, View } from "react-native";
 
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import SettingsStore from "../../helpers/Stores/SettingsStore";
-import { getEnabledFeeds } from "../../helpers/feeds";
-import useColorScheme from "../../hooks/useColorScheme";
-import { ContentSettingType, SettingType } from "../../types";
-import Text from "../design/Text";
+import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import SettingsStore from "#/helpers/Stores/SettingsStore";
+import { getEnabledFeeds } from "#/helpers/feeds";
+import useColorScheme from "#/hooks/useColorScheme";
+import { ContentSettingType, SettingType } from "#/types";
 
 interface SettingsListProperties {
   saveSettings: (

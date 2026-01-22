@@ -12,18 +12,19 @@ import {
 } from "react-native-safe-area-context";
 import Toast, { ToastConfig } from "react-native-toast-message";
 
-import SourceSansProBold from "../../assets/fonts/SourceSansPro-Bold.ttf";
-import SourceSansPro from "../../assets/fonts/SourceSansPro-Regular.ttf";
-import SourceSansProSemiBold from "../../assets/fonts/SourceSansPro-SemiBold.ttf";
-import AnimatedLoading from "../components/animations/AnimatedLoading";
-import View from "../components/design/View";
-import MissionPopup from "../components/popups/MissionPopup";
-import ToastShareSheet from "../components/popups/ToastShareSheet";
-import Colors from "../constants/Colors";
-import { BadgeProvider } from "../helpers/BadgeContext";
-import { SettingsProvider } from "../helpers/SettingsContext";
-import useColorScheme from "../hooks/useColorScheme";
-import { useNotificationObserver } from "../hooks/useNotificationObserver";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import View from "#/components/design/View";
+import MissionPopup from "#/components/popups/MissionPopup";
+import ToastShareSheet from "#/components/popups/ToastShareSheet";
+import Colors from "#/constants/Colors";
+import { BadgeProvider } from "#/helpers/BadgeContext";
+import { SettingsProvider } from "#/helpers/SettingsContext";
+import useColorScheme from "#/hooks/useColorScheme";
+import { useNotificationObserver } from "#/hooks/useNotificationObserver";
+
+import SourceSansProBold from "#assets/fonts/SourceSansPro-Bold.ttf";
+import SourceSansPro from "#assets/fonts/SourceSansPro-Regular.ttf";
+import SourceSansProSemiBold from "#assets/fonts/SourceSansPro-SemiBold.ttf";
 
 // Hide warning for new native event emitter
 LogBox.ignoreLogs(["new NativeEventEmitter"]);

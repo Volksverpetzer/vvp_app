@@ -3,9 +3,10 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 
-import Colors from "../constants/Colors";
-import Config from "../constants/Config";
-import { NotificationSettingType } from "../types";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { NotificationSettingType } from "#/types";
+
 import API from "./Networking/ServerAPI";
 import SettingsStore from "./Stores/SettingsStore";
 

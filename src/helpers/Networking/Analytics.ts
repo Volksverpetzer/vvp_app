@@ -2,8 +2,8 @@ import * as Application from "expo-application";
 import * as Linking from "expo-linking";
 import { Dimensions, Platform } from "react-native";
 
-import Config from "../../constants/Config";
-import { createClient, get, post } from "../Networking";
+import Config from "#/constants/Config";
+import { createClient, get, post } from "#/helpers/utils/networking";
 
 const { apiUrl, wpUrl } = Config;
 
@@ -98,7 +98,7 @@ const getLinks = async (
  * Sends an event to Plausible Analytics
  * @param permalink - Link of the current Resource
  * @param event - Event Name
- * @param props - Additional properties
+ * @param properties - Additional properties
  * @param utm_campaign - UTM campaign (default: "app")
  * @param utm_source - UTM source (default: "app")
  * @returns Promise<unknown> - Response data

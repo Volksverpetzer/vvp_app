@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import { updateBadgeState } from "../../src/helpers/BadgeContext";
-import BadgeStore from "../../src/helpers/Stores/BadgeStore";
+import { updateBadgeState } from "#/helpers/BadgeContext";
+import BadgeStore from "#/helpers/Stores/BadgeStore";
 
 // Mock the BadgeStore
 jest.mock("../../src/helpers/Stores/BadgeStore", () => ({

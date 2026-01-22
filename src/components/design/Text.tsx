@@ -1,7 +1,7 @@
 import { Text as DefaultText } from "react-native";
 
-import { useThemeColor } from "../../hooks/useThemeColor";
-import { ThemeProperties } from "../../types";
+import { useThemeColor } from "#/hooks/useThemeColor";
+import { ThemeProperties } from "#/types";
 
 type TextProperties = ThemeProperties & DefaultText["props"] & { key?: string };
 

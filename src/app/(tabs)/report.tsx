@@ -11,20 +11,20 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import AnimatedHeader from "../../components/animations/AnimatedHeader";
-import AnimatedSuccess from "../../components/animations/AnimatedSuccess";
-import Checkbox from "../../components/design/Checkbox";
-import Space from "../../components/design/Space";
-import Text from "../../components/design/Text";
-import TextInput from "../../components/design/TextInput";
-import View from "../../components/design/View";
-import Heading from "../../components/typography/Heading";
-import Colors from "../../constants/Colors";
-import { styles as globalStyles, styles } from "../../constants/Styles";
-import API from "../../helpers/Networking/ServerAPI";
-import PersonalStore from "../../helpers/Stores/PersonalStore";
-import useColorScheme from "../../hooks/useColorScheme";
-import ReportStatusList from "../../screens/ReportTab/components/ReportStatusList";
+import AnimatedHeader from "#/components/animations/AnimatedHeader";
+import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
+import Checkbox from "#/components/design/Checkbox";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import TextInput from "#/components/design/TextInput";
+import View from "#/components/design/View";
+import Heading from "#/components/typography/Heading";
+import Colors from "#/constants/Colors";
+import { styles as globalStyles, styles } from "#/constants/Styles";
+import API from "#/helpers/Networking/ServerAPI";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
+import useColorScheme from "#/hooks/useColorScheme";
+import ReportStatusList from "#/screens/ReportTab/components/ReportStatusList";
 
 interface Report {
   id: string;

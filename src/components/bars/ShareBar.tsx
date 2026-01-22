@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Pressable } from "react-native";
 
-import { styles } from "../../constants/Styles";
-import { ShareableType, multishare } from "../../helpers/Sharing";
-import { useCorporateColor } from "../../hooks/useColorScheme";
-import { FaveableType } from "../../types";
-import { Share } from "../Icons";
-import FavCounter from "../counter/FavCounter";
-import ShareCounter from "../counter/ShareCounter";
-import View from "../design/View";
+import { Share } from "#/components/Icons";
+import FavCounter from "#/components/counter/FavCounter";
+import ShareCounter from "#/components/counter/ShareCounter";
+import View from "#/components/design/View";
+import { styles } from "#/constants/Styles";
+import { ShareableType, multishare } from "#/helpers/Sharing";
+import { useCorporateColor } from "#/hooks/useColorScheme";
+import { FaveableType } from "#/types";
 
 interface ShareBarProperties {
   shareable: ShareableType[];

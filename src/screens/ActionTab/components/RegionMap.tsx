@@ -2,15 +2,16 @@ import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { Text, View, useWindowDimensions } from "react-native";
 
-import { FirstPlace, SecondPlace, ThirdPlace } from "../../../components/Icons";
-import Space from "../../../components/design/Space";
-import Colors from "../../../constants/Colors";
-import Config from "../../../constants/Config";
-import { styles } from "../../../constants/Styles";
-import { getRegions } from "../../../helpers/Networking/Analytics";
-import { WEEK_IN_MS } from "../../../helpers/utils/time";
-import useColorScheme from "../../../hooks/useColorScheme";
-import type { RegionsByCode } from "../../../types";
+import { FirstPlace, SecondPlace, ThirdPlace } from "#/components/Icons";
+import Space from "#/components/design/Space";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { getRegions } from "#/helpers/Networking/Analytics";
+import { WEEK_IN_MS } from "#/helpers/utils/time";
+import useColorScheme from "#/hooks/useColorScheme";
+import type { RegionsByCode } from "#/types";
+
 import Legend from "./Legend";
 
 const weekNumber = Math.floor(Date.now() / WEEK_IN_MS);

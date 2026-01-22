@@ -1,7 +1,8 @@
 import * as Linking from "expo-linking";
 import { Href, Router } from "expo-router";
 
-import Config from "../constants/Config";
+import Config from "#/constants/Config";
+
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 import { registerEvent } from "./Networking/Analytics";
 

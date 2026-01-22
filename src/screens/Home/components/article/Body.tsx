@@ -11,11 +11,12 @@ import RenderHtml, {
   defaultHTMLElementModels,
 } from "react-native-render-html";
 
-import Colors from "../../../../constants/Colors";
-import Config from "../../../../constants/Config";
-import Statistics from "../../../../helpers/Statistics";
-import SourcesStore from "../../../../helpers/Stores/SourcesStore";
-import useColorScheme from "../../../../hooks/useColorScheme";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import Statistics from "#/helpers/Statistics";
+import SourcesStore from "#/helpers/Stores/SourcesStore";
+import useColorScheme from "#/hooks/useColorScheme";
+
 import BlockRenderer from "./BlockRenderer";
 import {
   handleContainerElements,

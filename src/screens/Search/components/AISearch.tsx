@@ -11,15 +11,15 @@ import {
 } from "react-native";
 import RenderHtml from "react-native-render-html";
 
-import AnimatedLoading from "../../../components/animations/AnimatedLoading";
-import Faktenbot from "../../../components/animations/Faktenbot";
-import Text from "../../../components/design/Text";
-import Colors from "../../../constants/Colors";
-import { styles as globalStyles } from "../../../constants/Styles";
-import { onLinkPress } from "../../../helpers/Linking";
-import { useAISearch } from "../../../hooks/useAISearch";
-import useColorScheme from "../../../hooks/useColorScheme";
-import { AISearchResponse } from "../../../types";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import Faktenbot from "#/components/animations/Faktenbot";
+import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import { styles as globalStyles } from "#/constants/Styles";
+import { onLinkPress } from "#/helpers/Linking";
+import { useAISearch } from "#/hooks/useAISearch";
+import useColorScheme from "#/hooks/useColorScheme";
+import { AISearchResponse } from "#/types";
 
 type FaktenbotReaction = 0 | 5 | 10;
 

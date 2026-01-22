@@ -1,11 +1,11 @@
 import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 
-import EmptyComponent from "../components/design/EmptyComponent";
-import Text from "../components/design/Text";
-import View from "../components/design/View";
-import { styles } from "../constants/Styles";
-import { useCorporateColor } from "../hooks/useColorScheme";
+import EmptyComponent from "#/components/design/EmptyComponent";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import { styles } from "#/constants/Styles";
+import { useCorporateColor } from "#/hooks/useColorScheme";
 
 const NotFoundScreen = () => {
   const corporate = useCorporateColor();

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import type { AxiosInstance } from "axios";
 
 // Import the module
-import * as Networking from "../../src/helpers/Networking";
+import * as Networking from "#/helpers/utils/networking";
 
 // Mock axios
 jest.mock("axios", () => ({

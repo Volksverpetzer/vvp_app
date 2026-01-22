@@ -1,11 +1,12 @@
 import { Pressable } from "react-native";
 
-import { styles } from "../../constants/Styles";
-import { useCorporateColor } from "../../hooks/useColorScheme";
-import { World } from "../Icons";
-import SteadyButton from "../buttons/SteadyButton";
-import View from "../design/View";
-import Donate from "../views/Donate";
+import { World } from "#/components/Icons";
+import SteadyButton from "#/components/buttons/SteadyButton";
+import View from "#/components/design/View";
+import Donate from "#/components/views/Donate";
+import { styles } from "#/constants/Styles";
+import { useCorporateColor } from "#/hooks/useColorScheme";
+
 import Text from "./Text";
 
 interface EmptyComponentProperties {

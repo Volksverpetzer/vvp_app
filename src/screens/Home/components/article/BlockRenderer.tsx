@@ -9,8 +9,8 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 
-import { Fehler } from "../../../../components/Icons";
-import { styles } from "../../../../constants/Styles";
+import { Fehler } from "#/components/Icons";
+import { styles } from "#/constants/Styles";
 
 interface BlockRenderProperties {
   renderProps: {

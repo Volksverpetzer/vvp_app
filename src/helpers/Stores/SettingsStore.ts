@@ -1,9 +1,9 @@
+import BaseStore from "#/helpers/Storage";
 import {
   AdvancedSettingType,
   ContentSettingType,
   NotificationSettingType,
-} from "../../types";
-import BaseStore from "../Storage";
+} from "#/types";
 
 const SettingsStore = {
   defaultContentSettings: {

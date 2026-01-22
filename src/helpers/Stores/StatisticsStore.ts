@@ -1,5 +1,5 @@
-import { StatisticsType } from "../../types";
-import BaseStore from "../Storage";
+import BaseStore from "#/helpers/Storage";
+import { StatisticsType } from "#/types";
 
 /**
  * Define the stats keys as a const object to enable type checking

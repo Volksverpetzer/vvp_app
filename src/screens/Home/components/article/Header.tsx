@@ -13,16 +13,18 @@ import {
 } from "react-native";
 import ViewShot from "react-native-view-shot";
 
-import logoPike from "../../../../../assets/images/logo_pike.png";
-import Space from "../../../../components/design/Space";
-import Text from "../../../../components/design/Text";
-import View from "../../../../components/design/View";
-import { ArticleProperties } from "../../../../components/posts/ArticlePost";
-import Colors from "../../../../constants/Colors";
-import Config from "../../../../constants/Config";
-import { outBoundLinkPress } from "../../../../helpers/Linking";
-import { onShare } from "../../../../helpers/Sharing";
-import { useCorporateColor } from "../../../../hooks/useColorScheme";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import { ArticleProperties } from "#/components/posts/ArticlePost";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { outBoundLinkPress } from "#/helpers/Linking";
+import { onShare } from "#/helpers/Sharing";
+import { useCorporateColor } from "#/hooks/useColorScheme";
+
+import logoPike from "#assets/images/logo_pike.png";
+
 import { ArticleSourceList } from "./ArticleSourceList";
 import ArticleStats from "./ArticleStats";
 

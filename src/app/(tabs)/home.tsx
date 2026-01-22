@@ -5,18 +5,18 @@ import { useShareIntentContext } from "expo-share-intent";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text } from "react-native";
 
-import { LogoBig, Search } from "../../components/Icons";
-import AnimatedHeader from "../../components/animations/AnimatedHeader";
-import View from "../../components/design/View";
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import SettingsContext from "../../helpers/SettingsContext";
-import { getEnabledFeeds } from "../../helpers/feeds";
-import { isVolksverpetzer } from "../../helpers/utils/variant";
-import useColorScheme from "../../hooks/useColorScheme";
-import Feed, { FeedProperties } from "../../screens/Home/components/Feed";
-import Fetcher from "../../screens/Home/fetchers/FeedFetcher";
+import { LogoBig, Search } from "#/components/Icons";
+import AnimatedHeader from "#/components/animations/AnimatedHeader";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import SettingsContext from "#/helpers/SettingsContext";
+import { getEnabledFeeds } from "#/helpers/feeds";
+import { isVolksverpetzer } from "#/helpers/utils/variant";
+import useColorScheme from "#/hooks/useColorScheme";
+import Feed, { FeedProperties } from "#/screens/Home/components/Feed";
+import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
 
 /**
  * HomeScreen is the main feed view. It fetches multiple social feeds,
