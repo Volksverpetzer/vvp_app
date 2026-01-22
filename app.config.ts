@@ -63,7 +63,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     ],
     splash: {
       image: variableConfig.assets.splash,
-      resizeMode: "contain",
       backgroundColor: variableConfig.extraConfig.themeColor,
     },
     updates: {
