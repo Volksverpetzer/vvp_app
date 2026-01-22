@@ -10,7 +10,7 @@ import {
   createClient,
   get as netGet,
   post as netPost,
-} from "#/helpers/Networking";
+} from "#/helpers/utils/networking";
 import {
   AISearchResponse,
   NotificationSettingType,

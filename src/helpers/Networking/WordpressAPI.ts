@@ -3,7 +3,7 @@ import { decode } from "html-entities";
 import { ArticleProperties } from "#/components/posts/ArticlePost";
 import { LoadArticlePostProperties } from "#/components/posts/LoadArticlePost";
 import Config from "#/constants/Config";
-import { createClient, get as netGet } from "#/helpers/Networking";
+import { createClient, get as netGet } from "#/helpers/utils/networking";
 
 // Define an interface for the media response structure.
 interface MediaResponse {

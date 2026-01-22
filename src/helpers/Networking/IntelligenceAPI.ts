@@ -3,7 +3,7 @@ import {
   createClient,
   get as netGet,
   post as netPost,
-} from "#/helpers/Networking";
+} from "#/helpers/utils/networking";
 import { AISearchResponse } from "#/types";
 
 /** Axios client for AI with Referer header set */

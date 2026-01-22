@@ -17,4 +17,8 @@ module.exports = {
     "!**/babel.config.js",
     "!**/jest.setup.js",
   ],
+  moduleNameMapper: {
+    // Maps '@/' to the root directory
+    "^#/(.*)$": "<rootDir>/$1",
+  },
 };
