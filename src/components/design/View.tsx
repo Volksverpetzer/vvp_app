@@ -1,7 +1,7 @@
 import { View as DefaultView } from "react-native";
 
-import { useThemeColor } from "../../hooks/useThemeColor";
-import { ThemeProperties } from "../../types";
+import { useThemeColor } from "#/hooks/useThemeColor";
+import { ThemeProperties } from "#/types";
 
 type ViewProperties = ThemeProperties & DefaultView["props"] & { key?: string };
 

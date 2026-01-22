@@ -11,9 +11,10 @@ import {
   View,
 } from "react-native";
 
-import Colors from "../../constants/Colors";
-import { styles } from "../../constants/Styles";
-import useColorScheme from "../../hooks/useColorScheme";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import useColorScheme from "#/hooks/useColorScheme";
+
 import Text from "./Text";
 
 type DesignedLinksProperties = {

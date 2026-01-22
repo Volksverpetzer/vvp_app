@@ -1,5 +1,5 @@
-import { BadgeState } from "../BadgeContext";
-import BaseStore from "../Storage";
+import { BadgeState } from "#/helpers/BadgeContext";
+import BaseStore from "#/helpers/Storage";
 
 /**
  * Class for managing badge-related state.

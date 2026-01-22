@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 
-import WordpressAPI from "../../helpers/Networking/WordpressAPI";
-import AnimatedLoading from "../animations/AnimatedLoading";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import WordpressAPI from "#/helpers/Networking/WordpressAPI";
+
 import ArticlePost, { ArticleProperties } from ".//ArticlePost";
 
 export type LoadProperties = {

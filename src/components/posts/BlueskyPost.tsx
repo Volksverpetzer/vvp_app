@@ -7,14 +7,15 @@ import { useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import { onLinkPress } from "../../helpers/Linking";
-import ContentStore from "../../helpers/Stores/ContentStore";
-import useColorScheme, { useCorporateColor } from "../../hooks/useColorScheme";
-import Text from "../design/Text";
-import View from "../design/View";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { onLinkPress } from "#/helpers/Linking";
+import ContentStore from "#/helpers/Stores/ContentStore";
+import useColorScheme, { useCorporateColor } from "#/hooks/useColorScheme";
+
 import { PostText } from "./PostText";
 
 export interface BlueskyPostProperties {

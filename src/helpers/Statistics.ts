@@ -1,4 +1,5 @@
-import { StatisticsType } from "../types";
+import { StatisticsType } from "#/types";
+
 import { Achievements } from "./Achievements";
 import StatisticsStore, { StatsKeyType } from "./Stores/StatisticsStore";
 import { WEEK_IN_MS } from "./utils/time";

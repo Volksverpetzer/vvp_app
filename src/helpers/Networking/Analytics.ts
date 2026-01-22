@@ -2,8 +2,8 @@ import * as Application from "expo-application";
 import * as Linking from "expo-linking";
 import { Dimensions, Platform } from "react-native";
 
-import Config from "../../constants/Config";
-import { createClient, get, post } from "../Networking";
+import Config from "#/constants/Config";
+import { createClient, get, post } from "#/helpers/Networking";
 
 const { apiUrl, wpUrl } = Config;
 

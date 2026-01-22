@@ -5,7 +5,8 @@ import * as Sharing from "expo-sharing";
 import { Platform, Share } from "react-native";
 import Toast from "react-native-toast-message";
 
-import Config from "../constants/Config";
+import Config from "#/constants/Config";
+
 import { Achievements } from "./Achievements";
 import { registerEvent } from "./Networking/Analytics";
 import Statistics from "./Statistics";

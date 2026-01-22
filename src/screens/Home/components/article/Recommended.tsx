@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
-import Text from "../../../../components/design/Text";
-import View from "../../../../components/design/View";
-import LoadArticlePost from "../../../../components/posts/LoadArticlePost";
-import Config from "../../../../constants/Config";
-import { styles } from "../../../../constants/Styles";
-import IntelligenceAPI from "../../../../helpers/Networking/IntelligenceAPI";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import LoadArticlePost from "#/components/posts/LoadArticlePost";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import IntelligenceAPI from "#/helpers/Networking/IntelligenceAPI";
 
 /**
  * Recommended component displays a list of recommended articles based on the current article's slug.

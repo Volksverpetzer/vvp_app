@@ -11,7 +11,7 @@ import Svg, {
   SvgProps,
 } from "react-native-svg";
 
-import { styles } from "../constants/Styles";
+import { styles } from "#/constants/Styles";
 
 interface IconProperties extends SvgProps {
   color?: string;

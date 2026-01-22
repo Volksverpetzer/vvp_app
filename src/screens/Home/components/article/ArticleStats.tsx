@@ -2,12 +2,12 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useKeepAwake } from "expo-keep-awake";
 import { View } from "react-native";
 
-import { Share } from "../../../../components/Icons";
-import ShareCounter from "../../../../components/counter/ShareCounter";
-import ViewCounter from "../../../../components/counter/ViewCounter";
-import Colors from "../../../../constants/Colors";
-import Config from "../../../../constants/Config";
-import { styles } from "../../../../constants/Styles";
+import { Share } from "#/components/Icons";
+import ShareCounter from "#/components/counter/ShareCounter";
+import ViewCounter from "#/components/counter/ViewCounter";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
 
 interface ArticleStatsProperties {
   article_link: string;

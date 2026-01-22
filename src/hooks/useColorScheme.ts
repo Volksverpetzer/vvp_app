@@ -4,8 +4,8 @@ import {
   useColorScheme as _useColorScheme,
 } from "react-native";
 
-import Colors from "../constants/Colors";
-import SettingsContext from "../helpers/SettingsContext";
+import Colors from "#/constants/Colors";
+import SettingsContext from "#/helpers/SettingsContext";
 
 /**
  * A hook that returns the color scheme of the device, or "dark" if the user has set the advanced setting "Always Dark Mode".

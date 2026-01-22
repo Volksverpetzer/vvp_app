@@ -1,6 +1,6 @@
 import { useWindowDimensions } from "react-native";
 
-import { styles } from "../constants/Styles";
+import { styles } from "#/constants/Styles";
 
 export const useFeedDimensions = () => {
   const { width } = useWindowDimensions();

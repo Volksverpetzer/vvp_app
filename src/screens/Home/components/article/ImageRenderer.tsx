@@ -9,10 +9,10 @@ import {
   useInternalRenderer,
 } from "react-native-render-html";
 
-import View from "../../../../components/design/View";
-import Colors from "../../../../constants/Colors";
-import { styles } from "../../../../constants/Styles";
-import useColorScheme from "../../../../hooks/useColorScheme";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import useColorScheme from "#/hooks/useColorScheme";
 
 const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
   const [ratio, setRatio] = useState(1.5);

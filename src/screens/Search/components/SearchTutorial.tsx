@@ -1,8 +1,8 @@
 import { StyleProp, TextStyle } from "react-native";
 
-import Faktenbot from "../../../components/animations/Faktenbot";
-import Text from "../../../components/design/Text";
-import View from "../../../components/design/View";
+import Faktenbot from "#/components/animations/Faktenbot";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
 
 interface SearchTutorialProperties {
   textStyle: StyleProp<TextStyle>;

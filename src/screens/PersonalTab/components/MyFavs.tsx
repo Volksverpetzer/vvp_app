@@ -2,20 +2,20 @@ import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { EmptyStar } from "../../../components/Icons";
-import ShareBar from "../../../components/bars/ShareBar";
-import Space from "../../../components/design/Space";
-import Text from "../../../components/design/Text";
-import LoadArticlePost from "../../../components/posts/LoadArticlePost";
-import LoadInstaPost from "../../../components/posts/LoadInstaPost";
-import Config from "../../../constants/Config";
-import { styles } from "../../../constants/Styles";
-import { updateBadgeState } from "../../../helpers/BadgeContext";
-import { registerViews } from "../../../helpers/Networking/Analytics";
-import { ShareableType } from "../../../helpers/Sharing";
-import FavoritesStore from "../../../helpers/Stores/FavoritesStore";
-import { useCorporateColor } from "../../../hooks/useColorScheme";
-import { StoredFav } from "../../../types";
+import { EmptyStar } from "#/components/Icons";
+import ShareBar from "#/components/bars/ShareBar";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import LoadArticlePost from "#/components/posts/LoadArticlePost";
+import LoadInstaPost from "#/components/posts/LoadInstaPost";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { updateBadgeState } from "#/helpers/BadgeContext";
+import { registerViews } from "#/helpers/Networking/Analytics";
+import { ShareableType } from "#/helpers/Sharing";
+import FavoritesStore from "#/helpers/Stores/FavoritesStore";
+import { useCorporateColor } from "#/hooks/useColorScheme";
+import { StoredFav } from "#/types";
 
 const MyFavs = () => {
   const [favs, setFavs] = useState<StoredFav>({});

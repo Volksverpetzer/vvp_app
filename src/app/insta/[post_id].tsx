@@ -3,23 +3,21 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
-import NavBar from "../../components/bars/NavBar";
-import Text from "../../components/design/Text";
-import View from "../../components/design/View";
-import InstaPost, {
-  InstaPostProperties,
-} from "../../components/posts/InstaPost";
-import Footer from "../../components/views/Footer";
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import { onLinkPress } from "../../helpers/Linking";
-import { registerViews } from "../../helpers/Networking/Analytics";
-import API from "../../helpers/Networking/ServerAPI";
-import { onShare } from "../../helpers/Sharing";
-import ContentStore from "../../helpers/Stores/ContentStore";
-import useColorScheme from "../../hooks/useColorScheme";
-import { useFeedDimensions } from "../../hooks/useFeedDimensions";
+import NavBar from "#/components/bars/NavBar";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import InstaPost, { InstaPostProperties } from "#/components/posts/InstaPost";
+import Footer from "#/components/views/Footer";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { onLinkPress } from "#/helpers/Linking";
+import { registerViews } from "#/helpers/Networking/Analytics";
+import API from "#/helpers/Networking/ServerAPI";
+import { onShare } from "#/helpers/Sharing";
+import ContentStore from "#/helpers/Stores/ContentStore";
+import useColorScheme from "#/hooks/useColorScheme";
+import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 
 /**
  * InstaScreen renders an Instagram post and its caption,

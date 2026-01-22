@@ -2,9 +2,9 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
-import Heading from "../../../components/typography/Heading";
-import API from "../../../helpers/Networking/ServerAPI";
-import { StatusResponse } from "../../../types";
+import Heading from "#/components/typography/Heading";
+import API from "#/helpers/Networking/ServerAPI";
+import { StatusResponse } from "#/types";
 
 interface ReportItem {
   id: string;

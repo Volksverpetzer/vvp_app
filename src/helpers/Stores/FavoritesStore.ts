@@ -1,5 +1,5 @@
-import { FaveableType, StoredFav } from "../../types";
-import BaseStore from "../Storage";
+import BaseStore from "#/helpers/Storage";
+import { FaveableType, StoredFav } from "#/types";
 
 const FavoritesStore = {
   favKey: "favs",

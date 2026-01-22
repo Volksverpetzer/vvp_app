@@ -1,4 +1,4 @@
-import Colors from "../../../../constants/Colors";
+import Colors from "#/constants/Colors";
 
 /**
  * Returns the tag styles for the given color scheme and width

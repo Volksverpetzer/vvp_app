@@ -9,10 +9,10 @@ import {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-import AnimatedLoading from "../../../../components/animations/AnimatedLoading";
-import Text from "../../../../components/design/Text";
-import LoadArticlePost from "../../../../components/posts/LoadArticlePost";
-import { styles } from "../../../../constants/Styles";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import Text from "#/components/design/Text";
+import LoadArticlePost from "#/components/posts/LoadArticlePost";
+import { styles } from "#/constants/Styles";
 
 export interface IframeRendererProperties {
   renderProps: CustomRendererProps<TBlock>;

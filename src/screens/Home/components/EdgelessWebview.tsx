@@ -5,8 +5,8 @@ import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WebView, WebViewNavigation } from "react-native-webview";
 
-import NavBar from "../../../components/bars/NavBar";
-import { onLinkPress } from "../../../helpers/Linking";
+import NavBar from "#/components/bars/NavBar";
+import { onLinkPress } from "#/helpers/Linking";
 
 interface Cookie {
   name: string;

@@ -10,21 +10,19 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import NavBar from "../../../../components/bars/NavBar";
-import { ArticleProperties } from "../../../../components/posts/ArticlePost";
-import Footer from "../../../../components/views/Footer";
-import Colors from "../../../../constants/Colors";
-import { styles } from "../../../../constants/Styles";
-import { Achievements } from "../../../../helpers/Achievements";
-import { onLinkPress } from "../../../../helpers/Linking";
-import {
-  registerEvent,
-  registerViews,
-} from "../../../../helpers/Networking/Analytics";
-import { onShare } from "../../../../helpers/Sharing";
-import Statistics from "../../../../helpers/Statistics";
-import PersonalStore from "../../../../helpers/Stores/PersonalStore";
-import useColorScheme from "../../../../hooks/useColorScheme";
+import NavBar from "#/components/bars/NavBar";
+import { ArticleProperties } from "#/components/posts/ArticlePost";
+import Footer from "#/components/views/Footer";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import { Achievements } from "#/helpers/Achievements";
+import { onLinkPress } from "#/helpers/Linking";
+import { registerEvent, registerViews } from "#/helpers/Networking/Analytics";
+import { onShare } from "#/helpers/Sharing";
+import Statistics from "#/helpers/Statistics";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
+import useColorScheme from "#/hooks/useColorScheme";
+
 import Body from "./Body";
 import Header from "./Header";
 import Recommended from "./Recommended";

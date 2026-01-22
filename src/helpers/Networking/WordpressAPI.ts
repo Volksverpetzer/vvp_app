@@ -1,9 +1,9 @@
 import { decode } from "html-entities";
 
-import { ArticleProperties } from "../../components/posts/ArticlePost";
-import { LoadArticlePostProperties } from "../../components/posts/LoadArticlePost";
-import Config from "../../constants/Config";
-import { createClient, get as netGet } from "../Networking";
+import { ArticleProperties } from "#/components/posts/ArticlePost";
+import { LoadArticlePostProperties } from "#/components/posts/LoadArticlePost";
+import Config from "#/constants/Config";
+import { createClient, get as netGet } from "#/helpers/Networking";
 
 // Define an interface for the media response structure.
 interface MediaResponse {

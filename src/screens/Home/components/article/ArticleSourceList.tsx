@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 
-import Collapsable from "../../../../components/design/Collapsable";
-import Text from "../../../../components/design/Text";
-import Colors from "../../../../constants/Colors";
-import { outBoundLinkPress } from "../../../../helpers/Linking";
-import { getLinks } from "../../../../helpers/Networking/Analytics";
-import SourcesStore from "../../../../helpers/Stores/SourcesStore";
-import useColorScheme from "../../../../hooks/useColorScheme";
+import Collapsable from "#/components/design/Collapsable";
+import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import { outBoundLinkPress } from "#/helpers/Linking";
+import { getLinks } from "#/helpers/Networking/Analytics";
+import SourcesStore from "#/helpers/Stores/SourcesStore";
+import useColorScheme from "#/hooks/useColorScheme";
 
 interface ArticleSourceListProperties {
   article_link: string;

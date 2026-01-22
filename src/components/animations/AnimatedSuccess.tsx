@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
 import { Animated, Dimensions } from "react-native";
 
-import Party from "../../../assets/images/Party.png";
-import Colors from "../../constants/Colors";
-import useColorScheme from "../../hooks/useColorScheme";
-import Text from "../design/Text";
+import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import useColorScheme from "#/hooks/useColorScheme";
+
+import Party from "#assets/images/Party.png";
 
 interface AnimatedSuccessProperties {
   animated: boolean;

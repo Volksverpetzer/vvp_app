@@ -1,10 +1,11 @@
 import { EvilIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
-import { ChevronLeft } from "../../../../components/Icons";
-import Space from "../../../../components/design/Space";
-import { styles } from "../../../../constants/Styles";
-import { StatisticsType, StatisticsValueKey } from "../../../../types";
+import { ChevronLeft } from "#/components/Icons";
+import Space from "#/components/design/Space";
+import { styles } from "#/constants/Styles";
+import { StatisticsType, StatisticsValueKey } from "#/types";
+
 import StatisticsBox from "./StatisticsBox";
 
 interface StatsPanelProperties {

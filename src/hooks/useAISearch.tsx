@@ -2,10 +2,10 @@
 import { Buffer } from "buffer/";
 import { useCallback, useEffect, useState } from "react";
 
-import Config from "../constants/Config";
-import { registerEvent } from "../helpers/Networking/Analytics";
-import IntelligenceAPI from "../helpers/Networking/IntelligenceAPI";
-import { AISearchResponse } from "../types";
+import Config from "#/constants/Config";
+import { registerEvent } from "#/helpers/Networking/Analytics";
+import IntelligenceAPI from "#/helpers/Networking/IntelligenceAPI";
+import { AISearchResponse } from "#/types";
 
 export interface UseAISearchProperties {
   search: string;

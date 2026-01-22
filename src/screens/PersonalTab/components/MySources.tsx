@@ -13,19 +13,17 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 
-import Space from "../../../components/design/Space";
-import Text from "../../../components/design/Text";
-import View from "../../../components/design/View";
-import Colors from "../../../constants/Colors";
-import Config from "../../../constants/Config";
-import { styles } from "../../../constants/Styles";
-import { outBoundLinkPress } from "../../../helpers/Linking";
-import SourcesStore from "../../../helpers/Stores/SourcesStore";
-import useColorScheme, {
-  useCorporateColor,
-} from "../../../hooks/useColorScheme";
-import { useFeedDimensions } from "../../../hooks/useFeedDimensions";
-import { StoredSources } from "../../../types";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { outBoundLinkPress } from "#/helpers/Linking";
+import SourcesStore from "#/helpers/Stores/SourcesStore";
+import useColorScheme, { useCorporateColor } from "#/hooks/useColorScheme";
+import { useFeedDimensions } from "#/hooks/useFeedDimensions";
+import { StoredSources } from "#/types";
 
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});

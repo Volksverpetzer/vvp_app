@@ -1,7 +1,8 @@
 import { useCallback } from "react";
 import { FlatList } from "react-native";
 
-import { styles } from "../../../../constants/Styles";
+import { styles } from "#/constants/Styles";
+
 import LicensesListItem from "./LicenseListItem";
 import Data from "./data";
 

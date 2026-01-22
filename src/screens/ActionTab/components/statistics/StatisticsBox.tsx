@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 
-import { styles } from "../../../../constants/Styles";
-import { StatisticsType, StatisticsValueKey } from "../../../../types";
+import { styles } from "#/constants/Styles";
+import { StatisticsType, StatisticsValueKey } from "#/types";
 
 interface StatsBoxProperties {
   statisticsKey: string;

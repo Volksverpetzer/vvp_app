@@ -1,5 +1,5 @@
-import { StoredReport } from "../../types";
-import BaseStore from "../Storage";
+import BaseStore from "#/helpers/Storage";
+import { StoredReport } from "#/types";
 
 const PersonalStore = {
   keys: {

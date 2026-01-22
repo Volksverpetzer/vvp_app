@@ -11,14 +11,12 @@ import {
 } from "react-native";
 import RenderHtml from "react-native-render-html";
 
-import Space from "../../../components/design/Space";
-import Text from "../../../components/design/Text";
-import View from "../../../components/design/View";
-import Colors from "../../../constants/Colors";
-import { onLinkPress } from "../../../helpers/Linking";
-import useColorScheme, {
-  useCorporateColor,
-} from "../../../hooks/useColorScheme";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import { onLinkPress } from "#/helpers/Linking";
+import useColorScheme, { useCorporateColor } from "#/hooks/useColorScheme";
 
 interface AlgoliaSearchProperties {
   searchString: string;

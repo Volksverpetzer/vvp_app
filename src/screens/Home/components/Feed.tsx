@@ -11,17 +11,17 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { Search } from "../../../components/Icons";
-import AnimatedLoading from "../../../components/animations/AnimatedLoading";
-import EmptyComponent from "../../../components/design/EmptyComponent";
-import Text from "../../../components/design/Text";
-import View from "../../../components/design/View";
-import GenericPost from "../../../components/posts/GenericPost";
-import Colors from "../../../constants/Colors";
-import { styles } from "../../../constants/Styles";
-import Post from "../../../helpers/Post";
-import useColorScheme from "../../../hooks/useColorScheme";
-import FetcherUtilities from "../fetchers/FetcherUtilities";
+import { Search } from "#/components/Icons";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import EmptyComponent from "#/components/design/EmptyComponent";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import GenericPost from "#/components/posts/GenericPost";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import Post from "#/helpers/Post";
+import useColorScheme from "#/hooks/useColorScheme";
+import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 
 export type FeedFetcherProperties = {
   page?: number;

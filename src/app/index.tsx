@@ -2,13 +2,13 @@ import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 
-import AnimatedLoading from "../components/animations/AnimatedLoading";
-import Config from "../constants/Config";
-import { shouldExcludeFromDeepLink } from "../helpers/DeepLinkFilter";
-import NotificationManager from "../helpers/Notifications";
-import Statistics from "../helpers/Statistics";
-import ContentStore from "../helpers/Stores/ContentStore";
-import PersonalStore from "../helpers/Stores/PersonalStore";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import Config from "#/constants/Config";
+import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
+import NotificationManager from "#/helpers/Notifications";
+import Statistics from "#/helpers/Statistics";
+import ContentStore from "#/helpers/Stores/ContentStore";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
 
 /**
  * This is the entry point of the app.

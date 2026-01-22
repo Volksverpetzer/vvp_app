@@ -3,21 +3,22 @@ import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DimensionValue, TouchableOpacity } from "react-native";
 
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import { onLinkPress } from "../../helpers/Linking";
-import WordpressAPI from "../../helpers/Networking/WordpressAPI";
-import { onShare } from "../../helpers/Sharing";
-import ContentStore from "../../helpers/Stores/ContentStore";
-import PersonalStore from "../../helpers/Stores/PersonalStore";
-import useColorScheme from "../../hooks/useColorScheme";
-import { useFeedDimensions } from "../../hooks/useFeedDimensions";
-import AnimatedLoading from "../animations/AnimatedLoading";
-import ViewCounter from "../counter/ViewCounter";
-import Space from "../design/Space";
-import Text from "../design/Text";
-import View from "../design/View";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import ViewCounter from "#/components/counter/ViewCounter";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { onLinkPress } from "#/helpers/Linking";
+import WordpressAPI from "#/helpers/Networking/WordpressAPI";
+import { onShare } from "#/helpers/Sharing";
+import ContentStore from "#/helpers/Stores/ContentStore";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
+import useColorScheme from "#/hooks/useColorScheme";
+import { useFeedDimensions } from "#/hooks/useFeedDimensions";
+
 import Badge from "./Badge";
 
 /**

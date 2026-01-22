@@ -2,7 +2,7 @@ import { Link, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import MemoryGame from "../../screens/Games/Memory";
+import MemoryGame from "#/screens/Games/Memory";
 
 type GameParameters = {
   gameId: string;

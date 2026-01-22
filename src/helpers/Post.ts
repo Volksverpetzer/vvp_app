@@ -1,6 +1,7 @@
 import { FC } from "react";
 
-import { FaveableType } from "../types";
+import { FaveableType } from "#/types";
+
 import { ShareableType } from "./Sharing";
 
 /**
