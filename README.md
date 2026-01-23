@@ -3,33 +3,53 @@
 [![Check Test and Lint](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml/badge.svg)](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml)
 [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/gitleaks/gitleaks-action)
 
-Die offizielle App für den Volksverpetzer.
+Official mobile app for Volksverpetzer (build with Expo + TypeScript).
 
-Wir haben unsere App für Fact Checks direkt auf dem Handy entwickelt!
-Was dann geschah, hielten viele für unmöglich.
+## Requirements
 
-# How to run
+- [node.js](https://nodejs.org/en/download/current) v24.x or higher
+- [pnpm](https://pnpm.io/)
 
-- Clone Repo
-- Run `pnpm install`
-- Run `pnpm run start` for dev version
+## Quick start
 
-Run eas build for native binaries, see https://docs.expo.dev/build/introduction/
+- Clone the repository:
+  - `git clone https://github.com/Volksverpetzer/vvp_app.git`
 
-# How to debug
+- Change into project directory:
+  - `cd vvp_app`
 
-## In WebStorm
+- Install dependencies:
+  - `pnpm install`
 
-### Start your Expo App
+- Start development server:
+  - `pnpm start`
 
-First, make sure your Expo development server and the application on your device/emulator are running:
+## Configuration
 
-- Run your start script `pnpm run start`
-- Ensure the app is launched on a device/emulator.
+The app expects a `./.env` file in the project root for some minor configuration.
+
+See `.env.example` for reference.
+
+## Running the App
+
+For platform-specific runs:
+
+- `pnpm ios`
+- `pnpm android`
+- `pnpm web`
+
+## Other useful scripts
+
+- Run tests: `pnpm test`
+- Lint: `pnpm lint`
+- Fix lint issues: `pnpm lint:fix`
+- Check types and spelling: `pnpm check`
+
+## Debugging
 
 ### Configure a React Native Debugger in WebStorm
 
-Next, set up the WebStorm run configuration to attach its debugger to your running app:
+Set up the WebStorm run configuration to attach its debugger to your running app:
 
 1. Go to Run | Edit Configurations....
 2. Click the + icon in the top left corner and select React Native from the list.
