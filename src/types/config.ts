@@ -26,8 +26,6 @@ export interface ExtraConfigType {
   analytics: boolean; // enables analytics
   about: string; // URL to about page
   themeColor: string; // special color for the app
-  feedIcon: string; // URL to the feed icon
-  feedIconDark: string;
   donations: {
     account: {
       bank: string; // Bank name

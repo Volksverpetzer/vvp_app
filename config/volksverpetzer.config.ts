@@ -99,8 +99,6 @@ const extraConfig: ExtraConfigType = {
   colorScheme: colorScheme,
   themeColor: "#1b7194",
   analytics: true,
-  feedIcon: "./assets/images/logo_pike.png",
-  feedIconDark: "./assets/images/logo_pike_dark.png",
   assets: assets,
   about: `
     Diese Aufgabe ist bei der hohen Geschwindigkeit der sozialen Medien, sowie der starken Emotionalisierung der politischen Auseinandersetzungen, mehr als notwendig!

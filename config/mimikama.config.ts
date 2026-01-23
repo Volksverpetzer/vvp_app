@@ -94,8 +94,6 @@ const extraConfig: ExtraConfigType = {
   },
   colorScheme: colorScheme,
   assets: assets,
-  feedIcon: "./assets/images/logo_mimikama.png",
-  feedIconDark: "./assets/images/logo_mimikama.png",
   analytics: false,
   themeColor: "#db0301",
   about: `
