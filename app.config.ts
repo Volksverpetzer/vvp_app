@@ -6,8 +6,10 @@ import mimikamaConfig from "./config/mimikama.config";
 import vvpConfig from "./config/volksverpetzer.config";
 import * as pkg from "./package.json";
 
-const variableConfig =
-  process.env.APP === "volksverpetzer" ? vvpConfig : mimikamaConfig;
+// Fallback auf "volksverpetzer", wenn process.env.APP nicht gesetzt ist
+const appEnv = (process.env.APP ?? "volksverpetzer").toLowerCase();
+
+const variableConfig = appEnv === "volksverpetzer" ? vvpConfig : mimikamaConfig;
 
 const config = ({ config }: ConfigContext): ExpoConfig => {
   return {
