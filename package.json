@@ -29,6 +29,7 @@
     "@algolia/client-search": "5.47.0",
     "@atproto/api": "0.18.16",
     "@babel/runtime": "7.28.6",
+    "@expo-google-fonts/source-sans-3": "^0.4.1",
     "@expo/config": "12.0.13",
     "@expo/metro-runtime": "6.1.2",
     "@expo/vector-icons": "15.0.3",

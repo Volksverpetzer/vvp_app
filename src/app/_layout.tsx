@@ -1,5 +1,10 @@
+import {
+  SourceSans3_400Regular,
+  SourceSans3_600SemiBold,
+  SourceSans3_700Bold,
+  useFonts,
+} from "@expo-google-fonts/source-sans-3";
 import { StripeProvider } from "@stripe/stripe-react-native";
-import { useFonts } from "expo-font";
 import { Stack, useSegments } from "expo-router";
 import { ShareIntentProvider } from "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
@@ -22,10 +27,6 @@ import { SettingsProvider } from "#/helpers/SettingsContext";
 import useColorScheme from "#/hooks/useColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
 
-import SourceSansProBold from "#assets/fonts/SourceSansPro-Bold.ttf";
-import SourceSansPro from "#assets/fonts/SourceSansPro-Regular.ttf";
-import SourceSansProSemiBold from "#assets/fonts/SourceSansPro-SemiBold.ttf";
-
 // Hide warning for new native event emitter
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
 
@@ -40,10 +41,11 @@ const RootLayout = () => {
     segments.includes("(tabs)") && segments.includes("action");
 
   const [loaded] = useFonts({
-    SourceSansPro: SourceSansPro,
-    SourceSansProBold: SourceSansProBold,
-    SourceSansProSemiBold: SourceSansProSemiBold,
+    SourceSansPro: SourceSans3_400Regular,
+    SourceSansProSemiBold: SourceSans3_600SemiBold,
+    SourceSansProBold: SourceSans3_700Bold,
   });
+
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
 
