@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
 import { Router } from "expo-router";
 
-import { onLinkPress, outBoundLinkPress } from "../../src/helpers/Linking";
-import { registerEvent } from "../../src/helpers/Networking/Analytics";
+import { onLinkPress, outBoundLinkPress } from "#/helpers/Linking";
+import { registerEvent } from "#/helpers/Networking/Analytics";
 
 // Mock dependencies
 jest.mock("expo-linking", () => ({

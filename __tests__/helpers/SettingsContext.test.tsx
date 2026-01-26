@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import SettingsContext from "../../src/helpers/SettingsContext";
-import SettingsStore from "../../src/helpers/Stores/SettingsStore";
-import { AdvancedSettingType, ContentSettingType } from "../../src/types";
+import SettingsContext from "#/helpers/SettingsContext";
+import SettingsStore from "#/helpers/Stores/SettingsStore";
+import { AdvancedSettingType, ContentSettingType } from "#/types";
 
 // Mock the SettingsStore
 jest.mock("../../src/helpers/Stores/SettingsStore", () => ({

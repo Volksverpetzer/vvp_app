@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Haptics from "expo-haptics";
 import { Platform, Share } from "react-native";
 
-import { onShare } from "../../src/helpers/Sharing";
+import { onShare } from "#/helpers/Sharing";
 
 // Mock async-storage for Storage/AchievementStore dependencies
 jest.mock("@react-native-async-storage/async-storage", () => ({

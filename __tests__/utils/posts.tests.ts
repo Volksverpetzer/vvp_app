@@ -1,4 +1,4 @@
-import { normalizeFacets } from "../../src/helpers/utils/posts";
+import { normalizeFacets } from "#/helpers/utils/posts";
 
 describe("normalizeFacets", () => {
   test("returns falsy values unchanged", () => {

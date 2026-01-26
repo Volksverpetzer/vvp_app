@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import BaseStore from "../../src/helpers/Storage";
+import BaseStore from "#/helpers/Storage";
 
 // Mock AsyncStorage for testing purposes
 jest.mock("@react-native-async-storage/async-storage", () => {

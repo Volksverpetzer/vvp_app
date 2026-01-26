@@ -1,5 +1,5 @@
-import Config from "../../../src/constants/Config";
-import { registerViews } from "../../../src/helpers/Networking/Analytics";
+import Config from "#/constants/Config";
+import { registerViews } from "#/helpers/Networking/Analytics";
 
 // Mock Config
 jest.mock("../../../src/constants/Config", () => ({

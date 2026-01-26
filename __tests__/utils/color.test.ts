@@ -1,4 +1,4 @@
-import { hexToRgb } from "../../src/helpers/utils/color";
+import { hexToRgb } from "#/helpers/utils/color";
 
 describe("hexToRgb", () => {
   it("konvertiert 6-stellige Hex mit führendem #", () => {

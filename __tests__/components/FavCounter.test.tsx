@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import { Achievements } from "../../src/helpers/Achievements";
-import * as Analytics from "../../src/helpers/Networking/Analytics";
-import FavoritesStore from "../../src/helpers/Stores/FavoritesStore";
-import { FaveableType } from "../../src/types";
+import { Achievements } from "#/helpers/Achievements";
+import * as Analytics from "#/helpers/Networking/Analytics";
+import FavoritesStore from "#/helpers/Stores/FavoritesStore";
+import { FaveableType } from "#/types";
 
 jest.mock("../../src/constants/Config", () => ({ analytics: true }));
 jest.mock("../../src/helpers/Networking/Analytics", () => ({

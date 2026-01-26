@@ -1,7 +1,7 @@
-import { ArticleProperties } from "../../../src/components/posts/ArticlePost";
-import WordpressAPI from "../../../src/helpers/Networking/WordpressAPI";
-import Post from "../../../src/helpers/Post";
-import { WordPressFetcher } from "../../../src/screens/Home/fetchers/WordPressFetcher";
+import { ArticleProperties } from "#/components/posts/ArticlePost";
+import WordpressAPI from "#/helpers/Networking/WordpressAPI";
+import Post from "#/helpers/Post";
+import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 
 jest.mock("../../../src/helpers/Networking/WordpressAPI", () => ({
   __esModule: true,

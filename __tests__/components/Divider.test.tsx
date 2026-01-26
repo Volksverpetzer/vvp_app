@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react-native";
 
-import Divider from "../../src/components/design/Divider";
+import Divider from "#/components/design/Divider";
 
 function flattenStyle(style: any) {
   if (!style) return {};

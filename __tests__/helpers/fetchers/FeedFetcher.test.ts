@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import { BlueskyFetcher } from "../../../src/screens/Home/fetchers/BlueskyFetcher";
-import { BotFetcher } from "../../../src/screens/Home/fetchers/BotFetcher";
+import { BlueskyFetcher } from "#/screens/Home/fetchers/BlueskyFetcher";
+import { BotFetcher } from "#/screens/Home/fetchers/BotFetcher";
 import defaultExport, {
   FeedFetcher,
-} from "../../../src/screens/Home/fetchers/FeedFetcher";
-import { InstagramFetcher } from "../../../src/screens/Home/fetchers/InstagramFetcher";
-import { TikTokFetcher } from "../../../src/screens/Home/fetchers/TikTokFetcher";
-import { WordPressFetcher } from "../../../src/screens/Home/fetchers/WordPressFetcher";
-import { YouTubeFetcher } from "../../../src/screens/Home/fetchers/YouTubeFetcher";
+} from "#/screens/Home/fetchers/FeedFetcher";
+import { InstagramFetcher } from "#/screens/Home/fetchers/InstagramFetcher";
+import { TikTokFetcher } from "#/screens/Home/fetchers/TikTokFetcher";
+import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
+import { YouTubeFetcher } from "#/screens/Home/fetchers/YouTubeFetcher";
 
 // Mock all the fetchers
 jest.mock("../../../src/screens/Home/fetchers/WordPressFetcher", () => ({
