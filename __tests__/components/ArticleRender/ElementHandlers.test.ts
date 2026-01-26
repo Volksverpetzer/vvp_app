@@ -1,4 +1,4 @@
-import { handleContainerElements } from "../../../src/screens/Home/components/article/ElementHandlers";
+import { handleContainerElements } from "#/screens/Home/components/article/ElementHandlers";
 
 // Mock domutils functions
 jest.mock("domutils", () => ({

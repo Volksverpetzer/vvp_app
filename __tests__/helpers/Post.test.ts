@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
 
-import Post from "../../src/helpers/Post";
-import { FaveableType } from "../../src/types";
+import Post from "#/helpers/Post";
+import { FaveableType } from "#/types";
 
 describe("Post", () => {
   // Mock component for testing

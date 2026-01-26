@@ -1,4 +1,4 @@
-import tagStyles from "../../../src/screens/Home/components/article/tagStyles";
+import tagStyles from "#/screens/Home/components/article/tagStyles";
 
 describe("tagStyles", () => {
   it("should include blockquote styles", () => {

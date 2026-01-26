@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
+import API from "#/helpers/Networking/ServerAPI";
 import * as Networking from "#/helpers/utils/networking";
-
-import API from "../../../src/helpers/Networking/ServerAPI";
 
 // Mock dependencies
 jest.mock("#/helpers/utils/networking", () => ({

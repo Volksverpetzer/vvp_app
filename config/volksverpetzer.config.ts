@@ -1,6 +1,6 @@
 import { ExpoConfig } from "@expo/config";
 
-import { ExtraConfigType, colorSchemeType } from "../src/types";
+import { ExtraConfigType, colorSchemeType } from "#/types";
 
 const colorScheme: colorSchemeType = {
   light: {

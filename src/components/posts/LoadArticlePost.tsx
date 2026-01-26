@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
 import WordpressAPI from "#/helpers/Networking/WordpressAPI";
 
-import ArticlePost, { ArticleProperties } from ".//ArticlePost";
+import ArticlePost, { ArticleProperties } from "./ArticlePost";
 
 export type LoadProperties = {
   slug: string;
