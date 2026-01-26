@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Notifications from "expo-notifications";
 
-import NotificationManager from "../../src/helpers/Notifications";
+import NotificationManager from "#/helpers/Notifications";
 
 // Mock dependencies
 jest.mock("react-native", () => ({

@@ -6,10 +6,10 @@ import * as ExpoSharing from "expo-sharing";
 import { Platform, Share } from "react-native";
 import Toast from "react-native-toast-message";
 
-import { Achievements } from "../../src/helpers/Achievements";
-import { registerEvent } from "../../src/helpers/Networking/Analytics";
-import { multishare, onShare } from "../../src/helpers/Sharing";
-import Statistics from "../../src/helpers/Statistics";
+import { Achievements } from "#/helpers/Achievements";
+import { registerEvent } from "#/helpers/Networking/Analytics";
+import { multishare, onShare } from "#/helpers/Sharing";
+import Statistics from "#/helpers/Statistics";
 
 // Mock dependencies
 jest.mock("react-native", () => ({

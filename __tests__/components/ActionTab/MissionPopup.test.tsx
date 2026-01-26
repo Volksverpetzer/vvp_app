@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 
-import useColorScheme from "../../../src/hooks/useColorScheme";
+import useColorScheme from "#/hooks/useColorScheme";
 
 // Mock the useRouter hook
 jest.mock("expo-router", () => ({

@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import { Achievements } from "../../src/helpers/Achievements";
-import Statistics from "../../src/helpers/Statistics";
-import StatisticsStore from "../../src/helpers/Stores/StatisticsStore";
+import { Achievements } from "#/helpers/Achievements";
+import Statistics from "#/helpers/Statistics";
+import StatisticsStore from "#/helpers/Stores/StatisticsStore";
 
 // Mock dependencies
 jest.mock("../../src/helpers/Stores/StatisticsStore", () => ({
