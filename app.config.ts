@@ -49,7 +49,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       [
         "expo-notifications",
         {
-          icon: variableConfig.assets.icon,
+          icon: variableConfig.assets.notificationIcon,
           color: variableConfig.extraConfig.themeColor,
         },
       ],
@@ -115,11 +115,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
         monochromeImage: variableConfig.assets.iconMono,
         backgroundColor: "#ffffff",
       },
-    },
-    notification: {
-      icon: variableConfig.assets.notificationIcon,
-      iosDisplayInForeground: true,
-      color: variableConfig.extraConfig.themeColor,
     },
     extra: {
       ...variableConfig.extraConfig,
