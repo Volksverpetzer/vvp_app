@@ -101,61 +101,43 @@ const RegionMap = () => {
           Bundesländer Ranking
         </Text>
         <Space size={10} />
-        {regionData &&
-          regionData.map((region, index) => {
-            let Icon;
-
-            if (index === 0) {
-              Icon = FirstPlace;
-            } else if (index === 1) {
-              Icon = SecondPlace;
-            } else if (index === 2) {
-              Icon = ThirdPlace;
-            } else {
-              Icon = undefined;
-            }
-            if (index > 2) return null;
-            return (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  width: 120,
-                  margin: 3,
-                  borderRadius: 10,
-                  height: 18,
-                  backgroundColor: "white",
-                }}
-                key={index}
-              >
-                {index <= 2 ? <Icon style={{ left: -8 }} /> : index + 1}
-                <Text
-                  key={index}
-                  style={{ fontSize: 12, lineHeight: 18, color: corporate }}
-                >
-                  {` ${region.name}`}
-                </Text>
-              </View>
-            );
-          })}
-        <Space size={10} />
-        {regionData &&
-          regionData.map((region, index) => {
-            if (index <= 2) return null;
-            return (
-              <Text
-                key={index}
-                style={{
-                  fontSize: 13,
-                  paddingVertical: 2,
-                  ...styles.whiteText,
-                }}
-              >
-                {`${index + 1}. ${region.name}`}
+        {regionData?.slice(0, 3).map((region, index) => {
+          const Icon =
+            index === 0 ? FirstPlace : index === 1 ? SecondPlace : ThirdPlace;
+          return (
+            <View
+              key={region.region}
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
+                width: 120,
+                margin: 3,
+                borderRadius: 10,
+                height: 18,
+                backgroundColor: "white",
+              }}
+            >
+              <Icon style={{ left: -8 }} />
+              <Text style={{ fontSize: 12, lineHeight: 18, color: corporate }}>
+                {` ${region.name}`}
               </Text>
-            );
-          })}
+            </View>
+          );
+        })}
+        <Space size={10} />
+        {regionData?.slice(3).map((region, idx) => (
+          <Text
+            key={region.region}
+            style={{
+              fontSize: 13,
+              paddingVertical: 2,
+              ...styles.whiteText,
+            }}
+          >
+            {`${idx + 4}. ${region.name}`}
+          </Text>
+        ))}
         <Space size={80} />
       </View>
     </View>
