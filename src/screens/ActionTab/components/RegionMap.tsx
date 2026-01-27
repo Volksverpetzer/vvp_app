@@ -49,7 +49,7 @@ const RegionMap = () => {
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: -70,
-        paddingTop: 80,
+        paddingTop: 90,
         backgroundColor: corporate,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
@@ -93,7 +93,6 @@ const RegionMap = () => {
       <View
         style={{
           flex: 1,
-          paddingTop: 30,
           backgroundColor: corporate,
         }}
       >
