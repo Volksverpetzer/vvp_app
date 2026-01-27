@@ -61,6 +61,8 @@ const ReportScreen = () => {
       StyleSheet.create({
         errorText: {
           color: highlight,
+          fontSize: 18,
+          fontWeight: "bold",
           textAlign: "center",
         },
         input: {
