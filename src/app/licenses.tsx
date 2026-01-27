@@ -6,12 +6,10 @@ import Licenses from "#/screens/Settings/components/licenses/Licenses";
 
 const LicensesScreen = () => {
   return (
-    <>
-      <View style={styles.container}>
-        <Licenses />
-        <NavBar />
-      </View>
-    </>
+    <View style={styles.container}>
+      <Licenses />
+      <NavBar />
+    </View>
   );
 };
 
