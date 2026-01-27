@@ -2,7 +2,7 @@
   "name": "vvp_app",
   "version": "2.1.0",
   "main": "expo-router/entry",
-  "packageManager": "pnpm@10.28.1",
+  "packageManager": "pnpm@10.28.2",
   "license": "MIT",
   "scripts": {
     "start": "expo start",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@algolia/client-search": "5.47.0",
-    "@atproto/api": "0.18.16",
+    "@atproto/api": "0.18.17",
     "@babel/runtime": "7.28.6",
     "@expo-google-fonts/source-sans-3": "^0.4.1",
     "@expo/config": "12.0.13",
@@ -40,7 +40,7 @@
     "@react-navigation/native": "^7.1.8",
     "@stripe/stripe-react-native": "0.50.3",
     "@vseslav/react-native-horizontal-picker": "0.1.1",
-    "axios": "1.13.2",
+    "axios": "1.13.3",
     "domhandler": "5.0.3",
     "eslint-plugin-prettier": "5.5.5",
     "expo": "54.0.32",
@@ -85,7 +85,7 @@
     "react-native-web": "0.21.2",
     "react-native-webview": "13.15.0",
     "react-native-worklets": "0.5.1",
-    "rive-react-native": "9.7.1"
+    "rive-react-native": "9.8.0"
   },
   "devDependencies": {
     "@babel/core": "7.28.6",
@@ -93,7 +93,7 @@
     "@babel/preset-flow": "7.27.1",
     "@babel/preset-typescript": "7.28.5",
     "@cspell/dict-de-de": "4.1.2",
-    "@cspell/eslint-plugin": "9.6.0",
+    "@cspell/eslint-plugin": "9.6.2",
     "@jest/globals": "30.2.0",
     "@testing-library/react-native": "13.3.3",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
@@ -103,7 +103,7 @@
     "babel-jest": "30.2.0",
     "babel-plugin-module-resolver": "5.0.2",
     "babel-preset-expo": "54.0.10",
-    "cspell": "9.6.0",
+    "cspell": "9.6.2",
     "domutils": "3.2.2",
     "eslint": "9.39.2",
     "eslint-config-expo": "~10.0.0",
