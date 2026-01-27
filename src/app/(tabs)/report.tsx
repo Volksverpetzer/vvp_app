@@ -20,7 +20,7 @@ import TextInput from "#/components/design/TextInput";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles, styles } from "#/constants/Styles";
+import { styles as globalStyles } from "#/constants/Styles";
 import API from "#/helpers/Networking/ServerAPI";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import useColorScheme from "#/hooks/useColorScheme";
@@ -61,6 +61,10 @@ const ReportScreen = () => {
       StyleSheet.create({
         errorText: {
           color: highlight,
+          fontSize: 18,
+          fontWeight: "bold",
+          marginBottom: 20,
+          paddingHorizontal: 12,
           textAlign: "center",
         },
         input: {
@@ -68,7 +72,6 @@ const ReportScreen = () => {
           backgroundColor: inputBackground,
           borderRadius: 5,
           margin: 0,
-          paddingLeft: 13,
           padding: 10,
           width: "100%",
         },
@@ -208,9 +211,9 @@ const ReportScreen = () => {
           <View
             style={{
               ...globalStyles.row,
+              ...globalStyles.noBackground,
               width: "85%",
               paddingHorizontal: 12,
-              ...styles.noBackground,
             }}
           >
             <Checkbox
@@ -235,7 +238,11 @@ const ReportScreen = () => {
             ]}
           >
             <Text
-              style={{ textAlign: "center", fontSize: 18, ...styles.whiteText }}
+              style={{
+                ...globalStyles.whiteText,
+                textAlign: "center",
+                fontSize: 18,
+              }}
             >
               Report
             </Text>
