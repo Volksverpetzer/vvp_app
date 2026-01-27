@@ -18,7 +18,7 @@ jest.mock("../../src/helpers/Stores/SettingsStore", () => ({
       bot: { value: true, name: "Bot Feed" },
     },
     defaultAdvancedSettings: {
-      //advancedReporting: { value: false, name: "Erweitertes Reporting" },
+      advancedReporting: { value: false, name: "Erweitertes Reporting" },
       alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
     },
     getContentSettings: jest.fn(),
@@ -85,7 +85,7 @@ describe("SettingsContext Logic", () => {
 
     it("should call setAdvancedSettings when updating", async () => {
       const newSettings: AdvancedSettingType = {
-        //advancedReporting: { value: true, name: "Erweitertes Reporting" },
+        advancedReporting: { value: true, name: "Erweitertes Reporting" },
         alwaysDarkMode: { value: true, name: "Always Dark Mode" },
       };
 
