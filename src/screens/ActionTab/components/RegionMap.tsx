@@ -10,13 +10,13 @@ import { styles } from "#/constants/Styles";
 import { getRegions } from "#/helpers/Networking/Analytics";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import useColorScheme from "#/hooks/useColorScheme";
-import type { RegionsByCode } from "#/types";
+import type { Region, RegionsByCode } from "#/types";
 
 import Legend from "./Legend";
 
 const weekNumber = Math.floor(Date.now() / WEEK_IN_MS);
 
-const parseRegionsData = async (): Promise<RegionsByCode> => {
+const parseRegionsData = async (): Promise<Region[]> => {
   const csv = await getRegions();
   const rows = csv.split("\n");
   const regions: RegionsByCode = {};
@@ -29,11 +29,12 @@ const parseRegionsData = async (): Promise<RegionsByCode> => {
       pageviews: Number.parseInt(pageviews),
     };
   }
-  return regions;
+
+  return Object.values(regions).sort((a, b) => b.pageviews - a.pageviews);
 };
 
 const RegionMap = () => {
-  const [regionData, setRegionData] = useState<RegionsByCode | undefined>();
+  const [regionData, setRegionData] = useState<Region[] | undefined>();
 
   useEffect(() => {
     parseRegionsData().then(setRegionData);
@@ -101,64 +102,60 @@ const RegionMap = () => {
         </Text>
         <Space size={10} />
         {regionData &&
-          Object.values(regionData)
-            .sort((a, b) => b.pageviews - a.pageviews)
-            .map((region, index) => {
-              let Icon;
+          regionData.map((region, index) => {
+            let Icon;
 
-              if (index === 0) {
-                Icon = FirstPlace;
-              } else if (index === 1) {
-                Icon = SecondPlace;
-              } else if (index === 2) {
-                Icon = ThirdPlace;
-              } else {
-                Icon = undefined;
-              }
-              if (index > 2) return null;
-              return (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    width: 120,
-                    margin: 3,
-                    borderRadius: 10,
-                    height: 18,
-                    backgroundColor: "white",
-                  }}
-                  key={index}
-                >
-                  {index <= 2 ? <Icon style={{ left: -8 }} /> : index + 1}
-                  <Text
-                    key={index}
-                    style={{ fontSize: 12, lineHeight: 18, color: corporate }}
-                  >
-                    {` ${region.name}`}
-                  </Text>
-                </View>
-              );
-            })}
-        <Space size={10} />
-        {regionData &&
-          Object.values(regionData)
-            .sort((a, b) => b.pageviews - a.pageviews)
-            .map((region, index) => {
-              if (index <= 2) return null;
-              return (
+            if (index === 0) {
+              Icon = FirstPlace;
+            } else if (index === 1) {
+              Icon = SecondPlace;
+            } else if (index === 2) {
+              Icon = ThirdPlace;
+            } else {
+              Icon = undefined;
+            }
+            if (index > 2) return null;
+            return (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  width: 120,
+                  margin: 3,
+                  borderRadius: 10,
+                  height: 18,
+                  backgroundColor: "white",
+                }}
+                key={index}
+              >
+                {index <= 2 ? <Icon style={{ left: -8 }} /> : index + 1}
                 <Text
                   key={index}
-                  style={{
-                    fontSize: 13,
-                    paddingVertical: 2,
-                    ...styles.whiteText,
-                  }}
+                  style={{ fontSize: 12, lineHeight: 18, color: corporate }}
                 >
-                  {`${index + 1}. ${region.name}`}
+                  {` ${region.name}`}
                 </Text>
-              );
-            })}
+              </View>
+            );
+          })}
+        <Space size={10} />
+        {regionData &&
+          regionData.map((region, index) => {
+            if (index <= 2) return null;
+            return (
+              <Text
+                key={index}
+                style={{
+                  fontSize: 13,
+                  paddingVertical: 2,
+                  ...styles.whiteText,
+                }}
+              >
+                {`${index + 1}. ${region.name}`}
+              </Text>
+            );
+          })}
         <Space size={80} />
       </View>
     </View>
