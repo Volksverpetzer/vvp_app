@@ -1,32 +1,32 @@
 import { FontAwesome } from "@expo/vector-icons";
-import { JSX } from "react";
+import { JSX, ReactNode } from "react";
 import {
   Image,
   Linking,
+  StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   View,
 } from "react-native";
 
-// Version can be specified in package.json
-
 interface ListProperties {
-  image;
-  userUrl;
-  username;
-  packageName;
-  packageVersion;
-  licenses;
-  repository;
-  licenseUrl;
-  parents;
+  image?: string;
+  userUrl?: string;
+  username?: string;
+  packageName: string;
+  packageVersion?: string;
+  licenses?: string;
+  repository?: string;
+  licenseUrl?: string;
+  parents?: string[];
 }
 
 interface LinkProperties {
-  url?;
-  style;
-  children;
+  url?: string;
+  style?: StyleProp<TextStyle>;
+  children?: ReactNode;
 }
 
 /**
@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
   text: {
     color: "#34495e",
     marginTop: 3,
