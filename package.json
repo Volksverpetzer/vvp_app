@@ -2,8 +2,8 @@
   "name": "vvp_app",
   "version": "2.1.0",
   "main": "expo-router/entry",
-  "private": true,
   "packageManager": "pnpm@10.28.1",
+  "license": "MIT",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",

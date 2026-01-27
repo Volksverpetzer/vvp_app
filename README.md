@@ -1,35 +1,57 @@
 # Volksverpetzer App
 
-[![Check Test and Lint](https://github.com/Volksverpetzer/vvp_App/actions/workflows/check-test-and-lint.yml/badge.svg)](https://github.com/Volksverpetzer/vvp_App/actions/workflows/check-test-and-lint.yml)
-<img alt="gitleaks badge" src="https://img.shields.io/badge/protected%20by-gitleaks-blue">
+[![Check Test and Lint](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml/badge.svg)](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+[![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/gitleaks/gitleaks-action)
+[![GitHub release](https://img.shields.io/github/release/Volksverpetzer/vvp_app.svg)](https://github.com/Volksverpetzer/vvp_app/releases/)
 
-Die offizielle App für den Volksverpetzer.
+Official mobile app for Volksverpetzer (build with Expo + TypeScript).
 
-Wir haben unsere App für Fact Checks direkt auf dem Handy entwickelt!
-Was dann geschah, hielten viele für unmöglich.
+## Requirements
 
-# How to run
+- [node.js](https://nodejs.org/en/download/current) v24.x or higher
+- [pnpm](https://pnpm.io/)
 
-- Clone Repo
-- Run `pnpm install`
-- Run `pnpm run start` for dev version
+## Quick start
 
-Run eas build for native binaries, see https://docs.expo.dev/build/introduction/
+- Clone the repository:
+  - `git clone https://github.com/Volksverpetzer/vvp_app.git`
 
-# How to debug
+- Change into project directory:
+  - `cd vvp_app`
 
-## In Webstorm
+- Install dependencies:
+  - `pnpm install`
 
-### Start your Expo App
+- Start development server:
+  - `pnpm start`
 
-First, make sure your Expo development server and the application on your device/emulator are running:
+## Configuration
 
-- Run your start script `pnpm run start`
-- Ensure the app is launched on a device/emulator.
+The app expects a `./.env` file in the project root for some minor configuration.
+
+See `.env.example` for reference.
+
+## Running the App
+
+For platform-specific runs:
+
+- `pnpm ios`
+- `pnpm android`
+- `pnpm web`
+
+## Other useful scripts
+
+- Run tests: `pnpm test`
+- Lint: `pnpm lint`
+- Fix lint issues: `pnpm lint:fix`
+- Check types and spelling: `pnpm check`
+
+## Debugging
 
 ### Configure a React Native Debugger in WebStorm
 
-Next, set up the WebStorm run configuration to attach its debugger to your running app:
+Set up the WebStorm run configuration to attach its debugger to your running app:
 
 1. Go to Run | Edit Configurations....
 2. Click the + icon in the top left corner and select React Native from the list.
@@ -52,13 +74,3 @@ Now, you can start the debugging session from within WebStorm:
 4.  On your physical device or emulator, open the Developer Menu (shake the device, press Ctrl + Cmd + Z on iOS simulator, or Ctrl + M on Android emulator).
 5.  Select "Enable Local DevTools" or "Open JS Debugger" from the menu to connect the app to the WebStorm debugger session.
 6.  Once connected, your breakpoints should be triggered, and you can inspect variables, the call stack, and step through your code in the WebStorm Debug tool window.
-
-# Wichtige Dateien:
-
-> src/helpers/Analytics
-
-Funktionen, um Analytics Daten abzurufen oder zu senden
-
-> src/helpers/FeedFetcher
-
-Funktionen, die APIs anzapfen, und Content vereinheitlicht als Array aus "Posts" zurückgeben
