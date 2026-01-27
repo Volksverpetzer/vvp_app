@@ -63,6 +63,8 @@ const ReportScreen = () => {
           color: highlight,
           fontSize: 18,
           fontWeight: "bold",
+          marginBottom: 20,
+          paddingHorizontal: 12,
           textAlign: "center",
         },
         input: {
@@ -70,7 +72,6 @@ const ReportScreen = () => {
           backgroundColor: inputBackground,
           borderRadius: 5,
           margin: 0,
-          paddingLeft: 13,
           padding: 10,
           width: "100%",
         },
