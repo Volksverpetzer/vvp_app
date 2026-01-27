@@ -12,6 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Fehler } from "#/components/Icons";
+import Colors from "#/constants/Colors";
 import { styles as globalStyles } from "#/constants/Styles";
 
 interface ReportingWrapperProperties {
@@ -65,12 +66,12 @@ const ReportingWrapper = ({
     });
 
     return (
-      <View style={{ justifyContent: "center" }}>
+      <View style={styles.rightActionContainer}>
         <Pressable accessibilityRole="button" onPress={errorReport}>
           <Animated.View
             style={[styles.sheet, actionStyle, { height: blockHeight / 3 }]}
           >
-            <Fehler />
+            <Fehler color={Colors.light.corporate} />
             <Text style={styles.sheetText}>Fehler melden</Text>
           </Animated.View>
         </Pressable>
@@ -104,6 +105,10 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     width: "100%",
   },
+  rightActionContainer: {
+    justifyContent: "center",
+    width: 100, // feste Breite damit die Aktion sichtbar ist
+  },
   sheet: {
     alignItems: "center",
     borderBottomLeftRadius: 50,
@@ -111,10 +116,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     maxHeight: 70,
     paddingLeft: 20,
+    paddingRight: 12,
+    backgroundColor: "#d93025", // sichtbare Hintergrundfarbe für Kontrast
+    width: "100%",
   },
   sheetText: {
     ...globalStyles.whiteText,
     fontSize: 14,
     fontWeight: "bold",
+    marginTop: 4,
+    textAlign: "center",
   },
 });

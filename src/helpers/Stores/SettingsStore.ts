@@ -29,7 +29,7 @@ const SettingsStore = {
    * @property {SettingType} alwaysDarkMode - Indicates if always dark mode is enabled.
    */
   defaultAdvancedSettings: {
-    //advancedReporting: { value: false, name: "Erweitertes Reporting" },
+    advancedReporting: { value: false, name: "Erweitertes Reporting" },
     alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
   } as AdvancedSettingType,
 

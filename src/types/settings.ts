@@ -19,6 +19,6 @@ export type NotificationSettingType = {
 };
 
 export type AdvancedSettingType = {
-  //advancedReporting: SettingType;
+  advancedReporting: SettingType;
   alwaysDarkMode: SettingType;
 };
