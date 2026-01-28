@@ -21,7 +21,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
-import useColorScheme, { useCorporateColor } from "#/hooks/useColorScheme";
+import useColorScheme from "#/hooks/useColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import { StoredSources } from "#/types";
 
@@ -32,7 +32,7 @@ const MySources = () => {
   const { width } = useFeedDimensions();
   const colorScheme = useColorScheme();
   const backgroundColor = Colors[colorScheme].background;
-  const corporate = useCorporateColor();
+  const corporate = Colors[colorScheme].corporate;
   useFocusEffect(
     useCallback(() => {
       SourcesStore.getAllSources().then(setSources);
