@@ -15,10 +15,10 @@ import { registerViews } from "#/helpers/Networking/Analytics";
 import { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { useCorporateColor } from "#/hooks/useColorScheme";
-import { StoredFav } from "#/types";
+import { StoredFavs } from "#/types";
 
 const MyFavs = () => {
-  const [favs, setFavs] = useState<StoredFav>({});
+  const [favs, setFavs] = useState<StoredFavs>({});
   const focused = useIsFocused();
 
   useEffect(() => {

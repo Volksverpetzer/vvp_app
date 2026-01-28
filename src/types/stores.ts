@@ -1,5 +1,10 @@
 export type FaveableType = "article" | "insta";
-export type StoredFav = Record<string, { contentType: FaveableType }>;
+
+export type StoredF = {
+  contentType: FaveableType;
+};
+
+export type StoredFavs = Record<string, StoredF>;
 
 export type StoredReport = {
   id: string;
