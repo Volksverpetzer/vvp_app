@@ -61,10 +61,19 @@ const Footer = (properties: FooterProperties) => {
             })
           }
         >
-          <Share color={"#fcfcfc"} size={50} />
+          <Share color={"white"} size={50} />
         </Pressable>
       </View>
-      <Support article_link={properties.article_link} />
+      <View
+        style={{
+          marginHorizontal: 12,
+          paddingVertical: 12,
+          borderRadius: 20,
+          backgroundColor: Colors[colorScheme].secondaryBackground,
+        }}
+      >
+        <Support article_link={properties.article_link} />
+      </View>
       <Space size={95} />
     </>
   );
