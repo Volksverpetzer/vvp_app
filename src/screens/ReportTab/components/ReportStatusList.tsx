@@ -4,6 +4,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import Heading from "#/components/typography/Heading";
 import API from "#/helpers/Networking/ServerAPI";
+import useColorScheme from "#/hooks/useColorScheme";
 import { StatusResponse } from "#/types";
 
 interface ReportItem {
@@ -36,6 +37,25 @@ const ReportStatusList = ({ reports }: ReportStatusListProperties) => {
  * @returns {ReactElement} the status of the report
  */
 const ReportStatusItem = ({ id }: ReportItem) => {
+  const colorScheme = useColorScheme();
+
+  const colors =
+    colorScheme === "dark"
+      ? {
+          text: "#FFFFFF",
+          posted: "#34D399",
+          error: "#F87171",
+          pending: "#9CA3AF",
+          activity: "#FFFFFF",
+        }
+      : {
+          text: "#000000",
+          posted: "#059669",
+          error: "#EF4444",
+          pending: "#6B7280",
+          activity: "#000000",
+        };
+
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<string>("");
   const [error, setError] = useState(false);
@@ -59,20 +79,24 @@ const ReportStatusItem = ({ id }: ReportItem) => {
    */
   const renderIcon = () => {
     if (loading) {
-      return <ActivityIndicator />;
+      return <ActivityIndicator color={colors.activity} />;
     }
     if (error) {
-      return <FontAwesome name="exclamation-circle" size={24} color="red" />;
+      return (
+        <FontAwesome name="exclamation-circle" size={24} color={colors.error} />
+      );
     }
     if (status === "posted") {
-      return <FontAwesome name="check" size={24} color="green" />;
+      return <FontAwesome name="check" size={24} color={colors.posted} />;
     }
-    return <FontAwesome name="hourglass-half" size={24} color="gray" />;
+    return (
+      <FontAwesome name="hourglass-half" size={24} color={colors.pending} />
+    );
   };
 
   return (
     <View style={styles.item}>
-      <Text selectable style={styles.text}>
+      <Text selectable style={[styles.text, { color: colors.text }]}>
         {id} {renderIcon()}
       </Text>
     </View>
