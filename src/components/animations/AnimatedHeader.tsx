@@ -8,7 +8,7 @@ import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { hexToRgb } from "#/helpers/utils/color";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 /**
  * Props for the AnimatedHeader component.
@@ -45,7 +45,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
     headerComponent,
   } = properties;
 
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors["dark"].corporate;
   const router = useRouter();
   // Memoize the background color based on the current scheme.

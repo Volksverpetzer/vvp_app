@@ -13,7 +13,7 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { useBadge } from "#/helpers/BadgeContext";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 /**
  * The layout for the tab navigator.
@@ -21,7 +21,7 @@ import useColorScheme from "#/hooks/useColorScheme";
  */
 const TabLayout = () => {
   const { badgeState } = useBadge();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const actionsActive = Config.enabledActions;
 

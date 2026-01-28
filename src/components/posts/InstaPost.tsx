@@ -19,7 +19,7 @@ import { Achievements } from "#/helpers/Achievements";
 import { registerViews } from "#/helpers/Networking/Analytics";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 
 /**

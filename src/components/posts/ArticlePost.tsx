@@ -16,7 +16,7 @@ import WordpressAPI from "#/helpers/Networking/WordpressAPI";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 
 import Badge from "./Badge";
@@ -66,7 +66,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const [date, setDate] = useState("");
 
   // Hooks and derived values.
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const greyText = Colors[colorScheme].grayedOutText;
   const { width } = useFeedDimensions();

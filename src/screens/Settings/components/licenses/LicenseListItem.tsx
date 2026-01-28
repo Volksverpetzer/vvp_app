@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 interface LicensesListItemProperties {
   image?: string;
@@ -39,7 +39,7 @@ interface LinkProperties {
 const LicensesListItem = (
   Properties: LicensesListItemProperties,
 ): JSX.Element => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const isDark = colorScheme === "dark";
   const styles = getStyles(isDark);
   const textColor = isDark ? "#e5e7eb" : "#34495e";
@@ -98,7 +98,7 @@ const LicensesListItem = (
 };
 
 const Link = (properties: LinkProperties) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const isDark = colorScheme === "dark";
   const defaultColor = isDark ? "#e5e7eb" : "#34495e";
 

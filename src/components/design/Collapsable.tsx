@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import Colors from "#/constants/Colors";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 interface CollapsableProps {
   title: string;
@@ -31,7 +31,7 @@ const Collapsable = ({
 }: CollapsableProps): ReactElement => {
   const [open, setOpen] = useState(defaultOpen);
 
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
 
   const toggle = () => {

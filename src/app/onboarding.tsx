@@ -18,7 +18,7 @@ import SettingsContext from "#/helpers/SettingsContext";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
 import { NotificationSettingType, SettingType } from "#/types";
 

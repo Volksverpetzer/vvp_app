@@ -18,7 +18,7 @@ import Colors from "#/constants/Colors";
 import { styles as globalStyles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { AISearchResponse } from "#/types";
 
 type FaktenbotReaction = 0 | 5 | 10;
@@ -44,7 +44,7 @@ const AISearch = ({
   );
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const textColor = Colors[colorScheme].text;
 

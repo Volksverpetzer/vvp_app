@@ -20,7 +20,7 @@ import GenericPost from "#/components/posts/GenericPost";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import Post from "#/helpers/Post";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 
 export type FeedFetcherProperties = {
@@ -50,7 +50,7 @@ const Feed = (properties: FeedProperties) => {
   const [isLoadingMore, setIsLoadingMore] = useState(true);
   const [page, setPage] = useState(1);
   const router = useRouter();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);

@@ -23,7 +23,7 @@ import Colors from "#/constants/Colors";
 import { styles as globalStyles } from "#/constants/Styles";
 import API from "#/helpers/Networking/ServerAPI";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import ReportStatusList from "#/screens/ReportTab/components/ReportStatusList";
 
 interface Report {
@@ -46,7 +46,7 @@ const ReportScreen = () => {
   const { url: parameterUrl, index } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const { height } = useWindowDimensions();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
 
   // Color constants
   const highlight = Colors[colorScheme].highlight;

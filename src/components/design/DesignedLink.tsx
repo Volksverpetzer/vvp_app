@@ -13,7 +13,7 @@ import {
 
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import Text from "./Text";
 
@@ -24,7 +24,7 @@ type DesignedLinksProperties = {
 } & ({ asset: ImageSourcePropType } | { icon: ReactElement });
 
 const DesignedLink = (properties: DesignedLinksProperties) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const openLink = () => {
     if ("mailto:" === properties.url.slice(0, 7)) {
       MailComposer.isAvailableAsync().then((isAvailable) => {

@@ -10,7 +10,7 @@ import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
-import useColorScheme, { useCorporateColor } from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 export interface MastodonPostProperties {
   id: number;
@@ -49,8 +49,8 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
   const { textDisplay, ...post } = properties;
   const { account, content, answers, created_at, uri } = post;
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const corporate = useCorporateColor();
+  const colorScheme = useAppColorScheme();
+  const corporate = Colors[colorScheme].corporate;
   const grey = Colors[colorScheme].grayedOutText;
   const htmlPattern = /<[^>]+>/g;
   const fulltext = decode(

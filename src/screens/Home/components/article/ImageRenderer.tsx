@@ -12,7 +12,7 @@ import {
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
   const [ratio, setRatio] = useState(1.5);
@@ -20,7 +20,7 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const { rendererProps } = useInternalRenderer("img", properties);
   const { width } = useWindowDimensions();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const uri = rendererProps.source.uri;
   const backgroundColor = Colors[colorScheme].background;
 

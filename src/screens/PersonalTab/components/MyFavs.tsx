@@ -14,7 +14,7 @@ import { updateBadgeState } from "#/helpers/BadgeContext";
 import { registerViews } from "#/helpers/Networking/Analytics";
 import { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA, StoredFavs } from "#/types";
 
 const MyFavs = () => {

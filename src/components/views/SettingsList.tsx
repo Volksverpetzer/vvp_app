@@ -7,7 +7,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { ContentSettingType, SettingType } from "#/types";
 
 interface SettingsListProperties {
@@ -28,7 +28,7 @@ const SettingsList = (properties: SettingsListProperties) => {
   useEffect(() => {
     setDisabled(false);
   }, [properties.settings, update]);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const activeColor = Colors[colorScheme].tint;
   const activeSettings = getEnabledFeeds(Config.feeds);

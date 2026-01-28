@@ -13,7 +13,7 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 import Stepper from "./Stepper";
 

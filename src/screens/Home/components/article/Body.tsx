@@ -15,7 +15,7 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import BlockRenderer from "./BlockRenderer";
 import {
@@ -57,7 +57,7 @@ const Body = (properties: BodyProperties) => {
     slug,
     article_title,
   } = properties;
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
 
   const articleTagStyles = useMemo(
     () => tagStylesFunction(colorScheme, width),

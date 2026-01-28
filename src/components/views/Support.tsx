@@ -13,7 +13,7 @@ import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import Donate from "./Donate";
 
@@ -24,7 +24,7 @@ interface SupportProperties {
 
 const Support = ({ article_link, location }: SupportProperties) => {
   const [showBank, setShowBank] = useState(false);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].secondaryBackground;
   const corporate = Colors[colorScheme].corporate;
 

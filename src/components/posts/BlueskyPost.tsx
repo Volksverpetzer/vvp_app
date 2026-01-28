@@ -14,7 +14,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import useColorScheme, { useCorporateColor } from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import { PostText } from "./PostText";
 
@@ -35,8 +35,8 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
   const { record, author, uri } = post.post;
   const { wpUrl } = Config;
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const corporate = useCorporateColor();
+  const colorScheme = useAppColorScheme();
+  const corporate = Colors[colorScheme].corporate;
   const grey = Colors[colorScheme].grayedOutText;
   const postId = uri.split("/app.bsky.feed.post/")[1];
   const htmlPattern = /<[^>]+>/g;

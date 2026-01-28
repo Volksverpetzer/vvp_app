@@ -7,7 +7,7 @@ import Colors from "#/constants/Colors";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { getLinks } from "#/helpers/Networking/Analytics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 interface ArticleSourceListProperties {
   article_link: string;
@@ -20,7 +20,7 @@ export const ArticleSourceList = ({
     { visitors: number; url: string }[] | undefined
   >();
   const [open, setOpen] = useState(false);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
   const corporate = Colors[colorScheme].corporate;
 

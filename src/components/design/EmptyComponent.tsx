@@ -5,7 +5,7 @@ import SteadyButton from "#/components/buttons/SteadyButton";
 import View from "#/components/design/View";
 import Donate from "#/components/views/Donate";
 import { styles } from "#/constants/Styles";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 import Text from "./Text";
 
