@@ -15,7 +15,7 @@ import { registerViews } from "#/helpers/Networking/Analytics";
 import { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { useCorporateColor } from "#/hooks/useColorScheme";
-import { StoredFavs } from "#/types";
+import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA, StoredFavs } from "#/types";
 
 const MyFavs = () => {
   const [favs, setFavs] = useState<StoredFavs>({});
@@ -38,7 +38,7 @@ const MyFavs = () => {
         .map((fav) => {
           const { contentType } = favs[fav];
           switch (contentType) {
-            case "article": {
+            case FAV_TYPE_ARTICLE: {
               const url = Config.wpUrl + "/redirect/" + fav;
               const shareable: ShareableType[] = [{ title: fav, url }];
               return (
@@ -58,7 +58,7 @@ const MyFavs = () => {
                 </View>
               );
             }
-            case "insta": {
+            case FAV_TYPE_INSTA: {
               return (
                 <View style={{ ...styles.roundEdges }} key={fav}>
                   <LoadInstaPost inView={true} id={fav} />
