@@ -9,10 +9,11 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
-  useColorScheme,
 } from "react-native";
 
-export interface LicensesListItemProperties {
+import useColorScheme from "#/hooks/useColorScheme";
+
+interface LicensesListItemProperties {
   image?: string;
   userUrl?: string;
   username?: string;
@@ -66,14 +67,14 @@ const LicensesListItem = (
           {image && (
             <TouchableOpacity
               accessibilityRole="button"
-              onPress={() => Linking.openURL(userUrl)}
+              onPress={() => userUrl && Linking.openURL(userUrl)}
             >
               <Image source={{ uri: image }} style={styles.image} />
             </TouchableOpacity>
           )}
           <TouchableOpacity
             accessibilityRole="button"
-            onPress={() => Linking.openURL(repository)}
+            onPress={() => repository && Linking.openURL(repository)}
             style={styles.item}
           >
             <View style={{ maxWidth: "90%" }}>
