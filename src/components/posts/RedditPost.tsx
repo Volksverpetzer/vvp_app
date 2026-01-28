@@ -9,7 +9,7 @@ import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { onShare as _onShare } from "#/helpers/Sharing";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 interface RedditProperties {
   preview: { images: any; enabled: boolean };
@@ -31,7 +31,7 @@ interface RedditProperties {
 const RedditPost = (properties: RedditProperties) => {
   const [dims, setDims] = useState({ width: 0, height: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const img_dim = properties.preview?.images[0].source ?? {
     width: 100,

@@ -27,7 +27,7 @@ import { styles } from "#/constants/Styles";
 import { registerEvent } from "#/helpers/Networking/Analytics";
 import API from "#/helpers/Networking/ServerAPI";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import Paypal from "#assets/images/ButtonPaypal.png";
 
@@ -46,7 +46,7 @@ const Donate = (properties: DonateProperties) => {
   const [isPaySupported, setIsPaySupported] = useState(false);
   const [amount, setAmount] = useState(10);
   const [successAnimated, setSuccessAnimated] = useState(false);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const { isPlatformPaySupported } = usePlatformPay();
   const paypalAlways =
     properties?.paypalAlways || !Config.donations.platformPay;

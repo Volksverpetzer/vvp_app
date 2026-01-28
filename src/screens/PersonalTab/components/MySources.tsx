@@ -21,7 +21,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import { StoredSources } from "#/types";
 
@@ -30,7 +30,7 @@ const MySources = () => {
   const wpUrl = Config.wpUrl;
 
   const { width } = useFeedDimensions();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
   const corporate = Colors[colorScheme].corporate;
   useFocusEffect(

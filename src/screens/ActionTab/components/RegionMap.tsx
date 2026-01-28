@@ -9,7 +9,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { getRegions } from "#/helpers/Networking/Analytics";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import type { Region, RegionsByCode } from "#/types";
 
 import Legend from "./Legend";
@@ -40,7 +40,7 @@ const RegionMap = () => {
     parseRegionsData().then(setRegionData);
   }, []);
   const { width } = useWindowDimensions();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors["light"].corporate;
   const corporateColor = Colors["dark"].corporate;
   const highlight = Colors[colorScheme].highlight;

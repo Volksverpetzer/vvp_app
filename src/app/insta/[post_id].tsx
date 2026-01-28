@@ -16,7 +16,7 @@ import { registerViews } from "#/helpers/Networking/Analytics";
 import API from "#/helpers/Networking/ServerAPI";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 
 /**
@@ -40,7 +40,7 @@ const InstaScreen = () => {
   const parameters = useLocalSearchParams<{ post_id: string }>();
 
   // Retrieve current color scheme to style links appropriately
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
 
   // Get the WordPress URL from configuration and navigation router

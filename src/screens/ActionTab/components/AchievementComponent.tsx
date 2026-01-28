@@ -13,7 +13,7 @@ import {
   TaskType,
 } from "#/helpers/Achievements";
 import { updateBadgeState } from "#/helpers/BadgeContext";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import Parallelogram from "./Parallelogram";
 
@@ -22,7 +22,7 @@ const AchievementComponent = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const corporate = Colors["dark"].corporate;
   const corporateColor = Colors["light"].corporate;
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const highlight = Colors[colorScheme].highlight;
   const backgroundColor = Colors[colorScheme].background;
   const secondaryBackground = Colors[colorScheme].secondaryBackground;

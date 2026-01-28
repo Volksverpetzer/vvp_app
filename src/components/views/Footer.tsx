@@ -6,7 +6,7 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import Support from "./Support";
 
@@ -21,7 +21,7 @@ interface FooterProperties {
  * @returns The rendered footer
  */
 const Footer = (properties: FooterProperties) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
 
   return (

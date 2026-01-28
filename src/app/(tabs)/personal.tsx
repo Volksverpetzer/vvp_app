@@ -11,7 +11,7 @@ import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { updateBadgeState } from "#/helpers/BadgeContext";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import MyFavs from "#/screens/PersonalTab/components/MyFavs";
 import MySources from "#/screens/PersonalTab/components/MySources";
 
@@ -28,7 +28,7 @@ const PersonalTab = () => {
   );
 
   const scrollOffsetY = new Animated.Value(0);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporateColor = Colors[colorScheme].corporate;
   const backgroundColor = Colors[colorScheme].secondaryBackground;
   const tabIconColor = Colors[colorScheme].tabIconDefault;

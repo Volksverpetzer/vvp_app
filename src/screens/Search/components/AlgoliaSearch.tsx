@@ -16,7 +16,7 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 interface AlgoliaSearchProperties {
   searchString: string;
@@ -34,7 +34,7 @@ const AlgoliaSearchResults = ({
 
   // Initialize Algolia client
   const client = searchClient("W8YO8C6SIN", "f8211e7620b2d30da0d73f451fe36634");
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const highlightColor = Colors[colorScheme].corporate;
   const textColor = Colors[colorScheme].text;
 

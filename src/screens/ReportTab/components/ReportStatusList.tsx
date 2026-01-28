@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import Heading from "#/components/typography/Heading";
 import API from "#/helpers/Networking/ServerAPI";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { StatusResponse } from "#/types";
 
 interface ReportItem {
@@ -37,7 +37,7 @@ const ReportStatusList = ({ reports }: ReportStatusListProperties) => {
  * @returns {ReactElement} the status of the report
  */
 const ReportStatusItem = ({ id }: ReportItem) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
 
   const colors =
     colorScheme === "dark"

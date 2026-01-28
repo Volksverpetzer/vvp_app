@@ -10,7 +10,7 @@ import { updateBadgeState } from "#/helpers/BadgeContext";
 import { getFavs, registerFav } from "#/helpers/Networking/Analytics";
 import { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { FaveableType } from "#/types";
 
 interface FavCounterProperties {

@@ -7,7 +7,7 @@ import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import { normalizeFacets } from "#/helpers/utils/posts";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 type Props = {
   feedViewPost: FeedViewPost;
@@ -19,7 +19,7 @@ export const PostText = ({ feedViewPost, uri }: Props) => {
   const record = feedViewPost?.post?.record;
   const facetsForRichText = normalizeFacets(record.facets);
 
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
 
   /*

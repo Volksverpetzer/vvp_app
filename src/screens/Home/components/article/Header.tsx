@@ -21,7 +21,7 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 import logoPike from "#assets/images/logo_pike.png";
 

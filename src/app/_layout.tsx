@@ -24,7 +24,7 @@ import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import Colors from "#/constants/Colors";
 import { BadgeProvider } from "#/helpers/BadgeContext";
 import { SettingsProvider } from "#/helpers/SettingsContext";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
 
 // Hide warning for new native event emitter
@@ -46,7 +46,7 @@ const RootLayout = () => {
     SourceSansProBold: SourceSans3_700Bold,
   });
 
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {

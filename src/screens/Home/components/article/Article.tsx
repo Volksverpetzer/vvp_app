@@ -21,7 +21,7 @@ import { registerEvent, registerViews } from "#/helpers/Networking/Analytics";
 import { onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import Body from "./Body";
 import Header from "./Header";
@@ -47,7 +47,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const scrollProgress = useRef(new Animated.Value(0)).current;
   const scrollReference = useRef<ScrollView>(null);
   const router = useRouter();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const backgroundColor = Colors[colorScheme].background;
 

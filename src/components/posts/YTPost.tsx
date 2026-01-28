@@ -5,7 +5,7 @@ import { TouchableOpacity, useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
 
 import View from "#/components/design/View";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 /**
  * Represents the properties of a Youtube post as fetched from the Youtube API

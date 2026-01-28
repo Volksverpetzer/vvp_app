@@ -3,7 +3,7 @@ import { Animated, Dimensions } from "react-native";
 
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import Party from "#assets/images/Party.png";
 
@@ -15,7 +15,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   const { animated } = properties;
   const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
   const animation = useRef(new Animated.Value(0)).current;
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const radius = animation.interpolate({
     inputRange: [0, 100],
     outputRange: [0, screenWidth * 2],

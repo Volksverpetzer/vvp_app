@@ -10,7 +10,7 @@ import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { ShareableType, onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { FaveableType } from "#/types";
 
 interface NavBarProperties {
@@ -39,7 +39,7 @@ interface NavBarProperties {
 const NavBar = (properties: NavBarProperties) => {
   const { contentFavIdentifier, contentType, link, shareable } = properties;
   const router = useRouter();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const backgroundColor = Colors[colorScheme].background;
   const insets = useSafeAreaInsets();

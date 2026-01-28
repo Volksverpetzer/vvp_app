@@ -29,7 +29,7 @@ import Notifications from "#/helpers/Notifications";
 import SettingsContext from "#/helpers/SettingsContext";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { NotificationSettingType, SettingType } from "#/types";
 
 const SettingsScreen = () => {
@@ -47,7 +47,7 @@ const SettingsScreen = () => {
     advancedSettings,
     setAdvancedSettings,
   } = useContext(SettingsContext);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const backgroundColor = Colors[colorScheme].secondaryBackground;
   const secondaryBackground = Colors[colorScheme].background;

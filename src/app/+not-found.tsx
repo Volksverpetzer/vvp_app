@@ -5,7 +5,7 @@ import EmptyComponent from "#/components/design/EmptyComponent";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 const NotFoundScreen = () => {
   const corporate = useCorporateColor();

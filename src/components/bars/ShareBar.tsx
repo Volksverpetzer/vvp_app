@@ -7,7 +7,7 @@ import ShareCounter from "#/components/counter/ShareCounter";
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
 import { ShareableType, multishare } from "#/helpers/Sharing";
-import { useCorporateColor } from "#/hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { FaveableType } from "#/types";
 
 interface ShareBarProperties {

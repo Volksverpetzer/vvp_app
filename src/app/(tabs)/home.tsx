@@ -14,7 +14,7 @@ import { styles } from "#/constants/Styles";
 import SettingsContext from "#/helpers/SettingsContext";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
-import useColorScheme from "#/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 import Feed, { FeedProperties } from "#/screens/Home/components/Feed";
 import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
 
@@ -29,7 +29,7 @@ const HomeScreen = () => {
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const router = useRouter();
   const { shareIntent, hasShareIntent } = useShareIntentContext();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
 
   const HEADER_HEIGHT = 220;
