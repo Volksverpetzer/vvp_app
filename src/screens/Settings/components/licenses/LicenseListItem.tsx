@@ -61,42 +61,37 @@ const LicensesListItem = (
   }
 
   return (
-    <View>
-      <View style={styles.cardShadow}>
-        <View style={styles.card}>
-          {image && (
-            <TouchableOpacity
-              accessibilityRole="button"
-              onPress={() => userUrl && Linking.openURL(userUrl)}
-            >
-              <Image source={{ uri: image }} style={styles.image} />
-            </TouchableOpacity>
-          )}
+    <View style={styles.cardShadow}>
+      <View style={styles.card}>
+        {image && (
           <TouchableOpacity
             accessibilityRole="button"
-            onPress={() => repository && Linking.openURL(repository)}
-            style={styles.item}
+            onPress={() => userUrl && Linking.openURL(userUrl)}
           >
-            <View style={{ maxWidth: "90%" }}>
-              <Text style={[styles.name, { color: textColor }]}>{title}</Text>
-              <Link
-                style={[styles.text, { color: textColor }]}
-                url={licenseUrl}
-              >
-                {licenses}
-              </Link>
-              <Link style={[styles.text, { color: textColor }]}>
-                {packageVersion}
-              </Link>
-            </View>
-            <FontAwesome
-              style={{ alignSelf: "center" }}
-              color={iconColor}
-              size={16}
-              name={"chevron-right"}
-            />
+            <Image source={{ uri: image }} style={styles.image} />
           </TouchableOpacity>
-        </View>
+        )}
+        <TouchableOpacity
+          accessibilityRole="button"
+          onPress={() => repository && Linking.openURL(repository)}
+          style={styles.item}
+        >
+          <View style={{ maxWidth: "90%" }}>
+            <Text style={[styles.name, { color: textColor }]}>{title}</Text>
+            <Link style={[styles.text, { color: textColor }]} url={licenseUrl}>
+              {licenses}
+            </Link>
+            <Text style={[styles.name, { color: textColor }]}>
+              {packageVersion}
+            </Text>
+          </View>
+          <FontAwesome
+            style={{ alignSelf: "center" }}
+            color={iconColor}
+            size={16}
+            name={"chevron-right"}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -122,7 +117,7 @@ const getStyles = (isDark: boolean) =>
   StyleSheet.create({
     card: {
       alignItems: "stretch",
-      backgroundColor: isDark ? "#111827" : "white",
+      backgroundColor: isDark ? "#111827" : "#fff",
       borderRadius: 4,
       flexDirection: "row",
       overflow: "hidden",
@@ -130,7 +125,7 @@ const getStyles = (isDark: boolean) =>
     cardShadow: {
       marginHorizontal: 12,
       marginVertical: 6,
-      shadowColor: isDark ? "#000" : "black",
+      shadowColor: isDark ? "#000" : "#fff",
       shadowOffset: { width: 0, height: 0 },
       shadowOpacity: isDark ? 0.6 : 0.4,
       shadowRadius: isDark ? 4 : 2,
@@ -143,7 +138,6 @@ const getStyles = (isDark: boolean) =>
       width: 96,
     },
     item: {
-      backgroundColor: "transparent",
       flex: 1,
       flexDirection: "row",
       flexWrap: "wrap",
