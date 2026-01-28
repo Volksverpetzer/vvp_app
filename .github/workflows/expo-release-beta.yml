@@ -5,7 +5,8 @@ on:
     branches:
       - "prerelease"
     tags:
-      - "*.*.*-beta.*" # Match tags like v1.2.3-beta.1, v2.3.0-beta.2, etc.
+      - "*.*.*-beta.*" # Match tags like 1.2.3-beta.1, 2.3.0-beta.2, etc.
+        # We dont add a v here in front to distinguish from stable releases.
 
 jobs:
   test-and-lint:
