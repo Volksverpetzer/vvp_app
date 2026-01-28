@@ -9,9 +9,10 @@ import {
   TextStyle,
   TouchableOpacity,
   View,
+  useColorScheme,
 } from "react-native";
 
-interface ListProperties {
+export interface LicensesListItemProperties {
   image?: string;
   userUrl?: string;
   username?: string;
@@ -34,7 +35,14 @@ interface LinkProperties {
  * @param Properties The properties of the list item.
  * @returns The rendered list item.
  */
-const LicensesListItem = (Properties: ListProperties): JSX.Element => {
+const LicensesListItem = (
+  Properties: LicensesListItemProperties,
+): JSX.Element => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const styles = getStyles(isDark);
+  const textColor = isDark ? "#e5e7eb" : "#34495e";
+  const iconColor = textColor;
   const {
     image,
     userUrl,
@@ -45,6 +53,7 @@ const LicensesListItem = (Properties: ListProperties): JSX.Element => {
     repository,
     licenseUrl,
   } = Properties;
+
   let title = packageName;
   if (username && title.toLowerCase() !== username.toLowerCase()) {
     title += ` by ${username}`;
@@ -68,15 +77,20 @@ const LicensesListItem = (Properties: ListProperties): JSX.Element => {
             style={styles.item}
           >
             <View style={{ maxWidth: "90%" }}>
-              <Text style={styles.name}>{title}</Text>
-              <Link style={styles.text} url={licenseUrl}>
+              <Text style={[styles.name, { color: textColor }]}>{title}</Text>
+              <Link
+                style={[styles.text, { color: textColor }]}
+                url={licenseUrl}
+              >
                 {licenses}
               </Link>
-              <Link style={styles.text}>{packageVersion}</Link>
+              <Link style={[styles.text, { color: textColor }]}>
+                {packageVersion}
+              </Link>
             </View>
             <FontAwesome
               style={{ alignSelf: "center" }}
-              color={"#34495e"}
+              color={iconColor}
               size={16}
               name={"chevron-right"}
             />
@@ -88,9 +102,13 @@ const LicensesListItem = (Properties: ListProperties): JSX.Element => {
 };
 
 const Link = (properties: LinkProperties) => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const defaultColor = isDark ? "#e5e7eb" : "#34495e";
+
   return (
     <Text
-      style={properties.style}
+      style={[{ color: defaultColor }, properties.style]}
       numberOfLines={1}
       onPress={() => properties.url && Linking.openURL(properties.url)}
     >
@@ -99,46 +117,47 @@ const Link = (properties: LinkProperties) => {
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    alignItems: "stretch",
-    backgroundColor: "white",
-    borderRadius: 4,
-    flexDirection: "row",
-    overflow: "hidden",
-  },
-  cardShadow: {
-    marginHorizontal: 12,
-    marginVertical: 6,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 2,
-  },
-  image: {
-    borderRadius: 0,
-    flex: 1,
-    maxWidth: 96,
-    width: 96,
-  },
-  item: {
-    backgroundColor: "transparent",
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    maxWidth: "100%",
-    paddingHorizontal: 12,
-    paddingVertical: 16,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  text: {
-    color: "#34495e",
-    marginTop: 3,
-  },
-});
+const getStyles = (isDark: boolean) =>
+  StyleSheet.create({
+    card: {
+      alignItems: "stretch",
+      backgroundColor: isDark ? "#111827" : "white",
+      borderRadius: 4,
+      flexDirection: "row",
+      overflow: "hidden",
+    },
+    cardShadow: {
+      marginHorizontal: 12,
+      marginVertical: 6,
+      shadowColor: isDark ? "#000" : "black",
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: isDark ? 0.6 : 0.4,
+      shadowRadius: isDark ? 4 : 2,
+      elevation: isDark ? 3 : 1,
+    },
+    image: {
+      borderRadius: 0,
+      flex: 1,
+      maxWidth: 96,
+      width: 96,
+    },
+    item: {
+      backgroundColor: "transparent",
+      flex: 1,
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      maxWidth: "100%",
+      paddingHorizontal: 12,
+      paddingVertical: 16,
+    },
+    name: {
+      fontSize: 16,
+      fontWeight: "bold",
+    },
+    text: {
+      marginTop: 3,
+    },
+  });
 
 export default LicensesListItem;
