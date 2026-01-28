@@ -36,7 +36,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
   return (
     <View
       style={{
-        backgroundColor,
+        backgroundColor: "transparent",
         gap: 20,
         alignItems: "center",
       }}
