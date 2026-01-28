@@ -151,8 +151,17 @@ const MySources = () => {
                     )
                   }
                 >
-                  <Text style={{ ...styles.heading, padding: 0 }}>{text}</Text>
-                  <Space size={10} />
+                  {text && (
+                    <Text
+                      style={{
+                        ...styles.heading,
+                        padding: 0,
+                        paddingBottom: 10,
+                      }}
+                    >
+                      {text}
+                    </Text>
+                  )}
                   <Text style={{ color: corporate }}>{href}</Text>
                 </Pressable>
               </RNView>

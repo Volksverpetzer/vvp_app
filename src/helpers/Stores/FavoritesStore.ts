@@ -1,14 +1,14 @@
 import BaseStore from "#/helpers/Storage";
-import { FaveableType, StoredFav } from "#/types";
+import { FaveableType, StoredFavs } from "#/types";
 
 const FavoritesStore = {
   favKey: "favs",
 
   /**
    * Retrieves the stored favorites from AsyncStorage.
-   * @returns {Promise<StoredFav>} The stored favorites object.
+   * @returns {Promise<StoredFavs>} The stored favorites object.
    */
-  async getStoredFavs(): Promise<StoredFav> {
+  async getStoredFavs(): Promise<StoredFavs> {
     try {
       const storedFavsJson = await BaseStore.getItem(this.favKey);
       return BaseStore.parseJSON(storedFavsJson, {});
@@ -20,9 +20,9 @@ const FavoritesStore = {
 
   /**
    * Persists the favorites object to AsyncStorage.
-   * @param {StoredFav} favs The favorites object to store.
+   * @param {StoredFavs} favs The favorites object to store.
    */
-  async setStoredFavs(favs: StoredFav): Promise<void> {
+  async setStoredFavs(favs: StoredFavs): Promise<void> {
     try {
       await BaseStore.setItem(this.favKey, JSON.stringify(favs));
     } catch (error) {
@@ -71,9 +71,9 @@ const FavoritesStore = {
 
   /**
    * Retrieves all favorites from storage.
-   * @returns {Promise<StoredFav>} The complete favorites object.
+   * @returns {Promise<StoredFavs>} The complete favorites object.
    */
-  async getAllFavorites(): Promise<StoredFav> {
+  async getAllFavorites(): Promise<StoredFavs> {
     return await this.getStoredFavs();
   },
 };

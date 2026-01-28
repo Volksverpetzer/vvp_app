@@ -6,7 +6,7 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
-import { getEnabledFeeds } from "#/helpers/feeds";
+import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import useColorScheme from "#/hooks/useColorScheme";
 import { ContentSettingType, SettingType } from "#/types";
 

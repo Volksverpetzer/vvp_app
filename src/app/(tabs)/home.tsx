@@ -12,7 +12,7 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import SettingsContext from "#/helpers/SettingsContext";
-import { getEnabledFeeds } from "#/helpers/feeds";
+import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import useColorScheme from "#/hooks/useColorScheme";
 import Feed, { FeedProperties } from "#/screens/Home/components/Feed";
