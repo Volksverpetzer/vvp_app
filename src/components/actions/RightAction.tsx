@@ -37,7 +37,6 @@ const RightAction: FC<RightActionProps> = ({
   const bg = backgroundColor ?? Colors[colorScheme].highlight;
 
   const actionStyle = useAnimatedStyle(() => {
-    "worklet";
     const translateX = interpolate(
       drag.value,
       [-120, 0],
