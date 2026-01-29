@@ -18,9 +18,11 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
   return (
     <View
       style={{
-        paddingBottom: 48,
-        paddingHorizontal: 24,
-        gap: 24,
+        marginBottom: 80,
+        paddingBottom: 40,
+        paddingHorizontal: 30,
+        gap: 20,
+        borderRadius: 20,
         ...styles.centered,
       }}
     >
