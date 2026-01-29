@@ -8,6 +8,7 @@ import { outBoundLinkPress } from "#/helpers/Linking";
 import { getLinks } from "#/helpers/Networking/Analytics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
 
 interface ArticleSourceListProperties {
   article_link: string;
@@ -37,7 +38,7 @@ export const ArticleSourceList = ({
 
   const onPress = async (extension_url: string) => {
     if (extension_url.startsWith("https://")) {
-      SourcesStore.onAddSource(extension_url as `https://${string}`, "", "");
+      SourcesStore.onAddSource(extension_url as HttpsUrl, "", "");
     }
     outBoundLinkPress(extension_url, article_link);
   };

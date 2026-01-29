@@ -33,7 +33,7 @@ const MySources = () => {
     }, []),
   );
 
-  const handleDelete = useCallback(async (href: `https://${string}`) => {
+  const handleDelete = useCallback(async (href: HttpsUrl) => {
     await SourcesStore.removeSource(href);
     setSources((prev) => {
       const updated = { ...prev };
@@ -48,7 +48,7 @@ const MySources = () => {
         .sort((keyA, keyB) => {
           return sources[keyB].date.localeCompare(sources[keyA].date);
         })
-        .map((href: `https://${string}`) => {
+        .map((href: HttpsUrl) => {
           const { slug, text } = sources[href];
           return (
             <Swipeable

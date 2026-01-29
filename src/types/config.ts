@@ -15,8 +15,8 @@ export interface ExtraConfigType {
   eas: {
     projectId: string;
   };
-  wpUrl: `https://${string}`; // URL to the Wordpress site
-  analyticsUrl?: `https://${string}`; // URL to the analytics site
+  wpUrl: HttpsUrl; // URL to the Wordpress site
+  analyticsUrl?: HttpsUrl; // URL to the analytics site
   aboutUrl: string; // URL to the about page
   colorScheme: colorSchemeType; // color scheme for the app is defined with type colorSchemeType
   assets: {
@@ -35,12 +35,12 @@ export interface ExtraConfigType {
       IBAN: string; // IBAN number
       note: string; // Verwendungszweck
     };
-    steady: `https://${string}`; // URL to Steady donation
+    steady: HttpsUrl; // URL to Steady donation
     paypal: `https://www.paypal.com/donate/?hosted_button_id${string}`; // URL to paypal donation
     paypalEmail: string; // email for paypal donations
-    paypalMatrix: { amount: number; url: `https://${string}` }[]; // predefined amounts for paypal donations
-    support: `https://${string}`; // URL to support page
-    shop?: `https://${string}`;
+    paypalMatrix: { amount: number; url: HttpsUrl }[]; // predefined amounts for paypal donations
+    support: HttpsUrl; // URL to support page
+    shop?: HttpsUrl;
     platformPay: boolean; // enables Apple Pay and Google Pay
   };
   importantCats: Record<number, string>;

@@ -18,6 +18,7 @@ import ContentStore from "#/helpers/Stores/ContentStore";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
+import { HttpsUrl } from "#/types";
 
 import Badge from "./Badge";
 
@@ -29,7 +30,7 @@ export interface ArticleProperties {
     "wp:featuredmedia": { href: string }[];
   };
   date: string;
-  link: `https://${string}/${string}`;
+  link: HttpsUrl;
   description: string;
   categories: number[];
   id: number;
