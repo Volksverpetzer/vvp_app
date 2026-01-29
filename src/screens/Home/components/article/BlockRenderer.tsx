@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext } from "react";
 import { View } from "react-native";
 
 import SettingsContext from "#/helpers/SettingsContext";
@@ -18,7 +18,6 @@ interface BlockRenderProperties {
  */
 const BlockRenderer = (properties: BlockRenderProperties) => {
   const { advancedSettings } = useContext(SettingsContext);
-  const [blockHeight, setHeight] = useState(0);
 
   if (!("TDefaultRenderer" in properties.renderProps)) {
     return undefined;
@@ -31,10 +30,6 @@ const BlockRenderer = (properties: BlockRenderProperties) => {
         maxWidth: "100%",
         width: "100%",
       }}
-      onLayout={(event) => {
-        const { height } = event.nativeEvent.layout;
-        setHeight(height);
-      }}
     >
       <properties.renderProps.TDefaultRenderer {...properties.renderProps} />
     </View>
@@ -45,7 +40,6 @@ const BlockRenderer = (properties: BlockRenderProperties) => {
       <ReportingWrapper
         url={properties.url}
         renderIndex={properties.renderProps.renderIndex}
-        blockHeight={blockHeight}
       >
         <DefaultRender />
       </ReportingWrapper>
