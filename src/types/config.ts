@@ -1,6 +1,8 @@
 import { colorSchemeType } from "./colors";
 import { FeedsConfig } from "./feeds";
 
+export type HttpsUrl = `https://${string}`;
+
 /**
  * Represents the extra configuration of the app as defined in the app.json
  */
