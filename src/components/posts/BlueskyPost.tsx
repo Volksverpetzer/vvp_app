@@ -151,7 +151,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
                   })}
                 </Text>
                 {replies?.length > 0 && (
-                  <Text style={{ fontSize: 16, color: "corporate" }}>
+                  <Text style={{ fontSize: 16, color: corporate }}>
                     Thread (1 von {replies.length + 1})
                   </Text>
                 )}
