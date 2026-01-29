@@ -1,18 +1,12 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
-import { FC, useCallback, useState } from "react";
-import { Pressable, Text as RNText, View as RNView } from "react-native";
+import { useCallback, useState } from "react";
+import { Pressable, View as RNView } from "react-native";
 import Swipeable, {
   SwipeDirection,
-  SwipeableMethods,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
-import Animated, {
-  Extrapolation,
-  SharedValue,
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
 
+import RightAction from "#/components/actions/RightAction";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -48,63 +42,6 @@ const MySources = () => {
     });
   }, []);
 
-  const RightActions: FC<{
-    progress: SharedValue<number>;
-    drag: SharedValue<number>;
-    swipeable: SwipeableMethods;
-    href: `https://${string}`;
-  }> = ({ drag, swipeable, href }) => {
-    const actionStyle = useAnimatedStyle(() => {
-      "worklet";
-      const translateX = interpolate(
-        drag.value,
-        [-120, 0],
-        [0, 120],
-        Extrapolation.CLAMP,
-      );
-      const opacity = interpolate(
-        drag.value,
-        [-120, -60, 0],
-        [1, 1, 0],
-        Extrapolation.CLAMP,
-      );
-      return { transform: [{ translateX }], opacity };
-    });
-    return (
-      <RNView style={{ justifyContent: "center" }}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Quelle löschen"
-          accessibilityHint="Löscht diese Quelle"
-          onPress={async () => {
-            await handleDelete(href);
-            swipeable.close();
-          }}
-        >
-          <Animated.View
-            style={[
-              {
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: Colors[colorScheme].highlight,
-                paddingHorizontal: 20,
-                height: "100%",
-              },
-              actionStyle,
-            ]}
-          >
-            <MaterialIcons name="delete" size={22} color={"white"} />
-            <RNText
-              style={{ ...styles.whiteText, fontWeight: "bold", marginTop: 6 }}
-            >
-              Löschen
-            </RNText>
-          </Animated.View>
-        </Pressable>
-      </RNView>
-    );
-  };
-
   return (
     <View style={{ flex: 1, backgroundColor: undefined }}>
       {Object.keys(sources)
@@ -123,11 +60,15 @@ const MySources = () => {
                 }
               }}
               renderRightActions={(p, d, s) => (
-                <RightActions
+                <RightAction
                   progress={p}
                   drag={d}
                   swipeable={s}
                   href={href as `https://${string}`}
+                  icon={<MaterialIcons name="delete" size={22} color="white" />}
+                  onAction={async (h) => {
+                    await handleDelete(h as `https://${string}`);
+                  }}
                 />
               )}
             >
