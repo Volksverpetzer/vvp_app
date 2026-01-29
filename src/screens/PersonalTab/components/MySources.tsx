@@ -48,15 +48,15 @@ const MySources = () => {
         .sort((keyA, keyB) => {
           return sources[keyB].date.localeCompare(sources[keyA].date);
         })
-        .map((href) => {
+        .map((href: `https://${string}`) => {
           const { slug, text } = sources[href];
           return (
             <Swipeable
               key={href}
               rightThreshold={width * 0.6}
-              onSwipeableOpen={(direction) => {
+              onSwipeableOpen={async (direction) => {
                 if (direction === SwipeDirection.LEFT) {
-                  handleDelete(href as `https://${string}`);
+                  await handleDelete(href);
                 }
               }}
               renderRightActions={(p, d, s) => (
@@ -64,10 +64,11 @@ const MySources = () => {
                   progress={p}
                   drag={d}
                   swipeable={s}
-                  href={href as `https://${string}`}
                   icon={<MaterialIcons name="delete" size={22} color="white" />}
-                  onAction={async (h) => {
-                    await handleDelete(h as `https://${string}`);
+                  label={"Löschen"}
+                  hint={"Lösche diese Quelle"}
+                  onAction={async () => {
+                    await handleDelete(href);
                   }}
                 />
               )}

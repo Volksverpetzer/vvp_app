@@ -36,7 +36,7 @@ const ReportingWrapper = ({
 
   return (
     <Swipeable
-      renderRightActions={(p, d, s: SwipeableMethods) => (
+      renderRightActions={(p, d, s) => (
         <RightAction
           progress={p}
           drag={d}

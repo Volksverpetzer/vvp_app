@@ -9,31 +9,32 @@ import Animated, {
 } from "react-native-reanimated";
 
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 interface RightActionProps {
-  progress?: SharedValue<number>;
+  progress: SharedValue<number>;
   drag: SharedValue<number>;
   swipeable: SwipeableMethods;
-  onAction: (href?: string) => Promise<void> | void;
-  href?: string;
+  onAction: () => Promise<void> | void;
   label?: string;
+  hint?: string;
   icon?: ReactElement;
+  color?: string;
   backgroundColor?: string;
-  iconSize?: number;
 }
 
 const RightAction: FC<RightActionProps> = ({
   drag,
   swipeable,
   onAction,
-  href,
-  label = "Löschen",
+  label,
+  hint,
   icon,
+  color,
   backgroundColor,
 }) => {
   const colorScheme = useAppColorScheme();
+  const fg = color ?? "white";
   const bg = backgroundColor ?? Colors[colorScheme].highlight;
 
   const actionStyle = useAnimatedStyle(() => {
@@ -57,9 +58,9 @@ const RightAction: FC<RightActionProps> = ({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={label}
-        accessibilityHint={`${label} diese Quelle`}
+        accessibilityHint={hint}
         onPress={async () => {
-          await onAction(href);
+          await onAction();
           swipeable.close();
         }}
       >
@@ -71,16 +72,15 @@ const RightAction: FC<RightActionProps> = ({
               backgroundColor: bg,
               paddingHorizontal: 20,
               height: "100%",
+              gap: 5,
             },
             actionStyle,
           ]}
         >
           {icon}
-          <RNText
-            style={{ ...styles.whiteText, fontWeight: "bold", marginTop: 6 }}
-          >
-            {label}
-          </RNText>
+          {label && (
+            <RNText style={{ color: fg, fontWeight: "bold" }}>{label}</RNText>
+          )}
         </Animated.View>
       </Pressable>
     </RNView>
