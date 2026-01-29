@@ -33,7 +33,7 @@ import tagStylesFunction from "./tagStyles";
 
 interface BodyProperties {
   article_content: string;
-  article_link: string;
+  article_link: HttpsUrl;
   slug: string;
   article_title: string;
   onLinkPress: (event: GestureResponderEvent, href: string) => void;

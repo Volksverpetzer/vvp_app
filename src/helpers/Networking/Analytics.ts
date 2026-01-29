@@ -4,6 +4,7 @@ import { Dimensions, Platform } from "react-native";
 
 import Config from "#/constants/Config";
 import { createClient, get, post } from "#/helpers/utils/networking";
+import { HttpsUrl } from "#/types";
 
 const { apiUrl, wpUrl } = Config;
 
@@ -80,10 +81,10 @@ const getFavs = async (permalink: string): Promise<number> => {
  */
 const getLinks = async (
   permalink: string,
-): Promise<{ url: string; visitors: number }[]> => {
+): Promise<{ url: HttpsUrl; visitors: number }[]> => {
   const { path } = Linking.parse(permalink);
   try {
-    const data = await get<{ links: { url: string; visitors: number }[] }>(
+    const data = await get<{ links: { url: HttpsUrl; visitors: number }[] }>(
       client,
       `/proxy/links/${path}`,
     );

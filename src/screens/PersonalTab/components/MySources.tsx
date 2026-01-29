@@ -17,7 +17,7 @@ import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import { StoredSources } from "#/types";
+import { HttpsUrl, StoredSources } from "#/types";
 
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});
@@ -86,12 +86,7 @@ const MySources = () => {
                 <Pressable
                   accessibilityRole="button"
                   style={{ padding: 30 }}
-                  onPress={() =>
-                    outBoundLinkPress(
-                      href as `https://${string}`,
-                      wpUrl + "/" + slug,
-                    )
-                  }
+                  onPress={() => outBoundLinkPress(href, wpUrl + "/" + slug)}
                 >
                   {text && (
                     <Text

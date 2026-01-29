@@ -2,6 +2,7 @@ import { FC, useContext } from "react";
 import { View } from "react-native";
 
 import SettingsContext from "#/helpers/SettingsContext";
+import { HttpsUrl } from "#/types";
 
 import ReportingWrapper from "./BlockRendererReporting";
 
@@ -10,7 +11,7 @@ interface BlockRenderProperties {
     TDefaultRenderer: FC<Record<string, unknown>>;
     renderIndex: number;
   };
-  url: string;
+  url: HttpsUrl;
 }
 
 /**

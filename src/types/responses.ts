@@ -1,3 +1,5 @@
+import { HttpsUrl } from "#/types/config";
+
 export interface MediaResponse {
   media_details?: {
     sizes?: {
@@ -9,7 +11,7 @@ export interface MediaResponse {
 }
 
 export interface AISearchResponse {
-  url: string;
+  url: HttpsUrl;
   text: string;
   title?: string;
 }

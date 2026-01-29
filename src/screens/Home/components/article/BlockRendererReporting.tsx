@@ -1,15 +1,14 @@
 import { useRouter } from "expo-router";
 import { ReactNode } from "react";
-import Swipeable, {
-  SwipeableMethods,
-} from "react-native-gesture-handler/ReanimatedSwipeable";
+import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 
 import { Fehler } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
 import Colors from "#/constants/Colors";
+import { HttpsUrl } from "#/types";
 
 interface ReportingWrapperProperties {
-  url: string;
+  url: HttpsUrl;
   renderIndex: number;
   children: ReactNode;
 }
