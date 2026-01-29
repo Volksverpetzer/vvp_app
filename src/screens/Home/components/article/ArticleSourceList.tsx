@@ -8,6 +8,7 @@ import { outBoundLinkPress } from "#/helpers/Linking";
 import { getLinks } from "#/helpers/Networking/Analytics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
 
 interface ArticleSourceListProperties {
   article_link: string;
@@ -17,7 +18,7 @@ export const ArticleSourceList = ({
   article_link,
 }: ArticleSourceListProperties) => {
   const [links, setLinks] = useState<
-    { visitors: number; url: string }[] | undefined
+    { visitors: number; url: HttpsUrl }[] | undefined
   >();
   const [open, setOpen] = useState(false);
   const colorScheme = useAppColorScheme();
@@ -35,10 +36,8 @@ export const ArticleSourceList = ({
     }
   }, [open, article_link]);
 
-  const onPress = async (extension_url: string) => {
-    if (extension_url.startsWith("https://")) {
-      SourcesStore.onAddSource(extension_url as `https://${string}`, "", "");
-    }
+  const onPress = async (extension_url: HttpsUrl) => {
+    await SourcesStore.onAddSource(extension_url as HttpsUrl, "", "");
     outBoundLinkPress(extension_url, article_link);
   };
 

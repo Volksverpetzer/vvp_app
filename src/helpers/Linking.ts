@@ -2,6 +2,7 @@ import * as Linking from "expo-linking";
 import { Href, Router } from "expo-router";
 
 import Config from "#/constants/Config";
+import { HttpsUrl } from "#/types";
 
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 import { registerEvent } from "./Networking/Analytics";
@@ -15,7 +16,7 @@ import { registerEvent } from "./Networking/Analytics";
  * @param router - Expo Router instance for navigation.
  * @param article_link - Optional article URL for analytics context.
  */
-const onLinkPress = (href: string, router: Router, article_link?: string) => {
+const onLinkPress = (href: HttpsUrl, router: Router, article_link?: string) => {
   const { hostname, path } = Linking.parse(href);
   const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
 
@@ -43,7 +44,7 @@ const onLinkPress = (href: string, router: Router, article_link?: string) => {
  * @param href - The outbound URL to open.
  * @param article_link - Optional article URL for analytics context.
  */
-const outBoundLinkPress = (href: string, article_link?: string) => {
+const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
   registerEvent(article_link, "Outbound Link: Click", { url: href });
   Linking.openURL(href);
 };

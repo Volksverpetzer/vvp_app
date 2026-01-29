@@ -15,6 +15,7 @@ import { styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
 
 import { PostText } from "./PostText";
 
@@ -72,7 +73,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
     .display_name;
 
   const handle = author.handle;
-  const url = `https://bsky.app/profile/${handle}/post/${postId}`;
+  const url: HttpsUrl = `https://bsky.app/profile/${handle}/post/${postId}`;
 
   return (
     <TouchableOpacity
@@ -84,7 +85,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
       <Hyperlink
         linkStyle={{ color: corporate }}
         style={{ flex: 1 }}
-        onPress={(url) => onLinkPress(url, router, uri)}
+        onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
       >
         <View
           style={{

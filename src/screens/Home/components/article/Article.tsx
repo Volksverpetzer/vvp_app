@@ -22,6 +22,7 @@ import { onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
 
 import Body from "./Body";
 import Header from "./Header";
@@ -159,7 +160,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             maxWidth={maxWidth}
             width={width}
             scrollRef={scrollReference}
-            onLinkPress={(event, href) =>
+            onLinkPress={(event, href: HttpsUrl) =>
               onLinkPress(href, router, article_link)
             }
           />

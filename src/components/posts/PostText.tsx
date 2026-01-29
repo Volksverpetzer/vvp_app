@@ -8,6 +8,7 @@ import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import { normalizeFacets } from "#/helpers/utils/posts";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
 
 type Props = {
   feedViewPost: FeedViewPost;
@@ -53,7 +54,7 @@ export const PostText = ({ feedViewPost, uri }: Props) => {
     <Hyperlink
       linkStyle={{ color: corporate }}
       linkText={(url) => linkTextToUrlMap[url]}
-      onPress={(url) => onLinkPress(url, router, uri)}
+      onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
     >
       <Text style={{ lineHeight: 24, fontSize: 18 }}>{decodedText}</Text>
     </Hyperlink>

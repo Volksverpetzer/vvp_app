@@ -7,6 +7,7 @@ import { WebView, WebViewNavigation } from "react-native-webview";
 
 import NavBar from "#/components/bars/NavBar";
 import { onLinkPress } from "#/helpers/Linking";
+import { HttpsUrl } from "#/types";
 
 interface Cookie {
   name: string;
@@ -198,7 +199,7 @@ const EdgelessWebview = ({
           )
             return true;
           // Route natively instead
-          onLinkPress(url, router, uri);
+          onLinkPress(url as HttpsUrl, router, uri);
           return false;
         }}
         allowsBackForwardNavigationGestures={true}

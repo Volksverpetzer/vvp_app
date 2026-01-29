@@ -4,7 +4,7 @@ import {
   get as netGet,
   post as netPost,
 } from "#/helpers/utils/networking";
-import { AISearchResponse } from "#/types";
+import { AISearchResponse, HttpsUrl } from "#/types";
 
 /** Axios client for AI with Referer header set */
 const intelligenceClient = createClient(Config.aiUrl);
@@ -40,7 +40,7 @@ class IntelligenceAPI {
           id: string;
           title: string;
           excerpt: string;
-          url: string;
+          url: HttpsUrl;
           distance: number;
           rerank_score: number | null;
         }[];

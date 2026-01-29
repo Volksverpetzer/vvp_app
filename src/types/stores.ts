@@ -1,3 +1,5 @@
+import { HttpsUrl } from "#/types/config";
+
 export const FAV_TYPE_ARTICLE = "article";
 export const FAV_TYPE_INSTA = "insta";
 
@@ -21,4 +23,4 @@ export type StoredSource = {
   date?: string;
 };
 
-export type StoredSources = Record<`https://${string}`, StoredSource>;
+export type StoredSources = Record<HttpsUrl, StoredSource>;

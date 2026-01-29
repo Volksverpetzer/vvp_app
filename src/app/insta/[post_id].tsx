@@ -18,6 +18,7 @@ import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
+import { HttpsUrl } from "#/types";
 
 /**
  * InstaScreen renders an Instagram post and its caption,
@@ -74,7 +75,7 @@ const InstaScreen = () => {
 
   // Memoize the onPress callback to avoid re-creation on each render.
   const handleLinkPress = useCallback(
-    (url: string, _text: string) => {
+    (url: HttpsUrl, _text: string) => {
       onLinkPress(url, router, computedPermalink);
     },
     [router, computedPermalink],

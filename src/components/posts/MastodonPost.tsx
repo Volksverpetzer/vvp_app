@@ -11,6 +11,7 @@ import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
 
 export interface MastodonPostProperties {
   id: number;
@@ -76,7 +77,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
       <Hyperlink
         linkStyle={{ color: corporate }}
         style={{ flex: 1 }}
-        onPress={(url) => {
+        onPress={(url: HttpsUrl) => {
           onLinkPress(url, router, uri);
         }}
       >

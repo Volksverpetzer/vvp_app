@@ -17,7 +17,7 @@ import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import { StoredSources } from "#/types";
+import { HttpsUrl, StoredSources } from "#/types";
 
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});
@@ -33,7 +33,7 @@ const MySources = () => {
     }, []),
   );
 
-  const handleDelete = useCallback(async (href: `https://${string}`) => {
+  const handleDelete = useCallback(async (href: HttpsUrl) => {
     await SourcesStore.removeSource(href);
     setSources((prev) => {
       const updated = { ...prev };
@@ -48,7 +48,7 @@ const MySources = () => {
         .sort((keyA, keyB) => {
           return sources[keyB].date.localeCompare(sources[keyA].date);
         })
-        .map((href: `https://${string}`) => {
+        .map((href: HttpsUrl) => {
           const { slug, text } = sources[href];
           return (
             <Swipeable
@@ -86,12 +86,7 @@ const MySources = () => {
                 <Pressable
                   accessibilityRole="button"
                   style={{ padding: 30 }}
-                  onPress={() =>
-                    outBoundLinkPress(
-                      href as `https://${string}`,
-                      wpUrl + "/" + slug,
-                    )
-                  }
+                  onPress={() => outBoundLinkPress(href, wpUrl + "/" + slug)}
                 >
                   {text && (
                     <Text
