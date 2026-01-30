@@ -7,8 +7,8 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
-    "android:local": "eas build -p android --profile local-apk",
-    "android:submit": "pnpx eas build -p android --auto-submit",
+    "android:local": "pnpx eas-cli build -p android --profile local-apk",
+    "android:submit": "pnpx eas-cli build -p android --auto-submit",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "--- check test and lint ---": "-------------",
