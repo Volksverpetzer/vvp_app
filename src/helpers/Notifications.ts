@@ -47,6 +47,8 @@ const NotificationManager = {
 
   /**
    * Checks if push notifications are properly configured on the device.
+   * TODO its not used anywhere, check if we need it
+   *
    * @returns A promise that resolves to a boolean indicating if notifications are properly configured.
    */
   async checkNotificationsConfigured(): Promise<boolean> {
