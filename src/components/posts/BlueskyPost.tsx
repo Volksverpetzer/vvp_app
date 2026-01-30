@@ -46,10 +46,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
   }, [inView, properties]);
 
   const navigateToPost = () => {
-    router.push({
-      pathname: "/bsky/[post_id]",
-      params: { post_id: postId },
-    });
+    router.push(`/bsky/${postId}`);
   };
 
   const textRaw = (record?.text as string) || "";
