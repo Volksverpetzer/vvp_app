@@ -11,12 +11,6 @@ export type StoredFav = {
 
 export type StoredFavs = Record<string, StoredFav>;
 
-export type StoredReport = {
-  id: string;
-};
-
-export type StoredReports = StoredReport[];
-
 export type StoredSource = {
   slug: string;
   text?: string;

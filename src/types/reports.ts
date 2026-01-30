@@ -4,3 +4,9 @@ export type Report = {
   url: string;
   allowed_public: boolean;
 };
+
+export type StoredReport = {
+  id: string;
+};
+
+export type StoredReports = StoredReport[];
