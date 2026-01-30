@@ -83,32 +83,37 @@ const ReportStatusItem = ({ id }: ReportItem) => {
     }
     if (error) {
       return (
-        <FontAwesome name="exclamation-circle" size={24} color={colors.error} />
+        <FontAwesome name="exclamation-circle" size={20} color={colors.error} />
       );
     }
     if (status === "posted") {
-      return <FontAwesome name="check" size={24} color={colors.posted} />;
+      return <FontAwesome name="check" size={20} color={colors.posted} />;
     }
     return (
-      <FontAwesome name="hourglass-half" size={24} color={colors.pending} />
+      <FontAwesome name="hourglass-half" size={16} color={colors.pending} />
     );
   };
 
   return (
     <View style={styles.item}>
       <Text selectable style={[styles.text, { color: colors.text }]}>
-        {id} {renderIcon()}
+        {id}
       </Text>
+      {renderIcon()}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   item: {
+    paddingHorizontal: 10,
     alignItems: "center",
-    marginVertical: 4,
+    flexDirection: "row",
+    flex: 1,
+    gap: 10,
   },
   text: {
+    fontSize: 14,
     textAlign: "center",
   },
 });
