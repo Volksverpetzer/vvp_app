@@ -1,24 +1,18 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
-import { Hyperlink } from "react-native-hyperlink";
 
 import NavBar from "#/components/bars/NavBar";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import InstaPost, { InstaPostProperties } from "#/components/posts/InstaPost";
 import Footer from "#/components/views/Footer";
-import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import { onLinkPress } from "#/helpers/Linking";
 import { registerViews } from "#/helpers/Networking/Analytics";
 import API from "#/helpers/Networking/ServerAPI";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
-import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import { HttpsUrl } from "#/types";
 
 /**
  * InstaScreen renders an Instagram post and its caption,
@@ -34,52 +28,12 @@ const InstaScreen = () => {
   const [data, setData] = useState<InstaPostProperties | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
-  // Get dynamic width from feed dimensions
-  const { width } = useFeedDimensions();
-
   // Get URL parameter (post_id) from deep linking / route parameters
   const parameters = useLocalSearchParams<{ post_id: string }>();
-
-  // Retrieve current color scheme to style links appropriately
-  const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
 
   // Get the WordPress URL from configuration and navigation router
   const wpUrl = Config.wpUrl;
   const router = useRouter();
-
-  // Memoize a textStyle object that depends on the dynamic width.
-  // This avoids recreating the style object on every render.
-  const textStyle = useMemo(
-    () => ({
-      width,
-      marginHorizontal: "auto" as const,
-      paddingBottom: 100,
-      fontSize: 18,
-      textAlign: "left" as const,
-      lineHeight: 25,
-    }),
-    [width],
-  );
-
-  // Compute the "transformed" permalink once data is available.
-  // This value is reused by the analytics call and hyperlink handler.
-  const computedPermalink = useMemo(() => {
-    return data?.permalink
-      ? data.permalink.replace(
-          "https://www.instagram.com/p/",
-          `${wpUrl}/insta/`,
-        )
-      : "";
-  }, [data, wpUrl]);
-
-  // Memoize the onPress callback to avoid re-creation on each render.
-  const handleLinkPress = useCallback(
-    (url: HttpsUrl, _text: string) => {
-      onLinkPress(url, router, computedPermalink);
-    },
-    [router, computedPermalink],
-  );
 
   // Fetch the Instagram post data using a side effect.
   // This effect runs when the post_id (from params) or the wpUrl changes.
@@ -119,18 +73,12 @@ const InstaScreen = () => {
   }
 
   // Render the post content: the Instagram post,
-  // a caption with hyperlinking functionality,
   // a footer for sharing, and a navigation bar.
   return (
     <View style={styles.container}>
       <ScrollView>
         {/* Render the Instagram post; pass all fetched post data */}
-        <InstaPost textDisplay={false} disableLink={true} {...data} />
-
-        {/* Wrap caption text in Hyperlink */}
-        <Hyperlink linkStyle={{ color: corporate }} onPress={handleLinkPress}>
-          <Text style={textStyle}>{data.caption}</Text>
-        </Hyperlink>
+        <InstaPost shortenText={false} disableLink={true} {...data} />
 
         {/* Render article footer with sharing functionality */}
         <Footer article_link={data.permalink} onShare={onShare} />
