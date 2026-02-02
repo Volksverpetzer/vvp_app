@@ -97,14 +97,10 @@ const RootLayout = () => {
                     <Stack.Screen
                       name="[category]/[slug]"
                       options={{ title: "Artikel" }}
-                      getId={({ params }) =>
-                        params.category + "/" + params.slug
-                      }
                     />
                     <Stack.Screen
                       name="insta/[post_id]"
                       options={{ title: "Artikel" }}
-                      getId={({ params }) => params.post_id}
                     />
                     <Stack.Screen name="search" options={{ title: "Suche" }} />
                     <Stack.Screen
