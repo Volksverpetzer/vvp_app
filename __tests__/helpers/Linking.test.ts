@@ -3,7 +3,7 @@ import * as Linking from "expo-linking";
 import { Router } from "expo-router";
 
 import { onLinkPress, outBoundLinkPress } from "#/helpers/Linking";
-import { registerEvent } from "#/helpers/Networking/Analytics";
+import { registerEvent } from "#/helpers/network/Analytics";
 
 // Mock dependencies
 jest.mock("expo-linking", () => ({
@@ -12,12 +12,12 @@ jest.mock("expo-linking", () => ({
   openURL: jest.fn(),
 }));
 
-jest.mock("../../src/helpers/Networking/Analytics", () => ({
+jest.mock("#/helpers/network/Analytics", () => ({
   __esModule: true,
   registerEvent: jest.fn(),
 }));
 
-jest.mock("../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",

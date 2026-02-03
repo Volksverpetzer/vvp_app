@@ -11,7 +11,7 @@ import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import { YouTubeFetcher } from "#/screens/Home/fetchers/YouTubeFetcher";
 
 // Mock all the fetchers
-jest.mock("../../../src/screens/Home/fetchers/WordPressFetcher", () => ({
+jest.mock("#/screens/Home/fetchers/WordPressFetcher", () => ({
   WordPressFetcher: {
     feedFetcher: jest.fn(),
     searchFetcher: jest.fn(),
@@ -20,32 +20,32 @@ jest.mock("../../../src/screens/Home/fetchers/WordPressFetcher", () => ({
   },
 }));
 
-jest.mock("../../../src/screens/Home/fetchers/InstagramFetcher", () => ({
+jest.mock("#/screens/Home/fetchers/InstagramFetcher", () => ({
   InstagramFetcher: {
     feedFetcher: jest.fn(),
     memeFetcher: jest.fn(),
   },
 }));
 
-jest.mock("../../../src/screens/Home/fetchers/BlueskyFetcher", () => ({
+jest.mock("#/screens/Home/fetchers/BlueskyFetcher", () => ({
   BlueskyFetcher: {
     feedFetcher: jest.fn(),
   },
 }));
 
-jest.mock("../../../src/screens/Home/fetchers/YouTubeFetcher", () => ({
+jest.mock("#/screens/Home/fetchers/YouTubeFetcher", () => ({
   YouTubeFetcher: {
     feedFetcher: jest.fn(),
   },
 }));
 
-jest.mock("../../../src/screens/Home/fetchers/TikTokFetcher", () => ({
+jest.mock("#/screens/Home/fetchers/TikTokFetcher", () => ({
   TikTokFetcher: {
     feedFetcher: jest.fn(),
   },
 }));
 
-jest.mock("../../../src/screens/Home/fetchers/BotFetcher", () => ({
+jest.mock("#/screens/Home/fetchers/BotFetcher", () => ({
   BotFetcher: {
     feedFetcher: jest.fn(),
   },

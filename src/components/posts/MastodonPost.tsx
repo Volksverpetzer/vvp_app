@@ -11,12 +11,19 @@ import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
-import { HttpsUrl } from "#/types";
+import {
+  DISPLAY_TEXT_EXCERPT,
+  DISPLAY_TEXT_FULL,
+  DISPLAY_TEXT_NONE,
+  DisplayText,
+  HttpsUrl,
+} from "#/types";
 
 export interface MastodonPostProperties {
   id: number;
   created_at: string; // ISO 8601 date string
   content: string;
+  displayText?: DisplayText;
   replies_count: number;
   reblogs_count: number;
   favourites_count: number;
@@ -40,14 +47,13 @@ export interface MastodonPostProperties {
 
 type MastodonPostScreenProperties = MastodonPostProperties & {
   inView?: boolean;
-  textDisplay?: boolean;
 };
 
 /**
  * Renders a Mastodon Post
  */
 const MastodonPost = (properties: MastodonPostScreenProperties) => {
-  const { textDisplay, ...post } = properties;
+  const { displayText = DISPLAY_TEXT_EXCERPT, ...post } = properties;
   const { account, content, answers, created_at, uri } = post;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
@@ -72,7 +78,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
       accessibilityRole="button"
       onPress={() => router.push(`/bsky/${post.id}`)}
       style={{ flex: 1 }}
-      disabled={textDisplay}
+      disabled={displayText === DISPLAY_TEXT_FULL}
     >
       <Hyperlink
         linkStyle={{ color: corporate }}
@@ -111,22 +117,25 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
             </View>
           </View>
           <Space size={20} />
-          <Text style={{ lineHeight: 24, fontSize: 18 }}>
-            {textDisplay ? fulltext : excerpt}
-          </Text>
-          {!textDisplay && excerpt.length < fulltext.length && (
-            <Text
-              style={{
-                lineHeight: 24,
-                fontSize: 18,
-                color: corporate,
-                marginBottom: 20,
-              }}
-            >
-              Mehr Lesen
+          {displayText !== DISPLAY_TEXT_NONE && (
+            <Text style={{ lineHeight: 24, fontSize: 18 }}>
+              {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
             </Text>
           )}
-          {!textDisplay && (
+          {displayText === DISPLAY_TEXT_EXCERPT &&
+            excerpt.length < fulltext.length && (
+              <Text
+                style={{
+                  lineHeight: 24,
+                  fontSize: 18,
+                  color: corporate,
+                  marginBottom: 20,
+                }}
+              >
+                Mehr Lesen
+              </Text>
+            )}
+          {displayText !== DISPLAY_TEXT_FULL && (
             <View style={styles.row}>
               <Text style={{ lineHeight: 24, fontSize: 18, color: grey }}>
                 {new Date(created_at).toLocaleTimeString("de-DE", {
@@ -146,8 +155,10 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               )}
             </View>
           )}
-          {textDisplay && answers && answers.length > 0 && <Space size={10} />}
-          {textDisplay &&
+          {displayText === DISPLAY_TEXT_FULL &&
+            answers &&
+            answers.length > 0 && <Space size={10} />}
+          {displayText === DISPLAY_TEXT_FULL &&
             answers &&
             answers.length > 0 &&
             answers.map((answer, index) => {

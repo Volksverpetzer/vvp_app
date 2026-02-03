@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 
-jest.mock("../../src/helpers/Networking/ServerAPI", () => ({
+jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
   default: {
     getBskyFeed: jest.fn(),
@@ -12,7 +12,7 @@ jest.mock("../../src/helpers/Networking/ServerAPI", () => ({
   },
 }));
 
-jest.mock("../../src/screens/Home/fetchers/FetcherUtilities", () => ({
+jest.mock("#/screens/Home/fetchers/FetcherUtilities", () => ({
   __esModule: true,
   formatDate: jest.fn((date) => "2023-01-01"),
   getImageFromPost: jest.fn(),

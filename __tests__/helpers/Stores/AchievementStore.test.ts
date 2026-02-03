@@ -4,7 +4,7 @@ import BaseStore from "#/helpers/Storage";
 import AchievementStore from "#/helpers/Stores/AchievementStore";
 
 // Mock the BaseStore
-jest.mock("../../../src/helpers/Storage", () => ({
+jest.mock("#/helpers/Storage", () => ({
   __esModule: true,
   default: {
     getItem: jest.fn(),

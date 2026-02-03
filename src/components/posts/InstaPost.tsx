@@ -10,17 +10,25 @@ import {
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
+import { Hyperlink } from "react-native-hyperlink";
 
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
-import { registerViews } from "#/helpers/Networking/Analytics";
+import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
+import { registerViews } from "#/helpers/network/Analytics";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
+import {
+  DISPLAY_TEXT_EXCERPT,
+  DISPLAY_TEXT_FULL,
+  DisplayText,
+  HttpsUrl,
+} from "#/types";
 
 /**
  * Represents the props for an Instagram post component as fetched from the Instagram API
@@ -32,7 +40,7 @@ export interface InstaPostProperties {
   };
   media_url: string;
   caption: string;
-  textDisplay?: boolean;
+  displayText?: DisplayText;
   disableLink?: boolean;
   media_type: string;
   timestamp: string;
@@ -42,7 +50,6 @@ export interface InstaPostProperties {
 
 type InstaPostScreenProperties = InstaPostProperties & {
   inView?: boolean;
-  textDisplay?: boolean;
 };
 
 /**
@@ -69,12 +76,12 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
     children,
     disableLink,
     inView,
-    textDisplay,
+    displayText = DISPLAY_TEXT_EXCERPT,
   } = properties;
   const corporate = useCorporateColor();
   const windowDims = useWindowDimensions();
   const feedDims = useFeedDimensions();
-  const { width } = textDisplay === false ? windowDims : feedDims;
+  const { width } = displayText === DISPLAY_TEXT_FULL ? windowDims : feedDims;
 
   // Determine photos array. If children exists, map its data for media_url; fallback to media_url.
   const photos = useMemo(
@@ -82,6 +89,22 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
     [children, media_url],
   );
   const excerpt = useMemo(() => caption?.slice(0, 70) ?? "", [caption]);
+
+  // Compute the "transformed" permalink once data is available.
+  // This value is reused by the analytics call and hyperlink handler.
+  const computedPermalink = useMemo(() => {
+    return permalink
+      ? permalink.replace("https://www.instagram.com/p/", `${wpUrl}/insta/`)
+      : "";
+  }, [permalink, wpUrl]);
+
+  // Memoize the onPress callback to avoid re-creation on each render.
+  const handleLinkPress = useCallback(
+    (url: HttpsUrl, _text: string) => {
+      onLinkPress(url, router, computedPermalink);
+    },
+    [router, computedPermalink],
+  );
 
   const handleSelectPost = useCallback(() => {
     if (disableLink) return;
@@ -216,8 +239,24 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
           ))}
         </ScrollView>
       </View>
+
       <View style={{ flexDirection: "row", ...styles.centered }}>{dots}</View>
-      {(textDisplay ?? true) && (
+
+      {displayText === DISPLAY_TEXT_FULL && (
+        <Hyperlink linkStyle={{ color: corporate }} onPress={handleLinkPress}>
+          <Text
+            style={{
+              paddingHorizontal: 10,
+              paddingBottom: 50,
+              fontSize: 18,
+              lineHeight: 25,
+            }}
+          >
+            {caption}
+          </Text>
+        </Hyperlink>
+      )}
+      {displayText === DISPLAY_TEXT_EXCERPT && (
         <TouchableOpacity
           accessibilityRole="button"
           onPress={handleSelectPost}

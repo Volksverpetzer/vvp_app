@@ -1,6 +1,6 @@
 import YTPost from "#/components/posts/YTPost";
-import API from "#/helpers/Networking/ServerAPI";
 import Post from "#/helpers/Post";
+import API from "#/helpers/network/ServerAPI";
 
 import FetcherUtilities from "./FetcherUtilities";
 

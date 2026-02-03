@@ -9,6 +9,7 @@ import BlueskyPost, {
 } from "#/components/posts/BlueskyPost";
 import { styles } from "#/constants/Styles";
 import ContentStore from "#/helpers/Stores/ContentStore";
+import { DISPLAY_TEXT_FULL } from "#/types";
 
 /**
  * Loads a Bluesky post based on the provided post ID.
@@ -39,7 +40,7 @@ const BskyScreen = () => {
 
   return (
     <View style={styles.container}>
-      <BlueskyPost textDisplay={true} {...post} />
+      <BlueskyPost displayText={DISPLAY_TEXT_FULL} {...post} />
       <NavBar link={url} />
     </View>
   );

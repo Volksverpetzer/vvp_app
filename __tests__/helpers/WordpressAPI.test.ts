@@ -1,6 +1,6 @@
 import { describe, expect, it, jest } from "@jest/globals";
 
-import WordpressAPI from "#/helpers/Networking/WordpressAPI";
+import WordpressAPI from "#/helpers/network/WordpressAPI";
 import * as Networking from "#/helpers/utils/networking";
 
 describe("WordpressAPI", () => {

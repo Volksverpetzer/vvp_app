@@ -4,7 +4,7 @@ import * as Linking from "expo-linking";
 import { Platform } from "react-native";
 
 import Config from "#/constants/Config";
-import * as AnalyticsModule from "#/helpers/Networking/Analytics";
+import * as AnalyticsModule from "#/helpers/network/Analytics";
 import * as Networking from "#/helpers/utils/networking";
 
 const { getViews, getRegions, getShares, getFavs, getLinks, registerEvent } =
@@ -38,7 +38,7 @@ jest.mock("#/helpers/utils/networking", () => ({
   post: jest.fn(),
 }));
 
-jest.mock("../../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     apiUrl: "https://api.example.com",

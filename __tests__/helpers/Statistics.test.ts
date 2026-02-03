@@ -5,7 +5,7 @@ import Statistics from "#/helpers/Statistics";
 import StatisticsStore from "#/helpers/Stores/StatisticsStore";
 
 // Mock dependencies
-jest.mock("../../src/helpers/Stores/StatisticsStore", () => ({
+jest.mock("#/helpers/Stores/StatisticsStore", () => ({
   __esModule: true,
   default: {
     getStatistics: jest.fn(),
@@ -19,7 +19,7 @@ jest.mock("../../src/helpers/Stores/StatisticsStore", () => ({
   },
 }));
 
-jest.mock("../../src/helpers/Achievements", () => ({
+jest.mock("#/helpers/Achievements", () => ({
   __esModule: true,
   Achievements: {
     setAchievementValue: jest.fn(),

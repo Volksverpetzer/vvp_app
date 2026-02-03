@@ -21,8 +21,8 @@ import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import Colors from "#/constants/Colors";
 import { styles as globalStyles } from "#/constants/Styles";
-import API from "#/helpers/Networking/ServerAPI";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
+import API from "#/helpers/network/ServerAPI";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import ReportStatusList from "#/screens/ReportTab/components/ReportStatusList";
 

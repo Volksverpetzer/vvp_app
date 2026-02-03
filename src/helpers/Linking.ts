@@ -2,10 +2,10 @@ import * as Linking from "expo-linking";
 import { Href, Router } from "expo-router";
 
 import Config from "#/constants/Config";
+import { registerEvent } from "#/helpers/network/Analytics";
 import { HttpsUrl } from "#/types";
 
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
-import { registerEvent } from "./Networking/Analytics";
 
 /**
  * Handles in-app navigation for links. Internal links (same hostname)

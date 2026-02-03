@@ -5,9 +5,9 @@ import { Platform } from "react-native";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import API from "#/helpers/network/ServerAPI";
 import { NotificationSettingType } from "#/types";
 
-import API from "./Networking/ServerAPI";
 import SettingsStore from "./Stores/SettingsStore";
 
 // Configure the notification handler

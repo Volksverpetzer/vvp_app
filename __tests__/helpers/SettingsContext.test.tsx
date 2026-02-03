@@ -5,7 +5,7 @@ import SettingsProvider from "#/helpers/provider/SettingsProvider";
 import { AdvancedSettingType, ContentSettingType } from "#/types";
 
 // Mock the SettingsStore
-jest.mock("../../src/helpers/Stores/SettingsStore", () => ({
+jest.mock("#/helpers/Stores/SettingsStore", () => ({
   __esModule: true,
   default: {
     defaultContentSettings: {
