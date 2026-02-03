@@ -26,9 +26,9 @@ import Config from "#/constants/Config";
 import { styles as globalStyles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
-import SettingsContext from "#/helpers/SettingsContext";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
+import SettingsProvider from "#/helpers/provider/SettingsProvider";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { NotificationSettingType, SettingType } from "#/types";
 
@@ -46,7 +46,7 @@ const SettingsScreen = () => {
     setContentSettings,
     advancedSettings,
     setAdvancedSettings,
-  } = useContext(SettingsContext);
+  } = useContext(SettingsProvider);
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const backgroundColor = Colors[colorScheme].secondaryBackground;

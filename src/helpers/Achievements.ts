@@ -1,7 +1,8 @@
 import * as Haptics from "expo-haptics";
 import Toast from "react-native-toast-message";
 
-import { updateBadgeState } from "./BadgeContext";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+
 import AchievementStore from "./Stores/AchievementStore";
 
 export type TaskType = {

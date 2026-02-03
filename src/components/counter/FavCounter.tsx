@@ -6,10 +6,10 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Config from "#/constants/Config";
 import { Achievements } from "#/helpers/Achievements";
-import { updateBadgeState } from "#/helpers/BadgeContext";
 import { getFavs, registerFav } from "#/helpers/Networking/Analytics";
 import { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { FaveableType } from "#/types";
 

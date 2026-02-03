@@ -12,7 +12,7 @@ import {
   LevelType,
   TaskType,
 } from "#/helpers/Achievements";
-import { updateBadgeState } from "#/helpers/BadgeContext";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 import Parallelogram from "./Parallelogram";

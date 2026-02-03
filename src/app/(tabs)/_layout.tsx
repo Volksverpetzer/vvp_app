@@ -12,7 +12,7 @@ import {
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import { useBadge } from "#/helpers/BadgeContext";
+import { useBadge } from "#/helpers/provider/BadgeProvider";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 /**

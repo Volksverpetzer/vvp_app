@@ -19,7 +19,7 @@ jest.mock("../../../src/helpers/Stores/FavoritesStore", () => ({
   getAllFavorites: jest.fn(() => Promise.resolve({})),
 }));
 
-jest.mock("../../../src/helpers/BadgeContext", () => ({
+jest.mock("#/helpers/provider/BadgeProvider", () => ({
   updateBadgeState: jest.fn(),
 }));
 
