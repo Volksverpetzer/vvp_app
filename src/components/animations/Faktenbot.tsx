@@ -2,8 +2,10 @@ import Constants from "expo-constants";
 import { useEffect, useRef } from "react";
 import Rive, { RiveRef } from "rive-react-native";
 
+export type FaktenbotReaction = 0 | 5 | 10;
+
 interface FaktenbotProperties {
-  reaction?: undefined | 0 | 5 | 10;
+  reaction?: FaktenbotReaction;
   search?: boolean;
 }
 

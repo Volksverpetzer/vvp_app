@@ -21,8 +21,6 @@ import { useAISearch } from "#/hooks/useAISearch";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { AISearchResponse } from "#/types";
 
-type FaktenbotReaction = 0 | 5 | 10;
-
 interface AISearchProperties {
   search: string;
   setResultsLength: (results: number) => void;
@@ -126,10 +124,7 @@ const AISearch = ({
         <AnimatedLoading />
         {showFaktenbot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
-            <Faktenbot
-              search={true}
-              reaction={reactionValue as FaktenbotReaction}
-            />
+            <Faktenbot search={true} reaction={reactionValue} />
           </View>
         )}
       </View>
@@ -169,7 +164,7 @@ const AISearch = ({
         </Pressable>
         {showFaktenbot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
-            <Faktenbot search={false} reaction={reactionValue as 0 | 5 | 10} />
+            <Faktenbot search={false} reaction={reactionValue} />
           </View>
         )}
       </View>
@@ -180,7 +175,7 @@ const AISearch = ({
     <View style={{ flex: 1, height: "100%", paddingTop: 20 }}>
       {showFaktenbot && (
         <View style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}>
-          <Faktenbot search={false} reaction={reactionValue as 0 | 5 | 10} />
+          <Faktenbot search={false} reaction={reactionValue} />
         </View>
       )}
       <FlatList
