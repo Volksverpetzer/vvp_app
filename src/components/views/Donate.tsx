@@ -209,7 +209,6 @@ const Donate = (properties: DonateProperties) => {
             type={PlatformPay?.ButtonType?.Donate}
             appearance={PlatformPay?.ButtonStyle?.Black}
             borderRadius={4}
-            disabled={false}
             style={{
               height: 40,
               width: 220,
