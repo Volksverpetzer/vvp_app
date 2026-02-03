@@ -23,7 +23,12 @@ import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerViews } from "#/helpers/network/Analytics";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import { HttpsUrl } from "#/types";
+import {
+  DISPLAY_TEXT_EXCERPT,
+  DISPLAY_TEXT_FULL,
+  DisplayText,
+  HttpsUrl,
+} from "#/types";
 
 /**
  * Represents the props for an Instagram post component as fetched from the Instagram API
@@ -35,7 +40,7 @@ export interface InstaPostProperties {
   };
   media_url: string;
   caption: string;
-  shortenText?: boolean;
+  displayText?: DisplayText;
   disableLink?: boolean;
   media_type: string;
   timestamp: string;
@@ -71,12 +76,13 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
     children,
     disableLink,
     inView,
-    shortenText = true,
+    displayText = DISPLAY_TEXT_EXCERPT,
   } = properties;
   const corporate = useCorporateColor();
   const windowDims = useWindowDimensions();
   const feedDims = useFeedDimensions();
-  const { width } = shortenText === false ? windowDims : feedDims;
+  const { width } =
+    displayText === DISPLAY_TEXT_EXCERPT ? windowDims : feedDims;
 
   // Determine photos array. If children exists, map its data for media_url; fallback to media_url.
   const photos = useMemo(
@@ -237,7 +243,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
 
       <View style={{ flexDirection: "row", ...styles.centered }}>{dots}</View>
 
-      {!shortenText && (
+      {displayText === DISPLAY_TEXT_FULL && (
         <Hyperlink linkStyle={{ color: corporate }} onPress={handleLinkPress}>
           <Text
             style={{
@@ -251,7 +257,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
           </Text>
         </Hyperlink>
       )}
-      {!!shortenText && (
+      {displayText === DISPLAY_TEXT_EXCERPT && (
         <TouchableOpacity
           accessibilityRole="button"
           onPress={handleSelectPost}

@@ -15,7 +15,13 @@ import { styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
-import { HttpsUrl } from "#/types";
+import {
+  DISPLAY_TEXT_EXCERPT,
+  DISPLAY_TEXT_FULL,
+  DISPLAY_TEXT_NONE,
+  DisplayText,
+  HttpsUrl,
+} from "#/types";
 
 import { PostText } from "./PostText";
 
@@ -23,7 +29,7 @@ export interface BlueskyPostProperties {
   post: FeedViewPost;
   replies?: FeedViewPost[];
   inView?: boolean;
-  textDisplay?: boolean;
+  displayText?: DisplayText;
 }
 
 /**
@@ -32,7 +38,12 @@ export interface BlueskyPostProperties {
  * @returns
  */
 const BlueskyPost = (properties: BlueskyPostProperties) => {
-  const { post, inView, textDisplay, replies } = properties;
+  const {
+    post,
+    inView,
+    displayText = DISPLAY_TEXT_EXCERPT,
+    replies,
+  } = properties;
   const { record, author, uri } = post.post;
   const { wpUrl } = Config;
   const router = useRouter();
@@ -77,7 +88,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
       accessibilityRole="button"
       onPress={navigateToPost}
       style={{ flex: 1 }}
-      disabled={textDisplay || replies.length === 0}
+      disabled={displayText === "full" || replies?.length === 0}
     >
       <Hyperlink
         linkStyle={{ color: corporate }}
@@ -127,9 +138,13 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             </Text>
           </View>
 
-          <Text style={{ lineHeight: 24, fontSize: 18 }}>{fulltext}</Text>
+          {displayText !== DISPLAY_TEXT_NONE && (
+            <Text style={{ lineHeight: 24, fontSize: 18 }}>
+              {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
+            </Text>
+          )}
 
-          {!textDisplay && (
+          {displayText === DISPLAY_TEXT_EXCERPT && (
             <>
               <View style={styles.row}>
                 <Text
@@ -156,7 +171,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             </>
           )}
 
-          {textDisplay &&
+          {displayText === DISPLAY_TEXT_FULL &&
             replies &&
             replies.length > 0 &&
             replies.map((reply: FeedViewPost, index: number) => {

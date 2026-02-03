@@ -13,6 +13,7 @@ import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerViews } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
+import { DISPLAY_TEXT_FULL } from "#/types";
 
 /**
  * InstaScreen renders an Instagram post and its caption,
@@ -78,7 +79,11 @@ const InstaScreen = () => {
     <View style={styles.container}>
       <ScrollView>
         {/* Render the Instagram post; pass all fetched post data */}
-        <InstaPost shortenText={false} disableLink={true} {...data} />
+        <InstaPost
+          displayText={DISPLAY_TEXT_FULL}
+          disableLink={true}
+          {...data}
+        />
 
         {/* Render article footer with sharing functionality */}
         <Footer article_link={data.permalink} onShare={onShare} />

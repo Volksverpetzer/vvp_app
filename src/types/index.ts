@@ -3,6 +3,7 @@ export * from "./config";
 export * from "./feeds";
 export * from "./fetcher";
 export * from "./game";
+export * from "./posts";
 export * from "./regions";
 export * from "./responses";
 export * from "./reports";
