@@ -12,11 +12,11 @@ import View from "#/components/design/View";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import { updateBadgeState } from "#/helpers/BadgeContext";
 import Notifications from "#/helpers/Notifications";
-import SettingsContext from "#/helpers/SettingsContext";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+import SettingsProvider from "#/helpers/provider/SettingsProvider";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
@@ -30,7 +30,7 @@ const Onboarding = () => {
       SettingsStore.defaultNotificationSettings,
     );
   const appName = Constants.expoConfig.name;
-  const { contentSettings, setContentSettings } = useContext(SettingsContext);
+  const { contentSettings, setContentSettings } = useContext(SettingsProvider);
   const corporate = useCorporateColor();
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();

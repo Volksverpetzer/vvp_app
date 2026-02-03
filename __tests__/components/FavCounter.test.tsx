@@ -18,7 +18,7 @@ jest.mock("../../src/helpers/Stores/FavoritesStore", () => ({
 jest.mock("../../src/helpers/Achievements", () => ({
   Achievements: { setAchievementValue: jest.fn() },
 }));
-jest.mock("../../src/helpers/BadgeContext", () => ({
+jest.mock("#/helpers/provider/BadgeProvider", () => ({
   updateBadgeState: jest.fn(),
 }));
 

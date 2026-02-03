@@ -10,10 +10,10 @@ import LoadArticlePost from "#/components/posts/LoadArticlePost";
 import LoadInstaPost from "#/components/posts/LoadInstaPost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import { updateBadgeState } from "#/helpers/BadgeContext";
 import { registerViews } from "#/helpers/Networking/Analytics";
 import { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA, StoredFavs } from "#/types";
 

@@ -22,8 +22,8 @@ import View from "#/components/design/View";
 import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import Colors from "#/constants/Colors";
-import { BadgeProvider } from "#/helpers/BadgeContext";
-import { SettingsProvider } from "#/helpers/SettingsContext";
+import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
+import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
 
