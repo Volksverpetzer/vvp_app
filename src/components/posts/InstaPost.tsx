@@ -82,7 +82,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
   const windowDims = useWindowDimensions();
   const feedDims = useFeedDimensions();
   const { width } =
-    displayText === DISPLAY_TEXT_EXCERPT ? windowDims : feedDims;
+    displayText === DISPLAY_TEXT_FULL ? windowDims : feedDims;
 
   // Determine photos array. If children exists, map its data for media_url; fallback to media_url.
   const photos = useMemo(

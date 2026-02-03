@@ -78,7 +78,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
       accessibilityRole="button"
       onPress={() => router.push(`/bsky/${post.id}`)}
       style={{ flex: 1 }}
-      disabled={displayText === "full"}
+      disabled={displayText === DISPLAY_TEXT_FULL}
     >
       <Hyperlink
         linkStyle={{ color: corporate }}

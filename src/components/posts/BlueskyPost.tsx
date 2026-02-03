@@ -88,7 +88,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
       accessibilityRole="button"
       onPress={navigateToPost}
       style={{ flex: 1 }}
-      disabled={displayText === "full" || replies?.length === 0}
+      disabled={displayText === DISPLAY_TEXT_FULL || replies?.length === 0}
     >
       <Hyperlink
         linkStyle={{ color: corporate }}
