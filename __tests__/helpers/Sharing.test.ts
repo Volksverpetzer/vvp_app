@@ -7,9 +7,9 @@ import { Platform, Share } from "react-native";
 import Toast from "react-native-toast-message";
 
 import { Achievements } from "#/helpers/Achievements";
-import { registerEvent } from "#/helpers/Networking/Analytics";
 import { multishare, onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
+import { registerEvent } from "#/helpers/network/Analytics";
 
 // Mock dependencies
 jest.mock("react-native", () => ({
@@ -56,7 +56,7 @@ jest.mock("react-native-toast-message", () => ({
   },
 }));
 
-jest.mock("../../src/helpers/Networking/Analytics", () => ({
+jest.mock("#/helpers/network/Analytics", () => ({
   __esModule: true,
   registerEvent: jest.fn(),
 }));

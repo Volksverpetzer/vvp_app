@@ -3,7 +3,7 @@ import { ActivityIndicator } from "react-native";
 
 import Text from "#/components/design/Text";
 import Config from "#/constants/Config";
-import { getViews } from "#/helpers/Networking/Analytics";
+import { getViews } from "#/helpers/network/Analytics";
 
 interface ViewCounterProperties {
   url: string; // the URL for which to fetch the views

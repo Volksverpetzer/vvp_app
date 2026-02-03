@@ -17,10 +17,10 @@ import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
-import { registerEvent, registerViews } from "#/helpers/Networking/Analytics";
 import { onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
+import { registerEvent, registerViews } from "#/helpers/network/Analytics";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { HttpsUrl } from "#/types";
 

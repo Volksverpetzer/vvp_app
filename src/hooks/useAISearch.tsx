@@ -3,8 +3,8 @@ import { Buffer } from "buffer/";
 import { useCallback, useEffect, useState } from "react";
 
 import Config from "#/constants/Config";
-import { registerEvent } from "#/helpers/Networking/Analytics";
-import IntelligenceAPI from "#/helpers/Networking/IntelligenceAPI";
+import { registerEvent } from "#/helpers/network/Analytics";
+import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import { AISearchResponse } from "#/types";
 
 export interface UseAISearchProperties {

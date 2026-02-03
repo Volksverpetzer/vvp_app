@@ -2,7 +2,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
-import API from "#/helpers/Networking/ServerAPI";
+import API from "#/helpers/network/ServerAPI";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { StatusResponse, StoredReport } from "#/types";
 

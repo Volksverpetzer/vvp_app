@@ -9,10 +9,10 @@ import InstaPost, { InstaPostProperties } from "#/components/posts/InstaPost";
 import Footer from "#/components/views/Footer";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import { registerViews } from "#/helpers/Networking/Analytics";
-import API from "#/helpers/Networking/ServerAPI";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
+import { registerViews } from "#/helpers/network/Analytics";
+import API from "#/helpers/network/ServerAPI";
 
 /**
  * InstaScreen renders an Instagram post and its caption,

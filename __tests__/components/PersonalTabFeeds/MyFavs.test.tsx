@@ -1,5 +1,5 @@
 import Config from "#/constants/Config";
-import { registerViews } from "#/helpers/Networking/Analytics";
+import { registerViews } from "#/helpers/network/Analytics";
 
 // Mock Config
 jest.mock("../../../src/constants/Config", () => ({
@@ -11,7 +11,7 @@ jest.mock("../../../src/constants/Config", () => ({
 }));
 
 // Mock dependencies
-jest.mock("../../../src/helpers/Networking/Analytics", () => ({
+jest.mock("#/helpers/network/Analytics", () => ({
   registerViews: jest.fn(),
 }));
 

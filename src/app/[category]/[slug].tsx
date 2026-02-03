@@ -6,8 +6,8 @@ import AnimatedLoading from "#/components/animations/AnimatedLoading";
 import View from "#/components/design/View";
 import { ArticleProperties } from "#/components/posts/ArticlePost";
 import Config from "#/constants/Config";
-import WordpressAPI from "#/helpers/Networking/WordpressAPI";
 import ContentStore from "#/helpers/Stores/ContentStore";
+import WordpressAPI from "#/helpers/network/WordpressAPI";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
 import ArticleScreen from "#/screens/Home/components/article/Article";
 

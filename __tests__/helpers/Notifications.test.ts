@@ -35,7 +35,7 @@ jest.mock("expo-application", () => ({
   nativeBuildVersion: "1.0.0",
 }));
 
-jest.mock("../../src/helpers/Networking/ServerAPI", () => ({
+jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
   default: {
     registerNotifications: jest.fn(),

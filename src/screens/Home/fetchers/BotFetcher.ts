@@ -4,8 +4,8 @@ import BlueskyPost, {
   BlueskyPostProperties,
 } from "#/components/posts/BlueskyPost";
 import Config from "#/constants/Config";
-import API from "#/helpers/Networking/ServerAPI";
 import Post from "#/helpers/Post";
+import API from "#/helpers/network/ServerAPI";
 
 import FetcherUtilities from "./FetcherUtilities";
 

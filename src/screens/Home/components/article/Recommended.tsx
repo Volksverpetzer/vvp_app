@@ -5,7 +5,7 @@ import View from "#/components/design/View";
 import LoadArticlePost from "#/components/posts/LoadArticlePost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import IntelligenceAPI from "#/helpers/Networking/IntelligenceAPI";
+import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 
 type RecommendedProperties = {
   article_link: string;

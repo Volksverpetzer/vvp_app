@@ -24,8 +24,8 @@ import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import { registerEvent } from "#/helpers/Networking/Analytics";
-import API from "#/helpers/Networking/ServerAPI";
+import { registerEvent } from "#/helpers/network/Analytics";
+import API from "#/helpers/network/ServerAPI";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 

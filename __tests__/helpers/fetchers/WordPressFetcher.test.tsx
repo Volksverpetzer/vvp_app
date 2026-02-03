@@ -1,9 +1,9 @@
 import { ArticleProperties } from "#/components/posts/ArticlePost";
-import WordpressAPI from "#/helpers/Networking/WordpressAPI";
 import Post from "#/helpers/Post";
+import WordpressAPI from "#/helpers/network/WordpressAPI";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 
-jest.mock("../../../src/helpers/Networking/WordpressAPI", () => ({
+jest.mock("#/helpers/network/WordpressAPI", () => ({
   __esModule: true,
   default: {
     getPosts: jest.fn(),

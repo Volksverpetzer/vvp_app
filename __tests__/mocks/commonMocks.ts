@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 
-jest.mock("../../src/helpers/Networking/ServerAPI", () => ({
+jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
   default: {
     getBskyFeed: jest.fn(),
