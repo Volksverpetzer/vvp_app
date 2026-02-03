@@ -30,9 +30,9 @@ interface AISearchProperties {
   showFaktenbot?: boolean;
 }
 
-/**
- *
- */
+// Konstanten außerhalb der Komponente sind immer stabil
+const IGNORED_DOM_TAGS = ["img", "script", "iframe", "style"];
+
 const AISearch = ({
   search,
   setResultsLength,
@@ -60,16 +60,33 @@ const AISearch = ({
     [corporate, textColor],
   );
 
+  // Memoize baseStyle so it isn't recreated every render
+  const renderHtmlBaseStyle = useMemo(
+    () => ({
+      color: textColor,
+      width: width - 60,
+      maxHeight: 200,
+      overflow: "hidden" as const,
+    }),
+    [textColor, width],
+  );
+
+  // Memoize Pressable item container style array
+  const itemContainerStyle = useMemo(
+    () => [
+      globalStyles.centered,
+      { padding: 30, borderBottomWidth: 1, borderBottomColor: textColor },
+    ],
+    [textColor],
+  );
+
   const renderItem = useCallback(
     ({ item }: { item: AISearchResponse }) => {
       const hostname = Linking.parse(item.url).hostname;
       return (
         <Pressable
           accessibilityRole="button"
-          style={[
-            globalStyles.centered,
-            { padding: 30, borderBottomWidth: 1, borderBottomColor: textColor },
-          ]}
+          style={itemContainerStyle}
           onPress={() => onLinkPress(item.url, router)}
         >
           {item.title && (
@@ -83,13 +100,8 @@ const AISearch = ({
             source={{ html: item.text }}
             tagsStyles={tagStyles}
             contentWidth={width - 60}
-            baseStyle={{
-              color: textColor,
-              width: width - 60,
-              maxHeight: 200,
-              overflow: "hidden",
-            }}
-            ignoredDomTags={["img", "script", "iframe", "style"]}
+            baseStyle={renderHtmlBaseStyle}
+            ignoredDomTags={IGNORED_DOM_TAGS}
           />
           <Text style={{ fontWeight: "bold", color: textColor, fontSize: 16 }}>
             {hostname ?? item.url}
@@ -97,7 +109,14 @@ const AISearch = ({
         </Pressable>
       );
     },
-    [width, tagStyles, textColor, router],
+    [
+      width,
+      tagStyles,
+      textColor,
+      router,
+      itemContainerStyle,
+      renderHtmlBaseStyle,
+    ],
   );
 
   if (results.length === 0 && !error) {
