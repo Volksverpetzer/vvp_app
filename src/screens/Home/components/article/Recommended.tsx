@@ -7,14 +7,18 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import IntelligenceAPI from "#/helpers/Networking/IntelligenceAPI";
 
+type RecommendedProperties = {
+  article_link: string;
+};
+
 /**
  * Recommended component displays a list of recommended articles based on the current article's slug.
  * Fetches recommendations from the API and renders them as article posts.
  *
- * @param props - Object containing the slug of the current article.
  * @returns A React fragment with the recommended articles list.
+ * @param properties
  */
-const Recommended = (properties: { article_link }) => {
+const Recommended = (properties: RecommendedProperties) => {
   const [matches, setMatches] = useState<{ url: string; title: string }[]>([]);
   const { article_link } = properties;
 
