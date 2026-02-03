@@ -5,7 +5,7 @@ import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { StoredFavs } from "#/types";
 
 // Mock the BaseStore
-jest.mock("../../../src/helpers/Storage", () => ({
+jest.mock("#/helpers/Storage", () => ({
   __esModule: true,
   default: {
     getItem: jest.fn(),

@@ -1,6 +1,5 @@
-import useAppColorScheme from "src/hooks/useAppColorScheme";
-
 import Colors from "#/constants/Colors";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 export function useThemeColor(
   properties: { light?: string; dark?: string },

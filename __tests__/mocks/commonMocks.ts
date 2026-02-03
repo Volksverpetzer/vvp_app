@@ -12,7 +12,7 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
   },
 }));
 
-jest.mock("../../src/screens/Home/fetchers/FetcherUtilities", () => ({
+jest.mock("#/screens/Home/fetchers/FetcherUtilities", () => ({
   __esModule: true,
   formatDate: jest.fn((date) => "2023-01-01"),
   getImageFromPost: jest.fn(),

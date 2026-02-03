@@ -61,21 +61,21 @@ jest.mock("#/helpers/network/Analytics", () => ({
   registerEvent: jest.fn(),
 }));
 
-jest.mock("../../src/helpers/Achievements", () => ({
+jest.mock("#/helpers/Achievements", () => ({
   __esModule: true,
   Achievements: {
     setAchievementValue: jest.fn(),
   },
 }));
 
-jest.mock("../../src/helpers/Statistics", () => ({
+jest.mock("#/helpers/Statistics", () => ({
   __esModule: true,
   default: {
     countArticleShared: jest.fn(),
   },
 }));
 
-jest.mock("../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",

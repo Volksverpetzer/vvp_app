@@ -42,7 +42,7 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
   },
 }));
 
-jest.mock("../../src/helpers/Stores/SettingsStore", () => ({
+jest.mock("#/helpers/Stores/SettingsStore", () => ({
   __esModule: true,
   default: {
     getNotificationSettings: jest.fn(),
@@ -53,13 +53,13 @@ jest.mock("../../src/helpers/Stores/SettingsStore", () => ({
   },
 }));
 
-jest.mock("../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   eas: {
     projectId: "test-project-id",
   },
 }));
 
-jest.mock("../../src/constants/Colors", () => ({
+jest.mock("#/constants/Colors", () => ({
   light: {
     corporate: "#ff0000",
   },

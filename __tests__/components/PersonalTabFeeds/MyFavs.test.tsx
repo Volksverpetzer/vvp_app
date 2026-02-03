@@ -2,7 +2,7 @@ import Config from "#/constants/Config";
 import { registerViews } from "#/helpers/network/Analytics";
 
 // Mock Config
-jest.mock("../../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
@@ -15,7 +15,7 @@ jest.mock("#/helpers/network/Analytics", () => ({
   registerViews: jest.fn(),
 }));
 
-jest.mock("../../../src/helpers/Stores/FavoritesStore", () => ({
+jest.mock("#/helpers/Stores/FavoritesStore", () => ({
   getAllFavorites: jest.fn(() => Promise.resolve({})),
 }));
 

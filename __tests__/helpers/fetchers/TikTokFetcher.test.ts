@@ -6,7 +6,7 @@ import { TikTokFetcher } from "#/screens/Home/fetchers/TikTokFetcher";
 import "../../mocks/commonMocks";
 
 // Mock the TiktokPost component to avoid WebView dependencies
-jest.mock("../../../src/components/posts/TiktokPost", () => ({
+jest.mock("#/components/posts/TiktokPost", () => ({
   __esModule: true,
   default: "TiktokPost",
 }));

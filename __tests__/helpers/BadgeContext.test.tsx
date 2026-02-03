@@ -4,7 +4,7 @@ import BadgeStore from "#/helpers/Stores/BadgeStore";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 
 // Mock the BadgeStore
-jest.mock("../../src/helpers/Stores/BadgeStore", () => ({
+jest.mock("#/helpers/Stores/BadgeStore", () => ({
   __esModule: true,
   default: {
     defaultState: { action: false, personal: false },

@@ -17,7 +17,7 @@ jest.mock("#/helpers/network/Analytics", () => ({
   registerEvent: jest.fn(),
 }));
 
-jest.mock("../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",

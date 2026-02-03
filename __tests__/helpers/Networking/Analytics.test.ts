@@ -38,7 +38,7 @@ jest.mock("#/helpers/utils/networking", () => ({
   post: jest.fn(),
 }));
 
-jest.mock("../../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     apiUrl: "https://api.example.com",

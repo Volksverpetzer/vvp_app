@@ -11,12 +11,12 @@ jest.mock("#/helpers/network/WordpressAPI", () => ({
   },
 }));
 
-jest.mock("../../../src/helpers/Post", () => ({
+jest.mock("#/helpers/Post", () => ({
   __esModule: true,
   default: jest.fn(),
 }));
 
-jest.mock("../../../src/components/posts/ArticlePost", () => ({
+jest.mock("#/components/posts/ArticlePost", () => ({
   __esModule: true,
   default: jest.fn(),
 }));

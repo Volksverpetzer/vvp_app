@@ -6,7 +6,7 @@ import { AchievementConfig, Achievements } from "#/helpers/Achievements";
 import AchievementStore from "#/helpers/Stores/AchievementStore";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 
-jest.mock("../../src/helpers/Stores/AchievementStore", () => ({
+jest.mock("#/helpers/Stores/AchievementStore", () => ({
   __esModule: true,
   default: {
     getLevel: jest.fn(),

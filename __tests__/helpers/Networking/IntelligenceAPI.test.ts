@@ -19,7 +19,7 @@ jest.mock("#/helpers/utils/networking", () => {
   };
 });
 
-jest.mock("../../../src/constants/Config", () => {
+jest.mock("#/constants/Config", () => {
   return {
     __esModule: true,
     default: {
