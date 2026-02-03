@@ -1,5 +1,4 @@
-// Using the buffer package that's available through expo dependencies
-import { Buffer } from "buffer/";
+import { Buffer } from "buffer";
 import { useCallback, useEffect, useState } from "react";
 
 import Config from "#/constants/Config";
