@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { RefObject, useCallback } from "react";
 import { Keyboard, Pressable, TextInput } from "react-native";
 
 import { Search } from "#/components/Icons";
@@ -13,7 +13,7 @@ interface SearchHeaderProperties {
   search: string;
   setSearch: (value: string) => void;
   setSearchParams: (value: string) => void;
-  searchRef: React.RefObject<TextInput>;
+  searchRef: RefObject<TextInput>;
   resultsLength?: number;
   isLoading: boolean;
   showFaktenbot?: boolean;
