@@ -6,18 +6,15 @@ import {
   ActivityIndicator,
   Dimensions,
   FlatList,
-  Pressable,
   StyleSheet,
 } from "react-native";
-import RenderHtml from "react-native-render-html";
 
-import Card from "#/components/design/Card";
-import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 
 interface AlgoliaSearchProperties {
   searchString: string;
@@ -99,29 +96,12 @@ const AlgoliaSearchResults = ({
         "." +
         _date.getFullYear();
       return (
-        <Card>
-          <Pressable
-            accessibilityRole="button"
-            style={itemStyles.itemContainer}
-            onPress={() => handleResultPress(item)}
-          >
-            <Text style={itemStyles.itemText}>{item.post_title}</Text>
-            <RenderHtml
-              contentWidth={width}
-              baseStyle={{ color: textColor }}
-              tagsStyles={{
-                em: {
-                  fontWeight: "bold",
-                  color: highlightColor,
-                },
-              }}
-              source={{
-                html: `<div>${item._highlightResult?.content?.value?.slice(0, 200) || ""}...</div>`,
-              }}
-            />
-            <Text style={{ textAlign: "right" }}>{date}</Text>
-          </Pressable>
-        </Card>
+        <SearchResultItem
+          title={item.post_title}
+          text={`<div>${item._highlightResult?.content?.value?.slice(0, 200) || ""}...</div>`}
+          subtitle={<Text style={{ textAlign: "right" }}>{date}</Text>}
+          onPress={() => handleResultPress(item)}
+        />
       );
     },
     [width, textColor, highlightColor, handleResultPress],
@@ -169,9 +149,6 @@ const itemStyles = StyleSheet.create({
   loadingContainer: {
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
-  },
-  itemContainer: {
     padding: 20,
   },
   itemText: {

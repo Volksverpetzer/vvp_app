@@ -9,17 +9,16 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import RenderHtml from "react-native-render-html";
 
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
 import Faktenbot from "#/components/animations/Faktenbot";
-import Card from "#/components/design/Card";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles, styles } from "#/constants/Styles";
+import { styles as globalStyles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 import { AISearchResponse } from "#/types";
 
 interface AISearchProperties {
@@ -28,9 +27,6 @@ interface AISearchProperties {
   setIsLoading: (loading: boolean) => void;
   showFaktenbot?: boolean;
 }
-
-// Konstanten außerhalb der Komponente sind immer stabil
-const IGNORED_DOM_TAGS = ["img", "script", "iframe", "style"];
 
 const AISearch = ({
   search,
@@ -70,60 +66,25 @@ const AISearch = ({
     [textColor, width],
   );
 
-  // Memoize Pressable item container style array
-  const itemContainerStyle = useMemo(
-    () => [
-      globalStyles.centered,
-      { padding: 30, borderBottomWidth: 1, borderBottomColor: textColor },
-    ],
-    [textColor],
-  );
-
   const renderItem = useCallback(
     ({ item }: { item: AISearchResponse }) => {
       const hostname = Linking.parse(item.url).hostname;
       return (
-        <Card>
-          <Pressable
-            accessibilityRole="button"
-            style={itemContainerStyle}
-            onPress={() => onLinkPress(item.url, router)}
-          >
-            {item.title && (
-              <Text
-                style={{
-                  ...styles.heading,
-                  padding: 0,
-                  paddingBottom: 30,
-                }}
-              >
-                {decode(item.title)}
-              </Text>
-            )}
-            <RenderHtml
-              source={{ html: item.text }}
-              tagsStyles={tagStyles}
-              contentWidth={width - 60}
-              baseStyle={renderHtmlBaseStyle}
-              ignoredDomTags={IGNORED_DOM_TAGS}
-            />
+        <SearchResultItem
+          title={decode(item.title)}
+          onPress={() => onLinkPress(item.url, router)}
+          text={item.text}
+          subtitle={
             <Text
               style={{ fontWeight: "bold", color: textColor, fontSize: 16 }}
             >
               {hostname ?? item.url}
             </Text>
-          </Pressable>
-        </Card>
+          }
+        />
       );
     },
-    [
-      width,
-      tagStyles,
-      textColor,
-      router,
-      itemContainerStyle,
-      renderHtmlBaseStyle,
-    ],
+    [width, tagStyles, textColor, router, renderHtmlBaseStyle],
   );
 
   if (results.length === 0 && !error) {
