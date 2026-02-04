@@ -149,7 +149,12 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
           }}
         >
           <Header
-            {...{ article, article_image, article_title, date, article_link }}
+            article={article}
+            article_image={article_image}
+            article_link={article_link}
+            article_title={article_title}
+            date={date}
+            slug={slug}
           />
 
           <Body

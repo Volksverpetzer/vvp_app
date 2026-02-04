@@ -12,10 +12,14 @@ import { HttpsUrl } from "#/types";
 
 interface ArticleSourceListProperties {
   article_link: string;
+  article_title?: string;
+  slug: string;
 }
 
 export const ArticleSourceList = ({
   article_link,
+  article_title,
+  slug,
 }: ArticleSourceListProperties) => {
   const [links, setLinks] = useState<
     { visitors: number; url: HttpsUrl }[] | undefined
@@ -37,7 +41,11 @@ export const ArticleSourceList = ({
   }, [open, article_link]);
 
   const onPress = async (extension_url: HttpsUrl) => {
-    await SourcesStore.onAddSource(extension_url as HttpsUrl, "", "");
+    await SourcesStore.onAddSource(
+      extension_url as HttpsUrl,
+      slug,
+      article_title,
+    );
     outBoundLinkPress(extension_url, article_link);
   };
 
