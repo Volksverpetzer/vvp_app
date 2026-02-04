@@ -13,9 +13,10 @@ import RenderHtml from "react-native-render-html";
 
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
 import Faktenbot from "#/components/animations/Faktenbot";
+import Card from "#/components/design/Card";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles } from "#/constants/Styles";
+import { styles as globalStyles, styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
@@ -82,29 +83,37 @@ const AISearch = ({
     ({ item }: { item: AISearchResponse }) => {
       const hostname = Linking.parse(item.url).hostname;
       return (
-        <Pressable
-          accessibilityRole="button"
-          style={itemContainerStyle}
-          onPress={() => onLinkPress(item.url, router)}
-        >
-          {item.title && (
+        <Card>
+          <Pressable
+            accessibilityRole="button"
+            style={itemContainerStyle}
+            onPress={() => onLinkPress(item.url, router)}
+          >
+            {item.title && (
+              <Text
+                style={{
+                  ...styles.heading,
+                  padding: 0,
+                  paddingBottom: 30,
+                }}
+              >
+                {decode(item.title)}
+              </Text>
+            )}
+            <RenderHtml
+              source={{ html: item.text }}
+              tagsStyles={tagStyles}
+              contentWidth={width - 60}
+              baseStyle={renderHtmlBaseStyle}
+              ignoredDomTags={IGNORED_DOM_TAGS}
+            />
             <Text
               style={{ fontWeight: "bold", color: textColor, fontSize: 16 }}
             >
-              {decode(item.title)}
+              {hostname ?? item.url}
             </Text>
-          )}
-          <RenderHtml
-            source={{ html: item.text }}
-            tagsStyles={tagStyles}
-            contentWidth={width - 60}
-            baseStyle={renderHtmlBaseStyle}
-            ignoredDomTags={IGNORED_DOM_TAGS}
-          />
-          <Text style={{ fontWeight: "bold", color: textColor, fontSize: 16 }}>
-            {hostname ?? item.url}
-          </Text>
-        </Pressable>
+          </Pressable>
+        </Card>
       );
     },
     [
@@ -181,7 +190,11 @@ const AISearch = ({
       <FlatList
         data={results}
         keyExtractor={(_, index) => index.toString()}
-        contentContainerStyle={{ paddingBottom: 200 }}
+        contentContainerStyle={{
+          paddingBottom: 200,
+          paddingHorizontal: 20,
+          gap: 20,
+        }}
         ListHeaderComponent={
           <Text style={{ textAlign: "center", marginVertical: 10 }}>
             Ergebnisse der KI-Suche

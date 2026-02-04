@@ -31,6 +31,7 @@ const SearchHeader = ({
   onSubmit,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].secondaryBackground;
   const corporate = Colors[colorScheme].corporate;
 
   // Extract the nested ternary operation into an independent variable
@@ -57,6 +58,7 @@ const SearchHeader = ({
           height: 100,
           justifyContent: "flex-end",
           paddingRight: 20,
+          backgroundColor,
         }}
       >
         <Text

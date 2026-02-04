@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import RenderHtml from "react-native-render-html";
 
+import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -98,28 +99,29 @@ const AlgoliaSearchResults = ({
         "." +
         _date.getFullYear();
       return (
-        <Pressable
-          accessibilityRole="button"
-          style={itemStyles.itemContainer}
-          onPress={() => handleResultPress(item)}
-        >
-          <Text style={itemStyles.itemText}>{item.post_title}</Text>
-          <Space size={5} />
-          <RenderHtml
-            contentWidth={width}
-            baseStyle={{ color: textColor }}
-            tagsStyles={{
-              em: {
-                fontWeight: "bold",
-                color: highlightColor,
-              },
-            }}
-            source={{
-              html: `<div>${item._highlightResult?.content?.value?.slice(0, 200) || ""}...</div>`,
-            }}
-          />
-          <Text style={{ textAlign: "right" }}>{date}</Text>
-        </Pressable>
+        <Card>
+          <Pressable
+            accessibilityRole="button"
+            style={itemStyles.itemContainer}
+            onPress={() => handleResultPress(item)}
+          >
+            <Text style={itemStyles.itemText}>{item.post_title}</Text>
+            <RenderHtml
+              contentWidth={width}
+              baseStyle={{ color: textColor }}
+              tagsStyles={{
+                em: {
+                  fontWeight: "bold",
+                  color: highlightColor,
+                },
+              }}
+              source={{
+                html: `<div>${item._highlightResult?.content?.value?.slice(0, 200) || ""}...</div>`,
+              }}
+            />
+            <Text style={{ textAlign: "right" }}>{date}</Text>
+          </Pressable>
+        </Card>
       );
     },
     [width, textColor, highlightColor, handleResultPress],
@@ -144,7 +146,11 @@ const AlgoliaSearchResults = ({
   return (
     <FlatList
       data={results}
-      contentContainerStyle={{ paddingBottom: 100 }}
+      contentContainerStyle={{
+        paddingBottom: 100,
+        paddingHorizontal: 20,
+        gap: 20,
+      }}
       keyExtractor={(item) => item.objectID}
       renderItem={renderItem}
       initialNumToRender={5}
@@ -166,8 +172,6 @@ const itemStyles = StyleSheet.create({
     padding: 20,
   },
   itemContainer: {
-    borderBottomColor: "#ccc",
-    borderBottomWidth: 1,
     padding: 20,
   },
   itemText: {
