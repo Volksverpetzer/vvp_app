@@ -10,7 +10,7 @@ interface SettContextInterface {
   setContentSettings: (sett: ContentSettingType) => void;
 }
 
-const SettingsContext = createContext<SettContextInterface>({
+export const SettingsContext = createContext<SettContextInterface>({
   contentSettings: SettingsStore.defaultContentSettings,
   advancedSettings: SettingsStore.defaultAdvancedSettings,
   setAdvancedSettings: (settings: AdvancedSettingType) => {
@@ -21,9 +21,7 @@ const SettingsContext = createContext<SettContextInterface>({
   },
 });
 
-export default SettingsContext;
-
-const SettingsProvider = ({ children }) => {
+export const SettingsProvider = ({ children }) => {
   const [contentSettings, setContentSettings] = useState(
     SettingsStore.defaultContentSettings,
   );
@@ -70,5 +68,3 @@ const SettingsProvider = ({ children }) => {
     </SettingsContext.Provider>
   );
 };
-
-export { SettingsProvider };

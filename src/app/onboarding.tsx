@@ -16,7 +16,7 @@ import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import SettingsProvider from "#/helpers/provider/SettingsProvider";
+import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
@@ -30,7 +30,7 @@ const Onboarding = () => {
       SettingsStore.defaultNotificationSettings,
     );
   const appName = Constants.expoConfig.name;
-  const { contentSettings, setContentSettings } = useContext(SettingsProvider);
+  const { contentSettings, setContentSettings } = useContext(SettingsContext);
   const corporate = useCorporateColor();
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();

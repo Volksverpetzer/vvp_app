@@ -1,7 +1,7 @@
 import { FC, useContext } from "react";
 import { View } from "react-native";
 
-import SettingsProvider from "#/helpers/provider/SettingsProvider";
+import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { HttpsUrl } from "#/types";
 
 import ReportingWrapper from "./BlockRendererReporting";
@@ -18,7 +18,7 @@ interface BlockRenderProperties {
  * BlockRenderer: Basis‑Rendering und Höhenmessung.
  */
 const BlockRenderer = (properties: BlockRenderProperties) => {
-  const { advancedSettings } = useContext(SettingsProvider);
+  const { advancedSettings } = useContext(SettingsContext);
 
   if (!("TDefaultRenderer" in properties.renderProps)) {
     return undefined;

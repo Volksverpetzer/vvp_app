@@ -11,7 +11,7 @@ import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import SettingsProvider from "#/helpers/provider/SettingsProvider";
+import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
@@ -25,7 +25,7 @@ import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
  * @returns React element for the home feed screen.
  */
 const HomeScreen = () => {
-  const { contentSettings } = useContext(SettingsProvider);
+  const { contentSettings } = useContext(SettingsContext);
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const router = useRouter();
   const { shareIntent, hasShareIntent } = useShareIntentContext();
