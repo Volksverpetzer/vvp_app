@@ -144,10 +144,6 @@ const itemStyles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  itemText: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
 });
 
 export default AlgoliaSearchResults;
