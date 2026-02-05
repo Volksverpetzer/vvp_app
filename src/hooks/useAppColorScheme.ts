@@ -2,14 +2,14 @@ import { useContext } from "react";
 import { ColorSchemeName, useColorScheme } from "react-native";
 
 import Colors from "#/constants/Colors";
-import SettingsProvider from "#/helpers/provider/SettingsProvider";
+import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 
 /**
  * A hook that returns the color scheme of the device, or "dark" if the user has set the advanced setting "Always Dark Mode".
  * @returns The color scheme of the device, or "dark" if the user has set the advanced setting "Always Dark Mode".
  */
 export default function useAppColorScheme(): NonNullable<ColorSchemeName> {
-  const { advancedSettings } = useContext(SettingsProvider);
+  const { advancedSettings } = useContext(SettingsContext);
   const scheme = useColorScheme();
   if (advancedSettings?.alwaysDarkMode?.value ?? false)
     return "dark" as NonNullable<ColorSchemeName>;

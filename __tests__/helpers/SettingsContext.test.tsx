@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 import SettingsStore from "#/helpers/Stores/SettingsStore";
-import SettingsProvider from "#/helpers/provider/SettingsProvider";
+import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { AdvancedSettingType, ContentSettingType } from "#/types";
 
 // Mock the SettingsStore
@@ -124,8 +124,8 @@ describe("SettingsContext Logic", () => {
 
   describe("SettingsContext", () => {
     it("should be available as a context object", () => {
-      expect(SettingsProvider).toBeDefined();
-      expect(typeof SettingsProvider).toBe("object");
+      expect(SettingsContext).toBeDefined();
+      expect(typeof SettingsContext).toBe("object");
     });
   });
 });
