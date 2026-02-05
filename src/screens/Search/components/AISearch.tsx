@@ -84,7 +84,7 @@ const AISearch = ({
         />
       );
     },
-    [width, tagStyles, textColor, router, renderHtmlBaseStyle],
+    [textColor, router],
   );
 
   if (results.length === 0 && !error) {
