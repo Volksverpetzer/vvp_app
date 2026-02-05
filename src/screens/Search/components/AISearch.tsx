@@ -1,14 +1,8 @@
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
-import { useCallback, useMemo } from "react";
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { useCallback } from "react";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
 import Faktenbot from "#/components/animations/Faktenbot";
@@ -38,33 +32,9 @@ const AISearch = ({
     { search, setResultsLength, setIsLoading },
   );
   const router = useRouter();
-  const { width } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const textColor = Colors[colorScheme].text;
-
-  const tagStyles = useMemo(
-    () => ({
-      a: {
-        color: corporate,
-        textDecorationLine: "underline" as const,
-        textDecorationColor: corporate,
-      },
-      p: { color: textColor },
-    }),
-    [corporate, textColor],
-  );
-
-  // Memoize baseStyle so it isn't recreated every render
-  const renderHtmlBaseStyle = useMemo(
-    () => ({
-      color: textColor,
-      width: width - 60,
-      maxHeight: 200,
-      overflow: "hidden" as const,
-    }),
-    [textColor, width],
-  );
 
   const renderItem = useCallback(
     ({ item }: { item: AISearchResponse }) => {
