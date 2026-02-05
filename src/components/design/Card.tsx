@@ -3,10 +3,10 @@ import { View as DefaultView } from "react-native";
 import { useThemeColor } from "#/hooks/useThemeColor";
 import { ThemeProperties } from "#/types";
 
-type PanelProperties = ThemeProperties &
+type CardProperties = ThemeProperties &
   DefaultView["props"] & { key?: string };
 
-const Card = (properties: PanelProperties) => {
+const Card = (properties: CardProperties) => {
   const { style, lightColor, darkColor, ...otherProperties } = properties;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
