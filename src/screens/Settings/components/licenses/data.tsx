@@ -96,6 +96,12 @@ export default {
     licenseUrl: "https://github.com/axios/axios/raw/master/LICENSE",
     parents: "vvp_app",
   },
+  "buffer@6.0.3": {
+    licenses: "MIT",
+    repository: "https://github.com/feross/buffer",
+    licenseUrl: "https://github.com/feross/buffer/raw/master/LICENSE",
+    parents: "vvp_app",
+  },
   "domhandler@5.0.3": {
     licenses: "BSD-2-Clause",
     repository: "https://github.com/fb55/domhandler",
@@ -265,6 +271,12 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/mdevils/html-entities",
     licenseUrl: "https://github.com/mdevils/html-entities/raw/master/LICENSE",
+    parents: "vvp_app",
+  },
+  "lodash@4.17.23": {
+    licenses: "MIT",
+    repository: "https://github.com/lodash/lodash",
+    licenseUrl: "https://github.com/lodash/lodash/raw/master/LICENSE",
     parents: "vvp_app",
   },
   "react-dom@19.1.0": {
