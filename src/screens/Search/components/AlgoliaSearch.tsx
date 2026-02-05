@@ -104,7 +104,7 @@ const AlgoliaSearchResults = ({
         />
       );
     },
-    [width, textColor, highlightColor, handleResultPress],
+    [handleResultPress],
   );
 
   if (isLoading) {
