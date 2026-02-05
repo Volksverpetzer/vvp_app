@@ -2,12 +2,7 @@ import { searchClient } from "@algolia/client-search";
 import { useRouter } from "expo-router";
 import debounce from "lodash/debounce";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  StyleSheet,
-} from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet } from "react-native";
 
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -27,14 +22,12 @@ const AlgoliaSearchResults = ({
 }: AlgoliaSearchProperties) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { width } = Dimensions.get("window");
   const router = useRouter();
 
   // Initialize Algolia client
   const client = searchClient("W8YO8C6SIN", "f8211e7620b2d30da0d73f451fe36634");
   const colorScheme = useAppColorScheme();
   const highlightColor = Colors[colorScheme].corporate;
-  const textColor = Colors[colorScheme].text;
 
   // Create a debounced search function to avoid too many API calls
   const debouncedSearch = useRef(
