@@ -1,6 +1,7 @@
-import InstaPost from "../../../components/posts/InstaPost";
-import API from "../../../helpers/Networking/ServerAPI";
-import Post from "../../../helpers/Post";
+import InstaPost from "#/components/posts/InstaPost";
+import Post from "#/helpers/Post";
+import API from "#/helpers/network/ServerAPI";
+
 import FetcherUtilities from "./FetcherUtilities";
 
 export const InstagramFetcher = {

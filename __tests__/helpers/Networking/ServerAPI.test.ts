@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import * as Networking from "../../../src/helpers/Networking";
-import API from "../../../src/helpers/Networking/ServerAPI";
+import API from "#/helpers/network/ServerAPI";
+import * as Networking from "#/helpers/utils/networking";
 
 // Mock dependencies
-jest.mock("../../../src/helpers/Networking", () => ({
+jest.mock("#/helpers/utils/networking", () => ({
   __esModule: true,
   createClient: jest.fn(() => ({
     defaults: {
@@ -16,7 +16,7 @@ jest.mock("../../../src/helpers/Networking", () => ({
   post: jest.fn(),
 }));
 
-jest.mock("../../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     apiUrl: "http://api.example.com",

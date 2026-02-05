@@ -3,17 +3,18 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
-import Space from "../../../components/design/Space";
-import Colors from "../../../constants/Colors";
-import { styles } from "../../../constants/Styles";
+import Space from "#/components/design/Space";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
 import {
   AchievementConfig,
   Achievements,
   LevelType,
   TaskType,
-} from "../../../helpers/Achievements";
-import { updateBadgeState } from "../../../helpers/BadgeContext";
-import useColorScheme from "../../../hooks/useColorScheme";
+} from "#/helpers/Achievements";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+
 import Parallelogram from "./Parallelogram";
 
 const AchievementComponent = () => {
@@ -21,7 +22,7 @@ const AchievementComponent = () => {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const corporate = Colors["dark"].corporate;
   const corporateColor = Colors["light"].corporate;
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const highlight = Colors[colorScheme].highlight;
   const backgroundColor = Colors[colorScheme].background;
   const secondaryBackground = Colors[colorScheme].secondaryBackground;

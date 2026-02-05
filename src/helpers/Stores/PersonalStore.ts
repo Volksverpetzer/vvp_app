@@ -1,5 +1,5 @@
-import { StoredReport } from "../../types";
-import BaseStore from "../Storage";
+import BaseStore from "#/helpers/Storage";
+import { StoredReports } from "#/types";
 
 const PersonalStore = {
   keys: {
@@ -46,9 +46,9 @@ const PersonalStore = {
 
   /**
    * Stores the reports.
-   * @param {StoredReport[]} reports - The reports to store.
+   * @param {StoredReports} reports - The reports to store.
    */
-  async setReports(reports: StoredReport[]): Promise<void> {
+  async setReports(reports: StoredReports): Promise<void> {
     try {
       await BaseStore.setItem(this.keys.reports, JSON.stringify(reports));
     } catch (error) {
@@ -58,12 +58,12 @@ const PersonalStore = {
 
   /**
    * Retrieves the reports.
-   * @returns {Promise<StoredReport[]>} The stored reports.
+   * @returns {Promise<StoredReports>} The stored reports.
    */
-  async getReports(): Promise<StoredReport[]> {
+  async getReports(): Promise<StoredReports> {
     try {
       const jsonValue = await BaseStore.getItem(this.keys.reports);
-      return BaseStore.parseJSON<StoredReport[]>(jsonValue, []);
+      return BaseStore.parseJSON<StoredReports>(jsonValue, []);
     } catch (error) {
       console.error("Error retrieving reports:", error);
       return [];

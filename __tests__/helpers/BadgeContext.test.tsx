@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import { updateBadgeState } from "../../src/helpers/BadgeContext";
-import BadgeStore from "../../src/helpers/Stores/BadgeStore";
+import BadgeStore from "#/helpers/Stores/BadgeStore";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 
 // Mock the BadgeStore
-jest.mock("../../src/helpers/Stores/BadgeStore", () => ({
+jest.mock("#/helpers/Stores/BadgeStore", () => ({
   __esModule: true,
   default: {
     defaultState: { action: false, personal: false },

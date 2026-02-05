@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 
-import useColorScheme from "../../../src/hooks/useColorScheme";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 // Mock the useRouter hook
 jest.mock("expo-router", () => ({
@@ -8,7 +8,7 @@ jest.mock("expo-router", () => ({
 }));
 
 // Mock the useColorScheme hook
-jest.mock("../../../src/hooks/useColorScheme", () => ({
+jest.mock("#/hooks/useAppColorScheme", () => ({
   __esModule: true,
   default: jest.fn(),
 }));
@@ -24,7 +24,7 @@ describe("MissionPopup Logic", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    (useColorScheme as jest.Mock).mockReturnValue("dark");
+    (useAppColorScheme as jest.Mock).mockReturnValue("dark");
   });
 
   it("should have useRouter hook available", () => {
@@ -35,7 +35,7 @@ describe("MissionPopup Logic", () => {
   });
 
   it("should have useColorScheme hook available", () => {
-    const colorScheme = useColorScheme();
+    const colorScheme = useAppColorScheme();
     expect(colorScheme).toBeDefined();
     expect(typeof colorScheme).toBe("string");
   });

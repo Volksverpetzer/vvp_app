@@ -3,21 +3,23 @@ import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DimensionValue, TouchableOpacity } from "react-native";
 
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import { onLinkPress } from "../../helpers/Linking";
-import WordpressAPI from "../../helpers/Networking/WordpressAPI";
-import { onShare } from "../../helpers/Sharing";
-import ContentStore from "../../helpers/Stores/ContentStore";
-import PersonalStore from "../../helpers/Stores/PersonalStore";
-import useColorScheme from "../../hooks/useColorScheme";
-import { useFeedDimensions } from "../../hooks/useFeedDimensions";
-import AnimatedLoading from "../animations/AnimatedLoading";
-import ViewCounter from "../counter/ViewCounter";
-import Space from "../design/Space";
-import Text from "../design/Text";
-import View from "../design/View";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import ViewCounter from "#/components/counter/ViewCounter";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { onLinkPress } from "#/helpers/Linking";
+import { onShare } from "#/helpers/Sharing";
+import ContentStore from "#/helpers/Stores/ContentStore";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
+import WordpressAPI from "#/helpers/network/WordpressAPI";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useFeedDimensions } from "#/hooks/useFeedDimensions";
+import { HttpsUrl } from "#/types";
+
 import Badge from "./Badge";
 
 /**
@@ -28,7 +30,7 @@ export interface ArticleProperties {
     "wp:featuredmedia": { href: string }[];
   };
   date: string;
-  link: `https://${string}/${string}`;
+  link: HttpsUrl;
   description: string;
   categories: number[];
   id: number;
@@ -65,7 +67,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const [date, setDate] = useState("");
 
   // Hooks and derived values.
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const greyText = Colors[colorScheme].grayedOutText;
   const { width } = useFeedDimensions();

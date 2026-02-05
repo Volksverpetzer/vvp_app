@@ -10,21 +10,20 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import NavBar from "../../../../components/bars/NavBar";
-import { ArticleProperties } from "../../../../components/posts/ArticlePost";
-import Footer from "../../../../components/views/Footer";
-import Colors from "../../../../constants/Colors";
-import { styles } from "../../../../constants/Styles";
-import { Achievements } from "../../../../helpers/Achievements";
-import { onLinkPress } from "../../../../helpers/Linking";
-import {
-  registerEvent,
-  registerViews,
-} from "../../../../helpers/Networking/Analytics";
-import { onShare } from "../../../../helpers/Sharing";
-import Statistics from "../../../../helpers/Statistics";
-import PersonalStore from "../../../../helpers/Stores/PersonalStore";
-import useColorScheme from "../../../../hooks/useColorScheme";
+import NavBar from "#/components/bars/NavBar";
+import { ArticleProperties } from "#/components/posts/ArticlePost";
+import Footer from "#/components/views/Footer";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import { Achievements } from "#/helpers/Achievements";
+import { onLinkPress } from "#/helpers/Linking";
+import { onShare } from "#/helpers/Sharing";
+import Statistics from "#/helpers/Statistics";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
+import { registerEvent, registerViews } from "#/helpers/network/Analytics";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
+
 import Body from "./Body";
 import Header from "./Header";
 import Recommended from "./Recommended";
@@ -49,7 +48,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const scrollProgress = useRef(new Animated.Value(0)).current;
   const scrollReference = useRef<ScrollView>(null);
   const router = useRouter();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const backgroundColor = Colors[colorScheme].background;
 
@@ -150,7 +149,12 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
           }}
         >
           <Header
-            {...{ article, article_image, article_title, date, article_link }}
+            article={article}
+            article_image={article_image}
+            article_link={article_link}
+            article_title={article_title}
+            date={date}
+            slug={slug}
           />
 
           <Body
@@ -161,7 +165,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             maxWidth={maxWidth}
             width={width}
             scrollRef={scrollReference}
-            onLinkPress={(event, href) =>
+            onLinkPress={(event, href: HttpsUrl) =>
               onLinkPress(href, router, article_link)
             }
           />

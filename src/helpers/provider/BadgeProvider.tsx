@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-import BadgeStore from "./Stores/BadgeStore";
+import BadgeStore from "#/helpers/Stores/BadgeStore";
 
 export interface BadgeState {
   action: boolean;
@@ -20,7 +20,7 @@ const BadgeContext = createContext<{
 });
 
 // Module-level variable to hold the external reference to setBadgeState
-let externalSetBadgeState;
+let externalSetBadgeState: SetBadgeState;
 
 /**
  * A React context that provides badge state and its setter.

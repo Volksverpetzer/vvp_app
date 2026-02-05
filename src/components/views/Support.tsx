@@ -4,16 +4,17 @@ import { useState } from "react";
 import { Pressable } from "react-native";
 import Modal from "react-native-modal";
 
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import useColorScheme from "../../hooks/useColorScheme";
-import { Heart } from "../Icons";
-import ShopButton from "../buttons/ShopButton";
-import SteadyButton from "../buttons/SteadyButton";
-import Space from "../design/Space";
-import Text from "../design/Text";
-import View from "../design/View";
+import { Heart } from "#/components/Icons";
+import ShopButton from "#/components/buttons/ShopButton";
+import SteadyButton from "#/components/buttons/SteadyButton";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+
 import Donate from "./Donate";
 
 interface SupportProperties {
@@ -23,7 +24,7 @@ interface SupportProperties {
 
 const Support = ({ article_link, location }: SupportProperties) => {
   const [showBank, setShowBank] = useState(false);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].secondaryBackground;
   const corporate = Colors[colorScheme].corporate;
 
@@ -35,7 +36,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
   return (
     <View
       style={{
-        backgroundColor,
+        backgroundColor: "transparent",
         gap: 20,
         alignItems: "center",
       }}

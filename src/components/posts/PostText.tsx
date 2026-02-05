@@ -3,11 +3,12 @@ import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs"
 import { useRouter } from "expo-router";
 import { Hyperlink } from "react-native-hyperlink";
 
-import Colors from "../../constants/Colors";
-import { onLinkPress } from "../../helpers/Linking";
-import { normalizeFacets } from "../../helpers/utils/posts";
-import useColorScheme from "../../hooks/useColorScheme";
-import Text from "../design/Text";
+import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import { onLinkPress } from "#/helpers/Linking";
+import { normalizeFacets } from "#/helpers/utils/posts";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
 
 type Props = {
   feedViewPost: FeedViewPost;
@@ -19,7 +20,7 @@ export const PostText = ({ feedViewPost, uri }: Props) => {
   const record = feedViewPost?.post?.record;
   const facetsForRichText = normalizeFacets(record.facets);
 
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
 
   /*
@@ -53,7 +54,7 @@ export const PostText = ({ feedViewPost, uri }: Props) => {
     <Hyperlink
       linkStyle={{ color: corporate }}
       linkText={(url) => linkTextToUrlMap[url]}
-      onPress={(url) => onLinkPress(url, router, uri)}
+      onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
     >
       <Text style={{ lineHeight: 24, fontSize: 18 }}>{decodedText}</Text>
     </Hyperlink>

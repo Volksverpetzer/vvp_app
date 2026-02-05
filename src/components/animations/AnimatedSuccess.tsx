@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
 import { Animated, Dimensions } from "react-native";
 
-import Party from "../../../assets/images/Party.png";
-import Colors from "../../constants/Colors";
-import useColorScheme from "../../hooks/useColorScheme";
-import Text from "../design/Text";
+import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+
+import Party from "#assets/images/Party.png";
 
 interface AnimatedSuccessProperties {
   animated: boolean;
@@ -14,7 +15,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   const { animated } = properties;
   const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
   const animation = useRef(new Animated.Value(0)).current;
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const radius = animation.interpolate({
     inputRange: [0, 100],
     outputRange: [0, screenWidth * 2],

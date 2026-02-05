@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import BaseStore from "../../../src/helpers/Storage";
-import AchievementStore from "../../../src/helpers/Stores/AchievementStore";
+import BaseStore from "#/helpers/Storage";
+import AchievementStore from "#/helpers/Stores/AchievementStore";
 
 // Mock the BaseStore
-jest.mock("../../../src/helpers/Storage", () => ({
+jest.mock("#/helpers/Storage", () => ({
   __esModule: true,
   default: {
     getItem: jest.fn(),

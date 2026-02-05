@@ -1,5 +1,10 @@
+import {
+  SourceSans3_400Regular,
+  SourceSans3_600SemiBold,
+  SourceSans3_700Bold,
+  useFonts,
+} from "@expo-google-fonts/source-sans-3";
 import { StripeProvider } from "@stripe/stripe-react-native";
-import { useFonts } from "expo-font";
 import { Stack, useSegments } from "expo-router";
 import { ShareIntentProvider } from "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
@@ -12,18 +17,15 @@ import {
 } from "react-native-safe-area-context";
 import Toast, { ToastConfig } from "react-native-toast-message";
 
-import SourceSansProBold from "../../assets/fonts/SourceSansPro-Bold.ttf";
-import SourceSansPro from "../../assets/fonts/SourceSansPro-Regular.ttf";
-import SourceSansProSemiBold from "../../assets/fonts/SourceSansPro-SemiBold.ttf";
-import AnimatedLoading from "../components/animations/AnimatedLoading";
-import View from "../components/design/View";
-import MissionPopup from "../components/popups/MissionPopup";
-import ToastShareSheet from "../components/popups/ToastShareSheet";
-import Colors from "../constants/Colors";
-import { BadgeProvider } from "../helpers/BadgeContext";
-import { SettingsProvider } from "../helpers/SettingsContext";
-import useColorScheme from "../hooks/useColorScheme";
-import { useNotificationObserver } from "../hooks/useNotificationObserver";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import View from "#/components/design/View";
+import MissionPopup from "#/components/popups/MissionPopup";
+import ToastShareSheet from "#/components/popups/ToastShareSheet";
+import Colors from "#/constants/Colors";
+import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
+import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useNotificationObserver } from "#/hooks/useNotificationObserver";
 
 // Hide warning for new native event emitter
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
@@ -39,11 +41,12 @@ const RootLayout = () => {
     segments.includes("(tabs)") && segments.includes("action");
 
   const [loaded] = useFonts({
-    SourceSansPro: SourceSansPro,
-    SourceSansProBold: SourceSansProBold,
-    SourceSansProSemiBold: SourceSansProSemiBold,
+    SourceSansPro: SourceSans3_400Regular,
+    SourceSansProSemiBold: SourceSans3_600SemiBold,
+    SourceSansProBold: SourceSans3_700Bold,
   });
-  const colorScheme = useColorScheme();
+
+  const colorScheme = useAppColorScheme();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -94,14 +97,10 @@ const RootLayout = () => {
                     <Stack.Screen
                       name="[category]/[slug]"
                       options={{ title: "Artikel" }}
-                      getId={({ params }) =>
-                        params.category + "/" + params.slug
-                      }
                     />
                     <Stack.Screen
                       name="insta/[post_id]"
                       options={{ title: "Artikel" }}
-                      getId={({ params }) => params.post_id}
                     />
                     <Stack.Screen name="search" options={{ title: "Suche" }} />
                     <Stack.Screen

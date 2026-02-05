@@ -6,8 +6,10 @@ import mimikamaConfig from "./config/mimikama.config";
 import vvpConfig from "./config/volksverpetzer.config";
 import * as pkg from "./package.json";
 
-const variableConfig =
-  process.env.APP === "volksverpetzer" ? vvpConfig : mimikamaConfig;
+// Fallback auf "volksverpetzer", wenn process.env.APP nicht gesetzt ist
+const appEnv = (process.env.APP ?? "volksverpetzer").toLowerCase();
+
+const variableConfig = appEnv === "volksverpetzer" ? vvpConfig : mimikamaConfig;
 
 const config = ({ config }: ConfigContext): ExpoConfig => {
   return {
@@ -47,7 +49,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       [
         "expo-notifications",
         {
-          icon: variableConfig.assets.icon,
+          icon: variableConfig.assets.notificationIcon,
           color: variableConfig.extraConfig.themeColor,
         },
       ],
@@ -63,7 +65,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     ],
     splash: {
       image: variableConfig.assets.splash,
-      resizeMode: "contain",
       backgroundColor: variableConfig.extraConfig.themeColor,
     },
     updates: {
@@ -114,11 +115,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
         monochromeImage: variableConfig.assets.iconMono,
         backgroundColor: "#ffffff",
       },
-    },
-    notification: {
-      icon: variableConfig.assets.notificationIcon,
-      iosDisplayInForeground: true,
-      color: variableConfig.extraConfig.themeColor,
     },
     extra: {
       ...variableConfig.extraConfig,

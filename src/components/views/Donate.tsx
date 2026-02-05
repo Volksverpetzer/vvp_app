@@ -18,17 +18,18 @@ import {
   View,
 } from "react-native";
 
-import Paypal from "../../../assets/images/ButtonPaypal.png";
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import { registerEvent } from "../../helpers/Networking/Analytics";
-import API from "../../helpers/Networking/ServerAPI";
-import { WEEK_IN_MS } from "../../helpers/utils/time";
-import useColorScheme from "../../hooks/useColorScheme";
-import AnimatedSuccess from "../animations/AnimatedSuccess";
-import Space from "../design/Space";
-import Text from "../design/Text";
+import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { registerEvent } from "#/helpers/network/Analytics";
+import API from "#/helpers/network/ServerAPI";
+import { WEEK_IN_MS } from "#/helpers/utils/time";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+
+import Paypal from "#assets/images/ButtonPaypal.png";
 
 interface DonateProperties {
   paypalAlways?: boolean; // Whether to always show the paypal button (if false, the button is only shown if platform pay is not supported)
@@ -45,7 +46,7 @@ const Donate = (properties: DonateProperties) => {
   const [isPaySupported, setIsPaySupported] = useState(false);
   const [amount, setAmount] = useState(10);
   const [successAnimated, setSuccessAnimated] = useState(false);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const { isPlatformPaySupported } = usePlatformPay();
   const paypalAlways =
     properties?.paypalAlways || !Config.donations.platformPay;
@@ -208,7 +209,6 @@ const Donate = (properties: DonateProperties) => {
             type={PlatformPay?.ButtonType?.Donate}
             appearance={PlatformPay?.ButtonStyle?.Black}
             borderRadius={4}
-            disabled={false}
             style={{
               height: 40,
               width: 220,

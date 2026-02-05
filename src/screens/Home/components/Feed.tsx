@@ -11,17 +11,17 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { Search } from "../../../components/Icons";
-import AnimatedLoading from "../../../components/animations/AnimatedLoading";
-import EmptyComponent from "../../../components/design/EmptyComponent";
-import Text from "../../../components/design/Text";
-import View from "../../../components/design/View";
-import GenericPost from "../../../components/posts/GenericPost";
-import Colors from "../../../constants/Colors";
-import { styles } from "../../../constants/Styles";
-import Post from "../../../helpers/Post";
-import useColorScheme from "../../../hooks/useColorScheme";
-import FetcherUtilities from "../fetchers/FetcherUtilities";
+import { Search } from "#/components/Icons";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import EmptyComponent from "#/components/design/EmptyComponent";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import GenericPost from "#/components/posts/GenericPost";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import Post from "#/helpers/Post";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 
 export type FeedFetcherProperties = {
   page?: number;
@@ -50,7 +50,7 @@ const Feed = (properties: FeedProperties) => {
   const [isLoadingMore, setIsLoadingMore] = useState(true);
   const [page, setPage] = useState(1);
   const router = useRouter();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);

@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useState } from "react";
 
-import Config from "../../../constants/Config";
-import { Achievements } from "../../../helpers/Achievements";
-import { registerEvent } from "../../../helpers/Networking/Analytics";
+import Config from "#/constants/Config";
+import { Achievements } from "#/helpers/Achievements";
+import { registerEvent } from "#/helpers/network/Analytics";
 
 interface SearchManagerProperties {
   initialSearch?: string;
@@ -11,7 +11,7 @@ interface SearchManagerProperties {
   ) => ReactNode;
 }
 
-export interface SearchManagerState {
+interface SearchManagerState {
   search: string;
   searchParams: string;
   resultsLength: number | undefined;
@@ -19,7 +19,7 @@ export interface SearchManagerState {
   isAISearch: boolean;
 }
 
-export interface SearchManagerActions {
+interface SearchManagerActions {
   setSearch: (value: string) => void;
   setSearchParams: (value: string) => void;
   setResultsLength: (length: number) => void;
@@ -37,9 +37,8 @@ const SearchManager = ({
   // Search state
   // Ensure initialSearch is a string, fallback to '' on null/undefined
   const [search, setSearch] = useState<string>(initialSearch || "");
-  const [searchParameters, setSearchParameters] = useState<string>(
-    initialSearch || "",
-  );
+  const [searchParameters, setSearchParameters] =
+    useState<string>(initialSearch);
   const [resultsLength, setResultsLength] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const isAISearch = searchParameters !== "" && searchParameters !== null;

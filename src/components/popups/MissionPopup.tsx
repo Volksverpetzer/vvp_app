@@ -2,12 +2,12 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet } from "react-native";
 
-import Colors from "../../constants/Colors";
-import { styles } from "../../constants/Styles";
-import useColorScheme from "../../hooks/useColorScheme";
-import Space from "../design/Space";
-import Text from "../design/Text";
-import View from "../design/View";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 interface MissionPopupProperties {
   text1: string;
@@ -15,7 +15,7 @@ interface MissionPopupProperties {
 }
 
 const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
   const corporate = Colors[colorScheme].corporate;
   const router = useRouter();

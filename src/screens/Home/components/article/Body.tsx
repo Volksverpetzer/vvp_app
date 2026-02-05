@@ -11,11 +11,13 @@ import RenderHtml, {
   defaultHTMLElementModels,
 } from "react-native-render-html";
 
-import Colors from "../../../../constants/Colors";
-import Config from "../../../../constants/Config";
-import Statistics from "../../../../helpers/Statistics";
-import SourcesStore from "../../../../helpers/Stores/SourcesStore";
-import useColorScheme from "../../../../hooks/useColorScheme";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import Statistics from "#/helpers/Statistics";
+import SourcesStore from "#/helpers/Stores/SourcesStore";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
+
 import BlockRenderer from "./BlockRenderer";
 import {
   handleContainerElements,
@@ -31,7 +33,7 @@ import tagStylesFunction from "./tagStyles";
 
 interface BodyProperties {
   article_content: string;
-  article_link: string;
+  article_link: HttpsUrl;
   slug: string;
   article_title: string;
   onLinkPress: (event: GestureResponderEvent, href: string) => void;
@@ -56,7 +58,7 @@ const Body = (properties: BodyProperties) => {
     slug,
     article_title,
   } = properties;
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
 
   const articleTagStyles = useMemo(
     () => tagStylesFunction(colorScheme, width),
@@ -97,7 +99,7 @@ const Body = (properties: BodyProperties) => {
          * @param {GestureResponderEvent} event - The event object
          * @param {string} href - The URL of the link
          */
-        onPress: (event, href: string) => {
+        onPress: (event: GestureResponderEvent, href: string) => {
           if (
             href.includes(article_link) ||
             href.startsWith("about:///blank#")
@@ -117,11 +119,7 @@ const Body = (properties: BodyProperties) => {
             return;
           }
           if (href.startsWith("https://") && !href.includes(Config.wpUrl)) {
-            SourcesStore.onAddSource(
-              href as `https://${string}`,
-              slug,
-              article_title,
-            );
+            SourcesStore.onAddSource(href as HttpsUrl, slug, article_title);
             Statistics.countSourceChecked();
           }
           onLinkPress(event, href);

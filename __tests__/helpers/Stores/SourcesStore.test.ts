@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import { Achievements } from "../../../src/helpers/Achievements";
-import BaseStore from "../../../src/helpers/Storage";
-import SourcesStore from "../../../src/helpers/Stores/SourcesStore";
+import { Achievements } from "#/helpers/Achievements";
+import BaseStore from "#/helpers/Storage";
+import SourcesStore from "#/helpers/Stores/SourcesStore";
 
 // Mock the dependencies
-jest.mock("../../../src/helpers/Storage", () => ({
+jest.mock("#/helpers/Storage", () => ({
   __esModule: true,
   default: {
     getItem: jest.fn(),
@@ -14,7 +14,7 @@ jest.mock("../../../src/helpers/Storage", () => ({
   },
 }));
 
-jest.mock("../../../src/helpers/Achievements", () => ({
+jest.mock("#/helpers/Achievements", () => ({
   __esModule: true,
   Achievements: {
     setAchievementValue: jest.fn(),

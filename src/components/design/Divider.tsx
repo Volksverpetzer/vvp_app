@@ -1,7 +1,7 @@
 import { StyleSheet, View, ViewStyle } from "react-native";
 
-import Colors from "../../constants/Colors";
-import useColorScheme from "../../hooks/useColorScheme";
+import Colors from "#/constants/Colors";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 type DividerProps = {
   padding?: number;
@@ -15,7 +15,7 @@ const Divider = ({
   thickness = StyleSheet.hairlineWidth,
   style,
 }: DividerProps) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].corporate;
   return (
     <View

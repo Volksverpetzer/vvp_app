@@ -5,9 +5,9 @@ import {
   ViewStyle,
 } from "react-native";
 
-import Text from "../../components/design/Text";
-import View from "../../components/design/View";
-import { MemoryCard } from "../../types";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import { MemoryCard } from "#/types";
 
 interface CardComponentProperties {
   card: MemoryCard;

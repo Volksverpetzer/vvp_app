@@ -7,7 +7,12 @@
     "module": "preserve",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "paths": {
+      "#assets/*": ["assets/*"],
+      "#/*": ["src/*"]
+    }
   },
   "include": [
     "**/*.ts",

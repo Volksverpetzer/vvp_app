@@ -1,11 +1,12 @@
 import { Pressable } from "react-native";
 
-import { styles } from "../../constants/Styles";
-import { useCorporateColor } from "../../hooks/useColorScheme";
-import { World } from "../Icons";
-import SteadyButton from "../buttons/SteadyButton";
-import View from "../design/View";
-import Donate from "../views/Donate";
+import { World } from "#/components/Icons";
+import SteadyButton from "#/components/buttons/SteadyButton";
+import View from "#/components/design/View";
+import Donate from "#/components/views/Donate";
+import { styles } from "#/constants/Styles";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
+
 import Text from "./Text";
 
 interface EmptyComponentProperties {
@@ -17,9 +18,11 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
   return (
     <View
       style={{
-        paddingBottom: 48,
-        paddingHorizontal: 24,
-        gap: 24,
+        marginBottom: 80,
+        paddingBottom: 40,
+        paddingHorizontal: 30,
+        gap: 20,
+        borderRadius: 20,
         ...styles.centered,
       }}
     >

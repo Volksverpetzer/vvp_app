@@ -11,26 +11,26 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 
-import { Feed, Give, Search } from "../../components/Icons";
-import AnimatedHeader from "../../components/animations/AnimatedHeader";
-import ShopButton from "../../components/buttons/ShopButton";
-import Collapsable from "../../components/design/Collapsable";
-import DesignedLink from "../../components/design/DesignedLink";
-import Divider from "../../components/design/Divider";
-import Space from "../../components/design/Space";
-import Text from "../../components/design/Text";
-import Donate from "../../components/views/Donate";
-import SettingsList from "../../components/views/SettingsList";
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles as globalStyles } from "../../constants/Styles";
-import { Achievements } from "../../helpers/Achievements";
-import Notifications from "../../helpers/Notifications";
-import SettingsContext from "../../helpers/SettingsContext";
-import PersonalStore from "../../helpers/Stores/PersonalStore";
-import SettingsStore from "../../helpers/Stores/SettingsStore";
-import useColorScheme from "../../hooks/useColorScheme";
-import { NotificationSettingType, SettingType } from "../../types";
+import { Feed, Give, Search } from "#/components/Icons";
+import AnimatedHeader from "#/components/animations/AnimatedHeader";
+import ShopButton from "#/components/buttons/ShopButton";
+import Collapsable from "#/components/design/Collapsable";
+import DesignedLink from "#/components/design/DesignedLink";
+import Divider from "#/components/design/Divider";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import Donate from "#/components/views/Donate";
+import SettingsList from "#/components/views/SettingsList";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles as globalStyles } from "#/constants/Styles";
+import { Achievements } from "#/helpers/Achievements";
+import Notifications from "#/helpers/Notifications";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
+import SettingsStore from "#/helpers/Stores/SettingsStore";
+import SettingsProvider from "#/helpers/provider/SettingsProvider";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { NotificationSettingType, SettingType } from "#/types";
 
 const SettingsScreen = () => {
   const [token, setToken] = useState<string | undefined>();
@@ -46,8 +46,8 @@ const SettingsScreen = () => {
     setContentSettings,
     advancedSettings,
     setAdvancedSettings,
-  } = useContext(SettingsContext);
-  const colorScheme = useColorScheme();
+  } = useContext(SettingsProvider);
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const backgroundColor = Colors[colorScheme].secondaryBackground;
   const secondaryBackground = Colors[colorScheme].background;

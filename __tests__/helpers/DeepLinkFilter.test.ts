@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@jest/globals";
 
-import { shouldExcludeFromDeepLink } from "../../src/helpers/DeepLinkFilter";
+import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 
 describe("DeepLinkFilter", () => {
   describe("shouldExcludeFromDeepLink", () => {

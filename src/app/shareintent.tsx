@@ -3,7 +3,7 @@ import { Href, Redirect, useRouter } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
 import { Button, Text, View } from "react-native";
 
-import Config from "../constants/Config";
+import Config from "#/constants/Config";
 
 const ShareIntent = () => {
   const router = useRouter();

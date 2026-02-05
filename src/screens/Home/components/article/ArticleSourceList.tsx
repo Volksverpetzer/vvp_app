@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 
-import Collapsable from "../../../../components/design/Collapsable";
-import Text from "../../../../components/design/Text";
-import Colors from "../../../../constants/Colors";
-import { outBoundLinkPress } from "../../../../helpers/Linking";
-import { getLinks } from "../../../../helpers/Networking/Analytics";
-import SourcesStore from "../../../../helpers/Stores/SourcesStore";
-import useColorScheme from "../../../../hooks/useColorScheme";
+import Collapsable from "#/components/design/Collapsable";
+import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import { outBoundLinkPress } from "#/helpers/Linking";
+import SourcesStore from "#/helpers/Stores/SourcesStore";
+import { getLinks } from "#/helpers/network/Analytics";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { HttpsUrl } from "#/types";
 
 interface ArticleSourceListProperties {
   article_link: string;
+  article_title?: string;
+  slug: string;
 }
 
 export const ArticleSourceList = ({
   article_link,
+  article_title,
+  slug,
 }: ArticleSourceListProperties) => {
   const [links, setLinks] = useState<
-    { visitors: number; url: string }[] | undefined
+    { visitors: number; url: HttpsUrl }[] | undefined
   >();
   const [open, setOpen] = useState(false);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
   const corporate = Colors[colorScheme].corporate;
 
@@ -35,10 +40,12 @@ export const ArticleSourceList = ({
     }
   }, [open, article_link]);
 
-  const onPress = async (extension_url: string) => {
-    if (extension_url.startsWith("https://")) {
-      SourcesStore.onAddSource(extension_url as `https://${string}`, "", "");
-    }
+  const onPress = async (extension_url: HttpsUrl) => {
+    await SourcesStore.onAddSource(
+      extension_url as HttpsUrl,
+      slug,
+      article_title,
+    );
     outBoundLinkPress(extension_url, article_link);
   };
 

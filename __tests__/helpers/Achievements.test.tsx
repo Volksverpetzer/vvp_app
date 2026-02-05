@@ -2,14 +2,11 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Haptics from "expo-haptics";
 import Toast from "react-native-toast-message";
 
-import {
-  AchievementConfig,
-  Achievements,
-} from "../../src/helpers/Achievements";
-import { updateBadgeState } from "../../src/helpers/BadgeContext";
-import AchievementStore from "../../src/helpers/Stores/AchievementStore";
+import { AchievementConfig, Achievements } from "#/helpers/Achievements";
+import AchievementStore from "#/helpers/Stores/AchievementStore";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 
-jest.mock("../../src/helpers/Stores/AchievementStore", () => ({
+jest.mock("#/helpers/Stores/AchievementStore", () => ({
   __esModule: true,
   default: {
     getLevel: jest.fn(),
@@ -31,7 +28,7 @@ jest.mock("expo-haptics", () => ({
   notificationAsync: jest.fn(),
 }));
 
-jest.mock("../../src/helpers/BadgeContext", () => ({
+jest.mock("#/helpers/provider/BadgeProvider", () => ({
   __esModule: true,
   updateBadgeState: jest.fn(),
 }));

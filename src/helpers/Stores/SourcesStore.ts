@@ -1,6 +1,6 @@
-import { StoredSources } from "../../types";
-import { Achievements } from "../Achievements";
-import BaseStore from "../Storage";
+import { Achievements } from "#/helpers/Achievements";
+import BaseStore from "#/helpers/Storage";
+import { HttpsUrl, StoredSources } from "#/types";
 
 /**
  * Manages stored sources in a persistent storage.
@@ -15,7 +15,7 @@ const SourcesStore = {
    * @param slug - A unique identifier for the source.
    * @param text - Optional additional text associated with the source.
    */
-  async onAddSource(source: `https://${string}`, slug: string, text?: string) {
+  async onAddSource(source: HttpsUrl, slug: string, text?: string) {
     const storedSourcesJson =
       (await BaseStore.getItem(this.sourcesKey)) ?? undefined;
     const storedSources: StoredSources = BaseStore.parseJSON(
@@ -48,7 +48,7 @@ const SourcesStore = {
    *
    * @param source - The URL of the source to remove in the format `https://${string}`.
    */
-  async removeSource(source: `https://${string}`): Promise<void> {
+  async removeSource(source: HttpsUrl): Promise<void> {
     const storedSourcesJson =
       (await BaseStore.getItem(this.sourcesKey)) ?? undefined;
     const storedSources: StoredSources =

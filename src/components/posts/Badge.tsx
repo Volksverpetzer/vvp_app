@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { ViewStyle } from "react-native";
 
-import View from "../design/View";
+import View from "#/components/design/View";
 
 type BadgeProperties = {
   children: ReactNode;

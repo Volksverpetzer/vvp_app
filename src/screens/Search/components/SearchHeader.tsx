@@ -1,13 +1,13 @@
 import { useCallback } from "react";
 import { Keyboard, Pressable, TextInput } from "react-native";
 
-import { Search } from "../../../components/Icons";
-import Faktenbot from "../../../components/animations/Faktenbot";
-import Text from "../../../components/design/Text";
-import View from "../../../components/design/View";
-import Colors from "../../../constants/Colors";
-import { styles } from "../../../constants/Styles";
-import useColorScheme from "../../../hooks/useColorScheme";
+import { Search } from "#/components/Icons";
+import Faktenbot from "#/components/animations/Faktenbot";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 interface SearchHeaderProperties {
   search: string;
@@ -30,7 +30,7 @@ const SearchHeader = ({
   showFaktenbot = true,
   onSubmit,
 }: SearchHeaderProperties) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
 
   // Extract the nested ternary operation into an independent variable

@@ -5,9 +5,10 @@ import * as Sharing from "expo-sharing";
 import { Platform, Share } from "react-native";
 import Toast from "react-native-toast-message";
 
-import Config from "../constants/Config";
+import Config from "#/constants/Config";
+import { registerEvent } from "#/helpers/network/Analytics";
+
 import { Achievements } from "./Achievements";
-import { registerEvent } from "./Networking/Analytics";
 import Statistics from "./Statistics";
 
 interface ShareableType {
@@ -20,9 +21,8 @@ interface ShareableType {
  * If the platform is android, the image will be shared with the expo-sharing package.
  * If the platform is ios, the image will be shared with the react-native-share package.
  * On Android Analytics will always be registered, on iOS only if the user actually shared the content.
- * @param url
- * @param props
  * @returns
+ * @param filename
  */
 const isImageFile = (filename: string): boolean => {
   const imageExtensions = [".jpg", ".png", ".webp", ".gif"];
@@ -70,7 +70,7 @@ const downloadImage = async (
  * @param uri The URI of the image to share
  * @param fileType The type of file to save the image as (e.g., 'jpg', 'png', etc.)
  * @param url The URL of the image that was shared
- * @param props Additional properties to include in the share event
+ * @param properties Additional properties to include in the share event
  * @returns A promise that resolves to true when the sharing is complete
  */
 const handleAndroidImageShare = async (
@@ -100,7 +100,7 @@ const handleAndroidImageShare = async (
  *
  * @param url - The URL that was shared.
  * @param activityType - The type of activity used for sharing (e.g., 'facebook', 'twitter', etc.) or null.
- * @param props - Additional properties to include in the share event.
+ * @param properties - Additional properties to include in the share event.
  * @returns A promise that resolves to true when all operations are complete.
  */
 const handleSuccessfulShare = async (
@@ -125,7 +125,7 @@ const handleSuccessfulShare = async (
  * Shares a URL using the native sharing functionality.
  *
  * @param url - The URL to share.
- * @param props - Additional properties to pass to the share event.
+ * @param properties - Additional properties to pass to the share event.
  * @returns {Promise<boolean>} A promise that resolves to true if the sharing was successful, false otherwise.
  */
 const onShare = async (
@@ -173,10 +173,10 @@ const onShare = async (
 
 /**
  * multishare is a wrapper for onShare. It will show an alert with the given shareable items.
- * @param shareable: ShareableType[] - Array of ShareableType objects
- * @param props: object - Additional props to be passed to onShare
  * @returns : Promise<boolean> - true if the user shared something, false if the user cancelled the sharing
  * On Android Sharing will always be registered if the Share Sheet opens, on iOS only if the user actually shared the content.
+ * @param shareable ShareableType[] - Array of ShareableType objects
+ * @param properties object - Additional props to be passed to onShare
  */
 const multishare = async (
   shareable: ShareableType[],

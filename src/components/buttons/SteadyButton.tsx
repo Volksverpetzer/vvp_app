@@ -1,9 +1,10 @@
 import { Image } from "expo-image";
 import { Linking, Pressable } from "react-native";
 
-import ButtonSteady from "../../../assets/images/ButtonSteady.png";
-import Config from "../../constants/Config";
-import { registerEvent } from "../../helpers/Networking/Analytics";
+import Config from "#/constants/Config";
+import { registerEvent } from "#/helpers/network/Analytics";
+
+import ButtonSteady from "#assets/images/ButtonSteady.png";
 
 interface SteadyButtonProperties {
   article_link?: string;

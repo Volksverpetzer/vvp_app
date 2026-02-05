@@ -13,16 +13,18 @@ import {
 } from "react-native";
 import ViewShot from "react-native-view-shot";
 
-import logoPike from "../../../../../assets/images/logo_pike.png";
-import Space from "../../../../components/design/Space";
-import Text from "../../../../components/design/Text";
-import View from "../../../../components/design/View";
-import { ArticleProperties } from "../../../../components/posts/ArticlePost";
-import Colors from "../../../../constants/Colors";
-import Config from "../../../../constants/Config";
-import { outBoundLinkPress } from "../../../../helpers/Linking";
-import { onShare } from "../../../../helpers/Sharing";
-import { useCorporateColor } from "../../../../hooks/useColorScheme";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import { ArticleProperties } from "#/components/posts/ArticlePost";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { outBoundLinkPress } from "#/helpers/Linking";
+import { onShare } from "#/helpers/Sharing";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
+
+import logoPike from "#assets/images/logo_pike.png";
+
 import { ArticleSourceList } from "./ArticleSourceList";
 import ArticleStats from "./ArticleStats";
 
@@ -32,6 +34,7 @@ interface HeaderProperties {
   article_title: string;
   article_link: string;
   date: string;
+  slug: string;
 }
 
 /**
@@ -40,13 +43,14 @@ interface HeaderProperties {
  * @returns
  */
 const Header = (properties: HeaderProperties) => {
+  const { article, article_image, article_link, article_title, date, slug } =
+    properties;
   const [visible, setVisible] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageLoaded2, setImageLoaded2] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
   const { width } = useWindowDimensions();
   const [height, setHeight] = useState(Math.round(0.5125 * width));
-  const { article_link } = properties;
   // Reference to the ViewShot component for image capture
   const reference = useRef<ViewShot>(null);
   const router = useRouter();
@@ -109,7 +113,6 @@ const Header = (properties: HeaderProperties) => {
     setHeight(Math.round(0.5125 * width));
   };
 
-  const { article, article_image, article_title, date } = properties;
   return (
     <>
       <MaterialIcons
@@ -181,7 +184,11 @@ const Header = (properties: HeaderProperties) => {
       </Text>
       <ArticleStats article_link={article_link} />
       <Space size={10} />
-      <ArticleSourceList article_link={article_link} />
+      <ArticleSourceList
+        article_link={article_link}
+        article_title={article_title}
+        slug={slug}
+      />
       <Space size={20} />
       <Modal visible={visible}>
         <ViewShot ref={reference} options={{ fileName: article_title }}>

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Switch, View } from "react-native";
 
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import SettingsStore from "../../helpers/Stores/SettingsStore";
-import { getEnabledFeeds } from "../../helpers/feeds";
-import useColorScheme from "../../hooks/useColorScheme";
-import { ContentSettingType, SettingType } from "../../types";
-import Text from "../design/Text";
+import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import SettingsStore from "#/helpers/Stores/SettingsStore";
+import { getEnabledFeeds } from "#/helpers/utils/feeds";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { ContentSettingType, SettingType } from "#/types";
 
 interface SettingsListProperties {
   saveSettings: (
@@ -28,7 +28,7 @@ const SettingsList = (properties: SettingsListProperties) => {
   useEffect(() => {
     setDisabled(false);
   }, [properties.settings, update]);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const activeColor = Colors[colorScheme].tint;
   const activeSettings = getEnabledFeeds(Config.feeds);

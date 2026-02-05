@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Notifications from "expo-notifications";
 
-import NotificationManager from "../../src/helpers/Notifications";
+import NotificationManager from "#/helpers/Notifications";
 
 // Mock dependencies
 jest.mock("react-native", () => ({
@@ -35,14 +35,14 @@ jest.mock("expo-application", () => ({
   nativeBuildVersion: "1.0.0",
 }));
 
-jest.mock("../../src/helpers/Networking/ServerAPI", () => ({
+jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
   default: {
     registerNotifications: jest.fn(),
   },
 }));
 
-jest.mock("../../src/helpers/Stores/SettingsStore", () => ({
+jest.mock("#/helpers/Stores/SettingsStore", () => ({
   __esModule: true,
   default: {
     getNotificationSettings: jest.fn(),
@@ -53,13 +53,13 @@ jest.mock("../../src/helpers/Stores/SettingsStore", () => ({
   },
 }));
 
-jest.mock("../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   eas: {
     projectId: "test-project-id",
   },
 }));
 
-jest.mock("../../src/constants/Colors", () => ({
+jest.mock("#/constants/Colors", () => ({
   light: {
     corporate: "#ff0000",
   },

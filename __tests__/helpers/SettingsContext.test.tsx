@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import SettingsContext from "../../src/helpers/SettingsContext";
-import SettingsStore from "../../src/helpers/Stores/SettingsStore";
-import { AdvancedSettingType, ContentSettingType } from "../../src/types";
+import SettingsStore from "#/helpers/Stores/SettingsStore";
+import SettingsProvider from "#/helpers/provider/SettingsProvider";
+import { AdvancedSettingType, ContentSettingType } from "#/types";
 
 // Mock the SettingsStore
-jest.mock("../../src/helpers/Stores/SettingsStore", () => ({
+jest.mock("#/helpers/Stores/SettingsStore", () => ({
   __esModule: true,
   default: {
     defaultContentSettings: {
@@ -18,7 +18,7 @@ jest.mock("../../src/helpers/Stores/SettingsStore", () => ({
       bot: { value: true, name: "Bot Feed" },
     },
     defaultAdvancedSettings: {
-      //advancedReporting: { value: false, name: "Erweitertes Reporting" },
+      advancedReporting: { value: false, name: "Erweitertes Reporting" },
       alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
     },
     getContentSettings: jest.fn(),
@@ -85,7 +85,7 @@ describe("SettingsContext Logic", () => {
 
     it("should call setAdvancedSettings when updating", async () => {
       const newSettings: AdvancedSettingType = {
-        //advancedReporting: { value: true, name: "Erweitertes Reporting" },
+        advancedReporting: { value: true, name: "Erweitertes Reporting" },
         alwaysDarkMode: { value: true, name: "Always Dark Mode" },
       };
 
@@ -124,8 +124,8 @@ describe("SettingsContext Logic", () => {
 
   describe("SettingsContext", () => {
     it("should be available as a context object", () => {
-      expect(SettingsContext).toBeDefined();
-      expect(typeof SettingsContext).toBe("object");
+      expect(SettingsProvider).toBeDefined();
+      expect(typeof SettingsProvider).toBe("object");
     });
   });
 });

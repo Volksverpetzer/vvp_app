@@ -2,23 +2,23 @@ import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { EmptyStar } from "../../../components/Icons";
-import ShareBar from "../../../components/bars/ShareBar";
-import Space from "../../../components/design/Space";
-import Text from "../../../components/design/Text";
-import LoadArticlePost from "../../../components/posts/LoadArticlePost";
-import LoadInstaPost from "../../../components/posts/LoadInstaPost";
-import Config from "../../../constants/Config";
-import { styles } from "../../../constants/Styles";
-import { updateBadgeState } from "../../../helpers/BadgeContext";
-import { registerViews } from "../../../helpers/Networking/Analytics";
-import { ShareableType } from "../../../helpers/Sharing";
-import FavoritesStore from "../../../helpers/Stores/FavoritesStore";
-import { useCorporateColor } from "../../../hooks/useColorScheme";
-import { StoredFav } from "../../../types";
+import { EmptyStar } from "#/components/Icons";
+import ShareBar from "#/components/bars/ShareBar";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import LoadArticlePost from "#/components/posts/LoadArticlePost";
+import LoadInstaPost from "#/components/posts/LoadInstaPost";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { ShareableType } from "#/helpers/Sharing";
+import FavoritesStore from "#/helpers/Stores/FavoritesStore";
+import { registerViews } from "#/helpers/network/Analytics";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA, StoredFavs } from "#/types";
 
 const MyFavs = () => {
-  const [favs, setFavs] = useState<StoredFav>({});
+  const [favs, setFavs] = useState<StoredFavs>({});
   const focused = useIsFocused();
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const MyFavs = () => {
         .map((fav) => {
           const { contentType } = favs[fav];
           switch (contentType) {
-            case "article": {
+            case FAV_TYPE_ARTICLE: {
               const url = Config.wpUrl + "/redirect/" + fav;
               const shareable: ShareableType[] = [{ title: fav, url }];
               return (
@@ -58,7 +58,7 @@ const MyFavs = () => {
                 </View>
               );
             }
-            case "insta": {
+            case FAV_TYPE_INSTA: {
               return (
                 <View style={{ ...styles.roundEdges }} key={fav}>
                   <LoadInstaPost inView={true} id={fav} />

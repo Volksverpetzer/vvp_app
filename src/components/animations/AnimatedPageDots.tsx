@@ -1,6 +1,6 @@
 import { Animated, View } from "react-native";
 
-import { useCorporateColor } from "../../hooks/useColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 interface AnimatedPageDotsProperties {
   scrollX: Animated.Value;

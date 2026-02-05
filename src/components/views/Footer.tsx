@@ -1,12 +1,13 @@
 import { Pressable } from "react-native";
 
-import Colors from "../../constants/Colors";
-import { styles } from "../../constants/Styles";
-import useColorScheme from "../../hooks/useColorScheme";
-import { Share } from "../Icons";
-import Space from "../design/Space";
-import Text from "../design/Text";
-import View from "../design/View";
+import { Share } from "#/components/Icons";
+import Space from "#/components/design/Space";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+
 import Support from "./Support";
 
 interface FooterProperties {
@@ -20,7 +21,7 @@ interface FooterProperties {
  * @returns The rendered footer
  */
 const Footer = (properties: FooterProperties) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
 
   return (
@@ -60,10 +61,19 @@ const Footer = (properties: FooterProperties) => {
             })
           }
         >
-          <Share color={"#fcfcfc"} size={50} />
+          <Share color={"white"} size={50} />
         </Pressable>
       </View>
-      <Support article_link={properties.article_link} />
+      <View
+        style={{
+          marginHorizontal: 12,
+          paddingVertical: 12,
+          borderRadius: 20,
+          backgroundColor: Colors[colorScheme].secondaryBackground,
+        }}
+      >
+        <Support article_link={properties.article_link} />
+      </View>
       <Space size={95} />
     </>
   );

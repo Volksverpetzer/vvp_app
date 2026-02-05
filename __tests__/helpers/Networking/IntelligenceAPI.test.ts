@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 // Import dependencies after mocking
-import * as Networking from "../../../src/helpers/Networking";
+import * as Networking from "#/helpers/utils/networking";
 
 // Mock dependencies
-jest.mock("../../../src/helpers/Networking", () => {
+jest.mock("#/helpers/utils/networking", () => {
   return {
     __esModule: true,
     createClient: jest.fn(() => ({
@@ -19,7 +19,7 @@ jest.mock("../../../src/helpers/Networking", () => {
   };
 });
 
-jest.mock("../../../src/constants/Config", () => {
+jest.mock("#/constants/Config", () => {
   return {
     __esModule: true,
     default: {

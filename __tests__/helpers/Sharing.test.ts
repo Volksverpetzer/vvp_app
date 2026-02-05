@@ -6,10 +6,10 @@ import * as ExpoSharing from "expo-sharing";
 import { Platform, Share } from "react-native";
 import Toast from "react-native-toast-message";
 
-import { Achievements } from "../../src/helpers/Achievements";
-import { registerEvent } from "../../src/helpers/Networking/Analytics";
-import { multishare, onShare } from "../../src/helpers/Sharing";
-import Statistics from "../../src/helpers/Statistics";
+import { Achievements } from "#/helpers/Achievements";
+import { multishare, onShare } from "#/helpers/Sharing";
+import Statistics from "#/helpers/Statistics";
+import { registerEvent } from "#/helpers/network/Analytics";
 
 // Mock dependencies
 jest.mock("react-native", () => ({
@@ -56,26 +56,26 @@ jest.mock("react-native-toast-message", () => ({
   },
 }));
 
-jest.mock("../../src/helpers/Networking/Analytics", () => ({
+jest.mock("#/helpers/network/Analytics", () => ({
   __esModule: true,
   registerEvent: jest.fn(),
 }));
 
-jest.mock("../../src/helpers/Achievements", () => ({
+jest.mock("#/helpers/Achievements", () => ({
   __esModule: true,
   Achievements: {
     setAchievementValue: jest.fn(),
   },
 }));
 
-jest.mock("../../src/helpers/Statistics", () => ({
+jest.mock("#/helpers/Statistics", () => ({
   __esModule: true,
   default: {
     countArticleShared: jest.fn(),
   },
 }));
 
-jest.mock("../../src/constants/Config", () => ({
+jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",

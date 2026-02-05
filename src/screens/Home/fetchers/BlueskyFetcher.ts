@@ -2,10 +2,11 @@ import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs"
 
 import BlueskyPost, {
   BlueskyPostProperties,
-} from "../../../components/posts/BlueskyPost";
-import Config from "../../../constants/Config";
-import API from "../../../helpers/Networking/ServerAPI";
-import Post from "../../../helpers/Post";
+} from "#/components/posts/BlueskyPost";
+import Config from "#/constants/Config";
+import Post from "#/helpers/Post";
+import API from "#/helpers/network/ServerAPI";
+
 import FetcherUtilities from "./FetcherUtilities";
 
 export const BlueskyFetcher = {

@@ -1,9 +1,10 @@
 import { Image } from "expo-image";
 import { Linking, Pressable } from "react-native";
 
-import ButtonVVPShop from "../../../assets/images/ButtonVVPShop.png";
-import Config from "../../constants/Config";
-import { registerEvent } from "../../helpers/Networking/Analytics";
+import Config from "#/constants/Config";
+import { registerEvent } from "#/helpers/network/Analytics";
+
+import ButtonVVPShop from "#assets/images/ButtonVVPShop.png";
 
 interface ShopButtonProperties {
   article_link: string;

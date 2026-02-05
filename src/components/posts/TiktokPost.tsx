@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import WebView from "react-native-webview";
 
-import AnimatedLoading from "../animations/AnimatedLoading";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
 
 /**
  *  Represents the properties of a Tiktok post as fetched from the Tiktok API

@@ -8,12 +8,12 @@ import {
   Pokal,
   Report,
   Settings,
-} from "../../components/Icons";
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import { useBadge } from "../../helpers/BadgeContext";
-import useColorScheme from "../../hooks/useColorScheme";
+} from "#/components/Icons";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { useBadge } from "#/helpers/provider/BadgeProvider";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 /**
  * The layout for the tab navigator.
@@ -21,7 +21,7 @@ import useColorScheme from "../../hooks/useColorScheme";
  */
 const TabLayout = () => {
   const { badgeState } = useBadge();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const actionsActive = Config.enabledActions;
 

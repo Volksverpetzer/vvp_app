@@ -2,8 +2,9 @@ import * as Application from "expo-application";
 import * as Linking from "expo-linking";
 import { Dimensions, Platform } from "react-native";
 
-import Config from "../../constants/Config";
-import { createClient, get, post } from "../Networking";
+import Config from "#/constants/Config";
+import { createClient, get, post } from "#/helpers/utils/networking";
+import { HttpsUrl } from "#/types";
 
 const { apiUrl, wpUrl } = Config;
 
@@ -80,10 +81,10 @@ const getFavs = async (permalink: string): Promise<number> => {
  */
 const getLinks = async (
   permalink: string,
-): Promise<{ url: string; visitors: number }[]> => {
+): Promise<{ url: HttpsUrl; visitors: number }[]> => {
   const { path } = Linking.parse(permalink);
   try {
-    const data = await get<{ links: { url: string; visitors: number }[] }>(
+    const data = await get<{ links: { url: HttpsUrl; visitors: number }[] }>(
       client,
       `/proxy/links/${path}`,
     );
@@ -98,7 +99,7 @@ const getLinks = async (
  * Sends an event to Plausible Analytics
  * @param permalink - Link of the current Resource
  * @param event - Event Name
- * @param props - Additional properties
+ * @param properties - Additional properties
  * @param utm_campaign - UTM campaign (default: "app")
  * @param utm_source - UTM source (default: "app")
  * @returns Promise<unknown> - Response data

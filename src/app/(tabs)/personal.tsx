@@ -4,16 +4,16 @@ import { JSX, useCallback, useState } from "react";
 import { Animated, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import { EmptyStar } from "../../components/Icons";
-import AnimatedHeader from "../../components/animations/AnimatedHeader";
-import Text from "../../components/design/Text";
-import View from "../../components/design/View";
-import Colors from "../../constants/Colors";
-import { styles } from "../../constants/Styles";
-import { updateBadgeState } from "../../helpers/BadgeContext";
-import useColorScheme from "../../hooks/useColorScheme";
-import MyFavs from "../../screens/PersonalTab/components/MyFavs";
-import MySources from "../../screens/PersonalTab/components/MySources";
+import { EmptyStar } from "#/components/Icons";
+import AnimatedHeader from "#/components/animations/AnimatedHeader";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import MyFavs from "#/screens/PersonalTab/components/MyFavs";
+import MySources from "#/screens/PersonalTab/components/MySources";
 
 const PersonalTab = () => {
   const tabs: Record<string, JSX.Element> = {
@@ -28,7 +28,7 @@ const PersonalTab = () => {
   );
 
   const scrollOffsetY = new Animated.Value(0);
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const corporateColor = Colors[colorScheme].corporate;
   const backgroundColor = Colors[colorScheme].secondaryBackground;
   const tabIconColor = Colors[colorScheme].tabIconDefault;

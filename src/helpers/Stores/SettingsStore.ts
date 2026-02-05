@@ -1,9 +1,9 @@
+import BaseStore from "#/helpers/Storage";
 import {
   AdvancedSettingType,
   ContentSettingType,
   NotificationSettingType,
-} from "../../types";
-import BaseStore from "../Storage";
+} from "#/types";
 
 const SettingsStore = {
   defaultContentSettings: {
@@ -29,7 +29,7 @@ const SettingsStore = {
    * @property {SettingType} alwaysDarkMode - Indicates if always dark mode is enabled.
    */
   defaultAdvancedSettings: {
-    //advancedReporting: { value: false, name: "Erweitertes Reporting" },
+    advancedReporting: { value: false, name: "Erweitertes Reporting" },
     alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
   } as AdvancedSettingType,
 

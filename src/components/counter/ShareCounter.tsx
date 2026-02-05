@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { TextStyle } from "react-native";
 
-import Config from "../../constants/Config";
-import { getShares } from "../../helpers/Networking/Analytics";
-import { ShareableType } from "../../helpers/Sharing";
-import Text from "../design/Text";
-import View from "../design/View";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Config from "#/constants/Config";
+import { ShareableType } from "#/helpers/Sharing";
+import { getShares } from "#/helpers/network/Analytics";
 
 interface ShareCounterProperties {
   shareable: ShareableType[];

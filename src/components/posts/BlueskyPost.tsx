@@ -7,21 +7,29 @@ import { useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import { onLinkPress } from "../../helpers/Linking";
-import ContentStore from "../../helpers/Stores/ContentStore";
-import useColorScheme, { useCorporateColor } from "../../hooks/useColorScheme";
-import Text from "../design/Text";
-import View from "../design/View";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import { onLinkPress } from "#/helpers/Linking";
+import ContentStore from "#/helpers/Stores/ContentStore";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import {
+  DISPLAY_TEXT_EXCERPT,
+  DISPLAY_TEXT_FULL,
+  DISPLAY_TEXT_NONE,
+  DisplayText,
+  HttpsUrl,
+} from "#/types";
+
 import { PostText } from "./PostText";
 
 export interface BlueskyPostProperties {
   post: FeedViewPost;
   replies?: FeedViewPost[];
   inView?: boolean;
-  textDisplay?: boolean;
+  displayText?: DisplayText;
 }
 
 /**
@@ -30,12 +38,17 @@ export interface BlueskyPostProperties {
  * @returns
  */
 const BlueskyPost = (properties: BlueskyPostProperties) => {
-  const { post, inView, textDisplay, replies } = properties;
+  const {
+    post,
+    inView,
+    displayText = DISPLAY_TEXT_EXCERPT,
+    replies,
+  } = properties;
   const { record, author, uri } = post.post;
   const { wpUrl } = Config;
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const corporate = useCorporateColor();
+  const colorScheme = useAppColorScheme();
+  const corporate = Colors[colorScheme].corporate;
   const grey = Colors[colorScheme].grayedOutText;
   const postId = uri.split("/app.bsky.feed.post/")[1];
   const htmlPattern = /<[^>]+>/g;
@@ -44,10 +57,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
   }, [inView, properties]);
 
   const navigateToPost = () => {
-    router.push({
-      pathname: "/bsky/[post_id]",
-      params: { post_id: postId },
-    });
+    router.push(`/bsky/${postId}`);
   };
 
   const textRaw = (record?.text as string) || "";
@@ -71,19 +81,19 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
     .display_name;
 
   const handle = author.handle;
-  const url = `https://bsky.app/profile/${handle}/post/${postId}`;
+  const url: HttpsUrl = `https://bsky.app/profile/${handle}/post/${postId}`;
 
   return (
     <TouchableOpacity
       accessibilityRole="button"
       onPress={navigateToPost}
       style={{ flex: 1 }}
-      disabled={textDisplay || replies.length === 0}
+      disabled={displayText === DISPLAY_TEXT_FULL || replies?.length === 0}
     >
       <Hyperlink
         linkStyle={{ color: corporate }}
         style={{ flex: 1 }}
-        onPress={(url) => onLinkPress(url, router, uri)}
+        onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
       >
         <View
           style={{
@@ -128,9 +138,13 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             </Text>
           </View>
 
-          <Text style={{ lineHeight: 24, fontSize: 18 }}>{fulltext}</Text>
+          {displayText !== DISPLAY_TEXT_NONE && (
+            <Text style={{ lineHeight: 24, fontSize: 18 }}>
+              {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
+            </Text>
+          )}
 
-          {!textDisplay && (
+          {displayText === DISPLAY_TEXT_EXCERPT && (
             <>
               <View style={styles.row}>
                 <Text
@@ -149,7 +163,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
                   })}
                 </Text>
                 {replies?.length > 0 && (
-                  <Text style={{ fontSize: 16, color: "corporate" }}>
+                  <Text style={{ fontSize: 16, color: corporate }}>
                     Thread (1 von {replies.length + 1})
                   </Text>
                 )}
@@ -157,7 +171,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             </>
           )}
 
-          {textDisplay &&
+          {displayText === DISPLAY_TEXT_FULL &&
             replies &&
             replies.length > 0 &&
             replies.map((reply: FeedViewPost, index: number) => {

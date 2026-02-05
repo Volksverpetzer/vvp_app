@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import BaseStore from "../../../src/helpers/Storage";
-import FavoritesStore from "../../../src/helpers/Stores/FavoritesStore";
-import { StoredFav } from "../../../src/types";
+import BaseStore from "#/helpers/Storage";
+import FavoritesStore from "#/helpers/Stores/FavoritesStore";
+import { StoredFavs } from "#/types";
 
 // Mock the BaseStore
-jest.mock("../../../src/helpers/Storage", () => ({
+jest.mock("#/helpers/Storage", () => ({
   __esModule: true,
   default: {
     getItem: jest.fn(),
@@ -84,7 +84,7 @@ describe("FavoritesStore", () => {
   describe("setStoredFavs", () => {
     it("should store favorites as JSON string", async () => {
       // Setup
-      const mockFavs: StoredFav = { article1: { contentType: "article" } };
+      const mockFavs: StoredFavs = { article1: { contentType: "article" } };
 
       // Execute
       await FavoritesStore.setStoredFavs(mockFavs);
@@ -98,7 +98,7 @@ describe("FavoritesStore", () => {
 
     it("should handle errors gracefully", async () => {
       // Setup
-      const mockFavs: StoredFav = { article1: { contentType: "article" } };
+      const mockFavs: StoredFavs = { article1: { contentType: "article" } };
       jest
         .spyOn(BaseStore, "setItem")
         .mockRejectedValue(new Error("Storage error"));

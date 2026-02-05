@@ -1,19 +1,23 @@
 import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
-import { ClaimProperties } from "../../components/posts/ClaimPost";
-import { InstaPostProperties } from "../../components/posts/InstaPost";
-import { MastodonPostProperties } from "../../components/posts/MastodonPost";
-import { TiktokPostProperties } from "../../components/posts/TiktokPost";
-import { YTPostProperties } from "../../components/posts/YTPost";
-import Config from "../../constants/Config";
+import { ClaimProperties } from "#/components/posts/ClaimPost";
+import { InstaPostProperties } from "#/components/posts/InstaPost";
+import { MastodonPostProperties } from "#/components/posts/MastodonPost";
+import { TiktokPostProperties } from "#/components/posts/TiktokPost";
+import { YTPostProperties } from "#/components/posts/YTPost";
+import Config from "#/constants/Config";
+import {
+  createClient,
+  get as netGet,
+  post as netPost,
+} from "#/helpers/utils/networking";
 import {
   AISearchResponse,
   NotificationSettingType,
   Report,
   StatusResponse,
   StoredReport,
-} from "../../types";
-import { createClient, get as netGet, post as netPost } from "../Networking";
+} from "#/types";
 
 /**
  * The API class provides methods for making HTTP requests and fetching data from an API.

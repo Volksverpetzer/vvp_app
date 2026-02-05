@@ -1,10 +1,10 @@
 import * as WebBrowser from "expo-web-browser";
 import { TouchableOpacity } from "react-native";
 
-import Colors from "../../constants/Colors";
-import useColorScheme from "../../hooks/useColorScheme";
-import Text from "../design/Text";
-import View from "../design/View";
+import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
 
 interface Review {
   publisher: {
@@ -34,7 +34,7 @@ export interface ClaimProperties {
  * Renders Short Post for Googles Claim Review
  */
 const ClaimPost = (properties: ClaimProperties) => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].grayedOutText;
   const handleSelectClaim = () => {
     WebBrowser.openBrowserAsync(properties.claimReview[0].url);

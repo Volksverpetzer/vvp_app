@@ -1,14 +1,15 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
-import AnimatedLoading from "../../components/animations/AnimatedLoading";
-import NavBar from "../../components/bars/NavBar";
-import View from "../../components/design/View";
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import NavBar from "#/components/bars/NavBar";
+import View from "#/components/design/View";
 import BlueskyPost, {
   BlueskyPostProperties,
-} from "../../components/posts/BlueskyPost";
-import { styles } from "../../constants/Styles";
-import ContentStore from "../../helpers/Stores/ContentStore";
+} from "#/components/posts/BlueskyPost";
+import { styles } from "#/constants/Styles";
+import ContentStore from "#/helpers/Stores/ContentStore";
+import { DISPLAY_TEXT_FULL } from "#/types";
 
 /**
  * Loads a Bluesky post based on the provided post ID.
@@ -39,7 +40,7 @@ const BskyScreen = () => {
 
   return (
     <View style={styles.container}>
-      <BlueskyPost textDisplay={true} {...post} />
+      <BlueskyPost displayText={DISPLAY_TEXT_FULL} {...post} />
       <NavBar link={url} />
     </View>
   );

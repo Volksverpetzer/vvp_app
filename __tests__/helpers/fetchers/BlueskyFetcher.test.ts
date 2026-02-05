@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-import API from "../../../src/helpers/Networking/ServerAPI";
-import { BlueskyFetcher } from "../../../src/screens/Home/fetchers/BlueskyFetcher";
+import API from "#/helpers/network/ServerAPI";
+import { BlueskyFetcher } from "#/screens/Home/fetchers/BlueskyFetcher";
+
 import "../../mocks/commonMocks";
 
 // Mock the BskyPost component to avoid complex dependencies
-jest.mock("../../../src/components/posts/BlueskyPost", () => ({
+jest.mock("#/components/posts/BlueskyPost", () => ({
   __esModule: true,
   default: "BskyPost",
 }));

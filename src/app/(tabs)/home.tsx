@@ -5,18 +5,18 @@ import { useShareIntentContext } from "expo-share-intent";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text } from "react-native";
 
-import { LogoBig, Search } from "../../components/Icons";
-import AnimatedHeader from "../../components/animations/AnimatedHeader";
-import View from "../../components/design/View";
-import Colors from "../../constants/Colors";
-import Config from "../../constants/Config";
-import { styles } from "../../constants/Styles";
-import SettingsContext from "../../helpers/SettingsContext";
-import { getEnabledFeeds } from "../../helpers/feeds";
-import { isVolksverpetzer } from "../../helpers/utils/variant";
-import useColorScheme from "../../hooks/useColorScheme";
-import Feed, { FeedProperties } from "../../screens/Home/components/Feed";
-import Fetcher from "../../screens/Home/fetchers/FeedFetcher";
+import { LogoBig, Search } from "#/components/Icons";
+import AnimatedHeader from "#/components/animations/AnimatedHeader";
+import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
+import SettingsProvider from "#/helpers/provider/SettingsProvider";
+import { getEnabledFeeds } from "#/helpers/utils/feeds";
+import { isVolksverpetzer } from "#/helpers/utils/variant";
+import useAppColorScheme from "#/hooks/useAppColorScheme";
+import Feed, { FeedProperties } from "#/screens/Home/components/Feed";
+import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
 
 /**
  * HomeScreen is the main feed view. It fetches multiple social feeds,
@@ -25,11 +25,11 @@ import Fetcher from "../../screens/Home/fetchers/FeedFetcher";
  * @returns React element for the home feed screen.
  */
 const HomeScreen = () => {
-  const { contentSettings } = useContext(SettingsContext);
+  const { contentSettings } = useContext(SettingsProvider);
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const router = useRouter();
   const { shareIntent, hasShareIntent } = useShareIntentContext();
-  const colorScheme = useColorScheme();
+  const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
 
   const HEADER_HEIGHT = 220;

@@ -1,12 +1,12 @@
 export default {
-  "@algolia/client-search@5.46.3": {
+  "@algolia/client-search@5.47.0": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@atproto/api@0.18.16": {
+  "@atproto/api@0.18.20": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -17,6 +17,12 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/babel/babel",
     licenseUrl: "https://github.com/babel/babel/raw/master/LICENSE",
+    parents: "vvp_app",
+  },
+  "@expo-google-fonts/source-sans-3@0.4.1": {
+    licenses: "MIT AND OFL-1.1",
+    repository: "https://github.com/expo/google-fonts",
+    licenseUrl: "https://github.com/expo/google-fonts/raw/master/LICENSE",
     parents: "vvp_app",
   },
   "@expo/config@12.0.13": {
@@ -84,7 +90,7 @@ export default {
     licenseUrl: "https://github.com/vdor/react-native-horizontal-picker",
     parents: "vvp_app",
   },
-  "axios@1.13.2": {
+  "axios@1.13.4": {
     licenses: "MIT",
     repository: "https://github.com/axios/axios",
     licenseUrl: "https://github.com/axios/axios/raw/master/LICENSE",
@@ -158,7 +164,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-font@14.0.10": {
+  "expo-font@14.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -206,7 +212,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-router@6.0.21": {
+  "expo-router@6.0.23": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -249,7 +255,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo@54.0.31": {
+  "expo@54.0.33": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -370,7 +376,7 @@ export default {
     licenseUrl: "https://github.com/facebook/react/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "rive-react-native@9.7.1": {
+  "rive-react-native@9.8.0": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-react-native",
     licenseUrl:
