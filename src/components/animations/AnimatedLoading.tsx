@@ -1,4 +1,5 @@
-import { ActivityIndicator, Image } from "react-native";
+import { Image } from "expo-image";
+import { ActivityIndicator } from "react-native";
 
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";

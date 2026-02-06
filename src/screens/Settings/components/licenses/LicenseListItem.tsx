@@ -1,7 +1,7 @@
 import { FontAwesome } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { JSX, ReactNode } from "react";
 import {
-  Image,
   Linking,
   StyleProp,
   StyleSheet,
