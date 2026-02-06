@@ -6,17 +6,11 @@ import {
 } from "@stripe/stripe-react-native";
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
 import Constants from "expo-constants";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Notifications from "expo-notifications";
 import { useEffect, useState } from "react";
-import {
-  Image,
-  Linking,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Linking, Platform, Pressable, StyleSheet, View } from "react-native";
 
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import Space from "#/components/design/Space";
