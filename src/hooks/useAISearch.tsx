@@ -1,7 +1,7 @@
-// Using the buffer package that's available through expo dependencies
-import { Buffer } from "buffer/";
+import { Buffer } from "buffer";
 import { useCallback, useEffect, useState } from "react";
 
+import { FaktenbotReaction } from "#/components/animations/Faktenbot";
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
@@ -103,7 +103,7 @@ export function useAISearch({
   }, [search]);
 
   // Determine reaction value based on error state and results length
-  let reactionValue = 0;
+  let reactionValue: FaktenbotReaction = 0;
 
   if (!error && results.length > 0) {
     reactionValue = results.length <= 3 ? 5 : 10;

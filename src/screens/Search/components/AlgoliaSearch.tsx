@@ -2,21 +2,14 @@ import { searchClient } from "@algolia/client-search";
 import { useRouter } from "expo-router";
 import debounce from "lodash/debounce";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  Pressable,
-  StyleSheet,
-} from "react-native";
-import RenderHtml from "react-native-render-html";
+import { ActivityIndicator, FlatList, StyleSheet } from "react-native";
 
-import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 
 interface AlgoliaSearchProperties {
   searchString: string;
@@ -29,14 +22,12 @@ const AlgoliaSearchResults = ({
 }: AlgoliaSearchProperties) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { width } = Dimensions.get("window");
   const router = useRouter();
 
   // Initialize Algolia client
   const client = searchClient("W8YO8C6SIN", "f8211e7620b2d30da0d73f451fe36634");
   const colorScheme = useAppColorScheme();
   const highlightColor = Colors[colorScheme].corporate;
-  const textColor = Colors[colorScheme].text;
 
   // Create a debounced search function to avoid too many API calls
   const debouncedSearch = useRef(
@@ -98,31 +89,15 @@ const AlgoliaSearchResults = ({
         "." +
         _date.getFullYear();
       return (
-        <Pressable
-          accessibilityRole="button"
-          style={itemStyles.itemContainer}
+        <SearchResultItem
+          title={item.post_title}
+          text={`<div>${item._highlightResult?.content?.value?.slice(0, 200) || ""}...</div>`}
+          subtitle={<Text style={{ textAlign: "right" }}>{date}</Text>}
           onPress={() => handleResultPress(item)}
-        >
-          <Text style={itemStyles.itemText}>{item.post_title}</Text>
-          <Space size={5} />
-          <RenderHtml
-            contentWidth={width}
-            baseStyle={{ color: textColor }}
-            tagsStyles={{
-              em: {
-                fontWeight: "bold",
-                color: highlightColor,
-              },
-            }}
-            source={{
-              html: `<div>${item._highlightResult?.content?.value?.slice(0, 200) || ""}...</div>`,
-            }}
-          />
-          <Text style={{ textAlign: "right" }}>{date}</Text>
-        </Pressable>
+        />
       );
     },
-    [width, textColor, highlightColor, handleResultPress],
+    [handleResultPress],
   );
 
   if (isLoading) {
@@ -144,7 +119,11 @@ const AlgoliaSearchResults = ({
   return (
     <FlatList
       data={results}
-      contentContainerStyle={{ paddingBottom: 100 }}
+      contentContainerStyle={{
+        paddingBottom: 100,
+        paddingHorizontal: 20,
+        gap: 20,
+      }}
       keyExtractor={(item) => item.objectID}
       renderItem={renderItem}
       initialNumToRender={5}
@@ -164,15 +143,6 @@ const itemStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-  },
-  itemContainer: {
-    borderBottomColor: "#ccc",
-    borderBottomWidth: 1,
-    padding: 20,
-  },
-  itemText: {
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
 
