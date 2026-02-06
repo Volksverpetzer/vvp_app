@@ -122,7 +122,8 @@ const registerEvent = async (
     props: {
       platform: Platform.OS,
       OSversion: Platform.Version,
-      appVersion: Application?.nativeBuildVersion,
+      appVersion: Application?.nativeApplicationVersion,
+      appBuild: Application?.nativeBuildVersion,
       width: Dimensions.get("window").width,
       ...properties,
     },
