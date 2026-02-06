@@ -4,7 +4,7 @@ import { Linking, Pressable } from "react-native";
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
 
-import ButtonSteady from "#assets/images/ButtonSteady.png";
+import ButtonSteady from "#assets/images/button_steady.webp";
 
 interface SteadyButtonProperties {
   article_link?: string;

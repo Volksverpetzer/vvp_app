@@ -29,7 +29,7 @@ import API from "#/helpers/network/ServerAPI";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 
-import Paypal from "#assets/images/ButtonPaypal.png";
+import Paypal from "#assets/images/button_paypal.webp";
 
 interface DonateProperties {
   paypalAlways?: boolean; // Whether to always show the paypal button (if false, the button is only shown if platform pay is not supported)
