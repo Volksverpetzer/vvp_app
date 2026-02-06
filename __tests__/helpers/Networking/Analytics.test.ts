@@ -323,7 +323,8 @@ describe("Analytics", () => {
           props: expect.objectContaining({
             platform: Platform.OS,
             OSversion: Platform.Version,
-            appVersion: Application.nativeBuildVersion,
+            appVersion: Application.nativeApplicationVersion,
+            appBuild: Application.nativeBuildVersion,
             customProp: "value",
           }),
         }),
