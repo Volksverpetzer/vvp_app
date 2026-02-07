@@ -10,6 +10,10 @@ import RenderHtml, {
   TBlock,
   defaultHTMLElementModels,
 } from "react-native-render-html";
+import BlockRenderer from "src/screens/Home/components/article/renderer/BlockRenderer";
+import HeaderRenderer from "src/screens/Home/components/article/renderer/HeaderRenderer";
+import IframeRenderer from "src/screens/Home/components/article/renderer/IframeRenderer";
+import ImageRenderer from "src/screens/Home/components/article/renderer/ImageRenderer";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -18,7 +22,6 @@ import SourcesStore from "#/helpers/Stores/SourcesStore";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { HttpsUrl } from "#/types";
 
-import BlockRenderer from "./BlockRenderer";
 import {
   handleContainerElements,
   handleEmbeddedContent,
@@ -26,9 +29,6 @@ import {
   handleRemovableElements,
   handleSpecialElements,
 } from "./ElementHandlers";
-import HeaderRenderer from "./HeaderRenderer";
-import IframeRenderer from "./IframeRenderer";
-import ImageRenderer from "./ImageRenderer";
 import tagStylesFunction from "./tagStyles";
 
 interface BodyProperties {
