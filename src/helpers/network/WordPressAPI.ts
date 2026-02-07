@@ -16,7 +16,7 @@ interface MediaResponse {
   };
 }
 
-export default class WordpressAPI {
+export default class WordPressAPI {
   static readonly client = createClient(Config.wpUrl);
 
   /**
@@ -29,7 +29,7 @@ export default class WordpressAPI {
     const timestamp = Date.now();
 
     return await netGet<LoadArticlePostProperties[]>(
-      WordpressAPI.client,
+      WordPressAPI.client,
       `/wp-json/wp/v2/posts`,
       {
         params: {
@@ -56,7 +56,7 @@ export default class WordpressAPI {
     page: number = 10,
   ): Promise<LoadArticlePostProperties[]> {
     return await netGet<LoadArticlePostProperties[]>(
-      WordpressAPI.client,
+      WordPressAPI.client,
       `/wp-json/wp/v2/posts`,
       {
         params: {
@@ -75,7 +75,7 @@ export default class WordpressAPI {
     slug: string,
   ): Promise<LoadArticlePostProperties | undefined> {
     const posts = await netGet<LoadArticlePostProperties[]>(
-      WordpressAPI.client,
+      WordPressAPI.client,
       `/wp-json/wp/v2/posts`,
       {
         params: {
@@ -101,7 +101,7 @@ export default class WordpressAPI {
         },
       },
     };
-    const data = await netGet<MediaResponse>(WordpressAPI.client, href);
+    const data = await netGet<MediaResponse>(WordPressAPI.client, href);
     const sizes = data?.media_details?.sizes;
     const image =
       sizes?.medium_large?.source_url ??
