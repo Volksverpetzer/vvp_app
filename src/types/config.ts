@@ -15,7 +15,7 @@ export interface ExtraConfigType {
   eas: {
     projectId: string;
   };
-  wpUrl: HttpsUrl; // URL to the Wordpress site
+  wpUrl: HttpsUrl; // URL to the WordPress site
   analyticsUrl?: HttpsUrl; // URL to the analytics site
   aboutUrl: string; // URL to the about page
   colorScheme: colorSchemeType; // color scheme for the app is defined with type colorSchemeType

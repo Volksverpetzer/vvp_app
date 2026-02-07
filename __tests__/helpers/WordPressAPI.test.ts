@@ -1,9 +1,9 @@
 import { describe, expect, it, jest } from "@jest/globals";
 
-import WordpressAPI from "#/helpers/network/WordpressAPI";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
 import * as Networking from "#/helpers/utils/networking";
 
-describe("WordpressAPI", () => {
+describe("WordPressAPI", () => {
   // Networking get is used under the hood
   describe("getPosts", () => {
     it("calls networking.get with correct URL", async () => {
@@ -17,12 +17,12 @@ describe("WordpressAPI", () => {
       const spy = jest
         .spyOn(Networking, "get")
         .mockResolvedValue([{ id: 1 }] as any);
-      const result = await WordpressAPI.getPosts(2);
+      const result = await WordPressAPI.getPosts(2);
 
       // We don't test the exact timestamp value since it's dynamic
       // but we verify the structure of the call
       expect(spy).toHaveBeenCalledWith(
-        WordpressAPI["client"],
+        WordPressAPI["client"],
         `/wp-json/wp/v2/posts`,
         expect.objectContaining({
           params: expect.objectContaining({
@@ -55,9 +55,9 @@ describe("WordpressAPI", () => {
       const spy = jest
         .spyOn(Networking, "get")
         .mockResolvedValue([{ id: 2 }] as any);
-      const result = await WordpressAPI.searchPosts(term);
+      const result = await WordPressAPI.searchPosts(term);
       expect(spy).toHaveBeenCalledWith(
-        WordpressAPI["client"],
+        WordPressAPI["client"],
         `/wp-json/wp/v2/posts`,
         {
           params: {
@@ -78,9 +78,9 @@ describe("WordpressAPI", () => {
       const spy = jest
         .spyOn(Networking, "get")
         .mockResolvedValue([item] as any);
-      const result = await WordpressAPI.getPost("slug");
+      const result = await WordPressAPI.getPost("slug");
       expect(spy).toHaveBeenCalledWith(
-        WordpressAPI["client"],
+        WordPressAPI["client"],
         `/wp-json/wp/v2/posts`,
         {
           params: {
@@ -94,7 +94,7 @@ describe("WordpressAPI", () => {
 
     it("returns null when data is empty", async () => {
       const spy = jest.spyOn(Networking, "get").mockResolvedValue([] as any);
-      const result = await WordpressAPI.getPost("slug");
+      const result = await WordPressAPI.getPost("slug");
       expect(result).toBeUndefined();
       spy.mockRestore();
     });
@@ -110,7 +110,7 @@ describe("WordpressAPI", () => {
       const spy = jest
         .spyOn(Networking, "get")
         .mockResolvedValue({ media_details: { sizes } } as any);
-      const { image, thumb } = await WordpressAPI.getFeatureImage("href");
+      const { image, thumb } = await WordPressAPI.getFeatureImage("href");
       expect(image).toBe("mlarge");
       expect(thumb).toBe("thumb");
       spy.mockRestore();
@@ -133,7 +133,7 @@ describe("WordpressAPI", () => {
         content: { rendered: "c" },
         authors: [],
       } as any;
-      const article = WordpressAPI.convertLoadProps(data);
+      const article = WordPressAPI.convertLoadProps(data);
       expect(article.title).toBe("Hello & World");
       expect(article.description).toBe("Desc");
       expect(article._links).toBe(data._links);

@@ -15,7 +15,7 @@ import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
-import WordpressAPI from "#/helpers/network/WordpressAPI";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import { HttpsUrl } from "#/types";
@@ -23,7 +23,7 @@ import { HttpsUrl } from "#/types";
 import Badge from "./Badge";
 
 /**
- * Represents the properties of an article as fetched from the Wordpress API
+ * Represents the properties of an article as fetched from the WordPress API
  */
 export interface ArticleProperties {
   _links: {
@@ -49,7 +49,7 @@ type ArticlePostScreenProperties = {
 };
 
 /**
- * ArticlePost renders a short preview of an article fetched from a Wordpress API.
+ * ArticlePost renders a short preview of an article fetched from a WordPress API.
  *
  * Optimizations applied:
  * - All hooks (useMemo, useCallback, useEffect) are called unconditionally.
@@ -97,7 +97,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Fetch the feature image when the article is in view.
   const getImages = useCallback(async () => {
     try {
-      const { image } = await WordpressAPI.getFeatureImage(
+      const { image } = await WordPressAPI.getFeatureImage(
         article._links["wp:featuredmedia"][0].href,
       );
       setImgURL(image);

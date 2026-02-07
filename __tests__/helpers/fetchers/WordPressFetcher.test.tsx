@@ -1,9 +1,9 @@
 import { ArticleProperties } from "#/components/posts/ArticlePost";
 import Post from "#/helpers/Post";
-import WordpressAPI from "#/helpers/network/WordpressAPI";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 
-jest.mock("#/helpers/network/WordpressAPI", () => ({
+jest.mock("#/helpers/network/WordPressAPI", () => ({
   __esModule: true,
   default: {
     getPosts: jest.fn(),
@@ -61,11 +61,11 @@ describe("WordPressFetcher", () => {
   });
 
   describe("feedFetcher and searchFetcher", () => {
-    it("calls WordpressAPI.getPosts in feedFetcher", async () => {
+    it("calls WordPressAPI.getPosts in feedFetcher", async () => {
       const page = 2;
       const articles = [makeArticle()];
       const spy = jest
-        .spyOn(WordpressAPI, "getPosts" as any)
+        .spyOn(WordPressAPI, "getPosts" as any)
         .mockResolvedValue(articles);
 
       const result = await WordPressFetcher.feedFetcher({ page });
@@ -74,11 +74,11 @@ describe("WordPressFetcher", () => {
       expect(result[0]).toBeInstanceOf(Post);
     });
 
-    it("calls WordpressAPI.searchPosts in searchFetcher", async () => {
+    it("calls WordPressAPI.searchPosts in searchFetcher", async () => {
       const parameter = "query";
       const articles = [makeArticle()];
       const spy = jest
-        .spyOn(WordpressAPI, "searchPosts" as any)
+        .spyOn(WordPressAPI, "searchPosts" as any)
         .mockResolvedValue(articles);
 
       const result = await WordPressFetcher.searchFetcher({ param: parameter });

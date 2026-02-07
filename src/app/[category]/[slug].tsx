@@ -7,7 +7,7 @@ import View from "#/components/design/View";
 import { ArticleProperties } from "#/components/posts/ArticlePost";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import WordpressAPI from "#/helpers/network/WordpressAPI";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
 import ArticleScreen from "#/screens/Home/components/article/Article";
 
@@ -43,10 +43,10 @@ const LoadArticle = () => {
         setArticle(articleParameter);
         setImageUrl(articleParameter.imageUrl || "");
       } else {
-        const _article = await WordpressAPI.getPost(slug);
+        const _article = await WordPressAPI.getPost(slug);
         const loadedArticle: ArticleProperties =
-          WordpressAPI.convertLoadProps(_article);
-        const { image } = await WordpressAPI.getFeatureImage(
+          WordPressAPI.convertLoadProps(_article);
+        const { image } = await WordPressAPI.getFeatureImage(
           loadedArticle._links["wp:featuredmedia"][0].href,
         );
         setArticle(loadedArticle);
