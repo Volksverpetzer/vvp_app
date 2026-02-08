@@ -105,7 +105,7 @@ const RootLayout = () => {
                 />
                 <Stack.Screen
                   name="support"
-                  options={{ title: "Unterstutzen" }}
+                  options={{ title: "Unterstützen" }}
                 />
                 <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
               </Stack>
