@@ -160,7 +160,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       top: 0,
       width: "100%" as const,
       height,
-      contentFit: "cover" as const,
     }),
     [height],
   );
@@ -218,6 +217,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           style={imageStyle}
           source={{ uri: imageUrl }}
           placeholder={LoadingImage}
+          contentFit={"cover"}
         />
         <View style={progressBarStyle} />
         <Space size={10} />

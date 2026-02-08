@@ -77,11 +77,11 @@ export default class WordPressAPI {
   }
 
   /**
-   * Get the feature image. Accepts an optional default image object.
+   * Get the feature image.
    */
   static async getFeatureImage(
     href: string,
-  ): Promise<{ image: string; thumb: string | undefined }> {
+  ): Promise<{ image: string | undefined; thumb: string | undefined }> {
     const data = await netGet<MediaResponse>(WordPressAPI.client, href);
     const sizes = data?.media_details?.sizes;
     const image = sizes?.medium_large?.source_url ?? sizes?.medium?.source_url;
