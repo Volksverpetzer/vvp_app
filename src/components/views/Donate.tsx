@@ -6,13 +6,13 @@ import {
 } from "@stripe/stripe-react-native";
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
 import Constants from "expo-constants";
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Notifications from "expo-notifications";
 import { useEffect, useState } from "react";
-import { Linking, Platform, Pressable, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
+import PaypalButton from "#/components/buttons/PaypalButton";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
@@ -22,8 +22,6 @@ import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
-
-import Paypal from "#assets/images/button_paypal.webp";
 
 interface DonateProperties {
   paypalAlways?: boolean; // Whether to always show the paypal button (if false, the button is only shown if platform pay is not supported)
@@ -86,18 +84,6 @@ const Donate = (properties: DonateProperties) => {
     setSuccessAnimated(true);
     setTimeout(() => setSuccessAnimated(false), 1500);
     logSuccess("Stripe");
-  };
-
-  // Neue Hilfsfunktion: ermittelt die PayPal-URL basierend auf amount
-  const getPaypalUrlForAmount = (amount: number): string => {
-    const entry = matrix.find((e) => Number(e?.amount) === amount);
-
-    // Wenn ein kompletter Link angegeben ist, verwende ihn direkt
-    if (entry && typeof entry.url === "string" && entry.url.length > 0) {
-      return entry.url;
-    }
-
-    return Config.donations.paypal;
   };
 
   /**
@@ -212,27 +198,10 @@ const Donate = (properties: DonateProperties) => {
         )}
         {paypalAlways && <Space size={20} />}
         {(!showPlatformPay || paypalAlways) && (
-          //Pressable to open browser to pay with paypal with paypal logo
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => {
-              const url = getPaypalUrlForAmount(amount);
-              Linking.openURL(url).then(() => {
-                logSuccess("Paypal");
-              });
-            }}
-          >
-            <Image
-              source={Paypal}
-              style={{
-                width: 220,
-                height: 40,
-                borderRadius: 4,
-                borderWidth: 1,
-                alignSelf: "center",
-              }}
-            />
-          </Pressable>
+          <PaypalButton
+            amount={amount}
+            onSuccess={() => logSuccess("Paypal")}
+          />
         )}
       </View>
       <AnimatedSuccess animated={successAnimated} />
