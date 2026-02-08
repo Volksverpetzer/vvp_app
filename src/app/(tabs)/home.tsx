@@ -3,7 +3,7 @@ import * as Linking from "expo-linking";
 import { Href, useRouter } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, Pressable, Text } from "react-native";
+import { Animated, Platform, Pressable, Text } from "react-native";
 
 import { LogoBig, Search } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
@@ -28,7 +28,11 @@ const HomeScreen = () => {
   const { contentSettings } = useContext(SettingsContext);
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const router = useRouter();
-  const { shareIntent, hasShareIntent } = useShareIntentContext();
+  // Share intent is not supported on web
+  const { shareIntent, hasShareIntent } =
+    Platform.OS === "web"
+      ? { shareIntent: null, hasShareIntent: false }
+      : useShareIntentContext();
   const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
 
@@ -58,7 +62,7 @@ const HomeScreen = () => {
       }, 0);
       return () => clearTimeout(timer);
     }
-  }, [hasShareIntent, router, shareIntent.webUrl]);
+  }, [hasShareIntent, router, shareIntent?.webUrl]);
 
   useEffect(() => {
     const enabled = getEnabledFeeds(

@@ -1,7 +1,7 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
 import { useCallback, useRef } from "react";
-import { StyleProp, TextInput, TextStyle } from "react-native";
+import { Platform, StyleProp, TextInput, TextStyle } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
@@ -14,7 +14,9 @@ import SearchManager from "#/screens/Search/components/SearchManager";
 import SearchTutorial from "#/screens/Search/components/SearchTutorial";
 
 const SearchScreen = () => {
-  const { shareIntent } = useShareIntentContext();
+  // Share intent is not supported on web
+  const { shareIntent } =
+    Platform.OS === "web" ? { shareIntent: null } : useShareIntentContext();
   const parameters = useLocalSearchParams<{ tag: string }>();
   const tag: string | undefined = parameters?.tag ?? shareIntent?.webUrl;
   const searchReference = useRef<TextInput>(null);

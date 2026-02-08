@@ -1,12 +1,23 @@
 import * as Linking from "expo-linking";
 import { Href, Redirect, useRouter } from "expo-router";
 import { useShareIntentContext } from "expo-share-intent";
-import { Button, Text, View } from "react-native";
+import { Button, Platform, Text, View } from "react-native";
 
 import Config from "#/constants/Config";
 
 const ShareIntent = () => {
   const router = useRouter();
+
+  // Share intent is not supported on web
+  if (Platform.OS === "web") {
+    return (
+      <View>
+        <Text>Share intent is not supported on web</Text>
+        <Button title="Go Home" onPress={() => router.push("/home")} />
+      </View>
+    );
+  }
+
   const { hasShareIntent, shareIntent, error } = useShareIntentContext();
 
   return (

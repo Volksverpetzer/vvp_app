@@ -1,5 +1,6 @@
 import Constants from "expo-constants";
 import { useEffect, useRef } from "react";
+import { Platform } from "react-native";
 import Rive, { RiveRef } from "rive-react-native";
 
 export type FaktenbotReaction = 0 | 5 | 10;
@@ -37,8 +38,9 @@ const Faktenbot = ({ reaction, search }: FaktenbotProperties) => {
     );
   }, [search]);
 
-  // Don't render in Expo Go
-  if (Constants.executionEnvironment === "standalone") return;
+  // Don't render in Expo Go or on web (Rive is native-only)
+  if (Constants.executionEnvironment === "standalone" || Platform.OS === "web")
+    return null;
 
   return (
     <Rive

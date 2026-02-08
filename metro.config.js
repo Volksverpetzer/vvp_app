@@ -38,6 +38,16 @@ config.resolver = {
           type: "empty",
         };
       }
+
+      // Handle native-only Rive animations on web
+      if (
+        moduleName.startsWith("rive-react-native") ||
+        moduleName === "rive-react-native"
+      ) {
+        return {
+          type: "empty",
+        };
+      }
     }
 
     // Use default resolution for everything else

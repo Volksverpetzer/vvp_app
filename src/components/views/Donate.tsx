@@ -39,7 +39,13 @@ const Donate = (properties: DonateProperties) => {
   const [amount, setAmount] = useState(10);
   const [successAnimated, setSuccessAnimated] = useState(false);
   const colorScheme = useAppColorScheme();
-  const { isPlatformPaySupported } = usePlatformPay();
+
+  // Stripe Platform Pay is not supported on web
+  const isPlatformPaySupported =
+    Platform.OS === "web"
+      ? () => Promise.resolve(false)
+      : usePlatformPay().isPlatformPaySupported;
+
   const paypalAlways =
     properties?.paypalAlways || !Config.donations.platformPay;
 
