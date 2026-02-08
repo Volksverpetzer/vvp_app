@@ -1,8 +1,8 @@
+import { Image } from "expo-image";
 import React, { FC, useMemo, useRef, useState } from "react";
 import {
   FlatList,
   GestureResponderEvent,
-  Image,
   ImageRequireSource,
   TextStyle,
   useWindowDimensions,

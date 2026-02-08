@@ -23,7 +23,7 @@ import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
-import logoPike from "#assets/images/logo_pike.png";
+import logoPike from "#assets/images/logo_pike.webp";
 
 import { ArticleSourceList } from "./ArticleSourceList";
 import ArticleStats from "./ArticleStats";

@@ -5,7 +5,7 @@ import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 
-import Party from "#assets/images/Party.png";
+import Party from "#assets/images/party.png";
 
 interface AnimatedSuccessProperties {
   animated: boolean;

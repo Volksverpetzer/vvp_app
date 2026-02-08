@@ -22,7 +22,7 @@ import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
 import { NotificationSettingType, SettingType } from "#/types";
 
-import VorstellungsgrafikImg from "#assets/images/Vorstellungsgrafik.jpg";
+import WelcomeVVP from "#assets/images/welcome.webp";
 
 const Onboarding = () => {
   const [notificationSettings, setNotificationSettings] =
@@ -82,7 +82,7 @@ const Onboarding = () => {
       id: 1,
       title: "Willkommen",
       description: `Willkommen bei der ${appName}-App!`,
-      icon: isVolksverpetzer ? VorstellungsgrafikImg : undefined,
+      icon: isVolksverpetzer ? WelcomeVVP : undefined,
     },
     {
       id: 3,
