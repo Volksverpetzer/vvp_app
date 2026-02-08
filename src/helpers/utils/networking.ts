@@ -9,7 +9,7 @@ import { Platform } from "react-native";
  *
  * The User-Agent will look like this:
  * YourApp/1.2.3 (android; Android 14; Pixel 7)
- * YourApp/1.2.3 (ios; iOS 17.3; iPhone15,3)
+ * YourApp/1.2.3 (ios; iOS 17.3; iPhone 15 Pro)
  *
  * @param baseURL Base URL for requests
  */
