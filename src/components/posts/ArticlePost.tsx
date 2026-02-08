@@ -20,6 +20,8 @@ import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import { HttpsUrl } from "#/types";
 
+import LoadingImage from "#assets/images/logo_animated.gif";
+
 import Badge from "./Badge";
 
 /**
@@ -212,7 +214,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       onLongPress={handleLongPress}
     >
       <View style={containerStyle}>
-        <Image style={imageStyle} source={{ uri: imageUrl }} />
+        <Image
+          style={imageStyle}
+          source={{ uri: imageUrl }}
+          placeholder={LoadingImage}
+        />
         <View style={progressBarStyle} />
         <Space size={10} />
         <Text style={titleStyle}>{article.title}</Text>
