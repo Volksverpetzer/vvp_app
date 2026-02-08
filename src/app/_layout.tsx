@@ -9,7 +9,7 @@ import { Stack, useSegments } from "expo-router";
 import { ShareIntentProvider } from "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { LogBox } from "react-native";
+import { LogBox, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   SafeAreaProvider,
@@ -68,61 +68,69 @@ const RootLayout = () => {
     ),
   };
 
+  // Create the main app content
+  const appContent = (
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SettingsProvider>
+          <BadgeProvider>
+            <View
+              style={{
+                flex: 1,
+                paddingTop: insets.top,
+                backgroundColor: isTabsAndAction
+                  ? Colors[colorScheme].secondaryBackground
+                  : Colors[colorScheme].background,
+              }}
+            >
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  gestureEnabled: true,
+                }}
+              >
+                <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
+                <Stack.Screen
+                  name="[category]/[slug]"
+                  options={{ title: "Artikel" }}
+                />
+                <Stack.Screen
+                  name="insta/[post_id]"
+                  options={{ title: "Artikel" }}
+                />
+                <Stack.Screen name="search" options={{ title: "Suche" }} />
+                <Stack.Screen
+                  name="+not-found"
+                  options={{ title: "Nicht gefunden" }}
+                />
+                <Stack.Screen
+                  name="support"
+                  options={{ title: "Unterstutzen" }}
+                />
+                <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
+              </Stack>
+              <Toast config={toastConfig} />
+            </View>
+          </BadgeProvider>
+        </SettingsProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
+  );
+
+  // On web, skip native-only providers (ShareIntent and Stripe)
+  if (Platform.OS === "web") {
+    return appContent;
+  }
+
+  // On native platforms, wrap with native-only providers
   return (
     <ShareIntentProvider options={{ debug: false }}>
-      <SafeAreaProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <StripeProvider
-            publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
-            merchantIdentifier="merchant.volksverpetzer.de"
-          >
-            <SettingsProvider>
-              <BadgeProvider>
-                <View
-                  style={{
-                    flex: 1,
-                    paddingTop: insets.top,
-                    backgroundColor: isTabsAndAction
-                      ? Colors[colorScheme].secondaryBackground
-                      : Colors[colorScheme].background,
-                  }}
-                >
-                  <Stack
-                    screenOptions={{
-                      headerShown: false,
-                      gestureEnabled: true,
-                    }}
-                  >
-                    <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
-                    <Stack.Screen
-                      name="[category]/[slug]"
-                      options={{ title: "Artikel" }}
-                    />
-                    <Stack.Screen
-                      name="insta/[post_id]"
-                      options={{ title: "Artikel" }}
-                    />
-                    <Stack.Screen name="search" options={{ title: "Suche" }} />
-                    <Stack.Screen
-                      name="+not-found"
-                      options={{ title: "Nicht gefunden" }}
-                    />
-                    <Stack.Screen
-                      name="support"
-                      options={{ title: "Unterstutzen" }}
-                    />
-                    <Stack.Screen
-                      name="licenses"
-                      options={{ title: "Lizenzen" }}
-                    />
-                  </Stack>
-                  <Toast config={toastConfig} />
-                </View>
-              </BadgeProvider>
-            </SettingsProvider>
-          </StripeProvider>
-        </GestureHandlerRootView>
-      </SafeAreaProvider>
+      <StripeProvider
+        publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
+        merchantIdentifier="merchant.volksverpetzer.de"
+      >
+        {appContent}
+      </StripeProvider>
     </ShareIntentProvider>
   );
 };
