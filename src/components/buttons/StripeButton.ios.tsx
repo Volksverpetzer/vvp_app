@@ -6,9 +6,24 @@ import {
 } from "@stripe/stripe-react-native";
 import Constants from "expo-constants";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import API from "#/helpers/network/ServerAPI";
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    height: 40,
+    width: 220,
+    alignSelf: "center",
+  },
+  loadingContainer: {
+    height: 40,
+    width: 220,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 interface StripeButtonProperties {
   amount: number;
@@ -29,7 +44,8 @@ const StripeButton = (props: StripeButtonProperties) => {
       setIsLoading(false);
       onSupportChecked?.(supported);
     })();
-  }, [isPlatformPaySupported, onSupportChecked]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlatformPaySupported]);
 
   /**
    * Fetch the client secret from "payment/paymentIntent" endpoint
@@ -68,15 +84,7 @@ const StripeButton = (props: StripeButtonProperties) => {
   // Show loading indicator while checking support
   if (isLoading) {
     return (
-      <View
-        style={{
-          height: 40,
-          width: 220,
-          alignSelf: "center",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.loadingContainer}>
         <ActivityIndicator />
       </View>
     );
@@ -93,11 +101,7 @@ const StripeButton = (props: StripeButtonProperties) => {
       type={PlatformPay?.ButtonType?.Donate}
       appearance={PlatformPay?.ButtonStyle?.Black}
       borderRadius={4}
-      style={{
-        height: 40,
-        width: 220,
-        alignSelf: "center",
-      }}
+      style={styles.buttonContainer}
     />
   );
 };
