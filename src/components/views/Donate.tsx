@@ -30,6 +30,7 @@ interface DonateProperties {
 const Donate = (properties: DonateProperties) => {
   const [amount, setAmount] = useState(10);
   const [successAnimated, setSuccessAnimated] = useState(false);
+  const [isPlatformPaySupported, setIsPlatformPaySupported] = useState(true); // Assume supported until checked
   const colorScheme = useAppColorScheme();
   const paypalAlways =
     properties?.paypalAlways || !Config.donations.platformPay;
@@ -137,10 +138,13 @@ const Donate = (properties: DonateProperties) => {
               setTimeout(() => setSuccessAnimated(false), 1500);
               logSuccess("Stripe");
             }}
+            onSupportChecked={(isSupported) => {
+              setIsPlatformPaySupported(isSupported);
+            }}
           />
         )}
         {paypalAlways && <Space size={20} />}
-        {(!showPlatformPay || paypalAlways) && (
+        {(!showPlatformPay || paypalAlways || !isPlatformPaySupported) && (
           <PaypalButton
             amount={amount}
             onSuccess={() => logSuccess("Paypal")}

@@ -1,6 +1,7 @@
 interface StripeButtonProperties {
   amount?: number;
   onSuccess?: () => void;
+  onSupportChecked?: (isSupported: boolean) => void;
 }
 
 /**
