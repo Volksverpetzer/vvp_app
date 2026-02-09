@@ -5,7 +5,7 @@ import {
   usePlatformPay,
 } from "@stripe/stripe-react-native";
 import Constants from "expo-constants";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import API from "#/helpers/network/ServerAPI";
@@ -36,6 +36,12 @@ const StripeButton = (props: StripeButtonProperties) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSupported, setIsSupported] = useState(false);
   const { isPlatformPaySupported } = usePlatformPay();
+  const onSupportCheckedRef = useRef(onSupportChecked);
+
+  // Keep ref up to date
+  useEffect(() => {
+    onSupportCheckedRef.current = onSupportChecked;
+  }, [onSupportChecked]);
 
   useEffect(() => {
     let mounted = true;
@@ -44,18 +50,11 @@ const StripeButton = (props: StripeButtonProperties) => {
       let supported = false;
       try {
         supported = await isPlatformPaySupported();
-        if (mounted) {
-          setIsSupported(supported);
-        }
-      } catch (error) {
-        console.error(error);
-        if (mounted) {
-          setIsSupported(false);
-        }
       } finally {
         if (mounted) {
+          setIsSupported(supported);
           setIsLoading(false);
-          onSupportChecked?.(supported);
+          onSupportCheckedRef.current?.(supported);
         }
       }
     };
@@ -65,7 +64,7 @@ const StripeButton = (props: StripeButtonProperties) => {
     return () => {
       mounted = false;
     };
-  }, [isPlatformPaySupported, onSupportChecked]);
+  }, [isPlatformPaySupported]);
 
   /**
    * Fetch the client secret from "payment/paymentIntent" endpoint
