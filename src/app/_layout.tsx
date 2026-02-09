@@ -25,6 +25,7 @@ import Colors from "#/constants/Colors";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useHandleShareIntent } from "#/hooks/useHandleShareIntent";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
 
 // Hide warning for new native event emitter
@@ -125,6 +126,7 @@ const RootLayout = () => {
   // On native platforms, wrap with native-only providers
   return (
     <ShareIntentProvider options={{ debug: false }}>
+      <ShareIntentRunner />
       <StripeProvider
         publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
         merchantIdentifier="merchant.volksverpetzer.de"
@@ -141,6 +143,14 @@ const RootLayout = () => {
  */
 export const unstable_settings = {
   initialRouteName: "(tabs)",
+};
+
+/**
+ * Tiny local component that calls the hook and renders nothing.
+ */
+const ShareIntentRunner = () => {
+  useHandleShareIntent();
+  return null;
 };
 
 export default RootLayout;
