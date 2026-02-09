@@ -29,6 +29,8 @@ const Onboarding = () => {
     useState<NotificationSettingType>(
       SettingsStore.defaultNotificationSettings,
     );
+  const [currentStep, setCurrentStep] = useState(0);
+  const [hasRequestedPermissions, setHasRequestedPermissions] = useState(false);
   const appName = Constants.expoConfig.name;
   const { contentSettings, setContentSettings } = useContext(SettingsContext);
   const corporate = useCorporateColor();
@@ -46,6 +48,17 @@ const Onboarding = () => {
       }
     });
   }, []);
+
+  // Request notification permissions when user reaches the notification slide
+  useEffect(() => {
+    // Notification slide is at index 2 (id: 7)
+    if (currentStep === 2 && !hasRequestedPermissions) {
+      setHasRequestedPermissions(true);
+      Notifications.registerForPushNotifications().then((result) => {
+        setNotificationSettings(result.notificationSettings);
+      });
+    }
+  }, [currentStep, hasRequestedPermissions]);
 
   const agreeToTerms = () => {
     PersonalStore.setOnboardingDone().then(() => {
@@ -170,6 +183,7 @@ const Onboarding = () => {
       <FlatBoard
         data={data}
         onFinish={agreeToTerms}
+        onStepChange={setCurrentStep}
         accentColor={Colors["light"].heading}
         buttonTitle="Los geht's"
         hideIndicator

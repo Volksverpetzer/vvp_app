@@ -29,6 +29,7 @@ export type OnBoardingData = {
 interface FlatBoardProperties {
   data: OnBoardingData[];
   onFinish: (event: GestureResponderEvent) => void;
+  onStepChange?: (step: number) => void;
   accentColor?: string;
   buttonTitle?: string;
   variant?: "standard" | "modern";
@@ -43,6 +44,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   const {
     data,
     onFinish,
+    onStepChange,
     accentColor,
     buttonTitle,
     headingStyle,
@@ -51,20 +53,24 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   const swipeReference = useRef<FlatList>(null);
 
   const nextStep = () => {
-    setStep(step + 1);
+    const newStep = step + 1;
+    setStep(newStep);
+    onStepChange?.(newStep);
     swipeReference.current &&
       swipeReference.current.scrollToIndex({
         animated: true,
-        index: step + 1,
+        index: newStep,
       });
   };
 
   const previousStep = () => {
-    setStep(step - 1);
+    const newStep = step - 1;
+    setStep(newStep);
+    onStepChange?.(newStep);
     swipeReference.current &&
       swipeReference.current.scrollToIndex({
         animated: true,
-        index: step - 1,
+        index: newStep,
       });
   };
 
@@ -142,6 +148,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
         Math.floor(event.nativeEvent.layoutMeasurement.width),
     );
     setStep(index);
+    onStepChange?.(index);
   };
 
   return (
