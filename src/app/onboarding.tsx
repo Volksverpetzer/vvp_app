@@ -51,12 +51,16 @@ const Onboarding = () => {
 
   // Request notification permissions when user reaches the notification slide
   useEffect(() => {
-    // Notification slide is at index 2 (id: 7)
+    // Notification slide is at index 2 (the third slide in the onboarding flow)
     if (currentStep === 2 && !hasRequestedPermissions) {
       setHasRequestedPermissions(true);
-      Notifications.registerForPushNotifications().then((result) => {
-        setNotificationSettings(result.notificationSettings);
-      });
+      Notifications.registerForPushNotifications()
+        .then((result) => {
+          setNotificationSettings(result.notificationSettings);
+        })
+        .catch((error) => {
+          console.warn("Failed to request notification permissions:", error);
+        });
     }
   }, [currentStep, hasRequestedPermissions]);
 
