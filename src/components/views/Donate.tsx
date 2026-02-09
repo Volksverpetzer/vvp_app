@@ -1,25 +1,19 @@
-import {
-  PlatformPay,
-  PlatformPayButton,
-  confirmPlatformPayPayment,
-  usePlatformPay,
-} from "@stripe/stripe-react-native";
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
 import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Notifications from "expo-notifications";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import PaypalButton from "#/components/buttons/PaypalButton";
+import StripeButton from "#/components/buttons/StripeButton";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { registerEvent } from "#/helpers/network/Analytics";
-import API from "#/helpers/network/ServerAPI";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -34,87 +28,41 @@ interface DonateProperties {
  * @returns The Donate component
  */
 const Donate = (properties: DonateProperties) => {
-  const [Loading, setLoading] = useState(true);
-  const [isPaySupported, setIsPaySupported] = useState(false);
   const [amount, setAmount] = useState(10);
   const [successAnimated, setSuccessAnimated] = useState(false);
   const colorScheme = useAppColorScheme();
-  const { isPlatformPaySupported } = usePlatformPay();
   const paypalAlways =
     properties?.paypalAlways || !Config.donations.platformPay;
-
-  useEffect(() => {
-    (async function () {
-      setIsPaySupported(await isPlatformPaySupported());
-      setLoading(false);
-    })();
-  }, [isPlatformPaySupported]);
-
-  /**
-   * Fetch the client secret from "payment/paymentIntent" endpoint
-   */
-  const fetchPaymentIntentClientSecret = async () => {
-    const data = await API.paymentIntent(amount);
-    return data.client_secret;
-  };
-
-  /**
-   * Handle the payment process
-   */
-  const pay = async () => {
-    const clientSecret = await fetchPaymentIntentClientSecret();
-    const applePay: PlatformPay.ApplePayBaseParams = {
-      cartItems: [
-        {
-          label: "Kaffeekasse " + Constants.expoConfig.name,
-          amount: amount.toString(),
-          paymentType: PlatformPay.PaymentType.Immediate,
-        },
-      ],
-      merchantCountryCode: "DE",
-      currencyCode: "EUR",
-    };
-    const result = await confirmPlatformPayPayment(clientSecret, {
-      applePay,
-    });
-    if (result.error) {
-      console.error(result.error);
-      return;
-    }
-    setSuccessAnimated(true);
-    setTimeout(() => setSuccessAnimated(false), 1500);
-    logSuccess("Stripe");
-  };
+  const showPlatformPay = Platform.OS === "ios" && Config.donations.platformPay;
 
   /**
    * Log a donation conversion event
    * @param method The payment method used
    */
   const logSuccess = (method: string) => {
-    const wpUrl = Constants.expoConfig.extra.wpUrl;
-    registerEvent(wpUrl + "/app", "DonateConversion", {
-      method: method,
-      amount: amount,
-    });
-    Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Danke für deine Spende! 📬",
-        body: "Wir haben uns sehr gefreut, dass du uns im letzten Monat unterstützt hast.",
+    registerEvent(
+      Constants.expoConfig.extra.wpUrl + "/app",
+      "DonateConversion",
+      {
+        method: method,
+        amount: amount,
       },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.DATE,
-        date: new Date(Date.now() + WEEK_IN_MS * 3),
-      },
-    });
+    );
+
+    if (Platform.OS !== "web") {
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Danke für deine Spende! 📬",
+          body: "Wir haben uns sehr gefreut, dass du uns im letzten Monat unterstützt hast.",
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date: new Date(Date.now() + WEEK_IN_MS * 3),
+        },
+      });
+    }
   };
 
-  if (Loading) {
-    return (
-      <View>
-        <Text>Loading</Text>
-      </View>
-    );
-  }
   const matrix = Config.donations?.paypalMatrix ?? [];
   const validAmounts = matrix
     .map((entry) => Number(entry?.amount))
@@ -126,8 +74,6 @@ const Donate = (properties: DonateProperties) => {
       ? background
       : background + background.replace("#", "");
   const pickerColorText = Colors[colorScheme].text;
-  const showPlatformPay =
-    Config.donations.platformPay && isPaySupported && Platform.OS === "ios";
   return (
     <>
       <View style={{ justifyContent: "center", ...styles.noBackground }}>
@@ -184,15 +130,12 @@ const Donate = (properties: DonateProperties) => {
           </View>
         )}
         {showPlatformPay && (
-          <PlatformPayButton
-            onPress={pay}
-            type={PlatformPay?.ButtonType?.Donate}
-            appearance={PlatformPay?.ButtonStyle?.Black}
-            borderRadius={4}
-            style={{
-              height: 40,
-              width: 220,
-              alignSelf: "center",
+          <StripeButton
+            amount={amount}
+            onSuccess={() => {
+              setSuccessAnimated(true);
+              setTimeout(() => setSuccessAnimated(false), 1500);
+              logSuccess("Stripe");
             }}
           />
         )}
