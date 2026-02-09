@@ -7,6 +7,7 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
+    "android:device": "expo run:android --no-build-cache --device",
     "android:local": "pnpx eas-cli build -p android --profile local-apk",
     "android:submit": "pnpx eas-cli build -p android --auto-submit",
     "ios": "expo run:ios",
