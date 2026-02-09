@@ -1,6 +1,10 @@
 const { getDefaultConfig } = require("expo/metro-config.js");
+const { resolve } = require("metro-resolver");
 
 const config = getDefaultConfig(__dirname);
+
+// Capture the default resolver before overriding
+const defaultResolveRequest = config.resolver.resolveRequest;
 
 // Add web-specific resolver to handle native-only modules
 config.resolver = {
@@ -50,8 +54,11 @@ config.resolver = {
       }
     }
 
-    // Use default resolution for everything else
-    return context.resolveRequest(context, moduleName, platform);
+    // Use the captured default resolver if it exists, otherwise fall back to metro-resolver's resolve
+    if (defaultResolveRequest) {
+      return defaultResolveRequest(context, moduleName, platform);
+    }
+    return resolve(context, moduleName, platform);
   },
 };
 
