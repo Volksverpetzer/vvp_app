@@ -38,14 +38,34 @@ const StripeButton = (props: StripeButtonProperties) => {
   const { isPlatformPaySupported } = usePlatformPay();
 
   useEffect(() => {
-    (async function checkSupport() {
-      const supported = await isPlatformPaySupported();
-      setIsSupported(supported);
-      setIsLoading(false);
-      onSupportChecked?.(supported);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlatformPaySupported]);
+    let mounted = true;
+
+    const checkSupport = async () => {
+      let supported = false;
+      try {
+        supported = await isPlatformPaySupported();
+        if (mounted) {
+          setIsSupported(supported);
+        }
+      } catch (error) {
+        console.error(error);
+        if (mounted) {
+          setIsSupported(false);
+        }
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+          onSupportChecked?.(supported);
+        }
+      }
+    };
+
+    void checkSupport();
+
+    return () => {
+      mounted = false;
+    };
+  }, [isPlatformPaySupported, onSupportChecked]);
 
   /**
    * Fetch the client secret from "payment/paymentIntent" endpoint
