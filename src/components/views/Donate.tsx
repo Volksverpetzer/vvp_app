@@ -2,7 +2,7 @@ import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
 import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Notifications from "expo-notifications";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
@@ -35,6 +35,13 @@ const Donate = (properties: DonateProperties) => {
   const paypalAlways =
     properties?.paypalAlways || !Config.donations.platformPay;
   const showPlatformPay = Platform.OS === "ios" && Config.donations.platformPay;
+
+  /**
+   * Callback to handle Platform Pay support check result
+   */
+  const handleSupportChecked = useCallback((isSupported: boolean) => {
+    setIsPlatformPaySupported(isSupported);
+  }, []);
 
   /**
    * Log a donation conversion event
@@ -138,9 +145,7 @@ const Donate = (properties: DonateProperties) => {
               setTimeout(() => setSuccessAnimated(false), 1500);
               logSuccess("Stripe");
             }}
-            onSupportChecked={(isSupported) => {
-              setIsPlatformPaySupported(isSupported);
-            }}
+            onSupportChecked={handleSupportChecked}
           />
         )}
         {paypalAlways && <Space size={20} />}
