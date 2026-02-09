@@ -9,7 +9,7 @@ import API from "#/helpers/network/ServerAPI";
 
 interface StripeButtonProperties {
   amount: number;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 const StripeButton = (props: StripeButtonProperties) => {

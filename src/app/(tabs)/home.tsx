@@ -35,8 +35,6 @@ const HomeScreen = () => {
     fetchers: [],
   });
 
-  // share intent handled centrally in RootLayout via ShareIntentHandler
-
   useEffect(() => {
     const enabled = getEnabledFeeds(
       Config.feeds,
