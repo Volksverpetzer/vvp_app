@@ -22,13 +22,21 @@ export const useHandleShareIntent = () => {
         try {
           const { path } = Linking.parse(shareIntent.webUrl);
           if (!shareIntent.webUrl.includes(Config.wpUrl)) {
-            router.push(
-              `/search?tag=${encodeURIComponent(shareIntent.webUrl)}` as unknown as Href,
-            );
+            router.push({
+              pathname: "/search",
+              params: { tag: shareIntent.webUrl },
+            });
             return;
           }
 
-          router.push(path as Href);
+          const safePath =
+            typeof path === "string" && path.length > 0
+              ? path.startsWith("/")
+                ? path
+                : `/${path}`
+              : "/search";
+
+          router.push(safePath as Href);
         } catch {
           // swallow malformed urls
         }
