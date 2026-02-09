@@ -36,6 +36,7 @@ const Onboarding = () => {
   const corporate = useCorporateColor();
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
+
   useEffect(() => {
     PersonalStore.isOnboardingDone().then((value) => {
       if (value === true) {
