@@ -1,6 +1,6 @@
 {
   "name": "vvp_app",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "main": "expo-router/entry",
   "packageManager": "pnpm@10.29.2",
   "license": "MIT",
