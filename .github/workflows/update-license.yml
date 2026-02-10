@@ -1,3 +1,37 @@
+# This workflow automatically updates license data and creates a PR with auto-merge enabled.
+#
+# IMPORTANT: Setup Required
+# -------------------------
+# This workflow requires a custom token (AUTO_MERGE_TOKEN) with the following permissions:
+#
+# Why a custom token is needed:
+# - GITHUB_TOKEN cannot trigger other workflows (pull_request events)
+# - GITHUB_TOKEN cannot enable auto-merge on pull requests
+#
+# Setup Instructions:
+# 1. Create a Personal Access Token (PAT) OR GitHub App:
+#    
+#    Option A - Personal Access Token:
+#    - Go to GitHub Settings > Developer settings > Personal access tokens > Fine-grained tokens
+#    - Create a token with these permissions:
+#      * Contents: Read and write
+#      * Pull requests: Read and write
+#      * Workflows: Read and write
+#    
+#    Option B - GitHub App:
+#    - Create a GitHub App with the same permissions as above
+#    - Install the app on this repository
+#    - Generate a private key and use it with an app token action
+#
+# 2. Add the token as a repository secret:
+#    - Go to repository Settings > Secrets and variables > Actions
+#    - Create a new secret named AUTO_MERGE_TOKEN
+#    - Paste your token value
+#
+# 3. Ensure branch protection rules allow auto-merge:
+#    - The 'prerelease' branch should have appropriate protection rules
+#    - "Allow auto-merge" must be enabled in repository settings
+
 name: Update licenses on prerelease
 
 on:
@@ -39,11 +73,21 @@ jobs:
           pnpm exec prettier --write src/screens/Settings/components/licenses/data.tsx
 
       - name: 🫸 Create Pull Request with license data changes
+        id: create-pr
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.AUTO_MERGE_TOKEN }}
           commit-message: "Bump license data"
           branch: bot/update-license-data
           base: prerelease
           title: "Update license data"
           delete-branch: true
+
+      - name: 🤖 Enable auto-merge
+        if: steps.create-pr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
+          PR_NUMBER: ${{ steps.create-pr.outputs.pull-request-number }}
+        run: |
+          gh pr merge $PR_NUMBER --auto --squash
+
