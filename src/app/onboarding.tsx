@@ -35,17 +35,12 @@ const Onboarding = () => {
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
 
-  const agreeToTerms = () => {
-    Notifications.getPermissions().then(async (status) => {
-      if (status.status !== "granted") {
-        await Notifications.registerForPushNotifications();
-      }
-      PersonalStore.setOnboardingDone().then(() => {
-        updateBadgeState({ personal: false, action: true });
-        router.replace("/");
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      });
-    });
+  const agreeToTerms = async () => {
+    await Notifications.registerForPushNotifications();
+    await PersonalStore.setOnboardingDone();
+    updateBadgeState({ personal: false, action: true });
+    router.replace("/");
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 
   const saveContentSetting = (
