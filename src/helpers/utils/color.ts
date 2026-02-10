@@ -15,7 +15,7 @@ export const hexToRgb = (hex: string): [number, number, number] => {
 };
 
 /**
- * Returns the tag styles for the given color scheme and width
+ * Returns the tag styles for the given color scheme
  * @param colorScheme The color scheme to use
  * @returns The tag styles
  */
