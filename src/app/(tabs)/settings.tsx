@@ -232,7 +232,7 @@ const SettingsScreen = () => {
               });
             }}
           >
-            <Text style={styles.pressableText}>Alle Erfolge Zurücksetzen</Text>
+            <Text style={styles.pressableText}>Alle Erfolge zurücksetzen</Text>
           </Pressable>
 
           <Text style={styles.versionText}>
