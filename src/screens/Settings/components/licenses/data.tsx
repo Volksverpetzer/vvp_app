@@ -1,4 +1,11 @@
 export default {
+  "@algolia/client-search@5.48.0": {
+    licenses: "MIT",
+    repository: "https://github.com/algolia/algoliasearch-client-javascript",
+    licenseUrl:
+      "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
+    parents: "vvp_app",
+  },
   "@atproto/api@0.18.20": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
@@ -83,7 +90,7 @@ export default {
     licenseUrl: "https://github.com/vdor/react-native-horizontal-picker",
     parents: "vvp_app",
   },
-  "axios@1.13.4": {
+  "axios@1.13.5": {
     licenses: "MIT",
     repository: "https://github.com/axios/axios",
     licenseUrl: "https://github.com/axios/axios/raw/master/LICENSE",
