@@ -12,12 +12,6 @@ export default {
     licenseUrl: "https://github.com/babel/babel/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@expo-google-fonts/source-sans-3@0.4.1": {
-    licenses: "MIT AND OFL-1.1",
-    repository: "https://github.com/expo/google-fonts",
-    licenseUrl: "https://github.com/expo/google-fonts/raw/master/LICENSE",
-    parents: "vvp_app",
-  },
   "@expo/config@12.0.13": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
