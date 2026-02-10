@@ -36,8 +36,12 @@ const Onboarding = () => {
   const router = useRouter();
 
   const agreeToTerms = async () => {
-    await Notifications.registerForPushNotifications();
-    await PersonalStore.setOnboardingDone();
+    await Notifications.registerForPushNotifications().catch((error) => {
+      console.error("Failed to register for push notifications:", error);
+    });
+    await PersonalStore.setOnboardingDone().catch((error) => {
+      console.error("Failed to set onboarding done:", error);
+    });
     updateBadgeState({ personal: false, action: true });
     router.replace("/");
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
