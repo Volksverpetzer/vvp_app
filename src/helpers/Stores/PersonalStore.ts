@@ -36,7 +36,7 @@ const PersonalStore = {
    * Sets the onboarding status (default: to true).
    * @param {boolean} [value=true] - The onboarding status to set.
    */
-  async setOnboardingDone(value = true): Promise<void> {
+  async setOnboardingDone(value: boolean = true): Promise<void> {
     try {
       await BaseStore.setItem(this.keys.onboardingDone, JSON.stringify(value));
     } catch (error) {

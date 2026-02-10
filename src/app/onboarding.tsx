@@ -39,12 +39,11 @@ const Onboarding = () => {
     await Notifications.registerForPushNotifications().catch((error) => {
       console.error("Failed to register for push notifications:", error);
     });
-    await PersonalStore.setOnboardingDone().catch((error) => {
-      console.error("Failed to set onboarding done:", error);
+    await PersonalStore.setOnboardingDone().finally(() => {
+      updateBadgeState({ personal: false, action: true });
+      router.replace("/");
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     });
-    updateBadgeState({ personal: false, action: true });
-    router.replace("/");
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 
   const saveContentSetting = (
