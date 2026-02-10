@@ -31,6 +31,10 @@
 # 3. Ensure branch protection rules allow auto-merge:
 #    - The 'prerelease' branch should have appropriate protection rules
 #    - "Allow auto-merge" must be enabled in repository settings
+#
+# Note: If AUTO_MERGE_TOKEN is not configured, the auto-merge step will fail
+# with a clear error message from GitHub CLI. The PR will still be created,
+# but auto-merge will not be enabled.
 
 name: Update licenses on prerelease
 
@@ -89,5 +93,5 @@ jobs:
           GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
           PR_NUMBER: ${{ steps.create-pr.outputs.pull-request-number }}
         run: |
-          gh pr merge $PR_NUMBER --auto --squash
+          gh pr merge $PR_NUMBER --auto --squash --repo ${{ github.repository }}
 
