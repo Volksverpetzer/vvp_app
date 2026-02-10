@@ -1,4 +1,11 @@
 export default {
+  "@algolia/client-search@5.48.0": {
+    licenses: "MIT",
+    repository: "https://github.com/algolia/algoliasearch-client-javascript",
+    licenseUrl:
+      "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
+    parents: "vvp_app",
+  },
   "@atproto/api@0.18.20": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
@@ -10,6 +17,12 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/babel/babel",
     licenseUrl: "https://github.com/babel/babel/raw/master/LICENSE",
+    parents: "vvp_app",
+  },
+  "@expo-google-fonts/source-sans-3@0.4.1": {
+    licenses: "MIT AND OFL-1.1",
+    repository: "https://github.com/expo/google-fonts",
+    licenseUrl: "https://github.com/expo/google-fonts/raw/master/LICENSE",
     parents: "vvp_app",
   },
   "@expo/config@12.0.13": {
@@ -77,7 +90,7 @@ export default {
     licenseUrl: "https://github.com/vdor/react-native-horizontal-picker",
     parents: "vvp_app",
   },
-  "axios@1.13.4": {
+  "axios@1.13.5": {
     licenses: "MIT",
     repository: "https://github.com/axios/axios",
     licenseUrl: "https://github.com/axios/axios/raw/master/LICENSE",
