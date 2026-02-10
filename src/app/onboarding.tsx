@@ -35,17 +35,20 @@ const Onboarding = () => {
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
 
-  const agreeToTerms = () => {
-    Notifications.getPermissions().then(async (status) => {
+  const agreeToTerms = async () => {
+    try {
+      const status = await Notifications.getPermissions();
       if (status.status !== "granted") {
         await Notifications.registerForPushNotifications();
       }
-      PersonalStore.setOnboardingDone().then(() => {
-        updateBadgeState({ personal: false, action: true });
-        router.replace("/");
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      });
-    });
+    } catch (error) {
+      console.warn("Failed to register for push notifications:", error);
+    } finally {
+      await PersonalStore.setOnboardingDone();
+      updateBadgeState({ personal: false, action: true });
+      router.replace("/");
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
   };
 
   const saveContentSetting = (
