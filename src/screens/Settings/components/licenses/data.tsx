@@ -1,11 +1,4 @@
 export default {
-  "@algolia/client-search@5.47.0": {
-    licenses: "MIT",
-    repository: "https://github.com/algolia/algoliasearch-client-javascript",
-    licenseUrl:
-      "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
-    parents: "vvp_app",
-  },
   "@atproto/api@0.18.20": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
