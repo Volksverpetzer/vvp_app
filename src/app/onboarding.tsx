@@ -2,7 +2,7 @@ import Constants from "expo-constants";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -34,21 +34,12 @@ const Onboarding = () => {
   const corporate = useCorporateColor();
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
-  useEffect(() => {
-    PersonalStore.isOnboardingDone().then((value) => {
-      if (value === true) {
-        Notifications.getPermissions().then((status) => {
-          if (status.status !== "granted") {
-            Notifications.registerForPushNotifications();
-          }
-        });
-        router.replace("/");
-      }
-    });
-  }, []);
 
-  const agreeToTerms = () => {
-    PersonalStore.setOnboardingDone().then(() => {
+  const agreeToTerms = async () => {
+    await Notifications.registerForPushNotifications().catch((error) => {
+      console.error("Failed to register for push notifications:", error);
+    });
+    await PersonalStore.setOnboardingDone().finally(() => {
       updateBadgeState({ personal: false, action: true });
       router.replace("/");
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
