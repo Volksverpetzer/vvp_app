@@ -35,6 +35,9 @@ const NotificationManager = {
    */
   async getToken(): Promise<string> {
     try {
+      // Skip on web as expo-notifications is not fully supported
+      if (Platform.OS === "web") return "-";
+
       const { data } = await Notifications.getExpoPushTokenAsync({
         projectId: Config.eas.projectId,
       });

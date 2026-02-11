@@ -212,15 +212,15 @@ const ReportScreen = () => {
             style={{
               ...globalStyles.row,
               ...globalStyles.noBackground,
-              width: "85%",
               paddingHorizontal: 12,
+              justifyContent: "flex-start",
+              gap: 20,
             }}
           >
             <Checkbox
               checked={allowedPublic}
               onChange={(checked: boolean) => setAllowedPublic(checked)}
             />
-            <View style={{ width: 20 }} />
             <Text>
               Der Report darf veröffentlicht werden, sodass andere ihn
               kommentieren können.

@@ -34,7 +34,6 @@ export const styles = StyleSheet.create({
   },
   feed: {
     marginHorizontal: "auto",
-    maxWidth: 700,
     width: "94%",
   },
   header: {
@@ -62,7 +61,7 @@ export const styles = StyleSheet.create({
     width: "80%",
   },
   noBackground: {
-    backgroundColor: undefined,
+    backgroundColor: "transparent",
   },
   roundEdges: {
     borderRadius: 15,
