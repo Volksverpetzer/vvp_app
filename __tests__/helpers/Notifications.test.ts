@@ -133,6 +133,12 @@ describe("NotificationManager", () => {
   });
 
   describe("checkAndRequestOnLaunch", () => {
+    afterEach(() => {
+      // Restore Device.isDevice after each test
+      const Device = jest.requireMock("expo-device");
+      Device.__isDeviceValue = true;
+    });
+
     it("should skip simulators/emulators and return early", async () => {
       // Mock Device to simulate running on a simulator
       const Device = jest.requireMock("expo-device");
@@ -154,9 +160,6 @@ describe("NotificationManager", () => {
       expect(getPermissionsSpy).not.toHaveBeenCalled();
       expect(refreshSpy).not.toHaveBeenCalled();
       expect(registerSpy).not.toHaveBeenCalled();
-
-      // Restore for other tests
-      Device.__isDeviceValue = true;
     });
 
     it("should refresh server when permissions are granted", async () => {
