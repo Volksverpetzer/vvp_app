@@ -78,7 +78,6 @@ const MySources = () => {
                   marginVertical: 15,
                   borderRadius: 10,
                   width,
-                  ...styles.shadow,
                   backgroundColor,
                   overflow: "hidden",
                 }}
