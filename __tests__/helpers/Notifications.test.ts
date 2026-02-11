@@ -27,11 +27,16 @@ jest.mock("expo-notifications", () => ({
   },
 }));
 
+// Use a closure variable and setter to control the mocked device flag safely
+let mockIsDeviceValue = true;
 jest.mock("expo-device", () => ({
   get isDevice() {
-    return jest.requireMock("expo-device").__isDeviceValue ?? true;
+    return mockIsDeviceValue;
   },
-  __isDeviceValue: true,
+  // helper to change the mocked value from tests
+  __setIsDeviceValue(value: boolean) {
+    mockIsDeviceValue = value;
+  },
 }));
 
 jest.mock("expo-application", () => ({
@@ -134,15 +139,15 @@ describe("NotificationManager", () => {
 
   describe("checkAndRequestOnLaunch", () => {
     afterEach(() => {
-      // Restore Device.isDevice after each test
-      const Device = jest.requireMock("expo-device");
-      Device.__isDeviceValue = true;
+      // Restore Device.isDevice after each test via the setter
+      const Device = jest.requireMock("expo-device") as any;
+      Device.__setIsDeviceValue(true);
     });
 
     it("should skip simulators/emulators and return early", async () => {
       // Mock Device to simulate running on a simulator
-      const Device = jest.requireMock("expo-device");
-      Device.__isDeviceValue = false;
+      const Device = jest.requireMock("expo-device") as any;
+      Device.__setIsDeviceValue(false);
 
       const getPermissionsSpy = jest.spyOn(
         Notifications,
