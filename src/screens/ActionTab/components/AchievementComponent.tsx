@@ -68,7 +68,6 @@ const AchievementComponent = () => {
             alignItems: "center",
             justifyContent: "center",
             zIndex: 4,
-            ...styles.shadow,
           }}
         >
           <Text style={{ fontSize: 30 }}>{AchievementConfig[level].logo}</Text>

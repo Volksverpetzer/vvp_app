@@ -30,11 +30,7 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
           router.replace("/(tabs)/action");
         }
       }}
-      style={[
-        missionStyles.rectanglePressable,
-        { backgroundColor },
-        styles.shadow,
-      ]}
+      style={[missionStyles.rectanglePressable, { backgroundColor }]}
     >
       <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
         <Feather name="check-circle" size={24} color={corporate} />
