@@ -60,8 +60,11 @@ const RootLayout = () => {
         if (onboardingDone) {
           await NotificationManager.checkAndRequestOnLaunch();
         }
-      } catch (e) {
-        console.error("Error checking onboarding status for notifications:", e);
+      } catch (error) {
+        console.error(
+          "Error checking onboarding status for notifications:",
+          error,
+        );
       }
     })();
   }, []);
