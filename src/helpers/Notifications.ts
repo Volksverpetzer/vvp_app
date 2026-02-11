@@ -198,7 +198,7 @@ const NotificationManager = {
 
       // permissions.status === DENIED (or other) — ask again only if the platform
       // indicates we can ask again.
-      const canAskAgain = (permissions as any)?.canAskAgain;
+      const canAskAgain = permissions?.canAskAgain;
       if (canAskAgain) {
         const { status } = await Notifications.requestPermissionsAsync();
         if (status === Notifications.PermissionStatus.GRANTED) {
