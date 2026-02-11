@@ -28,7 +28,10 @@ jest.mock("expo-notifications", () => ({
 }));
 
 jest.mock("expo-device", () => ({
-  isDevice: true,
+  get isDevice() {
+    return jest.requireMock("expo-device").__isDeviceValue ?? true;
+  },
+  __isDeviceValue: true,
 }));
 
 jest.mock("expo-application", () => ({
@@ -130,6 +133,32 @@ describe("NotificationManager", () => {
   });
 
   describe("checkAndRequestOnLaunch", () => {
+    it("should skip simulators/emulators and return early", async () => {
+      // Mock Device to simulate running on a simulator
+      const Device = jest.requireMock("expo-device");
+      Device.__isDeviceValue = false;
+
+      const getPermissionsSpy = jest.spyOn(
+        Notifications,
+        "getPermissionsAsync",
+      );
+      const refreshSpy = jest.spyOn(NotificationManager, "refreshServer");
+      const registerSpy = jest.spyOn(
+        NotificationManager,
+        "registerForPushNotifications",
+      );
+
+      await NotificationManager.checkAndRequestOnLaunch();
+
+      // Should return early without checking permissions or making any requests
+      expect(getPermissionsSpy).not.toHaveBeenCalled();
+      expect(refreshSpy).not.toHaveBeenCalled();
+      expect(registerSpy).not.toHaveBeenCalled();
+
+      // Restore for other tests
+      Device.__isDeviceValue = true;
+    });
+
     it("should refresh server when permissions are granted", async () => {
       jest
         .spyOn(Notifications, "getPermissionsAsync")
