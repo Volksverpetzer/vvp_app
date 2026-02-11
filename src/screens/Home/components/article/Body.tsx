@@ -10,10 +10,6 @@ import RenderHtml, {
   TBlock,
   defaultHTMLElementModels,
 } from "react-native-render-html";
-import BlockRenderer from "src/screens/Home/components/article/renderer/BlockRenderer";
-import HeaderRenderer from "src/screens/Home/components/article/renderer/HeaderRenderer";
-import IframeRenderer from "src/screens/Home/components/article/renderer/IframeRenderer";
-import ImageRenderer from "src/screens/Home/components/article/renderer/ImageRenderer";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -21,6 +17,10 @@ import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getTagStyles } from "#/helpers/utils/color";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
+import HeaderRenderer from "#/screens/Home/components/article/renderer/HeaderRenderer";
+import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
+import ImageRenderer from "#/screens/Home/components/article/renderer/ImageRenderer";
 import { HttpsUrl } from "#/types";
 
 import {

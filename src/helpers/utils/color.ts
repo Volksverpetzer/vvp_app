@@ -15,12 +15,13 @@ export const hexToRgb = (hex: string): [number, number, number] => {
 };
 
 /**
- * Returns the tag styles for the given color scheme and width
+ * Returns the tag styles for the given color scheme
  * @param colorScheme The color scheme to use
  * @returns The tag styles
  */
 export const getTagStyles = (colorScheme: string) => {
   const corporate = Colors[colorScheme].corporate;
+  const hightlightColor = Colors[colorScheme].hightlight;
   const textColor = Colors[colorScheme].text;
 
   return {
@@ -28,6 +29,10 @@ export const getTagStyles = (colorScheme: string) => {
       color: corporate,
       textDecorationLine: "underline" as const,
       textDecorationColor: corporate,
+    },
+    em: {
+      fontWeight: "bold" as const,
+      color: hightlightColor,
     },
     p: { color: textColor, padding: 10, fontSize: 18 },
     strong: {
