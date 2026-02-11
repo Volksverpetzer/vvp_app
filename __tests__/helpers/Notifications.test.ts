@@ -129,38 +129,69 @@ describe("NotificationManager", () => {
     });
   });
 
-  describe("checkNotificationsConfigured", () => {
-    it("should return true when device supports notifications and permissions are granted", async () => {
-      // Setup
-      // expo-device is already mocked to isDevice: true in the module factory above
-      jest.spyOn(Notifications, "getPermissionsAsync").mockResolvedValue({
-        status: "granted",
-      } as any);
-
-      // Execute
-      const result = await NotificationManager.checkNotificationsConfigured();
-
-      // Assert
-      expect(result).toBe(true);
-    });
-
-    it.skip("should return false when not on physical device", async () => {
-      // Skip this test due to mocking complexity with expo-device
-      // The functionality is tested in integration tests
-    });
-
-    it("should return false when permissions are not granted", async () => {
-      // Setup
-      // expo-device remains mocked as a device
+  describe("checkAndRequestOnLaunch", () => {
+    it("should refresh server when permissions are granted", async () => {
       jest
         .spyOn(Notifications, "getPermissionsAsync")
-        .mockResolvedValue({ status: "denied" } as any);
+        .mockResolvedValue({ status: "granted" } as any);
 
-      // Execute
-      const result = await NotificationManager.checkNotificationsConfigured();
+      const refreshSpy = jest
+        .spyOn(NotificationManager, "refreshServer")
+        .mockResolvedValue(undefined as any);
 
-      // Assert
-      expect(result).toBe(false);
+      await NotificationManager.checkAndRequestOnLaunch();
+
+      expect(refreshSpy).toHaveBeenCalled();
+    });
+
+    it("should request permissions when undetermined", async () => {
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "undetermined" } as any);
+
+      const registerSpy = jest
+        .spyOn(NotificationManager, "registerForPushNotifications")
+        .mockResolvedValue({ status: "ok", notificationSettings: {} } as any);
+
+      await NotificationManager.checkAndRequestOnLaunch();
+
+      expect(registerSpy).toHaveBeenCalled();
+    });
+
+    it("should request again when denied but canAskAgain and user grants", async () => {
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "denied", canAskAgain: true } as any);
+
+      const requestSpy = jest
+        .spyOn(Notifications, "requestPermissionsAsync")
+        .mockResolvedValue({ status: "granted" } as any);
+
+      const registerSpy = jest
+        .spyOn(NotificationManager, "registerForPushNotifications")
+        .mockResolvedValue({ status: "ok", notificationSettings: {} } as any);
+
+      await NotificationManager.checkAndRequestOnLaunch();
+
+      expect(requestSpy).toHaveBeenCalled();
+      expect(registerSpy).toHaveBeenCalled();
+    });
+
+    it("should not request when denied and cannot ask again", async () => {
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "denied", canAskAgain: false } as any);
+
+      const requestSpy = jest.spyOn(Notifications, "requestPermissionsAsync");
+      const registerSpy = jest.spyOn(
+        NotificationManager,
+        "registerForPushNotifications",
+      );
+
+      await NotificationManager.checkAndRequestOnLaunch();
+
+      expect(requestSpy).not.toHaveBeenCalled();
+      expect(registerSpy).not.toHaveBeenCalled();
     });
   });
 });

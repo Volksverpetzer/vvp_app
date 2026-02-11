@@ -23,6 +23,7 @@ import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import Colors from "#/constants/Colors";
 import NotificationManager from "#/helpers/Notifications";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
@@ -53,7 +54,16 @@ const RootLayout = () => {
   // On first mount check notification permissions and request if appropriate.
   // The NotificationManager itself will skip simulators and respects canAskAgain.
   useEffect(() => {
-    await NotificationManager.checkAndRequestOnLaunch();
+    (async () => {
+      try {
+        const onboardingDone = await PersonalStore.isOnboardingDone();
+        if (onboardingDone) {
+          await NotificationManager.checkAndRequestOnLaunch();
+        }
+      } catch (e) {
+        console.error("Error checking onboarding status for notifications:", e);
+      }
+    })();
   }, []);
 
   useEffect(() => {
