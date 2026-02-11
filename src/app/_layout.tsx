@@ -22,6 +22,7 @@ import View from "#/components/design/View";
 import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import Colors from "#/constants/Colors";
+import NotificationManager from "#/helpers/Notifications";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
@@ -48,6 +49,12 @@ const RootLayout = () => {
 
   const colorScheme = useAppColorScheme();
   const insets = useSafeAreaInsets();
+
+  // On first mount check notification permissions and request if appropriate.
+  // The NotificationManager itself will skip simulators and respects canAskAgain.
+  useEffect(() => {
+    await NotificationManager.checkAndRequestOnLaunch();
+  }, []);
 
   useEffect(() => {
     if (loaded) {
