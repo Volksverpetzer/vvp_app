@@ -23,7 +23,6 @@ import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles as globalStyles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -88,7 +87,6 @@ const SettingsScreen = () => {
   };
 
   const pressableStyle = ({ pressed }: { pressed: boolean }) => [
-    styles.pressable,
     pressed && { backgroundColor: secondaryBackground },
   ];
 
@@ -177,35 +175,33 @@ const SettingsScreen = () => {
             icon={<FontAwesome name="lock" size={24} color={corporate} />}
             text="Datenschutz"
           />
-          <Space size={10} />
-          <View style={[styles.donateContainer, globalStyles.noBackground]}>
-            <Donate showPicker={false} />
-            <Space size={20} />
-            <ShopButton article_link={Config.wpUrl} />
-          </View>
-          <Space size={10} />
+        </View>
+        <View style={styles.donateContainer}>
+          <Donate showPicker={false} />
+          <Space size={20} />
+          <ShopButton article_link={Config.wpUrl} />
+        </View>
+        <View style={styles.infoContainer}>
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push("/licenses")}
             style={pressableStyle}
           >
-            <Text style={styles.pressableText}>Lizenzen</Text>
+            <Text>Lizenzen</Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
             style={pressableStyle}
             onPress={() => PersonalStore.setOnboardingDone(false)}
           >
-            <Text style={styles.pressableText}>Intro zurücksetzen</Text>
+            <Text>Intro zurücksetzen</Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
             style={pressableStyle}
             onPress={() => Notifications.registerForPushNotifications()}
           >
-            <Text style={styles.pressableText}>
-              Benachrichtigungen zurücksetzen
-            </Text>
+            <Text>Benachrichtigungen zurücksetzen</Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
@@ -232,15 +228,13 @@ const SettingsScreen = () => {
               });
             }}
           >
-            <Text style={styles.pressableText}>Alle Erfolge Zurücksetzen</Text>
+            <Text>Alle Erfolge zurücksetzen</Text>
           </Pressable>
-
-          <Text style={styles.versionText}>
+          <Text selectable>
             Versionskennung: {Application.nativeApplicationVersion}
             &nbsp;-&nbsp;
             {Application.nativeBuildVersion}
-          </Text>
-          <Text style={styles.versionText} selectable>
+            {"\n"}
             Token: {token}
           </Text>
         </View>
@@ -255,15 +249,15 @@ const styles = StyleSheet.create({
   },
   donateContainer: {
     alignItems: "center",
+    paddingVertical: 20,
   },
   linksContainer: {
     paddingHorizontal: 20,
   },
-  pressable: {
-    paddingVertical: 20,
-  },
-  pressableText: {
-    alignSelf: "flex-start",
+  infoContainer: {
+    flex: 1,
+    padding: 20,
+    gap: 20,
   },
   sectionText: {
     fontSize: 16,
@@ -273,9 +267,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     paddingVertical: 10,
-  },
-  versionText: {
-    marginTop: 10,
   },
 });
 

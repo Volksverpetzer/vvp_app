@@ -45,7 +45,6 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
         source={{ uri }}
         style={{ width, height: width * ratio, backgroundColor }}
       />
-
       <Modal
         style={styles.centered}
         visible={isModalOpen}

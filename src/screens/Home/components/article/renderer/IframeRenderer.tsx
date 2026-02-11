@@ -33,9 +33,8 @@ const INJECT_AFTER = `
   document.head.appendChild(meta);
 `;
 
-// Extract slug from wp-embedded-content src
 /**
- *
+ * Extract slug from wp-embedded-content src
  */
 const extractSlug = (source: string): string => {
   try {
@@ -48,10 +47,6 @@ const extractSlug = (source: string): string => {
   }
 };
 
-// Decide if WebView should navigate
-/**
- *
- */
 type WebViewRequest = {
   url?: string;
   isTopFrame?: boolean;

@@ -15,10 +15,14 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
+import { getTagStyles } from "#/helpers/utils/color";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
+import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
+import HeaderRenderer from "#/screens/Home/components/article/renderer/HeaderRenderer";
+import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
+import ImageRenderer from "#/screens/Home/components/article/renderer/ImageRenderer";
 import { HttpsUrl } from "#/types";
 
-import BlockRenderer from "./BlockRenderer";
 import {
   handleContainerElements,
   handleEmbeddedContent,
@@ -26,10 +30,6 @@ import {
   handleRemovableElements,
   handleSpecialElements,
 } from "./ElementHandlers";
-import HeaderRenderer from "./HeaderRenderer";
-import IframeRenderer from "./IframeRenderer";
-import ImageRenderer from "./ImageRenderer";
-import tagStylesFunction from "./tagStyles";
 
 interface BodyProperties {
   article_content: string;
@@ -61,8 +61,8 @@ const Body = (properties: BodyProperties) => {
   const colorScheme = useAppColorScheme();
 
   const articleTagStyles = useMemo(
-    () => tagStylesFunction(colorScheme, width),
-    [colorScheme, width],
+    () => getTagStyles(colorScheme),
+    [colorScheme],
   );
 
   const headerReferences = useRef<Record<string, RefObject<View>>>({});
