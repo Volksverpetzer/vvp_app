@@ -4,7 +4,6 @@ import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
 import {
   Animated,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
