@@ -57,6 +57,7 @@ const extraConfig: ExtraConfigType = {
       IBAN: "DE67 7205 0000 0251 7976 92",
       note: "Spende",
     },
+    merchantIdentifier: "merchant.volksverpetzer.de",
     steady: "https://steadyhq.com/volksverpetzer",
     support: "https://www.volksverpetzer.de/unterstutzen/",
     paypal: "https://www.paypal.com/donate/?hosted_button_id=8LXQZGF3BDWVU",
@@ -116,7 +117,6 @@ const extraConfig: ExtraConfigType = {
 const appName = "Volksverpetzer";
 
 const slug = "vvp_App";
-const merchantIdentifier = "merchant.volksverpetzer.de";
 
 const packageName = "de.volksverpetzer.app";
 
@@ -137,7 +137,7 @@ const config = {
   extraConfig,
   packageName,
   AndroidIntentFilters,
-  merchantIdentifier,
+  merchantIdentifier: "merchant.volksverpetzer.de",
   iOSAssociatedDomains,
   appName,
   slug,

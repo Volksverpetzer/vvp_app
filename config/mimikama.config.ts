@@ -55,6 +55,7 @@ const extraConfig: ExtraConfigType = {
       IBAN: "AT461200052999199621",
       note: "Spende Mimikama",
     },
+    merchantIdentifier: "merchant.volksverpetzer.de",
     steady: "https://steadyhq.com/de/mimikama/",
     support: "https://www.mimikama.org/unterstuetze-uns-bitte/",
     paypal: "https://www.paypal.com/donate/?hosted_button_id=DFR6BRAK8YB2J",
@@ -108,7 +109,6 @@ const extraConfig: ExtraConfigType = {
 const appName = "Mimikama";
 
 const slug = "mimikamaapp";
-const merchantIdentifier = "merchant.volksverpetzer.de";
 
 const packageName = "de.mimikama.app";
 
@@ -129,7 +129,6 @@ const config = {
   extraConfig,
   packageName,
   AndroidIntentFilters,
-  merchantIdentifier,
   iOSAssociatedDomains,
   appName,
   slug,
