@@ -1,7 +1,5 @@
 import Constants from "expo-constants";
-import * as Linking from "expo-linking";
-import { Href, useRouter } from "expo-router";
-import { useShareIntentContext } from "expo-share-intent";
+import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text } from "react-native";
 
@@ -19,16 +17,14 @@ import Feed, { FeedProperties } from "#/screens/Home/components/Feed";
 import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
 
 /**
- * HomeScreen is the main feed view. It fetches multiple social feeds,
- * handles share intent redirects, and displays content with an
- * animated header and search shortcut.
+ * HomeScreen is the main feed view. It fetches multiple social feeds
+ * and displays content with an animated header and search shortcut.
  * @returns React element for the home feed screen.
  */
 const HomeScreen = () => {
   const { contentSettings } = useContext(SettingsContext);
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const router = useRouter();
-  const { shareIntent, hasShareIntent } = useShareIntentContext();
   const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
 
@@ -37,28 +33,6 @@ const HomeScreen = () => {
   const [feedprops, setFeedProperties] = useState<FeedProperties>({
     fetchers: [],
   });
-
-  useEffect(() => {
-    if (hasShareIntent) {
-      // delay navigation to ensure root layout is mounted
-      const timer = setTimeout(() => {
-        if (shareIntent?.type === "weburl") {
-          try {
-            const { path } = Linking.parse(shareIntent.webUrl);
-            if (!shareIntent.webUrl.includes(Config.wpUrl)) {
-              router.push({
-                pathname: "/search",
-                params: { tag: shareIntent.webUrl },
-              });
-              return;
-            }
-            router.push(path as Href);
-          } catch {}
-        }
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [hasShareIntent, router, shareIntent.webUrl]);
 
   useEffect(() => {
     const enabled = getEnabledFeeds(
