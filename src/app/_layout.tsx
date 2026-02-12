@@ -200,8 +200,18 @@ const ShareIntentRunner = () => {
 
           router.push(safePath as Href);
         } catch {
-          // swallow malformed urls
+          // Fallback to search for parse errors
+          router.push({
+            pathname: "/search",
+            params: { tag: shareIntent.webUrl },
+          });
         }
+      } else if (shareIntent?.type === "text" && shareIntent.text) {
+        // Route text share intents to search page
+        router.push({
+          pathname: "/search",
+          params: { tag: shareIntent.text },
+        });
       }
     }, 0);
 
