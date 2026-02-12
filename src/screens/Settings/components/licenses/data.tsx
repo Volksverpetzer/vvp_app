@@ -6,7 +6,7 @@ export default {
       "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@atproto/api@0.18.20": {
+  "@atproto/api@0.18.21": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -63,14 +63,14 @@ export default {
       "https://github.com/react-native-async-storage/async-storage/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/bottom-tabs@7.9.0": {
+  "@react-navigation/bottom-tabs@7.4.0": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/native@7.1.26": {
+  "@react-navigation/native@7.1.8": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
