@@ -16,7 +16,7 @@ import Config from "#/constants/Config";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getTagStyles } from "#/helpers/utils/color";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
 import HeaderRenderer from "#/screens/Home/components/article/renderer/HeaderRenderer";
 import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";

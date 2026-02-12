@@ -14,7 +14,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import {
   DISPLAY_TEXT_EXCERPT,
   DISPLAY_TEXT_FULL,

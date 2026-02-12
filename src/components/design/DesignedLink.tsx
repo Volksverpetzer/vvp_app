@@ -8,7 +8,7 @@ import { ImageSourcePropType, Pressable, TextStyle, View } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import Text from "./Text";
 

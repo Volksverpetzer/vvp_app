@@ -9,7 +9,7 @@ import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { onShare as _onShare } from "#/helpers/Sharing";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface RedditProperties {
   preview: { images: any; enabled: boolean };

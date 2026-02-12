@@ -21,7 +21,7 @@ import { onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent, registerViews } from "#/helpers/network/Analytics";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { HttpsUrl } from "#/types";
 
 import Body from "./Body";

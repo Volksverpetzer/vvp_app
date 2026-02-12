@@ -8,7 +8,7 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 
 interface AlgoliaSearchProperties {

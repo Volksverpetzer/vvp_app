@@ -23,7 +23,7 @@ import Colors from "#/constants/Colors";
 import { styles as globalStyles } from "#/constants/Styles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import API from "#/helpers/network/ServerAPI";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import ReportStatusList from "#/screens/ReportTab/components/ReportStatusList";
 
 interface Report {
