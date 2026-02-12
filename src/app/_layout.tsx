@@ -181,8 +181,9 @@ const ShareIntentRunner = () => {
     const t = setTimeout(() => {
       if (shareIntent?.type === "weburl") {
         try {
-          const { path } = Linking.parse(shareIntent.webUrl);
-          if (!shareIntent.webUrl.includes(Config.wpUrl)) {
+          const { hostname, path } = Linking.parse(shareIntent.webUrl);
+          const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
+          if (hostname !== baseHostname) {
             router.push({
               pathname: "/search",
               params: { tag: shareIntent.webUrl },
