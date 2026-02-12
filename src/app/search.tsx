@@ -5,7 +5,7 @@ import { StyleProp, TextInput, TextStyle } from "react-native";
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useOptionalShareIntent } from "#/hooks/useOptionalShareIntent";
 import AISearch from "#/screens/Search/components/AISearch";
 import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";

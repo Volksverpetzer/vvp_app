@@ -13,7 +13,7 @@ import {
   TaskType,
 } from "#/helpers/Achievements";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import Parallelogram from "./Parallelogram";
 

@@ -9,7 +9,7 @@ import { Platform } from "react-native";
  * On mount, checks last notification response and listens for new ones.
  * Note: This hook is a no-op on web as notifications are not fully supported.
  */
-export function useNotificationObserver() {
+export const useNotificationObserver = () => {
   useEffect(() => {
     // Skip on web as expo-notifications is not fully supported
     if (Platform.OS === "web") return;
@@ -43,4 +43,4 @@ export function useNotificationObserver() {
       subscription.remove();
     };
   }, []);
-}
+};

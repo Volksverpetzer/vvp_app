@@ -12,14 +12,17 @@ import { styles } from "#/constants/Styles";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import Feed, { FeedProperties } from "#/screens/Home/components/Feed";
 import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
 
 /**
- * HomeScreen is the main feed view. It fetches multiple social feeds,
- * handles share intent redirects, and displays content with an
- * animated header and search shortcut.
+ * HomeScreen is the main feed view. It fetches multiple social feeds
+ * and displays content with an animated header and search shortcut.
+ *
+ * Note: Share intent routing is handled by the dedicated /shareintent screen
+ * (src/app/shareintent.tsx), which is routed via +native-intent.tsx.
+ *
  * @returns React element for the home feed screen.
  */
 const HomeScreen = () => {

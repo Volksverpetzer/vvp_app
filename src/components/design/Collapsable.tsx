@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import Colors from "#/constants/Colors";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface CollapsableProps {
   title: string;

@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import Colors from "#/constants/Colors";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface RightActionProps {
   progress: SharedValue<number>;

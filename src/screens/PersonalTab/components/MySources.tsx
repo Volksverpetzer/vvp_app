@@ -15,7 +15,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import { HttpsUrl, StoredSources } from "#/types";
 

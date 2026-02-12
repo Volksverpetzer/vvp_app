@@ -20,7 +20,7 @@ import GenericPost from "#/components/posts/GenericPost";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import Post from "#/helpers/Post";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 
 export type FeedFetcherProperties = {

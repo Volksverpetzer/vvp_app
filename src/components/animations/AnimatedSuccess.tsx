@@ -3,7 +3,7 @@ import { Animated, Dimensions } from "react-native";
 
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import Party from "#assets/images/party.png";
 

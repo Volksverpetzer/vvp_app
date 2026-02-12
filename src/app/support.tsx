@@ -6,7 +6,7 @@ import Support from "#/components/views/Support";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles as globalStyles } from "#/constants/Styles";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const SupportScreen = () => {
   const wpUrl = Config.wpUrl;

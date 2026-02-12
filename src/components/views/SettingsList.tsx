@@ -7,7 +7,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { ContentSettingType, SettingType } from "#/types";
 
 interface SettingsListProperties {

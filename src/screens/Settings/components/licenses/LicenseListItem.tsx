@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface LicensesListItemProperties {
   image?: string;
