@@ -24,6 +24,7 @@ import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
@@ -181,11 +182,25 @@ const ShareIntentRunner = () => {
     const t = setTimeout(() => {
       if (shareIntent?.type === "weburl") {
         try {
-          const { path } = Linking.parse(shareIntent.webUrl);
-          if (!shareIntent.webUrl.includes(Config.wpUrl)) {
+          const { hostname, path } = Linking.parse(shareIntent.webUrl);
+          const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
+          if (hostname !== baseHostname) {
             router.push({
               pathname: "/search",
               params: { tag: shareIntent.webUrl },
+            });
+            return;
+          }
+
+          // Check if the path should be excluded from deep linking (e.g., /wp-content/uploads/)
+          if (shouldExcludeFromDeepLink(path)) {
+            // Open excluded URLs with OS default handler instead of in-app
+            Linking.openURL(shareIntent.webUrl).catch((error) => {
+              console.warn(
+                "Failed to open excluded URL:",
+                shareIntent.webUrl,
+                error,
+              );
             });
             return;
           }
@@ -199,8 +214,18 @@ const ShareIntentRunner = () => {
 
           router.push(safePath as Href);
         } catch {
-          // swallow malformed urls
+          // Fallback to search when URL parsing fails - treats malformed URL as search query
+          router.push({
+            pathname: "/search",
+            params: { tag: shareIntent.webUrl },
+          });
         }
+      } else if (shareIntent?.type === "text" && shareIntent.text) {
+        // Route text share intents to search page
+        router.push({
+          pathname: "/search",
+          params: { tag: shareIntent.text },
+        });
       }
     }, 0);
 
