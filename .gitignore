@@ -47,3 +47,4 @@ coverage/
 # generated native folders
 /ios
 /android
+package-lock.json
