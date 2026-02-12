@@ -42,6 +42,7 @@ export interface ExtraConfigType {
     support: HttpsUrl; // URL to support page
     shop?: HttpsUrl;
     platformPay: boolean; // enables Apple Pay and Google Pay
+    merchantIdentifier?: string; // required for Apple Pay, can be obtained from Apple Developer Account
   };
   importantCats: Record<number, string>;
 }

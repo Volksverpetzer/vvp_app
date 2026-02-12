@@ -42,7 +42,8 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       [
         "@stripe/stripe-react-native",
         {
-          merchantIdentifier: variableConfig.merchantIdentifier,
+          merchantIdentifier:
+            variableConfig.extraConfig.donations.merchantIdentifier,
           enableGooglePay: false,
         },
       ],

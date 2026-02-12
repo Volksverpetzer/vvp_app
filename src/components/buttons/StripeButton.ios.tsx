@@ -8,6 +8,7 @@ import Constants from "expo-constants";
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
+import { StripeButtonProperties } from "#/components/buttons/StripeButton";
 import API from "#/helpers/network/ServerAPI";
 
 const styles = StyleSheet.create({
@@ -25,16 +26,11 @@ const styles = StyleSheet.create({
   },
 });
 
-interface StripeButtonProperties {
-  amount: number;
-  onSuccess: () => void;
-  onSupportChecked?: (isSupported: boolean) => void;
-}
-
 const StripeButton = (props: StripeButtonProperties) => {
   const { amount, onSuccess, onSupportChecked } = props;
   const [isLoading, setIsLoading] = useState(true);
   const [isSupported, setIsSupported] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { isPlatformPaySupported } = usePlatformPay();
   const onSupportCheckedRef = useRef(onSupportChecked);
 
@@ -78,26 +74,36 @@ const StripeButton = (props: StripeButtonProperties) => {
    * Handle the payment process
    */
   const pay = async () => {
-    const clientSecret = await fetchPaymentIntentClientSecret();
-    const applePay: PlatformPay.ApplePayBaseParams = {
-      cartItems: [
-        {
-          label: "Kaffeekasse " + Constants.expoConfig.name,
-          amount: amount.toString(),
-          paymentType: PlatformPay.PaymentType.Immediate,
-        },
-      ],
-      merchantCountryCode: "DE",
-      currencyCode: "EUR",
-    };
-    const result = await confirmPlatformPayPayment(clientSecret, {
-      applePay,
-    });
-    if (result.error) {
-      console.error(result.error);
+    // Prevent multiple concurrent payment flows
+    if (isProcessing) {
       return;
     }
-    onSuccess();
+
+    setIsProcessing(true);
+    try {
+      const clientSecret = await fetchPaymentIntentClientSecret();
+      const applePay: PlatformPay.ApplePayBaseParams = {
+        cartItems: [
+          {
+            label: "Kaffeekasse " + Constants.expoConfig.name,
+            amount: amount.toString(),
+            paymentType: PlatformPay.PaymentType.Immediate,
+          },
+        ],
+        merchantCountryCode: "DE",
+        currencyCode: "EUR",
+      };
+      const result = await confirmPlatformPayPayment(clientSecret, {
+        applePay,
+      });
+      if (result.error) {
+        console.error(result.error);
+        return;
+      }
+      onSuccess();
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   // Show loading indicator while checking support
@@ -121,6 +127,7 @@ const StripeButton = (props: StripeButtonProperties) => {
       appearance={PlatformPay?.ButtonStyle?.Black}
       borderRadius={4}
       style={styles.buttonContainer}
+      disabled={isProcessing}
     />
   );
 };
