@@ -37,8 +37,8 @@ const Faktenbot = ({ reaction, search }: FaktenbotProperties) => {
   }, [search]);
 
   // Don't render in Web or Expo Go
-  if (Platform.OS === "web" || Constants.executionEnvironment === "standalone")
-    return;
+  if (Platform.OS === "web" || Constants.executionEnvironment === "storeClient")
+    return null;
 
   return (
     <Rive
