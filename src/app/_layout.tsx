@@ -93,6 +93,7 @@ const RootLayout = () => {
 
   return (
     <ShareIntentProvider options={{ debug: false }}>
+      <ShareIntentRunner />
       <SafeAreaProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <StripeProvider
