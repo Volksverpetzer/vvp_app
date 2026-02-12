@@ -1,4 +1,4 @@
-interface StripeButtonProperties {
+export interface StripeButtonProperties {
   amount: number;
   onSuccess: () => void;
   onSupportChecked?: (isSupported: boolean) => void;

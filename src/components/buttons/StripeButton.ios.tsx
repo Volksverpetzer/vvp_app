@@ -8,6 +8,7 @@ import Constants from "expo-constants";
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
+import { StripeButtonProperties } from "#/components/buttons/StripeButton";
 import API from "#/helpers/network/ServerAPI";
 
 const styles = StyleSheet.create({
@@ -24,12 +25,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-interface StripeButtonProperties {
-  amount: number;
-  onSuccess: () => void;
-  onSupportChecked?: (isSupported: boolean) => void;
-}
 
 const StripeButton = (props: StripeButtonProperties) => {
   const { amount, onSuccess, onSupportChecked } = props;
