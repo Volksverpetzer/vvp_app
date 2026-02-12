@@ -24,6 +24,7 @@ import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
@@ -187,6 +188,19 @@ const ShareIntentRunner = () => {
             router.push({
               pathname: "/search",
               params: { tag: shareIntent.webUrl },
+            });
+            return;
+          }
+
+          // Check if the path should be excluded from deep linking (e.g., /wp-content/uploads/)
+          if (shouldExcludeFromDeepLink(path)) {
+            // Open excluded URLs with OS default handler instead of in-app
+            Linking.openURL(shareIntent.webUrl).catch((error) => {
+              console.warn(
+                "Failed to open excluded URL:",
+                shareIntent.webUrl,
+                error,
+              );
             });
             return;
           }
