@@ -2,6 +2,9 @@ import { useWindowDimensions } from "react-native";
 
 import { styles } from "#/constants/Styles";
 
+/**
+ * TODO do we really need this?
+ */
 export const useFeedDimensions = () => {
   const { width } = useWindowDimensions();
   const maxWidth = styles.feed.maxWidth;
