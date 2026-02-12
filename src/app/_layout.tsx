@@ -195,8 +195,8 @@ const ShareIntentRunner = () => {
           // Check if the path should be excluded from deep linking (e.g., /wp-content/uploads/)
           if (shouldExcludeFromDeepLink(path)) {
             // Open excluded URLs with OS default handler instead of in-app
-            Linking.openURL(shareIntent.webUrl).catch(() => {
-              // Silently fail if URL cannot be opened
+            Linking.openURL(shareIntent.webUrl).catch((error) => {
+              console.warn("Failed to open excluded URL:", shareIntent.webUrl, error);
             });
             return;
           }
