@@ -125,11 +125,6 @@ const getStyles = (isDark: boolean) =>
     cardShadow: {
       marginHorizontal: 12,
       marginVertical: 6,
-      shadowColor: isDark ? "#000" : "#fff",
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: isDark ? 0.6 : 0.4,
-      shadowRadius: isDark ? 4 : 2,
-      elevation: isDark ? 3 : 1,
     },
     image: {
       borderRadius: 0,

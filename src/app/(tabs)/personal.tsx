@@ -47,14 +47,6 @@ const PersonalTab = () => {
             style={{
               width: "100%",
               ...styles.noBackground,
-              shadowColor: Colors[colorScheme].text,
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.5,
-              shadowRadius: 5.84,
-              elevation: 5,
             }}
           >
             <View
