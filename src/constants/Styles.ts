@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     width: "80%",
   },
   noBackground: {
-    backgroundColor: undefined,
+    backgroundColor: "transparent",
   },
   roundEdges: {
     borderRadius: 15,

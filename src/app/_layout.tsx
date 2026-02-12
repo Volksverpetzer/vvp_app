@@ -5,11 +5,12 @@ import {
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
 import { StripeProvider } from "@stripe/stripe-react-native";
-import { Stack, useSegments } from "expo-router";
+import * as Linking from "expo-linking";
+import { Href, Stack, useRouter, useSegments } from "expo-router";
 import { ShareIntentProvider } from "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { LogBox } from "react-native";
+import { LogBox, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   SafeAreaProvider,
@@ -29,6 +30,7 @@ import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
+import { useOptionalShareIntent } from "#/hooks/useOptionalShareIntent";
 
 // Hide warning for new native event emitter
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
@@ -89,61 +91,70 @@ const RootLayout = () => {
     ),
   };
 
+  // Create the main app content
+  const appContent = (
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SettingsProvider>
+          <BadgeProvider>
+            <View
+              style={{
+                flex: 1,
+                paddingTop: insets.top,
+                backgroundColor: isTabsAndAction
+                  ? Colors[colorScheme].secondaryBackground
+                  : Colors[colorScheme].background,
+              }}
+            >
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  gestureEnabled: true,
+                }}
+              >
+                <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
+                <Stack.Screen
+                  name="[category]/[slug]"
+                  options={{ title: "Artikel" }}
+                />
+                <Stack.Screen
+                  name="insta/[post_id]"
+                  options={{ title: "Artikel" }}
+                />
+                <Stack.Screen name="search" options={{ title: "Suche" }} />
+                <Stack.Screen
+                  name="+not-found"
+                  options={{ title: "Nicht gefunden" }}
+                />
+                <Stack.Screen
+                  name="support"
+                  options={{ title: "Unterstutzen" }}
+                />
+                <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
+              </Stack>
+              <Toast config={toastConfig} />
+            </View>
+          </BadgeProvider>
+        </SettingsProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
+  );
+
+  // On web, skip native-only providers (ShareIntent and Stripe)
+  if (Platform.OS === "web") {
+    return appContent;
+  }
+
+  // On native platforms, wrap with native-only providers
   return (
     <ShareIntentProvider options={{ debug: false }}>
-      <SafeAreaProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <StripeProvider
-            publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
-            merchantIdentifier={Config.donations.merchantIdentifier}
-          >
-            <SettingsProvider>
-              <BadgeProvider>
-                <View
-                  style={{
-                    flex: 1,
-                    paddingTop: insets.top,
-                    backgroundColor: isTabsAndAction
-                      ? Colors[colorScheme].secondaryBackground
-                      : Colors[colorScheme].background,
-                  }}
-                >
-                  <Stack
-                    screenOptions={{
-                      headerShown: false,
-                      gestureEnabled: true,
-                    }}
-                  >
-                    <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
-                    <Stack.Screen
-                      name="[category]/[slug]"
-                      options={{ title: "Artikel" }}
-                    />
-                    <Stack.Screen
-                      name="insta/[post_id]"
-                      options={{ title: "Artikel" }}
-                    />
-                    <Stack.Screen name="search" options={{ title: "Suche" }} />
-                    <Stack.Screen
-                      name="+not-found"
-                      options={{ title: "Nicht gefunden" }}
-                    />
-                    <Stack.Screen
-                      name="support"
-                      options={{ title: "Unterstutzen" }}
-                    />
-                    <Stack.Screen
-                      name="licenses"
-                      options={{ title: "Lizenzen" }}
-                    />
-                  </Stack>
-                  <Toast config={toastConfig} />
-                </View>
-              </BadgeProvider>
-            </SettingsProvider>
-          </StripeProvider>
-        </GestureHandlerRootView>
-      </SafeAreaProvider>
+      <ShareIntentRunner />
+      <StripeProvider
+        publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
+        merchantIdentifier={Config.donations.merchantIdentifier}
+      >
+        {appContent}
+      </StripeProvider>
     </ShareIntentProvider>
   );
 };
@@ -154,6 +165,49 @@ const RootLayout = () => {
  */
 export const unstable_settings = {
   initialRouteName: "(tabs)",
+};
+
+/**
+ * Inline runner that handles incoming share intents and routes them.
+ */
+const ShareIntentRunner = () => {
+  const router = useRouter();
+  const { hasShareIntent, shareIntent } = useOptionalShareIntent();
+
+  useEffect(() => {
+    if (!hasShareIntent || !shareIntent) return;
+
+    // Delay routing to allow root layout to finish mounting
+    const t = setTimeout(() => {
+      if (shareIntent?.type === "weburl") {
+        try {
+          const { path } = Linking.parse(shareIntent.webUrl);
+          if (!shareIntent.webUrl.includes(Config.wpUrl)) {
+            router.push({
+              pathname: "/search",
+              params: { tag: shareIntent.webUrl },
+            });
+            return;
+          }
+
+          const safePath =
+            typeof path === "string" && path.length > 0
+              ? path.startsWith("/")
+                ? path
+                : `/${path}`
+              : "/search";
+
+          router.push(safePath as Href);
+        } catch {
+          // swallow malformed urls
+        }
+      }
+    }, 0);
+
+    return () => clearTimeout(t);
+  }, [hasShareIntent, router, shareIntent]);
+
+  return null;
 };
 
 export default RootLayout;

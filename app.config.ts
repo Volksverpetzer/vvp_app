@@ -17,7 +17,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     name: variableConfig.appName,
     slug: variableConfig.slug,
     version: pkg.version,
-    platforms: ["ios", "android"],
+    platforms: ["ios", "android", "web"],
     experiments: {
       typedRoutes: true,
     },
