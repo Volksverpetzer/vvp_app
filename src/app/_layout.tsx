@@ -200,7 +200,7 @@ const ShareIntentRunner = () => {
 
           router.push(safePath as Href);
         } catch {
-          // Fallback to search for parse errors
+          // Fallback to search when URL parsing fails - treats malformed URL as search query
           router.push({
             pathname: "/search",
             params: { tag: shareIntent.webUrl },
