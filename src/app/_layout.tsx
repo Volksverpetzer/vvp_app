@@ -7,7 +7,7 @@ import {
 import { StripeProvider } from "@stripe/stripe-react-native";
 import * as Linking from "expo-linking";
 import { Href, Stack, useRouter, useSegments } from "expo-router";
-import { ShareIntentProvider, useShareIntentContext } from "expo-share-intent";
+import { ShareIntentProvider } from "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { LogBox, Platform } from "react-native";
@@ -30,6 +30,7 @@ import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import useAppColorScheme from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
+import { useOptionalShareIntent } from "#/hooks/useOptionalShareIntent";
 
 // Hide warning for new native event emitter
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
@@ -171,7 +172,7 @@ export const unstable_settings = {
  */
 const ShareIntentRunner = () => {
   const router = useRouter();
-  const { shareIntent, hasShareIntent } = useShareIntentContext();
+  const { hasShareIntent, shareIntent } = useOptionalShareIntent();
 
   useEffect(() => {
     if (!hasShareIntent || !shareIntent) return;
