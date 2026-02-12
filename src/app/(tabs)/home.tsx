@@ -14,7 +14,7 @@ import { styles } from "#/constants/Styles";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import Feed, { FeedProperties } from "#/screens/Home/components/Feed";
 import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
 

@@ -8,7 +8,7 @@ import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { hexToRgb } from "#/helpers/utils/color";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 /**
  * Props for the AnimatedHeader component.

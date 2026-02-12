@@ -7,10 +7,18 @@ import { registerEvent } from "#/helpers/network/Analytics";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import { AISearchResponse } from "#/types";
 
-export interface UseAISearchProperties {
+interface UseAISearchProperties {
   search: string;
   setResultsLength: (n: number) => void;
   setIsLoading: (b: boolean) => void;
+}
+
+interface UseAISearchResultProperties {
+  results: AISearchResponse[];
+  error: string;
+  loadingMessage: string;
+  reactionValue: FaktenbotReaction;
+  reload: () => void;
 }
 
 /**
@@ -20,15 +28,12 @@ export interface UseAISearchProperties {
  * It also updates the search results length and loading state.
  * In case of an error, it sets the error message and resets the search results length to 0.
  * It also handles scrolling to the next or previous result.
- *
- * @param {UseAISearchProperties} props
- * @returns {{ results: AISearchResponse[], error: string, loadingMessage: string, currentIndex: number, flatListRef: React.RefObject<FlatList<AISearchResponse>>, reactionValue: number }}
  */
-export function useAISearch({
+export const useAISearch = ({
   search,
   setResultsLength,
   setIsLoading,
-}: UseAISearchProperties) {
+}: UseAISearchProperties): UseAISearchResultProperties => {
   const [results, setResults] = useState<AISearchResponse[]>([]);
   const [error, setError] = useState<string>("");
   const [loadingMessage, setLoadingMessage] = useState<string>("");
@@ -117,4 +122,4 @@ export function useAISearch({
   }, []);
 
   return { results, error, loadingMessage, reactionValue, reload };
-}
+};

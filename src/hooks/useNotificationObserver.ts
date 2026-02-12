@@ -7,7 +7,7 @@ import { useEffect } from "react";
  * Hook to handle initial and response-based notification redirects.
  * On mount, checks last notification response and listens for new ones.
  */
-export function useNotificationObserver() {
+export const useNotificationObserver = () => {
   useEffect(() => {
     let isMounted = true;
 
@@ -38,4 +38,4 @@ export function useNotificationObserver() {
       subscription.remove();
     };
   }, []);
-}
+};

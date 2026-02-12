@@ -11,7 +11,7 @@ import Colors from "#/constants/Colors";
 import { styles as globalStyles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 import { AISearchResponse } from "#/types";
 

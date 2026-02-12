@@ -12,7 +12,7 @@ import {
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
   const [ratio, setRatio] = useState(1.5);

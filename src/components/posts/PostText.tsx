@@ -7,7 +7,7 @@ import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import { normalizeFacets } from "#/helpers/utils/posts";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { HttpsUrl } from "#/types";
 
 type Props = {

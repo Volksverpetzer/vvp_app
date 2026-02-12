@@ -10,7 +10,7 @@ import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { ShareableType, onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { FaveableType } from "#/types";
 
 interface NavBarProperties {

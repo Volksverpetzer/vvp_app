@@ -7,5 +7,3 @@ export interface ShareIntentFallback {
 export const useOptionalShareIntent = (): ShareIntentFallback => {
   return { hasShareIntent: false, shareIntent: undefined, error: null };
 };
-
-export default useOptionalShareIntent;

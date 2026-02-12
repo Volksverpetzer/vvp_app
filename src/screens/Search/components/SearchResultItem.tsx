@@ -6,7 +6,7 @@ import RenderHtml from "react-native-render-html";
 import Card from "#/components/design/Card";
 import Text from "#/components/design/Text";
 import { getTagStyles } from "#/helpers/utils/color";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 // Konstanten außerhalb der Komponente sind immer stabil
 const IGNORED_DOM_TAGS = ["img", "script", "iframe", "style"];

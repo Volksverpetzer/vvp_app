@@ -11,7 +11,7 @@ import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MyFavs from "#/screens/PersonalTab/components/MyFavs";
 import MySources from "#/screens/PersonalTab/components/MySources";
 

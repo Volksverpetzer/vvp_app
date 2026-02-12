@@ -7,7 +7,7 @@ import Colors from "#/constants/Colors";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getLinks } from "#/helpers/network/Analytics";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { HttpsUrl } from "#/types";
 
 interface ArticleSourceListProperties {

@@ -16,7 +16,7 @@ import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import { HttpsUrl } from "#/types";
 

@@ -1,7 +1,7 @@
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 import Colors from "#/constants/Colors";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 type DividerProps = {
   padding?: number;
