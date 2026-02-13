@@ -76,7 +76,7 @@ const LicensesListItem = (
           onPress={() => repository && Linking.openURL(repository)}
           style={styles.item}
         >
-          <View style={{ maxWidth: "90%" }}>
+          <View>
             <Text style={[styles.name, { color: textColor }]}>{title}</Text>
             <Link style={[styles.text, { color: textColor }]} url={licenseUrl}>
               {licenses}
