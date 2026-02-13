@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -11,7 +10,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { Search } from "#/components/Icons";
+import { Search, Settings } from "#/components/Icons";
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import Text from "#/components/design/Text";
@@ -192,11 +191,7 @@ const Feed = (properties: FeedProperties) => {
           accessibilityRole="button"
           onPress={() => router.push("/settings")}
         >
-          <Ionicons
-            name={colorScheme === "dark" ? "settings" : "settings-outline"}
-            size={30}
-            color={corporate}
-          />
+          <Settings color={corporate} />
         </Pressable>
       </View>
     );
