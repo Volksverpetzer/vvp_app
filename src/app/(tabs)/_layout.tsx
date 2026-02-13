@@ -59,9 +59,9 @@ const TabLayout = () => {
           tabBarIcon: ({ color, focused }) => (
             <>
               {focused ? (
-                <FilledStar color={color} width={50} />
+                <FilledStar color={color} />
               ) : (
-                <EmptyStar color={color} width={50} />
+                <EmptyStar color={color} />
               )}
 
               {badgeState.personal && <View style={styles.badge} />}
@@ -116,7 +116,7 @@ const TabLayout = () => {
         name="settings"
         options={{
           title: "Konfig",
-          tabBarIcon: ({ color }) => <Settings color={color} width={50} />,
+          tabBarIcon: ({ color }) => <Settings color={color} />,
           tabBarAccessibilityLabel: "Einstellungen",
         }}
       />

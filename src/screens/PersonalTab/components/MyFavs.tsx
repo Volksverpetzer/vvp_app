@@ -76,7 +76,7 @@ const MyFavs = () => {
         })}
       <Space size={100} />
       <View style={{ ...styles.centered }}>
-        <EmptyStar color={corporate} width={50} />
+        <EmptyStar color={corporate} />
         <Text style={{ textAlign: "center" }}>
           Klick den Stern, um zu den Favoriten hinzuzufügen
         </Text>

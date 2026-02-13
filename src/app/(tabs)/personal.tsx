@@ -1,4 +1,4 @@
-import { EvilIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import { JSX, useCallback, useState } from "react";
 import { Animated, Pressable } from "react-native";
@@ -72,7 +72,7 @@ const PersonalTab = () => {
                     activeTab === "favs" ? corporateColor : tabIconColor,
                 }}
               >
-                <EmptyStar color={"white"} width={40} />
+                <EmptyStar color={"white"} />
                 <Text
                   style={{
                     alignSelf: "center",
@@ -96,12 +96,7 @@ const PersonalTab = () => {
                     activeTab === "sources" ? corporateColor : tabIconColor,
                 }}
               >
-                <EvilIcons
-                  style={{ lineHeight: 35 }}
-                  name="link"
-                  size={35}
-                  color={"white"}
-                />
+                <FontAwesome name="link" color={"white"} size={30} />
                 <Text
                   style={{
                     alignSelf: "center",

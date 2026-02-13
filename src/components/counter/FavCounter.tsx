@@ -82,9 +82,9 @@ const FavCounter = (properties: FavCounterProperties) => {
         }}
       >
         {isFav ? (
-          <FilledStar color={color} width={35} />
+          <FilledStar color={color} size={35} />
         ) : (
-          <EmptyStar color={color} width={35} />
+          <EmptyStar color={color} size={35} />
         )}
       </View>
       <View style={{ width: 5 }} />
