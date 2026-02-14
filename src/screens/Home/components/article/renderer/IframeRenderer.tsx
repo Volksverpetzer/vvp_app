@@ -53,6 +53,36 @@ type WebViewRequest = {
   navigationType?: string;
 };
 
+const prepareWebViewSource = (
+  url: string,
+): { uri: string; headers?: { Referer: string } } => {
+  const { hostname } = Linking.parse(url);
+  const isYouTube =
+    !!hostname &&
+    (hostname.includes("youtube.com") ||
+      hostname.includes("youtube-nocookie.com") ||
+      hostname.includes("youtu.be"));
+  if (!isYouTube) return { uri: url };
+
+  let uri = url;
+  try {
+    const parsed = new URL(url);
+    parsed.searchParams.set("autoplay", "0");
+    uri = parsed.toString();
+  } catch {
+    uri = url.replace(/([?&])autoplay=1\b/g, "$1autoplay=0");
+    const queryPrefix = uri.includes("?") ? "&" : "?";
+    if (!/[?&]autoplay=/.test(uri)) {
+      uri = `${uri}${queryPrefix}autoplay=0`;
+    }
+  }
+
+  return {
+    uri,
+    headers: { Referer: "https://www.volksverpetzer.de/" },
+  };
+};
+
 const shouldStartRequest = (
   request: WebViewRequest,
   iframeSource: string,
@@ -93,6 +123,7 @@ const IframeRenderer = ({
   const [scroll, setScroll] = useState(false);
   const { htmlAttribs } = useHtmlIframeProps(renderProps);
   const source = htmlAttribs.src;
+  const webViewSource = prepareWebViewSource(source);
 
   const onMessage = useCallback((event: WebViewMessageEvent) => {
     const h = Number.parseInt(event.nativeEvent.data, 10);
@@ -140,7 +171,7 @@ const IframeRenderer = ({
       contentContainerStyle={styles.centered}
     >
       <WebView
-        source={{ uri: source }}
+        source={webViewSource}
         style={{ width, maxWidth: maxWidth + 40, height: Math.min(width, 400) }}
         nestedScrollEnabled={scroll}
         thirdPartyCookiesEnabled={false}
