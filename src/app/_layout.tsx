@@ -9,6 +9,7 @@ import * as Linking from "expo-linking";
 import { Href, Stack, useRouter, useSegments } from "expo-router";
 import { ShareIntentProvider } from "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import { useEffect } from "react";
 import { LogBox, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -54,6 +55,9 @@ const RootLayout = () => {
 
   const colorScheme = useAppColorScheme();
   const insets = useSafeAreaInsets();
+  const systemBackgroundColor = isTabsAndAction
+    ? Colors[colorScheme].secondaryBackground
+    : Colors[colorScheme].background;
 
   // On first mount check notification permissions and request if appropriate.
   // The NotificationManager itself will skip simulators and respects canAskAgain.
@@ -79,6 +83,14 @@ const RootLayout = () => {
     }
   }, [loaded]);
 
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+
+    SystemUI.setBackgroundColorAsync(systemBackgroundColor).catch((error) => {
+      console.warn("Failed to set system background color", error);
+    });
+  }, [systemBackgroundColor]);
+
   if (!loaded) {
     return <AnimatedLoading />;
   }
@@ -102,9 +114,7 @@ const RootLayout = () => {
               style={{
                 flex: 1,
                 paddingTop: insets.top,
-                backgroundColor: isTabsAndAction
-                  ? Colors[colorScheme].secondaryBackground
-                  : Colors[colorScheme].background,
+                backgroundColor: systemBackgroundColor,
               }}
             >
               <Stack
