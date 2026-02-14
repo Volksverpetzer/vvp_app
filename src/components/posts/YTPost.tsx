@@ -5,6 +5,7 @@ import { TouchableOpacity, useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
 
 import View from "#/components/design/View";
+import Config from "#/constants/Config";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 /**
@@ -93,7 +94,7 @@ const YTPost = (properties: YTPostProperties) => {
         <WebView
           source={{
             uri,
-            headers: { Referer: "https://www.volksverpetzer.de/" },
+            headers: { Referer: Config.wpUrl },
           }}
           style={{ width: "100%", height }}
           javaScriptEnabled={true}
