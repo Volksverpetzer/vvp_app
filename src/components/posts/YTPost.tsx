@@ -5,6 +5,7 @@ import { TouchableOpacity, useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
 
 import View from "#/components/design/View";
+import Config from "#/constants/Config";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 /**
@@ -57,7 +58,7 @@ const YTPost = (properties: YTPostProperties) => {
   const { width } = useWindowDimensions();
   const corporate = useCorporateColor();
   const height = (width - 24) / ratio;
-  const uri = `https://www.youtube.com/embed/${id}?autoplay=1&auto_play=1&width=${dims.width}`;
+  const uri = `https://www.youtube.com/embed/${id}?autoplay=1&width=${dims.width}`;
   const preview = inView
     ? snippet.thumbnails.high.url
     : snippet.thumbnails.default.url;
@@ -93,7 +94,7 @@ const YTPost = (properties: YTPostProperties) => {
         <WebView
           source={{
             uri,
-            headers: { Referer: "https://www.volksverpetzer.de/" },
+            headers: { Referer: Config.wpUrl },
           }}
           style={{ width: "100%", height }}
           javaScriptEnabled={true}
