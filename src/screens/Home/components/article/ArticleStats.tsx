@@ -35,7 +35,7 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
         color={color}
         style={{ fontSize: 16, paddingHorizontal: 5 }}
       />
-      <Share color={color} size={20} />
+      <Share color={color} />
       <ShareCounter
         style={{ color, fontSize: 16, paddingHorizontal: 5 }}
         shareable={[{ title: "Link teilen", url: article_link }]}

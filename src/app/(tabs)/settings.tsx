@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 
-import { Feed, Give, Search } from "#/components/Icons";
+import { Feed, Give, Search, Settings } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import ShopButton from "#/components/buttons/ShopButton";
 import Collapsable from "#/components/design/Collapsable";
@@ -142,7 +142,7 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={<MaterialIcons name="settings" size={24} color={corporate} />}
+          icon={<Settings size={24} color={corporate} />}
           title="Erweitert"
           titleStyle={styles.collapsibleTitle}
         >

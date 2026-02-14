@@ -1,4 +1,8 @@
-import { EvilIcons, FontAwesome } from "@expo/vector-icons";
+import {
+  EvilIcons,
+  FontAwesome,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { Platform, View } from "react-native";
 import Svg, {
   ClipPath,
@@ -341,8 +345,8 @@ export const EmptyStar = (properties: { color: string; size?: number }) => (
 );
 
 export const Settings = (properties: { color: string; size?: number }) => (
-  <FontAwesome
-    name="cog"
+  <MaterialCommunityIcons
+    name="cog-outline"
     size={properties.size ?? 30}
     color={properties.color}
   />

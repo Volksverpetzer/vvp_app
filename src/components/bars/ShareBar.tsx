@@ -56,7 +56,7 @@ const ShareBar = (properties: ShareBarProperties) => {
           };
         }}
       >
-        <Share color={color} size={30} />
+        <Share color={color} />
         {hideShareCount ? (
           <View style={{ width: "70%" }} />
         ) : (
