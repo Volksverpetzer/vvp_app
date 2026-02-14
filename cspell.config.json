@@ -22,7 +22,8 @@
     "tnode",
     "tracken",
     "volksverpetzer",
-    "yoast"
+    "yoast",
+    "youtu"
   ],
   "allowCompoundWords": true,
   "files": ["src/**/*"],
