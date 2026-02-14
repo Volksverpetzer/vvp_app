@@ -64,7 +64,7 @@ const prepareWebViewSource = (
       hostname.includes("youtu.be"));
   if (!isYouTube) return { uri: url };
 
-  let uri = url;
+  let uri: string;
   try {
     const parsed = new URL(url);
     parsed.searchParams.set("autoplay", "0");
