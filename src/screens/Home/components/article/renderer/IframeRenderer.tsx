@@ -12,6 +12,7 @@ import {
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
 import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/posts/LoadArticlePost";
+import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 
 export interface IframeRendererProperties {
@@ -79,7 +80,7 @@ const prepareWebViewSource = (
 
   return {
     uri,
-    headers: { Referer: "https://www.volksverpetzer.de/" },
+    headers: { Referer: Config.wpUrl },
   };
 };
 
