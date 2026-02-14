@@ -57,7 +57,7 @@ const YTPost = (properties: YTPostProperties) => {
   const { width } = useWindowDimensions();
   const corporate = useCorporateColor();
   const height = (width - 24) / ratio;
-  const uri = `https://www.youtube.com/embed/${id}?autoplay=1&auto_play=1&width=${dims.width}`;
+  const uri = `https://www.youtube.com/embed/${id}?autoplay=1&width=${dims.width}`;
   const preview = inView
     ? snippet.thumbnails.high.url
     : snippet.thumbnails.default.url;
