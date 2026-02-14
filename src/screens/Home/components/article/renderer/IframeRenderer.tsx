@@ -54,6 +54,17 @@ type WebViewRequest = {
   navigationType?: string;
 };
 
+/**
+ * Prepare the source configuration for a WebView, with special handling for YouTube embeds.
+ *
+ * For YouTube URLs, this function disables autoplay in the query parameters and
+ * adds a Referer header based on the WordPress site URL. Non-YouTube URLs are
+ * returned unchanged without additional headers.
+ *
+ * @param url - The iframe source URL to be loaded in the WebView.
+ * @returns An object containing the (possibly modified) `uri` and optional
+ * `headers` to be passed to the WebView `source` prop.
+ */
 const prepareWebViewSource = (
   url: string,
 ): { uri: string; headers?: { Referer: string } } => {
