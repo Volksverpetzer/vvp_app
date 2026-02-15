@@ -76,8 +76,14 @@ const LicensesListItem = (
           onPress={() => repository && Linking.openURL(repository)}
           style={styles.item}
         >
-          <View>
-            <Text style={[styles.name, { color: textColor }]}>{title}</Text>
+          <View style={styles.content}>
+            <Text
+              style={[styles.name, { color: textColor }]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {title}
+            </Text>
             <Link style={[styles.text, { color: textColor }]} url={licenseUrl}>
               {licenses}
             </Link>
@@ -85,12 +91,10 @@ const LicensesListItem = (
               {packageVersion}
             </Text>
           </View>
-          <FontAwesome
-            style={{ alignSelf: "center" }}
-            color={iconColor}
-            size={16}
-            name={"chevron-right"}
-          />
+
+          <View style={styles.icon}>
+            <FontAwesome color={iconColor} size={16} name={"chevron-right"} />
+          </View>
         </TouchableOpacity>
       </View>
     </View>
@@ -135,15 +139,26 @@ const getStyles = (isDark: boolean) =>
     item: {
       flex: 1,
       flexDirection: "row",
-      flexWrap: "wrap",
+      flexWrap: "nowrap",
       justifyContent: "space-between",
+      alignItems: "center",
       maxWidth: "100%",
       paddingHorizontal: 12,
       paddingVertical: 16,
     },
+    content: {
+      flex: 1,
+      minWidth: 0, // allow text to shrink
+    },
+    icon: {
+      alignSelf: "center",
+      flexShrink: 0, // ensure the icon isn't shrunk or pushed away
+      marginLeft: 8,
+    },
     name: {
       fontSize: 16,
       fontWeight: "bold",
+      flexShrink: 1, // ensure the title can shrink instead of overflowing
     },
     text: {
       marginTop: 3,
