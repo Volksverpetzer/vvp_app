@@ -1,10 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import * as Linking from "expo-linking";
 import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
 import { ReactElement } from "react";
-import { ImageSourcePropType, Pressable, TextStyle, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
@@ -14,9 +13,8 @@ import Text from "./Text";
 
 type DesignedLinksProperties = {
   url: string;
-  style?: TextStyle;
   text: string;
-} & ({ asset: ImageSourcePropType } | { icon: ReactElement });
+} & { icon: ReactElement };
 
 const DesignedLink = (properties: DesignedLinksProperties) => {
   const colorScheme = useAppColorScheme();
@@ -42,35 +40,25 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
       onPress={() => openLink()}
       style={({ pressed }) => [
         {
-          backgroundColor: pressed ? "#909090" : undefined,
           ...styles.row,
+          backgroundColor: pressed ? "#909090" : undefined,
           paddingVertical: 10,
           justifyContent: "flex-start",
+          gap: 3,
         },
       ]}
     >
-      {"asset" in properties && (
-        <Image
-          style={{ ...styles.iconLeft, top: 30 }}
-          source={properties.asset}
-        />
-      )}
-      {"icon" in properties && (
-        <View style={{ ...styles.iconLeft }}>{properties.icon}</View>
-      )}
+      {properties.icon && <View style={{ width: 20 }}>{properties.icon}</View>}
       <Text
         style={{
           ...styles.heading,
-          ...properties.style,
-          paddingLeft: 30,
-          paddingRight: 4,
         }}
       >
         {properties.text}
       </Text>
       <MaterialCommunityIcons
         name="arrow-top-right"
-        size={13}
+        size={15}
         color={Colors[colorScheme].tabIconDefault}
       />
     </Pressable>
