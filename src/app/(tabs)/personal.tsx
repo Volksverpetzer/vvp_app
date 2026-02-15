@@ -1,10 +1,9 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import { JSX, useCallback, useState } from "react";
 import { Animated, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import { EmptyStar } from "#/components/Icons";
+import { EmptyStar, LinkIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -96,7 +95,7 @@ const PersonalTab = () => {
                     activeTab === "sources" ? corporateColor : tabIconColor,
                 }}
               >
-                <FontAwesome name="link" color={"white"} size={30} />
+                <LinkIcon color={"white"} size={30} />
                 <Text
                   style={{
                     alignSelf: "center",

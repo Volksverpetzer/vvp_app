@@ -1,8 +1,13 @@
 import {
   EvilIcons,
+  Feather,
   FontAwesome,
+  FontAwesome5,
+  Ionicons,
   MaterialCommunityIcons,
+  MaterialIcons,
 } from "@expo/vector-icons";
+import type { ComponentProps } from "react";
 import { Platform, View } from "react-native";
 import Svg, {
   ClipPath,
@@ -20,6 +25,20 @@ interface IconProperties extends SvgProps {
   color?: string;
   width?: number;
 }
+
+type EvilIconsProps = Omit<ComponentProps<typeof EvilIcons>, "name">;
+type FeatherProps = Omit<ComponentProps<typeof Feather>, "name">;
+type FontAwesomeProps = Omit<ComponentProps<typeof FontAwesome>, "name">;
+type FontAwesome5Props = Omit<ComponentProps<typeof FontAwesome5>, "name">;
+type IoniconsProps = Omit<ComponentProps<typeof Ionicons>, "name">;
+type MaterialIconsProps = Omit<ComponentProps<typeof MaterialIcons>, "name">;
+type MaterialCommunityIconsProps = Omit<
+  ComponentProps<typeof MaterialCommunityIcons>,
+  "name"
+>;
+
+export type MaterialCommunityIconName =
+  keyof typeof MaterialCommunityIcons.glyphMap;
 
 export const Logo = (properties: IconProperties) => (
   <Svg
@@ -310,6 +329,95 @@ export const Pokal = (properties: IconProperties) => {
   );
 };
 
+export const Checkbox = (properties: IoniconsProps) => (
+  <Ionicons name="checkmark" {...properties} />
+);
+
+export const ExternalLink = (properties: MaterialCommunityIconsProps) => (
+  <MaterialCommunityIcons name="arrow-top-right" {...properties} />
+);
+
+export const MissionSuccess = (properties: FeatherProps) => (
+  <Feather name="check-circle" {...properties} />
+);
+
+export const TouchApp = (properties: MaterialIconsProps) => (
+  <MaterialIcons name="touch-app" {...properties} />
+);
+
+export const PlayCircle = (properties: FontAwesomeProps) => (
+  <FontAwesome name="play-circle" {...properties} />
+);
+
+export const LinkIcon = (properties: FontAwesomeProps) => (
+  <FontAwesome name="link" {...properties} />
+);
+
+export const NotificationIcon = (properties: MaterialIconsProps) => (
+  <MaterialIcons name="notifications" {...properties} />
+);
+
+export const FeedbackIcon = (properties: MaterialIconsProps) => (
+  <MaterialIcons name="feedback" {...properties} />
+);
+
+export const LockIcon = (properties: FontAwesomeProps) => (
+  <FontAwesome name="lock" {...properties} />
+);
+
+export const DeleteIcon = (properties: MaterialIconsProps) => (
+  <MaterialIcons name="delete" {...properties} />
+);
+
+export const CloseIcon = (properties: EvilIconsProps) => (
+  <EvilIcons
+    name="close"
+    {...properties}
+    style={[{ lineHeight: properties.size ?? 30 }, properties.style]}
+  />
+);
+
+export const CollapseChevron = ({
+  open,
+  ...properties
+}: MaterialIconsProps & { open: boolean }) => (
+  <MaterialIcons
+    name={open ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+    {...properties}
+  />
+);
+
+export const StatisticsIcon = (
+  properties: MaterialCommunityIconsProps & { name: MaterialCommunityIconName },
+) => <MaterialCommunityIcons {...properties} />;
+
+export const ArticleViewIcon = (properties: MaterialCommunityIconsProps) => (
+  <MaterialCommunityIcons name="eye-outline" {...properties} />
+);
+
+export const TaskStatusIcon = ({
+  complete,
+  ...properties
+}: FontAwesome5Props & { complete: boolean }) => (
+  <FontAwesome5 name={complete ? "check" : "circle"} {...properties} />
+);
+
+export const ReportStatusIcon = ({
+  status,
+  ...properties
+}: FontAwesomeProps & { status: "error" | "posted" | "pending" }) => (
+  <FontAwesome
+    name={
+      status === "error"
+        ? "exclamation-circle"
+        : status === "posted"
+          ? "check"
+          : "hourglass-half"
+    }
+    {...properties}
+  />
+);
+
 export const Share = (properties: { color: string; size?: number }) => (
   <EvilIcons
     name={Platform.OS === "ios" ? "share-apple" : "share-google"}
@@ -324,7 +432,14 @@ export const ChevronLeft = (properties: { color: string; size?: number }) => (
     name="chevron-left"
     size={properties.size ?? 30}
     color={properties.color}
-    style={{ lineHeight: properties.size ?? 30 }}
+  />
+);
+
+export const ChevronRight = (properties: { color: string; size?: number }) => (
+  <EvilIcons
+    name="chevron-right"
+    size={properties.size ?? 30}
+    color={properties.color}
   />
 );
 

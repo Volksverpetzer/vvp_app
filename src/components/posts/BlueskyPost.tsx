@@ -1,5 +1,4 @@
 import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
@@ -7,6 +6,7 @@ import { useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
+import { ExternalLink } from "#/components/Icons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
@@ -110,8 +110,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             onPress={() => onLinkPress(url, router, wpUrl)}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
-            <MaterialCommunityIcons
-              name="arrow-top-right"
+            <ExternalLink
               size={15}
               color={Colors[colorScheme].tabIconDefault}
             />

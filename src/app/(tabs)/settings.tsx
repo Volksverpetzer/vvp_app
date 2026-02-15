@@ -1,4 +1,3 @@
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -11,7 +10,15 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 
-import { Feed, Give, Search, Settings } from "#/components/Icons";
+import {
+  Feed,
+  FeedbackIcon,
+  Give,
+  LockIcon,
+  NotificationIcon,
+  Search,
+  Settings,
+} from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import ShopButton from "#/components/buttons/ShopButton";
 import Collapsable from "#/components/design/Collapsable";
@@ -130,9 +137,7 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={
-            <MaterialIcons name="notifications" size={24} color={corporate} />
-          }
+          icon={<NotificationIcon size={24} color={corporate} />}
           title="Benachrichtigungen"
           titleStyle={styles.collapsibleTitle}
         >
@@ -165,12 +170,12 @@ const SettingsScreen = () => {
           />
           <DesignedLink
             url={encodeURI("mailto:app@volksverpetzer.de")}
-            icon={<MaterialIcons name="feedback" size={24} color={corporate} />}
+            icon={<FeedbackIcon size={24} color={corporate} />}
             text="App-Feedback"
           />
           <DesignedLink
             url={Config.dataProtectionUrl}
-            icon={<FontAwesome name="lock" size={24} color={corporate} />}
+            icon={<LockIcon size={24} color={corporate} />}
             text="Datenschutz"
           />
         </View>

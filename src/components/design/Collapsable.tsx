@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { ReactElement, ReactNode, useState } from "react";
 import {
   Pressable,
@@ -9,6 +8,7 @@ import {
   View,
 } from "react-native";
 
+import { CollapseChevron } from "#/components/Icons";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -58,11 +58,7 @@ const Collapsable = ({
             {title}
           </Text>
         </View>
-        <MaterialIcons
-          name={open ? "keyboard-arrow-up" : "keyboard-arrow-down"}
-          size={24}
-          color={textColor}
-        />
+        <CollapseChevron open={open} size={24} color={textColor} />
       </Pressable>
       {open && <View>{children}</View>}
     </View>

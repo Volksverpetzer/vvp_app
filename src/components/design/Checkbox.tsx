@@ -1,7 +1,7 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, ViewStyle } from "react-native";
 
+import { Checkbox as CheckboxIcon } from "#/components/Icons";
 import { styles } from "#/constants/Styles";
 
 interface CheckboxProperties {
@@ -26,7 +26,7 @@ const Checkbox = (properties: CheckboxProperties) => {
       ]}
       onPress={onPress}
     >
-      {checked && <Ionicons name="checkmark" size={24} color="white" />}
+      {checked && <CheckboxIcon size={24} color="white" />}
     </Pressable>
   );
 };

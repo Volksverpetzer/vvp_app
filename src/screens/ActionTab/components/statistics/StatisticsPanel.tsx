@@ -1,7 +1,11 @@
-import { EvilIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
-import { ChevronLeft } from "#/components/Icons";
+import {
+  ChevronLeft,
+  ChevronRight,
+  MaterialCommunityIconName,
+  StatisticsIcon,
+} from "#/components/Icons";
 import Space from "#/components/design/Space";
 import { styles } from "#/constants/Styles";
 import { StatisticsType, StatisticsValueKey } from "#/types";
@@ -9,7 +13,7 @@ import { StatisticsType, StatisticsValueKey } from "#/types";
 import StatisticsBox from "./StatisticsBox";
 
 interface StatsPanelProperties {
-  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  icon: MaterialCommunityIconName;
   title: string;
   subtitle?: string;
   streakKeyToExclude: string;
@@ -42,7 +46,7 @@ const StatisticsPanel = ({
       <View
         style={{ ...styles.row, justifyContent: "flex-start", paddingLeft: 30 }}
       >
-        <MaterialCommunityIcons name={icon} size={40} color="white" />
+        <StatisticsIcon name={icon} size={40} color="white" />
         <Text
           style={{
             ...styles.whiteText,
@@ -86,12 +90,7 @@ const StatisticsPanel = ({
 
         {showRightChevron ? (
           <View style={{ width: 24 }}>
-            <EvilIcons
-              style={{ lineHeight: 24 }}
-              name="chevron-right"
-              size={24}
-              color="white"
-            />
+            <ChevronRight size={24} color="white" />
           </View>
         ) : (
           <View style={{ width: 24 }} />

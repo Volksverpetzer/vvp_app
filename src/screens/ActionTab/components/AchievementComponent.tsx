@@ -1,8 +1,8 @@
-import { FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
+import { TaskStatusIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
@@ -107,11 +107,7 @@ const AchievementComponent = () => {
                 marginBottom: 5,
               }}
             >
-              <FontAwesome5
-                name={task.value ? "check" : "circle"}
-                size={17}
-                color="white"
-              />
+              <TaskStatusIcon complete={task.value} size={17} color="white" />
               <Text
                 style={{
                   fontSize: 16,

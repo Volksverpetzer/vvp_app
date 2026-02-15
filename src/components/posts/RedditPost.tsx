@@ -1,9 +1,9 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { ImageZoom } from "@likashefqet/react-native-image-zoom";
 import { useState } from "react";
 import { Button, Modal, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { TouchApp } from "#/components/Icons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
@@ -91,8 +91,7 @@ const RedditPost = (properties: RedditProperties) => {
                 : properties.thumbnail
             }
           />
-          <MaterialIcons
-            name="touch-app"
+          <TouchApp
             size={30}
             color={"#ffffff"}
             style={{ alignSelf: "flex-end", marginTop: -40 }}

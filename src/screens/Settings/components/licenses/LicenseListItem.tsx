@@ -1,4 +1,3 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { JSX, ReactNode } from "react";
 import {
@@ -11,6 +10,7 @@ import {
   View,
 } from "react-native";
 
+import { ChevronRight } from "#/components/Icons";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface LicensesListItemProperties {
@@ -91,9 +91,8 @@ const LicensesListItem = (
               {packageVersion}
             </Text>
           </View>
-
           <View style={styles.icon}>
-            <FontAwesome color={iconColor} size={16} name={"chevron-right"} />
+            <ChevronRight color={iconColor} />
           </View>
         </TouchableOpacity>
       </View>
