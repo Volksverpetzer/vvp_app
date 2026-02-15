@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, ViewStyle } from "react-native";
 
-import { Checkbox as CheckboxIcon } from "#/components/Icons";
+import { CheckboxIcon } from "#/components/Icons";
 import { styles } from "#/constants/Styles";
 
 interface CheckboxProperties {

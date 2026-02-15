@@ -92,7 +92,7 @@ const LicensesListItem = (
             </Text>
           </View>
           <View style={styles.icon}>
-            <ChevronRight color={iconColor} />
+            <ChevronRight color={iconColor} size={40} />
           </View>
         </TouchableOpacity>
       </View>

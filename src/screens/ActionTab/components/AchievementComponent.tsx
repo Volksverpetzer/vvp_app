@@ -2,7 +2,7 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
-import { TaskStatusIcon } from "#/components/Icons";
+import { CheckboxIcon, CircleIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
@@ -107,7 +107,11 @@ const AchievementComponent = () => {
                 marginBottom: 5,
               }}
             >
-              <TaskStatusIcon complete={task.value} size={17} color="white" />
+              {!!task.value ? (
+                <CheckboxIcon size={16} color="white" />
+              ) : (
+                <CircleIcon size={16} color="white" />
+              )}
               <Text
                 style={{
                   fontSize: 16,

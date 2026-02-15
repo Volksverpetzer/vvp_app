@@ -2,13 +2,12 @@ import {
   EvilIcons,
   Feather,
   FontAwesome,
-  FontAwesome5,
   Ionicons,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
-import { Platform, View } from "react-native";
+import { Platform, StyleProp, TextStyle, View } from "react-native";
 import Svg, {
   ClipPath,
   Defs,
@@ -21,7 +20,13 @@ import Svg, {
 
 import { styles } from "#/constants/Styles";
 
-interface IconProperties extends SvgProps {
+interface IconProperties {
+  color?: string;
+  size?: number;
+  style?: StyleProp<TextStyle>;
+}
+
+interface SvgIconProperties extends SvgProps {
   color?: string;
   width?: number;
 }
@@ -29,7 +34,6 @@ interface IconProperties extends SvgProps {
 type EvilIconsProps = Omit<ComponentProps<typeof EvilIcons>, "name">;
 type FeatherProps = Omit<ComponentProps<typeof Feather>, "name">;
 type FontAwesomeProps = Omit<ComponentProps<typeof FontAwesome>, "name">;
-type FontAwesome5Props = Omit<ComponentProps<typeof FontAwesome5>, "name">;
 type IoniconsProps = Omit<ComponentProps<typeof Ionicons>, "name">;
 type MaterialIconsProps = Omit<ComponentProps<typeof MaterialIcons>, "name">;
 type MaterialCommunityIconsProps = Omit<
@@ -40,7 +44,7 @@ type MaterialCommunityIconsProps = Omit<
 export type MaterialCommunityIconName =
   keyof typeof MaterialCommunityIcons.glyphMap;
 
-export const Logo = (properties: IconProperties) => (
+export const Logo = (properties: SvgIconProperties) => (
   <Svg
     width={properties.width ?? 76}
     height={properties.width ?? 76}
@@ -53,7 +57,7 @@ export const Logo = (properties: IconProperties) => (
   </Svg>
 );
 
-export const Home = (properties: IconProperties) => (
+export const Home = (properties: SvgIconProperties) => (
   <Svg width={35} height={30} fill="none" {...properties}>
     <Path
       scale={properties.width ?? 0.95}
@@ -65,7 +69,7 @@ export const Home = (properties: IconProperties) => (
   </Svg>
 );
 
-export const Search = (properties: IconProperties) => (
+export const Search = (properties: SvgIconProperties) => (
   <Svg
     width={properties.width ?? 26}
     height={properties.width ?? 26}
@@ -83,7 +87,7 @@ export const Search = (properties: IconProperties) => (
   </Svg>
 );
 
-export const Report = (properties: IconProperties) => (
+export const Report = (properties: SvgIconProperties) => (
   <Svg
     width={properties.width ?? 30}
     height={properties.width ?? 30}
@@ -101,7 +105,7 @@ export const Report = (properties: IconProperties) => (
   </Svg>
 );
 
-export const Safety = (properties: IconProperties) => (
+export const Safety = (properties: SvgIconProperties) => (
   <Svg
     width={properties.width ?? 112}
     height={properties.width ?? 112}
@@ -125,7 +129,7 @@ export const Safety = (properties: IconProperties) => (
   </Svg>
 );
 
-export const Give = (properties: IconProperties) => (
+export const Give = (properties: SvgIconProperties) => (
   <Svg
     width={properties.width ?? 21}
     height={properties.width ?? 20}
@@ -140,7 +144,7 @@ export const Give = (properties: IconProperties) => (
   </Svg>
 );
 
-export const Heart = (properties: IconProperties) => (
+export const Heart = (properties: SvgIconProperties) => (
   <Svg
     width={properties.width ?? 20}
     height={properties.width ?? 19}
@@ -154,7 +158,7 @@ export const Heart = (properties: IconProperties) => (
   </Svg>
 );
 
-export const Fehler = (properties: IconProperties) => (
+export const Fehler = (properties: SvgIconProperties) => (
   <Svg width={35} height={28} fill="none" {...properties}>
     <Path d="M17.53 0 .695 28h33.673L17.531 0Z" fill="#fff" />
     <Path
@@ -164,7 +168,7 @@ export const Fehler = (properties: IconProperties) => (
   </Svg>
 );
 
-export const World = (properties: IconProperties) => (
+export const World = (properties: SvgIconProperties) => (
   <Svg width={152} height={152} fill="none" {...properties}>
     <Path
       d="M38.61 62.7h24.011m17.786 0h32.903M47.726 47.684a40.017 40.017 0 1 0 56.514 56.67m7.487-10.351a40.01 40.01 0 0 0-7.468-46.298 40.016 40.016 0 0 0-46.307-7.415M38.61 89.38H89.3m17.785 0h6.225"
@@ -183,7 +187,7 @@ export const World = (properties: IconProperties) => (
   </Svg>
 );
 
-export const Feed = (properties: IconProperties) => (
+export const Feed = (properties: SvgIconProperties) => (
   <Svg width={24} height={24} fill="none" {...properties}>
     <Mask id="a" fill="#fff">
       <Rect width={20} height={7} x={2} y={13} rx={1} />
@@ -214,7 +218,7 @@ export const Feed = (properties: IconProperties) => (
   </Svg>
 );
 
-export const LogoBig = (properties: IconProperties) => (
+export const LogoBig = (properties: SvgIconProperties) => (
   <View style={{ width: 233, height: 116, ...styles.centered, minHeight: 50 }}>
     <Svg viewBox="0 0 233 116" width="100%" height="100%" {...properties}>
       <Defs></Defs>
@@ -230,7 +234,7 @@ export const LogoBig = (properties: IconProperties) => (
   </View>
 );
 
-export const FirstPlace = (properties: IconProperties) => (
+export const FirstPlace = (properties: SvgIconProperties) => (
   <Svg width={24} height={24} fill="none" {...properties}>
     <Path
       fill="#E4D38B"
@@ -243,7 +247,7 @@ export const FirstPlace = (properties: IconProperties) => (
   </Svg>
 );
 
-export const SecondPlace = (properties: IconProperties) => (
+export const SecondPlace = (properties: SvgIconProperties) => (
   <Svg width={24} height={24} fill="none" {...properties}>
     <Path
       fill="#BDBDBD"
@@ -256,7 +260,7 @@ export const SecondPlace = (properties: IconProperties) => (
   </Svg>
 );
 
-export const ThirdPlace = (properties: IconProperties) => (
+export const ThirdPlace = (properties: SvgIconProperties) => (
   <Svg width={24} height={24} fill="none" {...properties}>
     <Path
       fill="#E7A990"
@@ -269,7 +273,7 @@ export const ThirdPlace = (properties: IconProperties) => (
   </Svg>
 );
 
-export const Pokal = (properties: IconProperties) => {
+export const Pokal = (properties: SvgIconProperties) => {
   return (
     <Svg
       viewBox="0 0 209 209"
@@ -329,8 +333,12 @@ export const Pokal = (properties: IconProperties) => {
   );
 };
 
-export const Checkbox = (properties: IoniconsProps) => (
+export const CheckboxIcon = (properties: IoniconsProps) => (
   <Ionicons name="checkmark" {...properties} />
+);
+
+export const CircleIcon = (properties: MaterialCommunityIconsProps) => (
+  <MaterialCommunityIcons name="circle-outline" {...properties} />
 );
 
 export const ExternalLink = (properties: MaterialCommunityIconsProps) => (
@@ -395,13 +403,6 @@ export const ArticleViewIcon = (properties: MaterialCommunityIconsProps) => (
   <MaterialCommunityIcons name="eye-outline" {...properties} />
 );
 
-export const TaskStatusIcon = ({
-  complete,
-  ...properties
-}: FontAwesome5Props & { complete: boolean }) => (
-  <FontAwesome5 name={complete ? "check" : "circle"} {...properties} />
-);
-
 export const ReportStatusIcon = ({
   status,
   ...properties
@@ -418,7 +419,7 @@ export const ReportStatusIcon = ({
   />
 );
 
-export const Share = (properties: { color: string; size?: number }) => (
+export const Share = (properties: IconProperties) => (
   <EvilIcons
     name={Platform.OS === "ios" ? "share-apple" : "share-google"}
     size={properties.size ?? 30}
@@ -427,7 +428,7 @@ export const Share = (properties: { color: string; size?: number }) => (
   />
 );
 
-export const ChevronLeft = (properties: { color: string; size?: number }) => (
+export const ChevronLeft = (properties: IconProperties) => (
   <EvilIcons
     name="chevron-left"
     size={properties.size ?? 30}
@@ -435,15 +436,16 @@ export const ChevronLeft = (properties: { color: string; size?: number }) => (
   />
 );
 
-export const ChevronRight = (properties: { color: string; size?: number }) => (
+export const ChevronRight = (properties: IconProperties) => (
   <EvilIcons
     name="chevron-right"
     size={properties.size ?? 30}
     color={properties.color}
+    style={properties.style}
   />
 );
 
-export const FilledStar = (properties: { color: string; size?: number }) => (
+export const FilledStar = (properties: IconProperties) => (
   <FontAwesome
     name="star"
     size={properties.size ?? 30}
@@ -451,7 +453,7 @@ export const FilledStar = (properties: { color: string; size?: number }) => (
   />
 );
 
-export const EmptyStar = (properties: { color: string; size?: number }) => (
+export const EmptyStar = (properties: IconProperties) => (
   <FontAwesome
     name="star-o"
     size={properties.size ?? 30}
@@ -459,7 +461,7 @@ export const EmptyStar = (properties: { color: string; size?: number }) => (
   />
 );
 
-export const Settings = (properties: { color: string; size?: number }) => (
+export const Settings = (properties: IconProperties) => (
   <MaterialCommunityIcons
     name="cog-outline"
     size={properties.size ?? 30}
