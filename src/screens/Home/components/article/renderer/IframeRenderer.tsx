@@ -1,7 +1,7 @@
 import { useHtmlIframeProps } from "@native-html/iframe-plugin";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { CustomRendererProps, TBlock } from "react-native-render-html";
 import WebView from "react-native-webview";
 import {
@@ -27,7 +27,18 @@ const INJECT_BEFORE = `
   document.querySelectorAll("video").forEach(video => video.removeAttribute("autoplay"));
 `;
 const INJECT_AFTER = `
-  window.ReactNativeWebView.postMessage(document.body.scrollHeight);
+  const postHeight = () => {
+    const bodyHeight = document.body ? document.body.scrollHeight : 0;
+    const docHeight = document.documentElement ? document.documentElement.scrollHeight : 0;
+    window.ReactNativeWebView.postMessage(String(Math.max(bodyHeight, docHeight)));
+  };
+  postHeight();
+  window.addEventListener("load", postHeight);
+  window.addEventListener("resize", postHeight);
+  if (window.MutationObserver) {
+    const observer = new MutationObserver(postHeight);
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+  }
   const meta = document.createElement('meta');
   meta.name = 'viewport';
   meta.content = 'width=device-width, initial-scale=1, maximum-scale=1';
@@ -132,14 +143,16 @@ const IframeRenderer = ({
   maxWidth,
   onLinkPress,
 }: IframeRendererProperties) => {
-  const [scroll, setScroll] = useState(false);
+  const fallbackHeight = Math.min(width, 400);
+  const [webViewHeight, setWebViewHeight] = useState(fallbackHeight);
   const { htmlAttribs } = useHtmlIframeProps(renderProps);
   const source = htmlAttribs.src;
   const webViewSource = prepareWebViewSource(source);
 
   const onMessage = useCallback((event: WebViewMessageEvent) => {
-    const h = Number.parseInt(event.nativeEvent.data, 10);
-    if (h > 400) setScroll(true);
+    const parsedHeight = Number.parseInt(event.nativeEvent.data, 10);
+    if (Number.isNaN(parsedHeight) || parsedHeight <= 0) return;
+    setWebViewHeight(parsedHeight);
   }, []);
 
   if (htmlAttribs.class?.includes("wp-embedded-content")) {
@@ -178,14 +191,11 @@ const IframeRenderer = ({
   }
 
   return (
-    <ScrollView
-      renderToHardwareTextureAndroid
-      contentContainerStyle={styles.centered}
-    >
+    <View style={{ alignItems: "center" }}>
       <WebView
         source={webViewSource}
-        style={{ width, maxWidth: maxWidth + 40, height: Math.min(width, 400) }}
-        nestedScrollEnabled={scroll}
+        style={{ width, maxWidth: maxWidth + 40, height: webViewHeight }}
+        nestedScrollEnabled={false}
         thirdPartyCookiesEnabled={false}
         injectedJavaScriptBeforeContentLoaded={INJECT_BEFORE}
         injectedJavaScript={INJECT_AFTER}
@@ -200,14 +210,14 @@ const IframeRenderer = ({
         renderError={() => <Text>Render Error</Text>}
         scalesPageToFit={false}
         overScrollMode="never"
-        scrollEnabled={scroll}
+        scrollEnabled={false}
         bounces={false}
         renderLoading={() => <AnimatedLoading />}
         onShouldStartLoadWithRequest={(request) =>
           shouldStartRequest(request, source, onLinkPress)
         }
       />
-    </ScrollView>
+    </View>
   );
 };
 
