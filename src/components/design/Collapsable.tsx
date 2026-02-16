@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 
-import { CollapseChevron } from "#/components/Icons";
+import { ChevronIcon } from "#/components/Icons";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -58,7 +58,11 @@ const Collapsable = ({
             {title}
           </Text>
         </View>
-        <CollapseChevron open={open} size={24} color={textColor} />
+        <ChevronIcon
+          direction={open ? "up" : "down"}
+          size={24}
+          color={textColor}
+        />
       </Pressable>
       {open && <View>{children}</View>}
     </View>

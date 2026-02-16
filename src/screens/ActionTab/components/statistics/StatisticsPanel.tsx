@@ -1,8 +1,7 @@
 import { Text, View } from "react-native";
 
 import {
-  ChevronLeft,
-  ChevronRight,
+  ChevronIcon,
   MaterialCommunityIconName,
   StatisticsIcon,
 } from "#/components/Icons";
@@ -69,7 +68,7 @@ const StatisticsPanel = ({
       <View style={styles.row}>
         {showLeftChevron ? (
           <View style={{ width: 24 }}>
-            <ChevronLeft size={24} color={"white"} />
+            <ChevronIcon direction="left" size={24} color={"white"} />
           </View>
         ) : (
           <View style={{ width: 24 }} />
@@ -90,7 +89,7 @@ const StatisticsPanel = ({
 
         {showRightChevron ? (
           <View style={{ width: 24 }}>
-            <ChevronRight size={24} color="white" />
+            <ChevronIcon direction="right" size={24} color="white" />
           </View>
         ) : (
           <View style={{ width: 24 }} />

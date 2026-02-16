@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { Pressable, StyleSheet } from "react-native";
 
-import { MissionSuccess } from "#/components/Icons";
+import { SuccessIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -32,7 +32,7 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
       style={[missionStyles.rectanglePressable, { backgroundColor }]}
     >
       <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
-        <MissionSuccess size={24} color={corporate} />
+        <SuccessIcon size={24} color={corporate} />
         <Text style={{ paddingLeft: 10, color: corporate, fontWeight: "bold" }}>
           {text1}
         </Text>

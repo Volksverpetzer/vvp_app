@@ -2,7 +2,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import { EmptyStar } from "#/components/Icons";
+import { StarIcon } from "#/components/Icons";
 import ShareBar from "#/components/bars/ShareBar";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
@@ -76,7 +76,7 @@ const MyFavs = () => {
         })}
       <Space size={100} />
       <View style={{ ...styles.centered }}>
-        <EmptyStar color={corporate} />
+        <StarIcon color={corporate} />
         <Text style={{ textAlign: "center" }}>
           Klick den Stern, um zu den Favoriten hinzuzufügen
         </Text>

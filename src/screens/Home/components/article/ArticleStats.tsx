@@ -1,7 +1,7 @@
 import { useKeepAwake } from "expo-keep-awake";
 import { View } from "react-native";
 
-import { ArticleViewIcon, Share } from "#/components/Icons";
+import { ArticleViewIcon, ShareIcon } from "#/components/Icons";
 import ShareCounter from "#/components/counter/ShareCounter";
 import ViewCounter from "#/components/counter/ViewCounter";
 import Colors from "#/constants/Colors";
@@ -34,7 +34,7 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
         color={color}
         style={{ fontSize: 16, paddingHorizontal: 5 }}
       />
-      <Share color={color} />
+      <ShareIcon color={color} />
       <ShareCounter
         style={{ color, fontSize: 16, paddingHorizontal: 5 }}
         shareable={[{ title: "Link teilen", url: article_link }]}

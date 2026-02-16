@@ -11,13 +11,13 @@ import {
 import Toast from "react-native-toast-message";
 
 import {
-  Feed,
+  FeedIcon,
   FeedbackIcon,
-  Give,
+  GiveIcon,
   LockIcon,
   NotificationIcon,
-  Search,
-  Settings,
+  SearchIcon,
+  SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import ShopButton from "#/components/buttons/ShopButton";
@@ -124,7 +124,7 @@ const SettingsScreen = () => {
         )}
       >
         <Collapsable
-          icon={<Feed color={corporate} />}
+          icon={<FeedIcon color={corporate} />}
           title="Feed"
           titleStyle={styles.collapsibleTitle}
         >
@@ -147,7 +147,7 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={<Settings size={24} color={corporate} />}
+          icon={<SettingsIcon size={24} color={corporate} />}
           title="Erweitert"
           titleStyle={styles.collapsibleTitle}
         >
@@ -160,12 +160,12 @@ const SettingsScreen = () => {
         <View style={styles.linksContainer}>
           <DesignedLink
             url={Config.aboutUrl}
-            icon={<Search color={corporate} width={20} />}
+            icon={<SearchIcon color={corporate} width={20} />}
             text="Über uns"
           />
           <DesignedLink
             url={Config.donations.support}
-            icon={<Give color={corporate} />}
+            icon={<GiveIcon color={corporate} />}
             text="Unterstützen"
           />
           <DesignedLink

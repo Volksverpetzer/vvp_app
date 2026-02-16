@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, TextStyle } from "react-native";
 
-import { EmptyStar, FilledStar } from "#/components/Icons";
+import { StarIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Config from "#/constants/Config";
@@ -73,11 +73,7 @@ const FavCounter = (properties: FavCounterProperties) => {
       }}
     >
       <View>
-        {isFav ? (
-          <FilledStar color={color} size={24} />
-        ) : (
-          <EmptyStar color={color} size={24} />
-        )}
+        <StarIcon filled={isFav} color={color} size={24} />
       </View>
       <View style={{ width: 5 }} />
       <Text style={properties.style}>{(isFav ? 1 : 0) + favs}</Text>

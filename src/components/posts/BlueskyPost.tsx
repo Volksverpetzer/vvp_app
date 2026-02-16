@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
-import { ExternalLink } from "#/components/Icons";
+import { ExternalLinkIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
@@ -110,7 +110,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             onPress={() => onLinkPress(url, router, wpUrl)}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
-            <ExternalLink
+            <ExternalLinkIcon
               size={15}
               color={Colors[colorScheme].tabIconDefault}
             />

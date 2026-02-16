@@ -10,7 +10,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { Search, Settings } from "#/components/Icons";
+import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import Text from "#/components/design/Text";
@@ -191,7 +191,7 @@ const Feed = (properties: FeedProperties) => {
           accessibilityRole="button"
           onPress={() => router.push("/settings")}
         >
-          <Settings color={corporate} />
+          <SettingsIcon color={corporate} />
         </Pressable>
       </View>
     );
@@ -227,7 +227,7 @@ const Feed = (properties: FeedProperties) => {
               style={styles.centered}
               onPress={() => router.push("/search")}
             >
-              <Search color={corporate} />
+              <SearchIcon color={corporate} />
             </Pressable>
           ))
         }

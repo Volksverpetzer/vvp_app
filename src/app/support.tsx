@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 
-import { Heart } from "#/components/Icons";
+import { HeartIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
 import Support from "#/components/views/Support";
 import Colors from "#/constants/Colors";
@@ -21,7 +21,7 @@ const SupportScreen = () => {
         }}
         contentContainerStyle={styles.contentContainer}
       >
-        <Heart width={50} />
+        <HeartIcon width={50} />
         <Support article_link={wpUrl + "/unterstutzen"} />
       </ScrollView>
       <NavBar link={wpUrl + "/unterstutzen"} />

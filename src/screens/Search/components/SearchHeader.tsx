@@ -1,7 +1,7 @@
 import { RefObject, useCallback } from "react";
 import { Keyboard, Pressable, TextInput } from "react-native";
 
-import { Search } from "#/components/Icons";
+import { SearchIcon } from "#/components/Icons";
 import Faktenbot from "#/components/animations/Faktenbot";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -100,7 +100,7 @@ const SearchHeader = ({
           returnKeyType="search"
         />
         <Pressable accessibilityRole="button" onPress={handleSubmit}>
-          <Search color="white" width={20} />
+          <SearchIcon color="white" width={20} />
         </Pressable>
       </View>
     </>

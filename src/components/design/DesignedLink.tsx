@@ -1,11 +1,10 @@
-import { Image } from "expo-image";
 import * as Linking from "expo-linking";
 import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
 import { ReactElement } from "react";
 import { Pressable, View } from "react-native";
 
-import { ExternalLink } from "#/components/Icons";
+import { ExternalLinkIcon } from "#/components/Icons";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -56,7 +55,7 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
       >
         {properties.text}
       </Text>
-      <ExternalLink size={15} color={Colors[colorScheme].tabIconDefault} />
+      <ExternalLinkIcon size={15} color={Colors[colorScheme].tabIconDefault} />
     </Pressable>
   );
 };

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Pressable } from "react-native";
 import Modal from "react-native-modal";
 
-import { CloseIcon, Heart } from "#/components/Icons";
+import { CloseIcon, HeartIcon } from "#/components/Icons";
 import ShopButton from "#/components/buttons/ShopButton";
 import SteadyButton from "#/components/buttons/SteadyButton";
 import Space from "#/components/design/Space";
@@ -106,7 +106,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
             IBAN: {Config.donations.account.IBAN} {`\n`}
             Verwendungszweck: {Config.donations.account.note} {`\n`}
           </Text>
-          <Heart />
+          <HeartIcon />
         </View>
       </Modal>
     </View>

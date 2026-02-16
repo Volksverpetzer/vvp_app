@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 
-import { ChevronRight } from "#/components/Icons";
+import { ChevronIcon } from "#/components/Icons";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface LicensesListItemProperties {
@@ -92,7 +92,7 @@ const LicensesListItem = (
             </Text>
           </View>
           <View style={styles.icon}>
-            <ChevronRight color={iconColor} size={40} />
+            <ChevronIcon direction="right" color={iconColor} size={40} />
           </View>
         </TouchableOpacity>
       </View>

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import ViewShot from "react-native-view-shot";
 
-import { TouchApp } from "#/components/Icons";
+import { TouchIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -115,7 +115,7 @@ const Header = (properties: HeaderProperties) => {
 
   return (
     <>
-      <TouchApp
+      <TouchIcon
         size={25}
         color={corporate}
         style={{
