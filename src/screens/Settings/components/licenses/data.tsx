@@ -249,7 +249,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-system-ui@6.0.8": {
+  "expo-system-ui@6.0.9": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
