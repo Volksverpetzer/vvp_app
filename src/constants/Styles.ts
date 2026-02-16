@@ -18,17 +18,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
-  checkboxBase: {
-    backgroundColor: "transparent",
-    borderColor: "coral",
-    borderRadius: 4,
-    borderWidth: 2,
-    height: 28,
-    width: 28,
-  },
-  checkboxChecked: {
-    backgroundColor: "coral",
-  },
   container: {
     flex: 1,
   },
@@ -46,11 +35,6 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     padding: 10,
-  },
-  iconLeft: {
-    height: 25,
-    position: "absolute",
-    width: 20,
   },
   input: {
     borderRadius: 20,
