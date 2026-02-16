@@ -353,7 +353,7 @@ export const TouchIcon = (properties: MaterialIconsProps) => (
   <MaterialIcons name="touch-app" {...properties} />
 );
 
-export const PlayCircle = (properties: FontAwesomeProps) => (
+export const PlayIcon = (properties: FontAwesomeProps) => (
   <FontAwesome name="play-circle" {...properties} />
 );
 

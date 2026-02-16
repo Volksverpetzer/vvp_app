@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import WebView from "react-native-webview";
 
-import { PlayCircle } from "#/components/Icons";
+import { PlayIcon } from "#/components/Icons";
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
 
 /**
@@ -84,7 +84,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
             accessibilityHint="Thumbnail for the TikTok video"
             importantForAccessibility="yes"
           />
-          <PlayCircle
+          <PlayIcon
             style={styles.playButton}
             size={50}
             color={TIKTOK_BRAND_COLOR}
