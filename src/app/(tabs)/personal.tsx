@@ -95,7 +95,7 @@ const PersonalTab = () => {
                     activeTab === "sources" ? corporateColor : tabIconColor,
                 }}
               >
-                <LinkIcon color={"white"} size={30} />
+                <LinkIcon color={"white"} />
                 <Text
                   style={{
                     alignSelf: "center",

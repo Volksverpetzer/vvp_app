@@ -350,7 +350,11 @@ export const SuccessIcon = (properties: FeatherProps) => (
 );
 
 export const TouchIcon = (properties: MaterialIconsProps) => (
-  <MaterialIcons name="touch-app" {...properties} />
+  <MaterialIcons
+    name="touch-app"
+    size={properties.size ?? 30}
+    {...properties}
+  />
 );
 
 export const PlayIcon = (properties: FontAwesomeProps) => (
@@ -358,7 +362,7 @@ export const PlayIcon = (properties: FontAwesomeProps) => (
 );
 
 export const LinkIcon = (properties: FontAwesomeProps) => (
-  <FontAwesome name="link" {...properties} />
+  <FontAwesome name="link" size={properties.size ?? 30} {...properties} />
 );
 
 export const NotificationIcon = (properties: MaterialIconsProps) => (

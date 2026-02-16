@@ -92,7 +92,6 @@ const RedditPost = (properties: RedditProperties) => {
             }
           />
           <TouchIcon
-            size={30}
             color={"#ffffff"}
             style={{ alignSelf: "flex-end", marginTop: -40 }}
           />
