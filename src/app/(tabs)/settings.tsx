@@ -131,7 +131,7 @@ const SettingsScreen = () => {
         </Collapsable>
         <Collapsable
           icon={
-            <MaterialIcons name="notifications" size={22} color={corporate} />
+            <MaterialIcons name="notifications" size={24} color={corporate} />
           }
           title="Benachrichtigungen"
           titleStyle={styles.collapsibleTitle}
@@ -142,7 +142,7 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={<MaterialIcons name="settings" size={22} color={corporate} />}
+          icon={<MaterialIcons name="settings" size={24} color={corporate} />}
           title="Erweitert"
           titleStyle={styles.collapsibleTitle}
         >
@@ -151,9 +151,7 @@ const SettingsScreen = () => {
             settings={advancedSettings}
           />
         </Collapsable>
-        <Space size={10} />
-        <Divider padding={60} />
-        <Space size={10} />
+        <Divider paddingHorizontal={35} paddingVertical={10} />
         <View style={styles.linksContainer}>
           <DesignedLink
             url={Config.aboutUrl}

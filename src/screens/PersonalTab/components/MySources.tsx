@@ -64,7 +64,7 @@ const MySources = () => {
                   progress={p}
                   drag={d}
                   swipeable={s}
-                  icon={<MaterialIcons name="delete" size={22} color="white" />}
+                  icon={<MaterialIcons name="delete" size={24} color="white" />}
                   label={"Löschen"}
                   hint={"Lösche diese Quelle"}
                   onAction={async () => {

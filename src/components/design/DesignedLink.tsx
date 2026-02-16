@@ -44,11 +44,10 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
           backgroundColor: pressed ? "#909090" : undefined,
           paddingVertical: 10,
           justifyContent: "flex-start",
-          gap: 3,
         },
       ]}
     >
-      {properties.icon && <View style={{ width: 20 }}>{properties.icon}</View>}
+      {properties.icon && <View style={{ width: 24 }}>{properties.icon}</View>}
       <Text
         style={{
           ...styles.heading,
