@@ -11,7 +11,11 @@ function flattenStyle(style: any) {
 describe("Divider", () => {
   it("renders correctly and applies padding/width/style props", () => {
     const { toJSON } = render(
-      <Divider padding={12} thickness={4} style={{ marginVertical: 8 }} />,
+      <Divider
+        paddingHorizontal={12}
+        thickness={4}
+        style={{ marginVertical: 8 }}
+      />,
     );
 
     const tree = toJSON();
@@ -19,8 +23,7 @@ describe("Divider", () => {
 
     const containerStyle = flattenStyle(tree.props.style);
     expect(containerStyle.width).toBe("100%");
-    expect(containerStyle.paddingLeft).toBe(12);
-    expect(containerStyle.paddingRight).toBe(12);
+    expect(containerStyle.paddingHorizontal).toBe(12);
     expect(containerStyle.marginVertical).toBe(8);
 
     const lineNode = tree.children && tree.children[0];
@@ -31,7 +34,11 @@ describe("Divider", () => {
 
   it("matches snapshot", () => {
     const { toJSON } = render(
-      <Divider padding={12} thickness={4} style={{ marginVertical: 8 }} />,
+      <Divider
+        paddingHorizontal={12}
+        thickness={4}
+        style={{ marginVertical: 8 }}
+      />,
     );
     expect(toJSON()).toMatchSnapshot();
   });

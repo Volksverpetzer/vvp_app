@@ -8,8 +8,8 @@ exports[`Divider matches snapshot 1`] = `
         "width": "100%",
       },
       {
-        "paddingLeft": 12,
-        "paddingRight": 12,
+        "paddingHorizontal": 12,
+        "paddingVertical": 0,
       },
       {
         "marginVertical": 8,
