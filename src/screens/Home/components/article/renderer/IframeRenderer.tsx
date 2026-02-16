@@ -14,6 +14,7 @@ import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/posts/LoadArticlePost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 export interface IframeRendererProperties {
   renderProps: CustomRendererProps<TBlock>;
@@ -73,37 +74,60 @@ type WebViewRequest = {
  * returned unchanged without additional headers.
  *
  * @param url - The iframe source URL to be loaded in the WebView.
+ * @param colorScheme
  * @returns An object containing the (possibly modified) `uri` and optional
  * `headers` to be passed to the WebView `source` prop.
  */
 const prepareWebViewSource = (
   url: string,
+  colorScheme: "light" | "dark",
 ): { uri: string; headers?: { Referer: string } } => {
+  let preparedUrl = url;
   const { hostname } = Linking.parse(url);
+
   const isYouTube =
     !!hostname &&
     (hostname.includes("youtube.com") ||
       hostname.includes("youtube-nocookie.com") ||
       hostname.includes("youtu.be"));
-  if (!isYouTube) return { uri: url };
+  if (isYouTube) {
+    try {
+      const parsed = new URL(preparedUrl);
+      parsed.searchParams.set("autoplay", "0");
+      preparedUrl = parsed.toString();
+    } catch {
+      preparedUrl = preparedUrl.replace(/([?&])autoplay=1\b/g, "$1autoplay=0");
+      const queryPrefix = preparedUrl.includes("?") ? "&" : "?";
+      if (!/[?&]autoplay=/.test(preparedUrl)) {
+        preparedUrl = `${preparedUrl}${queryPrefix}autoplay=0`;
+      }
+    }
 
-  let uri: string;
-  try {
-    const parsed = new URL(url);
-    parsed.searchParams.set("autoplay", "0");
-    uri = parsed.toString();
-  } catch {
-    uri = url.replace(/([?&])autoplay=1\b/g, "$1autoplay=0");
-    const queryPrefix = uri.includes("?") ? "&" : "?";
-    if (!/[?&]autoplay=/.test(uri)) {
-      uri = `${uri}${queryPrefix}autoplay=0`;
+    return {
+      uri: preparedUrl,
+      headers: { Referer: Config.wpUrl },
+    };
+  }
+
+  const isDatawrapper =
+    !!hostname && hostname.includes("datawrapper.dwcdn.net");
+  if (isDatawrapper) {
+    try {
+      const parsed = new URL(preparedUrl);
+      parsed.searchParams.set(
+        "dark",
+        colorScheme === "dark" ? "true" : "false",
+      );
+      preparedUrl = parsed.toString();
+    } catch {
+      const darkParam = `dark=${colorScheme === "dark" ? "true" : "false"}`;
+      preparedUrl = preparedUrl.includes("?")
+        ? `${preparedUrl}&${darkParam}`
+        : `${preparedUrl}?${darkParam}`;
     }
   }
 
-  return {
-    uri,
-    headers: { Referer: Config.wpUrl },
-  };
+  return { uri: preparedUrl };
 };
 
 const shouldStartRequest = (
@@ -144,10 +168,11 @@ const IframeRenderer = ({
   onLinkPress,
 }: IframeRendererProperties) => {
   const fallbackHeight = Math.min(width, 400);
+  const colorScheme = useAppColorScheme();
   const [webViewHeight, setWebViewHeight] = useState(fallbackHeight);
   const { htmlAttribs } = useHtmlIframeProps(renderProps);
   const source = htmlAttribs.src;
-  const webViewSource = prepareWebViewSource(source);
+  const webViewSource = prepareWebViewSource(source, colorScheme);
 
   const onMessage = useCallback((event: WebViewMessageEvent) => {
     const parsedHeight = Number.parseInt(event.nativeEvent.data, 10);
@@ -194,7 +219,12 @@ const IframeRenderer = ({
     <View style={{ alignItems: "center" }}>
       <WebView
         source={webViewSource}
-        style={{ width, maxWidth: maxWidth + 40, height: webViewHeight }}
+        style={{
+          width,
+          maxWidth: maxWidth + 40,
+          height: webViewHeight,
+          backgroundColor: "transparent",
+        }}
         nestedScrollEnabled={false}
         thirdPartyCookiesEnabled={false}
         injectedJavaScriptBeforeContentLoaded={INJECT_BEFORE}
