@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { ChevronLeft, Share } from "#/components/Icons";
+import { ChevronIcon, ShareIcon } from "#/components/Icons";
 import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
 import Colors from "#/constants/Colors";
@@ -75,7 +75,7 @@ const NavBar = (properties: NavBarProperties) => {
         onPress={() => router.back()}
         hitSlop={20}
       >
-        <ChevronLeft size={40} color={corporate} />
+        <ChevronIcon direction="left" size={40} color={corporate} />
       </Pressable>
 
       {link ? (
@@ -99,7 +99,7 @@ const NavBar = (properties: NavBarProperties) => {
               margin: 0,
             }}
           >
-            <Share color={corporate} size={30} />
+            <ShareIcon color={corporate} />
             <ShareCounter
               shareable={[{ title: "title", url: link }]}
               style={{ color: corporate, fontSize: 16 }}

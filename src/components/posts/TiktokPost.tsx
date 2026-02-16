@@ -1,4 +1,3 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useState } from "react";
 import {
@@ -9,6 +8,7 @@ import {
 } from "react-native";
 import WebView from "react-native-webview";
 
+import { PlayIcon } from "#/components/Icons";
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
 
 /**
@@ -84,9 +84,8 @@ const TiktokPost = (properties: TiktokPostProperties) => {
             accessibilityHint="Thumbnail for the TikTok video"
             importantForAccessibility="yes"
           />
-          <FontAwesome
+          <PlayIcon
             style={styles.playButton}
-            name="play-circle"
             size={50}
             color={TIKTOK_BRAND_COLOR}
             accessibilityElementsHidden

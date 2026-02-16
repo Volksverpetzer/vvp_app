@@ -1,10 +1,9 @@
-import { EvilIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import { JSX, useCallback, useState } from "react";
 import { Animated, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import { EmptyStar } from "#/components/Icons";
+import { LinkIcon, StarIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -72,7 +71,7 @@ const PersonalTab = () => {
                     activeTab === "favs" ? corporateColor : tabIconColor,
                 }}
               >
-                <EmptyStar color={"white"} width={40} />
+                <StarIcon color={"white"} />
                 <Text
                   style={{
                     alignSelf: "center",
@@ -96,12 +95,7 @@ const PersonalTab = () => {
                     activeTab === "sources" ? corporateColor : tabIconColor,
                 }}
               >
-                <EvilIcons
-                  style={{ lineHeight: 35 }}
-                  name="link"
-                  size={35}
-                  color={"white"}
-                />
+                <LinkIcon color={"white"} />
                 <Text
                   style={{
                     alignSelf: "center",

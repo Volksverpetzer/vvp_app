@@ -1,9 +1,9 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useState } from "react";
 import { TouchableOpacity, useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
 
+import { PlayIcon } from "#/components/Icons";
 import View from "#/components/design/View";
 import Config from "#/constants/Config";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -75,9 +75,8 @@ const YTPost = (properties: YTPostProperties) => {
             style={{ flex: 1, width: width - 24, backgroundColor: corporate }}
             source={{ uri: preview }}
           />
-          <FontAwesome
+          <PlayIcon
             style={{ position: "absolute", top: "45%", left: "45%" }}
-            name="play-circle"
             size={50}
             color="red"
           />

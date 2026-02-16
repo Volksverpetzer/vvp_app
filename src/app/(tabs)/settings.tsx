@@ -1,4 +1,3 @@
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -11,7 +10,15 @@ import {
 } from "react-native";
 import Toast from "react-native-toast-message";
 
-import { Feed, Give, Search } from "#/components/Icons";
+import {
+  FeedIcon,
+  FeedbackIcon,
+  GiveIcon,
+  LockIcon,
+  NotificationIcon,
+  SearchIcon,
+  SettingsIcon,
+} from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import ShopButton from "#/components/buttons/ShopButton";
 import Collapsable from "#/components/design/Collapsable";
@@ -117,7 +124,7 @@ const SettingsScreen = () => {
         )}
       >
         <Collapsable
-          icon={<Feed color={corporate} />}
+          icon={<FeedIcon color={corporate} />}
           title="Feed"
           titleStyle={styles.collapsibleTitle}
         >
@@ -130,9 +137,7 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={
-            <MaterialIcons name="notifications" size={24} color={corporate} />
-          }
+          icon={<NotificationIcon size={24} color={corporate} />}
           title="Benachrichtigungen"
           titleStyle={styles.collapsibleTitle}
         >
@@ -142,7 +147,7 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={<MaterialIcons name="settings" size={24} color={corporate} />}
+          icon={<SettingsIcon size={24} color={corporate} />}
           title="Erweitert"
           titleStyle={styles.collapsibleTitle}
         >
@@ -155,22 +160,22 @@ const SettingsScreen = () => {
         <View style={styles.linksContainer}>
           <DesignedLink
             url={Config.aboutUrl}
-            icon={<Search color={corporate} width={20} />}
+            icon={<SearchIcon color={corporate} width={20} />}
             text="Über uns"
           />
           <DesignedLink
             url={Config.donations.support}
-            icon={<Give color={corporate} />}
+            icon={<GiveIcon color={corporate} />}
             text="Unterstützen"
           />
           <DesignedLink
             url={encodeURI("mailto:app@volksverpetzer.de")}
-            icon={<MaterialIcons name="feedback" size={24} color={corporate} />}
+            icon={<FeedbackIcon size={24} color={corporate} />}
             text="App-Feedback"
           />
           <DesignedLink
             url={Config.dataProtectionUrl}
-            icon={<FontAwesome name="lock" size={24} color={corporate} />}
+            icon={<LockIcon size={24} color={corporate} />}
             text="Datenschutz"
           />
         </View>

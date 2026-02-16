@@ -1,12 +1,10 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Pressable, ViewStyle } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 
-import { styles } from "#/constants/Styles";
+import { CheckboxIcon } from "#/components/Icons";
 
 interface CheckboxProperties {
   checked: boolean;
-  style?: ViewStyle;
   onChange: (checked: boolean) => void;
 }
 
@@ -19,16 +17,26 @@ const Checkbox = (properties: CheckboxProperties) => {
   return (
     <Pressable
       accessibilityRole="button"
-      style={[
-        properties.style,
-        styles.checkboxBase,
-        checked && styles.checkboxChecked,
-      ]}
+      style={[styles.checkboxBase, checked && styles.checkboxChecked]}
       onPress={onPress}
     >
-      {checked && <Ionicons name="checkmark" size={24} color="white" />}
+      {checked && <CheckboxIcon size={24} color="white" />}
     </Pressable>
   );
 };
+
+const styles = StyleSheet.create({
+  checkboxBase: {
+    backgroundColor: "transparent",
+    borderColor: "coral",
+    borderRadius: 4,
+    borderWidth: 2,
+    height: 28,
+    width: 28,
+  },
+  checkboxChecked: {
+    backgroundColor: "coral",
+  },
+});
 
 export default Checkbox;

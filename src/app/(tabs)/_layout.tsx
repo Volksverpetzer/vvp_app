@@ -2,12 +2,11 @@ import { Tabs } from "expo-router";
 import { View } from "react-native";
 
 import {
-  EmptyStar,
-  FilledStar,
-  Home,
-  Pokal,
-  Report,
-  Settings,
+  HomeIcon,
+  ReportIcon,
+  SettingsIcon,
+  StarIcon,
+  TrophyIcon,
 } from "#/components/Icons";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -48,7 +47,7 @@ const TabLayout = () => {
         name="home"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => <Home color={color} />,
+          tabBarIcon: ({ color }) => <HomeIcon color={color} />,
           tabBarAccessibilityLabel: "Home",
         }}
       />
@@ -58,12 +57,7 @@ const TabLayout = () => {
           title: "Favs",
           tabBarIcon: ({ color, focused }) => (
             <>
-              {focused ? (
-                <FilledStar color={color} width={50} />
-              ) : (
-                <EmptyStar color={color} width={50} />
-              )}
-
+              <StarIcon filled={focused} color={color} />
               {badgeState.personal && <View style={styles.badge} />}
             </>
           ),
@@ -96,7 +90,7 @@ const TabLayout = () => {
                   borderTopColor: Colors[colorScheme].grayedOut,
                 }}
               >
-                <Pokal color={focused ? corporate : color} />
+                <TrophyIcon color={focused ? corporate : color} />
                 {badgeState.action && <View style={styles.badge} />}
               </View>
             );
@@ -108,7 +102,7 @@ const TabLayout = () => {
         name="report"
         options={{
           title: "Petzen",
-          tabBarIcon: ({ color }) => <Report color={color} />,
+          tabBarIcon: ({ color }) => <ReportIcon color={color} />,
           tabBarAccessibilityLabel: "Fake melden",
         }}
       />
@@ -116,7 +110,7 @@ const TabLayout = () => {
         name="settings"
         options={{
           title: "Konfig",
-          tabBarIcon: ({ color }) => <Settings color={color} width={50} />,
+          tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
           tabBarAccessibilityLabel: "Einstellungen",
         }}
       />
