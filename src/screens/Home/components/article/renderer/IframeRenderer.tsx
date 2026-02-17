@@ -38,13 +38,25 @@ const INJECT_AFTER = `
   window.addEventListener("load", postHeight);
   window.addEventListener("resize", postHeight);
   if (window.MutationObserver) {
-    const observer = new MutationObserver(postHeight);
-    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+    const setupObserver = () => {
+      if (!document.body) {
+        return;
+      }
+      const observer = new MutationObserver(postHeight);
+      observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", setupObserver);
+    } else {
+      setupObserver();
+    }
   }
-  const meta = document.createElement('meta');
-  meta.name = 'viewport';
-  meta.content = 'width=device-width, initial-scale=1, maximum-scale=1';
-  document.head.appendChild(meta);
+  if (document.head) {
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1, maximum-scale=1';
+    document.head.appendChild(meta);
+  }
 `;
 
 /**
@@ -82,7 +94,7 @@ type WebViewRequest = {
 const prepareWebViewSource = (
   url: string,
   colorScheme: "light" | "dark",
-): { uri: string; headers?: { Referer: string } } => {
+): { uri: string; headers?: { Referer: string } } | null => {
   // Linking.parse is tolerant, but it doesn't give us a URL object we can mutate.
   // We'll use it to detect the host, then rebuild the URL with the standard URL API.
   const parsed = Linking.parse(url);
@@ -229,6 +241,7 @@ const IframeRenderer = ({
           backgroundColor: "transparent",
         }}
         nestedScrollEnabled={false}
+        accessibilityLabel={`Embedded content from ${new URL(webViewSource.uri).hostname}`}
         thirdPartyCookiesEnabled={false}
         injectedJavaScriptBeforeContentLoaded={INJECT_BEFORE}
         injectedJavaScript={INJECT_AFTER}
