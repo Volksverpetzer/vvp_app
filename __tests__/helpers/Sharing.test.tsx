@@ -12,11 +12,16 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
   clear: jest.fn(),
 }));
 // Mock all expo/native modules
-jest.mock("expo-file-system/legacy", () => ({
-  downloadAsync: jest.fn(() =>
+jest.mock("expo-file-system", () => {
+  const MockFile = jest.fn(() => ({ uri: "file:///mocked/path.jpg" }));
+  MockFile.downloadFileAsync = jest.fn(() =>
     Promise.resolve({ uri: "file:///mocked/path.jpg" }),
-  ),
-}));
+  );
+  return {
+    File: MockFile,
+    Paths: { document: "file:///document/directory" },
+  };
+});
 jest.mock("expo-sharing", () => ({}));
 jest.mock("expo-haptics", () => ({
   notificationAsync: jest.fn(),
