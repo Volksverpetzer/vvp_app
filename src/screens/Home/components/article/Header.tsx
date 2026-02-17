@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
 import { Href, useRouter } from "expo-router";
@@ -13,6 +12,7 @@ import {
 } from "react-native";
 import ViewShot from "react-native-view-shot";
 
+import { TouchIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -115,8 +115,7 @@ const Header = (properties: HeaderProperties) => {
 
   return (
     <>
-      <MaterialIcons
-        name="touch-app"
+      <TouchIcon
         size={25}
         color={corporate}
         style={{

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { type ComponentProps, useEffect, useState } from "react";
 import { Switch, View } from "react-native";
 
 import Text from "#/components/design/Text";
@@ -21,6 +21,13 @@ interface SettingsListProperties {
     [id: string]: SettingType;
   };
 }
+
+// Extend native Switch props locally to allow `activeThumbColor` which
+// is accepted at runtime but may be missing from the RN typings used in this project.
+// See https://stackoverflow.com/a/73313139
+type ExtendedSwitchProps = ComponentProps<typeof Switch> & {
+  activeThumbColor?: string;
+};
 
 const SettingsList = (properties: SettingsListProperties) => {
   const [disabled, setDisabled] = useState(false);
@@ -48,6 +55,24 @@ const SettingsList = (properties: SettingsListProperties) => {
             !activeSettings.includes(key as keyof ContentSettingType)
           )
             return;
+
+          // Build the Switch props in a local object so we can add runtime-only props
+          // (like `activeThumbColor`) without TypeScript complaining about them.
+          const switchProps: ExtendedSwitchProps = {
+            testID: "settingSwitch",
+            trackColor: { false: "#E6E6E6", true: activeColor },
+            activeThumbColor: setting.value ? corporate : "#C4C4C4",
+            thumbColor: setting.value ? corporate : "#C4C4C4",
+            ios_backgroundColor: activeColor,
+            disabled,
+            onValueChange: (value: boolean) => {
+              setDisabled(true);
+              properties.saveSettings(value, key, setting, setUpdate);
+              setUpdate(false);
+            },
+            value: setting.value,
+          };
+
           return (
             <View
               key={key}
@@ -58,20 +83,8 @@ const SettingsList = (properties: SettingsListProperties) => {
               }}
             >
               <Text style={{ fontSize: 16 }}>{setting.name}</Text>
-              <Switch
-                testID="settingSwitch"
-                trackColor={{ false: "#E6E6E6", true: activeColor }}
-                thumbColor={setting.value ? corporate : "#C4C4C4"}
-                ios_backgroundColor={activeColor}
-                disabled={disabled}
-                onValueChange={(value) => {
-                  setDisabled(true);
-                  properties.saveSettings(value, key, setting, setUpdate);
-                  setUpdate(false);
-                }}
-                style={{ marginTop: -2 }}
-                value={setting.value}
-              />
+              {/* cast to native Switch props to satisfy TypeScript while keeping runtime props */}
+              <Switch {...(switchProps as ComponentProps<typeof Switch>)} />
             </View>
           );
         })}

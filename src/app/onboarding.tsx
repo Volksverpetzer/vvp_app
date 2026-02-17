@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 import { Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Feed, Safety } from "#/components/Icons";
+import { FeedIcon, SafetyIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import SettingsList from "#/components/views/SettingsList";
@@ -88,7 +88,7 @@ const Onboarding = () => {
               alignItems: "center",
             }}
           >
-            <Feed color={corporate} />
+            <FeedIcon color={corporate} />
             <Text
               style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
             >
@@ -115,7 +115,7 @@ const Onboarding = () => {
               alignItems: "center",
             }}
           >
-            <Feed color={corporate} />
+            <FeedIcon color={corporate} />
             <Text
               style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
             >
@@ -133,7 +133,7 @@ const Onboarding = () => {
       id: 8,
       title: "Prio: Datenschutz",
       description: `Unser Versprechen: Wir geben uns alle Mühe, den Datenkraken so wenig zu überliefern wie möglich. Du braucht keine Accounts, wir tracken dich nicht. Mit der Nutzung stimmst du unserer Datenschutzerklärung zu.`,
-      TopComponent: () => <Safety color={corporate} width={80} />,
+      TopComponent: () => <SafetyIcon color={corporate} width={80} />,
       Component: () => (
         <Pressable
           accessibilityRole="button"

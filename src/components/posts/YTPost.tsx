@@ -1,10 +1,11 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useState } from "react";
 import { TouchableOpacity, useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
 
+import { PlayIcon } from "#/components/Icons";
 import View from "#/components/design/View";
+import Config from "#/constants/Config";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 /**
@@ -57,7 +58,7 @@ const YTPost = (properties: YTPostProperties) => {
   const { width } = useWindowDimensions();
   const corporate = useCorporateColor();
   const height = (width - 24) / ratio;
-  const uri = `https://www.youtube.com/embed/${id}?autoplay=1&auto_play=1&width=${dims.width}`;
+  const uri = `https://www.youtube.com/embed/${id}?autoplay=1&width=${dims.width}`;
   const preview = inView
     ? snippet.thumbnails.high.url
     : snippet.thumbnails.default.url;
@@ -74,9 +75,8 @@ const YTPost = (properties: YTPostProperties) => {
             style={{ flex: 1, width: width - 24, backgroundColor: corporate }}
             source={{ uri: preview }}
           />
-          <FontAwesome
+          <PlayIcon
             style={{ position: "absolute", top: "45%", left: "45%" }}
-            name="play-circle"
             size={50}
             color="red"
           />
@@ -93,7 +93,7 @@ const YTPost = (properties: YTPostProperties) => {
         <WebView
           source={{
             uri,
-            headers: { Referer: "https://www.volksverpetzer.de/" },
+            headers: { Referer: Config.wpUrl },
           }}
           style={{ width: "100%", height }}
           javaScriptEnabled={true}

@@ -87,7 +87,12 @@ const Donate = (properties: DonateProperties) => {
       <View style={{ justifyContent: "center", ...styles.noBackground }}>
         {(properties?.showPicker ?? true) && (
           <View
-            style={{ height: 50, marginBottom: 20, ...styles.noBackground }}
+            style={{
+              height: 50,
+              marginBottom: 20,
+              ...styles.feed,
+              ...styles.noBackground,
+            }}
           >
             <HorizontalPicker
               data={validAmounts}

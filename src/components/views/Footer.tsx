@@ -1,6 +1,6 @@
 import { Pressable } from "react-native";
 
-import { Share } from "#/components/Icons";
+import { ShareIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -61,7 +61,7 @@ const Footer = (properties: FooterProperties) => {
             })
           }
         >
-          <Share color={"white"} size={50} />
+          <ShareIcon color={"white"} size={50} />
         </Pressable>
       </View>
       <View

@@ -11,6 +11,7 @@ interface SearchTutorialProperties {
 const SearchTutorial = ({ textStyle }: SearchTutorialProperties) => (
   <View
     style={{
+      flex: 1,
       alignItems: "center",
       paddingHorizontal: 30,
       paddingTop: 40,

@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { Pressable, View as RNView } from "react-native";
@@ -6,6 +5,7 @@ import Swipeable, {
   SwipeDirection,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
 
+import { DeleteIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
@@ -64,7 +64,7 @@ const MySources = () => {
                   progress={p}
                   drag={d}
                   swipeable={s}
-                  icon={<MaterialIcons name="delete" size={22} color="white" />}
+                  icon={<DeleteIcon size={24} color="white" />}
                   label={"Löschen"}
                   hint={"Lösche diese Quelle"}
                   onAction={async () => {

@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text } from "react-native";
 
-import { LogoBig, Search } from "#/components/Icons";
+import { LogoBig, SearchIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
@@ -86,7 +86,7 @@ const HomeScreen = () => {
             >
               Suche ...
             </Text>
-            <Search color={"white"} />
+            <SearchIcon color={"white"} />
           </View>
         </Pressable>
       </AnimatedHeader>

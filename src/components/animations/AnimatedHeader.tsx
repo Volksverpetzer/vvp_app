@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import React, { PropsWithChildren, ReactNode, useMemo } from "react";
 import { Animated, Pressable } from "react-native";
 
-import { Heart } from "#/components/Icons";
+import { HeartIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
@@ -159,7 +159,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
             }}
             style={{ position: "absolute", top: 20, right: "10%" }}
           >
-            <Heart color={corporate} />
+            <HeartIcon color={corporate} />
           </Pressable>
         )}
         {title && <Animated.Text style={titleTextStyle}>{title}</Animated.Text>}
