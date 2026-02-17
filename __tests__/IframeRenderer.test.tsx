@@ -17,14 +17,16 @@ jest.mock("expo-linking", () => ({
 }));
 
 // Mock the html iframe hook to return predictable htmlAttribs
+const mockUseHtmlIframeProps = jest.fn(() => ({
+  htmlAttribs: { src: "https://example.com/embed" },
+}));
 jest.mock("@native-html/iframe-plugin", () => ({
-  useHtmlIframeProps: () => ({
-    htmlAttribs: { src: "https://example.com/embed" },
-  }),
+  useHtmlIframeProps: (...args: unknown[]) => mockUseHtmlIframeProps(...args),
 }));
 
+const mockUseAppColorScheme = jest.fn(() => "light");
 jest.mock("#/hooks/useAppColorScheme", () => ({
-  useAppColorScheme: jest.fn(() => "light"),
+  useAppColorScheme: (...args: unknown[]) => mockUseAppColorScheme(...args),
 }));
 // We'll capture the last props passed to the WebView to inspect style.height updates
 let mockLastWebViewProps: any = null;
@@ -42,6 +44,19 @@ jest.mock("react-native-webview", () => ({
 }));
 
 describe("IframeRenderer dynamic height", () => {
+  beforeEach(() => {
+    // Reset mocks before each test to prevent test pollution
+    mockUseHtmlIframeProps.mockClear();
+    mockUseAppColorScheme.mockClear();
+    mockLastWebViewProps = null;
+    
+    // Reset to default return values
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://example.com/embed" },
+    });
+    mockUseAppColorScheme.mockReturnValue("light");
+  });
+
   it("updates webview height when onMessage posts a height", async () => {
     const onLinkPress = jest.fn();
 
@@ -331,5 +346,63 @@ describe("IframeRenderer dynamic height", () => {
     expect(mockLastWebViewProps).toBeTruthy();
     expect(mockLastWebViewProps.source).toBeTruthy();
     expect(mockLastWebViewProps.source.uri).toContain("dark=true");
+  });
+
+  it("should add dark parameter to Datawrapper URLs based on color scheme", () => {
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+    // Mock useAppColorScheme to return "dark"
+    mockUseAppColorScheme.mockReturnValue("dark");
+
+    // Mock useHtmlIframeProps to return a Datawrapper URL
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: {
+        src: "https://datawrapper.dwcdn.net/abc123/1/",
+      },
+    });
+
+    render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    // Verify that the WebView source includes the dark=true parameter with proper URL structure
+    const resultUrl = new URL(mockLastWebViewProps.source.uri);
+    expect(resultUrl.hostname).toBe("datawrapper.dwcdn.net");
+    expect(resultUrl.searchParams.get("dark")).toBe("true");
+  });
+
+  it("should add dark=false parameter to Datawrapper URLs in light mode", () => {
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+    // Mock useAppColorScheme to return "light"
+    mockUseAppColorScheme.mockReturnValue("light");
+
+    // Mock useHtmlIframeProps to return a Datawrapper URL
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: {
+        src: "https://datawrapper.dwcdn.net/xyz789/2/",
+      },
+    });
+
+    render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    // Verify that the WebView source includes the dark=false parameter with proper URL structure
+    const resultUrl = new URL(mockLastWebViewProps.source.uri);
+    expect(resultUrl.hostname).toBe("datawrapper.dwcdn.net");
+    expect(resultUrl.searchParams.get("dark")).toBe("false");
   });
 });
