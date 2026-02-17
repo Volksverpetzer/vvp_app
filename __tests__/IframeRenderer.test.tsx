@@ -326,5 +326,10 @@ describe("IframeRenderer dynamic height", () => {
     }
     // color scheme messages should not affect the height
     expect(height).toBe(360);
+
+    // and should update the Datawrapper dark mode parameter in the WebView source URL
+    expect(mockLastWebViewProps).toBeTruthy();
+    expect(mockLastWebViewProps.source).toBeTruthy();
+    expect(mockLastWebViewProps.source.uri).toContain("dark=true");
   });
 });
