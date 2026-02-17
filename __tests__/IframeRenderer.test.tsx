@@ -366,11 +366,10 @@ describe("IframeRenderer dynamic height", () => {
       />,
     );
 
-    // Verify that the WebView source includes the dark=true parameter
-    expect(mockLastWebViewProps.source.uri).toContain("dark=true");
-    expect(mockLastWebViewProps.source.uri).toContain(
-      "datawrapper.dwcdn.net",
-    );
+    // Verify that the WebView source includes the dark=true parameter with proper URL structure
+    const resultUrl = new URL(mockLastWebViewProps.source.uri);
+    expect(resultUrl.hostname).toBe("datawrapper.dwcdn.net");
+    expect(resultUrl.searchParams.get("dark")).toBe("true");
   });
 
   it("should add dark=false parameter to Datawrapper URLs in light mode", () => {
@@ -396,10 +395,9 @@ describe("IframeRenderer dynamic height", () => {
       />,
     );
 
-    // Verify that the WebView source includes the dark=false parameter
-    expect(mockLastWebViewProps.source.uri).toContain("dark=false");
-    expect(mockLastWebViewProps.source.uri).toContain(
-      "datawrapper.dwcdn.net",
-    );
+    // Verify that the WebView source includes the dark=false parameter with proper URL structure
+    const resultUrl = new URL(mockLastWebViewProps.source.uri);
+    expect(resultUrl.hostname).toBe("datawrapper.dwcdn.net");
+    expect(resultUrl.searchParams.get("dark")).toBe("false");
   });
 });
