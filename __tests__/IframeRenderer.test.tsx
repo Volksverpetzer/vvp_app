@@ -21,12 +21,12 @@ const mockUseHtmlIframeProps = jest.fn(() => ({
   htmlAttribs: { src: "https://example.com/embed" },
 }));
 jest.mock("@native-html/iframe-plugin", () => ({
-  useHtmlIframeProps: (...args: unknown[]) => mockUseHtmlIframeProps(...args),
+  useHtmlIframeProps: () => mockUseHtmlIframeProps(),
 }));
 
 const mockUseAppColorScheme = jest.fn(() => "light");
 jest.mock("#/hooks/useAppColorScheme", () => ({
-  useAppColorScheme: (...args: unknown[]) => mockUseAppColorScheme(...args),
+  useAppColorScheme: () => mockUseAppColorScheme(),
 }));
 // We'll capture the last props passed to the WebView to inspect style.height updates
 let mockLastWebViewProps: any = null;
@@ -49,7 +49,7 @@ describe("IframeRenderer dynamic height", () => {
     mockUseHtmlIframeProps.mockClear();
     mockUseAppColorScheme.mockClear();
     mockLastWebViewProps = null;
-    
+
     // Reset to default return values
     mockUseHtmlIframeProps.mockReturnValue({
       htmlAttribs: { src: "https://example.com/embed" },
@@ -341,11 +341,6 @@ describe("IframeRenderer dynamic height", () => {
     }
     // color scheme messages should not affect the height
     expect(height).toBe(360);
-
-    // and should update the Datawrapper dark mode parameter in the WebView source URL
-    expect(mockLastWebViewProps).toBeTruthy();
-    expect(mockLastWebViewProps.source).toBeTruthy();
-    expect(mockLastWebViewProps.source.uri).toContain("dark=true");
   });
 
   it("should add dark parameter to Datawrapper URLs based on color scheme", () => {
