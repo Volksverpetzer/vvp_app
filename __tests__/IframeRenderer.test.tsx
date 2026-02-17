@@ -2,7 +2,7 @@ import { act, render } from "@testing-library/react-native";
 import React from "react";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
 
-import IframeRenderer from "../src/screens/Home/components/article/renderer/IframeRenderer";
+import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
 
 // Mock expo-linking parse used in the component
 jest.mock("expo-linking", () => ({
@@ -28,6 +28,7 @@ const mockUseAppColorScheme = jest.fn(() => "light");
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => mockUseAppColorScheme(),
 }));
+
 // We'll capture the last props passed to the WebView to inspect style.height updates
 let mockLastWebViewProps: any = null;
 jest.mock("react-native-webview", () => ({
