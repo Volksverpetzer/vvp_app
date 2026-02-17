@@ -8,6 +8,8 @@ const colorScheme: colorSchemeType = {
     heading: "#1B7194",
     background: "#fff",
     secondaryBackground: "#E2F0F5",
+    errorBackground: "#C62828",
+    errorText: "#FFFFFF",
     tint: "#3893C0",
     tabIconDefault: "#aaa",
     grayedOut: "#bbb",
@@ -16,13 +18,14 @@ const colorScheme: colorSchemeType = {
     inputBackground: "#BADDE8",
     highlight: "#DB2685",
     corporate: "#1b7194",
-    error: "#dd1111",
   },
   dark: {
     text: "#F7F7F7",
     heading: "#8EC9E1",
     background: "#142228",
     secondaryBackground: "#050d0f",
+    errorBackground: "#7F1D1D",
+    errorText: "#FEE2E2",
     grayedOut: "#333",
     grayedOutText: "#aaa",
     tint: "#fff",
@@ -31,7 +34,6 @@ const colorScheme: colorSchemeType = {
     inputBackground: "#777",
     highlight: "#D31C74",
     corporate: "#3893c0",
-    error: "#dd1111",
   },
 };
 

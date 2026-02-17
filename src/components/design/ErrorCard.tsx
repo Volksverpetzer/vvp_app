@@ -12,7 +12,7 @@ const ErrorCard = (properties: ErrorCardProperties) => {
   const colorScheme = useAppColorScheme();
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    "error",
+    "errorBackground",
   );
 
   return (
@@ -20,8 +20,8 @@ const ErrorCard = (properties: ErrorCardProperties) => {
       style={[{ backgroundColor, alignItems: "center", gap: 5 }, style]}
       {...otherProperties}
     >
-      <ErrorIcon color={"black"} />
-      <Text style={{ color: Colors[colorScheme].text }}>
+      <ErrorIcon color={Colors[colorScheme].errorBackground} />
+      <Text style={{ color: Colors[colorScheme].errorText }}>
         {properties.text || "An error occurred. Please try again later."}
       </Text>
     </Card>

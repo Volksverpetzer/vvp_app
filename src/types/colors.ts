@@ -5,6 +5,8 @@ type styleColors = {
   heading: CSSProperties["color"];
   background: CSSProperties["color"];
   secondaryBackground: CSSProperties["color"];
+  errorBackground: CSSProperties["color"];
+  errorText: CSSProperties["color"];
   tint: CSSProperties["color"];
   tabIconDefault: CSSProperties["color"];
   grayedOut: CSSProperties["color"];
