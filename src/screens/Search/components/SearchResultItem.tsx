@@ -5,6 +5,7 @@ import RenderHtml from "react-native-render-html";
 
 import Card from "#/components/design/Card";
 import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
 import { getTagStyles } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -41,6 +42,9 @@ const SearchResultItem = ({
         tagsStyles={styles}
         ignoredDomTags={IGNORED_DOM_TAGS}
         contentWidth={width}
+        baseStyle={{
+          color: Colors[colorScheme].text,
+        }}
       />
 
       {subtitle}

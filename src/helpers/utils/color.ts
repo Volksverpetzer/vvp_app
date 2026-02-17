@@ -74,9 +74,7 @@ export const getTagStyles = (colorScheme: string) => {
     figure: {
       left: 0,
     },
-    div: {
-      color: textColor,
-    },
+    div: {},
     iframe: { left: 100 },
     figcaption: {
       color: textColor,
