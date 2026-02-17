@@ -1,6 +1,6 @@
 import { decode } from "html-entities";
 import { ReactNode, useMemo } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
 import Card from "#/components/design/Card";
@@ -25,8 +25,8 @@ const SearchResultItem = ({
   onPress,
 }: SearchResultItemProps) => {
   const colorScheme = useAppColorScheme();
-
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
+  const { width } = useWindowDimensions();
 
   const content = (
     <Card>
@@ -40,6 +40,7 @@ const SearchResultItem = ({
         source={{ html: text }}
         tagsStyles={styles}
         ignoredDomTags={IGNORED_DOM_TAGS}
+        contentWidth={width}
       />
 
       {subtitle}
