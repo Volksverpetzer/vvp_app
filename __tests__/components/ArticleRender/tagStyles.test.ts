@@ -25,4 +25,18 @@ describe("tagStyles", () => {
     // The corporate color should be used for the border
     expect(styles.blockquote.borderLeftColor).toBeDefined();
   });
+
+  it("should include div styles with textColor for dark mode", () => {
+    const styles = getTagStyles("dark");
+
+    expect(styles.div).toBeDefined();
+    expect(styles.div.color).toBeDefined();
+  });
+
+  it("should include div styles with textColor for light mode", () => {
+    const styles = getTagStyles("light");
+
+    expect(styles.div).toBeDefined();
+    expect(styles.div.color).toBeDefined();
+  });
 });
