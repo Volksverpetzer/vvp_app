@@ -9,9 +9,7 @@ import {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-import { ErrorIcon } from "#/components/Icons";
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
-import Card from "#/components/design/Card";
 import ErrorCard from "#/components/design/ErrorCard";
 import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/posts/LoadArticlePost";
