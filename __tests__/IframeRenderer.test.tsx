@@ -21,12 +21,12 @@ const mockUseHtmlIframeProps = jest.fn(() => ({
   htmlAttribs: { src: "https://example.com/embed" },
 }));
 jest.mock("@native-html/iframe-plugin", () => ({
-  useHtmlIframeProps: (...args: any[]) => mockUseHtmlIframeProps(...args),
+  useHtmlIframeProps: (...args: unknown[]) => mockUseHtmlIframeProps(...args),
 }));
 
 const mockUseAppColorScheme = jest.fn(() => "light");
 jest.mock("#/hooks/useAppColorScheme", () => ({
-  useAppColorScheme: (...args: any[]) => mockUseAppColorScheme(...args),
+  useAppColorScheme: (...args: unknown[]) => mockUseAppColorScheme(...args),
 }));
 // We'll capture the last props passed to the WebView to inspect style.height updates
 let mockLastWebViewProps: any = null;
@@ -44,6 +44,19 @@ jest.mock("react-native-webview", () => ({
 }));
 
 describe("IframeRenderer dynamic height", () => {
+  beforeEach(() => {
+    // Reset mocks before each test to prevent test pollution
+    mockUseHtmlIframeProps.mockClear();
+    mockUseAppColorScheme.mockClear();
+    mockLastWebViewProps = null;
+    
+    // Reset to default return values
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://example.com/embed" },
+    });
+    mockUseAppColorScheme.mockReturnValue("light");
+  });
+
   it("updates webview height when onMessage posts a height", async () => {
     const onLinkPress = jest.fn();
 
