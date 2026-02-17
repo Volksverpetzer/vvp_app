@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import * as FileSystem from "expo-file-system/legacy";
+import { File } from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
 import * as ExpoSharing from "expo-sharing";
@@ -10,6 +10,13 @@ import { Achievements } from "#/helpers/Achievements";
 import { multishare, onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
 import { registerEvent } from "#/helpers/network/Analytics";
+
+type DownloadResult = { uri: string };
+type DownloadFileAsync = (
+  url: string,
+  destination: { uri: string },
+  options: { idempotent: boolean },
+) => Promise<DownloadResult>;
 
 // Mock dependencies
 jest.mock("react-native", () => ({
@@ -23,11 +30,21 @@ jest.mock("react-native", () => ({
   },
 }));
 
-jest.mock("expo-file-system/legacy", () => ({
-  __esModule: true,
-  downloadAsync: jest.fn(),
-  documentDirectory: "file:///document/directory/",
-}));
+jest.mock("expo-file-system", () => {
+  const downloadFileAsyncMock: jest.MockedFunction<DownloadFileAsync> =
+    jest.fn();
+  const MockFile = Object.assign(
+    jest.fn((basePath: string, fileName: string) => ({
+      uri: `${basePath}/${fileName}`,
+    })),
+    { downloadFileAsync: downloadFileAsyncMock },
+  );
+  return {
+    __esModule: true,
+    File: MockFile,
+    Paths: { document: "file:///document/directory" },
+  };
+});
 
 jest.mock("expo-sharing", () => ({
   __esModule: true,
@@ -84,14 +101,16 @@ jest.mock("#/constants/Config", () => ({
 
 describe("Sharing helpers", () => {
   let parseSpy: ReturnType<typeof jest.spyOn>;
-  let downloadSpy: ReturnType<typeof jest.spyOn>;
+  let downloadSpy: jest.MockedFunction<DownloadFileAsync>;
   let shareSpy: ReturnType<typeof jest.spyOn>;
 
   beforeEach(() => {
     jest.clearAllMocks();
     Platform.OS = "ios"; // Default to iOS for tests
     parseSpy = jest.spyOn(Linking, "parse");
-    downloadSpy = jest.spyOn(FileSystem, "downloadAsync");
+    downloadSpy = (
+      File as unknown as { downloadFileAsync: jest.MockedFunction<DownloadFileAsync> }
+    ).downloadFileAsync;
     shareSpy = jest.spyOn(Share, "share");
   });
 
@@ -113,7 +132,7 @@ describe("Sharing helpers", () => {
       await onShare("https://example.com/image.jpg");
 
       // Verify isImageFile was correctly identified
-      expect(FileSystem.downloadAsync).toHaveBeenCalled();
+      expect(downloadSpy).toHaveBeenCalled();
     });
 
     it("should identify image files with media_url in the path", async () => {
@@ -133,7 +152,7 @@ describe("Sharing helpers", () => {
       await onShare("https://example.com/path/to/media_url_image");
 
       // Assert
-      expect(FileSystem.downloadAsync).toHaveBeenCalled();
+      expect(downloadSpy).toHaveBeenCalled();
     });
   });
 
@@ -154,9 +173,10 @@ describe("Sharing helpers", () => {
       await onShare("https://example.com/image.png");
 
       // Assert
-      expect(FileSystem.downloadAsync).toHaveBeenCalledWith(
+      expect(downloadSpy).toHaveBeenCalledWith(
         "https://example.com/image.png",
-        "file:///document/directory/temp.png",
+        expect.objectContaining({ uri: "file:///document/directory/temp.png" }),
+        { idempotent: true },
       );
     });
 
@@ -177,9 +197,10 @@ describe("Sharing helpers", () => {
       await onShare("https://example.com/media_url_image_without_extension");
 
       // Assert
-      expect(FileSystem.downloadAsync).toHaveBeenCalledWith(
+      expect(downloadSpy).toHaveBeenCalledWith(
         "https://example.com/media_url_image_without_extension",
-        "file:///document/directory/temp.jpg",
+        expect.objectContaining({ uri: "file:///document/directory/temp.jpg" }),
+        { idempotent: true },
       );
     });
   });
@@ -201,9 +222,10 @@ describe("Sharing helpers", () => {
       await onShare(url);
 
       // Assert
-      expect(FileSystem.downloadAsync).toHaveBeenCalledWith(
+      expect(downloadSpy).toHaveBeenCalledWith(
         url,
-        "file:///document/directory/temp.jpg",
+        expect.objectContaining({ uri: "file:///document/directory/temp.jpg" }),
+        { idempotent: true },
       );
     });
 
@@ -220,7 +242,7 @@ describe("Sharing helpers", () => {
       await onShare(url);
 
       // Assert
-      expect(FileSystem.downloadAsync).not.toHaveBeenCalled();
+      expect(downloadSpy).not.toHaveBeenCalled();
     });
   });
 

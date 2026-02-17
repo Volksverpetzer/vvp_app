@@ -1,4 +1,4 @@
-import * as FileSystem from "expo-file-system/legacy";
+import { File, Paths } from "expo-file-system";
 import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
 import * as Sharing from "expo-sharing";
@@ -55,10 +55,10 @@ const downloadImage = async (
   fileType: string,
 ): Promise<string> => {
   if (!url.startsWith("/") && !url.startsWith("file://")) {
-    const file = await FileSystem.downloadAsync(
-      url,
-      FileSystem.documentDirectory + "temp." + fileType,
-    );
+    const destination = new File(Paths.document, `temp.${fileType}`);
+    const file = await File.downloadFileAsync(url, destination, {
+      idempotent: true,
+    });
     return file.uri;
   }
   return url;
