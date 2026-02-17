@@ -458,5 +458,6 @@ export const SettingsIcon = (properties: IconProperties) => (
     name="cog-outline"
     size={properties.size ?? 30}
     color={properties.color}
+    {...properties}
   />
 );
