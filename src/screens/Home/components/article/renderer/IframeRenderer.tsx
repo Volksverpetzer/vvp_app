@@ -83,52 +83,46 @@ const prepareWebViewSource = (
   url: string,
   colorScheme: "light" | "dark",
 ): { uri: string; headers?: { Referer: string } } => {
-  let preparedUrl = url;
-  const { hostname } = Linking.parse(url);
+  // Linking.parse is tolerant, but it doesn't give us a URL object we can mutate.
+  // We'll use it to detect the host, then rebuild the URL with the standard URL API.
+  const parsed = Linking.parse(url);
+
+  const hostname = parsed.hostname ?? "";
+  if (!hostname) {
+    return null;
+  }
 
   const isYouTube =
-    !!hostname &&
-    (hostname.includes("youtube.com") ||
-      hostname.includes("youtube-nocookie.com") ||
-      hostname.includes("youtu.be"));
-  if (isYouTube) {
-    try {
-      const parsed = new URL(preparedUrl);
-      parsed.searchParams.set("autoplay", "0");
-      preparedUrl = parsed.toString();
-    } catch {
-      preparedUrl = preparedUrl.replace(/([?&])autoplay=1\b/g, "$1autoplay=0");
-      const queryPrefix = preparedUrl.includes("?") ? "&" : "?";
-      if (!/[?&]autoplay=/.test(preparedUrl)) {
-        preparedUrl = `${preparedUrl}${queryPrefix}autoplay=0`;
-      }
-    }
+    hostname.includes("youtube.com") ||
+    hostname.includes("youtube-nocookie.com") ||
+    hostname.includes("youtu.be");
 
+  const isDatawrapper = hostname.includes("datawrapper.dwcdn.net");
+
+  if (!isYouTube && !isDatawrapper) return { uri: url };
+
+  // Rebuild & mutate query params safely
+  let u: URL;
+  try {
+    // Ensure absolute URL for the constructor
+    u = new URL(url);
+  } catch {
+    return { uri: url };
+  }
+
+  if (isYouTube) {
+    u.searchParams.set("autoplay", "0");
     return {
-      uri: preparedUrl,
+      uri: u.toString(),
       headers: { Referer: Config.wpUrl },
     };
   }
 
-  const isDatawrapper =
-    !!hostname && hostname.includes("datawrapper.dwcdn.net");
   if (isDatawrapper) {
-    try {
-      const parsed = new URL(preparedUrl);
-      parsed.searchParams.set(
-        "dark",
-        colorScheme === "dark" ? "true" : "false",
-      );
-      preparedUrl = parsed.toString();
-    } catch {
-      const darkParam = `dark=${colorScheme === "dark" ? "true" : "false"}`;
-      preparedUrl = preparedUrl.includes("?")
-        ? `${preparedUrl}&${darkParam}`
-        : `${preparedUrl}?${darkParam}`;
-    }
+    u.searchParams.set("dark", colorScheme === "dark" ? "true" : "false");
   }
 
-  return { uri: preparedUrl };
+  return { uri: u.toString() };
 };
 
 const shouldStartRequest = (
