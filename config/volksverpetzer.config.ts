@@ -16,6 +16,7 @@ const colorScheme: colorSchemeType = {
     inputBackground: "#BADDE8",
     highlight: "#DB2685",
     corporate: "#1b7194",
+    error: "#dd1111",
   },
   dark: {
     text: "#F7F7F7",
@@ -30,6 +31,7 @@ const colorScheme: colorSchemeType = {
     inputBackground: "#777",
     highlight: "#D31C74",
     corporate: "#3893c0",
+    error: "#dd1111",
   },
 };
 

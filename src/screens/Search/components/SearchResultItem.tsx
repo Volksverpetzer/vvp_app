@@ -29,7 +29,7 @@ const SearchResultItem = ({
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
 
   const content = (
-    <Card style={{ padding: 20 }}>
+    <Card>
       {title ? (
         <Text style={{ fontWeight: "bold", paddingBottom: 30 }}>
           {decode(title)}

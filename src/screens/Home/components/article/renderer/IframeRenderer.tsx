@@ -9,7 +9,10 @@ import {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
+import { ErrorIcon } from "#/components/Icons";
 import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import Card from "#/components/design/Card";
+import ErrorCard from "#/components/design/ErrorCard";
 import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/posts/LoadArticlePost";
 import Config from "#/constants/Config";
@@ -141,6 +144,14 @@ const IframeRenderer = ({
     const h = Number.parseInt(event.nativeEvent.data, 10);
     if (h > 400) setScroll(true);
   }, []);
+
+  if (!webViewSource)
+    return (
+      <ErrorCard
+        style={{ marginHorizontal: 10 }}
+        text={"Error rendering iframe"}
+      />
+    );
 
   if (htmlAttribs.class?.includes("wp-embedded-content")) {
     const slug = extractSlug(source);
