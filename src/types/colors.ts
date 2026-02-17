@@ -15,7 +15,6 @@ type styleColors = {
   inputBackground: CSSProperties["color"];
   highlight: CSSProperties["color"];
   corporate: CSSProperties["color"];
-  error: CSSProperties["color"];
 };
 
 export type colorSchemeType = {
