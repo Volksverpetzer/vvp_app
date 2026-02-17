@@ -354,7 +354,7 @@ export const CloseIcon = ({ size, style, ...rest }: EvilIconsProps) => (
   <EvilIcons
     {...rest}
     name="close"
-    size={size}
+    size={size ?? 30}
     style={[{ lineHeight: size ?? 30 }, style]}
   />
 );
