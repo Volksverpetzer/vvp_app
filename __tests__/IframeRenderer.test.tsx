@@ -662,17 +662,13 @@ describe("IframeRenderer prepareWebViewSource", () => {
   });
 
   describe("URL constructor failure handling", () => {
-    it("should gracefully handle malformed YouTube URLs that fail URL constructor", () => {
+    it("should handle valid YouTube URLs correctly", () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
-      // When a URL has youtube hostname but fails URL constructor,
-      // prepareWebViewSource returns {uri: originalUrl} without headers
+      // Test with a standard YouTube URL to verify normal processing
       mockUseHtmlIframeProps.mockReturnValue({
         htmlAttribs: {
-          // Provide a URL that has valid hostname but would fail URL constructor manipulation
-          // However, since we can't easily create such a URL without breaking Linking.parse too,
-          // we test a simpler case: URL that can be parsed but is passed through
           src: "https://www.youtube.com/embed/test",
         },
       });
@@ -686,18 +682,19 @@ describe("IframeRenderer prepareWebViewSource", () => {
         />,
       );
 
-      // YouTube URLs should be processed and have headers
+      // YouTube URLs should be processed with autoplay disabled and headers added
       expect(mockLastWebViewProps).not.toBeNull();
       expect(mockLastWebViewProps.source).toBeDefined();
       expect(mockLastWebViewProps.source.uri).toContain("youtube.com");
+      expect(mockLastWebViewProps.source.uri).toContain("autoplay=0");
       expect(mockLastWebViewProps.source.headers).toBeDefined();
     });
 
-    it("should handle edge case where URL construction might fail for YouTube", () => {
+    it("should handle minimal valid YouTube URLs", () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
-      // Test with a minimal valid YouTube URL
+      // Test with a minimal but valid YouTube URL
       mockUseHtmlIframeProps.mockReturnValue({
         htmlAttribs: {
           src: "https://youtube.com/",
@@ -716,6 +713,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
       // Should successfully process even minimal YouTube URL
       expect(mockLastWebViewProps).not.toBeNull();
       expect(mockLastWebViewProps.source.uri).toContain("youtube.com");
+      expect(mockLastWebViewProps.source.uri).toContain("autoplay=0");
     });
   });
 });
