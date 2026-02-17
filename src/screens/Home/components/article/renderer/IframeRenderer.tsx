@@ -80,11 +80,12 @@ type WebViewRequest = {
 };
 
 /**
- * Prepare the source configuration for a WebView, with special handling for YouTube embeds.
+ * Prepare the source configuration for a WebView, with special handling for YouTube and Datawrapper embeds.
  *
  * For YouTube URLs, this function disables autoplay in the query parameters and
- * adds a Referer header based on the WordPress site URL. Non-YouTube URLs are
- * returned unchanged without additional headers.
+ * adds a Referer header based on the WordPress site URL. For Datawrapper URLs,
+ * this function sets the dark mode parameter based on the current color scheme.
+ * Other URLs are returned unchanged without additional headers.
  *
  * @param url - The iframe source URL to be loaded in the WebView.
  * @param colorScheme - The current color scheme ("light" or "dark") used to configure iframe appearance (e.g., Datawrapper embeds).
