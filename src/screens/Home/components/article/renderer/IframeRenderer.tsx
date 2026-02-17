@@ -74,7 +74,7 @@ type WebViewRequest = {
  * returned unchanged without additional headers.
  *
  * @param url - The iframe source URL to be loaded in the WebView.
- * @param colorScheme
+ * @param colorScheme - The current color scheme ("light" or "dark") used to configure iframe appearance (e.g., Datawrapper embeds).
  * @returns An object containing the (possibly modified) `uri` and optional
  * `headers` to be passed to the WebView `source` prop.
  */
