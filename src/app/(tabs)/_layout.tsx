@@ -110,7 +110,9 @@ const TabLayout = () => {
         name="settings"
         options={{
           title: "Konfig",
-          tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
+          tabBarIcon: ({ color }) => (
+            <SettingsIcon style={{ bottom: 3 }} color={color} />
+          ),
           tabBarAccessibilityLabel: "Einstellungen",
         }}
       />
