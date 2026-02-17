@@ -46,10 +46,10 @@ export type MaterialCommunityIconName =
 
 export const Logo = (properties: SvgIconProperties) => (
   <Svg
+    {...properties}
     width={properties.width ?? 76}
     height={properties.width ?? 76}
     fill="none"
-    {...properties}
   >
     <Rect width={76} height={76} rx={38} fill={properties.color} />
     <Path d="M56.65 27.5 35 65 13.35 27.5h43.3Z" stroke="#fff" />
@@ -87,10 +87,10 @@ export const HomeIcon = (properties: SvgIconProperties) => (
 
 export const SearchIcon = (properties: SvgIconProperties) => (
   <Svg
+    {...properties}
     width={properties.width ?? 26}
     height={properties.width ?? 26}
     fill="none"
-    {...properties}
   >
     <Path
       scale={(properties.width ?? 26) / 26}
@@ -105,10 +105,10 @@ export const SearchIcon = (properties: SvgIconProperties) => (
 
 export const ReportIcon = (properties: SvgIconProperties) => (
   <Svg
+    {...properties}
     width={properties.width ?? 30}
     height={properties.width ?? 30}
     fill="none"
-    {...properties}
   >
     <Path
       scale={Number.isFinite(properties.width) ? properties.width / 30 : 0.95}
@@ -123,10 +123,10 @@ export const ReportIcon = (properties: SvgIconProperties) => (
 
 export const SafetyIcon = (properties: SvgIconProperties) => (
   <Svg
+    {...properties}
     width={properties.width ?? 112}
     height={properties.width ?? 112}
     fill="none"
-    {...properties}
   >
     <G
       clipPath="url(#a)"
@@ -147,10 +147,10 @@ export const SafetyIcon = (properties: SvgIconProperties) => (
 
 export const GiveIcon = (properties: SvgIconProperties) => (
   <Svg
+    {...properties}
     width={properties.width ?? 21}
     height={properties.width ?? 20}
     fill="none"
-    {...properties}
   >
     <Path
       scale={properties.width ? properties.width / 21 : 1}
@@ -334,57 +334,57 @@ export const TrophyIcon = (properties: SvgIconProperties) => {
 };
 
 export const CheckboxIcon = (properties: IoniconsProps) => (
-  <Ionicons name="checkmark" {...properties} />
+  <Ionicons {...properties} name="checkmark" />
 );
 
 export const CircleIcon = (properties: MaterialCommunityIconsProps) => (
-  <MaterialCommunityIcons name="circle-outline" {...properties} />
+  <MaterialCommunityIcons {...properties} name="circle-outline" />
 );
 
 export const ExternalLinkIcon = (properties: MaterialCommunityIconsProps) => (
-  <MaterialCommunityIcons name="arrow-top-right" {...properties} />
+  <MaterialCommunityIcons {...properties} name="arrow-top-right" />
 );
 
 export const SuccessIcon = (properties: FeatherProps) => (
-  <Feather name="check-circle" {...properties} />
+  <Feather {...properties} name="check-circle" />
 );
 
 export const TouchIcon = (properties: MaterialIconsProps) => (
   <MaterialIcons
+    {...properties}
     name="touch-app"
     size={properties.size ?? 30}
-    {...properties}
   />
 );
 
 export const PlayIcon = (properties: FontAwesomeProps) => (
-  <FontAwesome name="play-circle" {...properties} />
+  <FontAwesome {...properties} name="play-circle" />
 );
 
 export const LinkIcon = (properties: FontAwesomeProps) => (
-  <FontAwesome name="link" size={properties.size ?? 30} {...properties} />
+  <FontAwesome {...properties} name="link" size={properties.size ?? 30} />
 );
 
 export const NotificationIcon = (properties: MaterialIconsProps) => (
-  <MaterialIcons name="notifications" {...properties} />
+  <MaterialIcons {...properties} name="notifications" />
 );
 
 export const FeedbackIcon = (properties: MaterialIconsProps) => (
-  <MaterialIcons name="feedback" {...properties} />
+  <MaterialIcons {...properties} name="feedback" />
 );
 
 export const LockIcon = (properties: FontAwesomeProps) => (
-  <FontAwesome name="lock" {...properties} />
+  <FontAwesome {...properties} name="lock" />
 );
 
 export const DeleteIcon = (properties: MaterialIconsProps) => (
-  <MaterialIcons name="delete" {...properties} />
+  <MaterialIcons {...properties} name="delete" />
 );
 
 export const CloseIcon = (properties: EvilIconsProps) => (
   <EvilIcons
-    name="close"
     {...properties}
+    name="close"
     style={[{ lineHeight: properties.size ?? 30 }, properties.style]}
   />
 );
@@ -394,7 +394,7 @@ export const StatisticsIcon = (
 ) => <MaterialCommunityIcons {...properties} />;
 
 export const ArticleViewIcon = (properties: MaterialCommunityIconsProps) => (
-  <MaterialCommunityIcons name="eye-outline" {...properties} />
+  <MaterialCommunityIcons {...properties} name="eye-outline" />
 );
 
 export type ChevronDirection = "left" | "right" | "up" | "down";
@@ -422,6 +422,7 @@ export const ReportStatusIcon = ({
   ...properties
 }: FontAwesomeProps & { status: "error" | "posted" | "pending" }) => (
   <FontAwesome
+    {...properties}
     name={
       status === "error"
         ? "exclamation-circle"
@@ -429,7 +430,6 @@ export const ReportStatusIcon = ({
           ? "check"
           : "hourglass-half"
     }
-    {...properties}
   />
 );
 
@@ -447,17 +447,17 @@ export const StarIcon = ({
   ...properties
 }: IconProperties & { filled?: boolean }) => (
   <FontAwesome
+    {...properties}
     name={filled ? "star" : "star-o"}
     size={properties.size ?? 30}
-    {...properties}
   />
 );
 
 export const SettingsIcon = (properties: IconProperties) => (
   <MaterialCommunityIcons
+    {...properties}
     name="cog-outline"
     size={properties.size ?? 30}
     color={properties.color}
-    {...properties}
   />
 );
