@@ -46,7 +46,6 @@ export const handleRemovableElements = (element: DomElement): boolean => {
 export const handleSpecialElements = (element: DomElement): boolean => {
   // Handle iframes
   if (element.tagName === "iframe") {
-    console.warn("iframe found");
     makeElementRoot(element);
     return true;
   }

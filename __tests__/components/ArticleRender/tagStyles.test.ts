@@ -19,6 +19,13 @@ describe("tagStyles", () => {
     expect(styles.cite.textAlign).toBe("right");
   });
 
+  it("should include em styles", () => {
+    const styles = getTagStyles("dark");
+
+    expect(styles.em).toBeDefined();
+    expect(styles.em.fontStyle).toBe("italic");
+  });
+
   it("should use corporate color for blockquote border", () => {
     const styles = getTagStyles("dark");
 

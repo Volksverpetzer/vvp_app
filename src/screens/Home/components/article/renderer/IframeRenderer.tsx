@@ -1,7 +1,7 @@
 import { useHtmlIframeProps } from "@native-html/iframe-plugin";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { CustomRendererProps, TBlock } from "react-native-render-html";
 import WebView from "react-native-webview";
 import {
@@ -15,6 +15,7 @@ import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/posts/LoadArticlePost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 export interface IframeRendererProperties {
   renderProps: CustomRendererProps<TBlock>;
@@ -28,11 +29,34 @@ const INJECT_BEFORE = `
   document.querySelectorAll("video").forEach(video => video.removeAttribute("autoplay"));
 `;
 const INJECT_AFTER = `
-  window.ReactNativeWebView.postMessage(document.body.scrollHeight);
-  const meta = document.createElement('meta');
-  meta.name = 'viewport';
-  meta.content = 'width=device-width, initial-scale=1, maximum-scale=1';
-  document.head.appendChild(meta);
+  const postHeight = () => {
+    const bodyHeight = document.body ? document.body.scrollHeight : 0;
+    const docHeight = document.documentElement ? document.documentElement.scrollHeight : 0;
+    window.ReactNativeWebView.postMessage(String(Math.max(bodyHeight, docHeight)));
+  };
+  postHeight();
+  window.addEventListener("load", postHeight);
+  window.addEventListener("resize", postHeight);
+  if (window.MutationObserver) {
+    const setupObserver = () => {
+      if (!document.body) {
+        return;
+      }
+      const observer = new MutationObserver(postHeight);
+      observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", setupObserver);
+    } else {
+      setupObserver();
+    }
+  }
+  if (document.head) {
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1, maximum-scale=1';
+    document.head.appendChild(meta);
+  }
 `;
 
 /**
@@ -56,44 +80,62 @@ type WebViewRequest = {
 };
 
 /**
- * Prepare the source configuration for a WebView, with special handling for YouTube embeds.
+ * Prepare the source configuration for a WebView, with special handling for YouTube and Datawrapper embeds.
  *
  * For YouTube URLs, this function disables autoplay in the query parameters and
- * adds a Referer header based on the WordPress site URL. Non-YouTube URLs are
- * returned unchanged without additional headers.
+ * adds a Referer header based on the WordPress site URL. For Datawrapper URLs,
+ * this function sets the dark mode parameter based on the current color scheme.
+ * Other URLs are returned unchanged without additional headers.
  *
  * @param url - The iframe source URL to be loaded in the WebView.
+ * @param colorScheme - The current color scheme ("light" or "dark") used to configure iframe appearance (e.g., Datawrapper embeds).
  * @returns An object containing the (possibly modified) `uri` and optional
  * `headers` to be passed to the WebView `source` prop.
  */
 const prepareWebViewSource = (
   url: string,
-): { uri: string; headers?: { Referer: string } } => {
-  const { hostname } = Linking.parse(url);
-  const isYouTube =
-    !!hostname &&
-    (hostname.includes("youtube.com") ||
-      hostname.includes("youtube-nocookie.com") ||
-      hostname.includes("youtu.be"));
-  if (!isYouTube) return { uri: url };
+  colorScheme: "light" | "dark",
+): { uri: string; headers?: { Referer: string } } | null => {
+  // Linking.parse is tolerant, but it doesn't give us a URL object we can mutate.
+  // We'll use it to detect the host, then rebuild the URL with the standard URL API.
+  const parsed = Linking.parse(url);
 
-  let uri: string;
-  try {
-    const parsed = new URL(url);
-    parsed.searchParams.set("autoplay", "0");
-    uri = parsed.toString();
-  } catch {
-    uri = url.replace(/([?&])autoplay=1\b/g, "$1autoplay=0");
-    const queryPrefix = uri.includes("?") ? "&" : "?";
-    if (!/[?&]autoplay=/.test(uri)) {
-      uri = `${uri}${queryPrefix}autoplay=0`;
-    }
+  const hostname = parsed.hostname ?? "";
+  if (!hostname) {
+    return null;
   }
 
-  return {
-    uri,
-    headers: { Referer: Config.wpUrl },
-  };
+  const isYouTube =
+    hostname.includes("youtube.com") ||
+    hostname.includes("youtube-nocookie.com") ||
+    hostname.includes("youtu.be");
+
+  const isDatawrapper = hostname.includes("datawrapper.dwcdn.net");
+
+  if (!isYouTube && !isDatawrapper) return { uri: url };
+
+  // Rebuild & mutate query params safely
+  let u: URL;
+  try {
+    // Ensure absolute URL for the constructor
+    u = new URL(url);
+  } catch {
+    return { uri: url };
+  }
+
+  if (isYouTube) {
+    u.searchParams.set("autoplay", "0");
+    return {
+      uri: u.toString(),
+      headers: { Referer: Config.wpUrl },
+    };
+  }
+
+  if (isDatawrapper) {
+    u.searchParams.set("dark", colorScheme === "dark" ? "true" : "false");
+  }
+
+  return { uri: u.toString() };
 };
 
 const shouldStartRequest = (
@@ -133,14 +175,17 @@ const IframeRenderer = ({
   maxWidth,
   onLinkPress,
 }: IframeRendererProperties) => {
-  const [scroll, setScroll] = useState(false);
+  const fallbackHeight = Math.min(width, 400);
+  const colorScheme = useAppColorScheme();
+  const [webViewHeight, setWebViewHeight] = useState(fallbackHeight);
   const { htmlAttribs } = useHtmlIframeProps(renderProps);
   const source = htmlAttribs.src;
-  const webViewSource = prepareWebViewSource(source);
+  const webViewSource = prepareWebViewSource(source, colorScheme);
 
   const onMessage = useCallback((event: WebViewMessageEvent) => {
-    const h = Number.parseInt(event.nativeEvent.data, 10);
-    if (h > 400) setScroll(true);
+    const parsedHeight = Number.parseInt(event.nativeEvent.data, 10);
+    if (Number.isNaN(parsedHeight) || parsedHeight <= 0) return;
+    setWebViewHeight(parsedHeight);
   }, []);
 
   if (!webViewSource)
@@ -187,14 +232,17 @@ const IframeRenderer = ({
   }
 
   return (
-    <ScrollView
-      renderToHardwareTextureAndroid
-      contentContainerStyle={styles.centered}
-    >
+    <View style={{ alignItems: "center" }}>
       <WebView
         source={webViewSource}
-        style={{ width, maxWidth: maxWidth + 40, height: Math.min(width, 400) }}
-        nestedScrollEnabled={scroll}
+        style={{
+          width,
+          maxWidth: maxWidth + 40,
+          height: webViewHeight,
+          backgroundColor: "transparent",
+        }}
+        nestedScrollEnabled={false}
+        accessibilityLabel={`Embedded content from ${Linking.parse(webViewSource.uri).hostname ?? "external source"}`}
         thirdPartyCookiesEnabled={false}
         injectedJavaScriptBeforeContentLoaded={INJECT_BEFORE}
         injectedJavaScript={INJECT_AFTER}
@@ -209,14 +257,14 @@ const IframeRenderer = ({
         renderError={() => <Text>Render Error</Text>}
         scalesPageToFit={false}
         overScrollMode="never"
-        scrollEnabled={scroll}
+        scrollEnabled={false}
         bounces={false}
         renderLoading={() => <AnimatedLoading />}
         onShouldStartLoadWithRequest={(request) =>
           shouldStartRequest(request, source, onLinkPress)
         }
       />
-    </ScrollView>
+    </View>
   );
 };
 
