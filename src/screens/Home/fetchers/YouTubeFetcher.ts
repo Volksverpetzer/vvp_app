@@ -1,4 +1,4 @@
-import YTPost from "#/components/posts/YTPost";
+import YouTubePost from "#/components/posts/YouTubePost";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
 
@@ -15,7 +15,7 @@ export const YouTubeFetcher = {
         new Post(
           post.snippet.publishedAt.replace("Z", ""),
           post.id,
-          YTPost,
+          YouTubePost,
           post,
           [
             {
