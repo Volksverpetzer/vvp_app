@@ -5,7 +5,7 @@ import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-import Party from "#assets/images/party.png";
+import Success from "#assets/images/success.png";
 
 interface AnimatedSuccessProperties {
   animated: boolean;
@@ -121,7 +121,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
             transform: [{ rotate: spin }, { scale: 0.75 }],
           },
         ]}
-        source={Party}
+        source={Success}
       />
     </>
   );
