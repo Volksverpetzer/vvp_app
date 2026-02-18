@@ -54,9 +54,7 @@ const Collapsable = ({
       >
         <View style={styles.title}>
           {icon}
-          <Text style={[styles.titleText, { color: textColor }, titleStyle]}>
-            {title}
-          </Text>
+          <Text style={[{ color: textColor }, titleStyle]}>{title}</Text>
         </View>
         <ChevronIcon
           direction={open ? "up" : "down"}
@@ -79,10 +77,6 @@ const styles = StyleSheet.create({
   title: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-  },
-  titleText: {
-    fontSize: 16,
   },
 });
 
