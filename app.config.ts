@@ -74,7 +74,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       fallbackToCacheTimeout: 0,
       url: "https://u.expo.dev/" + variableConfig.extraConfig.eas.projectId,
     },
-    assetBundlePatterns: ["**/*"],
     ios: {
       associatedDomains: variableConfig.iOSAssociatedDomains,
       infoPlist: {
