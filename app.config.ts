@@ -69,12 +69,12 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       backgroundColor: variableConfig.extraConfig.themeColor,
     },
     updates: {
-      assetPatternsToBeBundled: ["assets/**/*"],
       // Disable EAS updates for production builds
       enabled: false,
       fallbackToCacheTimeout: 0,
       url: "https://u.expo.dev/" + variableConfig.extraConfig.eas.projectId,
     },
+    assetBundlePatterns: ["**/*"],
     ios: {
       associatedDomains: variableConfig.iOSAssociatedDomains,
       infoPlist: {
