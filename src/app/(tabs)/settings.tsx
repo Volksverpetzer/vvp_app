@@ -267,7 +267,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 20,
   },
-  collapsibleTitle: {},
 });
 
 export default SettingsScreen;
