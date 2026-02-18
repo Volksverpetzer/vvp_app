@@ -242,7 +242,7 @@ const IframeRenderer = ({
           backgroundColor: "transparent",
         }}
         nestedScrollEnabled={false}
-        accessibilityLabel={`Embedded content from ${new URL(webViewSource.uri).hostname}`}
+        accessibilityLabel={`Embedded content from ${Linking.parse(webViewSource.uri).hostname ?? "external source"}`}
         thirdPartyCookiesEnabled={false}
         injectedJavaScriptBeforeContentLoaded={INJECT_BEFORE}
         injectedJavaScript={INJECT_AFTER}
