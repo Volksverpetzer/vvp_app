@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 
 import { CheckboxIcon } from "#/components/Icons";
+import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface CheckboxProperties {
   checked: boolean;
@@ -14,10 +16,21 @@ const Checkbox = (properties: CheckboxProperties) => {
     setChecked(!checked);
     properties.onChange(!checked);
   };
+
+  const colorScheme = useAppColorScheme();
+  const highlight = Colors[colorScheme].highlight;
+
+  const style = useMemo(() => ({ borderColor: highlight }), [highlight]);
+  const checkedStyle = useMemo(
+    () => (checked ? { backgroundColor: highlight } : undefined),
+    [checked, highlight],
+  );
+
   return (
     <Pressable
-      accessibilityRole="button"
-      style={[styles.checkboxBase, checked && styles.checkboxChecked]}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked }}
+      style={[styles.checkboxBase, style, checkedStyle]}
       onPress={onPress}
     >
       {checked && <CheckboxIcon size={24} color="white" />}
@@ -28,14 +41,10 @@ const Checkbox = (properties: CheckboxProperties) => {
 const styles = StyleSheet.create({
   checkboxBase: {
     backgroundColor: "transparent",
-    borderColor: "coral",
     borderRadius: 4,
     borderWidth: 2,
     height: 28,
     width: 28,
-  },
-  checkboxChecked: {
-    backgroundColor: "coral",
   },
 });
 
