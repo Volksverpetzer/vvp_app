@@ -30,6 +30,15 @@ const SearchResultItem = ({
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
   const { width } = useWindowDimensions();
 
+  const baseStyle = useMemo(
+    () => ({
+      fontFamily: "SourceSansPro",
+      lineHeight: 27,
+      color: Colors[colorScheme].text,
+    }),
+    [colorScheme],
+  );
+
   const content = (
     <Card>
       {title ? <Text style={globalStyles.heading}>{decode(title)}</Text> : null}
@@ -39,11 +48,7 @@ const SearchResultItem = ({
         tagsStyles={styles}
         ignoredDomTags={IGNORED_DOM_TAGS}
         contentWidth={width}
-        baseStyle={{
-          fontFamily: "SourceSansPro",
-          lineHeight: 27,
-          color: Colors[colorScheme].text,
-        }}
+        baseStyle={baseStyle}
       />
 
       {subtitle}
