@@ -4,6 +4,14 @@ import type { CustomRendererProps, TBlock } from "react-native-render-html";
 
 import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
 
+// Mock Config to provide wpUrl
+jest.mock("#/constants/Config", () => ({
+  __esModule: true,
+  default: {
+    wpUrl: "https://www.volksverpetzer.de",
+  },
+}));
+
 // Mock expo-linking parse used in the component
 jest.mock("expo-linking", () => ({
   parse: (url: string) => {
@@ -400,5 +408,312 @@ describe("IframeRenderer dynamic height", () => {
     const resultUrl = new URL(mockLastWebViewProps.source.uri);
     expect(resultUrl.hostname).toBe("datawrapper.dwcdn.net");
     expect(resultUrl.searchParams.get("dark")).toBe("false");
+  });
+});
+
+describe("IframeRenderer prepareWebViewSource", () => {
+  beforeEach(() => {
+    // Reset mocks before each test
+    mockUseHtmlIframeProps.mockClear();
+    mockUseAppColorScheme.mockClear();
+    mockLastWebViewProps = null;
+
+    // Reset to default return values
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://example.com/embed" },
+    });
+    mockUseAppColorScheme.mockReturnValue("light");
+  });
+
+  describe("YouTube URL handling", () => {
+    it("should disable autoplay parameter for youtube.com URLs", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: "https://www.youtube.com/embed/abc123?autoplay=1&start=10",
+        },
+      });
+
+      render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      const resultUrl = new URL(mockLastWebViewProps.source.uri);
+      expect(resultUrl.hostname).toBe("www.youtube.com");
+      expect(resultUrl.searchParams.get("autoplay")).toBe("0");
+      expect(resultUrl.searchParams.get("start")).toBe("10");
+    });
+
+    it("should add Referer header for youtube.com URLs", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: "https://www.youtube.com/embed/xyz789",
+        },
+      });
+
+      render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      expect(mockLastWebViewProps.source.headers).toBeDefined();
+      expect(mockLastWebViewProps.source.headers).toHaveProperty("Referer");
+      expect(typeof mockLastWebViewProps.source.headers.Referer).toBe("string");
+    });
+
+    it("should handle youtube-nocookie.com URLs", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: "https://www.youtube-nocookie.com/embed/test123?autoplay=1",
+        },
+      });
+
+      render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      const resultUrl = new URL(mockLastWebViewProps.source.uri);
+      expect(resultUrl.hostname).toBe("www.youtube-nocookie.com");
+      expect(resultUrl.searchParams.get("autoplay")).toBe("0");
+      expect(mockLastWebViewProps.source.headers).toBeDefined();
+      expect(mockLastWebViewProps.source.headers).toHaveProperty("Referer");
+    });
+
+    it("should handle youtu.be URLs", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: "https://youtu.be/short123?autoplay=1",
+        },
+      });
+
+      render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      const resultUrl = new URL(mockLastWebViewProps.source.uri);
+      expect(resultUrl.hostname).toBe("youtu.be");
+      expect(resultUrl.searchParams.get("autoplay")).toBe("0");
+      expect(mockLastWebViewProps.source.headers).toBeDefined();
+    });
+  });
+
+  describe("Non-YouTube/non-Datawrapper URL pass-through", () => {
+    it("should pass through regular URLs without modification", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      const testUrl = "https://example.com/embed/content?param=value";
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: testUrl,
+        },
+      });
+
+      render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      expect(mockLastWebViewProps.source.uri).toBe(testUrl);
+      expect(mockLastWebViewProps.source.headers).toBeUndefined();
+    });
+
+    it("should pass through Vimeo URLs without modification", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      const testUrl = "https://player.vimeo.com/video/123456";
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: testUrl,
+        },
+      });
+
+      render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      expect(mockLastWebViewProps.source.uri).toBe(testUrl);
+      expect(mockLastWebViewProps.source.headers).toBeUndefined();
+    });
+
+    it("should pass through Twitter embed URLs without modification", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      const testUrl = "https://platform.twitter.com/embed/index.html";
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: testUrl,
+        },
+      });
+
+      render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      expect(mockLastWebViewProps.source.uri).toBe(testUrl);
+      expect(mockLastWebViewProps.source.headers).toBeUndefined();
+    });
+  });
+
+  describe("Invalid URL handling", () => {
+    it("should render ErrorCard when URL has no hostname", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      // Mock Linking.parse to return empty hostname
+      const originalParse = require("expo-linking").parse;
+      require("expo-linking").parse = jest.fn(() => ({ hostname: "" }));
+
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: "invalid-url",
+        },
+      });
+
+      const { getByText } = render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      expect(getByText("Error rendering iframe")).toBeTruthy();
+
+      // Restore original mock
+      require("expo-linking").parse = originalParse;
+    });
+
+    it("should render ErrorCard when Linking.parse returns undefined hostname", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      // Mock Linking.parse to return undefined hostname
+      const originalParse = require("expo-linking").parse;
+      require("expo-linking").parse = jest.fn(() => ({}));
+
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: "://invalid",
+        },
+      });
+
+      const { getByText } = render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      expect(getByText("Error rendering iframe")).toBeTruthy();
+
+      // Restore original mock
+      require("expo-linking").parse = originalParse;
+    });
+  });
+
+  describe("URL constructor failure handling", () => {
+    it("should handle valid YouTube URLs correctly", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      // Test with a standard YouTube URL to verify normal processing
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: "https://www.youtube.com/embed/test",
+        },
+      });
+
+      render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      // YouTube URLs should be processed with autoplay disabled and headers added
+      expect(mockLastWebViewProps).not.toBeNull();
+      expect(mockLastWebViewProps.source).toBeDefined();
+      expect(mockLastWebViewProps.source.uri).toContain("youtube.com");
+      expect(mockLastWebViewProps.source.uri).toContain("autoplay=0");
+      expect(mockLastWebViewProps.source.headers).toBeDefined();
+    });
+
+    it("should handle minimal valid YouTube URLs", () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      // Test with a minimal but valid YouTube URL
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {
+          src: "https://youtube.com/",
+        },
+      });
+
+      render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      // Should successfully process even minimal YouTube URL
+      expect(mockLastWebViewProps).not.toBeNull();
+      expect(mockLastWebViewProps.source.uri).toContain("youtube.com");
+      expect(mockLastWebViewProps.source.uri).toContain("autoplay=0");
+    });
   });
 });
