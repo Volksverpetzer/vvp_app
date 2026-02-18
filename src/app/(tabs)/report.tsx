@@ -90,7 +90,7 @@ const ReportScreen = () => {
           backgroundColor: grayedOut,
         },
       }),
-    [inputBackground, highlight, grayedOut],
+    [inputBackground, highlight, grayedOut, errorColor],
   );
 
   // Populate initial fields and load reports on component mount or when params change
