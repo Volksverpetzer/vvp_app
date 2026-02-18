@@ -38,6 +38,7 @@ const SearchResultItem = ({
         source={{ html: text }}
         tagsStyles={styles}
         ignoredDomTags={IGNORED_DOM_TAGS}
+        systemFonts={["SourceSansPro"]}
         contentWidth={width}
         baseStyle={{
           fontFamily: "SourceSansPro",
