@@ -1,10 +1,12 @@
 import { decode } from "html-entities";
 import { ReactNode, useMemo } from "react";
-import { Pressable, View } from "react-native";
+import { Pressable, View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
 import Card from "#/components/design/Card";
 import Text from "#/components/design/Text";
+import Colors from "#/constants/Colors";
+import { styles as globalStyles } from "#/constants/Styles";
 import { getTagStyles } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -25,13 +27,27 @@ const SearchResultItem = ({
   onPress,
 }: SearchResultItemProps) => {
   const colorScheme = useAppColorScheme();
-
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
+  const { width } = useWindowDimensions();
+
+  // Card has padding: 20 on each side (40 total horizontal padding)
+  // FlatList has paddingHorizontal: 20 (40 total horizontal padding)
+  // Subtract both from window width to get actual available content width
+  const contentWidth = width - 80;
+
+  const baseStyle = useMemo(
+    () => ({
+      fontFamily: "SourceSansPro",
+      lineHeight: 27,
+      color: Colors[colorScheme].text,
+    }),
+    [colorScheme],
+  );
 
   const content = (
     <Card>
       {title ? (
-        <Text style={{ fontWeight: "bold", paddingBottom: 30 }}>
+        <Text style={[globalStyles.heading, { padding: 0, marginBottom: 10 }]}>
           {decode(title)}
         </Text>
       ) : null}
@@ -40,6 +56,9 @@ const SearchResultItem = ({
         source={{ html: text }}
         tagsStyles={styles}
         ignoredDomTags={IGNORED_DOM_TAGS}
+        systemFonts={["SourceSansPro"]}
+        contentWidth={contentWidth}
+        baseStyle={baseStyle}
       />
 
       {subtitle}
