@@ -50,6 +50,7 @@ const ReportScreen = () => {
 
   // Color constants
   const highlight = Colors[colorScheme].highlight;
+  const errorColor = Colors[colorScheme].errorBackground;
   const grayedOut = Colors[colorScheme].grayedOut;
   const inputBackground = Colors[colorScheme].background;
   const backgroundColor = Colors[colorScheme].secondaryBackground;
@@ -60,7 +61,7 @@ const ReportScreen = () => {
     () =>
       StyleSheet.create({
         errorText: {
-          color: highlight,
+          color: errorColor,
           fontSize: 18,
           fontWeight: "bold",
           marginBottom: 20,

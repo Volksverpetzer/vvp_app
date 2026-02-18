@@ -5,6 +5,7 @@ import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { ErrorIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
 import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { HttpsUrl } from "#/types";
 
 interface ReportingWrapperProperties {
@@ -22,6 +23,7 @@ const ReportingWrapper = ({
   children,
 }: ReportingWrapperProperties) => {
   const router = useRouter();
+  const colorScheme = useAppColorScheme();
 
   const errorReport = () => {
     router.push({
@@ -40,9 +42,9 @@ const ReportingWrapper = ({
           progress={p}
           drag={d}
           swipeable={s}
-          icon={<ErrorIcon color={Colors.light.corporate} />}
+          icon={<ErrorIcon color={Colors[colorScheme].errorBackground} />}
           label="Fehler melden"
-          backgroundColor="#d93025"
+          backgroundColor={Colors[colorScheme].errorBackground}
           onAction={errorReport}
         />
       )}
