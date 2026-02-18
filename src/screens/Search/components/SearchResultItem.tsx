@@ -30,6 +30,11 @@ const SearchResultItem = ({
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
   const { width } = useWindowDimensions();
 
+  // Card has padding: 20 on each side (40 total horizontal padding)
+  // FlatList has paddingHorizontal: 20 (40 total horizontal padding)
+  // Subtract both from window width to get actual available content width
+  const contentWidth = width - 80;
+
   const baseStyle = useMemo(
     () => ({
       fontFamily: "SourceSansPro",
@@ -52,7 +57,7 @@ const SearchResultItem = ({
         tagsStyles={styles}
         ignoredDomTags={IGNORED_DOM_TAGS}
         systemFonts={["SourceSansPro"]}
-        contentWidth={width}
+        contentWidth={contentWidth}
         baseStyle={baseStyle}
       />
 
