@@ -1,8 +1,7 @@
 import { useHtmlIframeProps } from "@native-html/iframe-plugin";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
-import { View } from "react-native";
-import { ColorSchemeName } from "react-native";
+import { ColorSchemeName, View } from "react-native";
 import { CustomRendererProps, TBlock } from "react-native-render-html";
 import WebView from "react-native-webview";
 import {
@@ -95,7 +94,7 @@ type WebViewRequest = {
  */
 const prepareWebViewSource = (
   url: string,
-  colorScheme: ColorSchemeName,
+  colorScheme: NonNullable<ColorSchemeName>,
 ): { uri: string; headers?: { Referer: string } } | null => {
   // Linking.parse is tolerant, but it doesn't give us a URL object we can mutate.
   // We'll use it to detect the host, then rebuild the URL with the standard URL API.
