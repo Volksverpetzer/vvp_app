@@ -44,6 +44,8 @@ export interface YTPostProperties {
   inView?: boolean;
 }
 
+const YOUTUBE_BRAND_COLOR = "#FF0000";
+
 /**
  * Renders a YouTube Post
  */
@@ -78,7 +80,7 @@ const YTPost = (properties: YTPostProperties) => {
           <PlayIcon
             style={{ position: "absolute", top: "45%", left: "45%" }}
             size={50}
-            color="red"
+            color={YOUTUBE_BRAND_COLOR}
           />
         </TouchableOpacity>
       </View>
