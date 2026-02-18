@@ -28,7 +28,7 @@ const Checkbox = (properties: CheckboxProperties) => {
 
   return (
     <Pressable
-      accessibilityRole="button"
+      accessibilityRole="checkbox"
       accessibilityState={{ checked }}
       style={[styles.checkboxBase, style, checkedStyle]}
       onPress={onPress}
