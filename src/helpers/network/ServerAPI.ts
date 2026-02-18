@@ -4,7 +4,7 @@ import { ClaimProperties } from "#/components/posts/ClaimPost";
 import { InstaPostProperties } from "#/components/posts/InstaPost";
 import { MastodonPostProperties } from "#/components/posts/MastodonPost";
 import { TiktokPostProperties } from "#/components/posts/TiktokPost";
-import { YTPostProperties } from "#/components/posts/YTPost";
+import { YouTubePostProperties } from "#/components/posts/YouTubePost";
 import Config from "#/constants/Config";
 import {
   createClient,
@@ -111,8 +111,8 @@ class API {
   /**
    * Fetches the YouTube feed.
    */
-  static async getYouTubeFeed(): Promise<YTPostProperties[]> {
-    const response = await API.get<{ items: YTPostProperties[] }>(
+  static async getYouTubeFeed(): Promise<YouTubePostProperties[]> {
+    const response = await API.get<{ items: YouTubePostProperties[] }>(
       "/proxy/ytAPI",
     );
     return response.items ?? [];

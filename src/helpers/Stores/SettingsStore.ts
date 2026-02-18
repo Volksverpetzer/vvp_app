@@ -10,7 +10,7 @@ const SettingsStore = {
     reddit: { value: true, name: "Memes" },
     wp: { value: true, name: "Artikel" },
     insta: { value: true, name: "Instagram Slides" },
-    yt: { value: true, name: "Youtube Videos" },
+    yt: { value: true, name: "YouTube Videos" },
     tiktok: { value: true, name: "TikTok Videos" },
     bsky: { value: false, name: "Bluesky Posts" },
     bot: { value: true, name: "Bot Feed" },

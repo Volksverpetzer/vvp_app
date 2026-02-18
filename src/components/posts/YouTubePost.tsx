@@ -9,9 +9,9 @@ import Config from "#/constants/Config";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 /**
- * Represents the properties of a Youtube post as fetched from the Youtube API
+ * Represents the properties of a YouTube post as fetched from the YouTube API
  */
-export interface YTPostProperties {
+export interface YouTubePostProperties {
   id: string;
   player: {
     embedHtml: string;
@@ -44,10 +44,12 @@ export interface YTPostProperties {
   inView?: boolean;
 }
 
+const YOUTUBE_BRAND_COLOR = "#FF0000";
+
 /**
  * Renders a YouTube Post
  */
-const YTPost = (properties: YTPostProperties) => {
+const YouTubePost = (properties: YouTubePostProperties) => {
   const { id, snippet, inView, player } = properties;
   const dims = {
     width: Number.parseInt(player.embedWidth),
@@ -78,7 +80,7 @@ const YTPost = (properties: YTPostProperties) => {
           <PlayIcon
             style={{ position: "absolute", top: "45%", left: "45%" }}
             size={50}
-            color="red"
+            color={YOUTUBE_BRAND_COLOR}
           />
         </TouchableOpacity>
       </View>
@@ -108,4 +110,4 @@ const YTPost = (properties: YTPostProperties) => {
   );
 };
 
-export default YTPost;
+export default YouTubePost;
