@@ -30,6 +30,7 @@ import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { styles as globalStyles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -126,7 +127,7 @@ const SettingsScreen = () => {
         <Collapsable
           icon={<FeedIcon color={corporate} />}
           title="Feed"
-          titleStyle={styles.collapsibleTitle}
+          titleStyle={globalStyles.heading}
         >
           <Text style={styles.sectionText}>
             Was möchtest du in deinem Feed sehen?
@@ -139,7 +140,7 @@ const SettingsScreen = () => {
         <Collapsable
           icon={<NotificationIcon size={24} color={corporate} />}
           title="Benachrichtigungen"
-          titleStyle={styles.collapsibleTitle}
+          titleStyle={globalStyles.heading}
         >
           <SettingsList
             saveSettings={saveNotificationSetting}
@@ -149,14 +150,14 @@ const SettingsScreen = () => {
         <Collapsable
           icon={<SettingsIcon size={24} color={corporate} />}
           title="Erweitert"
-          titleStyle={styles.collapsibleTitle}
+          titleStyle={globalStyles.heading}
         >
           <SettingsList
             saveSettings={saveAdvancedSetting}
             settings={advancedSettings}
           />
         </Collapsable>
-        <Divider paddingHorizontal={35} paddingVertical={10} />
+        <Divider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
           <DesignedLink
             url={Config.aboutUrl}
@@ -266,11 +267,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 20,
   },
-  collapsibleTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    paddingVertical: 10,
-  },
+  collapsibleTitle: {},
 });
 
 export default SettingsScreen;
