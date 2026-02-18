@@ -41,7 +41,11 @@ const SearchResultItem = ({
 
   const content = (
     <Card>
-      {title ? <Text style={globalStyles.heading}>{decode(title)}</Text> : null}
+      {title ? (
+        <Text style={[globalStyles.heading, { padding: 0, marginBottom: 10 }]}>
+          {decode(title)}
+        </Text>
+      ) : null}
 
       <RenderHtml
         source={{ html: text }}
