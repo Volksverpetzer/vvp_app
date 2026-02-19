@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
   loadingContainer: {
     height: 40,
     width: 220,
-    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
   },
