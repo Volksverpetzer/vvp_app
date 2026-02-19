@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
+
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
 
 import Text from "#/components/design/Text";
 import Config from "#/constants/Config";
@@ -29,7 +30,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
   return (
     <>
       {isLoading ? (
-        <ActivityIndicator size="small" color="#fff" />
+        <AnimatedLoading size="small" color="#fff" />
       ) : (
         <Text
           style={{

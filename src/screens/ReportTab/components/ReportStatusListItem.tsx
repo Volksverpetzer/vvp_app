@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
 
 import { ReportStatusIcon } from "#/components/Icons";
 import API from "#/helpers/network/ServerAPI";
@@ -53,7 +55,7 @@ const ReportStatusListItem = (props: StoredReport) => {
    */
   const renderIcon = () => {
     if (loading) {
-      return <ActivityIndicator color={colors.activity} />;
+      return <AnimatedLoading color={colors.activity} />;
     }
     if (error) {
       return <ReportStatusIcon status="error" size={20} color={colors.error} />;

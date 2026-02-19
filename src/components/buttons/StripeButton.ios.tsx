@@ -6,7 +6,9 @@ import {
 } from "@stripe/stripe-react-native";
 import Constants from "expo-constants";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+
+import AnimatedLoading from "#/components/animations/AnimatedLoading";
 
 import { StripeButtonProperties } from "#/components/buttons/StripeButton";
 import { styles as globalStyles } from "#/constants/Styles";
@@ -105,7 +107,7 @@ const StripeButton = (props: StripeButtonProperties) => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator />
+        <AnimatedLoading />
       </View>
     );
   }

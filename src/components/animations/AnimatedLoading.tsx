@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, ActivityIndicatorProps } from "react-native";
 
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
@@ -12,9 +12,10 @@ import LogoAnimation from "#assets/images/logo_animated.gif";
  * AnimatedLoading renders a loading indicator or animated image
  * depending on the app name. On Volksverpetzer it shows a GIF,
  * otherwise a native ActivityIndicator.
+ * @param props - Props forwarded to the underlying ActivityIndicator.
  * @returns React element displaying the loading animation.
  */
-const AnimatedLoading = () => {
+const AnimatedLoading = (props: ActivityIndicatorProps) => {
   const corporate = useCorporateColor();
   return (
     <View
@@ -23,7 +24,7 @@ const AnimatedLoading = () => {
       {isVolksverpetzer ? (
         <Image source={LogoAnimation} style={{ width: 100, height: 100 }} />
       ) : (
-        <ActivityIndicator size="large" color={corporate} />
+        <ActivityIndicator size="large" color={corporate} {...props} />
       )}
     </View>
   );
