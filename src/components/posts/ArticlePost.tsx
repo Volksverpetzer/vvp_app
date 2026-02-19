@@ -107,13 +107,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         imageUrl: image,
         ...article,
       });
+    } catch (error) {
+      console.error(error);
+    } finally {
       setLoading(false);
       setDate(dateBeautify());
-    } catch (error: unknown) {
-      setImgURL("./assets/loading.jpg");
-      setLoading(false);
-      setDate(dateBeautify());
-      console.error(String(error));
     }
   }, [article, dateBeautify]);
 

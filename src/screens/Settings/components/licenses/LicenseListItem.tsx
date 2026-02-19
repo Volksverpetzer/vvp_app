@@ -13,6 +13,8 @@ import {
 import { ChevronIcon } from "#/components/Icons";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
+import LoadingImage from "#assets/images/logo_animated.gif";
+
 interface LicensesListItemProperties {
   image?: string;
   userUrl?: string;
@@ -68,7 +70,11 @@ const LicensesListItem = (
             accessibilityRole="button"
             onPress={() => userUrl && Linking.openURL(userUrl)}
           >
-            <Image source={{ uri: image }} style={styles.image} />
+            <Image
+              source={{ uri: image }}
+              style={styles.image}
+              placeholder={LoadingImage}
+            />
           </TouchableOpacity>
         )}
         <TouchableOpacity
