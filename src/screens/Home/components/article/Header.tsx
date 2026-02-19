@@ -134,7 +134,7 @@ const Header = (properties: HeaderProperties) => {
       >
         <Image
           style={{ margin: "auto", height, width: "100%" }}
-          source={article_image}
+          source={{ uri: article_image }}
           placeholder={LoadingImage}
         />
       </Pressable>
