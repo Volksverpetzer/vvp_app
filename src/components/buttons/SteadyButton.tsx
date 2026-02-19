@@ -14,7 +14,8 @@ interface SteadyButtonProperties {
 
 /**
  * SteadyButton is a button that opens the Steady donation page.
- * @param properties
+ * @param article_link - The link to the article that was shared
+ * @param location - The location where the button was pressed for analytics
  */
 const SteadyButton = (properties: SteadyButtonProperties) => {
   const article_link = properties.article_link ?? Config.wpUrl;
