@@ -9,18 +9,13 @@ import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import { StripeButtonProperties } from "#/components/buttons/StripeButton";
+import { styles as globalStyles } from "#/constants/Styles";
 import API from "#/helpers/network/ServerAPI";
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    height: 40,
-    width: 220,
-    alignSelf: "center",
-  },
   loadingContainer: {
     height: 40,
     width: 220,
-    alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -126,7 +121,7 @@ const StripeButton = (props: StripeButtonProperties) => {
       type={PlatformPay?.ButtonType?.Donate}
       appearance={PlatformPay?.ButtonStyle?.Black}
       borderRadius={4}
-      style={styles.buttonContainer}
+      style={globalStyles.button}
       disabled={isProcessing}
     />
   );
