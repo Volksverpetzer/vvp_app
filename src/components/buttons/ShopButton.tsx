@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import { Linking, Pressable } from "react-native";
 
 import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
 import { registerEvent } from "#/helpers/network/Analytics";
 
 import ButtonVVPShop from "#assets/images/button_vvp_shop.webp";
@@ -23,14 +24,7 @@ const ShopButton = ({
         Linking.openURL(Config.donations.shop);
       }}
     >
-      <Image
-        style={{
-          width: 220,
-          height: 40,
-          borderRadius: 4,
-        }}
-        source={ButtonVVPShop}
-      />
+      <Image style={styles.button} source={ButtonVVPShop} />
     </Pressable>
   );
 };

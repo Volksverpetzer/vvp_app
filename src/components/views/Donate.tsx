@@ -84,7 +84,12 @@ const Donate = (properties: DonateProperties) => {
   const pickerColorText = Colors[colorScheme].text;
   return (
     <>
-      <View style={{ justifyContent: "center", ...styles.noBackground }}>
+      <View
+        style={{
+          alignItems: "center",
+          ...styles.noBackground,
+        }}
+      >
         {(properties?.showPicker ?? true) && (
           <View
             style={{

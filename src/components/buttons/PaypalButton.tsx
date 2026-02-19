@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import { Linking, Pressable } from "react-native";
 
 import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
 
 import Paypal from "#assets/images/button_paypal.webp";
 
@@ -38,16 +39,7 @@ const PaypalButton = ({ amount, onSuccess }: PaypalButtonProperties) => {
         });
       }}
     >
-      <Image
-        source={Paypal}
-        style={{
-          width: 220,
-          height: 40,
-          borderRadius: 4,
-          borderWidth: 1,
-          alignSelf: "center",
-        }}
-      />
+      <Image source={Paypal} style={styles.button} />
     </Pressable>
   );
 };
