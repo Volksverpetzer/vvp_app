@@ -23,6 +23,7 @@ import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
+import LoadingImage from "#assets/images/logo_animated.gif";
 import logoPike from "#assets/images/logo_pike.webp";
 
 import { ArticleSourceList } from "./ArticleSourceList";
@@ -134,6 +135,7 @@ const Header = (properties: HeaderProperties) => {
         <Image
           style={{ margin: "auto", height, width: "100%" }}
           source={{ uri: article_image }}
+          placeholder={LoadingImage}
         />
       </Pressable>
       <Space size={30} />
