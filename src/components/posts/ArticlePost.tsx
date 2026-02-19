@@ -213,7 +213,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       <View style={containerStyle}>
         <Image
           style={imageStyle}
-          source={{ uri: imageUrl }}
+          source={imageUrl ? { uri: imageUrl } : LoadingImage}
           placeholder={LoadingImage}
           contentFit={"cover"}
         />
