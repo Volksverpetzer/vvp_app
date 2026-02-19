@@ -81,7 +81,7 @@ const MyFavs = () => {
           Klick den Stern, um zu den Favoriten hinzuzufügen
         </Text>
       </View>
-      <Space size={300} />
+      <Space size={100} />
     </>
   );
 };

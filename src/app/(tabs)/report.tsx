@@ -249,7 +249,7 @@ const ReportScreen = () => {
             </Text>
           </Pressable>
           <ReportStatusList reports={reports} />
-          <Space size={300} />
+          <Space size={100} />
         </ScrollView>
       </KeyboardAvoidingView>
     </>

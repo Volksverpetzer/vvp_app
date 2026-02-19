@@ -115,10 +115,10 @@ const SettingsScreen = () => {
         maxHeight={HEADER_HEIGHT}
       />
       <ScrollView
-        contentContainerStyle={[
-          styles.container,
-          { backgroundColor, paddingTop: HEADER_HEIGHT },
-        ]}
+        contentContainerStyle={{
+          backgroundColor,
+          paddingTop: HEADER_HEIGHT,
+        }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
@@ -242,15 +242,13 @@ const SettingsScreen = () => {
             Token: {token}
           </Text>
         </View>
+        <Space size={100} />
       </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 100,
-  },
   donateContainer: {
     alignItems: "center",
     paddingVertical: 20,
