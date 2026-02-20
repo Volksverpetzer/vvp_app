@@ -60,7 +60,7 @@ type InstaPostScreenProperties = InstaPostProperties & {
  * - Dot indicator mapping is memoized.
  */
 const InstaPost = (properties: InstaPostScreenProperties) => {
-  const [ratio, setRatio] = useState(1.25);
+  const [ratio, setRatio] = useState(1.33333);
   const [page, setPage] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [registered, setRegistered] = useState(false);
@@ -156,7 +156,6 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
     () => ({
       width,
       height: width * ratio,
-      contentFit: "contain",
     }),
     [width, ratio],
   );
@@ -201,9 +200,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
 
   return (
     <View>
-      <View
-        style={{ width, height: width * ratio, backgroundColor: corporate }}
-      >
+      <View style={{ backgroundColor: corporate }}>
         <ScrollView
           horizontal
           pagingEnabled
@@ -216,7 +213,6 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
             <TouchableOpacity
               accessibilityRole="button"
               key={index * 163 + id}
-              style={{ flex: 1 }}
               activeOpacity={0.95}
               onPress={handleSelectPost}
               onLongPress={() => onLongPressHandler(source)}
@@ -224,6 +220,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
               <Zoomable doubleTapScale={2} maxScale={3} minScale={1}>
                 <Image
                   onLoad={onLoadHandler}
+                  contentFit={"cover"}
                   source={
                     page >= index - 1 && inView
                       ? {
