@@ -9,13 +9,12 @@ import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import LogoAnimation from "#assets/images/logo_animated.gif";
 
 /**
- * AnimatedLoading renders a loading indicator or animated image
- * depending on the app name. On Volksverpetzer it shows a GIF,
- * otherwise a native ActivityIndicator.
+ * UiSpinner renders a loading indicator or animated image depending on the app
+ * name. On Volksverpetzer it shows a GIF, otherwise a native ActivityIndicator.
  * @param props - Props forwarded to the underlying ActivityIndicator.
  * @returns React element displaying the loading animation.
  */
-const AnimatedLoading = (props: ActivityIndicatorProps) => {
+const UiSpinner = (props: ActivityIndicatorProps) => {
   const corporate = useCorporateColor();
   return (
     <View
@@ -30,4 +29,4 @@ const AnimatedLoading = (props: ActivityIndicatorProps) => {
   );
 };
 
-export default AnimatedLoading;
+export default UiSpinner;

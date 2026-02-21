@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
-
 import { ReportStatusIcon } from "#/components/Icons";
+import UiSpinner from "#/components/animations/UiSpinner";
 import API from "#/helpers/network/ServerAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { StatusResponse, StoredReport } from "#/types";
@@ -55,7 +54,7 @@ const ReportStatusListItem = (props: StoredReport) => {
    */
   const renderIcon = () => {
     if (loading) {
-      return <AnimatedLoading color={colors.activity} />;
+      return <UiSpinner color={colors.activity} />;
     }
     if (error) {
       return <ReportStatusIcon status="error" size={20} color={colors.error} />;

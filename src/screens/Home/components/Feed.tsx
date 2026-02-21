@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -170,7 +170,7 @@ const Feed = (properties: FeedProperties) => {
           ...properties?.style,
         }}
       >
-        <AnimatedLoading />
+        <UiSpinner />
       </View>
     );
   }
@@ -220,7 +220,7 @@ const Feed = (properties: FeedProperties) => {
         ListFooterComponent={
           posts.length > 0 &&
           (isLoadingMore ? (
-            <AnimatedLoading />
+            <UiSpinner />
           ) : (
             <Pressable
               accessibilityRole="button"

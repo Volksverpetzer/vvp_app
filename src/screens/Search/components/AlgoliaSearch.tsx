@@ -4,8 +4,7 @@ import debounce from "lodash/debounce";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
-
+import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
@@ -105,7 +104,7 @@ const AlgoliaSearchResults = ({
   if (isLoading) {
     return (
       <View style={itemStyles.loadingContainer}>
-        <AnimatedLoading size="small" color={highlightColor} />
+        <UiSpinner size="small" color={highlightColor} />
       </View>
     );
   }

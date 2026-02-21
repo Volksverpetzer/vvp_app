@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
 import BlueskyPost, {
@@ -31,7 +31,7 @@ const BskyScreen = () => {
   }, [parameters.post_id]);
 
   if (!post) {
-    return <AnimatedLoading />;
+    return <UiSpinner />;
   }
 
   const postId = post.post.post.uri.split("/app.bsky.feed.post/")[1];

@@ -4,8 +4,8 @@ import { decode } from "html-entities";
 import { useCallback } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
 import Faktenbot from "#/components/animations/Faktenbot";
+import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
 import { styles as globalStyles } from "#/constants/Styles";
@@ -61,7 +61,7 @@ const AISearch = ({
     return (
       <View style={[localStyles.centeredContainer, { paddingTop: 100 }]}>
         <Text>{loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}</Text>
-        <AnimatedLoading />
+        <UiSpinner />
         {showFaktenbot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
             <Faktenbot search={true} reaction={reactionValue} />

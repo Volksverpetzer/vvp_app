@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
-
+import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";
 import Config from "#/constants/Config";
 import { getViews } from "#/helpers/network/Analytics";
@@ -30,7 +29,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
   return (
     <>
       {isLoading ? (
-        <AnimatedLoading size="small" color="#fff" />
+        <UiSpinner size="small" color="#fff" />
       ) : (
         <Text
           style={{

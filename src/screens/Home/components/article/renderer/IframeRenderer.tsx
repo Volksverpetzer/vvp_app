@@ -9,7 +9,7 @@ import {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import ErrorCard from "#/components/design/ErrorCard";
 import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/posts/LoadArticlePost";
@@ -259,7 +259,7 @@ const IframeRenderer = ({
         overScrollMode="never"
         scrollEnabled={false}
         bounces={false}
-        renderLoading={() => <AnimatedLoading />}
+        renderLoading={() => <UiSpinner />}
         onShouldStartLoadWithRequest={(request) =>
           shouldStartRequest(request, source, onLinkPress)
         }

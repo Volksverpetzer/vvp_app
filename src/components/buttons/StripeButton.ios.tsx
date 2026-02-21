@@ -8,8 +8,7 @@ import Constants from "expo-constants";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
-
+import UiSpinner from "#/components/animations/UiSpinner";
 import { StripeButtonProperties } from "#/components/buttons/StripeButton";
 import { styles as globalStyles } from "#/constants/Styles";
 import API from "#/helpers/network/ServerAPI";
@@ -107,7 +106,7 @@ const StripeButton = (props: StripeButtonProperties) => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <AnimatedLoading />
+        <UiSpinner />
       </View>
     );
   }
