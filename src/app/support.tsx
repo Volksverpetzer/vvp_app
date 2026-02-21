@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import { HeartIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
@@ -24,9 +25,9 @@ const SupportScreen = () => {
           backgroundColor,
         }}
         contentContainerStyle={{
-          paddingTop: HEADER_HEIGHT,
           alignItems: "center",
           flexGrow: 1,
+          paddingTop: HEADER_HEIGHT,
           gap: 20,
         }}
       >

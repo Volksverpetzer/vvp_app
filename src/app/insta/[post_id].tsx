@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import NavBar from "#/components/bars/NavBar";
 import Text from "#/components/design/Text";
