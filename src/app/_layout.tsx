@@ -19,7 +19,7 @@ import {
 } from "react-native-safe-area-context";
 import Toast, { ToastConfig } from "react-native-toast-message";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import View from "#/components/design/View";
 import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
@@ -92,7 +92,7 @@ const RootLayout = () => {
   }, [systemBackgroundColor]);
 
   if (!loaded) {
-    return <AnimatedLoading />;
+    return <UiSpinner size={"large"} />;
   }
 
   const toastConfig: ToastConfig = {

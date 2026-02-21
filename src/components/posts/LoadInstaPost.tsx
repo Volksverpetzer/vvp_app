@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import API from "#/helpers/network/ServerAPI";
 
@@ -32,7 +32,7 @@ const LoadInstaPost = (properties: LoadProperties) => {
   }, [id]);
 
   if (isLoading) {
-    return <AnimatedLoading />;
+    return <UiSpinner size={"large"} />;
   }
 
   return <InstaPost inView={true} {...post} />;

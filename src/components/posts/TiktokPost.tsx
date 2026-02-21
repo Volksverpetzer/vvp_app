@@ -9,7 +9,7 @@ import {
 import WebView from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 
 /**
  *  Represents the properties of a Tiktok post as fetched from the Tiktok API
@@ -103,7 +103,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
         javaScriptEnabled
         domStorageEnabled
         startInLoadingState
-        renderLoading={() => <AnimatedLoading />}
+        renderLoading={() => <UiSpinner size={"large"} />}
         mediaPlaybackRequiresUserAction={false}
         allowsFullscreenVideo
         scrollEnabled={false}
