@@ -70,9 +70,7 @@ const ReportScreen = () => {
           ...styles.input,
           backgroundColor: inputBackground,
           borderRadius: 5,
-          margin: 0,
           padding: 10,
-          width: "100%",
         },
         submitButton: {
           alignItems: "center",

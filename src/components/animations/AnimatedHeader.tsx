@@ -135,6 +135,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
     () => ({
       ...styles.row,
       ...styles.input,
+      ...styles.feed,
       height: headerInputHeight,
       backgroundColor: corporate,
     }),
