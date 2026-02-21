@@ -74,7 +74,7 @@ const Footer = (properties: FooterProperties) => {
       >
         <Support article_link={properties.article_link} />
       </View>
-      <Space size={95} />
+      <Space size={100} />
     </>
   );
 };

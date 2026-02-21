@@ -1,15 +1,14 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { Pressable, View as RNView } from "react-native";
+import { Pressable, View } from "react-native";
 import Swipeable, {
   SwipeDirection,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
 
-import { DeleteIcon } from "#/components/Icons";
+import { DeleteIcon, LinkIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
-import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -73,7 +72,7 @@ const MySources = () => {
                 />
               )}
             >
-              <RNView
+              <View
                 style={{
                   marginVertical: 15,
                   borderRadius: 10,
@@ -100,14 +99,17 @@ const MySources = () => {
                   )}
                   <Text style={{ color: corporate }}>{href}</Text>
                 </Pressable>
-              </RNView>
+              </View>
             </Swipeable>
           );
         })}
       <Space size={100} />
-      <Text style={{ textAlign: "center", fontSize: 18 }}>
-        Klicke auf Links in Artikeln, dann tauchen sie hier auf
-      </Text>
+      <View style={{ ...styles.centered }}>
+        <LinkIcon color={corporate} />
+        <Text style={{ textAlign: "center", fontSize: 18 }}>
+          Klicke auf Links in Artikeln, dann tauchen sie hier auf
+        </Text>
+      </View>
       <Space size={100} />
     </View>
   );

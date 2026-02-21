@@ -146,7 +146,7 @@ const RegionMap = () => {
             {`${idx + 4}. ${region.name}`}
           </Text>
         ))}
-        <Space size={80} />
+        <Space size={100} />
       </View>
     </View>
   );

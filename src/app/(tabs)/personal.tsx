@@ -114,7 +114,6 @@ const PersonalTab = () => {
       <ScrollView
         style={{
           flex: 1,
-          paddingBottom: 250,
           backgroundColor,
           paddingTop: HEADER_HEIGHT,
         }}
