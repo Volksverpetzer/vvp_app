@@ -23,7 +23,7 @@ const UiSpinner = (props: ActivityIndicatorProps) => {
       {isVolksverpetzer ? (
         <Image source={LogoAnimation} style={{ width: 100, height: 100 }} />
       ) : (
-        <ActivityIndicator size="large" color={corporate} {...props} />
+        <ActivityIndicator color={corporate} {...props} />
       )}
     </View>
   );

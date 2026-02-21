@@ -32,7 +32,7 @@ const LoadInstaPost = (properties: LoadProperties) => {
   }, [id]);
 
   if (isLoading) {
-    return <UiSpinner />;
+    return <UiSpinner size={"large"} />;
   }
 
   return <InstaPost inView={true} {...post} />;

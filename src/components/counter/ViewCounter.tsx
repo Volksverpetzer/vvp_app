@@ -29,7 +29,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
   return (
     <>
       {isLoading ? (
-        <UiSpinner size="small" color="#fff" />
+        <UiSpinner color="#fff" />
       ) : (
         <Text
           style={{

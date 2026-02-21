@@ -170,7 +170,7 @@ const Feed = (properties: FeedProperties) => {
           ...properties?.style,
         }}
       >
-        <UiSpinner />
+        <UiSpinner size={"large"} />
       </View>
     );
   }
@@ -220,7 +220,7 @@ const Feed = (properties: FeedProperties) => {
         ListFooterComponent={
           posts.length > 0 &&
           (isLoadingMore ? (
-            <UiSpinner />
+            <UiSpinner size={"large"} />
           ) : (
             <Pressable
               accessibilityRole="button"

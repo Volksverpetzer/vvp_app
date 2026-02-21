@@ -104,7 +104,7 @@ const AlgoliaSearchResults = ({
   if (isLoading) {
     return (
       <View style={itemStyles.loadingContainer}>
-        <UiSpinner size="small" color={highlightColor} />
+        <UiSpinner color={highlightColor} />
       </View>
     );
   }

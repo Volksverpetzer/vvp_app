@@ -100,7 +100,7 @@ const LoadArticle = () => {
   // Fallback: Show loading state
   return (
     <View style={{ justifyContent: "center", height: "100%" }}>
-      <UiSpinner />
+      <UiSpinner size={"large"} />
       <Text style={{ textAlign: "center" }}>Lade Artikel...</Text>
     </View>
   );

@@ -106,7 +106,7 @@ const StripeButton = (props: StripeButtonProperties) => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <UiSpinner />
+        <UiSpinner size={"small"} />
       </View>
     );
   }

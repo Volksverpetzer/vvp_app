@@ -92,7 +92,7 @@ const RootLayout = () => {
   }, [systemBackgroundColor]);
 
   if (!loaded) {
-    return <UiSpinner />;
+    return <UiSpinner size={"large"} />;
   }
 
   const toastConfig: ToastConfig = {

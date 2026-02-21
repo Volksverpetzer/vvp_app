@@ -72,7 +72,7 @@ const Index = () => {
       });
     })();
   }, []);
-  return <UiSpinner />;
+  return <UiSpinner size={"large"} />;
 };
 
 export default Index;

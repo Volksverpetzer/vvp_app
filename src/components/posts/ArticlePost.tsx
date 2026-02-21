@@ -197,7 +197,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   if (isLoading) {
     return (
       <View style={{ height: height * 1.8, width }}>
-        <UiSpinner />
+        <UiSpinner size={"large"} />
       </View>
     );
   }

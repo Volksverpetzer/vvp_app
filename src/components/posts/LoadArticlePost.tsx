@@ -37,7 +37,7 @@ const LoadArticlePost = (properties: LoadProperties) => {
   }, [slug]);
 
   if (isLoading) {
-    return <UiSpinner />;
+    return <UiSpinner size={"large"} />;
   }
 
   return <ArticlePost inView={true} article={article} />;

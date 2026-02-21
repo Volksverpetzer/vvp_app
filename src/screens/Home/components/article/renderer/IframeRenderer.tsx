@@ -259,7 +259,7 @@ const IframeRenderer = ({
         overScrollMode="never"
         scrollEnabled={false}
         bounces={false}
-        renderLoading={() => <UiSpinner />}
+        renderLoading={() => <UiSpinner size={"large"} />}
         onShouldStartLoadWithRequest={(request) =>
           shouldStartRequest(request, source, onLinkPress)
         }
