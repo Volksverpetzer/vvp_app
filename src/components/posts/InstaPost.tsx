@@ -119,16 +119,13 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
   const onLoadHandler = useCallback(
     async (event: ImageLoadEventData) => {
       if (loaded) return;
-      const { width: w, height: h } = event.source;
-      const _ratio = Math.round((h / w) * 100) / 100;
       // We update stored post asynchronously.
       await ContentStore.setStoredInstaPost(id, properties);
-      if (Math.abs(ratio - _ratio) / ratio < 0.05) {
-        setRatio(_ratio);
-        setLoaded(true);
-      }
+      const { width: w, height: h } = event.source;
+      setRatio(Math.round((h / w) * 100) / 100);
+      setLoaded(true);
     },
-    [loaded, id, properties, ratio],
+    [loaded, id, properties],
   );
 
   const onScrollListener = useCallback(
