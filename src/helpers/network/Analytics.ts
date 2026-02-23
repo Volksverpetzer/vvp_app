@@ -118,7 +118,6 @@ const registerEvent = async (
     url: `${permalink}?utm_source=${utm_source}&utm_medium=app&utm_campaign=${utm_campaign}`,
     referrer: "de.volksverpetzer.app",
     domain: hostname,
-    screen_width: Dimensions.get("window").width,
     props: {
       platform: Platform.OS,
       OSversion: Platform.Version,

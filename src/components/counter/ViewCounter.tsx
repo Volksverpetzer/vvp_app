@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
 
+import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";
 import Config from "#/constants/Config";
 import { getViews } from "#/helpers/network/Analytics";
@@ -29,7 +29,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
   return (
     <>
       {isLoading ? (
-        <ActivityIndicator size="small" color="#fff" />
+        <UiSpinner color="#fff" />
       ) : (
         <Text
           style={{

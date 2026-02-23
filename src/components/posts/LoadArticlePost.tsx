@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
-import WordpressAPI from "#/helpers/network/WordpressAPI";
+import UiSpinner from "#/components/animations/UiSpinner";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
 
 import ArticlePost, { ArticleProperties } from "./ArticlePost";
 
@@ -19,7 +19,7 @@ export type LoadArticlePostProperties = Omit<
 };
 
 /**
- * This component takes an article slug, pulls Wordpress API and then Renders an Article Post with the Response
+ * This component takes an article slug, pulls WordPress API and then Renders an Article Post with the Response
  */
 const LoadArticlePost = (properties: LoadProperties) => {
   const [article, setArticle] = useState<ArticleProperties>();
@@ -27,9 +27,9 @@ const LoadArticlePost = (properties: LoadProperties) => {
   const { slug } = properties;
 
   useEffect(() => {
-    WordpressAPI.getPost(slug)
+    WordPressAPI.getPost(slug)
       .then((data: LoadArticlePostProperties) => {
-        const article = WordpressAPI.convertLoadProps(data);
+        const article = WordPressAPI.convertLoadProps(data);
         setArticle(article);
         setLoading(false);
       })
@@ -37,7 +37,7 @@ const LoadArticlePost = (properties: LoadProperties) => {
   }, [slug]);
 
   if (isLoading) {
-    return <AnimatedLoading />;
+    return <UiSpinner size={"large"} />;
   }
 
   return <ArticlePost inView={true} article={article} />;

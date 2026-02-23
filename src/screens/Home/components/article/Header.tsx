@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
 import { Href, useRouter } from "expo-router";
@@ -13,6 +12,7 @@ import {
 } from "react-native";
 import ViewShot from "react-native-view-shot";
 
+import { TouchIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -23,7 +23,8 @@ import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
-import logoPike from "#assets/images/logo_pike.png";
+import LoadingImage from "#assets/images/logo_animated.gif";
+import logoPike from "#assets/images/logo_pike.webp";
 
 import { ArticleSourceList } from "./ArticleSourceList";
 import ArticleStats from "./ArticleStats";
@@ -115,8 +116,7 @@ const Header = (properties: HeaderProperties) => {
 
   return (
     <>
-      <MaterialIcons
-        name="touch-app"
+      <TouchIcon
         size={25}
         color={corporate}
         style={{
@@ -135,6 +135,7 @@ const Header = (properties: HeaderProperties) => {
         <Image
           style={{ margin: "auto", height, width: "100%" }}
           source={{ uri: article_image }}
+          placeholder={LoadingImage}
         />
       </Pressable>
       <Space size={30} />

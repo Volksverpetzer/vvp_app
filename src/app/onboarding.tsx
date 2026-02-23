@@ -2,11 +2,11 @@ import Constants from "expo-constants";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Feed, Safety } from "#/components/Icons";
+import { FeedIcon, SafetyIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import SettingsList from "#/components/views/SettingsList";
@@ -22,7 +22,7 @@ import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
 import { NotificationSettingType, SettingType } from "#/types";
 
-import VorstellungsgrafikImg from "#assets/images/Vorstellungsgrafik.jpg";
+import WelcomeVVP from "#assets/images/welcome.webp";
 
 const Onboarding = () => {
   const [notificationSettings, setNotificationSettings] =
@@ -34,21 +34,12 @@ const Onboarding = () => {
   const corporate = useCorporateColor();
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
-  useEffect(() => {
-    PersonalStore.isOnboardingDone().then((value) => {
-      if (value === true) {
-        Notifications.getPermissions().then((status) => {
-          if (status.status !== "granted") {
-            Notifications.registerForPushNotifications();
-          }
-        });
-        router.replace("/");
-      }
-    });
-  }, []);
 
-  const agreeToTerms = () => {
-    PersonalStore.setOnboardingDone().then(() => {
+  const agreeToTerms = async () => {
+    await Notifications.registerForPushNotifications().catch((error) => {
+      console.error("Failed to register for push notifications:", error);
+    });
+    await PersonalStore.setOnboardingDone().finally(() => {
       updateBadgeState({ personal: false, action: true });
       router.replace("/");
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -82,7 +73,7 @@ const Onboarding = () => {
       id: 1,
       title: "Willkommen",
       description: `Willkommen bei der ${appName}-App!`,
-      icon: isVolksverpetzer ? VorstellungsgrafikImg : undefined,
+      icon: isVolksverpetzer ? WelcomeVVP : undefined,
     },
     {
       id: 3,
@@ -97,7 +88,7 @@ const Onboarding = () => {
               alignItems: "center",
             }}
           >
-            <Feed color={corporate} />
+            <FeedIcon color={corporate} />
             <Text
               style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
             >
@@ -124,7 +115,7 @@ const Onboarding = () => {
               alignItems: "center",
             }}
           >
-            <Feed color={corporate} />
+            <FeedIcon color={corporate} />
             <Text
               style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
             >
@@ -142,7 +133,7 @@ const Onboarding = () => {
       id: 8,
       title: "Prio: Datenschutz",
       description: `Unser Versprechen: Wir geben uns alle Mühe, den Datenkraken so wenig zu überliefern wie möglich. Du braucht keine Accounts, wir tracken dich nicht. Mit der Nutzung stimmst du unserer Datenschutzerklärung zu.`,
-      TopComponent: () => <Safety color={corporate} width={80} />,
+      TopComponent: () => <SafetyIcon color={corporate} width={80} />,
       Component: () => (
         <Pressable
           accessibilityRole="button"

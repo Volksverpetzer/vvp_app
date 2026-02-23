@@ -8,6 +8,8 @@ const colorScheme: colorSchemeType = {
     heading: "#313131",
     background: "#fff",
     secondaryBackground: "#eee",
+    errorBackground: "#B71C1C",
+    errorText: "#FFFFFF",
     tint: "#313131",
     tabIconDefault: "#aaa",
     grayedOut: "#bbb",
@@ -22,6 +24,8 @@ const colorScheme: colorSchemeType = {
     heading: "#8EC9E1",
     background: "#212121",
     secondaryBackground: "#333",
+    errorBackground: "#6E1111",
+    errorText: "#FEE2E2",
     grayedOut: "#333",
     grayedOutText: "#aaa",
     tint: "#fff",
@@ -55,6 +59,7 @@ const extraConfig: ExtraConfigType = {
       IBAN: "AT461200052999199621",
       note: "Spende Mimikama",
     },
+    merchantIdentifier: "merchant.volksverpetzer.de",
     steady: "https://steadyhq.com/de/mimikama/",
     support: "https://www.mimikama.org/unterstuetze-uns-bitte/",
     paypal: "https://www.paypal.com/donate/?hosted_button_id=DFR6BRAK8YB2J",
@@ -108,7 +113,6 @@ const extraConfig: ExtraConfigType = {
 const appName = "Mimikama";
 
 const slug = "mimikamaapp";
-const merchantIdentifier = "merchant.volksverpetzer.de";
 
 const packageName = "de.mimikama.app";
 
@@ -129,7 +133,6 @@ const config = {
   extraConfig,
   packageName,
   AndroidIntentFilters,
-  merchantIdentifier,
   iOSAssociatedDomains,
   appName,
   slug,

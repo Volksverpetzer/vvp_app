@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable } from "react-native";
 
-import { Share } from "#/components/Icons";
+import { ShareIcon } from "#/components/Icons";
 import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
 import View from "#/components/design/View";
@@ -56,7 +56,7 @@ const ShareBar = (properties: ShareBarProperties) => {
           };
         }}
       >
-        <Share color={color} size={30} />
+        <ShareIcon color={color} />
         {hideShareCount ? (
           <View style={{ width: "70%" }} />
         ) : (

@@ -46,7 +46,6 @@ export const handleRemovableElements = (element: DomElement): boolean => {
 export const handleSpecialElements = (element: DomElement): boolean => {
   // Handle iframes
   if (element.tagName === "iframe") {
-    console.warn("iframe found");
     makeElementRoot(element);
     return true;
   }
@@ -65,13 +64,9 @@ export const handleSpecialElements = (element: DomElement): boolean => {
 /**
  * Handles embedded content like YouTube videos and tweets
  * @param element The element to process
- * @param width The maximum width for embedded content
  * @returns True if the element was handled
  */
-export const handleEmbeddedContent = (
-  element: DomElement,
-  width: number,
-): boolean => {
+export const handleEmbeddedContent = (element: DomElement): boolean => {
   // Handle YouTube embeds
   if (element.attribs?.class?.includes("__youtube_prefs__") ?? false) {
     if (element.tagName === "div") {

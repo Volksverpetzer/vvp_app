@@ -17,7 +17,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     name: variableConfig.appName,
     slug: variableConfig.slug,
     version: pkg.version,
-    platforms: ["ios", "android"],
+    platforms: ["ios", "android", "web"],
     experiments: {
       typedRoutes: true,
     },
@@ -42,7 +42,8 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       [
         "@stripe/stripe-react-native",
         {
-          merchantIdentifier: variableConfig.merchantIdentifier,
+          merchantIdentifier:
+            variableConfig.extraConfig.donations.merchantIdentifier,
           enableGooglePay: false,
         },
       ],
@@ -73,7 +74,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       fallbackToCacheTimeout: 0,
       url: "https://u.expo.dev/" + variableConfig.extraConfig.eas.projectId,
     },
-    assetBundlePatterns: ["**/*"],
     ios: {
       associatedDomains: variableConfig.iOSAssociatedDomains,
       infoPlist: {

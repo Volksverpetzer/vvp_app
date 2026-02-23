@@ -1,8 +1,8 @@
-import { FontAwesome5 } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
+import { CheckboxIcon, CircleIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
@@ -13,7 +13,7 @@ import {
   TaskType,
 } from "#/helpers/Achievements";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import Parallelogram from "./Parallelogram";
 
@@ -25,7 +25,6 @@ const AchievementComponent = () => {
   const colorScheme = useAppColorScheme();
   const highlight = Colors[colorScheme].highlight;
   const backgroundColor = Colors[colorScheme].background;
-  const secondaryBackground = Colors[colorScheme].secondaryBackground;
 
   const updateLevelData = () => {
     Achievements.getCurrentAchievements().then((data: LevelType) => {
@@ -68,7 +67,6 @@ const AchievementComponent = () => {
             alignItems: "center",
             justifyContent: "center",
             zIndex: 4,
-            ...styles.shadow,
           }}
         >
           <Text style={{ fontSize: 30 }}>{AchievementConfig[level].logo}</Text>
@@ -89,7 +87,6 @@ const AchievementComponent = () => {
           <Parallelogram
             backgroundColor={corporateColor}
             color={"white"}
-            textStyle={{ color: secondaryBackground }}
             containerStyle={{ height: 30, marginTop: 0, marginLeft: -20 }}
           >
             Level {level + 1 + ": " + AchievementConfig[level].name}
@@ -108,11 +105,11 @@ const AchievementComponent = () => {
                 marginBottom: 5,
               }}
             >
-              <FontAwesome5
-                name={task.value ? "check" : "circle"}
-                size={17}
-                color="white"
-              />
+              {!!task.value ? (
+                <CheckboxIcon size={16} color="white" />
+              ) : (
+                <CircleIcon size={16} color="white" />
+              )}
               <Text
                 style={{
                   fontSize: 16,

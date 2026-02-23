@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { ReactElement, ReactNode, useState } from "react";
 import {
   Pressable,
@@ -9,8 +8,9 @@ import {
   View,
 } from "react-native";
 
+import { ChevronIcon } from "#/components/Icons";
 import Colors from "#/constants/Colors";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface CollapsableProps {
   title: string;
@@ -54,12 +54,10 @@ const Collapsable = ({
       >
         <View style={styles.title}>
           {icon}
-          <Text style={[styles.titleText, { color: textColor }, titleStyle]}>
-            {title}
-          </Text>
+          <Text style={[{ color: textColor }, titleStyle]}>{title}</Text>
         </View>
-        <MaterialIcons
-          name={open ? "keyboard-arrow-up" : "keyboard-arrow-down"}
+        <ChevronIcon
+          direction={open ? "up" : "down"}
           size={24}
           color={textColor}
         />
@@ -79,10 +77,6 @@ const styles = StyleSheet.create({
   title: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-  },
-  titleText: {
-    fontSize: 16,
   },
 });
 

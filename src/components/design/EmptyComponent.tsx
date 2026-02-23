@@ -1,6 +1,6 @@
 import { Pressable } from "react-native";
 
-import { World } from "#/components/Icons";
+import { WorldIcon } from "#/components/Icons";
 import SteadyButton from "#/components/buttons/SteadyButton";
 import View from "#/components/design/View";
 import Donate from "#/components/views/Donate";
@@ -26,7 +26,7 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
         ...styles.centered,
       }}
     >
-      <World color={corporate} />
+      <WorldIcon color={corporate} />
       {reload && (
         <>
           <Text style={{ fontSize: 18, textAlign: "center" }}>

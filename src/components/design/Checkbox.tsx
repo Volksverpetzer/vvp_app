@@ -1,12 +1,12 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import { Pressable, ViewStyle } from "react-native";
+import { useMemo, useState } from "react";
+import { Pressable, StyleSheet } from "react-native";
 
-import { styles } from "#/constants/Styles";
+import { CheckboxIcon } from "#/components/Icons";
+import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface CheckboxProperties {
   checked: boolean;
-  style?: ViewStyle;
   onChange: (checked: boolean) => void;
 }
 
@@ -16,19 +16,36 @@ const Checkbox = (properties: CheckboxProperties) => {
     setChecked(!checked);
     properties.onChange(!checked);
   };
+
+  const colorScheme = useAppColorScheme();
+  const highlight = Colors[colorScheme].highlight;
+
+  const style = useMemo(() => ({ borderColor: highlight }), [highlight]);
+  const checkedStyle = useMemo(
+    () => (checked ? { backgroundColor: highlight } : undefined),
+    [checked, highlight],
+  );
+
   return (
     <Pressable
-      accessibilityRole="button"
-      style={[
-        properties.style,
-        styles.checkboxBase,
-        checked && styles.checkboxChecked,
-      ]}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked }}
+      style={[styles.checkboxBase, style, checkedStyle]}
       onPress={onPress}
     >
-      {checked && <Ionicons name="checkmark" size={24} color="white" />}
+      {checked && <CheckboxIcon size={24} color="white" />}
     </Pressable>
   );
 };
+
+const styles = StyleSheet.create({
+  checkboxBase: {
+    backgroundColor: "transparent",
+    borderRadius: 4,
+    borderWidth: 2,
+    height: 28,
+    width: 28,
+  },
+});
 
 export default Checkbox;

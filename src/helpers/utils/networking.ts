@@ -1,8 +1,16 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import * as Application from "expo-application";
+import Constants from "expo-constants";
+import * as Device from "expo-device";
+import { Platform } from "react-native";
 
 /**
  * Create an Axios client with default headers.
+ *
+ * The User-Agent will look like this:
+ * YourApp/1.2.3 (android; Android 14; Pixel 7)
+ * YourApp/1.2.3 (ios; iOS 17.3; iPhone 15 Pro)
+ *
  * @param baseURL Base URL for requests
  */
 export function createClient(baseURL: string): AxiosInstance {
@@ -10,7 +18,7 @@ export function createClient(baseURL: string): AxiosInstance {
     baseURL,
     headers: {
       "Content-Type": "application/json",
-      "User-Agent": "vvp-app-" + (Application?.nativeBuildVersion ?? "dev"),
+      "User-Agent": `${Constants.expoConfig?.slug}/${Application?.nativeApplicationVersion} (${Platform.OS}; ${Device.osName} ${Device.osVersion}; ${Device.modelName})`,
       "Cache-Control": "no-cache, no-store, must-revalidate",
       Pragma: "no-cache",
       Expires: "0",

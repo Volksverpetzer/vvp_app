@@ -1,7 +1,6 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { useState } from "react";
 import {
-  Image,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -9,7 +8,8 @@ import {
 } from "react-native";
 import WebView from "react-native-webview";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import { PlayIcon } from "#/components/Icons";
+import UiSpinner from "#/components/animations/UiSpinner";
 
 /**
  *  Represents the properties of a Tiktok post as fetched from the Tiktok API
@@ -78,15 +78,14 @@ const TiktokPost = (properties: TiktokPostProperties) => {
           <Image
             style={styles.thumbnailImage}
             source={{ uri: cover_image_url }}
-            resizeMode="cover"
+            contentFit="cover"
             accessibilityIgnoresInvertColors
             accessibilityLabel="Video thumbnail"
             accessibilityHint="Thumbnail for the TikTok video"
             importantForAccessibility="yes"
           />
-          <FontAwesome
+          <PlayIcon
             style={styles.playButton}
-            name="play-circle"
             size={50}
             color={TIKTOK_BRAND_COLOR}
             accessibilityElementsHidden
@@ -104,7 +103,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
         javaScriptEnabled
         domStorageEnabled
         startInLoadingState
-        renderLoading={() => <AnimatedLoading />}
+        renderLoading={() => <UiSpinner size={"large"} />}
         mediaPlaybackRequiresUserAction={false}
         allowsFullscreenVideo
         scrollEnabled={false}

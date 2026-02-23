@@ -1,9 +1,10 @@
-import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
+import { ReportStatusIcon } from "#/components/Icons";
+import UiSpinner from "#/components/animations/UiSpinner";
 import API from "#/helpers/network/ServerAPI";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { StatusResponse, StoredReport } from "#/types";
 
 /**
@@ -53,18 +54,18 @@ const ReportStatusListItem = (props: StoredReport) => {
    */
   const renderIcon = () => {
     if (loading) {
-      return <ActivityIndicator color={colors.activity} />;
+      return <UiSpinner color={colors.activity} />;
     }
     if (error) {
-      return (
-        <FontAwesome name="exclamation-circle" size={20} color={colors.error} />
-      );
+      return <ReportStatusIcon status="error" size={20} color={colors.error} />;
     }
     if (status === "posted") {
-      return <FontAwesome name="check" size={20} color={colors.posted} />;
+      return (
+        <ReportStatusIcon status="posted" size={20} color={colors.posted} />
+      );
     }
     return (
-      <FontAwesome name="hourglass-half" size={16} color={colors.pending} />
+      <ReportStatusIcon status="pending" size={16} color={colors.pending} />
     );
   };
 

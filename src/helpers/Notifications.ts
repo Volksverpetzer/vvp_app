@@ -35,6 +35,9 @@ const NotificationManager = {
    */
   async getToken(): Promise<string> {
     try {
+      // Skip on web as expo-notifications is not fully supported
+      if (Platform.OS === "web") return "";
+
       const { data } = await Notifications.getExpoPushTokenAsync({
         projectId: Config.eas.projectId,
       });
@@ -43,24 +46,6 @@ const NotificationManager = {
       console.error("Error getting push token:", error);
       throw error;
     }
-  },
-
-  /**
-   * Checks if push notifications are properly configured on the device.
-   * TODO its not used anywhere, check if we need it
-   *
-   * @returns A promise that resolves to a boolean indicating if notifications are properly configured.
-   */
-  async checkNotificationsConfigured(): Promise<boolean> {
-    // Check if we're on a physical device
-    if (!Device.isDevice) {
-      console.warn("Push notifications are not supported in the simulator");
-      return false;
-    }
-
-    // Check permissions
-    const { status } = await Notifications.getPermissionsAsync();
-    return status === "granted";
   },
 
   /**
@@ -184,6 +169,51 @@ const NotificationManager = {
     await SettingsStore.setNotificationSettings(notificationSettings);
     const response = await API.registerNotifications(body);
     return { status: response.status, notificationSettings };
+  },
+
+  /**
+   * On app launch check current permissions and request them when appropriate.
+   * - If status is UNDETERMINED -> request permissions
+   * - If status is DENIED but canAskAgain -> request permissions
+   * - If granted -> refresh server registration
+   * This function is safe on simulators and will not attempt requests there.
+   */
+  async checkAndRequestOnLaunch(): Promise<void> {
+    try {
+      // Don't request on simulators/emulators
+      if (!Device.isDevice) {
+        return;
+      }
+
+      const permissions = await Notifications.getPermissionsAsync();
+
+      if (permissions.status === Notifications.PermissionStatus.GRANTED) {
+        // Ensure server is up-to-date
+        await NotificationManager.refreshServer();
+        return;
+      }
+
+      // If undetermined, ask right away
+      if (permissions.status === Notifications.PermissionStatus.UNDETERMINED) {
+        await NotificationManager.registerForPushNotifications();
+        return;
+      }
+
+      // permissions.status === DENIED (or other) — ask again only if the platform
+      // indicates we can ask again.
+      const canAskAgain = permissions?.canAskAgain;
+      if (canAskAgain) {
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status === Notifications.PermissionStatus.GRANTED) {
+          await NotificationManager.registerForPushNotifications();
+        }
+      } else {
+        // Final denial — we could optionally surface a UI hint to open settings.
+        console.info("Notifications: permission denied and cannot ask again");
+      }
+    } catch (error) {
+      console.error("Error during checkAndRequestOnLaunch:", error);
+    }
   },
 };
 

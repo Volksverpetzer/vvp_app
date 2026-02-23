@@ -8,6 +8,8 @@ const colorScheme: colorSchemeType = {
     heading: "#1B7194",
     background: "#fff",
     secondaryBackground: "#E2F0F5",
+    errorBackground: "#C62828",
+    errorText: "#FFFFFF",
     tint: "#3893C0",
     tabIconDefault: "#aaa",
     grayedOut: "#bbb",
@@ -22,6 +24,8 @@ const colorScheme: colorSchemeType = {
     heading: "#8EC9E1",
     background: "#142228",
     secondaryBackground: "#050d0f",
+    errorBackground: "#7F1D1D",
+    errorText: "#FEE2E2",
     grayedOut: "#333",
     grayedOutText: "#aaa",
     tint: "#fff",
@@ -57,6 +61,7 @@ const extraConfig: ExtraConfigType = {
       IBAN: "DE67 7205 0000 0251 7976 92",
       note: "Spende",
     },
+    merchantIdentifier: "merchant.volksverpetzer.de",
     steady: "https://steadyhq.com/volksverpetzer",
     support: "https://www.volksverpetzer.de/unterstutzen/",
     paypal: "https://www.paypal.com/donate/?hosted_button_id=8LXQZGF3BDWVU",
@@ -116,7 +121,6 @@ const extraConfig: ExtraConfigType = {
 const appName = "Volksverpetzer";
 
 const slug = "vvp_App";
-const merchantIdentifier = "merchant.volksverpetzer.de";
 
 const packageName = "de.volksverpetzer.app";
 
@@ -137,7 +141,7 @@ const config = {
   extraConfig,
   packageName,
   AndroidIntentFilters,
-  merchantIdentifier,
+  merchantIdentifier: "merchant.volksverpetzer.de",
   iOSAssociatedDomains,
   appName,
   slug,

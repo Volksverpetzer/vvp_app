@@ -1,8 +1,7 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useKeepAwake } from "expo-keep-awake";
 import { View } from "react-native";
 
-import { Share } from "#/components/Icons";
+import { ArticleViewIcon, ShareIcon } from "#/components/Icons";
 import ShareCounter from "#/components/counter/ShareCounter";
 import ViewCounter from "#/components/counter/ViewCounter";
 import Colors from "#/constants/Colors";
@@ -29,13 +28,13 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
         justifyContent: "flex-start",
       }}
     >
-      <MaterialCommunityIcons name="eye-outline" size={20} color={color} />
+      <ArticleViewIcon size={20} color={color} />
       <ViewCounter
         {...{ url: article_link }}
         color={color}
         style={{ fontSize: 16, paddingHorizontal: 5 }}
       />
-      <Share color={color} size={20} />
+      <ShareIcon size={20} color={color} />
       <ShareCounter
         style={{ color, fontSize: 16, paddingHorizontal: 5 }}
         shareable={[{ title: "Link teilen", url: article_link }]}

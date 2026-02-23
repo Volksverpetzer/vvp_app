@@ -1,7 +1,7 @@
 import { ScrollView } from "react-native-gesture-handler";
 
 import Colors from "#/constants/Colors";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import AchievementComponent from "#/screens/ActionTab/components/AchievementComponent";
 import RegionMap from "#/screens/ActionTab/components/RegionMap";
 import StatisticsView from "#/screens/ActionTab/components/statistics/StatisticsView";

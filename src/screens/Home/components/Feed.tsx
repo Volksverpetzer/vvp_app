@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -11,8 +10,8 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { Search } from "#/components/Icons";
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import { SearchIcon, SettingsIcon } from "#/components/Icons";
+import UiSpinner from "#/components/animations/UiSpinner";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -20,7 +19,7 @@ import GenericPost from "#/components/posts/GenericPost";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import Post from "#/helpers/Post";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 
 export type FeedFetcherProperties = {
@@ -171,7 +170,7 @@ const Feed = (properties: FeedProperties) => {
           ...properties?.style,
         }}
       >
-        <AnimatedLoading />
+        <UiSpinner size={"large"} />
       </View>
     );
   }
@@ -192,11 +191,7 @@ const Feed = (properties: FeedProperties) => {
           accessibilityRole="button"
           onPress={() => router.push("/settings")}
         >
-          <Ionicons
-            name={colorScheme === "dark" ? "settings" : "settings-outline"}
-            size={30}
-            color={corporate}
-          />
+          <SettingsIcon color={corporate} />
         </Pressable>
       </View>
     );
@@ -225,14 +220,14 @@ const Feed = (properties: FeedProperties) => {
         ListFooterComponent={
           posts.length > 0 &&
           (isLoadingMore ? (
-            <AnimatedLoading />
+            <UiSpinner size={"large"} />
           ) : (
             <Pressable
               accessibilityRole="button"
               style={styles.centered}
               onPress={() => router.push("/search")}
             >
-              <Search color={corporate} />
+              <SearchIcon color={corporate} />
             </Pressable>
           ))
         }

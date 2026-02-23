@@ -6,7 +6,9 @@ import RenderHtml from "react-native-render-html";
 import Card from "#/components/design/Card";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { styles as globalStyles } from "#/constants/Styles";
+import { getTagStyles } from "#/helpers/utils/color";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 // Konstanten außerhalb der Komponente sind immer stabil
 const IGNORED_DOM_TAGS = ["img", "script", "iframe", "style"];
@@ -24,52 +26,39 @@ const SearchResultItem = ({
   subtitle,
   onPress,
 }: SearchResultItemProps) => {
-  const { width } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
-  const highlightColor = Colors[colorScheme].highlight;
-  const textColor = Colors[colorScheme].text;
+  const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
+  const { width } = useWindowDimensions();
 
-  const tagStyles = useMemo(
-    () => ({
-      a: {
-        color: corporate,
-        textDecorationLine: "underline" as const,
-        textDecorationColor: corporate,
-      },
-      em: {
-        fontWeight: "bold" as const,
-        color: highlightColor,
-      },
-      p: { color: textColor },
-    }),
-    [corporate, highlightColor, textColor],
-  );
+  // Card has padding: 20 on each side (40 total horizontal padding)
+  // FlatList has paddingHorizontal: 20 (40 total horizontal padding)
+  // Subtract both from window width to get actual available content width
+  const contentWidth = width - 80;
 
-  const renderHtmlBaseStyle = useMemo(
+  const baseStyle = useMemo(
     () => ({
-      color: textColor,
-      width: width - 60,
-      maxHeight: 200,
-      overflow: "hidden" as const,
+      fontFamily: "SourceSansPro",
+      lineHeight: 27,
+      color: Colors[colorScheme].text,
     }),
-    [textColor, width],
+    [colorScheme],
   );
 
   const content = (
-    <Card style={{ padding: 20 }}>
+    <Card>
       {title ? (
-        <Text style={{ fontWeight: "bold", paddingBottom: 30 }}>
+        <Text style={[globalStyles.heading, { padding: 0, marginBottom: 10 }]}>
           {decode(title)}
         </Text>
       ) : null}
 
       <RenderHtml
         source={{ html: text }}
-        baseStyle={renderHtmlBaseStyle}
-        tagsStyles={tagStyles}
-        contentWidth={width - 60}
+        tagsStyles={styles}
         ignoredDomTags={IGNORED_DOM_TAGS}
+        systemFonts={["SourceSansPro"]}
+        contentWidth={contentWidth}
+        baseStyle={baseStyle}
       />
 
       {subtitle}

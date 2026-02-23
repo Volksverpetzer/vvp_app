@@ -21,7 +21,7 @@ import { onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent, registerViews } from "#/helpers/network/Analytics";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { HttpsUrl } from "#/types";
 
 import Body from "./Body";
@@ -33,13 +33,13 @@ interface ArticleScreenProperties {
 }
 
 /**
- * Renders an Article from Wordpress API Data in Route Param Props
+ * Renders an Article from WordPress API Data in Route Param Props
  *
  * Handles scrolling by rendering a progress bar and saving scroll position
  * to local storage. Also triggers "FullRead" analytics event when user
  * scrolls 70% down the article.
  *
- * @param {ArticleProperties} properties - Article data from Wordpress API
+ * @param {ArticleProperties} properties - Article data from WordPress API
  * @returns
  */
 const ArticleScreen = (properties: ArticleScreenProperties) => {

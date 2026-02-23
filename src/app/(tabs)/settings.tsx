@@ -1,17 +1,19 @@
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Animated, Pressable, StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
-import { Feed, Give, Search } from "#/components/Icons";
+import {
+  FeedIcon,
+  FeedbackIcon,
+  GiveIcon,
+  LockIcon,
+  NotificationIcon,
+  SearchIcon,
+  SettingsIcon,
+} from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import ShopButton from "#/components/buttons/ShopButton";
 import Collapsable from "#/components/design/Collapsable";
@@ -29,7 +31,7 @@ import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { NotificationSettingType, SettingType } from "#/types";
 
 const SettingsScreen = () => {
@@ -88,7 +90,6 @@ const SettingsScreen = () => {
   };
 
   const pressableStyle = ({ pressed }: { pressed: boolean }) => [
-    styles.pressable,
     pressed && { backgroundColor: secondaryBackground },
   ];
 
@@ -109,19 +110,23 @@ const SettingsScreen = () => {
         maxHeight={HEADER_HEIGHT}
       />
       <ScrollView
-        contentContainerStyle={[
-          styles.container,
-          { backgroundColor, paddingTop: HEADER_HEIGHT },
-        ]}
+        style={{
+          flex: 1,
+          backgroundColor,
+        }}
+        contentContainerStyle={{
+          backgroundColor,
+          paddingTop: HEADER_HEIGHT,
+        }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
         )}
       >
         <Collapsable
-          icon={<Feed color={corporate} />}
+          icon={<FeedIcon color={corporate} />}
           title="Feed"
-          titleStyle={styles.collapsibleTitle}
+          titleStyle={globalStyles.heading}
         >
           <Text style={styles.sectionText}>
             Was möchtest du in deinem Feed sehen?
@@ -132,11 +137,9 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={
-            <MaterialIcons name="notifications" size={22} color={corporate} />
-          }
+          icon={<NotificationIcon size={24} color={corporate} />}
           title="Benachrichtigungen"
-          titleStyle={styles.collapsibleTitle}
+          titleStyle={globalStyles.heading}
         >
           <SettingsList
             saveSettings={saveNotificationSetting}
@@ -144,68 +147,64 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={<MaterialIcons name="settings" size={22} color={corporate} />}
+          icon={<SettingsIcon size={24} color={corporate} />}
           title="Erweitert"
-          titleStyle={styles.collapsibleTitle}
+          titleStyle={globalStyles.heading}
         >
           <SettingsList
             saveSettings={saveAdvancedSetting}
             settings={advancedSettings}
           />
         </Collapsable>
-        <Space size={10} />
-        <Divider padding={60} />
-        <Space size={10} />
+        <Divider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
           <DesignedLink
             url={Config.aboutUrl}
-            icon={<Search color={corporate} width={20} />}
+            icon={<SearchIcon color={corporate} width={20} />}
             text="Über uns"
           />
           <DesignedLink
             url={Config.donations.support}
-            icon={<Give color={corporate} />}
+            icon={<GiveIcon color={corporate} />}
             text="Unterstützen"
           />
           <DesignedLink
             url={encodeURI("mailto:app@volksverpetzer.de")}
-            icon={<MaterialIcons name="feedback" size={24} color={corporate} />}
+            icon={<FeedbackIcon size={24} color={corporate} />}
             text="App-Feedback"
           />
           <DesignedLink
             url={Config.dataProtectionUrl}
-            icon={<FontAwesome name="lock" size={24} color={corporate} />}
+            icon={<LockIcon size={24} color={corporate} />}
             text="Datenschutz"
           />
-          <Space size={10} />
-          <View style={[styles.donateContainer, globalStyles.noBackground]}>
-            <Donate showPicker={false} />
-            <Space size={20} />
-            <ShopButton article_link={Config.wpUrl} />
-          </View>
-          <Space size={10} />
+        </View>
+        <View style={styles.donateContainer}>
+          <Donate showPicker={false} />
+          <Space size={20} />
+          <ShopButton article_link={Config.wpUrl} />
+        </View>
+        <View style={styles.infoContainer}>
           <Pressable
             accessibilityRole="button"
             onPress={() => router.push("/licenses")}
             style={pressableStyle}
           >
-            <Text style={styles.pressableText}>Lizenzen</Text>
+            <Text>Lizenzen</Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
             style={pressableStyle}
             onPress={() => PersonalStore.setOnboardingDone(false)}
           >
-            <Text style={styles.pressableText}>Intro zurücksetzen</Text>
+            <Text>Intro zurücksetzen</Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
             style={pressableStyle}
             onPress={() => Notifications.registerForPushNotifications()}
           >
-            <Text style={styles.pressableText}>
-              Benachrichtigungen zurücksetzen
-            </Text>
+            <Text>Benachrichtigungen zurücksetzen</Text>
           </Pressable>
           <Pressable
             accessibilityRole="button"
@@ -232,50 +231,38 @@ const SettingsScreen = () => {
               });
             }}
           >
-            <Text style={styles.pressableText}>Alle Erfolge Zurücksetzen</Text>
+            <Text>Alle Erfolge zurücksetzen</Text>
           </Pressable>
-
-          <Text style={styles.versionText}>
+          <Text selectable>
             Versionskennung: {Application.nativeApplicationVersion}
             &nbsp;-&nbsp;
             {Application.nativeBuildVersion}
-          </Text>
-          <Text style={styles.versionText} selectable>
+            {"\n"}
             Token: {token}
           </Text>
         </View>
+        <Space size={100} />
       </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 100,
-  },
   donateContainer: {
     alignItems: "center",
+    paddingVertical: 20,
   },
   linksContainer: {
     paddingHorizontal: 20,
   },
-  pressable: {
-    paddingVertical: 20,
-  },
-  pressableText: {
-    alignSelf: "flex-start",
+  infoContainer: {
+    flex: 1,
+    padding: 20,
+    gap: 20,
   },
   sectionText: {
     fontSize: 16,
     paddingHorizontal: 20,
-  },
-  collapsibleTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    paddingVertical: 10,
-  },
-  versionText: {
-    marginTop: 10,
   },
 });
 

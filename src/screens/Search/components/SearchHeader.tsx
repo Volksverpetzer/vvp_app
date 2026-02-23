@@ -1,13 +1,13 @@
 import { RefObject, useCallback } from "react";
 import { Keyboard, Pressable, TextInput } from "react-native";
 
-import { Search } from "#/components/Icons";
+import { SearchIcon } from "#/components/Icons";
 import Faktenbot from "#/components/animations/Faktenbot";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface SearchHeaderProperties {
   search: string;
@@ -79,11 +79,11 @@ const SearchHeader = ({
         style={{
           ...styles.row,
           ...styles.input,
-          marginTop: -10,
+          ...styles.feed,
           height: 50,
           paddingRight: 40,
           backgroundColor: corporate,
-          alignSelf: "center",
+          marginBottom: 40,
         }}
       >
         <TextInput
@@ -100,7 +100,7 @@ const SearchHeader = ({
           returnKeyType="search"
         />
         <Pressable accessibilityRole="button" onPress={handleSubmit}>
-          <Search color="white" width={20} />
+          <SearchIcon color="white" width={20} />
         </Pressable>
       </View>
     </>

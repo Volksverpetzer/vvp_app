@@ -1,17 +1,19 @@
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 import Colors from "#/constants/Colors";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 type DividerProps = {
-  padding?: number;
+  paddingHorizontal?: number;
+  paddingVertical?: number;
   thickness?: number;
   color?: string;
   style?: ViewStyle;
 };
 
 const Divider = ({
-  padding = 0,
+  paddingHorizontal = 0,
+  paddingVertical = 0,
   thickness = StyleSheet.hairlineWidth,
   style,
 }: DividerProps) => {
@@ -22,8 +24,8 @@ const Divider = ({
       style={[
         styles.container,
         {
-          paddingLeft: padding,
-          paddingRight: padding,
+          paddingHorizontal,
+          paddingVertical,
         },
         style,
       ]}

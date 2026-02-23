@@ -2,14 +2,18 @@ import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { Text, View, useWindowDimensions } from "react-native";
 
-import { FirstPlace, SecondPlace, ThirdPlace } from "#/components/Icons";
+import {
+  FirstPlaceIcon,
+  SecondPlaceIcon,
+  ThirdPlaceIcon,
+} from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { getRegions } from "#/helpers/network/Analytics";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { Region, RegionsByCode } from "#/types";
 
 import Legend from "./Legend";
@@ -103,7 +107,11 @@ const RegionMap = () => {
         <Space size={10} />
         {regionData?.slice(0, 3).map((region, index) => {
           const Icon =
-            index === 0 ? FirstPlace : index === 1 ? SecondPlace : ThirdPlace;
+            index === 0
+              ? FirstPlaceIcon
+              : index === 1
+                ? SecondPlaceIcon
+                : ThirdPlaceIcon;
           return (
             <View
               key={region.region}
@@ -138,7 +146,7 @@ const RegionMap = () => {
             {`${idx + 4}. ${region.name}`}
           </Text>
         ))}
-        <Space size={80} />
+        <Space size={100} />
       </View>
     </View>
   );

@@ -4,19 +4,9 @@ import { ArticleProperties } from "#/components/posts/ArticlePost";
 import { LoadArticlePostProperties } from "#/components/posts/LoadArticlePost";
 import Config from "#/constants/Config";
 import { createClient, get as netGet } from "#/helpers/utils/networking";
+import { MediaResponse } from "#/types";
 
-// Define an interface for the media response structure.
-interface MediaResponse {
-  media_details?: {
-    sizes?: {
-      medium_large?: { source_url: string };
-      medium?: { source_url: string };
-      thumbnail?: { source_url: string };
-    };
-  };
-}
-
-export default class WordpressAPI {
+export default class WordPressAPI {
   static readonly client = createClient(Config.wpUrl);
 
   /**
@@ -29,7 +19,7 @@ export default class WordpressAPI {
     const timestamp = Date.now();
 
     return await netGet<LoadArticlePostProperties[]>(
-      WordpressAPI.client,
+      WordPressAPI.client,
       `/wp-json/wp/v2/posts`,
       {
         params: {
@@ -56,7 +46,7 @@ export default class WordpressAPI {
     page: number = 10,
   ): Promise<LoadArticlePostProperties[]> {
     return await netGet<LoadArticlePostProperties[]>(
-      WordpressAPI.client,
+      WordPressAPI.client,
       `/wp-json/wp/v2/posts`,
       {
         params: {
@@ -75,7 +65,7 @@ export default class WordpressAPI {
     slug: string,
   ): Promise<LoadArticlePostProperties | undefined> {
     const posts = await netGet<LoadArticlePostProperties[]>(
-      WordpressAPI.client,
+      WordPressAPI.client,
       `/wp-json/wp/v2/posts`,
       {
         params: {
@@ -87,26 +77,14 @@ export default class WordpressAPI {
   }
 
   /**
-   * Get the feature image. Accepts an optional default image object.
+   * Get the feature image.
    */
   static async getFeatureImage(
     href: string,
-  ): Promise<{ image: string; thumb: string | undefined }> {
-    const defaultImage: MediaResponse = {
-      media_details: {
-        sizes: {
-          medium_large: { source_url: "./assets/loading.jpg" },
-          medium: { source_url: "./assets/loading.jpg" },
-          thumbnail: { source_url: "./assets/loading.jpg" },
-        },
-      },
-    };
-    const data = await netGet<MediaResponse>(WordpressAPI.client, href);
+  ): Promise<{ image: string | undefined; thumb: string | undefined }> {
+    const data = await netGet<MediaResponse>(WordPressAPI.client, href);
     const sizes = data?.media_details?.sizes;
-    const image =
-      sizes?.medium_large?.source_url ??
-      sizes?.medium?.source_url ??
-      defaultImage.media_details.sizes.medium_large.source_url;
+    const image = sizes?.medium_large?.source_url ?? sizes?.medium?.source_url;
     const thumb = sizes?.thumbnail?.source_url;
     return { image, thumb };
   }

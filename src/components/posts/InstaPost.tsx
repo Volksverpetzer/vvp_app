@@ -60,7 +60,7 @@ type InstaPostScreenProperties = InstaPostProperties & {
  * - Dot indicator mapping is memoized.
  */
 const InstaPost = (properties: InstaPostScreenProperties) => {
-  const [ratio, setRatio] = useState(1.25);
+  const [ratio, setRatio] = useState(1.33333);
   const [page, setPage] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [registered, setRegistered] = useState(false);
@@ -119,16 +119,13 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
   const onLoadHandler = useCallback(
     async (event: ImageLoadEventData) => {
       if (loaded) return;
-      const { width: w, height: h } = event.source;
-      const _ratio = Math.round((h / w) * 100) / 100;
       // We update stored post asynchronously.
       await ContentStore.setStoredInstaPost(id, properties);
-      if (Math.abs(ratio - _ratio) / ratio < 0.05) {
-        setRatio(_ratio);
-        setLoaded(true);
-      }
+      const { width: w, height: h } = event.source;
+      setRatio(Math.round((h / w) * 100) / 100);
+      setLoaded(true);
     },
-    [loaded, id, properties, ratio],
+    [loaded, id, properties],
   );
 
   const onScrollListener = useCallback(
@@ -156,7 +153,6 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
     () => ({
       width,
       height: width * ratio,
-      contentFit: "contain",
     }),
     [width, ratio],
   );
@@ -201,9 +197,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
 
   return (
     <View>
-      <View
-        style={{ width, height: width * ratio, backgroundColor: corporate }}
-      >
+      <View style={{ backgroundColor: corporate }}>
         <ScrollView
           horizontal
           pagingEnabled
@@ -216,7 +210,6 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
             <TouchableOpacity
               accessibilityRole="button"
               key={index * 163 + id}
-              style={{ flex: 1 }}
               activeOpacity={0.95}
               onPress={handleSelectPost}
               onLongPress={() => onLongPressHandler(source)}
@@ -224,6 +217,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
               <Zoomable doubleTapScale={2} maxScale={3} minScale={1}>
                 <Image
                   onLoad={onLoadHandler}
+                  contentFit={"cover"}
                   source={
                     page >= index - 1 && inView
                       ? {

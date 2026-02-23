@@ -1,17 +1,16 @@
-import { EvilIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
 import { JSX, useCallback, useState } from "react";
 import { Animated, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import { EmptyStar } from "#/components/Icons";
+import { LinkIcon, StarIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MyFavs from "#/screens/PersonalTab/components/MyFavs";
 import MySources from "#/screens/PersonalTab/components/MySources";
 
@@ -47,14 +46,6 @@ const PersonalTab = () => {
             style={{
               width: "100%",
               ...styles.noBackground,
-              shadowColor: Colors[colorScheme].text,
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.5,
-              shadowRadius: 5.84,
-              elevation: 5,
             }}
           >
             <View
@@ -80,7 +71,7 @@ const PersonalTab = () => {
                     activeTab === "favs" ? corporateColor : tabIconColor,
                 }}
               >
-                <EmptyStar color={"white"} width={40} />
+                <StarIcon color={"white"} />
                 <Text
                   style={{
                     alignSelf: "center",
@@ -104,12 +95,7 @@ const PersonalTab = () => {
                     activeTab === "sources" ? corporateColor : tabIconColor,
                 }}
               >
-                <EvilIcons
-                  style={{ lineHeight: 35 }}
-                  name="link"
-                  size={35}
-                  color={"white"}
-                />
+                <LinkIcon color={"white"} />
                 <Text
                   style={{
                     alignSelf: "center",
@@ -128,9 +114,7 @@ const PersonalTab = () => {
       <ScrollView
         style={{
           flex: 1,
-          paddingBottom: 250,
           backgroundColor,
-          paddingTop: HEADER_HEIGHT,
         }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
@@ -138,6 +122,7 @@ const PersonalTab = () => {
         )}
         contentContainerStyle={{
           ...styles.feed,
+          paddingTop: HEADER_HEIGHT,
         }}
       >
         {tabs[activeTab]}

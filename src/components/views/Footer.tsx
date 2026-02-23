@@ -1,12 +1,12 @@
 import { Pressable } from "react-native";
 
-import { Share } from "#/components/Icons";
+import { ShareIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import Support from "./Support";
 
@@ -61,7 +61,7 @@ const Footer = (properties: FooterProperties) => {
             })
           }
         >
-          <Share color={"white"} size={50} />
+          <ShareIcon color={"white"} size={50} />
         </Pressable>
       </View>
       <View
@@ -74,7 +74,7 @@ const Footer = (properties: FooterProperties) => {
       >
         <Support article_link={properties.article_link} />
       </View>
-      <Space size={95} />
+      <Space size={100} />
     </>
   );
 };

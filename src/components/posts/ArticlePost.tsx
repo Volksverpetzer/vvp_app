@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DimensionValue, TouchableOpacity } from "react-native";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
@@ -15,15 +15,17 @@ import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
-import WordpressAPI from "#/helpers/network/WordpressAPI";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import { HttpsUrl } from "#/types";
+
+import LoadingImage from "#assets/images/logo_animated.gif";
 
 import Badge from "./Badge";
 
 /**
- * Represents the properties of an article as fetched from the Wordpress API
+ * Represents the properties of an article as fetched from the WordPress API
  */
 export interface ArticleProperties {
   _links: {
@@ -49,7 +51,7 @@ type ArticlePostScreenProperties = {
 };
 
 /**
- * ArticlePost renders a short preview of an article fetched from a Wordpress API.
+ * ArticlePost renders a short preview of an article fetched from a WordPress API.
  *
  * Optimizations applied:
  * - All hooks (useMemo, useCallback, useEffect) are called unconditionally.
@@ -97,7 +99,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Fetch the feature image when the article is in view.
   const getImages = useCallback(async () => {
     try {
-      const { image } = await WordpressAPI.getFeatureImage(
+      const { image } = await WordPressAPI.getFeatureImage(
         article._links["wp:featuredmedia"][0].href,
       );
       setImgURL(image);
@@ -105,13 +107,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         imageUrl: image,
         ...article,
       });
+    } catch (error) {
+      console.error(error);
+    } finally {
       setLoading(false);
       setDate(dateBeautify());
-    } catch (error: unknown) {
-      setImgURL("./assets/loading.jpg");
-      setLoading(false);
-      setDate(dateBeautify());
-      console.error(String(error));
     }
   }, [article, dateBeautify]);
 
@@ -158,7 +158,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       top: 0,
       width: "100%" as const,
       height,
-      contentFit: "cover" as const,
     }),
     [height],
   );
@@ -198,7 +197,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   if (isLoading) {
     return (
       <View style={{ height: height * 1.8, width }}>
-        <AnimatedLoading />
+        <UiSpinner size={"large"} />
       </View>
     );
   }
@@ -212,7 +211,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       onLongPress={handleLongPress}
     >
       <View style={containerStyle}>
-        <Image style={imageStyle} source={{ uri: imageUrl }} />
+        <Image
+          style={imageStyle}
+          source={{ uri: imageUrl }}
+          placeholder={LoadingImage}
+          contentFit={"cover"}
+        />
         <View style={progressBarStyle} />
         <Space size={10} />
         <Text style={titleStyle}>{article.title}</Text>

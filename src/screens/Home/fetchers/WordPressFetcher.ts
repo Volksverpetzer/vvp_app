@@ -3,7 +3,7 @@ import { decode } from "html-entities";
 import ArticlePost, { ArticleProperties } from "#/components/posts/ArticlePost";
 import { LoadArticlePostProperties } from "#/components/posts/LoadArticlePost";
 import Post from "#/helpers/Post";
-import WordpressAPI from "#/helpers/network/WordpressAPI";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
 
 export const WordPressFetcher = {
   /**
@@ -62,7 +62,7 @@ export const WordPressFetcher = {
    */
   feedFetcher: async ({ page = 1 }) => {
     return await WordPressFetcher.wpBaseFetcher(() =>
-      WordpressAPI.getPosts(page),
+      WordPressAPI.getPosts(page),
     );
   },
 
@@ -73,7 +73,7 @@ export const WordPressFetcher = {
    */
   searchFetcher: async ({ param: parameter = "" }) => {
     return await WordPressFetcher.wpBaseFetcher(() =>
-      WordpressAPI.searchPosts(parameter),
+      WordPressAPI.searchPosts(parameter),
     );
   },
 };

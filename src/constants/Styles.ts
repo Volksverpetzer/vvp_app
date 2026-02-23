@@ -18,17 +18,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
-  checkboxBase: {
-    backgroundColor: "transparent",
-    borderColor: "coral",
-    borderRadius: 4,
-    borderWidth: 2,
-    height: 28,
-    width: 28,
-  },
-  checkboxChecked: {
-    backgroundColor: "coral",
-  },
   container: {
     flex: 1,
   },
@@ -47,22 +36,13 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     padding: 10,
   },
-  iconLeft: {
-    height: 25,
-    position: "absolute",
-    width: 20,
-  },
   input: {
     borderRadius: 20,
-    marginHorizontal: 10,
-    marginVertical: 10,
     minHeight: 40,
-    paddingLeft: 25,
-    paddingRight: 20,
-    width: "80%",
+    paddingHorizontal: 25,
   },
   noBackground: {
-    backgroundColor: undefined,
+    backgroundColor: "transparent",
   },
   roundEdges: {
     borderRadius: 15,
@@ -76,16 +56,12 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
-  shadow: {
-    shadowColor: "rgba(0, 0, 0, 0.25)",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 1,
-    shadowRadius: 18.5,
-  },
   whiteText: {
     color: "white",
+  },
+  button: {
+    width: 220,
+    height: 40,
+    borderRadius: 4,
   },
 });

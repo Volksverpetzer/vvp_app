@@ -1,10 +1,9 @@
-import { EvilIcons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
 import { Pressable } from "react-native";
 import Modal from "react-native-modal";
 
-import { Heart } from "#/components/Icons";
+import { CloseIcon, HeartIcon } from "#/components/Icons";
 import ShopButton from "#/components/buttons/ShopButton";
 import SteadyButton from "#/components/buttons/SteadyButton";
 import Space from "#/components/design/Space";
@@ -13,7 +12,7 @@ import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import Donate from "./Donate";
 
@@ -87,12 +86,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
               accessibilityRole="button"
               onPress={() => setShowBank(false)}
             >
-              <EvilIcons
-                style={{ lineHeight: 40 }}
-                name="close"
-                size={40}
-                color={corporate}
-              />
+              <CloseIcon size={40} color={corporate} />
             </Pressable>
           </View>
           <Text style={{ fontSize: 25 }}>Banküberweisung</Text>
@@ -112,7 +106,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
             IBAN: {Config.donations.account.IBAN} {`\n`}
             Verwendungszweck: {Config.donations.account.note} {`\n`}
           </Text>
-          <Heart />
+          <HeartIcon />
         </View>
       </Modal>
     </View>

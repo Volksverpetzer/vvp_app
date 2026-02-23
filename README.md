@@ -74,3 +74,11 @@ Now, you can start the debugging session from within WebStorm:
 4.  On your physical device or emulator, open the Developer Menu (shake the device, press Ctrl + Cmd + Z on iOS simulator, or Ctrl + M on Android emulator).
 5.  Select "Enable Local DevTools" or "Open JS Debugger" from the menu to connect the app to the WebStorm debugger session.
 6.  Once connected, your breakpoints should be triggered, and you can inspect variables, the call stack, and step through your code in the WebStorm Debug tool window.
+
+### How to check that assets are properly bundled
+
+Download the latest release from GitHub (the APK), and run the following commands in the project root:
+
+- `unzip -p vvp-app-XXXX.apk assets/app.manifest > app.manifest`
+- `npx expo export --dump-assetmap`
+- `npx expo-updates assets:verify -b app.manifest -a dist/assetmap.json -e dist/metadata.json -p android`

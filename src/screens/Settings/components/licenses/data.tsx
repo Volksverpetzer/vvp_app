@@ -1,12 +1,12 @@
 export default {
-  "@algolia/client-search@5.47.0": {
+  "@algolia/client-search@5.49.0": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@atproto/api@0.18.20": {
+  "@atproto/api@0.18.21": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -63,14 +63,14 @@ export default {
       "https://github.com/react-native-async-storage/async-storage/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/bottom-tabs@7.9.0": {
+  "@react-navigation/bottom-tabs@7.4.0": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/native@7.1.26": {
+  "@react-navigation/native@7.1.8": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
@@ -90,7 +90,7 @@ export default {
     licenseUrl: "https://github.com/vdor/react-native-horizontal-picker",
     parents: "vvp_app",
   },
-  "axios@1.13.4": {
+  "axios@1.13.5": {
     licenses: "MIT",
     repository: "https://github.com/axios/axios",
     licenseUrl: "https://github.com/axios/axios/raw/master/LICENSE",
@@ -244,6 +244,12 @@ export default {
     parents: "vvp_app",
   },
   "expo-status-bar@3.0.9": {
+    licenses: "MIT",
+    repository: "https://github.com/expo/expo",
+    licenseUrl: "https://github.com/expo/expo",
+    parents: "vvp_app",
+  },
+  "expo-system-ui@6.0.9": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",

@@ -1,15 +1,15 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { ImageZoom } from "@likashefqet/react-native-image-zoom";
 import { useState } from "react";
 import { Button, Modal, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { TouchIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { onShare as _onShare } from "#/helpers/Sharing";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface RedditProperties {
   preview: { images: any; enabled: boolean };
@@ -91,9 +91,7 @@ const RedditPost = (properties: RedditProperties) => {
                 : properties.thumbnail
             }
           />
-          <MaterialIcons
-            name="touch-app"
-            size={30}
+          <TouchIcon
             color={"#ffffff"}
             style={{ alignSelf: "flex-end", marginTop: -40 }}
           />

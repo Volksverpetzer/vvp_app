@@ -3,7 +3,7 @@ import { Text, TextProps, TextStyle } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { styles as _styles } from "#/constants/Styles";
-import useAppColorScheme from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface HeadingProperties extends TextProps {
   children: ReactNode;
