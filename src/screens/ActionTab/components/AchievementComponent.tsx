@@ -25,7 +25,6 @@ const AchievementComponent = () => {
   const colorScheme = useAppColorScheme();
   const highlight = Colors[colorScheme].highlight;
   const backgroundColor = Colors[colorScheme].background;
-  const secondaryBackground = Colors[colorScheme].secondaryBackground;
 
   const updateLevelData = () => {
     Achievements.getCurrentAchievements().then((data: LevelType) => {
