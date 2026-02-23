@@ -75,7 +75,7 @@ Now, you can start the debugging session from within WebStorm:
 5.  Select "Enable Local DevTools" or "Open JS Debugger" from the menu to connect the app to the WebStorm debugger session.
 6.  Once connected, your breakpoints should be triggered, and you can inspect variables, the call stack, and step through your code in the WebStorm Debug tool window.
 
-### How to check assets are properly bundled
+### How to check that assets are properly bundled
 
 Download the latest release from GitHub (the APK), and run the following commands in the project root:
 
