@@ -38,12 +38,8 @@ export const styles = StyleSheet.create({
   },
   input: {
     borderRadius: 20,
-    marginHorizontal: 10,
-    marginVertical: 10,
     minHeight: 40,
-    paddingLeft: 25,
-    paddingRight: 20,
-    width: "80%",
+    paddingHorizontal: 25,
   },
   noBackground: {
     backgroundColor: "transparent",

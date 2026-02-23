@@ -8,7 +8,7 @@ import { useThemeColor } from "#/hooks/useThemeColor";
 type ErrorCardProperties = CardProperties & { text?: string };
 
 const ErrorCard = (properties: ErrorCardProperties) => {
-  const { style, lightColor, darkColor, ...otherProperties } = properties;
+  const { text, style, lightColor, darkColor, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
@@ -22,7 +22,7 @@ const ErrorCard = (properties: ErrorCardProperties) => {
     >
       <ErrorIcon color={Colors[colorScheme].errorBackground} />
       <Text style={{ color: Colors[colorScheme].errorText }}>
-        {properties.text || "An error occurred. Please try again later."}
+        {text || "An error occurred. Please try again later."}
       </Text>
     </Card>
   );

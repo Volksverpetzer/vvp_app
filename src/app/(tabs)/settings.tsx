@@ -1,13 +1,8 @@
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Animated, Pressable, StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
 import {
@@ -115,6 +110,10 @@ const SettingsScreen = () => {
         maxHeight={HEADER_HEIGHT}
       />
       <ScrollView
+        style={{
+          flex: 1,
+          backgroundColor,
+        }}
         contentContainerStyle={{
           backgroundColor,
           paddingTop: HEADER_HEIGHT,

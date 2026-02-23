@@ -6,10 +6,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
-  useWindowDimensions,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
@@ -20,7 +19,7 @@ import TextInput from "#/components/design/TextInput";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles } from "#/constants/Styles";
+import { styles } from "#/constants/Styles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import API from "#/helpers/network/ServerAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -45,7 +44,6 @@ const ReportScreen = () => {
   const parameters = useLocalSearchParams<{ url: string; index: string }>();
   const { url: parameterUrl, index } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
-  const { height } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
 
   // Color constants
@@ -69,12 +67,10 @@ const ReportScreen = () => {
           textAlign: "center",
         },
         input: {
-          ...globalStyles.input,
+          ...styles.input,
           backgroundColor: inputBackground,
           borderRadius: 5,
-          margin: 0,
           padding: 10,
-          width: "100%",
         },
         submitButton: {
           alignItems: "center",
@@ -152,17 +148,13 @@ const ReportScreen = () => {
       />
       <AnimatedSuccess animated={animation} />
       <KeyboardAvoidingView
-        style={globalStyles.container}
+        style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={0}
       >
         <ScrollView
           style={{
             flex: 1,
-            paddingTop: HEADER_HEIGHT,
-            height,
-            paddingHorizontal: 12,
-            paddingRight: 24,
             backgroundColor,
           }}
           onScroll={Animated.event(
@@ -170,6 +162,10 @@ const ReportScreen = () => {
             { useNativeDriver: false },
           )}
           scrollEventThrottle={16}
+          contentContainerStyle={{
+            ...styles.feed,
+            paddingTop: HEADER_HEIGHT,
+          }}
         >
           <Heading>Zusammenfassung</Heading>
           <TextInput
@@ -211,9 +207,8 @@ const ReportScreen = () => {
           ) : undefined}
           <View
             style={{
-              ...globalStyles.row,
-              ...globalStyles.noBackground,
-              paddingHorizontal: 12,
+              ...styles.row,
+              ...styles.noBackground,
               justifyContent: "flex-start",
               gap: 20,
             }}
@@ -240,7 +235,7 @@ const ReportScreen = () => {
           >
             <Text
               style={{
-                ...globalStyles.whiteText,
+                ...styles.whiteText,
                 textAlign: "center",
                 fontSize: 18,
               }}

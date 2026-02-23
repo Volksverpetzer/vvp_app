@@ -79,11 +79,11 @@ const SearchHeader = ({
         style={{
           ...styles.row,
           ...styles.input,
-          marginTop: -10,
+          ...styles.feed,
           height: 50,
           paddingRight: 40,
           backgroundColor: corporate,
-          alignSelf: "center",
+          marginBottom: 40,
         }}
       >
         <TextInput
