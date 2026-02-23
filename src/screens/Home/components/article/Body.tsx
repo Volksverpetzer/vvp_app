@@ -132,11 +132,10 @@ const Body = (properties: BodyProperties) => {
   /**
    * Processes HTML elements and removes unwanted elements from the DOM
    * @param {ChildNode & Element} element - The HTML element to process
-   * @returns {void}
    */
   const onElement = (element: ChildNode & Element) => {
     const domElement = element;
-    if (handleEmbeddedContent(domElement, maxWidth)) return;
+    if (handleEmbeddedContent(domElement)) return;
     if (handleRemovableElements(domElement)) return;
     if (handleSpecialElements(domElement)) return;
     if (handleContainerElements(domElement)) return;
