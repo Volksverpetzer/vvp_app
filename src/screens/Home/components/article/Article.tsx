@@ -58,9 +58,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const slug = article.slug;
   const article_image = article.imageUrl;
   const article_title = article.title;
-  const article_content = article.content.rendered.replaceAll(/\[v.+/gms, "");
+  // Remove Visual Composer shortcodes (opening and closing) like
+  // [vc_column ...] and [/vc_column], matching across newlines safely.
+  const article_content = article.content.rendered.replaceAll(
+    /\[\/?vc_[\s\S]*?]/gi,
+    "",
+  );
   const article_link = article.link;
-  //props.navigation.setOptions({ title: article_title })
   const _date = new Date(article.date);
   const width = useWindowDimensions().width;
 
