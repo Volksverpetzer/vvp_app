@@ -25,7 +25,6 @@ const AchievementComponent = () => {
   const colorScheme = useAppColorScheme();
   const highlight = Colors[colorScheme].highlight;
   const backgroundColor = Colors[colorScheme].background;
-  const secondaryBackground = Colors[colorScheme].secondaryBackground;
 
   const updateLevelData = () => {
     Achievements.getCurrentAchievements().then((data: LevelType) => {
@@ -88,7 +87,6 @@ const AchievementComponent = () => {
           <Parallelogram
             backgroundColor={corporateColor}
             color={"white"}
-            textStyle={{ color: secondaryBackground }}
             containerStyle={{ height: 30, marginTop: 0, marginLeft: -20 }}
           >
             Level {level + 1 + ": " + AchievementConfig[level].name}

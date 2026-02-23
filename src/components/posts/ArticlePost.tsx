@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { DimensionValue, TouchableOpacity } from "react-native";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
@@ -197,7 +197,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   if (isLoading) {
     return (
       <View style={{ height: height * 1.8, width }}>
-        <AnimatedLoading />
+        <UiSpinner size={"large"} />
       </View>
     );
   }

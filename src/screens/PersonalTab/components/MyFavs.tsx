@@ -77,11 +77,11 @@ const MyFavs = () => {
       <Space size={100} />
       <View style={{ ...styles.centered }}>
         <StarIcon color={corporate} />
-        <Text style={{ textAlign: "center" }}>
+        <Text style={{ textAlign: "center", fontSize: 18 }}>
           Klick den Stern, um zu den Favoriten hinzuzufügen
         </Text>
       </View>
-      <Space size={300} />
+      <Space size={100} />
     </>
   );
 };

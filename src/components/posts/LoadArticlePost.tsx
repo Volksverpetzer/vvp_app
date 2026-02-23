@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 
 import ArticlePost, { ArticleProperties } from "./ArticlePost";
@@ -37,7 +37,7 @@ const LoadArticlePost = (properties: LoadProperties) => {
   }, [slug]);
 
   if (isLoading) {
-    return <AnimatedLoading />;
+    return <UiSpinner size={"large"} />;
   }
 
   return <ArticlePost inView={true} article={article} />;

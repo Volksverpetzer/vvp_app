@@ -114,9 +114,7 @@ const PersonalTab = () => {
       <ScrollView
         style={{
           flex: 1,
-          paddingBottom: 250,
           backgroundColor,
-          paddingTop: HEADER_HEIGHT,
         }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
@@ -124,6 +122,7 @@ const PersonalTab = () => {
         )}
         contentContainerStyle={{
           ...styles.feed,
+          paddingTop: HEADER_HEIGHT,
         }}
       >
         {tabs[activeTab]}

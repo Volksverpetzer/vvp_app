@@ -2,7 +2,7 @@ import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import NotificationManager from "#/helpers/Notifications";
@@ -72,7 +72,7 @@ const Index = () => {
       });
     })();
   }, []);
-  return <AnimatedLoading />;
+  return <UiSpinner size={"large"} />;
 };
 
 export default Index;

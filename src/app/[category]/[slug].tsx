@@ -2,7 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text } from "react-native";
 
-import AnimatedLoading from "#/components/animations/AnimatedLoading";
+import UiSpinner from "#/components/animations/UiSpinner";
 import View from "#/components/design/View";
 import { ArticleProperties } from "#/components/posts/ArticlePost";
 import Config from "#/constants/Config";
@@ -100,7 +100,7 @@ const LoadArticle = () => {
   // Fallback: Show loading state
   return (
     <View style={{ justifyContent: "center", height: "100%" }}>
-      <AnimatedLoading />
+      <UiSpinner size={"large"} />
       <Text style={{ textAlign: "center" }}>Lade Artikel...</Text>
     </View>
   );

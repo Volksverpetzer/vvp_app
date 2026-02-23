@@ -6,8 +6,9 @@ import {
 } from "@stripe/stripe-react-native";
 import Constants from "expo-constants";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
+import UiSpinner from "#/components/animations/UiSpinner";
 import { StripeButtonProperties } from "#/components/buttons/StripeButton";
 import { styles as globalStyles } from "#/constants/Styles";
 import API from "#/helpers/network/ServerAPI";
@@ -105,7 +106,7 @@ const StripeButton = (props: StripeButtonProperties) => {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator />
+        <UiSpinner size={"small"} />
       </View>
     );
   }

@@ -1,13 +1,8 @@
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Animated, Pressable, StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
 import {
@@ -115,10 +110,14 @@ const SettingsScreen = () => {
         maxHeight={HEADER_HEIGHT}
       />
       <ScrollView
-        contentContainerStyle={[
-          styles.container,
-          { backgroundColor, paddingTop: HEADER_HEIGHT },
-        ]}
+        style={{
+          flex: 1,
+          backgroundColor,
+        }}
+        contentContainerStyle={{
+          backgroundColor,
+          paddingTop: HEADER_HEIGHT,
+        }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
@@ -242,15 +241,13 @@ const SettingsScreen = () => {
             Token: {token}
           </Text>
         </View>
+        <Space size={100} />
       </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingBottom: 100,
-  },
   donateContainer: {
     alignItems: "center",
     paddingVertical: 20,

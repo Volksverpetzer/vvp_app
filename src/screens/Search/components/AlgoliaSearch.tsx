@@ -2,8 +2,9 @@ import { searchClient } from "@algolia/client-search";
 import { useRouter } from "expo-router";
 import debounce from "lodash/debounce";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 
+import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
@@ -103,7 +104,7 @@ const AlgoliaSearchResults = ({
   if (isLoading) {
     return (
       <View style={itemStyles.loadingContainer}>
-        <ActivityIndicator size="small" color={highlightColor} />
+        <UiSpinner color={highlightColor} />
       </View>
     );
   }
