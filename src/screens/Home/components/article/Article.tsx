@@ -60,7 +60,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const article_image = article.imageUrl;
   const article_title = article.title;
   const article_content = stripVisualComposerShortcodes(
-    article.content.rendered,
+    article.content?.rendered ?? "",
   );
   const article_link = article.link;
   const _date = new Date(article.date);
