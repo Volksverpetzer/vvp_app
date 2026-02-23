@@ -15,6 +15,18 @@ export default defineConfig([
     ],
     plugins: { "import-alias": importAlias },
     rules: {
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          args: "after-used",
+          argsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+          varsIgnorePattern: "^_",
+        },
+      ],
+      "no-unused-labels": "error",
+      "no-unused-private-class-members": "error",
       "import-alias/import-alias": [
         "error",
         {
