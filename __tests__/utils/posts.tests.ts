@@ -1,4 +1,7 @@
-import { normalizeFacets } from "#/helpers/utils/posts";
+import {
+  normalizeFacets,
+  stripVisualComposerShortcodes,
+} from "#/helpers/utils/posts";
 
 describe("normalizeFacets", () => {
   test("returns falsy values unchanged", () => {
@@ -98,5 +101,68 @@ describe("normalizeFacets", () => {
     expect(idx.byteEnd).toBe(100);
     expect(idx.byte_start).toBeUndefined();
     expect(idx.byte_end).toBeUndefined();
+  });
+});
+
+describe("stripVisualComposerShortcodes", () => {
+  test("removes Visual Composer opening, closing, and nested shortcodes while preserving content", () => {
+    const input = `
+      <p>Intro paragraph.</p>
+      [vc_row]
+        [vc_column width="1/2"]
+          <p>Left column text.</p>
+          [vc_custom_heading text="Headline"]
+        [/vc_column]
+        [vc_column width="1/2"]
+          <p>Right column text.</p>
+        [/vc_column]
+      [/vc_row]
+      <p>Outro paragraph.</p>
+    `;
+
+    const output = stripVisualComposerShortcodes(input);
+
+    expect(output).toContain("<p>Intro paragraph.</p>");
+    expect(output).toContain("<p>Left column text.</p>");
+    expect(output).toContain("<p>Right column text.</p>");
+    expect(output).toContain("<p>Outro paragraph.</p>");
+    expect(output).not.toMatch(/\[\/?vc_[\s\S]*?]/i);
+  });
+
+  test("handles shortcode tags split across lines", () => {
+    const input = `[vc_column
+      width="1/1"
+      el_class="hero"
+    ]Body[/vc_column]`;
+
+    expect(stripVisualComposerShortcodes(input)).toBe("Body");
+  });
+
+  test("returns empty string unchanged", () => {
+    expect(stripVisualComposerShortcodes("")).toBe("");
+  });
+
+  test("returns content without Visual Composer shortcodes unchanged", () => {
+    const input = "<p>Plain article content only.</p>";
+
+    expect(stripVisualComposerShortcodes(input)).toBe(input);
+  });
+
+  test("does not remove non-Visual-Composer shortcodes", () => {
+    const input = `
+      <p>Intro</p>
+      [gallery ids="1,2,3"]
+      [video src="https://example.com/video.mp4"][/video]
+      [vc_row][vc_column]Body[/vc_column][/vc_row]
+    `;
+
+    const output = stripVisualComposerShortcodes(input);
+
+    expect(output).toContain('[gallery ids="1,2,3"]');
+    expect(output).toContain(
+      '[video src="https://example.com/video.mp4"][/video]',
+    );
+    expect(output).toContain("Body");
+    expect(output).not.toMatch(/\[\/?vc_[\s\S]*?]/i);
   });
 });

@@ -21,6 +21,7 @@ import { onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent, registerViews } from "#/helpers/network/Analytics";
+import { stripVisualComposerShortcodes } from "#/helpers/utils/posts";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { HttpsUrl } from "#/types";
 
@@ -58,11 +59,8 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const slug = article.slug;
   const article_image = article.imageUrl;
   const article_title = article.title;
-  // Remove Visual Composer shortcodes (opening and closing) like
-  // [vc_column ...] and [/vc_column], matching across newlines safely.
-  const article_content = article.content.rendered.replaceAll(
-    /\[\/?vc_[\s\S]*?]/gi,
-    "",
+  const article_content = stripVisualComposerShortcodes(
+    article.content.rendered,
   );
   const article_link = article.link;
   const _date = new Date(article.date);
