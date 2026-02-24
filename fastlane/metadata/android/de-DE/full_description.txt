@@ -3,7 +3,7 @@ Die offizielle Volksverpetzer-App bringt Faktenchecks, Analysen und Artikel dire
 Mit der App kannst du Inhalte von Volksverpetzer bequem lesen, durchsuchen, speichern und teilen.
 
 Funktionen:
-- Artikel und Beiträge auf den Social Media Seiten von Volksverpetzer mobil lesen
+- Artikel und Beiträge auf den Social-Media-Seiten von Volksverpetzer mobil lesen
 - Suche nach Themen und Inhalten
 - Favoriten und Artikelquellen speichern
 - Inhalte teilen

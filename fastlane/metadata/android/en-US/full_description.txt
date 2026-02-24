@@ -3,7 +3,7 @@ The official Volksverpetzer app brings fact checks, analysis, and articles direc
 Use the app to read, search, save, and share Volksverpetzer content in a mobile-friendly interface.
 
 Features:
-- Read articles and the social media feeds from volksverpetzer from volksverpetzer
+- Read articles and the social media feeds from Volksverpetzer
 - Search for topics
 - Save favorites and article sources
 - Share content

@@ -1,1 +1,1 @@
-Fix article cut off in the middle.
+Fix article being cut off in the middle.
