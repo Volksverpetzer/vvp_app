@@ -23,6 +23,9 @@ jobs:
         run: pnpm check
         shell: bash
 
+      - name: 🔍 Check fastlane supply metadata
+        uses: ashutoshgngwr/validate-fastlane-supply-metadata@v2
+
       - name: 🔍 Check for secrets
         uses: gitleaks/gitleaks-action@v2
         env:
