@@ -53,3 +53,12 @@ export function normalizeFacets(facets: any): any {
 
   return facets.map((f) => normalizeFacet(f));
 }
+
+const visualComposerShortcodePattern = /\[\/?vc_[\s\S]*?]/gi;
+
+/**
+ * Removes Visual Composer shortcodes from WordPress article HTML/text.
+ * Handles opening and closing tags and matches across newlines.
+ */
+export const stripVisualComposerShortcodes = (content: string) =>
+  content.replaceAll(visualComposerShortcodePattern, "");
