@@ -1,0 +1,1 @@
+Fix article cut off in the middle.
