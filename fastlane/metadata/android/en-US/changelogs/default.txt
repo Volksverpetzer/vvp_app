@@ -1,0 +1,2 @@
+Current changes and release notes are available on GitHub Releases:
+https://github.com/Volksverpetzer/vvp_app/releases

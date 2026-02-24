@@ -1,0 +1,12 @@
+The official Volksverpetzer app brings fact checks, analysis, and articles directly to your mobile phone.
+
+Use the app to read, search, save, and share Volksverpetzer content in a mobile-friendly interface.
+
+Features:
+- Read articles and the social media feeds from volksverpetzer from volksverpetzer
+- Search for topics
+- Save favorites and article sources
+- Share content
+- Push notifications for new content (depending on device settings)
+
+The app is open source under the MIT license and the source code is published on GitHub.
