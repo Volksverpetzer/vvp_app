@@ -6,7 +6,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WebView, WebViewNavigation } from "react-native-webview";
 
 import NavBar from "#/components/bars/NavBar";
+import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { HttpsUrl } from "#/types";
 
 interface Cookie {
@@ -119,6 +121,8 @@ const EdgelessWebview = ({
   const insets = useSafeAreaInsets();
   const webViewReference = useRef<WebView>(null);
   const router = useRouter();
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].background;
   // Function to convert cookies to cookie string
   const getCookieString = useCallback((cookie: Cookie) => {
     const parts = [
@@ -152,6 +156,7 @@ const EdgelessWebview = ({
     <View
       style={[
         styles.container,
+        { backgroundColor },
         { paddingBottom: showNavBar ? 0 : insets.bottom },
         style,
       ]}
@@ -170,7 +175,7 @@ const EdgelessWebview = ({
               .join("; "),
           },
         }}
-        style={styles.webview}
+        style={[styles.webview, { backgroundColor }]}
         onLoadStart={(syntheticEvent) => {
           // Set cookies when the WebView starts loading
           const { nativeEvent } = syntheticEvent;
@@ -218,6 +223,7 @@ const EdgelessWebview = ({
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         overScrollMode="always"
+        containerStyle={{ backgroundColor }}
       />
       {showNavBar && <NavBar link={uri} />}
     </View>
