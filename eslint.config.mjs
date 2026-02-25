@@ -41,6 +41,7 @@ export default defineConfig([
         2,
         { namedComponents: "arrow-function" },
       ],
+      "require-await": "error",
     },
   },
 ]);

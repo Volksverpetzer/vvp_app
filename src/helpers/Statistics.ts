@@ -66,7 +66,7 @@ const Statistics = {
   /**
    * Update the app opened data.
    */
-  countAppOpened: async () => {
+  countAppOpened: () => {
     return Statistics.updateData(
       StatisticsStore.keys.appOpened,
       async (statistic) => {

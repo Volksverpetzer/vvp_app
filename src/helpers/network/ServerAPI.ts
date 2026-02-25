@@ -28,18 +28,14 @@ class API {
   /**
    * GET request wrapper. Accepts optional config and abortTime.
    */
-  static async get<T>(path: string, abortTime?: number): Promise<T> {
+  static get<T>(path: string, abortTime?: number): Promise<T> {
     return netGet<T>(API.client, path, undefined, abortTime);
   }
 
   /**
    * POST request wrapper. Accepts optional config and abortTime.
    */
-  static async post<T, D>(
-    path: string,
-    data: D,
-    abortTime?: number,
-  ): Promise<T> {
+  static post<T, D>(path: string, data: D, abortTime?: number): Promise<T> {
     return netPost<T, D>(API.client, path, data, abortTime);
   }
 
