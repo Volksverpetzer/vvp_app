@@ -4,6 +4,7 @@
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/gitleaks/gitleaks-action)
 [![GitHub release](https://img.shields.io/github/release/Volksverpetzer/vvp_app.svg)](https://github.com/Volksverpetzer/vvp_app/releases/)
+[![F-Droid release](https://img.shields.io/f-droid/v/APP.ID.svg?logo=F-Droid)](https://f-droid.org/en/packages/de.volksverpetzer.app/)
 
 Official mobile app for Volksverpetzer (build with Expo + TypeScript).
 
