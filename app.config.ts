@@ -30,16 +30,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       ["expo-router"],
       ["expo-asset"],
       [
-        "expo-share-intent",
-        {
-          iosActivationRules: {
-            NSExtensionActivationSupportsWebURLWithMaxCount: 1,
-            NSExtensionActivationSupportsWebPageWithMaxCount: 0,
-          },
-          androidIntentFilters: ["text/*"],
-        },
-      ],
-      [
         "@stripe/stripe-react-native",
         {
           merchantIdentifier:

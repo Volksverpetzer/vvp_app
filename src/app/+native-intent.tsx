@@ -1,13 +1,8 @@
-import { getShareExtensionKey } from "expo-share-intent";
-
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 
 export function redirectSystemPath({ path }) {
   const wpUrl = Config.wpUrl;
-  if (path.includes(`dataUrl=${getShareExtensionKey()}`)) {
-    return "/shareintent";
-  }
 
   // Check if the path should be excluded from deep linking
   if (path.startsWith(wpUrl)) {
