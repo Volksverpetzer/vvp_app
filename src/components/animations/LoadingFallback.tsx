@@ -2,8 +2,9 @@ import React from "react";
 import { ActivityIndicatorProps } from "react-native";
 
 import UiSpinner from "#/components/animations/UiSpinner";
-import View from "#/components/design/View";
 import Text from "#/components/design/Text";
+import View from "#/components/design/View";
+
 interface LoadingFallbackProps {
   text?: string;
   spinnerProps?: ActivityIndicatorProps;
@@ -22,11 +23,12 @@ const LoadingFallback = ({
         justifyContent: "center",
         alignItems: "center",
         height: "100%",
+        gap: 20,
       }}
     >
       <UiSpinner
         {...spinnerProps}
-        style={[{ flex: 0, alignSelf: "center" }, spinnerProps?.style]}
+        containerStyle={{ flex: 0, alignSelf: "center" }}
       />
       <Text style={{ textAlign: "center" }}>{text}</Text>
     </View>
