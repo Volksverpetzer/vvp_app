@@ -2,7 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Text } from "react-native";
 
-import UiSpinner from "#/components/animations/UiSpinner";
+import LoadingFallback from "#/components/animations/LoadingFallback";
 import View from "#/components/design/View";
 import { ArticleProperties } from "#/components/posts/ArticlePost";
 import Config from "#/constants/Config";
@@ -86,10 +86,10 @@ const LoadArticle = () => {
   // While we're fetching the article show a themed spinner instead of a webview
   if (isLoading) {
     return (
-      <View style={{ justifyContent: "center", height: "100%" }}>
-        <UiSpinner size={"large"} />
-        <Text style={{ textAlign: "center" }}>Lade Artikel...</Text>
-      </View>
+      <LoadingFallback
+        text={"Lade Artikel..."}
+        spinnerProps={{ size: "large" }}
+      />
     );
   }
 
@@ -121,10 +121,10 @@ const LoadArticle = () => {
 
   // Fallback: Show loading state (shouldn't normally be reached)
   return (
-    <View style={{ justifyContent: "center", height: "100%" }}>
-      <UiSpinner size={"large"} />
-      <Text style={{ textAlign: "center" }}>Lade Artikel...</Text>
-    </View>
+    <LoadingFallback
+      text={"Lade Artikel..."}
+      spinnerProps={{ size: "large" }}
+    />
   );
 };
 
