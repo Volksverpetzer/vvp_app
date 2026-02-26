@@ -17,9 +17,7 @@ import LogoAnimation from "#assets/images/logo_animated.gif";
 const UiSpinner = (props: ActivityIndicatorProps) => {
   const corporate = useCorporateColor();
   return (
-    <View
-      style={{ backgroundColor: undefined, width: "100%", ...styles.centered }}
-    >
+    <View style={{ width: "100%", ...styles.centered }}>
       {isVolksverpetzer ? (
         <Image source={LogoAnimation} style={{ width: 100, height: 100 }} />
       ) : (

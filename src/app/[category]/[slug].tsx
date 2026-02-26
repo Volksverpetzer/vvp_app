@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Text } from "react-native";
 
 import UiSpinner from "#/components/animations/UiSpinner";
@@ -26,49 +26,71 @@ const LoadArticle = () => {
   const { slug, category } = parameters;
   const [article, setArticle] = useState<ArticleProperties | undefined>();
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasError, setHasError] = useState<boolean>(false);
 
-  /**
-   * Loads an article based on the provided slug.
-   */
-  const loadArticle = async () => {
+  const mountedRef = useRef(true);
+
+  const fetchArticle = useCallback(async () => {
+    setIsLoading(true);
+    setHasError(false);
+
     try {
-      if (!slug) {
-        // If no slug is provided, render the EdgelessWebview with the base URL
-        console.warn("No slug provided, rendering EdgelessWebview");
-        return;
-      }
-
       const articleParameter = await ContentStore.getStoredArticle(slug);
+      if (!mountedRef.current) return;
+
       if (articleParameter) {
         setArticle(articleParameter);
         setImageUrl(articleParameter.imageUrl || "");
-      } else {
-        const _article = await WordPressAPI.getPost(slug);
-        const loadedArticle: ArticleProperties =
-          WordPressAPI.convertLoadProps(_article);
-        const { image } = await WordPressAPI.getFeatureImage(
-          loadedArticle._links["wp:featuredmedia"][0].href,
-        );
-        setArticle(loadedArticle);
-        setImageUrl(image);
+        setIsLoading(false);
+        return;
       }
+
+      const _article = await WordPressAPI.getPost(slug);
+      const loadedArticle: ArticleProperties =
+        WordPressAPI.convertLoadProps(_article);
+
+      const { image } = await WordPressAPI.getFeatureImage(
+        loadedArticle._links["wp:featuredmedia"][0].href,
+      );
+
+      if (!mountedRef.current) return;
+      setArticle(loadedArticle);
+      setImageUrl(image);
+      setIsLoading(false);
     } catch (error_) {
+      if (!mountedRef.current) return;
       console.error("Error loading article:", error_);
-      console.warn("Failed to load article, falling back to EdgelessWebview");
-      // Render the EdgelessWebview with the article URL
-      const url = `${wpUrl}/${category || ""}/${slug || ""}`;
-      return <EdgelessWebview uri={url} />;
+      setHasError(true);
+      setIsLoading(false);
     }
-  };
+  }, [slug]);
 
   useEffect(() => {
-    loadArticle();
-  }, [slug]);
+    if (!slug) return;
+    mountedRef.current = true;
+
+    void fetchArticle();
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, [slug, fetchArticle]);
 
   if (!slug) {
     // If no slug is provided, render the EdgelessWebview
     const url = `${wpUrl}/${category || ""}`;
     return <EdgelessWebview uri={url} />;
+  }
+
+  // While we're fetching the article show a themed spinner instead of a webview
+  if (isLoading) {
+    return (
+      <View style={{ justifyContent: "center", height: "100%" }}>
+        <UiSpinner size={"large"} />
+        <Text style={{ textAlign: "center" }}>Lade Artikel...</Text>
+      </View>
+    );
   }
 
   // If we have an article, render it with the ArticleScreen
@@ -81,8 +103,8 @@ const LoadArticle = () => {
     return <ArticleScreen article={articleWithImage} />;
   }
 
-  // If we have a slug but no article, show the webview
-  if (slug) {
+  // If fetching failed, fall back to the webview for compatibility
+  if (hasError) {
     // Safely build the URL without collapsing the protocol slashes
     const buildUrl = (base: string, ...segments: (string | undefined)[]) => {
       const trimmedBase = base.replace(/\/+$/, "");
@@ -97,7 +119,7 @@ const LoadArticle = () => {
     return <EdgelessWebview uri={cleanPath} />;
   }
 
-  // Fallback: Show loading state
+  // Fallback: Show loading state (shouldn't normally be reached)
   return (
     <View style={{ justifyContent: "center", height: "100%" }}>
       <UiSpinner size={"large"} />
