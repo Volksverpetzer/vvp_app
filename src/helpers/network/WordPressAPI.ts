@@ -14,7 +14,10 @@ export default class WordPressAPI {
    * @param page - The page number to fetch (pagination)
    * @returns Promise with an array of WordPress posts
    */
-  static async getPosts(page?: number): Promise<LoadArticlePostProperties[]> {
+  static async getPosts(
+    page?: number,
+    signal?: AbortSignal,
+  ): Promise<LoadArticlePostProperties[]> {
     // Add a timestamp to prevent caching issues
     const timestamp = Date.now();
 
@@ -34,6 +37,7 @@ export default class WordPressAPI {
           Pragma: "no-cache",
           Expires: "0",
         },
+        signal,
       },
     );
   }
@@ -44,6 +48,7 @@ export default class WordPressAPI {
   static async searchPosts(
     search: string,
     page: number = 10,
+    signal?: AbortSignal,
   ): Promise<LoadArticlePostProperties[]> {
     return await netGet<LoadArticlePostProperties[]>(
       WordPressAPI.client,
@@ -54,6 +59,7 @@ export default class WordPressAPI {
           search: encodeURIComponent(search),
           page: page,
         },
+        signal,
       },
     );
   }

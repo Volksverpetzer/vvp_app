@@ -9,9 +9,9 @@ export const TikTokFetcher = {
    * Fetches the feed from TikTok.
    * @returns An array of posts.
    */
-  feedFetcher: async () => {
+  feedFetcher: async ({ signal }: { signal?: AbortSignal } = {}) => {
     const data = await FetcherUtilities.safeFetch(
-      () => API.getTikTokFeed(),
+      () => API.getTikTokFeed(signal),
       "tiktok",
     );
     return data.map(

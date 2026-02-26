@@ -25,6 +25,7 @@ import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 export type FeedFetcherProperties = {
   page?: number;
   param?: string;
+  signal?: AbortSignal;
 };
 
 export interface FeedProperties {
@@ -53,6 +54,7 @@ const Feed = (properties: FeedProperties) => {
   const corporate = Colors[colorScheme].corporate;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
+  const fetchControllerRef = useRef<AbortController | null>(null);
 
   const updateLoadingStates = useCallback(() => {
     setRefresh(false);
@@ -65,19 +67,29 @@ const Feed = (properties: FeedProperties) => {
       fetcherProperties?: { page?: number; param?: string },
       oldPosts: Post<unknown>[] = [],
     ) => {
+      const controller = new AbortController();
+      fetchControllerRef.current?.abort();
+      fetchControllerRef.current = controller;
+
       try {
         const newPosts = await FetcherUtilities.fetchAndProcessPosts(
           properties.fetchers,
-          fetcherProperties,
+          { ...fetcherProperties, signal: controller.signal },
           oldPosts,
           { prioSort: properties.prioSort, cutoffDate: properties.cutoffDate },
         );
+        if (controller.signal.aborted) return false;
         setPosts(newPosts);
         updateLoadingStates();
         return oldPosts.length < newPosts.length;
       } catch (error) {
+        if (controller.signal.aborted) return false;
         console.error("Error fetching posts:", error);
         updateLoadingStates();
+      } finally {
+        if (fetchControllerRef.current === controller) {
+          fetchControllerRef.current = null;
+        }
       }
     },
     [
@@ -96,6 +108,11 @@ const Feed = (properties: FeedProperties) => {
     getPosts(undefined, []);
     setInitialLoad(false);
     setRefresh(true);
+
+    return () => {
+      fetchControllerRef.current?.abort();
+      fetchControllerRef.current = null;
+    };
   }, [properties.fetchers.length, getPosts, updateLoadingStates]);
 
   const onRefresh = useCallback(() => {
