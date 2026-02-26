@@ -20,4 +20,4 @@ jobs:
           setup-expo-token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 Publish preview
-        run: APP=volksverpetzer eas update --non-interactive --auto
+        run: APP=volksverpetzer eas update --non-interactive --auto --environment preview

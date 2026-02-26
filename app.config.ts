@@ -61,7 +61,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
         },
       ],
       "expo-font",
+      "expo-image",
       "expo-mail-composer",
+      "expo-sharing",
       "expo-web-browser",
     ],
     splash: {
