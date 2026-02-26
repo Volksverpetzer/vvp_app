@@ -23,9 +23,21 @@ const Recommended = (properties: RecommendedProperties) => {
   const { article_link } = properties;
 
   useEffect(() => {
-    IntelligenceAPI.recommendations(article_link).then((data) => {
-      setMatches(data.results);
-    });
+    const controller = new AbortController();
+
+    IntelligenceAPI.recommendations(article_link, controller.signal)
+      .then((data) => {
+        if (controller.signal.aborted) return;
+        setMatches(data.results);
+      })
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        console.error("Failed to load recommendations:", error);
+      });
+
+    return () => {
+      controller.abort();
+    };
   }, [article_link]);
 
   return (

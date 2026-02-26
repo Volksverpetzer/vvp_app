@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { FaktenbotReaction } from "#/components/animations/Faktenbot";
 import Config from "#/constants/Config";
@@ -37,74 +37,97 @@ export const useAISearch = ({
   const [results, setResults] = useState<AISearchResponse[]>([]);
   const [error, setError] = useState<string>("");
   const [loadingMessage, setLoadingMessage] = useState<string>("");
+  const activeControllerRef = useRef<AbortController | null>(null);
 
-  const fetchResults = useCallback(async () => {
-    setError("");
-    setResults([]);
-    setIsLoading(true);
-    setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
-    let queryText = search;
-    registerEvent(Config.wpUrl, "search", { query: search });
-    if (search.includes("x.com")) {
-      setLoadingMessage("Lade Vorschau von x.com...");
-      try {
-        const r = await fetch(`https://publish.x.com/oembed?url=${search}`);
-        const json = await r.json();
-        const html_p = json.html || "";
-        queryText = html_p.replaceAll(/<[^>]+>/g, " ");
-      } catch {
-        setError("Fehler beim Laden der Vorschau");
-        setResultsLength(0);
-        setIsLoading(false);
-        return;
+  const fetchResults = useCallback(
+    async (signal?: AbortSignal) => {
+      setError("");
+      setResults([]);
+      setIsLoading(true);
+      setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
+      let queryText = search;
+      registerEvent(Config.wpUrl, "search", { query: search });
+      if (search.includes("x.com")) {
+        setLoadingMessage("Lade Vorschau von x.com...");
+        try {
+          const r = await fetch(`https://publish.x.com/oembed?url=${search}`, {
+            signal,
+          });
+          const json = await r.json();
+          if (signal?.aborted) return;
+          const html_p = json.html || "";
+          queryText = html_p.replaceAll(/<[^>]+>/g, " ");
+        } catch {
+          if (signal?.aborted) return;
+          setError("Fehler beim Laden der Vorschau");
+          setResultsLength(0);
+          setIsLoading(false);
+          return;
+        }
+        setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
+      } else if (search.startsWith("http")) {
+        try {
+          const response = await fetch(search, { signal });
+          let html = await response.text();
+          if (signal?.aborted) return;
+          html = html.replaceAll(/<script[\s\S]*?<\/script>/gi, "");
+          html = html.replaceAll(/<style[\s\S]*?<\/style>/gi, "");
+          queryText = html.replaceAll(/<[^>]+>/g, " "); //
+        } catch {
+          if (signal?.aborted) return;
+          setError("Fehler beim Laden der Seite");
+          setResultsLength(0);
+          setIsLoading(false);
+          return;
+        }
       }
       setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
-    } else if (search.startsWith("http")) {
       try {
-        const response = await fetch(search);
-        let html = await response.text();
-        html = html.replaceAll(/<script[\s\S]*?<\/script>/gi, "");
-        html = html.replaceAll(/<style[\s\S]*?<\/style>/gi, "");
-        queryText = html.replaceAll(/<[^>]+>/g, " "); //
-      } catch {
-        setError("Fehler beim Laden der Seite");
-        setResultsLength(0);
-        setIsLoading(false);
-        return;
-      }
-    }
-    setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
-    try {
-      const data = await IntelligenceAPI.vectorSearch(queryText);
-      // decode only if mis-encoded
-      const decoded = data.map((item) => {
-        let text = item.text;
-        if (/Ã/.test(text)) {
-          try {
-            text = Buffer.from(text, "latin1").toString("utf8");
-          } catch (error_) {
-            console.warn("Buffer conversion error:", error_);
+        const data = await IntelligenceAPI.vectorSearch(queryText, signal);
+        if (signal?.aborted) return;
+        // decode only if mis-encoded
+        const decoded = data.map((item) => {
+          let text = item.text;
+          if (/Ã/.test(text)) {
+            try {
+              text = Buffer.from(text, "latin1").toString("utf8");
+            } catch (error_) {
+              console.warn("Buffer conversion error:", error_);
+            }
           }
+          return { ...item, text };
+        });
+        const count = decoded.length;
+        setResultsLength(count);
+        if (count > 0) {
+          setResults(decoded);
+        } else {
+          setError("Keine passenden Ergebnisse gefunden");
         }
-        return { ...item, text };
-      });
-      const count = decoded.length;
-      setResultsLength(count);
-      if (count > 0) {
-        setResults(decoded);
-      } else {
-        setError("Keine passenden Ergebnisse gefunden");
+      } catch {
+        if (signal?.aborted) return;
+        setError("Fehler bei der Suche");
+        setResultsLength(0);
+      } finally {
+        if (signal?.aborted) return;
+        setIsLoading(false);
       }
-    } catch {
-      setError("Fehler bei der Suche");
-      setResultsLength(0);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [search, setIsLoading, setResultsLength]);
+    },
+    [search, setIsLoading, setResultsLength],
+  );
 
   useEffect(() => {
-    fetchResults();
+    const controller = new AbortController();
+    activeControllerRef.current?.abort();
+    activeControllerRef.current = controller;
+    void fetchResults(controller.signal);
+
+    return () => {
+      controller.abort();
+      if (activeControllerRef.current === controller) {
+        activeControllerRef.current = null;
+      }
+    };
   }, [fetchResults]);
 
   // Determine reaction value based on error state and results length
@@ -115,10 +138,13 @@ export const useAISearch = ({
   }
 
   const reload = useCallback(() => {
+    const controller = new AbortController();
+    activeControllerRef.current?.abort();
+    activeControllerRef.current = controller;
     setResults([]);
     setResultsLength(0);
     setIsLoading(true);
-    fetchResults();
+    void fetchResults(controller.signal);
   }, [fetchResults, setIsLoading, setResultsLength]);
 
   return { results, error, loadingMessage, reactionValue, reload };
