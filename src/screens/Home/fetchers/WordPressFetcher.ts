@@ -39,10 +39,11 @@ export const WordPressFetcher = {
    * @returns An array of posts.
    */
   async wpBaseFetcher(
-    api: () => Promise<LoadArticlePostProperties[]>,
+    api: (signal?: AbortSignal) => Promise<LoadArticlePostProperties[]>,
+    signal?: AbortSignal,
   ): Promise<Post<{ article: ArticleProperties }>[]> {
     try {
-      const data = await api();
+      const data = await api(signal);
       return data.map((article, index) =>
         WordPressFetcher.mapArticleToPost(
           article as LoadArticlePostProperties,
@@ -60,9 +61,13 @@ export const WordPressFetcher = {
    * @param page The page number to fetch (pagination)
    * @returns An array of posts.
    */
-  feedFetcher: async ({ page = 1 }) => {
-    return await WordPressFetcher.wpBaseFetcher(() =>
-      WordPressAPI.getPosts(page),
+  feedFetcher: async ({
+    page = 1,
+    signal,
+  }: { page?: number; signal?: AbortSignal } = {}) => {
+    return await WordPressFetcher.wpBaseFetcher(
+      (_signal) => WordPressAPI.getPosts(page, _signal),
+      signal,
     );
   },
 
@@ -71,9 +76,13 @@ export const WordPressFetcher = {
    * @param param The search parameter.
    * @returns An array of posts.
    */
-  searchFetcher: async ({ param: parameter = "" }) => {
-    return await WordPressFetcher.wpBaseFetcher(() =>
-      WordPressAPI.searchPosts(parameter),
+  searchFetcher: async ({
+    param: parameter = "",
+    signal,
+  }: { param?: string; signal?: AbortSignal } = {}) => {
+    return await WordPressFetcher.wpBaseFetcher(
+      (_signal) => WordPressAPI.searchPosts(parameter, 10, _signal),
+      signal,
     );
   },
 };

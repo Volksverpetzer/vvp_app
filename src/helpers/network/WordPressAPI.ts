@@ -14,7 +14,10 @@ export default class WordPressAPI {
    * @param page - The page number to fetch (pagination)
    * @returns Promise with an array of WordPress posts
    */
-  static async getPosts(page?: number): Promise<LoadArticlePostProperties[]> {
+  static async getPosts(
+    page?: number,
+    signal?: AbortSignal,
+  ): Promise<LoadArticlePostProperties[]> {
     // Add a timestamp to prevent caching issues
     const timestamp = Date.now();
 
@@ -34,6 +37,7 @@ export default class WordPressAPI {
           Pragma: "no-cache",
           Expires: "0",
         },
+        signal,
       },
     );
   }
@@ -44,6 +48,7 @@ export default class WordPressAPI {
   static async searchPosts(
     search: string,
     page: number = 10,
+    signal?: AbortSignal,
   ): Promise<LoadArticlePostProperties[]> {
     return await netGet<LoadArticlePostProperties[]>(
       WordPressAPI.client,
@@ -54,6 +59,7 @@ export default class WordPressAPI {
           search: encodeURIComponent(search),
           page: page,
         },
+        signal,
       },
     );
   }
@@ -63,6 +69,7 @@ export default class WordPressAPI {
    */
   static async getPost(
     slug: string,
+    signal?: AbortSignal,
   ): Promise<LoadArticlePostProperties | undefined> {
     const posts = await netGet<LoadArticlePostProperties[]>(
       WordPressAPI.client,
@@ -71,6 +78,7 @@ export default class WordPressAPI {
         params: {
           slug: encodeURIComponent(slug),
         },
+        signal,
       },
     );
     return posts[0] ?? undefined;
@@ -81,8 +89,11 @@ export default class WordPressAPI {
    */
   static async getFeatureImage(
     href: string,
+    signal?: AbortSignal,
   ): Promise<{ image: string | undefined; thumb: string | undefined }> {
-    const data = await netGet<MediaResponse>(WordPressAPI.client, href);
+    const data = await netGet<MediaResponse>(WordPressAPI.client, href, {
+      signal,
+    });
     const sizes = data?.media_details?.sizes;
     const image = sizes?.medium_large?.source_url ?? sizes?.medium?.source_url;
     const thumb = sizes?.thumbnail?.source_url;

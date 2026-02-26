@@ -9,9 +9,9 @@ export const InstagramFetcher = {
    * Fetches the feed from Instagram.
    * @returns An array of posts.
    */
-  feedFetcher: async () => {
+  feedFetcher: async ({ signal }: { signal?: AbortSignal } = {}) => {
     const data = await FetcherUtilities.safeFetch(
-      () => API.getInstaFeed(),
+      () => API.getInstaFeed(signal),
       "insta",
     );
     return data
@@ -35,9 +35,9 @@ export const InstagramFetcher = {
       );
   },
 
-  memeFetcher: async () => {
+  memeFetcher: async ({ signal }: { signal?: AbortSignal } = {}) => {
     const data = await FetcherUtilities.safeFetch(
-      () => API.getInstaMemeFeed(),
+      () => API.getInstaMemeFeed(signal),
       "meme",
     );
     return data

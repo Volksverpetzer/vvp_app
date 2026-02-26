@@ -28,23 +28,47 @@ class API {
   /**
    * GET request wrapper. Accepts optional config and abortTime.
    */
-  static get<T>(path: string, abortTime?: number): Promise<T> {
-    return netGet<T>(API.client, path, undefined, abortTime);
+  static get<T>(
+    path: string,
+    abortTime?: number,
+    signal?: AbortSignal,
+  ): Promise<T> {
+    return netGet<T>(
+      API.client,
+      path,
+      signal ? { signal } : undefined,
+      abortTime,
+    );
   }
 
   /**
    * POST request wrapper. Accepts optional config and abortTime.
    */
-  static post<T, D>(path: string, data: D, abortTime?: number): Promise<T> {
-    return netPost<T, D>(API.client, path, data, abortTime);
+  static post<T, D>(
+    path: string,
+    data: D,
+    abortTime?: number,
+    signal?: AbortSignal,
+  ): Promise<T> {
+    return netPost<T, D>(
+      API.client,
+      path,
+      data,
+      abortTime,
+      signal ? { signal } : undefined,
+    );
   }
 
   /**
    * Fetches the Instagram feed.
    */
-  static async getInstaFeed(): Promise<InstaPostProperties[]> {
+  static async getInstaFeed(
+    signal?: AbortSignal,
+  ): Promise<InstaPostProperties[]> {
     const response = await API.get<{ data: InstaPostProperties[] }>(
       "/proxy/instaFeed",
+      undefined,
+      signal,
     );
     return response.data ?? [];
   }
@@ -52,9 +76,13 @@ class API {
   /**
    * Fetches the Instagram meme feed.
    */
-  static async getInstaMemeFeed(): Promise<InstaPostProperties[]> {
+  static async getInstaMemeFeed(
+    signal?: AbortSignal,
+  ): Promise<InstaPostProperties[]> {
     const response = await API.get<{ data: InstaPostProperties[] }>(
       "/proxy/instaMemeFeed",
+      undefined,
+      signal,
     );
     return response.data ?? [];
   }
@@ -62,16 +90,28 @@ class API {
   /**
    * Fetches a specific Instagram post by ID.
    */
-  static async getInstaPost(id: string): Promise<InstaPostProperties> {
-    return await API.get<InstaPostProperties>("/proxy/instaById/" + id);
+  static async getInstaPost(
+    id: string,
+    signal?: AbortSignal,
+  ): Promise<InstaPostProperties> {
+    return await API.get<InstaPostProperties>(
+      "/proxy/instaById/" + id,
+      undefined,
+      signal,
+    );
   }
 
   /**
    * Fetches the fact feed based on keywords.
    */
-  static async getFactFeed(keywords: string[]): Promise<ClaimProperties[]> {
+  static async getFactFeed(
+    keywords: string[],
+    signal?: AbortSignal,
+  ): Promise<ClaimProperties[]> {
     const response = await API.get<{ claims: ClaimProperties[] }>(
       "/googleFact?keywords=" + keywords.join(","),
+      undefined,
+      signal,
     );
     return response.claims ?? [];
   }
@@ -79,9 +119,13 @@ class API {
   /**
    * Fetches the Mastodon feed.
    */
-  static async getMastodonFeed(): Promise<MastodonPostProperties[]> {
+  static async getMastodonFeed(
+    signal?: AbortSignal,
+  ): Promise<MastodonPostProperties[]> {
     const response = await API.get<{ data: MastodonPostProperties[] }>(
       "/proxy/mastodon",
+      undefined,
+      signal,
     );
     return response.data ?? [];
   }
@@ -89,9 +133,11 @@ class API {
   /**
    * Fetches the Bluesky feed.
    */
-  static async getBskyFeed(): Promise<FeedViewPost[]> {
+  static async getBskyFeed(signal?: AbortSignal): Promise<FeedViewPost[]> {
     const response = await API.get<{ feed: FeedViewPost[] }>(
       "/proxy/blueskyFeed",
+      undefined,
+      signal,
     );
     return response.feed ?? [];
   }
@@ -99,17 +145,25 @@ class API {
   /**
    * Fetches the bot feed.
    */
-  static async getBotFeed(): Promise<FeedViewPost[]> {
-    const response = await API.get<{ feed: FeedViewPost[] }>("/botFeed");
+  static async getBotFeed(signal?: AbortSignal): Promise<FeedViewPost[]> {
+    const response = await API.get<{ feed: FeedViewPost[] }>(
+      "/botFeed",
+      undefined,
+      signal,
+    );
     return response.feed ?? [];
   }
 
   /**
    * Fetches the YouTube feed.
    */
-  static async getYouTubeFeed(): Promise<YouTubePostProperties[]> {
+  static async getYouTubeFeed(
+    signal?: AbortSignal,
+  ): Promise<YouTubePostProperties[]> {
     const response = await API.get<{ items: YouTubePostProperties[] }>(
       "/proxy/ytAPI",
+      undefined,
+      signal,
     );
     return response.items ?? [];
   }
@@ -117,10 +171,12 @@ class API {
   /**
    * Fetches the TikTok feed.
    */
-  static async getTikTokFeed(): Promise<TiktokPostProperties[]> {
+  static async getTikTokFeed(
+    signal?: AbortSignal,
+  ): Promise<TiktokPostProperties[]> {
     const response = await API.get<{
       data: { data: { videos: TiktokPostProperties[] } };
-    }>("/tiktok/tiktokFeed");
+    }>("/tiktok/tiktokFeed", undefined, signal);
     return response?.data?.data?.videos ?? [];
   }
 
@@ -141,9 +197,12 @@ class API {
    */
   static async paymentIntent(
     amount: number,
+    signal?: AbortSignal,
   ): Promise<{ client_secret: string }> {
     return await API.get<{ client_secret: string }>(
       "/paymentIntent?amount=" + amount,
+      undefined,
+      signal,
     );
   }
 
@@ -157,8 +216,15 @@ class API {
   /**
    * Fetch status of a report
    */
-  static async getReportStatus(uuid: string): Promise<StatusResponse> {
-    return await API.get<StatusResponse>("/statusFake/" + uuid);
+  static async getReportStatus(
+    uuid: string,
+    signal?: AbortSignal,
+  ): Promise<StatusResponse> {
+    return await API.get<StatusResponse>(
+      "/statusFake/" + uuid,
+      undefined,
+      signal,
+    );
   }
 
   /**
@@ -166,21 +232,29 @@ class API {
    */
   static async getRecommendations(
     slug: string,
+    signal?: AbortSignal,
   ): Promise<{ matches: string[] }> {
-    return await API.get<{ matches: string[] }>(`/recommend?slug=${slug}`);
+    return await API.get<{ matches: string[] }>(
+      `/recommend?slug=${slug}`,
+      undefined,
+      signal,
+    );
   }
 
   /**
    * Performs an AI search based on a query.
    */
-  static async postAISearch(body: {
-    query: string;
-  }): Promise<AISearchResponse[]> {
+  static async postAISearch(
+    body: {
+      query: string;
+    },
+    signal?: AbortSignal,
+  ): Promise<AISearchResponse[]> {
     const { query } = body;
     const data = await API.post<
       { results: AISearchResponse[] },
       { query: string; n_results: number }
-    >("/ai_search", { query, n_results: 20 });
+    >("/ai_search", { query, n_results: 20 }, undefined, signal);
     return data.results;
   }
 }

@@ -22,13 +22,23 @@ const LoadInstaPost = (properties: LoadProperties) => {
   const { id } = properties;
 
   useEffect(() => {
-    API.getInstaPost(id)
+    const controller = new AbortController();
+
+    API.getInstaPost(id, controller.signal)
       .then((_post: InstaPostProperties) => {
+        if (controller.signal.aborted) return;
         ContentStore.setStoredInstaPost(id, _post);
         setPost(_post);
         setLoading(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        console.error(error);
+      });
+
+    return () => {
+      controller.abort();
+    };
   }, [id]);
 
   if (isLoading) {

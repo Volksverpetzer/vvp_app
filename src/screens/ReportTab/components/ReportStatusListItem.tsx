@@ -36,16 +36,25 @@ const ReportStatusListItem = (props: StoredReport) => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    API.getReportStatus(id)
+    const controller = new AbortController();
+
+    API.getReportStatus(id, controller.signal)
       .then((response: StatusResponse) => {
+        if (controller.signal.aborted) return;
         setStatus(response.status);
       })
       .catch(() => {
+        if (controller.signal.aborted) return;
         setError(true);
       })
       .finally(() => {
+        if (controller.signal.aborted) return;
         setLoading(false);
       });
+
+    return () => {
+      controller.abort();
+    };
   }, [id]);
 
   /**

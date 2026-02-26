@@ -36,6 +36,19 @@ export async function fetchWithTimeout<T>(
   abortTime?: number,
 ): Promise<AxiosResponse<T>> {
   const controller = new AbortController();
+  const externalSignal = config.signal;
+  const onExternalAbort = () => controller.abort();
+
+  if (externalSignal) {
+    if (externalSignal.aborted) {
+      controller.abort();
+    } else {
+      externalSignal.addEventListener("abort", onExternalAbort, {
+        once: true,
+      });
+    }
+  }
+
   const id = setTimeout(() => controller.abort(), abortTime || 60_000);
   try {
     return await client.request<T>({
@@ -49,6 +62,9 @@ export async function fetchWithTimeout<T>(
     throw error;
   } finally {
     clearTimeout(id);
+    if (externalSignal) {
+      externalSignal.removeEventListener("abort", onExternalAbort);
+    }
   }
 }
 
@@ -78,11 +94,12 @@ export async function post<T, D>(
   path: string,
   data: D,
   abortTime?: number,
+  config: AxiosRequestConfig = {},
 ): Promise<T> {
   const response = await fetchWithTimeout<T>(
     client,
     path,
-    { method: "POST", data },
+    { method: "POST", data, ...config },
     abortTime,
   );
   return response.data;
