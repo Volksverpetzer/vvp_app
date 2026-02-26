@@ -108,6 +108,65 @@ describe("Networking utilities", () => {
     expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 60000);
   });
 
+  it("fetchWithTimeout listens to external AbortSignal and aborts internal controller", async () => {
+    const originalAbortController = (global as any).AbortController;
+    const createdControllers: any[] = [];
+
+    class TestAbortController {
+      signal = { internal: true };
+      abort = jest.fn();
+      constructor() {
+        createdControllers.push(this);
+      }
+    }
+
+    let abortListener: (() => void) | undefined;
+    const externalSignal = {
+      aborted: false,
+      addEventListener: jest.fn((_event: string, cb: () => void) => {
+        abortListener = cb;
+      }),
+      removeEventListener: jest.fn(),
+    };
+
+    try {
+      (global as any).AbortController = TestAbortController;
+      const client = Networking.createClient("http://x");
+      const fakeResponse = { data: { ok: true } };
+      const mockRequest = jest.fn().mockResolvedValue(fakeResponse) as any;
+      client.request = mockRequest;
+
+      const promise = Networking.fetchWithTimeout(
+        client,
+        "/abortable",
+        { signal: externalSignal as any },
+        1000,
+      );
+
+      abortListener?.();
+      await promise;
+
+      expect(createdControllers).toHaveLength(1);
+      expect(createdControllers[0].abort).toHaveBeenCalled();
+      expect(mockRequest).toHaveBeenCalledWith(
+        expect.objectContaining({
+          signal: createdControllers[0].signal,
+        }),
+      );
+      expect(externalSignal.addEventListener).toHaveBeenCalledWith(
+        "abort",
+        expect.any(Function),
+        { once: true },
+      );
+      expect(externalSignal.removeEventListener).toHaveBeenCalledWith(
+        "abort",
+        expect.any(Function),
+      );
+    } finally {
+      (global as any).AbortController = originalAbortController;
+    }
+  });
+
   it("get function calls fetchWithTimeout with correct parameters", async () => {
     // Skip this test since we're having issues with the mock implementation
     // This is a known limitation of the testing environment

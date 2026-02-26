@@ -39,6 +39,24 @@ describe("FetcherUtils", () => {
         error,
       );
     });
+
+    it("returns empty array and does not log for canceled fetch errors", async () => {
+      const canceled = Object.assign(new Error("canceled"), {
+        code: "ERR_CANCELED",
+      });
+      const fetchFunction: SafeFetchFunction<string> = jest.fn(async () => {
+        throw canceled;
+      });
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      const result = await FetcherUtilities.safeFetch(
+        fetchFunction,
+        "fetcherName",
+      );
+
+      expect(result).toEqual([]);
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe("sortByDatetime", () => {
@@ -207,6 +225,26 @@ describe("FetcherUtils", () => {
         expect.stringContaining("Error processing posts:"),
         expect.any(Error),
       );
+    });
+
+    it("returns old posts and does not log when processing is canceled", async () => {
+      const canceled = Object.assign(new Error("canceled"), {
+        code: "ERR_CANCELED",
+      });
+      const fetcher1 = jest.fn(async () => {
+        throw canceled;
+      });
+      const oldPosts = [p1];
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      const result = await FetcherUtilities.fetchAndProcessPosts(
+        [{ fetcher: fetcher1, props: {} }],
+        {},
+        oldPosts,
+      );
+
+      expect(result).toBe(oldPosts);
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
     it("includes old posts newer than cutoffDate threshold", async () => {
