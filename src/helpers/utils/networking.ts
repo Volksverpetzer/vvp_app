@@ -233,11 +233,12 @@ export async function post<T, D>(
   path: string,
   data: D,
   abortTime?: number,
+  config: FetchRequestConfig = {},
 ): Promise<T> {
   const response = await fetchWithTimeout<T>(
     client,
     path,
-    { method: "POST", data },
+    { method: "POST", data, ...config },
     abortTime,
   );
   return response.data;
