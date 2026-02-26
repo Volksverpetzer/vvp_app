@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import { ArticleProperties } from "#/components/posts/ArticlePost";
@@ -27,51 +27,52 @@ const LoadArticle = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
 
-  const mountedRef = useRef(true);
+  const fetchArticle = useCallback(
+    async (signal: AbortSignal) => {
+      setIsLoading(true);
+      setHasError(false);
 
-  const fetchArticle = useCallback(async () => {
-    setIsLoading(true);
-    setHasError(false);
+      try {
+        const articleParameter = await ContentStore.getStoredArticle(slug);
+        if (signal.aborted) return;
 
-    try {
-      const articleParameter = await ContentStore.getStoredArticle(slug);
-      if (!mountedRef.current) return;
+        if (articleParameter) {
+          setArticle(articleParameter);
+          setImageUrl(articleParameter.imageUrl || "");
+          setIsLoading(false);
+          return;
+        }
 
-      if (articleParameter) {
-        setArticle(articleParameter);
-        setImageUrl(articleParameter.imageUrl || "");
+        const _article = await WordPressAPI.getPost(slug);
+        const loadedArticle: ArticleProperties =
+          WordPressAPI.convertLoadProps(_article);
+
+        const { image } = await WordPressAPI.getFeatureImage(
+          loadedArticle._links["wp:featuredmedia"][0].href,
+        );
+
+        if (signal.aborted) return;
+        setArticle(loadedArticle);
+        setImageUrl(image);
         setIsLoading(false);
-        return;
+      } catch (error_) {
+        if (signal.aborted) return;
+        console.error("Error loading article:", error_);
+        setHasError(true);
+        setIsLoading(false);
       }
-
-      const _article = await WordPressAPI.getPost(slug);
-      const loadedArticle: ArticleProperties =
-        WordPressAPI.convertLoadProps(_article);
-
-      const { image } = await WordPressAPI.getFeatureImage(
-        loadedArticle._links["wp:featuredmedia"][0].href,
-      );
-
-      if (!mountedRef.current) return;
-      setArticle(loadedArticle);
-      setImageUrl(image);
-      setIsLoading(false);
-    } catch (error_) {
-      if (!mountedRef.current) return;
-      console.error("Error loading article:", error_);
-      setHasError(true);
-      setIsLoading(false);
-    }
-  }, [slug]);
+    },
+    [slug],
+  );
 
   useEffect(() => {
     if (!slug) return;
-    mountedRef.current = true;
+    const controller = new AbortController();
 
-    void fetchArticle();
+    void fetchArticle(controller.signal);
 
     return () => {
-      mountedRef.current = false;
+      controller.abort();
     };
   }, [slug, fetchArticle]);
 
