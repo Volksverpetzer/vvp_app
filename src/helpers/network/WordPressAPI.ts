@@ -67,6 +67,7 @@ export default class WordPressAPI {
    */
   static async getPost(
     slug: string,
+    signal?: AbortSignal,
   ): Promise<LoadArticlePostProperties | undefined> {
     const posts = await netGet<LoadArticlePostProperties[]>(
       WordPressAPI.client,
@@ -76,6 +77,7 @@ export default class WordPressAPI {
           slug,
           _embed: "author",
         },
+        signal,
       },
     );
     return posts[0] ?? undefined;
@@ -86,8 +88,11 @@ export default class WordPressAPI {
    */
   static async getFeatureImage(
     href: string,
+    signal?: AbortSignal,
   ): Promise<{ image: string | undefined; thumb: string | undefined }> {
-    const data = await netGet<MediaResponse>(WordPressAPI.client, href);
+    const data = await netGet<MediaResponse>(WordPressAPI.client, href, {
+      signal,
+    });
     const sizes = data?.media_details?.sizes;
     const image = sizes?.medium_large?.source_url ?? sizes?.medium?.source_url;
     const thumb = sizes?.thumbnail?.source_url;

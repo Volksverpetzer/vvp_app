@@ -169,6 +169,19 @@ export async function fetchWithTimeout<T>(
   abortTime?: number,
 ): Promise<FetchResponse<T>> {
   const controller = new AbortController();
+  const externalSignal = config.signal;
+  const onExternalAbort = () => controller.abort();
+
+  if (externalSignal) {
+    if (externalSignal.aborted) {
+      controller.abort();
+    } else {
+      externalSignal.addEventListener("abort", onExternalAbort, {
+        once: true,
+      });
+    }
+  }
+
   const id = setTimeout(() => controller.abort(), abortTime ?? 60_000);
   try {
     return await client.request<T>({
@@ -182,6 +195,9 @@ export async function fetchWithTimeout<T>(
     throw error;
   } finally {
     clearTimeout(id);
+    if (externalSignal) {
+      externalSignal.removeEventListener("abort", onExternalAbort);
+    }
   }
 }
 
