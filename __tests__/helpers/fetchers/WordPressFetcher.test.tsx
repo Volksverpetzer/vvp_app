@@ -70,8 +70,21 @@ describe("WordPressFetcher", () => {
 
       const result = await WordPressFetcher.feedFetcher({ page });
 
-      expect(spy).toHaveBeenCalledWith(page);
+      expect(spy).toHaveBeenCalledWith(page, undefined);
       expect(result[0]).toBeInstanceOf(Post);
+    });
+
+    it("forwards AbortSignal to getPosts in feedFetcher", async () => {
+      const page = 2;
+      const articles = [makeArticle()];
+      const controller = new AbortController();
+      const spy = jest
+        .spyOn(WordPressAPI, "getPosts" as any)
+        .mockResolvedValue(articles);
+
+      await WordPressFetcher.feedFetcher({ page, signal: controller.signal });
+
+      expect(spy).toHaveBeenCalledWith(page, controller.signal);
     });
 
     it("calls WordPressAPI.searchPosts in searchFetcher", async () => {
@@ -83,7 +96,7 @@ describe("WordPressFetcher", () => {
 
       const result = await WordPressFetcher.searchFetcher({ param: parameter });
 
-      expect(spy).toHaveBeenCalledWith(parameter);
+      expect(spy).toHaveBeenCalledWith(parameter, 10, undefined);
       expect(result[0]).toBeInstanceOf(Post);
     });
   });
