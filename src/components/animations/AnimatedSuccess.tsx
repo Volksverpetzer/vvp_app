@@ -62,12 +62,17 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
         useNativeDriver: true,
         speed: 1,
       }),
-    ]).start(cleanUpSubmit);
-  }, [animation, cleanUpSubmit, spinAnimation]);
+    ]).start();
+  }, [animation, spinAnimation]);
 
   useEffect(() => {
-    if (animated) animate();
-  }, [animated, animate]);
+    if (animated) {
+      animate();
+      return;
+    }
+
+    cleanUpSubmit();
+  }, [animated, animate, cleanUpSubmit]);
 
   if (!animated) return;
 
