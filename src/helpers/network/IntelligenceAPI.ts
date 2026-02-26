@@ -19,21 +19,30 @@ class IntelligenceAPI {
   /**
    * POST request wrapper.
    */
-  static post<T, D>(path: string, data: D): Promise<T> {
-    return netPost<T, D>(this.client, path, data);
+  static post<T, D>(path: string, data: D, signal?: AbortSignal): Promise<T> {
+    return netPost<T, D>(
+      this.client,
+      path,
+      data,
+      undefined,
+      signal ? { signal } : undefined,
+    );
   }
 
   /**
    * GET request wrapper
    */
-  static get<T>(path: string): Promise<T> {
-    return netGet<T>(this.client, path);
+  static get<T>(path: string, signal?: AbortSignal): Promise<T> {
+    return netGet<T>(this.client, path, signal ? { signal } : undefined);
   }
 
   /**
    * Performs an AI search based on a query.
    */
-  static async vectorSearch(query: string): Promise<AISearchResponse[]> {
+  static async vectorSearch(
+    query: string,
+    signal?: AbortSignal,
+  ): Promise<AISearchResponse[]> {
     const rawResponse = await this.post<
       {
         results: {
@@ -46,7 +55,7 @@ class IntelligenceAPI {
         }[];
       },
       { query: string; n_results: number }
-    >("/api/vector-search/", { query, n_results: 20 });
+    >("/api/vector-search/", { query, n_results: 20 }, signal);
     return rawResponse.results.map((item) => ({
       url: item.url,
       text: item.excerpt,
@@ -56,10 +65,11 @@ class IntelligenceAPI {
 
   static async recommendations(
     url: string,
+    signal?: AbortSignal,
   ): Promise<{ results: { url: string; title: string }[] }> {
     return await this.get<{
       results: { url: string; title: string }[];
-    }>(`/api/recommend/?url=${url}`);
+    }>(`/api/recommend/?url=${url}`, signal);
   }
 }
 
