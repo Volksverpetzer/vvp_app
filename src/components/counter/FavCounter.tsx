@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Pressable, TextStyle } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
@@ -25,22 +25,23 @@ const FavCounter = (properties: FavCounterProperties) => {
   const [isFav, setIsFav] = useState(false);
   const color = useCorporateColor();
   const { contentFavIdentifier, contentType, shareable } = properties;
+
+  const getAllFavs = useCallback(async () => {
+    let _favs = 0;
+    for (const item of shareable) {
+      _favs = _favs + ((await getFavs(item.url)) ?? 0);
+    }
+    setFavs(_favs);
+  }, [shareable]);
+
   useEffect(() => {
     if (Config.analytics) getAllFavs();
     if (contentFavIdentifier) {
       FavoritesStore.isFavorite(contentFavIdentifier).then(setIsFav);
     }
-  }, []);
+  }, [contentFavIdentifier, getAllFavs]);
 
   if (!Config.analytics) return <View />;
-
-  const getAllFavs = async () => {
-    let _favs = 0;
-    for (const _shareable of properties.shareable) {
-      _favs = _favs + ((await getFavs(_shareable.url)) ?? 0);
-    }
-    setFavs(_favs);
-  };
 
   const handleFav = async () => {
     if (contentFavIdentifier) {

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { Animated, Dimensions } from "react-native";
 
 import Text from "#/components/design/Text";
@@ -35,26 +35,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
     outputRange: ["-70deg", "0deg"],
   });
 
-  useEffect(() => {
-    if (animated) animate();
-  }, [animated]);
-
-  const animate = () => {
-    Animated.parallel([
-      Animated.spring(animation, {
-        toValue: 100,
-        useNativeDriver: true,
-        speed: 6,
-      }),
-      Animated.spring(spinAnimation, {
-        toValue: 100,
-        useNativeDriver: true,
-        speed: 1,
-      }),
-    ]).start(cleanUpSubmit);
-  };
-
-  const cleanUpSubmit = () => {
+  const cleanUpSubmit = useCallback(() => {
     Animated.parallel([
       Animated.spring(animation, {
         toValue: 0,
@@ -67,7 +48,26 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
         speed: 20,
       }),
     ]).start();
-  };
+  }, [animation, spinAnimation]);
+
+  const animate = useCallback(() => {
+    Animated.parallel([
+      Animated.spring(animation, {
+        toValue: 100,
+        useNativeDriver: true,
+        speed: 6,
+      }),
+      Animated.spring(spinAnimation, {
+        toValue: 100,
+        useNativeDriver: true,
+        speed: 1,
+      }),
+    ]).start(cleanUpSubmit);
+  }, [animation, cleanUpSubmit, spinAnimation]);
+
+  useEffect(() => {
+    if (animated) animate();
+  }, [animated, animate]);
 
   if (!animated) return;
 

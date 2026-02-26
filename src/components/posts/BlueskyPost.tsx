@@ -54,7 +54,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
   const htmlPattern = /<[^>]+>/g;
   useEffect(() => {
     ContentStore.setStoredBskyPostById(postId, properties);
-  }, [inView, properties]);
+  }, [inView, postId, properties]);
 
   const navigateToPost = () => {
     router.push(`/bsky/${postId}`);
