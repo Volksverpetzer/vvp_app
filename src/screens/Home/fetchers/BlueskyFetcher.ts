@@ -14,9 +14,9 @@ export const BlueskyFetcher = {
    * Fetches the feed from Bluesky.
    * @returns An array of posts.
    */
-  feedFetcher: async () => {
+  feedFetcher: async ({ signal }: { signal?: AbortSignal } = {}) => {
     const feed = await FetcherUtilities.safeFetch(
-      () => API.getBskyFeed(),
+      () => API.getBskyFeed(signal),
       "bsky",
     );
     const postsByUri: {
