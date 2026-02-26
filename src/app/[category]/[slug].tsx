@@ -1,9 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Text } from "react-native";
 
 import LoadingFallback from "#/components/animations/LoadingFallback";
-import View from "#/components/design/View";
 import { ArticleProperties } from "#/components/posts/ArticlePost";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
