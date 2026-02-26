@@ -264,10 +264,10 @@ importers:
         specifier: 9.39.2
         version: 9.39.2
       eslint-config-expo:
-        specifier: ~55.0.0
+        specifier: 55.0.0
         version: 55.0.0(eslint@9.39.2)(typescript@5.9.3)
       eslint-config-prettier:
-        specifier: ^10.1.8
+        specifier: 10.1.8
         version: 10.1.8(eslint@9.39.2)
       eslint-plugin-import-alias:
         specifier: 1.2.0

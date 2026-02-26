@@ -1,4 +1,4 @@
-# minimumReleaseAge: 1440 # 1 day cooldown for new releases, see https://pnpm.io/settings#minimumreleaseage
+minimumReleaseAge: 1440 # 1 day cooldown for new releases, see https://pnpm.io/settings#minimumreleaseage
 nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 overrides:
   domhandler: 5.0.3 # to fix tsc errors in ElementHandlers
