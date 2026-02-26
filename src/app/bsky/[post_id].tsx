@@ -28,7 +28,7 @@ const BskyScreen = () => {
         router.back();
       }
     });
-  }, [parameters.post_id]);
+  }, [parameters.post_id, router]);
 
   if (!post) {
     return <UiSpinner size={"large"} />;

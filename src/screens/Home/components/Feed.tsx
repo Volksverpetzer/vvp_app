@@ -54,16 +54,16 @@ const Feed = (properties: FeedProperties) => {
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
 
-  const updateLoadingStates = () => {
+  const updateLoadingStates = useCallback(() => {
     setRefresh(false);
     setLoadmore(false);
     setInitialLoad(true);
-  };
+  }, []);
 
   const getPosts = useCallback(
     async (
       fetcherProperties?: { page?: number; param?: string },
-      oldPosts: Post<unknown>[] = posts,
+      oldPosts: Post<unknown>[] = [],
     ) => {
       try {
         const newPosts = await FetcherUtilities.fetchAndProcessPosts(
@@ -80,7 +80,12 @@ const Feed = (properties: FeedProperties) => {
         updateLoadingStates();
       }
     },
-    [properties.fetchers.length, properties.prioSort, properties.cutoffDate],
+    [
+      properties.fetchers,
+      properties.prioSort,
+      properties.cutoffDate,
+      updateLoadingStates,
+    ],
   );
 
   useEffect(() => {
@@ -91,7 +96,7 @@ const Feed = (properties: FeedProperties) => {
     getPosts(undefined, []);
     setInitialLoad(false);
     setRefresh(true);
-  }, [properties.fetchers.length]);
+  }, [properties.fetchers.length, getPosts, updateLoadingStates]);
 
   const onRefresh = useCallback(() => {
     if (refreshing) return;
@@ -103,14 +108,14 @@ const Feed = (properties: FeedProperties) => {
   }, [refreshing, getPosts]);
 
   // Load-more handler: wrapped in useCallback.
-  const onLoadMore = useCallback(() => {
+  const onLoadMore = useCallback(async () => {
     if (loadmore) return;
     setLoadmore(true);
     const nextPage = page + 1;
-    const received = getPosts({ page: nextPage }, posts);
+    const received = await getPosts({ page: nextPage }, posts);
     if (received) setPage(nextPage);
     else setIsLoadingMore(false);
-  }, [loadmore, page, getPosts, posts.length]);
+  }, [loadmore, page, getPosts, posts]);
 
   // Update inView set immutably – do not mutate state directly.
   const onViewableItemsChanged = useCallback(({ viewableItems }) => {

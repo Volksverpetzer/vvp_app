@@ -71,7 +71,7 @@ const Index = () => {
         }
       });
     })();
-  }, []);
+  }, [router]);
   return <UiSpinner size={"large"} />;
 };
 

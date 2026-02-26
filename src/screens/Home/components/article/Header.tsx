@@ -1,7 +1,7 @@
 import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
 import { Href, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AppState,
   LayoutChangeEvent,
@@ -57,13 +57,40 @@ const Header = (properties: HeaderProperties) => {
   const router = useRouter();
   const corporate = useCorporateColor();
 
+  const appState = useRef(AppState.currentState);
+
+  /**
+   * Copies the url link to the clipboard based on platform support.
+   */
+  const copyToClipboard = useCallback(async (url: string) => {
+    if (Platform.OS === "android") await Clipboard.setStringAsync(url);
+    else await Clipboard.setUrlAsync(url);
+  }, []);
+
+  /**
+   * Captures the header view and shares it to Instagram Story if available,
+   * otherwise falls back to generic sharing.
+   */
+  const captureAndShare = useCallback(async () => {
+    setVisible(true);
+    const current = reference.current;
+    if (!current) {
+      setVisible(false);
+      setImageLoaded(false);
+      return;
+    }
+    const uri = await current.capture();
+    await copyToClipboard(article_link);
+    await onShare(uri, { location: "ArticleTop" });
+    setVisible(false);
+    setImageLoaded(false);
+  }, [article_link, copyToClipboard]);
+
   useEffect(() => {
     if (imageLoaded && imageLoaded2) {
       captureAndShare();
     }
-  }, [imageLoaded, imageLoaded2]);
-
-  const appState = useRef(AppState.currentState);
+  }, [imageLoaded, imageLoaded2, captureAndShare]);
 
   useEffect(() => {
     // copy article url in case of insta share
@@ -80,34 +107,7 @@ const Header = (properties: HeaderProperties) => {
     return () => {
       subscription.remove();
     };
-  }, [urlCopied]);
-
-  /**
-   * Copies the url link to the clipboard based on platform support.
-   */
-  async function copyToClipboard(url) {
-    if (Platform.OS === "android") await Clipboard.setStringAsync(url);
-    else await Clipboard.setUrlAsync(url);
-  }
-
-  /**
-   * Captures the header view and shares it to Instagram Story if available,
-   * otherwise falls back to generic sharing.
-   */
-  const captureAndShare = async () => {
-    setVisible(true);
-    const current = reference.current;
-    if (!current) {
-      setVisible(false);
-      setImageLoaded(false);
-      return;
-    }
-    const uri = await current.capture();
-    await copyToClipboard(article_link);
-    await onShare(uri, { location: "ArticleTop" });
-    setVisible(false);
-    setImageLoaded(false);
-  };
+  }, [article_link, copyToClipboard, urlCopied]);
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { width } = event.nativeEvent.layout;

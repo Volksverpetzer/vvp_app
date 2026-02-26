@@ -38,7 +38,7 @@ export const useAISearch = ({
   const [error, setError] = useState<string>("");
   const [loadingMessage, setLoadingMessage] = useState<string>("");
 
-  const fetchResults = async () => {
+  const fetchResults = useCallback(async () => {
     setError("");
     setResults([]);
     setIsLoading(true);
@@ -101,11 +101,11 @@ export const useAISearch = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [search, setIsLoading, setResultsLength]);
 
   useEffect(() => {
     fetchResults();
-  }, [search]);
+  }, [fetchResults]);
 
   // Determine reaction value based on error state and results length
   let reactionValue: FaktenbotReaction = 0;
@@ -119,7 +119,7 @@ export const useAISearch = ({
     setResultsLength(0);
     setIsLoading(true);
     fetchResults();
-  }, []);
+  }, [fetchResults, setIsLoading, setResultsLength]);
 
   return { results, error, loadingMessage, reactionValue, reload };
 };
