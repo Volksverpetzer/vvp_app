@@ -1,11 +1,13 @@
 import React, { ReactElement, useEffect, useState } from "react";
 
 import LoadingFallback from "#/components/animations/LoadingFallback";
+import ErrorCard from "#/components/design/ErrorCard";
 
 type LoaderProps<TData> = {
   keyValue: string;
   load: (keyValue: string) => Promise<TData>;
   render: (data: TData) => ReactElement;
+  renderError?: (error: unknown) => ReactElement;
   onLoaded?: (data: TData) => void;
   loadingText?: string;
 };
@@ -14,10 +16,12 @@ const Loader = <TData,>({
   keyValue,
   load,
   render,
+  renderError,
   onLoaded,
   loadingText = "Lade Beitrag...",
 }: LoaderProps<TData>) => {
   const [data, setData] = useState<TData>();
+  const [error, setError] = useState<unknown>();
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,6 +29,7 @@ const Loader = <TData,>({
 
     setLoading(true);
     setData(undefined);
+    setError(undefined);
 
     load(keyValue)
       .then((result: TData) => {
@@ -35,7 +40,12 @@ const Loader = <TData,>({
         onLoaded?.(result);
         setData(result);
       })
-      .catch((error) => console.error(error))
+      .catch((_error) => {
+        if (isMounted) {
+          setError(_error);
+        }
+        console.error(_error);
+      })
       .finally(() => {
         if (isMounted) {
           setLoading(false);
@@ -61,6 +71,16 @@ const Loader = <TData,>({
   }
 
   if (typeof data === "undefined") {
+    if (error) {
+      if (renderError) {
+        return renderError(error);
+      }
+      return (
+        <ErrorCard
+          text={"Beitrag konnte nicht geladen werden. Bitte erneut versuchen."}
+        />
+      );
+    }
     return null;
   }
 
