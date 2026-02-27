@@ -1,7 +1,7 @@
-import { ArticleProperties } from "#/components/posts/ArticlePost";
 import Post from "#/helpers/Post";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
+import type { LoadArticlePostProperties } from "#/types";
 
 jest.mock("#/helpers/network/WordPressAPI", () => ({
   __esModule: true,
@@ -26,7 +26,7 @@ describe("WordPressFetcher", () => {
     jest.restoreAllMocks();
   });
 
-  const makeArticle = (overrides: Partial<ArticleProperties> = {}) => ({
+  const makeArticle = (overrides: Partial<LoadArticlePostProperties> = {}) => ({
     id: 3,
     date_gmt: "2021-02-03T04:05:06Z",
     link: "https://example.com/article",

@@ -1,6 +1,6 @@
 import { Achievements } from "#/helpers/Achievements";
 import BaseStore from "#/helpers/Storage";
-import { HttpsUrl, StoredSources } from "#/types";
+import type { HttpsUrl, StoredSources } from "#/types";
 
 /**
  * Manages stored sources in a persistent storage.

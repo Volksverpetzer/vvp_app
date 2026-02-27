@@ -1,4 +1,4 @@
-import { HttpsUrl } from "#/types/config";
+import type { HttpsUrl } from "#/types/config";
 
 export interface MediaResponse {
   media_details?: {

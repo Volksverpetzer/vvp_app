@@ -1,4 +1,4 @@
-import { HttpsUrl } from "#/types/config";
+import type { HttpsUrl } from "#/types/config";
 
 export const FAV_TYPE_ARTICLE = "article";
 export const FAV_TYPE_INSTA = "insta";

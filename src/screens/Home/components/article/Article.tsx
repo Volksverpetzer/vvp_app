@@ -11,7 +11,6 @@ import {
 } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
-import { ArticleProperties } from "#/components/posts/ArticlePost";
 import Footer from "#/components/views/Footer";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
@@ -23,7 +22,7 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent, registerViews } from "#/helpers/network/Analytics";
 import { stripVisualComposerShortcodes } from "#/helpers/utils/posts";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { HttpsUrl } from "#/types";
+import type { ArticleProperties, HttpsUrl } from "#/types";
 
 import Body from "./Body";
 import Header from "./Header";

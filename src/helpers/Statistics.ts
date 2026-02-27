@@ -1,4 +1,4 @@
-import { StatisticsType } from "#/types";
+import type { StatisticsType } from "#/types";
 
 import { Achievements } from "./Achievements";
 import StatisticsStore, { StatsKeyType } from "./Stores/StatisticsStore";

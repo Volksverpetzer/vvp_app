@@ -1,5 +1,5 @@
 import BaseStore from "#/helpers/Storage";
-import { FaveableType, StoredFavs } from "#/types";
+import type { FaveableType, StoredFavs } from "#/types";
 
 const FavoritesStore = {
   favKey: "favs",

@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { type ActivityIndicatorProps } from "react-native";
+import type { ActivityIndicatorProps } from "react-native";
 
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import ErrorCard from "#/components/design/ErrorCard";

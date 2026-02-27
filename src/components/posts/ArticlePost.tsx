@@ -18,31 +18,11 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import { HttpsUrl } from "#/types";
+import type { ArticleProperties } from "#/types";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
 
 import Badge from "./Badge";
-
-/**
- * Represents the properties of an article as fetched from the WordPress API
- */
-export interface ArticleProperties {
-  _links: {
-    "wp:featuredmedia": { href: string }[];
-  };
-  date: string;
-  link: HttpsUrl;
-  description: string;
-  categories: number[];
-  id: number;
-  slug: string;
-  date_gmt: string;
-  title: string;
-  content?: { rendered: string };
-  authors: { display_name: string; slug: string }[];
-  imageUrl?: string;
-}
 
 // Define the component props type.
 type ArticlePostScreenProperties = {

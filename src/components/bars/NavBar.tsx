@@ -11,7 +11,7 @@ import { styles } from "#/constants/Styles";
 import { ShareableType, onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { FaveableType } from "#/types";
+import type { FaveableType } from "#/types";
 
 interface NavBarProperties {
   link?: string;

@@ -2,12 +2,12 @@ import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 
 import LoadingFallback from "#/components/animations/LoadingFallback";
-import { ArticleProperties } from "#/components/posts/ArticlePost";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
 import ArticleScreen from "#/screens/Home/components/article/Article";
+import type { ArticleProperties } from "#/types";
 
 type LoadArticleParameters = {
   imageUrl?: string;

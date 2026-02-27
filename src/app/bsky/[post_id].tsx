@@ -4,12 +4,10 @@ import { useEffect, useState } from "react";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
-import BlueskyPost, {
-  BlueskyPostProperties,
-} from "#/components/posts/BlueskyPost";
+import BlueskyPost from "#/components/posts/BlueskyPost";
 import { styles } from "#/constants/Styles";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { DISPLAY_TEXT_FULL } from "#/types";
+import { type BlueskyPostProperties, DISPLAY_TEXT_FULL } from "#/types";
 
 /**
  * Loads a Bluesky post based on the provided post ID.

@@ -10,7 +10,7 @@ import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
-import { OnBoardingData } from "./Flatboard";
+import type { OnBoardingData } from "./Flatboard";
 
 type StandardStepperProperties = {
   step: number;

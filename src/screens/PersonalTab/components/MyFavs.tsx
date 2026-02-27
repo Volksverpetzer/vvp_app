@@ -10,7 +10,7 @@ import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import LoadInstaPost from "#/components/loader/LoadInstaPost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import { ShareableType } from "#/helpers/Sharing";
+import type { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Analytics";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";

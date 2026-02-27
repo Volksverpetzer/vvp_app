@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { ViewStyle } from "react-native";
+import type { ReactNode } from "react";
+import type { ViewStyle } from "react-native";
 
 import View from "#/components/design/View";
 

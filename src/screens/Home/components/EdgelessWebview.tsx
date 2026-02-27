@@ -9,7 +9,7 @@ import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { HttpsUrl } from "#/types";
+import type { HttpsUrl } from "#/types";
 
 interface Cookie {
   name: string;

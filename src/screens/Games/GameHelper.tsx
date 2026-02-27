@@ -1,4 +1,4 @@
-import { DisinfoPair, MemoryCard } from "#/types";
+import type { DisinfoPair, MemoryCard } from "#/types";
 
 export const truncate = (text: string, maxLength = 30): string =>
   text.length > maxLength ? text.slice(0, maxLength) + "..." : text;

@@ -5,30 +5,7 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-
-interface Review {
-  publisher: {
-    name: string;
-    site: string;
-  };
-  url: string;
-  title: string;
-  reviewDate: string;
-  textualRating: string;
-  languageCode: string;
-}
-
-/**
- * Represents the properties of a fact check as fetched from the Google Fact Check API
- */
-export interface ClaimProperties {
-  text: string;
-  claimant: string;
-  claimDate: string;
-  claimReview: Review[];
-  count: number;
-  id: number;
-}
+import type { ClaimProperties } from "#/types";
 
 /**
  * Renders Short Post for Googles Claim Review
@@ -40,7 +17,7 @@ const ClaimPost = (properties: ClaimProperties) => {
     WebBrowser.openBrowserAsync(properties.claimReview[0].url);
   };
 
-  const review: Review = properties.claimReview[0];
+  const review = properties.claimReview[0];
   return (
     <TouchableOpacity accessibilityRole="button" onPress={handleSelectClaim}>
       <View style={{ paddingBottom: 0, flex: 1 }}>

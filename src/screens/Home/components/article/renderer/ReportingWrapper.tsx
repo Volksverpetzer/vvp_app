@@ -1,12 +1,12 @@
 import { useRouter } from "expo-router";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 
 import { ErrorIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { HttpsUrl } from "#/types";
+import type { HttpsUrl } from "#/types";
 
 interface ReportingWrapperProperties {
   url: HttpsUrl;

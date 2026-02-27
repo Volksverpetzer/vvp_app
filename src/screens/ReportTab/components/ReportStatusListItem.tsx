@@ -5,7 +5,7 @@ import { ReportStatusIcon } from "#/components/Icons";
 import UiSpinner from "#/components/animations/UiSpinner";
 import API from "#/helpers/network/ServerAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { StatusResponse, StoredReport } from "#/types";
+import type { StatusResponse, StoredReport } from "#/types";
 
 /**
  * Component to display the status of a report

@@ -13,7 +13,7 @@ import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
-import { AISearchResponse } from "#/types";
+import type { AISearchResponse } from "#/types";
 
 interface AISearchProperties {
   search: string;

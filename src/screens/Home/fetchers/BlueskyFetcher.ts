@@ -1,11 +1,10 @@
-import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
-import BlueskyPost, {
-  BlueskyPostProperties,
-} from "#/components/posts/BlueskyPost";
+import BlueskyPost from "#/components/posts/BlueskyPost";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
+import type { BlueskyPostProperties } from "#/types";
 
 import FetcherUtilities from "./FetcherUtilities";
 

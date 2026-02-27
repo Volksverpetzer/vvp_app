@@ -4,7 +4,7 @@ import { Dimensions, Platform } from "react-native";
 
 import Config from "#/constants/Config";
 import { createClient, get, post } from "#/helpers/utils/networking";
-import { HttpsUrl } from "#/types";
+import type { HttpsUrl } from "#/types";
 
 const { apiUrl, wpUrl } = Config;
 

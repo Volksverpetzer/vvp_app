@@ -1,4 +1,4 @@
-import { FeedType, FeedsConfig } from "#/types";
+import type { FeedType, FeedsConfig } from "#/types";
 
 /**
  * Liefert die aktivierten Feed‑Keys als `FeedType[]`.

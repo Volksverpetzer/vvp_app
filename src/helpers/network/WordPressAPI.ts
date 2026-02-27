@@ -1,10 +1,12 @@
 import { decode } from "html-entities";
 
-import type { LoadArticlePostProperties } from "#/components/loader/LoadArticlePost";
-import type { ArticleProperties } from "#/components/posts/ArticlePost";
 import Config from "#/constants/Config";
 import { createClient, get as netGet } from "#/helpers/utils/networking";
-import { MediaResponse } from "#/types";
+import type {
+  ArticleProperties,
+  LoadArticlePostProperties,
+  MediaResponse,
+} from "#/types";
 
 export default class WordPressAPI {
   static readonly client = createClient(Config.wpUrl);

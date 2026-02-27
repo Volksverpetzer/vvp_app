@@ -1,5 +1,5 @@
 import BaseStore from "#/helpers/Storage";
-import { BadgeState } from "#/helpers/provider/BadgeProvider";
+import type { BadgeState } from "#/helpers/provider/BadgeProvider";
 
 /**
  * Class for managing badge-related state.
