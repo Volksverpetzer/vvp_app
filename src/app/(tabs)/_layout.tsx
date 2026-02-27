@@ -1,18 +1,14 @@
-import { Tabs } from "expo-router";
-import { View } from "react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 
-import {
-  HomeIcon,
-  ReportIcon,
-  SettingsIcon,
-  StarIcon,
-  TrophyIcon,
-} from "#/components/Icons";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import { useBadge } from "#/helpers/provider/BadgeProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+
+export const unstable_settings = {
+  initialRouteName: "home",
+};
 
 /**
  * The layout for the tab navigator.
@@ -26,99 +22,121 @@ const TabLayout = () => {
   const engagementActive = Config.enableEngagement;
 
   return (
-    <Tabs
-      initialRouteName="home"
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: corporate,
-        tabBarShowLabel: false,
-        tabBarInactiveTintColor: Colors[colorScheme].tabIconDefault,
-        tabBarIconStyle: {
-          marginVertical: 5,
-        },
-        tabBarStyle: {
-          paddingBottom: 10,
-          backgroundColor: Colors[colorScheme].background,
-          borderTopWidth: 1,
-          borderColor: Colors[colorScheme].grayedOut,
-        },
+    <NativeTabs
+      backBehavior="history"
+      backgroundColor={Colors[colorScheme].background}
+      badgeBackgroundColor={corporate}
+      disableTransparentOnScrollEdge
+      iconColor={{
+        default: Colors[colorScheme].tabIconDefault,
+        selected: Colors[colorScheme].text,
       }}
+      indicatorColor={corporate}
+      labelVisibilityMode="unlabeled"
+      shadowColor={Colors[colorScheme].grayedOut}
     >
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => <HomeIcon color={color} />,
-          tabBarAccessibilityLabel: "Home",
-        }}
-      />
-      <Tabs.Screen
-        name="personal"
-        options={{
-          href: engagementActive ? "/personal" : null,
-          title: "Favs",
-          tabBarIcon: ({ color, focused }) => (
-            <>
-              <StarIcon filled={focused} color={color} />
-              {badgeState.personal && <View style={styles.badge} />}
-            </>
-          ),
-          tabBarAccessibilityLabel: "Favoriten",
-        }}
-      />
-      <Tabs.Screen
-        name="action"
-        options={{
-          href: actionsActive ? "/action" : null,
-          title: "Action",
-          tabBarIcon: ({ color, focused }) => {
-            return (
-              <View
-                style={{
-                  width: 70,
-                  height: 70,
-                  borderRadius: 35,
-                  padding: 10,
-                  marginTop: 0,
-                  backgroundColor: focused
-                    ? Colors[colorScheme].secondaryBackground
-                    : Colors[colorScheme].background,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderWidth: 1,
-                  borderBottomColor: Colors[colorScheme].background,
-                  borderLeftColor: Colors[colorScheme].background,
-                  borderRightColor: Colors[colorScheme].background,
-                  borderTopColor: Colors[colorScheme].grayedOut,
-                }}
-              >
-                <TrophyIcon color={focused ? corporate : color} />
-                {badgeState.action && <View style={styles.badge} />}
-              </View>
-            );
-          },
-          tabBarAccessibilityLabel: "Aktionen",
-        }}
-      />
-      <Tabs.Screen
-        name="report"
-        options={{
-          title: "Petzen",
-          tabBarIcon: ({ color }) => <ReportIcon color={color} />,
-          tabBarAccessibilityLabel: "Fake melden",
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Konfig",
-          tabBarIcon: ({ color }) => (
-            <SettingsIcon style={{ bottom: 3 }} color={color} />
-          ),
-          tabBarAccessibilityLabel: "Einstellungen",
-        }}
-      />
-    </Tabs>
+      <NativeTabs.Trigger name="home">
+        <NativeTabs.Trigger.Icon
+          src={{
+            default: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="home-outline"
+              />
+            ),
+            selected: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="home"
+              />
+            ),
+          }}
+        />
+        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger hidden={!engagementActive} name="personal">
+        <NativeTabs.Trigger.Icon
+          src={{
+            default: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="star-outline"
+              />
+            ),
+            selected: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="star"
+              />
+            ),
+          }}
+        />
+        <NativeTabs.Trigger.Badge hidden={!badgeState.personal} />
+        <NativeTabs.Trigger.Label>Favs</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger hidden={!actionsActive} name="action">
+        <NativeTabs.Trigger.Icon
+          src={{
+            default: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="trophy-outline"
+              />
+            ),
+            selected: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="trophy"
+              />
+            ),
+          }}
+        />
+        <NativeTabs.Trigger.Badge hidden={!badgeState.action} />
+        <NativeTabs.Trigger.Label>Action</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="report">
+        <NativeTabs.Trigger.Icon
+          src={{
+            default: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="alert-circle-outline"
+              />
+            ),
+            selected: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="alert-circle"
+              />
+            ),
+          }}
+        />
+        <NativeTabs.Trigger.Label>Petzen</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="settings">
+        <NativeTabs.Trigger.Icon
+          src={{
+            default: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="cog-outline"
+              />
+            ),
+            selected: (
+              <NativeTabs.Trigger.VectorIcon
+                family={MaterialCommunityIcons}
+                name="cog"
+              />
+            ),
+          }}
+        />
+        <NativeTabs.Trigger.Label>Konfig</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
+    </NativeTabs>
   );
 };
 
