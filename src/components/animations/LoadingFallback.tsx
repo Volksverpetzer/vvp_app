@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicatorProps } from "react-native";
+import { ActivityIndicatorProps, ViewStyle } from "react-native";
 
 import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";
@@ -8,6 +8,7 @@ import View from "#/components/design/View";
 interface LoadingFallbackProps {
   text?: string;
   spinnerProps?: ActivityIndicatorProps;
+  containerStyle?: ViewStyle;
 }
 
 /**
@@ -16,6 +17,7 @@ interface LoadingFallbackProps {
 const LoadingFallback = ({
   text = "Lade Artikel...",
   spinnerProps,
+  containerStyle,
 }: LoadingFallbackProps) => {
   return (
     <View
@@ -24,6 +26,7 @@ const LoadingFallback = ({
         alignItems: "center",
         height: "100%",
         gap: 20,
+        ...containerStyle,
       }}
     >
       <UiSpinner
