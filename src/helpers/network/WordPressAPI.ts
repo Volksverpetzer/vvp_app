@@ -1,7 +1,7 @@
 import { decode } from "html-entities";
 
-import { LoadArticlePostProperties } from "#/components/loader/LoadArticlePost";
-import { ArticleProperties } from "#/components/posts/ArticlePost";
+import type { LoadArticlePostProperties } from "#/components/loader/LoadArticlePost";
+import type { ArticleProperties } from "#/components/posts/ArticlePost";
 import Config from "#/constants/Config";
 import { createClient, get as netGet } from "#/helpers/utils/networking";
 import { MediaResponse } from "#/types";

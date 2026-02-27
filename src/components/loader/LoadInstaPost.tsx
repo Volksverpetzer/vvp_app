@@ -16,7 +16,7 @@ type LoadProperties = {
  * it displays an animated loading indicator.
  */
 const LoadInstaPost = (properties: LoadProperties) => {
-  const { id } = properties;
+  const { id, inView = true } = properties;
 
   const loadInstaPost = useCallback(
     (postId: string) => API.getInstaPost(postId),
@@ -31,8 +31,8 @@ const LoadInstaPost = (properties: LoadProperties) => {
   );
 
   const renderPost = useCallback(
-    (post: InstaPostProperties) => <InstaPost inView={true} {...post} />,
-    [],
+    (post: InstaPostProperties) => <InstaPost inView={inView} {...post} />,
+    [inView],
   );
 
   return (

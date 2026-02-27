@@ -60,7 +60,7 @@ const Loader = <TData,>({
     );
   }
 
-  if (!data) {
+  if (typeof data === "undefined") {
     return null;
   }
 

@@ -1,6 +1,6 @@
 import { decode } from "html-entities";
 
-import { LoadArticlePostProperties } from "#/components/loader/LoadArticlePost";
+import type { LoadArticlePostProperties } from "#/components/loader/LoadArticlePost";
 import ArticlePost, { ArticleProperties } from "#/components/posts/ArticlePost";
 import Post from "#/helpers/Post";
 import WordPressAPI from "#/helpers/network/WordPressAPI";

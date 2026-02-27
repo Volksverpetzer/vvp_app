@@ -21,7 +21,7 @@ export type LoadArticlePostProperties = Omit<
  * This component takes an article slug, pulls WordPress API and then Renders an Article Post with the Response
  */
 const LoadArticlePost = (properties: LoadProperties) => {
-  const { slug } = properties;
+  const { slug, inView = true } = properties;
 
   const loadArticle = useCallback((articleSlug: string) => {
     return WordPressAPI.getPost(articleSlug).then(
@@ -31,9 +31,9 @@ const LoadArticlePost = (properties: LoadProperties) => {
 
   const renderArticle = useCallback(
     (article: ArticleProperties) => (
-      <ArticlePost inView={true} article={article} />
+      <ArticlePost inView={inView} article={article} />
     ),
-    [],
+    [inView],
   );
 
   return (
