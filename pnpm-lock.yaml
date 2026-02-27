@@ -47,10 +47,10 @@ importers:
         specifier: 2.2.0
         version: 2.2.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))
       '@react-navigation/bottom-tabs':
-        specifier: ^7.10.1
+        specifier: 7.10.1
         version: 7.10.1(@react-navigation/native@7.1.28(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native-safe-area-context@5.6.2(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native-screens@4.23.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
       '@react-navigation/native':
-        specifier: ^7.1.28
+        specifier: 7.1.28
         version: 7.1.28(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
       '@stripe/stripe-react-native':
         specifier: 0.58.0

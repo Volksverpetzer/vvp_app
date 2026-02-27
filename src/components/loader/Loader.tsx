@@ -1,4 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
+import { type ActivityIndicatorProps } from "react-native";
 
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import ErrorCard from "#/components/design/ErrorCard";
@@ -10,6 +11,7 @@ type LoaderProps<TData> = {
   renderError?: (error: unknown) => ReactElement;
   onLoaded?: (data: TData) => void;
   loadingText?: string;
+  spinnerProps?: ActivityIndicatorProps;
 };
 
 const Loader = <TData,>({
@@ -19,6 +21,7 @@ const Loader = <TData,>({
   renderError,
   onLoaded,
   loadingText = "Lade Beitrag...",
+  spinnerProps = { size: "large" },
 }: LoaderProps<TData>) => {
   const [data, setData] = useState<TData>();
   const [error, setError] = useState<unknown>();
@@ -61,6 +64,7 @@ const Loader = <TData,>({
     return (
       <LoadingFallback
         text={loadingText}
+        spinnerProps={spinnerProps}
         containerStyle={{
           height: undefined,
           minHeight: 280,

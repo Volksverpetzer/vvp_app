@@ -24,9 +24,15 @@ const LoadArticlePost = (properties: LoadProperties) => {
   const { slug, inView = true } = properties;
 
   const loadArticle = useCallback((articleSlug: string) => {
-    return WordPressAPI.getPost(articleSlug).then(
-      (data: LoadArticlePostProperties) => WordPressAPI.convertLoadProps(data),
-    );
+    return WordPressAPI.getPost(articleSlug).then((data) => {
+      if (!data) {
+        return Promise.reject(
+          new Error(`Article not found for slug: ${articleSlug}`),
+        );
+      }
+
+      return WordPressAPI.convertLoadProps(data);
+    });
   }, []);
 
   const renderArticle = useCallback(
