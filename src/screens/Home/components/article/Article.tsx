@@ -1,14 +1,11 @@
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
-import {
-  Animated,
+import type {
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ScrollView,
-  View,
-  useWindowDimensions,
 } from "react-native";
+import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import Footer from "#/components/views/Footer";

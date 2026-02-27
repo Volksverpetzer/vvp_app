@@ -1,9 +1,6 @@
 import { Image } from "expo-image";
-import {
-  ActivityIndicator,
-  ActivityIndicatorProps,
-  ViewStyle,
-} from "react-native";
+import type { ActivityIndicatorProps, ViewStyle } from "react-native";
+import { ActivityIndicator } from "react-native";
 
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";

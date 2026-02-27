@@ -6,7 +6,8 @@ import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
-import { ShareableType, multishare } from "#/helpers/Sharing";
+import type { ShareableType } from "#/helpers/Sharing";
+import { multishare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { FaveableType } from "#/types";
 

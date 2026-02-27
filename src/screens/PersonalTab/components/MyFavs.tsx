@@ -15,7 +15,8 @@ import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Analytics";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA, StoredFavs } from "#/types";
+import type { StoredFavs } from "#/types";
+import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
 const MyFavs = () => {
   const [favs, setFavs] = useState<StoredFavs>({});

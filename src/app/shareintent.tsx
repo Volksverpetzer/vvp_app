@@ -1,5 +1,6 @@
 import * as Linking from "expo-linking";
-import { Href, Redirect, useRouter } from "expo-router";
+import type { Href } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { Button, Text, View } from "react-native";
 
 import Config from "#/constants/Config";

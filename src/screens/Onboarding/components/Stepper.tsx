@@ -1,9 +1,6 @@
 import { useMemo } from "react";
-import {
-  GestureResponderEvent,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import type { GestureResponderEvent } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";

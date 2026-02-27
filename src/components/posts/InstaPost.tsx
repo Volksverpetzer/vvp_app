@@ -1,11 +1,11 @@
 import { Zoomable } from "@likashefqet/react-native-image-zoom";
-import { Image, ImageLoadEventData } from "expo-image";
+import type { ImageLoadEventData } from "expo-image";
+import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import {
   Animated,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   ScrollView,
   TouchableOpacity,
   useWindowDimensions,

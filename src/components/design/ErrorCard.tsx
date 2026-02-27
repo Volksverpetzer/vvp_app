@@ -1,5 +1,6 @@
 import { ErrorIcon } from "#/components/Icons";
-import Card, { CardProperties } from "#/components/design/Card";
+import type { CardProperties } from "#/components/design/Card";
+import Card from "#/components/design/Card";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";

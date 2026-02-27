@@ -1,4 +1,5 @@
-import { StyleSheet, View, ViewStyle } from "react-native";
+import type { ViewStyle } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";

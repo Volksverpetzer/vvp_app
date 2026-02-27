@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { ColorSchemeName, useColorScheme } from "react-native";
+import type { ColorSchemeName } from "react-native";
+import { useColorScheme } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";

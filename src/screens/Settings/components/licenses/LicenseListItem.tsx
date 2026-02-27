@@ -1,11 +1,10 @@
 import { Image } from "expo-image";
 import type { JSX, ReactNode } from "react";
+import type { StyleProp, TextStyle } from "react-native";
 import {
   Linking,
-  StyleProp,
   StyleSheet,
   Text,
-  TextStyle,
   TouchableOpacity,
   View,
 } from "react-native";

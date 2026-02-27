@@ -1,4 +1,5 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
+import type { FC } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { ViewStyle } from "react-native";
 
 import ShareBar from "#/components/bars/ShareBar";

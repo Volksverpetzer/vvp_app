@@ -1,7 +1,8 @@
 import type { StatisticsType } from "#/types";
 
 import { Achievements } from "./Achievements";
-import StatisticsStore, { StatsKeyType } from "./Stores/StatisticsStore";
+import type { StatsKeyType } from "./Stores/StatisticsStore";
+import StatisticsStore from "./Stores/StatisticsStore";
 import { WEEK_IN_MS } from "./utils/time";
 
 const Statistics = {

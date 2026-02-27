@@ -1,12 +1,7 @@
-import { ReactElement, ReactNode, useState } from "react";
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-} from "react-native";
+import type { ReactElement, ReactNode } from "react";
+import { useState } from "react";
+import type { StyleProp, TextStyle } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
 import Colors from "#/constants/Colors";

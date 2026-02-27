@@ -1,10 +1,8 @@
-import { RefObject, useEffect, useRef } from "react";
+import type { RefObject } from "react";
+import { useEffect, useRef } from "react";
 import { View } from "react-native";
-import {
-  InternalRendererProps,
-  TText,
-  useInternalRenderer,
-} from "react-native-render-html";
+import type { InternalRendererProps, TText } from "react-native-render-html";
+import { useInternalRenderer } from "react-native-render-html";
 
 interface HeaderRendererProperties extends InternalRendererProps<TText> {
   componentRefs: RefObject<Record<string, unknown>>;
