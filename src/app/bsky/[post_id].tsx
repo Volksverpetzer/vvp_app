@@ -1,6 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
+import LoadingFallback from "#/components/animations/LoadingFallback";
 import UiSpinner from "#/components/animations/UiSpinner";
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
@@ -31,7 +32,7 @@ const BskyScreen = () => {
   }, [parameters.post_id, router]);
 
   if (!post) {
-    return <UiSpinner size={"large"} />;
+    return <LoadingFallback text={"Lade Bluesky Beitrag..."} />;
   }
 
   const postId = post.post.post.uri.split("/app.bsky.feed.post/")[1];
