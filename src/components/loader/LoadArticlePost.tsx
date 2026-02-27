@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import Loader from "src/components/loader/Loader";
+import Loader from "#/components/loader/Loader";
 import ArticlePost, {
   ArticleProperties,
-} from "src/components/posts/ArticlePost";
+} from "#/components/posts/ArticlePost";
 
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 

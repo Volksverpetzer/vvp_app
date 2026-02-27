@@ -168,7 +168,12 @@ const Feed = (properties: FeedProperties) => {
   );
 
   if (!initialLoad) {
-    return <LoadingFallback text={"Lade Feed..."} />;
+    return (
+      <LoadingFallback
+        text={"Lade Feed..."}
+        containerStyle={properties?.style}
+      />
+    );
   }
 
   if (properties.fetchers.length === 0) {

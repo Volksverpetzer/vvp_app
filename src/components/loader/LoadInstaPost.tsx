@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import Loader from "src/components/loader/Loader";
-import InstaPost, { InstaPostProperties } from "src/components/posts/InstaPost";
+import Loader from "#/components/loader/Loader";
+import InstaPost, { InstaPostProperties } from "#/components/posts/InstaPost";
 
 import ContentStore from "#/helpers/Stores/ContentStore";
 import API from "#/helpers/network/ServerAPI";
