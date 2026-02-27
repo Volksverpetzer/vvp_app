@@ -6,7 +6,7 @@ import { Platform } from "react-native";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import API from "#/helpers/network/ServerAPI";
-import { NotificationSettingType } from "#/types";
+import type { NotificationSettingType } from "#/types";
 
 import SettingsStore from "./Stores/SettingsStore";
 

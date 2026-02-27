@@ -2,9 +2,9 @@ import { useHtmlIframeProps } from "@native-html/iframe-plugin";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
 import { ColorSchemeName, View } from "react-native";
-import { CustomRendererProps, TBlock } from "react-native-render-html";
+import type { CustomRendererProps, TBlock } from "react-native-render-html";
 import WebView from "react-native-webview";
-import {
+import type {
   WebViewErrorEvent,
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";

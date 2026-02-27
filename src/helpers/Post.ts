@@ -1,8 +1,8 @@
-import { FC } from "react";
+import type { FC } from "react";
 
-import { FaveableType } from "#/types";
+import type { FaveableType } from "#/types";
 
-import { ShareableType } from "./Sharing";
+import type { ShareableType } from "./Sharing";
 
 /**
  * Post Class for ordering of different types of Post Components

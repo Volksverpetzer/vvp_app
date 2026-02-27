@@ -1,4 +1,4 @@
-import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";

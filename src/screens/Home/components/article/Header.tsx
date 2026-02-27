@@ -16,7 +16,7 @@ import { TouchIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
-import { ArticleProperties } from "#/components/posts/ArticlePost";
+import type { ArticleProperties } from "#/components/posts/ArticlePost";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { outBoundLinkPress } from "#/helpers/Linking";

@@ -1,5 +1,5 @@
 import Post from "#/helpers/Post";
-import { SafeFetchFunction } from "#/types";
+import type { SafeFetchFunction } from "#/types";
 
 const FetcherUtilities = {
   /**

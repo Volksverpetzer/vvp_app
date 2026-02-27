@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import UiSpinner from "#/components/animations/UiSpinner";
-import { StripeButtonProperties } from "#/components/buttons/StripeButton";
+import type { StripeButtonProperties } from "#/components/buttons/StripeButton";
 import { styles as globalStyles } from "#/constants/Styles";
 import API from "#/helpers/network/ServerAPI";
 

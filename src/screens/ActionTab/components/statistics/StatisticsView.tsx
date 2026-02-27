@@ -7,7 +7,7 @@ import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import Statistics from "#/helpers/Statistics";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import { StatisticsType } from "#/types";
+import type { StatisticsType } from "#/types";
 
 import StatisticsPanel from "./StatisticsPanel";
 

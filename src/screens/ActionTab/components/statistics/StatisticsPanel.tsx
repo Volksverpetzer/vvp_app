@@ -7,7 +7,7 @@ import {
 } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import { styles } from "#/constants/Styles";
-import { StatisticsType, StatisticsValueKey } from "#/types";
+import type { StatisticsType, StatisticsValueKey } from "#/types";
 
 import StatisticsBox from "./StatisticsBox";
 

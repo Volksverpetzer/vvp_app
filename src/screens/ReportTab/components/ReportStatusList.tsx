@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
 import Heading from "#/components/typography/Heading";
-import { StoredReports } from "#/types";
+import type { StoredReports } from "#/types";
 
 import ReportStatusListItem from "./ReportStatusListItem";
 

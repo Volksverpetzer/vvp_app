@@ -1,5 +1,9 @@
 import React from "react";
-import { ActivityIndicatorProps, StyleProp, ViewStyle } from "react-native";
+import type {
+  ActivityIndicatorProps,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 
 import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";

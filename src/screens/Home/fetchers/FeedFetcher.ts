@@ -1,4 +1,4 @@
-import { ContentSettingType, FeedFetcherType } from "#/types";
+import type { ContentSettingType, FeedFetcherType } from "#/types";
 
 import { BlueskyFetcher } from "./BlueskyFetcher";
 import { BotFetcher } from "./BotFetcher";

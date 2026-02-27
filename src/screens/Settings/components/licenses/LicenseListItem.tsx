@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { JSX, ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 import {
   Linking,
   StyleProp,

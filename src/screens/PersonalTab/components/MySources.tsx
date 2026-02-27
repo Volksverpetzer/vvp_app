@@ -16,7 +16,7 @@ import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import { HttpsUrl, StoredSources } from "#/types";
+import type { HttpsUrl, StoredSources } from "#/types";
 
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});

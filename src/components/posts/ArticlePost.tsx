@@ -18,7 +18,7 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import { HttpsUrl } from "#/types";
+import type { HttpsUrl } from "#/types";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
 

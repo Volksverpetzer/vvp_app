@@ -4,7 +4,7 @@ import {
   get as netGet,
   post as netPost,
 } from "#/helpers/utils/networking";
-import { AISearchResponse, HttpsUrl } from "#/types";
+import type { AISearchResponse, HttpsUrl } from "#/types";
 
 /** Axios client for AI with Referer header set */
 const intelligenceClient = createClient(Config.aiUrl);

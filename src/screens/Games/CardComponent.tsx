@@ -7,7 +7,7 @@ import {
 
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
-import { MemoryCard } from "#/types";
+import type { MemoryCard } from "#/types";
 
 interface CardComponentProperties {
   card: MemoryCard;

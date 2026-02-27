@@ -2,7 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 
 import LoadingFallback from "#/components/animations/LoadingFallback";
-import { ArticleProperties } from "#/components/posts/ArticlePost";
+import type { ArticleProperties } from "#/components/posts/ArticlePost";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";

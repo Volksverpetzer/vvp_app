@@ -1,6 +1,6 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useRef } from "react";
-import { StyleProp, TextInput, TextStyle } from "react-native";
+import type { StyleProp, TextInput, TextStyle } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";

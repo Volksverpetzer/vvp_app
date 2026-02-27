@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
 
 interface Properties {

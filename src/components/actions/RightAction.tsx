@@ -1,6 +1,6 @@
-import { FC, ReactElement } from "react";
+import type { FC, ReactElement } from "react";
 import { Pressable, Text as RNText, View as RNView } from "react-native";
-import { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
+import type { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 import Animated, {
   Extrapolation,
   SharedValue,

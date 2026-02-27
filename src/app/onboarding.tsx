@@ -20,7 +20,7 @@ import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
-import { NotificationSettingType, SettingType } from "#/types";
+import type { NotificationSettingType, SettingType } from "#/types";
 
 import WelcomeVVP from "#assets/images/welcome.webp";
 

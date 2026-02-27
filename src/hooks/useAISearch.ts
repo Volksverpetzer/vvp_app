@@ -1,11 +1,11 @@
 import { Buffer } from "buffer";
 import { useCallback, useEffect, useState } from "react";
 
-import { FaktenbotReaction } from "#/components/animations/Faktenbot";
+import type { FaktenbotReaction } from "#/components/animations/Faktenbot";
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
-import { AISearchResponse } from "#/types";
+import type { AISearchResponse } from "#/types";
 
 interface UseAISearchProperties {
   search: string;
