@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
+import LoadingFallback from "#/components/animations/LoadingFallback";
 import UiSpinner from "#/components/animations/UiSpinner";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import Text from "#/components/design/Text";
@@ -167,17 +168,7 @@ const Feed = (properties: FeedProperties) => {
   );
 
   if (!initialLoad) {
-    return (
-      <View
-        style={{
-          justifyContent: "center",
-          height: "100%",
-          ...properties?.style,
-        }}
-      >
-        <UiSpinner size={"large"} />
-      </View>
-    );
+    return <LoadingFallback text={"Lade Feed..."} />;
   }
 
   if (properties.fetchers.length === 0) {
