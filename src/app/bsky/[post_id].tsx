@@ -31,7 +31,12 @@ const BskyScreen = () => {
   }, [parameters.post_id, router]);
 
   if (!post) {
-    return <LoadingFallback text={"Lade Bluesky Beitrag..."} />;
+    return (
+      <LoadingFallback
+        text={"Lade Bluesky Beitrag..."}
+        spinnerProps={{ size: "large" }}
+      />
+    );
   }
 
   const postId = post.post.post.uri.split("/app.bsky.feed.post/")[1];

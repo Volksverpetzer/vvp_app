@@ -172,6 +172,7 @@ const Feed = (properties: FeedProperties) => {
       <LoadingFallback
         text={"Lade Feed..."}
         containerStyle={properties?.style}
+        spinnerProps={{ size: "large" }}
       />
     );
   }

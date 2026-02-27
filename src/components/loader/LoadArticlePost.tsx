@@ -14,7 +14,7 @@ export type LoadArticlePostProperties = Omit<
   "title" | "yoast_head_json"
 > & {
   title: { rendered: string };
-  yoast_head_json: { description: string };
+  yoast_head_json?: { description?: string };
 };
 
 /**
