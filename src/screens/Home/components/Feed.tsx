@@ -1,14 +1,12 @@
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  FlatList,
+import type {
   ListRenderItem,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  Pressable,
-  RefreshControl,
   ViewStyle,
 } from "react-native";
+import { FlatList, Pressable, RefreshControl } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
@@ -19,7 +17,7 @@ import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import Post from "#/helpers/Post";
+import type Post from "#/helpers/Post";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 

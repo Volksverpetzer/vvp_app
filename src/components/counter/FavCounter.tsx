@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, TextStyle } from "react-native";
+import type { TextStyle } from "react-native";
+import { Pressable } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";

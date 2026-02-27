@@ -1,7 +1,8 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { DimensionValue, TouchableOpacity } from "react-native";
+import type { DimensionValue } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 import UiSpinner from "#/components/animations/UiSpinner";
 import ViewCounter from "#/components/counter/ViewCounter";

@@ -1,4 +1,5 @@
-import { FC, useContext } from "react";
+import type { FC } from "react";
+import { useContext } from "react";
 import { View } from "react-native";
 
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";

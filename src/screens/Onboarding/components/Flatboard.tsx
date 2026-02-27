@@ -1,12 +1,12 @@
 import { Image } from "expo-image";
-import React, { FC, useMemo, useRef, useState } from "react";
-import {
-  FlatList,
+import type { FC } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import type {
   GestureResponderEvent,
   ImageRequireSource,
   TextStyle,
-  useWindowDimensions,
 } from "react-native";
+import { FlatList, useWindowDimensions } from "react-native";
 
 import { Logo } from "#/components/Icons";
 import Text from "#/components/design/Text";

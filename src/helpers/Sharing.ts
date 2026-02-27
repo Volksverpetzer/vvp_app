@@ -211,4 +211,5 @@ const multishare = async (
   }
 };
 
-export { onShare, multishare, ShareableType };
+export type { ShareableType };
+export { onShare, multishare };

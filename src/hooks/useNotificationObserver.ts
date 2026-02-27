@@ -1,6 +1,7 @@
 import * as Linking from "expo-linking";
 import * as Notifications from "expo-notifications";
-import { Href, router } from "expo-router";
+import type { Href } from "expo-router";
+import { router } from "expo-router";
 import { useEffect } from "react";
 import { Platform } from "react-native";
 

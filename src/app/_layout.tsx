@@ -6,7 +6,8 @@ import {
 } from "@expo-google-fonts/source-sans-3";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import * as Linking from "expo-linking";
-import { Href, Stack, useRouter, useSegments } from "expo-router";
+import type { Href } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import { ShareIntentProvider } from "expo-share-intent";
 import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
@@ -17,7 +18,8 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import Toast, { ToastConfig } from "react-native-toast-message";
+import type { ToastConfig } from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 
 import UiSpinner from "#/components/animations/UiSpinner";
 import View from "#/components/design/View";

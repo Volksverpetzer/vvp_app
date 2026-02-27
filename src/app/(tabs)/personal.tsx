@@ -1,5 +1,6 @@
 import { useFocusEffect } from "expo-router";
-import { JSX, useCallback, useState } from "react";
+import type { JSX } from "react";
+import { useCallback, useState } from "react";
 import { Animated, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 

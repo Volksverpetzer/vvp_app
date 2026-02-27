@@ -1,10 +1,7 @@
 import { Text, View } from "react-native";
 
-import {
-  ChevronIcon,
-  MaterialCommunityIconName,
-  StatisticsIcon,
-} from "#/components/Icons";
+import type { MaterialCommunityIconName } from "#/components/Icons";
+import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import { styles } from "#/constants/Styles";
 import type { StatisticsType, StatisticsValueKey } from "#/types";

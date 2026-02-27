@@ -1,10 +1,11 @@
 import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
-import { Href, useRouter } from "expo-router";
+import type { Href } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { LayoutChangeEvent } from "react-native";
 import {
   AppState,
-  LayoutChangeEvent,
   Modal,
   Platform,
   Pressable,

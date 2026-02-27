@@ -1,13 +1,11 @@
 import { Zoomable } from "@likashefqet/react-native-image-zoom";
-import { Image, ImageLoadEventData } from "expo-image";
+import type { ImageLoadEventData } from "expo-image";
+import { Image } from "expo-image";
 import { useState } from "react";
 import { Button, Modal, Pressable, useWindowDimensions } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  InternalRendererProps,
-  TBlock,
-  useInternalRenderer,
-} from "react-native-render-html";
+import type { InternalRendererProps, TBlock } from "react-native-render-html";
+import { useInternalRenderer } from "react-native-render-html";
 
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";

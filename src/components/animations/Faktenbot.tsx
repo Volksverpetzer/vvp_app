@@ -1,7 +1,8 @@
 import Constants from "expo-constants";
 import { useEffect, useRef } from "react";
 import { Platform } from "react-native";
-import Rive, { RiveRef } from "rive-react-native";
+import type { RiveRef } from "rive-react-native";
+import Rive from "rive-react-native";
 
 export type FaktenbotReaction = 0 | 5 | 10;
 

@@ -3,7 +3,8 @@ import { useRouter } from "expo-router";
 import { useCallback, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { WebView, WebViewNavigation } from "react-native-webview";
+import type { WebViewNavigation } from "react-native-webview";
+import { WebView } from "react-native-webview";
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";

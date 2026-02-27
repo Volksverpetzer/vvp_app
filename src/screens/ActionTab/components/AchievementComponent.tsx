@@ -6,12 +6,8 @@ import { CheckboxIcon, CircleIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import {
-  AchievementConfig,
-  Achievements,
-  LevelType,
-  TaskType,
-} from "#/helpers/Achievements";
+import type { LevelType, TaskType } from "#/helpers/Achievements";
+import { AchievementConfig, Achievements } from "#/helpers/Achievements";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 

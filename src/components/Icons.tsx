@@ -7,16 +7,10 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
-import { Platform, StyleProp, TextStyle, View } from "react-native";
-import Svg, {
-  ClipPath,
-  Defs,
-  G,
-  Mask,
-  Path,
-  Rect,
-  SvgProps,
-} from "react-native-svg";
+import type { StyleProp, TextStyle } from "react-native";
+import { Platform, View } from "react-native";
+import type { SvgProps } from "react-native-svg";
+import Svg, { ClipPath, Defs, G, Mask, Path, Rect } from "react-native-svg";
 
 import { styles } from "#/constants/Styles";
 
