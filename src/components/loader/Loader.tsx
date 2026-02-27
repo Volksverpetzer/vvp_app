@@ -40,8 +40,12 @@ const Loader = <TData,>({
           return;
         }
 
-        onLoaded?.(result);
         setData(result);
+        try {
+          onLoaded?.(result);
+        } catch (_error) {
+          console.error(_error);
+        }
       })
       .catch((_error) => {
         if (isMounted) {

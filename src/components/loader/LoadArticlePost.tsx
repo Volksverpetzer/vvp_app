@@ -9,10 +9,7 @@ export type LoadProperties = {
   inView?: boolean;
 };
 
-export type LoadArticlePostProperties = Omit<
-  ArticleProperties,
-  "title" | "yoast_head_json"
-> & {
+export type LoadArticlePostProperties = Omit<ArticleProperties, "title"> & {
   title: { rendered: string };
   yoast_head_json?: { description?: string };
 };
