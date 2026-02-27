@@ -10,33 +10,7 @@ import WebView from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
 import UiSpinner from "#/components/animations/UiSpinner";
-
-/**
- *  Represents the properties of a Tiktok post as fetched from the Tiktok API
- *
- * @interface TiktokPostProperties
- * @property {string} embed_link - The URL to embed the TikTok video
- * @property {string} cover_image_url - URL of the video thumbnail
- * @property {number} width - Width of the video
- * @property {number} height - Height of the video
- * @property {string} [title] - Optional title of the video
- * @property {string} [video_description] - Optional description of the video
- * @property {number} [create_time] - Optional timestamp when the video was created
- * @property {string} [embedHtml] - Optional HTML for embedding
- * @property {string} [share_url] - Optional URL for sharing
- */
-export interface TiktokPostProperties {
-  embed_link: string;
-  create_time?: number;
-  title?: string;
-  video_description?: string;
-  cover_image_url: string;
-  embed_html?: string;
-  height: number;
-  width: number;
-  share_url?: string;
-  id: string;
-}
+import type { TiktokPostProperties } from "#/types";
 
 const TIKTOK_BRAND_COLOR = "#FF0050";
 const BLACK = "#000";

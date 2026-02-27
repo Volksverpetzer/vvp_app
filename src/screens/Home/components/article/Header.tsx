@@ -16,12 +16,12 @@ import { TouchIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
-import type { ArticleProperties } from "#/components/posts/ArticlePost";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import type { ArticleProperties } from "#/types";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
 import logoPike from "#assets/images/logo_pike.webp";

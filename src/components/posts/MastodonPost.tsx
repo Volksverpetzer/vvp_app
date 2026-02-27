@@ -15,35 +15,9 @@ import {
   DISPLAY_TEXT_EXCERPT,
   DISPLAY_TEXT_FULL,
   DISPLAY_TEXT_NONE,
-  DisplayText,
-  HttpsUrl,
+  type HttpsUrl,
+  type MastodonPostProperties,
 } from "#/types";
-
-export interface MastodonPostProperties {
-  id: number;
-  created_at: string; // ISO 8601 date string
-  content: string;
-  displayText?: DisplayText;
-  replies_count: number;
-  reblogs_count: number;
-  favourites_count: number;
-  answers: MastodonPostProperties[] | null;
-  in_reply_to_id: number;
-  reblog: unknown;
-  card: null;
-  uri: string;
-  account: {
-    id: number;
-    username: string;
-    uri: string;
-    acct: string;
-    display_name: string;
-    followers_count: number;
-    following_count: number;
-    statuses_count: number;
-    avatar: string;
-  };
-}
 
 type MastodonPostScreenProperties = MastodonPostProperties & {
   inView?: boolean;

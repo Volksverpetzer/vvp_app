@@ -1,17 +1,13 @@
 import { useCallback } from "react";
 
 import Loader from "#/components/loader/Loader";
-import ArticlePost, { ArticleProperties } from "#/components/posts/ArticlePost";
+import ArticlePost from "#/components/posts/ArticlePost";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
+import type { ArticleProperties } from "#/types";
 
 export type LoadProperties = {
   slug: string;
   inView?: boolean;
-};
-
-export type LoadArticlePostProperties = Omit<ArticleProperties, "title"> & {
-  title: { rendered: string };
-  yoast_head_json?: { description?: string };
 };
 
 /**

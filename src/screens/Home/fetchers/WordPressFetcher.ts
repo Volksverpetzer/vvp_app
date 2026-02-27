@@ -1,9 +1,9 @@
 import { decode } from "html-entities";
 
-import type { LoadArticlePostProperties } from "#/components/loader/LoadArticlePost";
-import ArticlePost, { ArticleProperties } from "#/components/posts/ArticlePost";
+import ArticlePost from "#/components/posts/ArticlePost";
 import Post from "#/helpers/Post";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
+import type { ArticleProperties, LoadArticlePostProperties } from "#/types";
 
 export const WordPressFetcher = {
   /**

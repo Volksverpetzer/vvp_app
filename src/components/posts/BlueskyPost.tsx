@@ -16,21 +16,14 @@ import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import {
+  type BlueskyPostProperties,
   DISPLAY_TEXT_EXCERPT,
   DISPLAY_TEXT_FULL,
   DISPLAY_TEXT_NONE,
-  DisplayText,
-  HttpsUrl,
+  type HttpsUrl,
 } from "#/types";
 
 import { PostText } from "./PostText";
-
-export interface BlueskyPostProperties {
-  post: FeedViewPost;
-  replies?: FeedViewPost[];
-  inView?: boolean;
-  displayText?: DisplayText;
-}
 
 /**
  * Displays a Bluesky post.

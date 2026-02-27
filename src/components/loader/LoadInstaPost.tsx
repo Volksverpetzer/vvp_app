@@ -1,9 +1,10 @@
 import { useCallback } from "react";
 
 import Loader from "#/components/loader/Loader";
-import InstaPost, { InstaPostProperties } from "#/components/posts/InstaPost";
+import InstaPost from "#/components/posts/InstaPost";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import API from "#/helpers/network/ServerAPI";
+import type { InstaPostProperties } from "#/types";
 
 type LoadProperties = {
   id: string;

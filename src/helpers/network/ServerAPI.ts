@@ -1,10 +1,5 @@
 import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
-import type { ClaimProperties } from "#/components/posts/ClaimPost";
-import type { InstaPostProperties } from "#/components/posts/InstaPost";
-import type { MastodonPostProperties } from "#/components/posts/MastodonPost";
-import type { TiktokPostProperties } from "#/components/posts/TiktokPost";
-import type { YouTubePostProperties } from "#/components/posts/YouTubePost";
 import Config from "#/constants/Config";
 import {
   createClient,
@@ -13,10 +8,15 @@ import {
 } from "#/helpers/utils/networking";
 import type {
   AISearchResponse,
+  ClaimProperties,
+  InstaPostProperties,
+  MastodonPostProperties,
   NotificationSettingType,
   Report,
   StatusResponse,
   StoredReport,
+  TiktokPostProperties,
+  YouTubePostProperties,
 } from "#/types";
 
 /**
