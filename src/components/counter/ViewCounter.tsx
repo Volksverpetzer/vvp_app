@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
+import type { ColorValue } from "react-native";
+import { ActivityIndicator } from "react-native";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";
 import Config from "#/constants/Config";
 import { getViews } from "#/helpers/network/Analytics";
 
 interface ViewCounterProperties {
   url: string; // the URL for which to fetch the views
-  color?: string;
+  color?: ColorValue;
   style?: any;
 }
 
@@ -17,6 +18,8 @@ interface ViewCounterProperties {
 const ViewCounter = (properties: ViewCounterProperties) => {
   const [isLoading, setLoading] = useState(true);
   const [views, setViews] = useState(0);
+  const color = properties?.color ?? "#fff";
+
   useEffect(() => {
     if (!Config.analytics) return;
     getViews(properties.url).then((views) => {
@@ -26,14 +29,16 @@ const ViewCounter = (properties: ViewCounterProperties) => {
     });
   });
   if (!Config.analytics) return;
+
+  // TODO replace ActivityIndicator with UiSpinner and adjust styling
   return (
     <>
       {isLoading ? (
-        <UiSpinner color="#fff" />
+        <ActivityIndicator color={color} />
       ) : (
         <Text
           style={{
-            color: properties?.color ?? "#fff",
+            color: color,
             fontSize: 14,
             ...properties.style,
           }}

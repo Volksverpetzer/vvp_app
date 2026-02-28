@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
-import type { ViewStyle } from "react-native";
+import type { ColorValue, ViewStyle } from "react-native";
 
 import View from "#/components/design/View";
 
 type BadgeProperties = {
   children: ReactNode;
   position: "topLeft" | "topRight";
-  color: string;
+  color: ColorValue;
 };
 
 const Badge = ({ children, position, color }: BadgeProperties) => {
