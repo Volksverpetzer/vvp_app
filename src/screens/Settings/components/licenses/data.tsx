@@ -90,7 +90,7 @@ export default {
     licenseUrl: "https://github.com/vdor/react-native-horizontal-picker",
     parents: "vvp_app",
   },
-  "axios@1.13.5": {
+  "axios@1.13.6": {
     licenses: "MIT",
     repository: "https://github.com/axios/axios",
     licenseUrl: "https://github.com/axios/axios/raw/master/LICENSE",
@@ -267,7 +267,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo@55.0.3": {
+  "expo@55.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
