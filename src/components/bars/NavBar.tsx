@@ -8,10 +8,11 @@ import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import { ShareableType, onShare } from "#/helpers/Sharing";
+import type { ShareableType } from "#/helpers/Sharing";
+import { onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { FaveableType } from "#/types";
+import type { FaveableType } from "#/types";
 
 interface NavBarProperties {
   link?: string;

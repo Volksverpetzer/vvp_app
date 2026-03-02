@@ -1,16 +1,13 @@
 import { useMemo } from "react";
-import {
-  GestureResponderEvent,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import type { GestureResponderEvent } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
-import { OnBoardingData } from "./Flatboard";
+import type { OnBoardingData } from "./Flatboard";
 
 type StandardStepperProperties = {
   step: number;

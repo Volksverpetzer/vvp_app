@@ -6,16 +6,17 @@ import { StarIcon } from "#/components/Icons";
 import ShareBar from "#/components/bars/ShareBar";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
-import LoadArticlePost from "#/components/posts/LoadArticlePost";
-import LoadInstaPost from "#/components/posts/LoadInstaPost";
+import LoadArticlePost from "#/components/loader/LoadArticlePost";
+import LoadInstaPost from "#/components/loader/LoadInstaPost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import { ShareableType } from "#/helpers/Sharing";
+import type { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Analytics";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA, StoredFavs } from "#/types";
+import type { StoredFavs } from "#/types";
+import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
 const MyFavs = () => {
   const [favs, setFavs] = useState<StoredFavs>({});

@@ -8,7 +8,7 @@ import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getLinks } from "#/helpers/network/Analytics";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { HttpsUrl } from "#/types";
+import type { HttpsUrl } from "#/types";
 
 interface ArticleSourceListProperties {
   article_link: string;

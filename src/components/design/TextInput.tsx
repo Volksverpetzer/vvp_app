@@ -1,7 +1,7 @@
 import { TextInput as DefaultTextInput } from "react-native";
 
 import { useThemeColor } from "#/hooks/useThemeColor";
-import { ThemeProperties } from "#/types";
+import type { ThemeProperties } from "#/types";
 
 type TextInputProperties = ThemeProperties &
   DefaultTextInput["props"] & { key?: string };

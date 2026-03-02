@@ -1,13 +1,9 @@
-import {
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  ViewStyle,
-} from "react-native";
+import type { ViewStyle } from "react-native";
+import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
-import { MemoryCard } from "#/types";
+import type { MemoryCard } from "#/types";
 
 interface CardComponentProperties {
   card: MemoryCard;

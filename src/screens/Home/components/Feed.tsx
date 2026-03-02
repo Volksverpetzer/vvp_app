@@ -1,16 +1,15 @@
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  FlatList,
+import type {
   ListRenderItem,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  Pressable,
-  RefreshControl,
   ViewStyle,
 } from "react-native";
+import { FlatList, Pressable, RefreshControl } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
+import LoadingFallback from "#/components/animations/LoadingFallback";
 import UiSpinner from "#/components/animations/UiSpinner";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import Text from "#/components/design/Text";
@@ -18,7 +17,7 @@ import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import Post from "#/helpers/Post";
+import type Post from "#/helpers/Post";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 
@@ -54,16 +53,16 @@ const Feed = (properties: FeedProperties) => {
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
 
-  const updateLoadingStates = () => {
+  const updateLoadingStates = useCallback(() => {
     setRefresh(false);
     setLoadmore(false);
     setInitialLoad(true);
-  };
+  }, []);
 
   const getPosts = useCallback(
     async (
       fetcherProperties?: { page?: number; param?: string },
-      oldPosts: Post<unknown>[] = posts,
+      oldPosts: Post<unknown>[] = [],
     ) => {
       try {
         const newPosts = await FetcherUtilities.fetchAndProcessPosts(
@@ -80,7 +79,12 @@ const Feed = (properties: FeedProperties) => {
         updateLoadingStates();
       }
     },
-    [properties.fetchers.length, properties.prioSort, properties.cutoffDate],
+    [
+      properties.fetchers,
+      properties.prioSort,
+      properties.cutoffDate,
+      updateLoadingStates,
+    ],
   );
 
   useEffect(() => {
@@ -91,7 +95,7 @@ const Feed = (properties: FeedProperties) => {
     getPosts(undefined, []);
     setInitialLoad(false);
     setRefresh(true);
-  }, [properties.fetchers.length]);
+  }, [properties.fetchers.length, getPosts, updateLoadingStates]);
 
   const onRefresh = useCallback(() => {
     if (refreshing) return;
@@ -103,14 +107,14 @@ const Feed = (properties: FeedProperties) => {
   }, [refreshing, getPosts]);
 
   // Load-more handler: wrapped in useCallback.
-  const onLoadMore = useCallback(() => {
+  const onLoadMore = useCallback(async () => {
     if (loadmore) return;
     setLoadmore(true);
     const nextPage = page + 1;
-    const received = getPosts({ page: nextPage }, posts);
+    const received = await getPosts({ page: nextPage }, posts);
     if (received) setPage(nextPage);
     else setIsLoadingMore(false);
-  }, [loadmore, page, getPosts, posts.length]);
+  }, [loadmore, page, getPosts, posts]);
 
   // Update inView set immutably – do not mutate state directly.
   const onViewableItemsChanged = useCallback(({ viewableItems }) => {
@@ -163,15 +167,11 @@ const Feed = (properties: FeedProperties) => {
 
   if (!initialLoad) {
     return (
-      <View
-        style={{
-          justifyContent: "center",
-          height: "100%",
-          ...properties?.style,
-        }}
-      >
-        <UiSpinner size={"large"} />
-      </View>
+      <LoadingFallback
+        text={"Lade Feed..."}
+        containerStyle={properties?.style}
+        spinnerProps={{ size: "large" }}
+      />
     );
   }
 

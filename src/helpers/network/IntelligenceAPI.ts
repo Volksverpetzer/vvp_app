@@ -4,7 +4,7 @@ import {
   get as netGet,
   post as netPost,
 } from "#/helpers/utils/networking";
-import { AISearchResponse, HttpsUrl } from "#/types";
+import type { AISearchResponse, HttpsUrl } from "#/types";
 
 /** Axios client for AI with Referer header set */
 const intelligenceClient = createClient(Config.aiUrl);
@@ -19,14 +19,14 @@ class IntelligenceAPI {
   /**
    * POST request wrapper.
    */
-  static async post<T, D>(path: string, data: D): Promise<T> {
+  static post<T, D>(path: string, data: D): Promise<T> {
     return netPost<T, D>(this.client, path, data);
   }
 
   /**
    * GET request wrapper
    */
-  static async get<T>(path: string): Promise<T> {
+  static get<T>(path: string): Promise<T> {
     return netGet<T>(this.client, path);
   }
 

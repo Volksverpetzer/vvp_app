@@ -3,11 +3,14 @@ import { useRouter } from "expo-router";
 import { useCallback, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { WebView, WebViewNavigation } from "react-native-webview";
+import type { WebViewNavigation } from "react-native-webview";
+import { WebView } from "react-native-webview";
 
 import NavBar from "#/components/bars/NavBar";
+import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
-import { HttpsUrl } from "#/types";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 interface Cookie {
   name: string;
@@ -119,6 +122,8 @@ const EdgelessWebview = ({
   const insets = useSafeAreaInsets();
   const webViewReference = useRef<WebView>(null);
   const router = useRouter();
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].background;
   // Function to convert cookies to cookie string
   const getCookieString = useCallback((cookie: Cookie) => {
     const parts = [
@@ -152,6 +157,7 @@ const EdgelessWebview = ({
     <View
       style={[
         styles.container,
+        { backgroundColor },
         { paddingBottom: showNavBar ? 0 : insets.bottom },
         style,
       ]}
@@ -170,7 +176,7 @@ const EdgelessWebview = ({
               .join("; "),
           },
         }}
-        style={styles.webview}
+        style={[styles.webview, { backgroundColor }]}
         onLoadStart={(syntheticEvent) => {
           // Set cookies when the WebView starts loading
           const { nativeEvent } = syntheticEvent;
@@ -218,6 +224,7 @@ const EdgelessWebview = ({
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         overScrollMode="always"
+        containerStyle={{ backgroundColor }}
       />
       {showNavBar && <NavBar link={uri} />}
     </View>

@@ -7,7 +7,7 @@ on:
 
 jobs:
   check-test-and-lint:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v6
@@ -22,6 +22,9 @@ jobs:
       - name: ✅ Check code
         run: pnpm check
         shell: bash
+
+      - name: 🔍 Check fastlane supply metadata
+        uses: ashutoshgngwr/validate-fastlane-supply-metadata@v2
 
       - name: 🔍 Check for secrets
         uses: gitleaks/gitleaks-action@v2

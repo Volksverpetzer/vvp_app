@@ -1,6 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React, { PropsWithChildren, ReactNode, useMemo } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
+import React, { useMemo } from "react";
 import { Animated, Pressable } from "react-native";
 
 import { HeartIcon } from "#/components/Icons";

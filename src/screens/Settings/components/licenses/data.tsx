@@ -1,12 +1,12 @@
 export default {
-  "@algolia/client-search@5.49.0": {
+  "@algolia/client-search@5.49.1": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@atproto/api@0.18.21": {
+  "@atproto/api@0.19.0": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -25,19 +25,19 @@ export default {
     licenseUrl: "https://github.com/expo/google-fonts/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@expo/config@12.0.13": {
+  "@expo/config@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@expo/metro-runtime@6.1.2": {
+  "@expo/metro-runtime@55.0.6": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "@expo/vector-icons@15.0.3": {
+  "@expo/vector-icons@15.1.1": {
     licenses: "MIT",
     repository: "https://github.com/expo/vector-icons",
     licenseUrl: "https://github.com/expo/vector-icons/raw/master/LICENSE",
@@ -63,21 +63,21 @@ export default {
       "https://github.com/react-native-async-storage/async-storage/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/bottom-tabs@7.4.0": {
+  "@react-navigation/bottom-tabs@7.10.1": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/native@7.1.8": {
+  "@react-navigation/native@7.1.28": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@stripe/stripe-react-native@0.50.3": {
+  "@stripe/stripe-react-native@0.58.0": {
     licenses: "MIT",
     repository: "https://github.com/stripe/stripe-react-native",
     licenseUrl:
@@ -90,7 +90,7 @@ export default {
     licenseUrl: "https://github.com/vdor/react-native-horizontal-picker",
     parents: "vvp_app",
   },
-  "axios@1.13.5": {
+  "axios@1.13.6": {
     licenses: "MIT",
     repository: "https://github.com/axios/axios",
     licenseUrl: "https://github.com/axios/axios/raw/master/LICENSE",
@@ -115,19 +115,19 @@ export default {
       "https://github.com/prettier/eslint-plugin-prettier/raw/master/LICENSE.md",
     parents: "vvp_app",
   },
-  "expo-application@7.0.8": {
+  "expo-application@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-asset@12.0.12": {
+  "expo-asset@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-clipboard@8.0.8": {
+  "expo-clipboard@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -139,7 +139,7 @@ export default {
     licenseUrl: "https://gitlab.com/breadboxio/expo-config",
     parents: "vvp_app",
   },
-  "expo-constants@18.0.13": {
+  "expo-constants@55.0.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -152,122 +152,122 @@ export default {
       "https://github.com/malaa-tech/expo-custom-assets/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "expo-dev-client@6.0.20": {
+  "expo-dev-client@55.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-device@8.0.10": {
+  "expo-device@55.0.9": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-file-system@19.0.21": {
+  "expo-file-system@55.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-font@14.0.11": {
+  "expo-font@55.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-haptics@15.0.8": {
+  "expo-haptics@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-image@3.0.11": {
+  "expo-image@55.0.5": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-keep-awake@15.0.8": {
+  "expo-keep-awake@55.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-linear-gradient@15.0.8": {
+  "expo-linear-gradient@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-linking@8.0.11": {
+  "expo-linking@55.0.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-mail-composer@15.0.8": {
+  "expo-mail-composer@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-notifications@0.32.16": {
+  "expo-notifications@55.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-router@6.0.23": {
+  "expo-router@55.0.3": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-share-intent@5.1.1": {
+  "expo-share-intent@6.0.0": {
     licenses: "MIT",
     repository: "https://github.com/achorein/expo-share-intent",
     licenseUrl:
       "https://github.com/achorein/expo-share-intent/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "expo-sharing@14.0.8": {
+  "expo-sharing@55.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-splash-screen@31.0.13": {
+  "expo-splash-screen@55.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-status-bar@3.0.9": {
+  "expo-status-bar@55.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-system-ui@6.0.9": {
+  "expo-system-ui@55.0.9": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-updates@29.0.16": {
+  "expo-updates@55.0.12": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-web-browser@15.0.10": {
+  "expo-web-browser@55.0.9": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo@54.0.33": {
+  "expo@55.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -285,13 +285,13 @@ export default {
     licenseUrl: "https://github.com/lodash/lodash/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-dom@19.1.0": {
+  "react-dom@19.2.0": {
     licenses: "MIT",
     repository: "https://github.com/facebook/react",
     licenseUrl: "https://github.com/facebook/react/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native-gesture-handler@2.28.0": {
+  "react-native-gesture-handler@2.30.0": {
     licenses: "MIT",
     repository:
       "https://github.com/software-mansion/react-native-gesture-handler",
@@ -313,7 +313,7 @@ export default {
       "https://github.com/react-native-modal/react-native-modal/raw/master/LICENSE.md",
     parents: "vvp_app",
   },
-  "react-native-reanimated@4.1.6": {
+  "react-native-reanimated@4.2.1": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-reanimated",
     licenseUrl:
@@ -333,14 +333,14 @@ export default {
       "https://github.com/AppAndFlow/react-native-safe-area-context/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native-screens@4.16.0": {
+  "react-native-screens@4.23.0": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-screens",
     licenseUrl:
       "https://github.com/software-mansion/react-native-screens/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native-svg@15.12.1": {
+  "react-native-svg@15.15.3": {
     licenses: "MIT",
     repository: "https://github.com/react-native-community/react-native-svg",
     licenseUrl:
@@ -368,27 +368,27 @@ export default {
       "https://github.com/necolas/react-native-web/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native-webview@13.15.0": {
+  "react-native-webview@13.16.0": {
     licenses: "MIT",
     repository: "https://github.com/react-native-webview/react-native-webview",
     licenseUrl:
       "https://github.com/react-native-webview/react-native-webview/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native-worklets@0.5.1": {
+  "react-native-worklets@0.7.2": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-reanimated",
     licenseUrl:
       "https://github.com/software-mansion/react-native-reanimated/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native@0.81.5": {
+  "react-native@0.83.2": {
     licenses: "MIT",
     repository: "https://github.com/facebook/react-native",
     licenseUrl: "https://github.com/facebook/react-native/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react@19.1.0": {
+  "react@19.2.0": {
     licenses: "MIT",
     repository: "https://github.com/facebook/react",
     licenseUrl: "https://github.com/facebook/react/raw/master/LICENSE",

@@ -1,11 +1,11 @@
 import { Zoomable } from "@likashefqet/react-native-image-zoom";
-import { Image, ImageLoadEventData } from "expo-image";
+import type { ImageLoadEventData } from "expo-image";
+import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import {
   Animated,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   ScrollView,
   TouchableOpacity,
   useWindowDimensions,
@@ -26,27 +26,9 @@ import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import {
   DISPLAY_TEXT_EXCERPT,
   DISPLAY_TEXT_FULL,
-  DisplayText,
-  HttpsUrl,
+  type HttpsUrl,
+  type InstaPostProperties,
 } from "#/types";
-
-/**
- * Represents the props for an Instagram post component as fetched from the Instagram API
- */
-export interface InstaPostProperties {
-  id: string;
-  children?: {
-    data: { media_url: string; id: string }[];
-  };
-  media_url: string;
-  caption: string;
-  displayText?: DisplayText;
-  disableLink?: boolean;
-  media_type: string;
-  timestamp: string;
-  permalink: string;
-  inView?: boolean;
-}
 
 type InstaPostScreenProperties = InstaPostProperties & {
   inView?: boolean;

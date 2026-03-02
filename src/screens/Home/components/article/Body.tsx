@@ -1,15 +1,16 @@
 import { iframeModel } from "@native-html/iframe-plugin";
 import type { ChildNode } from "domhandler";
-import React, { RefObject, useMemo, useRef } from "react";
-import { GestureResponderEvent, ScrollView } from "react-native";
-import { View } from "react-native-reanimated/lib/typescript/Animated";
-import RenderHtml, {
+import type { RefObject } from "react";
+import React, { useMemo, useRef } from "react";
+import type { GestureResponderEvent, ScrollView } from "react-native";
+import type { View } from "react-native-reanimated/lib/typescript/Animated";
+import type {
   CustomTagRendererRecord,
   Element,
   InternalRendererProps,
   TBlock,
-  defaultHTMLElementModels,
 } from "react-native-render-html";
+import RenderHtml, { defaultHTMLElementModels } from "react-native-render-html";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -21,7 +22,7 @@ import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRende
 import HeaderRenderer from "#/screens/Home/components/article/renderer/HeaderRenderer";
 import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
 import ImageRenderer from "#/screens/Home/components/article/renderer/ImageRenderer";
-import { HttpsUrl } from "#/types";
+import type { HttpsUrl } from "#/types";
 
 import {
   handleContainerElements,

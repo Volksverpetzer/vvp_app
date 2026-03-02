@@ -1,7 +1,9 @@
-import { ArticleProperties } from "#/components/posts/ArticlePost";
-import { BlueskyPostProperties } from "#/components/posts/BlueskyPost";
-import { InstaPostProperties } from "#/components/posts/InstaPost";
 import BaseStore from "#/helpers/Storage";
+import type {
+  ArticleProperties,
+  BlueskyPostProperties,
+  InstaPostProperties,
+} from "#/types";
 
 const ContentStore = {
   contentKeyPrefix: "content_",

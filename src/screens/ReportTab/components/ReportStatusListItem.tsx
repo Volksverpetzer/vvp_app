@@ -1,11 +1,11 @@
+import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { ReportStatusIcon } from "#/components/Icons";
-import UiSpinner from "#/components/animations/UiSpinner";
 import API from "#/helpers/network/ServerAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { StatusResponse, StoredReport } from "#/types";
+import type { StatusResponse, StoredReport } from "#/types";
 
 /**
  * Component to display the status of a report
@@ -52,9 +52,10 @@ const ReportStatusListItem = (props: StoredReport) => {
    * Renders an icon based on the status of the report
    * @returns {ReactElement} the icon
    */
-  const renderIcon = () => {
-    if (loading) {
-      return <UiSpinner color={colors.activity} />;
+  const renderIcon = (): ReactElement => {
+    // TODO replace ActivityIndicator with UiSpinner and adjust styling
+    if (!loading) {
+      return <ActivityIndicator color={colors.activity} />;
     }
     if (error) {
       return <ReportStatusIcon status="error" size={20} color={colors.error} />;

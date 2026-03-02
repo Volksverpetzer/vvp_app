@@ -1,5 +1,5 @@
-import { colorSchemeType } from "./colors";
-import { FeedsConfig } from "./feeds";
+import type { colorSchemeType } from "./colors";
+import type { FeedsConfig } from "./feeds";
 
 export type HttpsUrl = `https://${string}`;
 

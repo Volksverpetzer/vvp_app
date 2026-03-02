@@ -1,4 +1,5 @@
-import { RefObject, useCallback } from "react";
+import type { RefObject } from "react";
+import { useCallback } from "react";
 import { Keyboard, Pressable, TextInput } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";

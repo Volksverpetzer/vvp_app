@@ -1,10 +1,11 @@
 import { useHtmlIframeProps } from "@native-html/iframe-plugin";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
-import { ColorSchemeName, View } from "react-native";
-import { CustomRendererProps, TBlock } from "react-native-render-html";
+import type { ColorSchemeName } from "react-native";
+import { View } from "react-native";
+import type { CustomRendererProps, TBlock } from "react-native-render-html";
 import WebView from "react-native-webview";
-import {
+import type {
   WebViewErrorEvent,
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
@@ -12,7 +13,7 @@ import {
 import UiSpinner from "#/components/animations/UiSpinner";
 import ErrorCard from "#/components/design/ErrorCard";
 import Text from "#/components/design/Text";
-import LoadArticlePost from "#/components/posts/LoadArticlePost";
+import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";

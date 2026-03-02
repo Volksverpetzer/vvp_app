@@ -6,18 +6,19 @@ import { Platform } from "react-native";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import API from "#/helpers/network/ServerAPI";
-import { NotificationSettingType } from "#/types";
+import type { NotificationSettingType } from "#/types";
 
 import SettingsStore from "./Stores/SettingsStore";
 
 // Configure the notification handler
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
+  handleNotification: () =>
+    Promise.resolve({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
 });
 
 const NotificationManager = {
@@ -25,7 +26,7 @@ const NotificationManager = {
    * Gets the current notification permissions.
    * @returns A promise that resolves to the current notification permissions.
    */
-  async getPermissions(): Promise<Notifications.NotificationPermissionsStatus> {
+  getPermissions(): Promise<Notifications.NotificationPermissionsStatus> {
     return Notifications.getPermissionsAsync();
   },
 

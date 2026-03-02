@@ -1,8 +1,9 @@
+import type { ColorValue } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 
 interface LegendProperties {
   text: string;
-  color: string;
+  color: ColorValue;
 }
 
 /**

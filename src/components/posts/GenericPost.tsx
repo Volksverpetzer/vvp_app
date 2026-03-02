@@ -1,11 +1,12 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
-import { ViewStyle } from "react-native";
+import type { FC } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import type { ViewStyle } from "react-native";
 
 import ShareBar from "#/components/bars/ShareBar";
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
-import { ShareableType } from "#/helpers/Sharing";
-import { FaveableType } from "#/types";
+import type { ShareableType } from "#/helpers/Sharing";
+import type { FaveableType } from "#/types";
 
 interface ComponentProperty<T> {
   component: FC<{ inView: boolean } & T>;

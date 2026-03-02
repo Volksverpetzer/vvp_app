@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
-import LoadArticlePost from "#/components/posts/LoadArticlePost";
+import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";

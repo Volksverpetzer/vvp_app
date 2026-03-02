@@ -1,9 +1,10 @@
-import { FC, useContext } from "react";
+import type { FC } from "react";
+import { useContext } from "react";
 import { View } from "react-native";
 
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import ReportingWrapper from "#/screens/Home/components/article/renderer/ReportingWrapper";
-import { HttpsUrl } from "#/types";
+import type { HttpsUrl } from "#/types";
 
 interface BlockRenderProperties {
   renderProps: {

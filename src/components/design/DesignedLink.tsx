@@ -1,7 +1,7 @@
 import * as Linking from "expo-linking";
 import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 import { Pressable, View } from "react-native";
 
 import { ExternalLinkIcon } from "#/components/Icons";

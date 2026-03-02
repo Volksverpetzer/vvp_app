@@ -2,6 +2,7 @@
   "import": ["@cspell/dict-de-de/cspell-ext.json"],
   "language": "de, de_DE, en, en_GB",
   "words": [
+    "atproto",
     "bsky",
     "cmplz",
     "connaisseur",
@@ -14,6 +15,7 @@
     "favs",
     "insta",
     "konfig",
+    "likashefqet",
     "mimikama",
     "misinfo",
     "prio",
@@ -23,6 +25,7 @@
     "tiktok",
     "tnode",
     "tracken",
+    "vseslav",
     "volksverpetzer",
     "yoast",
     "youtu"

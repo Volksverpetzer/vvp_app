@@ -1,4 +1,4 @@
-import { StyleProp, TextStyle } from "react-native";
+import type { StyleProp, TextStyle } from "react-native";
 
 import Faktenbot from "#/components/animations/Faktenbot";
 import Text from "#/components/design/Text";

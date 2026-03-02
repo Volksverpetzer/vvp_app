@@ -2,10 +2,10 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 
+import LoadingFallback from "#/components/animations/LoadingFallback";
 import NavBar from "#/components/bars/NavBar";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
-import InstaPost, { InstaPostProperties } from "#/components/posts/InstaPost";
+import InstaPost from "#/components/posts/InstaPost";
 import Footer from "#/components/views/Footer";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -13,7 +13,7 @@ import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerViews } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
-import { DISPLAY_TEXT_FULL } from "#/types";
+import { DISPLAY_TEXT_FULL, type InstaPostProperties } from "#/types";
 
 /**
  * InstaScreen renders an Instagram post and its caption,
@@ -66,11 +66,7 @@ const InstaScreen = () => {
 
   // If still loading or data is not available, render a loading state.
   if (isLoading || !data) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
-      </View>
-    );
+    return <LoadingFallback text={"Lade Instagram Beitrag..."} />;
   }
 
   // Render the post content: the Instagram post,

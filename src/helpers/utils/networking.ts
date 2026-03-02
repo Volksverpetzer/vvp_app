@@ -1,4 +1,5 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios from "axios";
 import * as Application from "expo-application";
 import Constants from "expo-constants";
 import * as Device from "expo-device";

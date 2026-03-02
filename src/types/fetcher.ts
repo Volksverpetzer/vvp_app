@@ -1,5 +1,5 @@
-import Post from "#/helpers/Post";
-import { FeedFetcherProperties } from "#/screens/Home/components/Feed";
+import type Post from "#/helpers/Post";
+import type { FeedFetcherProperties } from "#/screens/Home/components/Feed";
 
 export type FeedFetcherType<T> = (
   properties: FeedFetcherProperties,

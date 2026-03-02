@@ -1,5 +1,5 @@
 import BaseStore from "#/helpers/Storage";
-import {
+import type {
   AdvancedSettingType,
   ContentSettingType,
   NotificationSettingType,

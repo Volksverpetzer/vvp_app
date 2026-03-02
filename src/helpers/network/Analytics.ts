@@ -4,7 +4,7 @@ import { Dimensions, Platform } from "react-native";
 
 import Config from "#/constants/Config";
 import { createClient, get, post } from "#/helpers/utils/networking";
-import { HttpsUrl } from "#/types";
+import type { HttpsUrl } from "#/types";
 
 const { apiUrl, wpUrl } = Config;
 
@@ -144,7 +144,7 @@ const registerEvent = async (
  * @param permalink - Link of the current Resource
  * @returns Promise<unknown> - Response data
  */
-const registerViews = async (permalink: string): Promise<unknown> =>
+const registerViews = (permalink: string): Promise<unknown> =>
   registerEvent(permalink, "pageviews");
 
 /**
@@ -152,7 +152,7 @@ const registerViews = async (permalink: string): Promise<unknown> =>
  * @param permalink - Link of the current Resource
  * @returns Promise<unknown> - Response data
  */
-const registerFav = async (permalink: string): Promise<unknown> =>
+const registerFav = (permalink: string): Promise<unknown> =>
   registerEvent(permalink, "favorite");
 
 export {
