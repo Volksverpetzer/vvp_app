@@ -72,7 +72,7 @@ const TabLayout = () => {
           }}
         />
         <NativeTabs.Trigger.Badge hidden={!badgeState.personal} />
-        <NativeTabs.Trigger.Label>Favs</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>Favoriten</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger hidden={!actionsActive} name="action">
@@ -93,7 +93,7 @@ const TabLayout = () => {
           }}
         />
         <NativeTabs.Trigger.Badge hidden={!badgeState.action} />
-        <NativeTabs.Trigger.Label>Action</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>Aktionen</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="report">
@@ -113,7 +113,7 @@ const TabLayout = () => {
             ),
           }}
         />
-        <NativeTabs.Trigger.Label>Petzen</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>Fake melden</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="settings">
@@ -133,7 +133,7 @@ const TabLayout = () => {
             ),
           }}
         />
-        <NativeTabs.Trigger.Label>Konfig</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>Einstellungen</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );
