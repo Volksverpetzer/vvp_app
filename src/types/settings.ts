@@ -21,4 +21,5 @@ export type NotificationSettingType = {
 export type AdvancedSettingType = {
   advancedReporting: SettingType;
   alwaysDarkMode: SettingType;
+  plausibleAnalytics: SettingType;
 };

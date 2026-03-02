@@ -136,11 +136,23 @@ describe("SettingsStore", () => {
     });
   });
 
+  describe("defaultAdvancedSettings", () => {
+    it("should include Plausible analytics toggle and default it to enabled", () => {
+      expect(SettingsStore.defaultAdvancedSettings).toHaveProperty(
+        "plausibleAnalytics",
+      );
+      expect(
+        SettingsStore.defaultAdvancedSettings.plausibleAnalytics.value,
+      ).toBe(true);
+    });
+  });
+
   describe("getAdvancedSettings", () => {
     it("returns parsed advanced settings", async () => {
       const settings: AdvancedSettingType = {
         advancedReporting: { value: true, name: "Erweitertes Reporting" },
         alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
+        plausibleAnalytics: { value: true, name: "Plausible Analytics" },
       };
       jest
         .spyOn(BaseStore, "getItem")
@@ -151,6 +163,23 @@ describe("SettingsStore", () => {
 
       expect(BaseStore.getItem).toHaveBeenCalledWith("advancedSettings");
       expect(result).toEqual(settings);
+    });
+
+    it("should backfill plausibleAnalytics when older settings are loaded", async () => {
+      const oldAdvancedSettings = {
+        advancedReporting: { value: false, name: "Erweitertes Reporting" },
+        alwaysDarkMode: { value: true, name: "Immer Dark Mode" },
+      };
+
+      jest.spyOn(BaseStore, "getItem").mockResolvedValue("{}");
+      jest
+        .spyOn(BaseStore, "parseJSON")
+        .mockReturnValue(oldAdvancedSettings as never);
+
+      const result = await SettingsStore.getAdvancedSettings();
+
+      expect(BaseStore.getItem).toHaveBeenCalledWith("advancedSettings");
+      expect(result.plausibleAnalytics.value).toBe(true);
     });
 
     it("returns defaults on error", async () => {

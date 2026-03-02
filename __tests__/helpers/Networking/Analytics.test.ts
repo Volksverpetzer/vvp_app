@@ -6,6 +6,8 @@ import { Platform } from "react-native";
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { registerFav, registerViews } from "#/helpers/network/Engagement";
+import SettingsStore from "#/helpers/Stores/SettingsStore";
+import * as AnalyticsModule from "#/helpers/network/Analytics";
 import * as Networking from "#/helpers/utils/networking";
 
 jest.mock("react-native", () => ({
@@ -34,6 +36,13 @@ jest.mock("#/helpers/utils/networking", () => ({
   post: jest.fn(),
 }));
 
+jest.mock("#/helpers/Stores/SettingsStore", () => ({
+  __esModule: true,
+  default: {
+    getAdvancedSettings: jest.fn(),
+  },
+}));
+
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
@@ -50,6 +59,11 @@ describe("Analytics (Plausible)", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(SettingsStore, "getAdvancedSettings").mockResolvedValue({
+      plausibleAnalytics: { value: true, name: "Plausible Analytics" },
+    } as never);
+
+    getSpy = jest.spyOn(Networking, "get");
     postSpy = jest.spyOn(Networking, "post");
     parseSpy = jest.spyOn(Linking, "parse");
     consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
@@ -118,10 +132,34 @@ describe("Analytics (Plausible)", () => {
 
       const result = await registerEvent("https://example.com", "event");
 
+      // Assert
+      expect(SettingsStore.getAdvancedSettings).not.toHaveBeenCalled();
       expect(postSpy).not.toHaveBeenCalled();
       expect(result).toBeUndefined();
 
       Config.enableAnalytics = originalEnableAnalytics;
+    });
+
+    it("should return early if advanced plausible analytics setting is disabled", async () => {
+      jest.spyOn(SettingsStore, "getAdvancedSettings").mockResolvedValue({
+        plausibleAnalytics: { value: false, name: "Plausible Analytics" },
+      } as never);
+
+      const result = await registerEvent("https://example.com", "event");
+
+      expect(SettingsStore.getAdvancedSettings).toHaveBeenCalled();
+      expect(postSpy).not.toHaveBeenCalled();
+      expect(result).toBeUndefined();
+    });
+
+    it("should send event if advanced plausible analytics setting is enabled", async () => {
+      parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
+      postSpy.mockResolvedValue({ success: true });
+
+      await registerEvent("https://example.com", "event");
+
+      expect(SettingsStore.getAdvancedSettings).toHaveBeenCalled();
+      expect(postSpy).toHaveBeenCalled();
     });
 
     it("should still send events when engagements are disabled", async () => {
