@@ -25,11 +25,11 @@ const ShareCounter = (properties: ShareCounterProperties) => {
   }, [properties.shareable]);
 
   useEffect(() => {
-    if (!Config.analytics) return;
+    if (!Config.enableFavorites) return;
     getAllShares();
   }, [getAllShares]);
 
-  if (!Config.analytics) return <View />;
+  if (!Config.enableFavorites) return <View />;
 
   return (
     <Text style={properties.style}>{shares + (properties.shares ?? 0)}</Text>

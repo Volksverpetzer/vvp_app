@@ -18,7 +18,7 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
   const { article_link } = properties;
   const color = Colors["light"].tint;
 
-  if (!Config.analytics) return undefined;
+  if (!Config.enableFavorites) return undefined;
 
   return (
     <View

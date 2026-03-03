@@ -5,7 +5,7 @@ import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import * as Analytics from "#/helpers/network/Analytics";
 import { FaveableType } from "#/types";
 
-jest.mock("#/constants/Config", () => ({ analytics: true }));
+jest.mock("#/constants/Config", () => ({ enableFavorites: true }));
 jest.mock("#/helpers/network/Analytics", () => ({
   getFavs: jest.fn(),
   registerFav: jest.fn(),

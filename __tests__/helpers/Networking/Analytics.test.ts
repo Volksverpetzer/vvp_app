@@ -43,7 +43,7 @@ jest.mock("#/constants/Config", () => ({
   default: {
     apiUrl: "https://api.example.com",
     wpUrl: "https://www.volksverpetzer.de",
-    analytics: true,
+    enableFavorites: true,
   },
 }));
 
@@ -365,8 +365,8 @@ describe("Analytics", () => {
 
     it("should return early if analytics is disabled", async () => {
       // Setup
-      const originalAnalytics = Config.analytics;
-      Config.analytics = false;
+      const originalAnalytics = Config.enableFavorites;
+      Config.enableFavorites = false;
 
       // Execute
       const result = await registerEvent("https://example.com", "event");
@@ -376,7 +376,7 @@ describe("Analytics", () => {
       expect(result).toBeUndefined();
 
       // Restore
-      Config.analytics = originalAnalytics;
+      Config.enableFavorites = originalAnalytics;
     });
 
     it("should handle errors", async () => {

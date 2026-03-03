@@ -6,7 +6,7 @@ jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
-    analytics: true,
+    enableFavorites: true,
   },
 }));
 

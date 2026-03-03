@@ -21,14 +21,14 @@ const ViewCounter = (properties: ViewCounterProperties) => {
   const color = properties?.color ?? "#fff";
 
   useEffect(() => {
-    if (!Config.analytics) return;
+    if (!Config.enableFavorites) return;
     getViews(properties.url).then((views) => {
       //console.log(views)
       setViews(views);
       setLoading(false);
     });
   });
-  if (!Config.analytics) return;
+  if (!Config.enableFavorites) return;
 
   // TODO replace ActivityIndicator with UiSpinner and adjust styling
   return (

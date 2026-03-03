@@ -8,7 +8,6 @@ export type HttpsUrl = `https://${string}`;
  */
 export interface ExtraConfigType {
   instagramAppId?: string;
-  enabledActions: boolean; // enables actions tab
   apiUrl: string;
   aiUrl?: string;
   dataProtectionUrl: string;
@@ -25,7 +24,8 @@ export interface ExtraConfigType {
     iconMono: string;
   };
   feeds?: FeedsConfig; // feeds configuration
-  analytics: boolean; // enables analytics
+  enabledActions: boolean; // enables actions tab
+  enableFavorites: boolean; // enables favorites-related features
   about: string; // URL to about page
   themeColor: string; // special color for the app
   donations: {
