@@ -23,6 +23,7 @@ const TabLayout = () => {
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
   const actionsActive = Config.enabledActions;
+  const favoritesActive = Config.enableFavorites;
 
   return (
     <Tabs
@@ -54,6 +55,7 @@ const TabLayout = () => {
       <Tabs.Screen
         name="personal"
         options={{
+          href: favoritesActive ? "/personal" : null,
           title: "Favs",
           tabBarIcon: ({ color, focused }) => (
             <>
