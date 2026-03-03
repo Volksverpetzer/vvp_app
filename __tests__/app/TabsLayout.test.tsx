@@ -1,17 +1,10 @@
 import { render } from "@testing-library/react-native";
+import { Tabs } from "expo-router";
 
-const mockTabsScreen = jest.fn(() => null);
-
-jest.mock("expo-router", () => {
-  const React = require("react");
-
-  const Tabs = ({ children }) => <>{children}</>;
-  Tabs.Screen = mockTabsScreen;
-
-  return {
-    Tabs,
-  };
-});
+import TabLayout from "#/app/(tabs)/_layout";
+import Config from "#/constants/Config";
+import { useBadge } from "#/helpers/provider/BadgeProvider";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 jest.mock("#/helpers/provider/BadgeProvider", () => ({
   useBadge: jest.fn(),
@@ -30,13 +23,24 @@ jest.mock("#/constants/Config", () => ({
 }));
 
 describe("TabLayout", () => {
-  const TabLayout = require("#/app/(tabs)/_layout").default;
-  const Config = require("#/constants/Config").default;
-  const { useBadge } = require("#/helpers/provider/BadgeProvider");
-  const { useAppColorScheme } = require("#/hooks/useAppColorScheme");
+  const tabsScreenSpy = jest.spyOn(Tabs, "Screen");
+
+  const getPersonalTabProps = () => {
+    const call = tabsScreenSpy.mock.calls.find(
+      ([props]) => props?.name === "personal",
+    );
+    return call?.[0];
+  };
+  const getHrefFromOptions = (
+    options: ReturnType<typeof getPersonalTabProps>["options"] | undefined,
+  ) => {
+    if (!options || typeof options === "function") return undefined;
+    return options.href;
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    tabsScreenSpy.mockClear();
     (useBadge as jest.Mock).mockReturnValue({
       badgeState: { personal: false, action: false },
     });
@@ -49,12 +53,10 @@ describe("TabLayout", () => {
 
     render(<TabLayout />);
 
-    const personalCall = mockTabsScreen.mock.calls.find(
-      ([props]) => props.name === "personal",
-    );
+    const personalProps = getPersonalTabProps();
 
-    expect(personalCall).toBeDefined();
-    expect(personalCall[0].options.href).toBeNull();
+    expect(personalProps).toBeDefined();
+    expect(getHrefFromOptions(personalProps?.options)).toBeNull();
   });
 
   it("should show personal tab when favorites are enabled", () => {
@@ -62,11 +64,9 @@ describe("TabLayout", () => {
 
     render(<TabLayout />);
 
-    const personalCall = mockTabsScreen.mock.calls.find(
-      ([props]) => props.name === "personal",
-    );
+    const personalProps = getPersonalTabProps();
 
-    expect(personalCall).toBeDefined();
-    expect(personalCall[0].options.href).toBe("/personal");
+    expect(personalProps).toBeDefined();
+    expect(getHrefFromOptions(personalProps?.options)).toBe("/personal");
   });
 });
