@@ -4,6 +4,7 @@ import { Pressable, View } from "react-native";
 import Collapsable from "#/components/design/Collapsable";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getLinks } from "#/helpers/network/Analytics";
@@ -41,11 +42,13 @@ export const ArticleSourceList = ({
   }, [open, article_link]);
 
   const onPress = async (extension_url: HttpsUrl) => {
-    await SourcesStore.onAddSource(
-      extension_url as HttpsUrl,
-      slug,
-      article_title,
-    );
+    if (Config.enableFavorites) {
+      await SourcesStore.onAddSource(
+        extension_url as HttpsUrl,
+        slug,
+        article_title,
+      );
+    }
     outBoundLinkPress(extension_url, article_link);
   };
 

@@ -92,6 +92,7 @@ const extraConfig: ExtraConfigType = {
     platformPay: true,
   },
   enabledActions: true,
+  enableAnalytics: true,
   enableFavorites: true,
   feeds: {
     reddit: { enabled: true },

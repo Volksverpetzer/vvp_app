@@ -119,7 +119,11 @@ const Body = (properties: BodyProperties) => {
             }
             return;
           }
-          if (href.startsWith("https://") && !href.includes(Config.wpUrl)) {
+          if (
+            href.startsWith("https://") &&
+            !href.includes(Config.wpUrl) &&
+            Config.enableFavorites
+          ) {
             SourcesStore.onAddSource(href as HttpsUrl, slug, article_title);
             Statistics.countSourceChecked();
           }

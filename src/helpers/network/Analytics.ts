@@ -111,7 +111,7 @@ const registerEvent = async (
   utm_campaign = "app",
   utm_source = "app",
 ): Promise<unknown> => {
-  if (!Config.enableFavorites) return;
+  if (!Config.enableAnalytics) return;
   const { hostname } = Linking.parse(wpUrl);
   const payload = {
     name: event,

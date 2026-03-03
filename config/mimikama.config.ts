@@ -93,6 +93,7 @@ const extraConfig: ExtraConfigType = {
     platformPay: false,
   },
   enabledActions: false,
+  enableAnalytics: false,
   enableFavorites: false,
   feeds: {
     wp: { enabled: true },
