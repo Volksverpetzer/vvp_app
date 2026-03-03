@@ -43,6 +43,7 @@ jest.mock("#/constants/Config", () => ({
   default: {
     apiUrl: "https://api.example.com",
     wpUrl: "https://www.volksverpetzer.de",
+    enableAnalytics: true,
     enableFavorites: true,
   },
 }));
@@ -365,8 +366,8 @@ describe("Analytics", () => {
 
     it("should return early if analytics is disabled", async () => {
       // Setup
-      const originalAnalytics = Config.enableFavorites;
-      Config.enableFavorites = false;
+      const originalEnableAnalytics = Config.enableAnalytics;
+      Config.enableAnalytics = false;
 
       // Execute
       const result = await registerEvent("https://example.com", "event");
@@ -376,7 +377,25 @@ describe("Analytics", () => {
       expect(result).toBeUndefined();
 
       // Restore
-      Config.enableFavorites = originalAnalytics;
+      Config.enableAnalytics = originalEnableAnalytics;
+    });
+
+    it("should still send events when favorites are disabled", async () => {
+      // Setup
+      const originalEnableFavorites = Config.enableFavorites;
+      Config.enableFavorites = false;
+      parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
+      postSpy.mockResolvedValue({ success: true });
+
+      // Execute
+      const result = await registerEvent("https://example.com", "event");
+
+      // Assert
+      expect(postSpy).toHaveBeenCalled();
+      expect(result).toEqual({ success: true });
+
+      // Restore
+      Config.enableFavorites = originalEnableFavorites;
     });
 
     it("should handle errors", async () => {
