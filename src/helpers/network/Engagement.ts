@@ -98,15 +98,24 @@ export { getViews, getRegions, getShares, getFavs, getLinks };
  * @param permalink - Link of the current Resource
  * @returns Promise<unknown> - Response data
  */
-const registerViews = (permalink: string): Promise<unknown> =>
-  registerEvent(permalink, "pageviews");
+const registerViews = (permalink: string): Promise<unknown> => {
+  if (!Config.enableEngagement) {
+    return Promise.resolve(undefined);
+  }
+
+  return registerEvent(permalink, "pageviews");
+};
 
 /**
  * Register Favorite
  * @param permalink - Link of the current Resource
  * @returns Promise<unknown> - Response data
  */
-const registerFav = (permalink: string): Promise<unknown> =>
-  registerEvent(permalink, "favorite");
+const registerFav = (permalink: string): Promise<unknown> => {
+  if (!Config.enableEngagement) {
+    return Promise.resolve(undefined);
+  }
 
+  return registerEvent(permalink, "favorite");
+};
 export { registerFav, registerViews };
