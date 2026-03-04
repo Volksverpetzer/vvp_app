@@ -33,7 +33,7 @@ jest.mock("expo-constants", () => ({
       extra: {
         enabledActions: true,
         enableAnalytics: true,
-        enableFavorites: true,
+        enableEngagement: true,
         colorScheme: {
           light: {
             text: "#111",

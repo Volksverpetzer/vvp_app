@@ -42,7 +42,7 @@ export const ArticleSourceList = ({
   }, [open, article_link]);
 
   const onPress = async (extension_url: HttpsUrl) => {
-    if (Config.enableFavorites) {
+    if (Config.enableEngagement) {
       await SourcesStore.onAddSource(
         extension_url as HttpsUrl,
         slug,

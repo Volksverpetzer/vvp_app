@@ -18,7 +18,7 @@ jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     enabledActions: true,
-    enableFavorites: true,
+    enableEngagement: true,
   },
 }));
 
@@ -45,11 +45,11 @@ describe("TabLayout", () => {
       badgeState: { personal: false, action: false },
     });
     (useAppColorScheme as jest.Mock).mockReturnValue("light");
-    Config.enableFavorites = true;
+    Config.enableEngagement = true;
   });
 
   it("should hide personal tab when favorites are disabled", () => {
-    Config.enableFavorites = false;
+    Config.enableEngagement = false;
 
     render(<TabLayout />);
 
@@ -60,7 +60,7 @@ describe("TabLayout", () => {
   });
 
   it("should show personal tab when favorites are enabled", () => {
-    Config.enableFavorites = true;
+    Config.enableEngagement = true;
 
     render(<TabLayout />);
 

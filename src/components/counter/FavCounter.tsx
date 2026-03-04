@@ -36,13 +36,13 @@ const FavCounter = (properties: FavCounterProperties) => {
   }, [shareable]);
 
   useEffect(() => {
-    if (Config.enableFavorites) getAllFavs();
+    if (Config.enableEngagement) getAllFavs();
     if (contentFavIdentifier) {
       FavoritesStore.isFavorite(contentFavIdentifier).then(setIsFav);
     }
   }, [contentFavIdentifier, getAllFavs]);
 
-  if (!Config.enableFavorites) return <View />;
+  if (!Config.enableEngagement) return <View />;
 
   const handleFav = async () => {
     if (contentFavIdentifier) {

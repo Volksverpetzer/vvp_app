@@ -94,7 +94,7 @@ const extraConfig: ExtraConfigType = {
   },
   enabledActions: false,
   enableAnalytics: false,
-  enableFavorites: false,
+  enableEngagement: false,
   feeds: {
     wp: { enabled: true },
     insta: { enabled: true },

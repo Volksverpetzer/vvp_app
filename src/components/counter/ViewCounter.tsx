@@ -21,7 +21,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
   const color = properties?.color ?? "#fff";
 
   useEffect(() => {
-    if (!Config.enableFavorites) return;
+    if (!Config.enableEngagement) return;
     let isCancelled = false;
     setLoading(true);
     getViews(properties.url).then((views) => {
@@ -33,9 +33,9 @@ const ViewCounter = (properties: ViewCounterProperties) => {
     return () => {
       isCancelled = true;
     };
-  }, [properties.url, Config.enableFavorites]);
+  }, [properties.url, Config.enableEngagement]);
 
-  if (!Config.enableFavorites) return;
+  if (!Config.enableEngagement) return;
 
   // TODO replace ActivityIndicator with UiSpinner and adjust styling
   return (

@@ -93,7 +93,7 @@ const extraConfig: ExtraConfigType = {
   },
   enabledActions: true,
   enableAnalytics: true,
-  enableFavorites: true,
+  enableEngagement: true,
   feeds: {
     reddit: { enabled: true },
     wp: { enabled: true },

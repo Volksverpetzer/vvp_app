@@ -39,7 +39,7 @@ jest.mock("#/constants/Config", () => ({
   default: {
     wpUrl: "https://www.volksverpetzer.de",
     enableAnalytics: true,
-    enableFavorites: true,
+    enableEngagement: true,
   },
 }));
 
@@ -124,9 +124,9 @@ describe("Analytics (Plausible)", () => {
       Config.enableAnalytics = originalEnableAnalytics;
     });
 
-    it("should still send events when favorites are disabled", async () => {
-      const originalEnableFavorites = Config.enableFavorites;
-      Config.enableFavorites = false;
+    it("should still send events when engagements are disabled", async () => {
+      const originalEnableEngagement = Config.enableEngagement;
+      Config.enableEngagement = false;
       parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
       postSpy.mockResolvedValue({ success: true });
 
@@ -135,7 +135,7 @@ describe("Analytics (Plausible)", () => {
       expect(postSpy).toHaveBeenCalled();
       expect(result).toEqual({ success: true });
 
-      Config.enableFavorites = originalEnableFavorites;
+      Config.enableEngagement = originalEnableEngagement;
     });
 
     it("should handle errors", async () => {

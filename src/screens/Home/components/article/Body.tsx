@@ -122,7 +122,7 @@ const Body = (properties: BodyProperties) => {
           if (
             href.startsWith("https://") &&
             !href.includes(Config.wpUrl) &&
-            Config.enableFavorites
+            Config.enableEngagement
           ) {
             SourcesStore.onAddSource(href as HttpsUrl, slug, article_title);
             Statistics.countSourceChecked();
