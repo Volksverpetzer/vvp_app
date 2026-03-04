@@ -31,7 +31,7 @@ jest.mock("expo-constants", () => ({
   default: {
     expoConfig: {
       extra: {
-        enabledActions: true,
+        enableActions: true,
         enableAnalytics: true,
         enableEngagement: true,
         colorScheme: {

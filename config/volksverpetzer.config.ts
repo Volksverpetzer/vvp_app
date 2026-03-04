@@ -91,7 +91,7 @@ const extraConfig: ExtraConfigType = {
     shop: "https://volksverpetzer-shop.de/",
     platformPay: true,
   },
-  enabledActions: true,
+  enableActions: true,
   enableAnalytics: true,
   enableEngagement: true,
   feeds: {

@@ -92,7 +92,7 @@ const extraConfig: ExtraConfigType = {
     ],
     platformPay: false,
   },
-  enabledActions: false,
+  enableActions: false,
   enableAnalytics: false,
   enableEngagement: false,
   feeds: {

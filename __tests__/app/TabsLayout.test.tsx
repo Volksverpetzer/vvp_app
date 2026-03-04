@@ -17,7 +17,7 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
-    enabledActions: true,
+    enableActions: true,
     enableEngagement: true,
   },
 }));

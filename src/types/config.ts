@@ -24,7 +24,7 @@ export interface ExtraConfigType {
     iconMono: string;
   };
   feeds?: FeedsConfig; // feeds configuration
-  enabledActions: boolean; // enables actions tab
+  enableActions: boolean; // enables actions tab
   enableAnalytics: boolean; // enables analytics collection and analytics UI
   enableEngagement: boolean; // enables favorites-related features
   about: string; // URL to about page
