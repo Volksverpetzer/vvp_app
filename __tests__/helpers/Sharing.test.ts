@@ -10,6 +10,7 @@ import { Achievements } from "#/helpers/Achievements";
 import { multishare, onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
 import { registerEvent } from "#/helpers/network/Analytics";
+import type { ShareableType } from "#/types";
 
 type DownloadResult = { uri: string };
 type DownloadFileAsync = (
@@ -109,7 +110,9 @@ describe("Sharing helpers", () => {
     Platform.OS = "ios"; // Default to iOS for tests
     parseSpy = jest.spyOn(Linking, "parse");
     downloadSpy = (
-      File as unknown as { downloadFileAsync: jest.MockedFunction<DownloadFileAsync> }
+      File as unknown as {
+        downloadFileAsync: jest.MockedFunction<DownloadFileAsync>;
+      }
     ).downloadFileAsync;
     shareSpy = jest.spyOn(Share, "share");
   });
@@ -439,7 +442,7 @@ describe("Sharing helpers", () => {
 
     it("should handle cancel action for multiple shareable items", async () => {
       // Setup
-      const shareable = [
+      const shareable: ShareableType[] = [
         { url: "https://example.com/article1", title: "Article 1" },
         { url: "https://example.com/article2", title: "Article 2" },
       ];

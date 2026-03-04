@@ -7,9 +7,10 @@ import ViewCounter from "#/components/counter/ViewCounter";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import type { HttpsUrl } from "#/types";
 
 interface ArticleStatsProperties {
-  article_link: string;
+  article_link: HttpsUrl;
 }
 
 const ArticleStats = (properties: ArticleStatsProperties) => {

@@ -22,7 +22,7 @@ import Config from "#/constants/Config";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-import type { ArticleProperties } from "#/types";
+import type { ArticleProperties, HttpsUrl } from "#/types";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
 import logoPike from "#assets/images/logo_pike.webp";
@@ -34,7 +34,7 @@ interface HeaderProperties {
   article: ArticleProperties;
   article_image: string;
   article_title: string;
-  article_link: string;
+  article_link: HttpsUrl;
   date: string;
   slug: string;
 }

@@ -7,7 +7,11 @@ import View from "#/components/design/View";
 import BlueskyPost from "#/components/posts/BlueskyPost";
 import { styles } from "#/constants/Styles";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { type BlueskyPostProperties, DISPLAY_TEXT_FULL } from "#/types";
+import {
+  type BlueskyPostProperties,
+  DISPLAY_TEXT_FULL,
+  type HttpsUrl,
+} from "#/types";
 
 /**
  * Loads a Bluesky post based on the provided post ID.
@@ -39,7 +43,8 @@ const BskyScreen = () => {
 
   const postId = post.post.post.uri.split("/app.bsky.feed.post/")[1];
   const handle = post.post.post.author.handle;
-  const url = `https://bsky.app/profile/${handle}/post/${postId}`;
+  const url =
+    `https://bsky.app/profile/${handle}/post/${postId}` satisfies HttpsUrl;
 
   return (
     <View style={styles.container}>

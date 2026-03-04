@@ -8,15 +8,15 @@ export type HttpsUrl = `https://${string}`;
  */
 export interface ExtraConfigType {
   instagramAppId?: string;
-  apiUrl: string;
-  aiUrl?: string;
-  dataProtectionUrl: string;
+  apiUrl: HttpsUrl;
+  aiUrl?: HttpsUrl;
+  dataProtectionUrl: HttpsUrl;
   eas: {
     projectId: string;
   };
   wpUrl: HttpsUrl; // URL to the WordPress site
   analyticsUrl?: HttpsUrl; // URL to the analytics site
-  aboutUrl: string; // URL to the about page
+  aboutUrl: HttpsUrl; // URL to the about page
   colorScheme: colorSchemeType; // color scheme for the app is defined with type colorSchemeType
   assets: {
     splash: string;

@@ -7,14 +7,10 @@ import Toast from "react-native-toast-message";
 
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
+import type { ShareableType } from "#/types";
 
 import { Achievements } from "./Achievements";
 import Statistics from "./Statistics";
-
-interface ShareableType {
-  url: string;
-  title: string;
-}
 
 /**
  * onShare tries to share a url. If the url is an image, it will be downloaded first.
@@ -211,5 +207,4 @@ const multishare = async (
   }
 };
 
-export type { ShareableType };
 export { onShare, multishare };

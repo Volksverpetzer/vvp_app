@@ -7,12 +7,11 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Config from "#/constants/Config";
 import { Achievements } from "#/helpers/Achievements";
-import type { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { getFavs, registerFav } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-import type { FaveableType } from "#/types";
+import type { FaveableType, ShareableType } from "#/types";
 
 interface FavCounterProperties {
   shareable: ShareableType[];

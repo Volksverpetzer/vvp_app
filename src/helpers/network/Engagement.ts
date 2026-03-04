@@ -5,7 +5,7 @@ import { registerEvent } from "#/helpers/network/Analytics";
 import { createClient, get } from "#/helpers/utils/networking";
 import type { HttpsUrl } from "#/types";
 
-const { apiUrl, wpUrl } = Config;
+const { apiUrl } = Config;
 const client = createClient(apiUrl);
 
 /**
@@ -13,8 +13,8 @@ const client = createClient(apiUrl);
  * @param permalink - Link of the current Resource
  * @returns Promise<number> - Number of views
  */
-const getViews = async (permalink: string): Promise<number> => {
-  const { path } = Linking.parse(permalink || wpUrl);
+const getViews = async (permalink: HttpsUrl): Promise<number> => {
+  const { path } = Linking.parse(permalink);
   const endpoint = "/proxy/stats/" + path;
   try {
     const data = await get<{ pageviews: number }>(client, endpoint);
@@ -44,8 +44,8 @@ const getRegions = async (): Promise<string> => {
  * @param permalink - Link of the current Resource
  * @returns Promise<number> - Number of shares
  */
-const getShares = async (permalink: string): Promise<number> => {
-  const { path } = Linking.parse(permalink || wpUrl);
+const getShares = async (permalink: HttpsUrl): Promise<number> => {
+  const { path } = Linking.parse(permalink);
   try {
     const data = await get<{ events: number }>(client, `/proxy/shares/${path}`);
     return data.events;
@@ -60,8 +60,8 @@ const getShares = async (permalink: string): Promise<number> => {
  * @param permalink - Link of the current Resource
  * @returns Promise<number> - Number of favorites
  */
-const getFavs = async (permalink: string): Promise<number> => {
-  const { path } = Linking.parse(permalink || wpUrl);
+const getFavs = async (permalink: HttpsUrl): Promise<number> => {
+  const { path } = Linking.parse(permalink);
   try {
     const data = await get<{ events: number }>(client, `/proxy/favs/${path}`);
     return data.events;
@@ -77,7 +77,7 @@ const getFavs = async (permalink: string): Promise<number> => {
  * @returns Promise<Array<{ url: string, visitors: number }>> - Array of links and their visitors
  */
 const getLinks = async (
-  permalink: string,
+  permalink: HttpsUrl,
 ): Promise<{ url: HttpsUrl; visitors: number }[]> => {
   const { path } = Linking.parse(permalink);
   try {
@@ -92,7 +92,6 @@ const getLinks = async (
   }
 };
 
-export { getViews, getRegions, getShares, getFavs, getLinks };
 /**
  * Sends a page view to Plausible Analytics
  * @param permalink - Link of the current Resource
@@ -118,4 +117,13 @@ const registerFav = (permalink: string): Promise<unknown> => {
 
   return registerEvent(permalink, "favorite");
 };
-export { registerFav, registerViews };
+
+export {
+  getViews,
+  getRegions,
+  getShares,
+  getFavs,
+  getLinks,
+  registerFav,
+  registerViews,
+};

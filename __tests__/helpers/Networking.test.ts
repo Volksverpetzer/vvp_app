@@ -41,7 +41,7 @@ describe("Networking utilities", () => {
   });
 
   it("createClient sets baseURL and headers", () => {
-    const baseURL = "http://example.com";
+    const baseURL = "https://example.com";
     // axios.create returns an instance
     const instance = Networking.createClient(baseURL);
     expect(instance.defaults.baseURL).toBe(baseURL);
@@ -55,7 +55,7 @@ describe("Networking utilities", () => {
 
   it("fetchWithTimeout resolves response data", async () => {
     // Setup
-    const client = Networking.createClient("http://x");
+    const client = Networking.createClient("https://x");
     const fakeResponse = { data: { foo: "bar" } };
     const mockRequest = jest.fn() as any;
     mockRequest.mockResolvedValue(fakeResponse);
@@ -78,7 +78,7 @@ describe("Networking utilities", () => {
 
   it("fetchWithTimeout handles errors correctly", async () => {
     // Setup
-    const client = Networking.createClient("http://x");
+    const client = Networking.createClient("https://x");
     const error = new Error("Network error");
     const mockRequest = jest.fn() as any;
     mockRequest.mockRejectedValue(error);
@@ -95,7 +95,7 @@ describe("Networking utilities", () => {
 
   it("fetchWithTimeout uses default timeout of 60 seconds if not specified", async () => {
     // Setup
-    const client = Networking.createClient("http://x");
+    const client = Networking.createClient("https://x");
     const fakeResponse = { data: {} };
     const mockRequest = jest.fn() as any;
     mockRequest.mockResolvedValue(fakeResponse);

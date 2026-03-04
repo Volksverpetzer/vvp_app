@@ -12,7 +12,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
 interface ArticleSourceListProperties {
-  article_link: string;
+  article_link: HttpsUrl;
   article_title?: string;
   slug: string;
 }
@@ -48,11 +48,7 @@ export const ArticleSourceList = ({
 
   const onPress = async (extension_url: HttpsUrl) => {
     if (Config.enableEngagement) {
-      await SourcesStore.onAddSource(
-        extension_url as HttpsUrl,
-        slug,
-        article_title,
-      );
+      await SourcesStore.onAddSource(extension_url, slug, article_title);
     }
     outBoundLinkPress(extension_url, article_link);
   };

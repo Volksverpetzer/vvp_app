@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
 
 import Post from "#/helpers/Post";
-import { FaveableType } from "#/types";
+import type { FaveableType, ShareableType } from "#/types";
 
 describe("Post", () => {
   // Mock component for testing
@@ -34,7 +34,7 @@ describe("Post", () => {
     const datetime = "2023-01-01T12:00:00Z";
     const id = "post-123";
     const data = { title: "Test Post" };
-    const shareable = [
+    const shareable: ShareableType[] = [
       { url: "https://example.com/facebook", title: "Facebook Share" },
       { url: "https://example.com/twitter", title: "Twitter Share" },
     ];

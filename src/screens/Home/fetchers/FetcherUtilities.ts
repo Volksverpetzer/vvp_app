@@ -1,5 +1,4 @@
-import type Post from "#/helpers/Post";
-import type { SafeFetchFunction } from "#/types";
+import type { Post, SafeFetchFunction } from "#/types";
 
 const FetcherUtilities = {
   /**

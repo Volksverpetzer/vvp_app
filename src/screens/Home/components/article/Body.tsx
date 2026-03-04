@@ -17,6 +17,7 @@ import Config from "#/constants/Config";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getTagStyles } from "#/helpers/utils/color";
+import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
 import HeaderRenderer from "#/screens/Home/components/article/renderer/HeaderRenderer";
@@ -120,11 +121,11 @@ const Body = (properties: BodyProperties) => {
             return;
           }
           if (
-            href.startsWith("https://") &&
+            isHttpsUrl(href) &&
             !href.includes(Config.wpUrl) &&
             Config.enableEngagement
           ) {
-            SourcesStore.onAddSource(href as HttpsUrl, slug, article_title);
+            SourcesStore.onAddSource(href, slug, article_title);
             Statistics.countSourceChecked();
           }
           onLinkPress(event, href);

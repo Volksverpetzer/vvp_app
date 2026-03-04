@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import type { ColorValue } from "react-native";
+import type { ColorValue, TextStyle } from "react-native";
 import { ActivityIndicator } from "react-native";
 
 import Text from "#/components/design/Text";
 import Config from "#/constants/Config";
 import { getViews } from "#/helpers/network/Engagement";
+import type { HttpsUrl } from "#/types";
 
 interface ViewCounterProperties {
-  url: string; // the URL for which to fetch the views
+  url: HttpsUrl; // the URL for which to fetch the views
   color?: ColorValue;
-  style?: any;
+  style?: TextStyle;
 }
 
 /**
@@ -33,7 +34,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
     return () => {
       isCancelled = true;
     };
-  }, [properties.url, Config.enableEngagement]);
+  }, [properties.url]);
 
   if (!Config.enableEngagement) return null;
 

@@ -4,8 +4,8 @@ import type { TextStyle } from "react-native";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Config from "#/constants/Config";
-import type { ShareableType } from "#/helpers/Sharing";
 import { getShares } from "#/helpers/network/Engagement";
+import type { ShareableType } from "#/types";
 
 interface ShareCounterProperties {
   shareable: ShareableType[];

@@ -1,6 +1,8 @@
 import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import type { FC } from "react";
 
 import type { HttpsUrl } from "./config";
+import type { FaveableType, ShareableType } from "./stores";
 
 export const DISPLAY_TEXT_FULL = "full";
 export const DISPLAY_TEXT_EXCERPT = "excerpt";
@@ -10,6 +12,19 @@ export type DisplayText =
   | typeof DISPLAY_TEXT_FULL
   | typeof DISPLAY_TEXT_EXCERPT
   | typeof DISPLAY_TEXT_NONE;
+
+export interface Post<T> {
+  datetime: string;
+  component: FC;
+  id: string;
+  shareable?: ShareableType[];
+  contentFavIdentifier?: string;
+  contentType?: FaveableType;
+  priority?: number;
+  inView: boolean;
+  hideShareCount?: boolean;
+  data: T;
+}
 
 export interface ArticleProperties {
   _links: {
@@ -44,7 +59,7 @@ export interface InstaPostProperties {
   disableLink?: boolean;
   media_type: string;
   timestamp: string;
-  permalink: string;
+  permalink: HttpsUrl;
   inView?: boolean;
 }
 
