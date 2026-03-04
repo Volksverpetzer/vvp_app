@@ -31,6 +31,11 @@ export const ArticleSourceList = ({
   const corporate = Colors[colorScheme].corporate;
 
   useEffect(() => {
+    if (!Config.enableEngagement) {
+      setLinks([]);
+      return;
+    }
+
     if (article_link && open) {
       getLinks(article_link)
         .then((results) => {

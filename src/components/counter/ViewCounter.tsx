@@ -35,7 +35,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
     };
   }, [properties.url, Config.enableEngagement]);
 
-  if (!Config.enableEngagement) return;
+  if (!Config.enableEngagement) return null;
 
   // TODO replace ActivityIndicator with UiSpinner and adjust styling
   return (

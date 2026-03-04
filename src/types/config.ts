@@ -26,7 +26,7 @@ export interface ExtraConfigType {
   feeds?: FeedsConfig; // feeds configuration
   enableActions: boolean; // enables actions tab
   enableAnalytics: boolean; // enables analytics collection and analytics UI
-  enableEngagement: boolean; // enables favorites-related features
+  enableEngagement: boolean; // enables engagement features (favorites, views, shares, link tracking, and related UI)
   about: string; // URL to about page
   themeColor: string; // special color for the app
   donations: {
