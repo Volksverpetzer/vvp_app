@@ -4,7 +4,7 @@ import { ActivityIndicator } from "react-native";
 
 import Text from "#/components/design/Text";
 import Config from "#/constants/Config";
-import { getViews } from "#/helpers/network/Analytics";
+import { getViews } from "#/helpers/network/Engagement";
 
 interface ViewCounterProperties {
   url: string; // the URL for which to fetch the views
@@ -22,12 +22,19 @@ const ViewCounter = (properties: ViewCounterProperties) => {
 
   useEffect(() => {
     if (!Config.enableFavorites) return;
+    let isCancelled = false;
+    setLoading(true);
     getViews(properties.url).then((views) => {
-      //console.log(views)
+      if (isCancelled) return;
       setViews(views);
       setLoading(false);
     });
-  });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [properties.url, Config.enableFavorites]);
+
   if (!Config.enableFavorites) return;
 
   // TODO replace ActivityIndicator with UiSpinner and adjust styling

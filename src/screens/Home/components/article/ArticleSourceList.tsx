@@ -7,7 +7,7 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
-import { getLinks } from "#/helpers/network/Analytics";
+import { getLinks } from "#/helpers/network/Engagement";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 

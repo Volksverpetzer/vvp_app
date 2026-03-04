@@ -5,7 +5,7 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Config from "#/constants/Config";
 import type { ShareableType } from "#/helpers/Sharing";
-import { getShares } from "#/helpers/network/Analytics";
+import { getShares } from "#/helpers/network/Engagement";
 
 interface ShareCounterProperties {
   shareable: ShareableType[];

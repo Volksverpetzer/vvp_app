@@ -12,7 +12,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import type { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import { registerViews } from "#/helpers/network/Analytics";
+import { registerViews } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { StoredFavs } from "#/types";

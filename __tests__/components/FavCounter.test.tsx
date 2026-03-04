@@ -2,11 +2,11 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 import { Achievements } from "#/helpers/Achievements";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import * as Analytics from "#/helpers/network/Analytics";
-import { FaveableType } from "#/types";
+import * as Engagement from "#/helpers/network/Engagement";
+import type { FaveableType } from "#/types";
 
 jest.mock("#/constants/Config", () => ({ enableFavorites: true }));
-jest.mock("#/helpers/network/Analytics", () => ({
+jest.mock("#/helpers/network/Engagement", () => ({
   getFavs: jest.fn(),
   registerFav: jest.fn(),
 }));
@@ -30,26 +30,26 @@ describe("FavCounter Logic", () => {
     jest.clearAllMocks();
   });
 
-  describe("Analytics Integration", () => {
+  describe("Engagement Integration", () => {
     it("should have getFavs function available", () => {
-      expect(Analytics.getFavs).toBeDefined();
-      expect(typeof Analytics.getFavs).toBe("function");
+      expect(Engagement.getFavs).toBeDefined();
+      expect(typeof Engagement.getFavs).toBe("function");
     });
 
     it("should call getFavs with correct URLs", async () => {
-      jest.spyOn(Analytics, "getFavs").mockResolvedValue(5);
+      jest.spyOn(Engagement, "getFavs").mockResolvedValue(5);
 
-      const result = await Analytics.getFavs("https://example.com/test");
+      const result = await Engagement.getFavs("https://example.com/test");
 
-      expect(Analytics.getFavs).toHaveBeenCalledWith(
+      expect(Engagement.getFavs).toHaveBeenCalledWith(
         "https://example.com/test",
       );
       expect(result).toBe(5);
     });
 
     it("should have registerFav function available", () => {
-      expect(Analytics.registerFav).toBeDefined();
-      expect(typeof Analytics.registerFav).toBe("function");
+      expect(Engagement.registerFav).toBeDefined();
+      expect(typeof Engagement.registerFav).toBe("function");
     });
   });
 
