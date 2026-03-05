@@ -5,7 +5,7 @@ import Config from "#/constants/Config";
 import * as EngagementModule from "#/helpers/network/Engagement";
 import * as Networking from "#/helpers/utils/networking";
 
-const { getViews, getRegions, getShares, getFavs, getLinks } = EngagementModule;
+const { getViews, getShares, getFavs, getLinks } = EngagementModule;
 
 jest.mock("expo-linking", () => ({
   __esModule: true,
@@ -78,29 +78,6 @@ describe("Engagement", () => {
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(error);
       expect(result).toBe(0);
-    });
-  });
-
-  describe("getRegions", () => {
-    it("should return regions data", async () => {
-      getSpy.mockResolvedValue("Germany,France,USA");
-
-      const result = await getRegions();
-
-      expect(getSpy).toHaveBeenCalledWith(expect.anything(), "/proxy/regions", {
-        responseType: "text",
-      });
-      expect(result).toBe("Germany,France,USA");
-    });
-
-    it("should return empty string if the request fails", async () => {
-      const error = new Error("Network error");
-      getSpy.mockRejectedValue(error);
-
-      const result = await getRegions();
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith("getRegions error:", error);
-      expect(result).toBe("");
     });
   });
 
