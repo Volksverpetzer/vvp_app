@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import type { ColorValue } from "react-native";
+import type { ColorValue, TextStyle } from "react-native";
 import { ActivityIndicator } from "react-native";
 
 import Text from "#/components/design/Text";
 import Config from "#/constants/Config";
-import { getViews } from "#/helpers/network/Analytics";
+import { getViews } from "#/helpers/network/Engagement";
+import type { HttpsUrl } from "#/types";
 
 interface ViewCounterProperties {
-  url: string; // the URL for which to fetch the views
+  url: HttpsUrl; // the URL for which to fetch the views
   color?: ColorValue;
-  style?: any;
+  style?: TextStyle;
 }
 
 /**
@@ -21,14 +22,21 @@ const ViewCounter = (properties: ViewCounterProperties) => {
   const color = properties?.color ?? "#fff";
 
   useEffect(() => {
-    if (!Config.analytics) return;
+    if (!Config.enableEngagement) return;
+    let isCancelled = false;
+    setLoading(true);
     getViews(properties.url).then((views) => {
-      //console.log(views)
+      if (isCancelled) return;
       setViews(views);
       setLoading(false);
     });
-  });
-  if (!Config.analytics) return;
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [properties.url]);
+
+  if (!Config.enableEngagement) return null;
 
   // TODO replace ActivityIndicator with UiSpinner and adjust styling
   return (

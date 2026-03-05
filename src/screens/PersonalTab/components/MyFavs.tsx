@@ -10,12 +10,11 @@ import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import LoadInstaPost from "#/components/loader/LoadInstaPost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import type { ShareableType } from "#/helpers/Sharing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import { registerViews } from "#/helpers/network/Analytics";
+import { registerViews } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-import type { StoredFavs } from "#/types";
+import type { HttpsUrl, ShareableType, StoredFavs } from "#/types";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
 const MyFavs = () => {
@@ -40,7 +39,7 @@ const MyFavs = () => {
           const { contentType } = favs[fav];
           switch (contentType) {
             case FAV_TYPE_ARTICLE: {
-              const url = Config.wpUrl + "/redirect/" + fav;
+              const url = `${Config.wpUrl}/redirect/${fav}` satisfies HttpsUrl;
               const shareable: ShareableType[] = [{ title: fav, url }];
               return (
                 <View style={{ ...styles.roundEdges }} key={fav}>
@@ -65,7 +64,10 @@ const MyFavs = () => {
                   <LoadInstaPost inView={true} id={fav} />
                   <ShareBar
                     shareable={[
-                      { title: fav, url: "https://instagram.com/p/" + fav },
+                      {
+                        title: fav,
+                        url: `https://instagram.com/p/${fav}` satisfies HttpsUrl,
+                      },
                     ]}
                     contentFavIdentifier={fav}
                     contentType={contentType}

@@ -5,6 +5,11 @@ export const FAV_TYPE_INSTA = "insta";
 
 export type FaveableType = typeof FAV_TYPE_ARTICLE | typeof FAV_TYPE_INSTA;
 
+export type ShareableType = {
+  url: HttpsUrl;
+  title: string;
+};
+
 export type StoredFav = {
   contentType: FaveableType;
 };

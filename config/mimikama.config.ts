@@ -92,14 +92,15 @@ const extraConfig: ExtraConfigType = {
     ],
     platformPay: false,
   },
-  enabledActions: false,
+  enableActions: false,
+  enableAnalytics: false,
+  enableEngagement: false,
   feeds: {
     wp: { enabled: true },
     insta: { enabled: true },
   },
   colorScheme: colorScheme,
   assets: assets,
-  analytics: false,
   themeColor: "#db0301",
   about: `
     Diese Aufgabe ist bei der hohen Geschwindigkeit der sozialen Medien, sowie der starken Emotionalisierung der politischen Auseinandersetzungen, mehr als notwendig!

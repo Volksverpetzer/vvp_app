@@ -8,16 +8,15 @@ export type HttpsUrl = `https://${string}`;
  */
 export interface ExtraConfigType {
   instagramAppId?: string;
-  enabledActions: boolean; // enables actions tab
-  apiUrl: string;
-  aiUrl?: string;
-  dataProtectionUrl: string;
+  apiUrl: HttpsUrl;
+  aiUrl?: HttpsUrl;
+  dataProtectionUrl: HttpsUrl;
   eas: {
     projectId: string;
   };
   wpUrl: HttpsUrl; // URL to the WordPress site
   analyticsUrl?: HttpsUrl; // URL to the analytics site
-  aboutUrl: string; // URL to the about page
+  aboutUrl: HttpsUrl; // URL to the about page
   colorScheme: colorSchemeType; // color scheme for the app is defined with type colorSchemeType
   assets: {
     splash: string;
@@ -25,7 +24,9 @@ export interface ExtraConfigType {
     iconMono: string;
   };
   feeds?: FeedsConfig; // feeds configuration
-  analytics: boolean; // enables analytics
+  enableActions: boolean; // enables actions tab
+  enableAnalytics: boolean; // enables analytics collection and analytics UI
+  enableEngagement: boolean; // enables engagement features (favorites, views, shares, link tracking, and related UI)
   about: string; // URL to about page
   themeColor: string; // special color for the app
   donations: {

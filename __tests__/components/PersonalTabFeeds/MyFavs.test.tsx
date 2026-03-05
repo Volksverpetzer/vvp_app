@@ -1,17 +1,17 @@
 import Config from "#/constants/Config";
-import { registerViews } from "#/helpers/network/Analytics";
+import { registerViews } from "#/helpers/network/Engagement";
 
 // Mock Config
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
-    analytics: true,
+    enableEngagement: true,
   },
 }));
 
 // Mock dependencies
-jest.mock("#/helpers/network/Analytics", () => ({
+jest.mock("#/helpers/network/Engagement", () => ({
   registerViews: jest.fn(),
 }));
 
@@ -23,7 +23,7 @@ jest.mock("#/helpers/provider/BadgeProvider", () => ({
   updateBadgeState: jest.fn(),
 }));
 
-describe("MyFavs Analytics", () => {
+describe("MyFavs Engagement", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

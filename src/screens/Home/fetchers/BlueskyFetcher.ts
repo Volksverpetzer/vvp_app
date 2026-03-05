@@ -4,7 +4,7 @@ import BlueskyPost from "#/components/posts/BlueskyPost";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
-import type { BlueskyPostProperties } from "#/types";
+import type { BlueskyPostProperties, HttpsUrl } from "#/types";
 
 import FetcherUtilities from "./FetcherUtilities";
 
@@ -77,7 +77,8 @@ export const BlueskyFetcher = {
     return topLevelPosts.map((item) => {
       const postId = item.uri.split("/app.bsky.feed.post/")[1];
       const handle = item.post.post.author.handle;
-      const url = `https://bsky.app/profile/${handle}/post/${postId}`;
+      const url =
+        `https://bsky.app/profile/${handle}/post/${postId}` satisfies HttpsUrl;
       return new Post<BlueskyPostProperties>(
         (item.post.post.record.created_at as string).replace("Z", ""),
         item.uri,

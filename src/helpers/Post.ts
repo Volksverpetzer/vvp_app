@@ -1,42 +1,21 @@
-import type { FC } from "react";
+import type { Post as PostType } from "#/types";
 
-import type { FaveableType } from "#/types";
-
-import type { ShareableType } from "./Sharing";
+type P<T> = PostType<T>;
 
 /**
  * Post Class for ordering of different types of Post Components
  */
-export default class Post<T> {
-  datetime: string;
-  component: FC;
-  id: string;
-  shareable?: ShareableType[];
-  contentFavIdentifier?: string;
-  contentType?: FaveableType;
-  priority?: number;
-  inView = false;
-  hideShareCount?: boolean;
-  data: T;
+export default class Post<T> implements P<T> {
   public constructor(
-    datetime: string,
-    id: string,
-    component: FC,
-    data: T,
-    shareable?: ShareableType[],
-    priority?: number,
-    hideShareCount?: boolean,
-    contentFavIdentifier?: string,
-    contentType?: FaveableType,
-  ) {
-    this.contentFavIdentifier = contentFavIdentifier;
-    this.contentType = contentType;
-    this.datetime = datetime;
-    this.id = id;
-    this.component = component;
-    this.data = data;
-    this.shareable = shareable ?? undefined;
-    this.priority = priority ?? 1;
-    this.hideShareCount = hideShareCount ?? false;
-  }
+    public datetime: P<T>["datetime"],
+    public id: P<T>["id"],
+    public component: P<T>["component"],
+    public data: P<T>["data"],
+    public shareable: P<T>["shareable"] = undefined,
+    public priority: P<T>["priority"] = 1,
+    public hideShareCount: P<T>["hideShareCount"] = false,
+    public contentFavIdentifier?: P<T>["contentFavIdentifier"],
+    public contentType?: P<T>["contentType"],
+    public inView: P<T>["inView"] = false,
+  ) {}
 }

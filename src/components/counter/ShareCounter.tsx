@@ -4,8 +4,8 @@ import type { TextStyle } from "react-native";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Config from "#/constants/Config";
-import type { ShareableType } from "#/helpers/Sharing";
-import { getShares } from "#/helpers/network/Analytics";
+import { getShares } from "#/helpers/network/Engagement";
+import type { ShareableType } from "#/types";
 
 interface ShareCounterProperties {
   shareable: ShareableType[];
@@ -25,11 +25,11 @@ const ShareCounter = (properties: ShareCounterProperties) => {
   }, [properties.shareable]);
 
   useEffect(() => {
-    if (!Config.analytics) return;
+    if (!Config.enableEngagement) return;
     getAllShares();
   }, [getAllShares]);
 
-  if (!Config.analytics) return <View />;
+  if (!Config.enableEngagement) return <View />;
 
   return (
     <Text style={properties.style}>{shares + (properties.shares ?? 0)}</Text>

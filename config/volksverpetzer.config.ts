@@ -91,7 +91,9 @@ const extraConfig: ExtraConfigType = {
     shop: "https://volksverpetzer-shop.de/",
     platformPay: true,
   },
-  enabledActions: true,
+  enableActions: true,
+  enableAnalytics: true,
+  enableEngagement: true,
   feeds: {
     reddit: { enabled: true },
     wp: { enabled: true },
@@ -103,7 +105,6 @@ const extraConfig: ExtraConfigType = {
   },
   colorScheme: colorScheme,
   themeColor: "#1b7194",
-  analytics: true,
   assets: assets,
   about: `
     Diese Aufgabe ist bei der hohen Geschwindigkeit der sozialen Medien, sowie der starken Emotionalisierung der politischen Auseinandersetzungen, mehr als notwendig!

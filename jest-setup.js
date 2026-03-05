@@ -31,6 +31,9 @@ jest.mock("expo-constants", () => ({
   default: {
     expoConfig: {
       extra: {
+        enableActions: true,
+        enableAnalytics: true,
+        enableEngagement: true,
         colorScheme: {
           light: {
             text: "#111",
@@ -66,10 +69,17 @@ jest.mock("expo-constants", () => ({
   },
 }));
 
-jest.mock("expo-router", () => ({
-  __esModule: true,
-  useFocusEffect: jest.fn(),
-}));
+jest.mock("expo-router", () => {
+  const React = require("react");
+  const Tabs = ({ children }) => <>{children}</>;
+  Tabs.Screen = jest.fn(() => null);
+
+  return {
+    __esModule: true,
+    Tabs,
+    useFocusEffect: jest.fn(),
+  };
+});
 
 // Mock AsyncStorage for tests
 jest.mock("@react-native-async-storage/async-storage", () =>
