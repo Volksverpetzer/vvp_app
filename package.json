@@ -24,7 +24,8 @@
     "expo:doctor": "pnpx expo-doctor",
     "expo:eject": "expo eject",
     "------- npm scripts -------": "-------------",
-    "prepare": "husky"
+    "prepare": "husky",
+    "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\""
   },
   "dependencies": {
     "@algolia/client-search": "5.49.1",
