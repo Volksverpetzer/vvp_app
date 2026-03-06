@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 import BaseStore from "#/helpers/Storage";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import { StoredFavs } from "#/types";
+import type { StoredFavs } from "#/types";
 
 // Mock the BaseStore
 jest.mock("#/helpers/Storage", () => ({

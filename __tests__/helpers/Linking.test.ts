@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
-import { Router } from "expo-router";
+import type { Router } from "expo-router";
 
 import { onLinkPress, outBoundLinkPress } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";

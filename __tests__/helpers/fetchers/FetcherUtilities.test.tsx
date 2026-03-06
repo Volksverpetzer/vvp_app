@@ -1,6 +1,6 @@
 import type Post from "#/helpers/Post";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
-import { SafeFetchFunction } from "#/types";
+import type { SafeFetchFunction } from "#/types";
 
 describe("FetcherUtils", () => {
   beforeEach(() => {
