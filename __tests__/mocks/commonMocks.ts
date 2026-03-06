@@ -14,7 +14,7 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
 
 jest.mock("#/screens/Home/fetchers/FetcherUtilities", () => ({
   __esModule: true,
-  formatDate: jest.fn((date) => "2023-01-01"),
+  formatDate: jest.fn((_date) => "2023-01-01"),
   getImageFromPost: jest.fn(),
   getVideoFromPost: jest.fn(),
   safeFetch: jest.fn(async (fetchFn: () => Promise<any>) => {

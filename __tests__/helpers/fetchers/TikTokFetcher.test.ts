@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import "__tests__/mocks/commonMocks";
 
 import API from "#/helpers/network/ServerAPI";
 import { TikTokFetcher } from "#/screens/Home/fetchers/TikTokFetcher";
-
-import "../../mocks/commonMocks";
 
 // Mock the TiktokPost component to avoid WebView dependencies
 jest.mock("#/components/posts/TiktokPost", () => ({

@@ -1,4 +1,4 @@
-import "../../mocks/commonMocks";
+import "__tests__/mocks/commonMocks";
 
 describe("BotFetcher", () => {
   // This file contains tests for BotFetcher

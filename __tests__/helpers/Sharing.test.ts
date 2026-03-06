@@ -140,7 +140,7 @@ describe("Sharing helpers", () => {
 
     it("should identify image files with media_url in the path", async () => {
       // Setup - the filename (last part of path) needs to contain media_url
-      parseSpy.mockImplementation((url) => {
+      parseSpy.mockImplementation((_url) => {
         return { path: "/path/to/media_url_image" };
       });
       downloadSpy.mockResolvedValue({
@@ -185,7 +185,7 @@ describe("Sharing helpers", () => {
 
     it("should default to jpg if no file extension is found", async () => {
       // Setup - need to make it an image file by including media_url
-      parseSpy.mockImplementation((url) => {
+      parseSpy.mockImplementation((_url) => {
         return { path: "/media_url_image_without_extension" };
       });
       downloadSpy.mockResolvedValue({

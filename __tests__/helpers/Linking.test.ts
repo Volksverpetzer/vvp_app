@@ -26,7 +26,7 @@ jest.mock("#/constants/Config", () => ({
 
 describe("Linking helpers", () => {
   const router = {
-    push(path?: any) {
+    push(_path?: any) {
       /* noop */
     },
   } as unknown as Router;
