@@ -1,5 +1,8 @@
-module.exports = function (api) {
-  api.cache(true);
+import type { ConfigAPI } from "@babel/core";
+
+const createBabelConfig = (api: ConfigAPI) => {
+  api.cache.forever();
+
   return {
     presets: [
       "babel-preset-expo",
@@ -22,3 +25,5 @@ module.exports = function (api) {
     ],
   };
 };
+
+export default createBabelConfig;

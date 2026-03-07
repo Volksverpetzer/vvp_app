@@ -19,7 +19,6 @@
     "**/*.tsx",
     "**/*.d.ts",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts",
-    "metro.config.js"
+    "expo-env.d.ts"
   ]
 }
