@@ -1,12 +1,14 @@
-module.exports = {
+import type { Config } from "@jest/types";
+
+const config: Config.InitialOptions = {
   preset: "jest-expo",
   testEnvironment: "node",
   testEnvironmentOptions: {},
-  transformIgnorePatterns: [], // transform everything to strip Flow types
+  transformIgnorePatterns: [],
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
-  setupFilesAfterEnv: ["<rootDir>/jest-setup.js"],
+  setupFilesAfterEnv: ["<rootDir>/jest-setup.ts"],
   testPathIgnorePatterns: ["<rootDir>/__tests__/mocks/"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   collectCoverage: true,
@@ -14,11 +16,12 @@ module.exports = {
     "**/*.{ts,tsx}",
     "!**/coverage/**",
     "!**/node_modules/**",
-    "!**/babel.config.js",
-    "!**/jest.setup.js",
+    "!**/babel.config.ts",
+    "!**/jest-setup.ts",
   ],
   moduleNameMapper: {
-    // Maps '@/' to the root directory
     "^#/(.*)$": "<rootDir>/$1",
   },
 };
+
+export default config;
