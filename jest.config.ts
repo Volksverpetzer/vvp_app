@@ -16,7 +16,7 @@ const config: Config.InitialOptions = {
     "**/*.{ts,tsx}",
     "!**/coverage/**",
     "!**/node_modules/**",
-    "!**/babel.config.ts",
+    "!**/babel.config.cts",
     "!**/jest-setup.ts",
   ],
   moduleNameMapper: {
