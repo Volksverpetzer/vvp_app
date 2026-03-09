@@ -11,7 +11,7 @@ import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import { getRegions } from "#/helpers/network/Engagement";
+import { getRegions } from "#/helpers/network/Action";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { Region, RegionsByCode } from "#/types";
