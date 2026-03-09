@@ -18,7 +18,7 @@ jest.mock("#/constants/Config", () => ({
   },
 }));
 
-describe("ActionEngagement", () => {
+describe("Action", () => {
   let getSpy: ReturnType<typeof jest.spyOn>;
   let consoleErrorSpy: ReturnType<typeof jest.spyOn>;
 
