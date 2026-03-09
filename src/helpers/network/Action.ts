@@ -8,6 +8,10 @@ const client = createClient(apiUrl);
  * Fetches the regions from the counter API
  */
 const getRegions = async (): Promise<string> => {
+  if (!Config.enableActions) {
+    return "";
+  }
+
   try {
     return await get<string>(client, "/proxy/regions", {
       responseType: "text",
