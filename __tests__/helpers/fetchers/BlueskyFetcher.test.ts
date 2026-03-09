@@ -1,5 +1,5 @@
+import "#tests/mocks/commonMocks";
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import "__tests__/mocks/commonMocks";
 
 import API from "#/helpers/network/ServerAPI";
 import { BlueskyFetcher } from "#/screens/Home/fetchers/BlueskyFetcher";
