@@ -20,7 +20,7 @@ const config: Config.InitialOptions = {
     "!**/jest-setup.ts",
   ],
   moduleNameMapper: {
-    "^#/(.*)$": "<rootDir>/$1",
+    "^#/(.*)$": "<rootDir>/src/$1",
   },
 };
 
