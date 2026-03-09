@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
-import { Router } from "expo-router";
+import type { Router } from "expo-router";
 
 import { onLinkPress, outBoundLinkPress } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -26,7 +26,7 @@ jest.mock("#/constants/Config", () => ({
 
 describe("Linking helpers", () => {
   const router = {
-    push(path?: any) {
+    push(_path?: any) {
       /* noop */
     },
   } as unknown as Router;

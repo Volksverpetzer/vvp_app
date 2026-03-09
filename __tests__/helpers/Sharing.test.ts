@@ -140,7 +140,7 @@ describe("Sharing helpers", () => {
 
     it("should identify image files with media_url in the path", async () => {
       // Setup - the filename (last part of path) needs to contain media_url
-      parseSpy.mockImplementation((url) => {
+      parseSpy.mockImplementation((_url) => {
         return { path: "/path/to/media_url_image" };
       });
       downloadSpy.mockResolvedValue({
@@ -185,7 +185,7 @@ describe("Sharing helpers", () => {
 
     it("should default to jpg if no file extension is found", async () => {
       // Setup - need to make it an image file by including media_url
-      parseSpy.mockImplementation((url) => {
+      parseSpy.mockImplementation((_url) => {
         return { path: "/media_url_image_without_extension" };
       });
       downloadSpy.mockResolvedValue({
@@ -347,10 +347,10 @@ describe("Sharing helpers", () => {
   });
 
   describe("onShare", () => {
-    it("should add UTM parameters to non-image URLs", async () => {
+    it("should share non-image URLs with UTM parameters and selection haptics", async () => {
       // Setup
-      const url = "https://example.com/article";
-      parseSpy.mockReturnValue({ path: "/article" });
+      const url = "https://example.com/content";
+      parseSpy.mockReturnValue({ path: "/content" });
       shareSpy.mockResolvedValue({
         action: Share.sharedAction,
         activityType: "facebook",
@@ -361,8 +361,9 @@ describe("Sharing helpers", () => {
 
       // Assert
       expect(Share.share).toHaveBeenCalledWith({
-        message: expect.stringContaining("utm_source=app_share"),
+        message: "https://example.com/content?utm_source=app_share",
       });
+      expect(Haptics.selectionAsync).toHaveBeenCalled();
     });
 
     it("should return true for successful shares", async () => {

@@ -26,20 +26,6 @@ const getViews = async (permalink?: HttpsUrl): Promise<number> => {
 };
 
 /**
- * Fetches the regions from the counter API
- */
-const getRegions = async (): Promise<string> => {
-  try {
-    return await get<string>(client, "/proxy/regions", {
-      responseType: "text",
-    });
-  } catch (error) {
-    console.error("getRegions error:", error);
-    return "";
-  }
-};
-
-/**
  * Returns the number of shares for the given permalink
  * @param permalink - Link of the current Resource, defaults to Config.wpUrl if not provided
  * @returns Promise<number> - Number of shares
@@ -118,12 +104,4 @@ const registerFav = (permalink: string): Promise<unknown> => {
   return registerEvent(permalink, "favorite");
 };
 
-export {
-  getViews,
-  getRegions,
-  getShares,
-  getFavs,
-  getLinks,
-  registerFav,
-  registerViews,
-};
+export { getViews, getShares, getFavs, getLinks, registerFav, registerViews };

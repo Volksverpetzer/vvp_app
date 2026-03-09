@@ -6,7 +6,7 @@ export default {
       "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@atproto/api@0.19.0": {
+  "@atproto/api@0.19.3": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -152,7 +152,7 @@ export default {
       "https://github.com/malaa-tech/expo-custom-assets/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "expo-dev-client@55.0.10": {
+  "expo-dev-client@55.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -182,7 +182,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-image@55.0.5": {
+  "expo-image@55.0.6": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -212,13 +212,13 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-notifications@55.0.10": {
+  "expo-notifications@55.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-router@55.0.3": {
+  "expo-router@55.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -267,7 +267,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo@55.0.4": {
+  "expo@55.0.5": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -394,7 +394,7 @@ export default {
     licenseUrl: "https://github.com/facebook/react/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "rive-react-native@9.8.0": {
+  "rive-react-native@9.8.1": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-react-native",
     licenseUrl:

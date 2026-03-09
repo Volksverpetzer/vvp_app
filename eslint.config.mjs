@@ -1,4 +1,5 @@
 import cspellESLintPluginRecommended from "@cspell/eslint-plugin/recommended";
+import tsESLintPlugin from "@typescript-eslint/eslint-plugin";
 import expoConfig from "eslint-config-expo/flat.js";
 import importAlias from "eslint-plugin-import-alias";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
@@ -14,15 +15,23 @@ export default defineConfig([
   {
     ignores: [
       "**/pnpm-lock.yaml",
+      "android/**",
+      "ios/**",
       "src/screens/Settings/components/licenses/data.tsx",
     ],
+  },
+  {
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
       parserOptions: {
         projectService: true,
         tsconfigRootDir,
       },
     },
-    plugins: { "import-alias": importAlias },
+    plugins: {
+      "@typescript-eslint": tsESLintPlugin,
+      "import-alias": importAlias,
+    },
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
@@ -49,8 +58,9 @@ export default defineConfig([
         {
           relativeDepth: 0, // 0 means avoid all relative paths if an alias exists
           aliases: [
-            { alias: "#assets", matcher: "^assets" }, // Maps '@' to any path starting with 'src'
-            { alias: "#", matcher: "^src" }, // Maps '@' to any path starting with 'src'
+            { alias: "#assets", matcher: "^assets" }, // Maps '#assets' to any path starting with 'assets'
+            { alias: "#tests", matcher: "^__tests__" }, // Maps '#tests' to any path starting with '__tests__'
+            { alias: "#", matcher: "^src" }, // Maps '#' to any path starting with 'src'
           ],
         },
       ],

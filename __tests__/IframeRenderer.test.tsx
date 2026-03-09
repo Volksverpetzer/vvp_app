@@ -1,4 +1,5 @@
 import { act, render } from "@testing-library/react-native";
+import * as Linking from "expo-linking";
 import React from "react";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
 
@@ -43,9 +44,9 @@ jest.mock("react-native-webview", () => ({
   __esModule: true,
   default: (props: any) => {
     mockLastWebViewProps = props;
-    const React = require("react");
+    const ReactRuntime = jest.requireActual("react");
     // Render a View that propagates the style prop so tests can inspect it
-    return React.createElement("View", {
+    return ReactRuntime.createElement("View", {
       testID: "mock-webview",
       style: props.style,
     });
@@ -607,8 +608,12 @@ describe("IframeRenderer prepareWebViewSource", () => {
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
       // Mock Linking.parse to return empty hostname
-      const originalParse = require("expo-linking").parse;
-      require("expo-linking").parse = jest.fn(() => ({ hostname: "" }));
+      const parseSpy = jest.spyOn(Linking, "parse").mockImplementation(() => ({
+        scheme: null,
+        hostname: "",
+        path: null,
+        queryParams: {},
+      }));
 
       mockUseHtmlIframeProps.mockReturnValue({
         htmlAttribs: {
@@ -627,8 +632,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
 
       expect(getByText("Error rendering iframe")).toBeTruthy();
 
-      // Restore original mock
-      require("expo-linking").parse = originalParse;
+      parseSpy.mockRestore();
     });
 
     it("should render ErrorCard when Linking.parse returns undefined hostname", () => {
@@ -636,8 +640,12 @@ describe("IframeRenderer prepareWebViewSource", () => {
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
       // Mock Linking.parse to return undefined hostname
-      const originalParse = require("expo-linking").parse;
-      require("expo-linking").parse = jest.fn(() => ({}));
+      const parseSpy = jest.spyOn(Linking, "parse").mockImplementation(() => ({
+        scheme: null,
+        hostname: undefined,
+        path: null,
+        queryParams: {},
+      }));
 
       mockUseHtmlIframeProps.mockReturnValue({
         htmlAttribs: {
@@ -656,8 +664,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
 
       expect(getByText("Error rendering iframe")).toBeTruthy();
 
-      // Restore original mock
-      require("expo-linking").parse = originalParse;
+      parseSpy.mockRestore();
     });
   });
 

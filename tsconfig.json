@@ -11,6 +11,7 @@
     "baseUrl": "./",
     "paths": {
       "#assets/*": ["assets/*"],
+      "#tests/*": ["__tests__/*"],
       "#/*": ["src/*"]
     }
   },

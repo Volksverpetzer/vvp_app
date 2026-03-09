@@ -17,6 +17,7 @@ const createBabelConfig = (api: ConfigAPI) => {
           root: ["./"],
           alias: {
             "#assets": "./assets",
+            "#tests": "./__tests__",
             "#": "./src",
           },
         },
