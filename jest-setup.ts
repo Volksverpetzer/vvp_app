@@ -1,30 +1,32 @@
 import { afterEach, jest } from "@jest/globals";
+import * as mockAsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock";
+import type { ReactNode } from "react";
 import { Platform } from "react-native";
 
-// Set React Act environment flag for React 19
+declare global {
+  var IS_REACT_ACT_ENVIRONMENT: boolean;
+}
+
 global.IS_REACT_ACT_ENVIRONMENT = true;
 
 jest.mock("react-native/Libraries/Interaction/InteractionManager", () => ({
   createInteractionHandle: jest.fn(),
   runAfterInteractions: jest.fn(),
   setDeadline: jest.fn(),
-  // Add other methods if needed
   clearInteractionHandle: jest.fn(),
 }));
 
-jest.mock("@expo/vector-icons", () => {
-  return {
-    MaterialCommunityIcons: jest.fn(),
-    Ionicons: jest.fn(),
-    FontAwesome: jest.fn(),
-    MaterialIcons: jest.fn(),
-    Entypo: jest.fn(),
-    Feather: jest.fn(),
-    AntDesign: jest.fn(),
-    Fontisto: jest.fn(),
-    EvilIcons: jest.fn(),
-  };
-});
+jest.mock("@expo/vector-icons", () => ({
+  MaterialCommunityIcons: jest.fn(),
+  Ionicons: jest.fn(),
+  FontAwesome: jest.fn(),
+  MaterialIcons: jest.fn(),
+  Entypo: jest.fn(),
+  Feather: jest.fn(),
+  AntDesign: jest.fn(),
+  Fontisto: jest.fn(),
+  EvilIcons: jest.fn(),
+}));
 
 jest.mock("expo-constants", () => ({
   __esModule: true,
@@ -70,8 +72,7 @@ jest.mock("expo-constants", () => ({
 }));
 
 jest.mock("expo-router", () => {
-  const React = require("react");
-  const Tabs = ({ children }) => <>{children}</>;
+  const Tabs = ({ children }: { children: ReactNode }) => children;
   Tabs.Screen = jest.fn(() => null);
 
   return {
@@ -81,12 +82,8 @@ jest.mock("expo-router", () => {
   };
 });
 
-// Mock AsyncStorage for tests
-jest.mock("@react-native-async-storage/async-storage", () =>
-  require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
-);
+jest.mock("@react-native-async-storage/async-storage", () => mockAsyncStorage);
 
-// Mock expo-notifications
 jest.mock("expo-notifications", () => ({
   getPermissionsAsync: jest.fn(),
   requestPermissionsAsync: jest.fn(),
@@ -99,21 +96,17 @@ jest.mock("expo-notifications", () => ({
   },
 }));
 
-// Mock expo-device
 jest.mock("expo-device", () => ({
   isDevice: true,
 }));
 
-// Mock expo-application
 jest.mock("expo-application", () => ({
   nativeBuildVersion: "1.0.0",
 }));
 
-// Mock Platform.OS
 const originalPlatform = Platform.OS;
 
 afterEach(() => {
-  // Reset the Platform.OS to its original value after each test
   Object.defineProperty(Platform, "OS", {
     value: originalPlatform,
     configurable: true,
