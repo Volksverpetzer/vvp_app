@@ -347,10 +347,10 @@ describe("Sharing helpers", () => {
   });
 
   describe("onShare", () => {
-    it("should add UTM parameters to non-image URLs", async () => {
+    it("should share non-image URLs with UTM parameters and selection haptics", async () => {
       // Setup
-      const url = "https://example.com/article";
-      parseSpy.mockReturnValue({ path: "/article" });
+      const url = "https://example.com/content";
+      parseSpy.mockReturnValue({ path: "/content" });
       shareSpy.mockResolvedValue({
         action: Share.sharedAction,
         activityType: "facebook",
@@ -361,8 +361,9 @@ describe("Sharing helpers", () => {
 
       // Assert
       expect(Share.share).toHaveBeenCalledWith({
-        message: expect.stringContaining("utm_source=app_share"),
+        message: "https://example.com/content?utm_source=app_share",
       });
+      expect(Haptics.selectionAsync).toHaveBeenCalled();
     });
 
     it("should return true for successful shares", async () => {
