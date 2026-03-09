@@ -1,4 +1,5 @@
 import { afterEach, jest } from "@jest/globals";
+import * as mockAsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock";
 import type { ReactNode } from "react";
 import { Platform } from "react-native";
 
@@ -81,9 +82,7 @@ jest.mock("expo-router", () => {
   };
 });
 
-jest.mock("@react-native-async-storage/async-storage", () =>
-  require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
-);
+jest.mock("@react-native-async-storage/async-storage", () => mockAsyncStorage);
 
 jest.mock("expo-notifications", () => ({
   getPermissionsAsync: jest.fn(),
