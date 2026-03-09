@@ -1,6 +1,5 @@
+import "#tests/mocks/commonMocks";
 import { describe, expect, it } from "@jest/globals";
-
-import "../../mocks/commonMocks";
 
 describe("InstagramFetcher", () => {
   // This file contains tests for InstagramFetcher
