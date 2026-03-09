@@ -106,6 +106,7 @@
     "@types/lodash": "4.17.24",
     "@types/node": "24.10.13",
     "@types/react": "19.2.10",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
     "babel-jest": "30.2.0",
     "babel-plugin-module-resolver": "5.0.2",
     "babel-preset-expo": "55.0.10",
