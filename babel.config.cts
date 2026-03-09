@@ -1,6 +1,6 @@
 import type { ConfigAPI } from "@babel/core";
 
-const createBabelConfig = (api: ConfigAPI) => {
+module.exports = (api: ConfigAPI) => {
   api.cache.forever();
 
   return {
@@ -26,5 +26,3 @@ const createBabelConfig = (api: ConfigAPI) => {
     ],
   };
 };
-
-export default createBabelConfig;
