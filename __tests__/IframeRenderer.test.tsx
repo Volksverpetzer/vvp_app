@@ -608,9 +608,12 @@ describe("IframeRenderer prepareWebViewSource", () => {
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
       // Mock Linking.parse to return empty hostname
-      const parseSpy = jest
-        .spyOn(Linking, "parse")
-        .mockImplementation(() => ({ hostname: "" }));
+      const parseSpy = jest.spyOn(Linking, "parse").mockImplementation(() => ({
+        scheme: null,
+        hostname: "",
+        path: null,
+        queryParams: {},
+      }));
 
       mockUseHtmlIframeProps.mockReturnValue({
         htmlAttribs: {
@@ -637,9 +640,12 @@ describe("IframeRenderer prepareWebViewSource", () => {
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
       // Mock Linking.parse to return undefined hostname
-      const parseSpy = jest
-        .spyOn(Linking, "parse")
-        .mockImplementation(() => ({}));
+      const parseSpy = jest.spyOn(Linking, "parse").mockImplementation(() => ({
+        scheme: null,
+        hostname: undefined,
+        path: null,
+        queryParams: {},
+      }));
 
       mockUseHtmlIframeProps.mockReturnValue({
         htmlAttribs: {
