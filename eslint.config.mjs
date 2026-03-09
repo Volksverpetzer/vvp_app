@@ -49,9 +49,9 @@ export default defineConfig([
         {
           relativeDepth: 0, // 0 means avoid all relative paths if an alias exists
           aliases: [
-            { alias: "#assets", matcher: "^assets" }, // Maps '@' to any path starting with 'src'
-            { alias: "#tests", matcher: "^__tests__" }, // Maps '@' to any path starting with 'src'
-            { alias: "#", matcher: "^src" }, // Maps '@' to any path starting with 'src'
+            { alias: "#assets", matcher: "^assets" }, // Maps '#assets' to any path starting with 'assets'
+            { alias: "#tests", matcher: "^__tests__" }, // Maps '#tests' to any path starting with '__tests__'
+            { alias: "#", matcher: "^src" }, // Maps '#' to any path starting with 'src'
           ],
         },
       ],
