@@ -5,14 +5,14 @@ import { Text } from "react-native";
 import Loader from "#/components/loader/Loader";
 
 jest.mock("#/components/animations/LoadingFallback", () => {
-  const { Text: MockText } = require("react-native");
+  const { Text: MockText } = jest.requireActual("react-native");
   return function MockLoadingFallback({ text }: { text?: string }) {
     return <MockText>{`loading:${text}`}</MockText>;
   };
 });
 
 jest.mock("#/components/design/ErrorCard", () => {
-  const { Text: MockText } = require("react-native");
+  const { Text: MockText } = jest.requireActual("react-native");
   return function MockErrorCard({ text }: { text?: string }) {
     return <MockText>{`error:${text}`}</MockText>;
   };
