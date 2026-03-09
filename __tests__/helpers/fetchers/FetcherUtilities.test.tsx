@@ -1,6 +1,6 @@
 import type Post from "#/helpers/Post";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
-import { SafeFetchFunction } from "#/types";
+import type { SafeFetchFunction } from "#/types";
 
 describe("FetcherUtils", () => {
   beforeEach(() => {
@@ -9,10 +9,9 @@ describe("FetcherUtils", () => {
 
   describe("safeFetch", () => {
     it("returns fetched data when fetchFn resolves", async () => {
-      const fetchFunction: SafeFetchFunction<string> = jest.fn(async () => [
-        "a",
-        "b",
-      ]);
+      const fetchFunction: SafeFetchFunction<string> = jest.fn(() =>
+        Promise.resolve(["a", "b"]),
+      );
       const result = await FetcherUtilities.safeFetch(
         fetchFunction,
         "testFetcher",
@@ -23,9 +22,9 @@ describe("FetcherUtils", () => {
 
     it("returns empty array and logs error when fetchFn throws", async () => {
       const error = new Error("fail");
-      const fetchFunction: SafeFetchFunction<string> = jest.fn(async () => {
-        throw error;
-      });
+      const fetchFunction: SafeFetchFunction<string> = jest.fn(() =>
+        Promise.reject(error),
+      );
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
 
       const result = await FetcherUtilities.safeFetch(
@@ -148,8 +147,8 @@ describe("FetcherUtils", () => {
     } as unknown as Post<unknown>;
 
     it("combines, deduplicates, defaults sorts by datetime, and applies cutoffDate", async () => {
-      const fetcher1 = jest.fn(async (_properties: any) => [p1, p2]);
-      const fetcher2 = jest.fn(async (_properties: any) => [p3, p4]);
+      const fetcher1 = jest.fn((_properties: any) => Promise.resolve([p1, p2]));
+      const fetcher2 = jest.fn((_properties: any) => Promise.resolve([p3, p4]));
 
       const result = await FetcherUtilities.fetchAndProcessPosts(
         [
@@ -166,8 +165,8 @@ describe("FetcherUtils", () => {
     });
 
     it("applies prioSort and disables cutoffDate when specified", async () => {
-      const fetcher1 = jest.fn(async () => [p1, p2]);
-      const fetcher2 = jest.fn(async () => [p3, p4]);
+      const fetcher1 = jest.fn(() => Promise.resolve([p1, p2]));
+      const fetcher2 = jest.fn(() => Promise.resolve([p3, p4]));
       const oldPosts = [
         {
           id: "0",
@@ -191,10 +190,8 @@ describe("FetcherUtils", () => {
     });
 
     it("returns empty array and logs error when a fetcher throws", async () => {
-      const fetcher1 = jest.fn(async () => {
-        throw new Error("oops");
-      });
-      const fetcher2 = jest.fn(async () => [p1]);
+      const fetcher1 = jest.fn(() => Promise.reject(new Error("oops")));
+      const fetcher2 = jest.fn(() => Promise.resolve([p1]));
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
 
       const result = await FetcherUtilities.fetchAndProcessPosts([
@@ -215,8 +212,8 @@ describe("FetcherUtils", () => {
         datetime: "2021-01-05T00:00:00Z",
         priority: 5,
       } as unknown as Post<unknown>;
-      const fetcher1 = jest.fn(async () => [p1, p2]);
-      const fetcher2 = jest.fn(async () => [p3, p4]);
+      const fetcher1 = jest.fn(() => Promise.resolve([p1, p2]));
+      const fetcher2 = jest.fn(() => Promise.resolve([p3, p4]));
       const result = await FetcherUtilities.fetchAndProcessPosts(
         [
           { fetcher: fetcher1, props: {} },

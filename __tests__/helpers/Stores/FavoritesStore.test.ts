@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 import BaseStore from "#/helpers/Storage";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import { StoredFavs } from "#/types";
+import type { StoredFavs } from "#/types";
 
 // Mock the BaseStore
 jest.mock("#/helpers/Storage", () => ({
@@ -161,7 +161,7 @@ describe("FavoritesStore", () => {
   });
 
   describe("isFavorite", () => {
-    it("should return true when content is favorited", async () => {
+    it("should return true when content is added to the favorites", async () => {
       // Setup
       const mockFavs = { article1: { contentType: "article" } };
       jest
@@ -176,7 +176,7 @@ describe("FavoritesStore", () => {
       expect(result).toBe(true);
     });
 
-    it("should return false when content is not favorited", async () => {
+    it("should return false when content is not added to the favorites", async () => {
       // Setup
       const mockFavs = { article1: { contentType: "article" } };
       jest

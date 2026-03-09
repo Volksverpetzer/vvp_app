@@ -1,4 +1,5 @@
-import "../../mocks/commonMocks";
+import "#tests/mocks/commonMocks";
+import { describe, expect, it } from "@jest/globals";
 
 describe("BotFetcher", () => {
   // This file contains tests for BotFetcher

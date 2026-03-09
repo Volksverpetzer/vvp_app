@@ -14,6 +14,7 @@ module.exports = function (api) {
           root: ["./"],
           alias: {
             "#assets": "./assets",
+            "#tests": "./__tests__",
             "#": "./src",
           },
         },
