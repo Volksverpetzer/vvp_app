@@ -6,16 +6,16 @@ import Loader from "#/components/loader/Loader";
 
 jest.mock("#/components/animations/LoadingFallback", () => {
   const { Text: MockText } = require("react-native");
-  return ({ text }: { text?: string }) => (
-    <MockText>{`loading:${text}`}</MockText>
-  );
+  return function ({ text }: { text?: string }) {
+    return <MockText>{`loading:${text}`}</MockText>;
+  };
 });
 
 jest.mock("#/components/design/ErrorCard", () => {
   const { Text: MockText } = require("react-native");
-  return ({ text }: { text?: string }) => (
-    <MockText>{`error:${text}`}</MockText>
-  );
+  return function ({ text }: { text?: string }) {
+    return <MockText>{`error:${text}`}</MockText>;
+  };
 });
 
 type Deferred<T> = {
