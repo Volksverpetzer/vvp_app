@@ -1,4 +1,5 @@
 import cspellESLintPluginRecommended from "@cspell/eslint-plugin/recommended";
+import tsESLintPlugin from "@typescript-eslint/eslint-plugin";
 import expoConfig from "eslint-config-expo/flat.js";
 import importAlias from "eslint-plugin-import-alias";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
@@ -14,15 +15,23 @@ export default defineConfig([
   {
     ignores: [
       "**/pnpm-lock.yaml",
+      "android/**",
+      "ios/**",
       "src/screens/Settings/components/licenses/data.tsx",
     ],
+  },
+  {
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
       parserOptions: {
         projectService: true,
         tsconfigRootDir,
       },
     },
-    plugins: { "import-alias": importAlias },
+    plugins: {
+      "@typescript-eslint": tsESLintPlugin,
+      "import-alias": importAlias,
+    },
     rules: {
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
