@@ -73,11 +73,16 @@ const MyFavs = () => {
         Object.entries(favs)
           .reverse()
           .map(async ([fav, { contentType }]) => {
-            switch (contentType) {
-              case FAV_TYPE_ARTICLE:
-                return await loadFavoriteArticlePost(fav);
-              case FAV_TYPE_INSTA:
-                return await loadFavoriteInstaPost(fav);
+            try {
+              switch (contentType) {
+                case FAV_TYPE_ARTICLE:
+                  return await loadFavoriteArticlePost(fav);
+                case FAV_TYPE_INSTA:
+                  return await loadFavoriteInstaPost(fav);
+              }
+            } catch (error) {
+              console.error(`Failed to load favorite "${fav}":`, error);
+              return undefined;
             }
           }),
       );
@@ -103,7 +108,6 @@ const MyFavs = () => {
     loadFavorites().catch((error) => {
       console.error("Failed to load favorites:", error);
       if (isMounted) {
-        setPosts([]);
         setIsLoading(false);
       }
     });
