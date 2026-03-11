@@ -118,7 +118,6 @@ const MyFavs = () => {
     loadFavorites().catch((error) => {
       console.error("Failed to load favorites:", error);
       if (isMounted) {
-        setPosts([]);
         setIsLoading(false);
       }
     });
