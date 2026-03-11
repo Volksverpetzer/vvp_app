@@ -1,21 +1,116 @@
 import { useIsFocused } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
 import ShareBar from "#/components/bars/ShareBar";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
-import LoadArticlePost from "#/components/loader/LoadArticlePost";
-import LoadInstaPost from "#/components/loader/LoadInstaPost";
+import Loader from "#/components/loader/Loader";
+import ArticlePost from "#/components/posts/ArticlePost";
+import InstaPost from "#/components/posts/InstaPost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import ContentStore from "#/helpers/Stores/ContentStore";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
+import API from "#/helpers/network/ServerAPI";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-import type { HttpsUrl, ShareableType, StoredFavs } from "#/types";
+import type {
+  ArticleProperties,
+  InstaPostProperties,
+  StoredFavs,
+} from "#/types";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
+
+type FavoriteArticleCardProperties = {
+  slug: string;
+};
+
+const FavoriteArticleCard = (properties: FavoriteArticleCardProperties) => {
+  const { slug } = properties;
+
+  const loadArticle = useCallback((articleSlug: string) => {
+    return WordPressAPI.getPost(articleSlug).then((data) => {
+      if (!data) {
+        return Promise.reject(
+          new Error(`Article not found for slug: ${articleSlug}`),
+        );
+      }
+
+      return WordPressAPI.convertLoadProps(data);
+    });
+  }, []);
+
+  const renderArticle = useCallback(
+    (article: ArticleProperties) => (
+      <>
+        <ArticlePost inView={true} article={article} />
+        <ShareBar
+          shareable={[{ title: article.title, url: article.link }]}
+          contentFavIdentifier={slug}
+          contentType={FAV_TYPE_ARTICLE}
+        />
+      </>
+    ),
+    [slug],
+  );
+
+  return (
+    <Loader
+      keyValue={slug}
+      load={loadArticle}
+      render={renderArticle}
+      loadingText={"Lade Artikel..."}
+    />
+  );
+};
+
+type FavoriteInstaCardProperties = {
+  id: string;
+};
+
+const FavoriteInstaCard = (properties: FavoriteInstaCardProperties) => {
+  const { id } = properties;
+
+  const loadInstaPost = useCallback(
+    (postId: string) => API.getInstaPost(postId),
+    [],
+  );
+
+  const handleLoaded = useCallback(
+    (post: InstaPostProperties) => {
+      ContentStore.setStoredInstaPost(id, post);
+    },
+    [id],
+  );
+
+  const renderPost = useCallback(
+    (post: InstaPostProperties) => (
+      <>
+        <InstaPost inView={true} {...post} />
+        <ShareBar
+          shareable={[{ title: post.caption, url: post.permalink }]}
+          contentFavIdentifier={id}
+          contentType={FAV_TYPE_INSTA}
+        />
+      </>
+    ),
+    [id],
+  );
+
+  return (
+    <Loader
+      keyValue={id}
+      load={loadInstaPost}
+      onLoaded={handleLoaded}
+      render={renderPost}
+      loadingText={"Lade Instagram Beitrag..."}
+    />
+  );
+};
 
 const MyFavs = () => {
   const [favs, setFavs] = useState<StoredFavs>({});
@@ -39,39 +134,16 @@ const MyFavs = () => {
           const { contentType } = favs[fav];
           switch (contentType) {
             case FAV_TYPE_ARTICLE: {
-              const url = `${Config.wpUrl}/redirect/${fav}` satisfies HttpsUrl;
-              const shareable: ShareableType[] = [{ title: fav, url }];
               return (
                 <View style={{ ...styles.roundEdges }} key={fav}>
-                  <LoadArticlePost inView={true} slug={fav} />
-                  {shareable ? (
-                    <ShareBar
-                      shareable={shareable}
-                      contentFavIdentifier={fav}
-                      contentType={contentType}
-                    />
-                  ) : (
-                    <View
-                      style={{ paddingHorizontal: 30, height: 40, margin: 0 }}
-                    />
-                  )}
+                  <FavoriteArticleCard slug={fav} />
                 </View>
               );
             }
             case FAV_TYPE_INSTA: {
               return (
                 <View style={{ ...styles.roundEdges }} key={fav}>
-                  <LoadInstaPost inView={true} id={fav} />
-                  <ShareBar
-                    shareable={[
-                      {
-                        title: fav,
-                        url: `https://instagram.com/p/${fav}` satisfies HttpsUrl,
-                      },
-                    ]}
-                    contentFavIdentifier={fav}
-                    contentType={contentType}
-                  />
+                  <FavoriteInstaCard id={fav} />
                 </View>
               );
             }
