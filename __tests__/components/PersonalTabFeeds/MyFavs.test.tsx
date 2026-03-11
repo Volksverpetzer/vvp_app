@@ -1,4 +1,5 @@
-import { render, waitFor } from "@testing-library/react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { act, render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import GenericPost from "#/components/posts/GenericPost";
@@ -259,5 +260,115 @@ describe("MyFavs", () => {
     );
 
     consoleErrorSpy.mockRestore();
+  });
+
+  it("discards results from a stale request when focused toggles cause overlapping loads", async () => {
+    let resolveFirstRequest: (
+      value: Record<string, { contentType: string }>,
+    ) => void;
+    let resolveSecondRequest: (
+      value: Record<string, { contentType: string }>,
+    ) => void;
+    const firstRequestPromise = new Promise<
+      Record<string, { contentType: string }>
+    >((resolve) => {
+      resolveFirstRequest = resolve;
+    });
+    const secondRequestPromise = new Promise<
+      Record<string, { contentType: string }>
+    >((resolve) => {
+      resolveSecondRequest = resolve;
+    });
+
+    let callCount = 0;
+    (FavoritesStore.getAllFavorites as jest.Mock).mockImplementation(() => {
+      callCount++;
+      return callCount === 1 ? firstRequestPromise : secondRequestPromise;
+    });
+
+    const stalePost = {
+      id: "stale-article",
+      component: jest.fn(),
+      data: {
+        article: { title: "Stale Article", link: "https://example.com/stale" },
+      },
+      shareable: [
+        { url: "https://example.com/stale", title: "Artikel teilen" },
+      ],
+      hideShareCount: false,
+      contentFavIdentifier: "stale-article",
+      contentType: FAV_TYPE_ARTICLE,
+    };
+    const freshPost = {
+      id: "fresh-article",
+      component: jest.fn(),
+      data: {
+        article: { title: "Fresh Article", link: "https://example.com/fresh" },
+      },
+      shareable: [
+        { url: "https://example.com/fresh", title: "Artikel teilen" },
+      ],
+      hideShareCount: false,
+      contentFavIdentifier: "fresh-article",
+      contentType: FAV_TYPE_ARTICLE,
+    };
+
+    (WordPressAPI.getPost as jest.Mock).mockImplementation((slug: string) =>
+      Promise.resolve({
+        id: 1,
+        date: "2026-01-01T12:00:00Z",
+        date_gmt: "2026-01-01T12:00:00Z",
+        link: `https://example.com/${slug}`,
+        slug,
+        title: { rendered: slug },
+        yoast_head_json: { description: "" },
+        _links: {},
+        categories: [],
+        authors: [],
+      }),
+    );
+    (WordPressFetcher.mapArticleToPost as jest.Mock).mockImplementation(
+      (article: { slug: string }) =>
+        article.slug === "stale-article" ? stalePost : freshPost,
+    );
+
+    // First render – focused = true → fires request 1 (held back)
+    (useIsFocused as jest.Mock).mockReturnValue(true);
+    const { rerender } = render(<MyFavs />);
+
+    // Toggle focused to false → fires request 2 (also held back)
+    (useIsFocused as jest.Mock).mockReturnValue(false);
+    rerender(<MyFavs />);
+
+    // Request 2 (the newer one) resolves first with the fresh article
+    act(() => {
+      resolveSecondRequest!({
+        "fresh-article": { contentType: FAV_TYPE_ARTICLE },
+      });
+    });
+
+    // Request 1 (the stale one) resolves after with the stale article
+    act(() => {
+      resolveFirstRequest!({
+        "stale-article": { contentType: FAV_TYPE_ARTICLE },
+      });
+    });
+
+    // Only the fresh result from request 2 should be rendered
+    await waitFor(() => {
+      const calls = (GenericPost as unknown as jest.Mock).mock.calls.map(
+        ([properties]) => properties,
+      );
+      expect(calls).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ contentFavIdentifier: "fresh-article" }),
+        ]),
+      );
+      expect(calls).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ contentFavIdentifier: "stale-article" }),
+        ]),
+      );
+    });
   });
 });
