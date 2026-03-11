@@ -40,22 +40,27 @@ const loadFavoriteArticlePost = async (
 const loadFavoriteInstaPost = async (
   id: string,
 ): Promise<Post<InstaPostProperties> | undefined> => {
-  const post = await API.getInstaPost(id);
-  if (post.media_type !== "IMAGE" && post.media_type !== "CAROUSEL_ALBUM") {
+  try {
+    const post = await API.getInstaPost(id);
+    if (post.media_type !== "IMAGE" && post.media_type !== "CAROUSEL_ALBUM") {
+      return undefined;
+    }
+
+    return new Post<InstaPostProperties>(
+      post.timestamp,
+      post.id,
+      InstaPost,
+      post,
+      [{ url: post.permalink, title: "Instagram Post teilen" }],
+      1,
+      false,
+      post.id,
+      FAV_TYPE_INSTA,
+    );
+  } catch (error) {
+    console.error(`Failed to load Instagram favorite ${id}:`, error);
     return undefined;
   }
-
-  return new Post<InstaPostProperties>(
-    post.timestamp,
-    post.id,
-    InstaPost,
-    post,
-    [{ url: post.permalink, title: "Instagram Post teilen" }],
-    1,
-    false,
-    post.id,
-    FAV_TYPE_INSTA,
-  );
 };
 
 const MyFavs = () => {
@@ -69,7 +74,7 @@ const MyFavs = () => {
     const loadFavorites = async () => {
       setIsLoading(true);
       const favs = await FavoritesStore.getAllFavorites();
-      const favoritePosts = await Promise.all(
+      const results = await Promise.allSettled(
         Object.entries(favs)
           .reverse()
           .map(async ([fav, { contentType }]) => {
@@ -81,8 +86,10 @@ const MyFavs = () => {
                   return await loadFavoriteInstaPost(fav);
               }
             } catch (error) {
-              console.error(`Failed to load favorite "${fav}":`, error);
-              return undefined;
+              console.error(
+                `Failed to load favorite "${fav}" (${contentType}):`,
+                error,
+              );
             }
           }),
       );
@@ -92,9 +99,12 @@ const MyFavs = () => {
       }
 
       setPosts(
-        favoritePosts.filter(
-          (post): post is FavoritePost => typeof post !== "undefined",
-        ),
+        results
+          .filter(
+            (result): result is PromiseFulfilledResult<FavoritePost> =>
+              result.status === "fulfilled" && result.value !== undefined,
+          )
+          .map((result) => result.value),
       );
       setIsLoading(false);
     };
