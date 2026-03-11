@@ -40,22 +40,27 @@ const loadFavoriteArticlePost = async (
 const loadFavoriteInstaPost = async (
   id: string,
 ): Promise<Post<InstaPostProperties> | undefined> => {
-  const post = await API.getInstaPost(id);
-  if (post.media_type !== "IMAGE" && post.media_type !== "CAROUSEL_ALBUM") {
+  try {
+    const post = await API.getInstaPost(id);
+    if (post.media_type !== "IMAGE" && post.media_type !== "CAROUSEL_ALBUM") {
+      return undefined;
+    }
+
+    return new Post<InstaPostProperties>(
+      post.timestamp,
+      post.id,
+      InstaPost,
+      post,
+      [{ url: post.permalink, title: "Instagram Post teilen" }],
+      1,
+      false,
+      post.id,
+      FAV_TYPE_INSTA,
+    );
+  } catch (error) {
+    console.error(`Failed to load Instagram favorite ${id}:`, error);
     return undefined;
   }
-
-  return new Post<InstaPostProperties>(
-    post.timestamp,
-    post.id,
-    InstaPost,
-    post,
-    [{ url: post.permalink, title: "Instagram Post teilen" }],
-    1,
-    false,
-    post.id,
-    FAV_TYPE_INSTA,
-  );
 };
 
 const MyFavs = () => {
