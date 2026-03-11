@@ -11,6 +11,8 @@ import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import MyFavs from "#/screens/PersonalTab/components/MyFavs";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
+const mockUseIsFocused = jest.fn(() => true);
+
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
@@ -19,7 +21,7 @@ jest.mock("#/constants/Config", () => ({
 }));
 
 jest.mock("@react-navigation/native", () => ({
-  useIsFocused: jest.fn(() => true),
+  useIsFocused: () => mockUseIsFocused(),
 }));
 
 jest.mock("#/components/Icons", () => ({
@@ -93,6 +95,7 @@ jest.mock("#/screens/Home/fetchers/WordPressFetcher", () => ({
 describe("MyFavs", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseIsFocused.mockReturnValue(true);
   });
 
   it("builds article and Instagram cards with canonical share URLs", async () => {
@@ -259,5 +262,20 @@ describe("MyFavs", () => {
     );
 
     consoleErrorSpy.mockRestore();
+  });
+
+  it("does not refresh favorites while the screen is unfocused", async () => {
+    mockUseIsFocused.mockReturnValue(false);
+
+    render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(FavoritesStore.getAllFavorites).not.toHaveBeenCalled();
+    });
+
+    expect(updateBadgeState).not.toHaveBeenCalled();
+    expect(registerViews).not.toHaveBeenCalled();
+    expect(WordPressAPI.getPost).not.toHaveBeenCalled();
+    expect(API.getInstaPost).not.toHaveBeenCalled();
   });
 });

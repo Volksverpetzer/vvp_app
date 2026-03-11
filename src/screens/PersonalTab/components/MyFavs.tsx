@@ -113,14 +113,13 @@ const MyFavs = () => {
       updateBadgeState({ personal: false });
       // Register page view for /favs
       registerViews(`${Config.wpUrl}/favs`);
+      loadFavorites().catch((error) => {
+        console.error("Failed to load favorites:", error);
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      });
     }
-
-    loadFavorites().catch((error) => {
-      console.error("Failed to load favorites:", error);
-      if (isMounted) {
-        setIsLoading(false);
-      }
-    });
 
     return () => {
       isMounted = false;
