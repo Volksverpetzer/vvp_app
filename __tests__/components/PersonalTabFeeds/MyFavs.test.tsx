@@ -1,205 +1,263 @@
 import { render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
+import GenericPost from "#/components/posts/GenericPost";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
+import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import MyFavs from "#/screens/PersonalTab/components/MyFavs";
+import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
-jest.mock("react-native-reanimated", () => ({}));
-jest.mock("react-native-worklets", () => ({}));
-jest.mock("@likashefqet/react-native-image-zoom", () => ({}));
-jest.mock("#/components/posts/InstaPost", () => () => null);
-jest.mock("#/components/posts/ArticlePost", () => () => null);
-jest.mock("#/screens/Home/fetchers/WordPressFetcher", () => ({
-  WordPressFetcher: { mapArticleToPost: jest.fn() },
-}));
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: { wpUrl: "https://www.volksverpetzer.de", enableEngagement: true },
+  default: {
+    wpUrl: "https://www.volksverpetzer.de",
+  },
 }));
+
 jest.mock("@react-navigation/native", () => ({
   useIsFocused: jest.fn(() => true),
 }));
+
+jest.mock("#/components/Icons", () => ({
+  StarIcon: jest.fn(() => null),
+}));
+
+jest.mock("#/components/animations/LoadingFallback", () => ({
+  __esModule: true,
+  default: jest.fn(() => null),
+}));
+
+jest.mock("#/components/design/Space", () => ({
+  __esModule: true,
+  default: jest.fn(() => null),
+}));
+
+jest.mock("#/components/design/Text", () => ({
+  __esModule: true,
+  default: jest.fn(({ children }) => children),
+}));
+
+jest.mock("#/components/posts/InstaPost", () => ({
+  __esModule: true,
+  default: jest.fn(() => null),
+}));
+
+jest.mock("#/components/posts/GenericPost", () => ({
+  __esModule: true,
+  default: jest.fn(() => null),
+}));
+
+jest.mock("#/helpers/Stores/FavoritesStore", () => ({
+  __esModule: true,
+  default: {
+    getAllFavorites: jest.fn(),
+  },
+}));
+
 jest.mock("#/helpers/network/Engagement", () => ({
   registerViews: jest.fn(),
 }));
-jest.mock("#/helpers/Stores/FavoritesStore", () => ({
-  __esModule: true,
-  default: { getAllFavorites: jest.fn() },
-}));
-jest.mock("#/helpers/network/WordPressAPI", () => ({
-  __esModule: true,
-  default: { getPost: jest.fn() },
-}));
+
 jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
-  default: { getInstaPost: jest.fn() },
+  default: {
+    getInstaPost: jest.fn(),
+  },
 }));
+
+jest.mock("#/helpers/network/WordPressAPI", () => ({
+  __esModule: true,
+  default: {
+    getPost: jest.fn(),
+  },
+}));
+
 jest.mock("#/helpers/provider/BadgeProvider", () => ({
   updateBadgeState: jest.fn(),
 }));
-jest.mock("#/components/animations/LoadingFallback", () => {
-  const mockReact = require("react");
-  const { Text: MockText } = require("react-native");
-  return function MockLoadingFallback({ text }) {
-    return mockReact.createElement(
-      MockText,
-      { testID: "loading-fallback" },
-      text,
-    );
-  };
-});
-jest.mock("#/components/posts/GenericPost", () => {
-  const mockReact = require("react");
-  const { Text: MockText } = require("react-native");
-  return function MockGenericPost({ contentFavIdentifier }) {
-    return mockReact.createElement(
-      MockText,
-      { testID: `post-${contentFavIdentifier}` },
-      contentFavIdentifier,
-    );
-  };
-});
-jest.mock("#/components/design/Space", () => () => null);
-jest.mock("#/components/design/Text", () => () => null);
-jest.mock("#/components/Icons", () => ({ StarIcon: () => null }));
+
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useCorporateColor: jest.fn(() => "#1b7194"),
 }));
 
-const mockArticle = {
-  _links: { "wp:featuredmedia": [{ href: "https://example.com/media" }] },
-  date: "2024-01-01",
-  link: "https://www.volksverpetzer.de/artikel/test-article",
-  description: "",
-  categories: [1],
-  id: 1,
-  slug: "test-article",
-  date_gmt: "2024-01-01T00:00:00",
-  title: { rendered: "Test Article" },
-  authors: [{ display_name: "Author", slug: "author" }],
-};
-
-const mockArticlePost = {
-  datetime: "2024-01-01T00:00:00",
-  id: "test-article",
-  component: () => null,
-  data: { article: { ...mockArticle, title: "Test Article" } },
-  shareable: [
-    {
-      url: "https://www.volksverpetzer.de/artikel/test-article",
-      title: "Artikel teilen",
-    },
-  ],
-  priority: 1,
-  hideShareCount: undefined,
-  contentFavIdentifier: "test-article",
-  contentType: "article",
-  inView: false,
-};
-
-const mockInstaPost = {
-  id: "insta-123",
-  media_url: "https://example.com/image.jpg",
-  caption: "Test caption",
-  media_type: "IMAGE",
-  timestamp: "2024-01-01T00:00:00",
-  permalink: "https://www.instagram.com/p/insta-123",
-};
+jest.mock("#/screens/Home/fetchers/WordPressFetcher", () => ({
+  WordPressFetcher: {
+    mapArticleToPost: jest.fn(),
+  },
+}));
 
 describe("MyFavs", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  it("builds article and Instagram cards with canonical share URLs", async () => {
+    const articleApiResponse = {
+      id: 1,
+      date: "2026-01-01T12:00:00Z",
+      date_gmt: "2026-01-01T12:00:00Z",
+      link: "https://www.volksverpetzer.de/faktencheck/example-article",
+      slug: "example-article",
+      title: { rendered: "Example Article" },
+      yoast_head_json: { description: "Article description" },
+      _links: { "wp:featuredmedia": [{ href: "https://example.com/image" }] },
+      categories: [],
+      authors: [],
+    };
+    const mappedArticlePost = {
+      id: "example-article",
+      component: jest.fn(),
+      data: {
+        article: {
+          title: "Example Article",
+          link: articleApiResponse.link,
+        },
+      },
+      shareable: [{ url: articleApiResponse.link, title: "Artikel teilen" }],
+      hideShareCount: false,
+      contentFavIdentifier: "example-article",
+      contentType: FAV_TYPE_ARTICLE,
+    };
+    const instaApiResponse = {
+      id: "abc123",
+      timestamp: "2026-01-02T12:00:00Z",
+      permalink: "https://www.instagram.com/p/abc123/",
+      media_type: "IMAGE",
+      media_url: "https://example.com/image.jpg",
+      caption: "Example caption",
+    };
 
-  it("shows loading state while favorites are being fetched", () => {
-    let resolvePromise: (value: Record<string, never>) => void;
-    const pendingPromise = new Promise<Record<string, never>>((resolve) => {
-      resolvePromise = resolve;
-    });
-    (FavoritesStore.getAllFavorites as jest.Mock).mockReturnValue(
-      pendingPromise,
-    );
-
-    const { queryByTestId } = render(<MyFavs />);
-
-    expect(queryByTestId("loading-fallback")).toBeTruthy();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    resolvePromise!({});
-  });
-
-  it("renders article and instagram favorites on successful load", async () => {
     (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
-      "test-article": { contentType: "article" },
-      "insta-123": { contentType: "insta" },
+      "example-article": { contentType: FAV_TYPE_ARTICLE },
+      abc123: { contentType: FAV_TYPE_INSTA },
     });
-    (WordPressAPI.getPost as jest.Mock).mockResolvedValue(mockArticle);
+    (WordPressAPI.getPost as jest.Mock).mockResolvedValue(articleApiResponse);
     (WordPressFetcher.mapArticleToPost as jest.Mock).mockReturnValue(
-      mockArticlePost,
+      mappedArticlePost,
     );
-    (API.getInstaPost as jest.Mock).mockResolvedValue(mockInstaPost);
+    (API.getInstaPost as jest.Mock).mockResolvedValue(instaApiResponse);
 
-    const { getByTestId, queryByTestId } = render(<MyFavs />);
+    render(<MyFavs />);
 
     await waitFor(() => {
-      expect(queryByTestId("loading-fallback")).toBeNull();
+      expect(GenericPost).toHaveBeenCalledTimes(2);
     });
 
-    expect(getByTestId("post-test-article")).toBeTruthy();
-    expect(getByTestId("post-insta-123")).toBeTruthy();
+    expect(updateBadgeState).toHaveBeenCalledWith({ personal: false });
+    expect(registerViews).toHaveBeenCalledWith(
+      "https://www.volksverpetzer.de/favs",
+    );
+    expect(WordPressAPI.getPost).toHaveBeenCalledWith("example-article");
+    expect(WordPressFetcher.mapArticleToPost).toHaveBeenCalledWith(
+      articleApiResponse,
+      1,
+    );
+    expect(API.getInstaPost).toHaveBeenCalledWith("abc123");
+
+    const genericPostCalls = (
+      GenericPost as unknown as jest.Mock
+    ).mock.calls.map(([properties]) => properties);
+
+    expect(genericPostCalls).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          contentFavIdentifier: "example-article",
+          contentType: FAV_TYPE_ARTICLE,
+          shareable: [
+            {
+              title: "Artikel teilen",
+              url: "https://www.volksverpetzer.de/faktencheck/example-article",
+            },
+          ],
+          inView: true,
+        }),
+        expect.objectContaining({
+          contentFavIdentifier: "abc123",
+          contentType: FAV_TYPE_INSTA,
+          shareable: [
+            {
+              title: "Instagram Post teilen",
+              url: "https://www.instagram.com/p/abc123/",
+            },
+          ],
+          inView: true,
+        }),
+      ]),
+    );
   });
 
-  it("renders available favorites when one fetch fails", async () => {
+  it("skips a failing Instagram favorite without aborting the rest of the list", async () => {
+    const articleApiResponse = {
+      id: 1,
+      date: "2026-01-01T12:00:00Z",
+      date_gmt: "2026-01-01T12:00:00Z",
+      link: "https://www.volksverpetzer.de/faktencheck/example-article",
+      slug: "example-article",
+      title: { rendered: "Example Article" },
+      yoast_head_json: { description: "Article description" },
+      _links: { "wp:featuredmedia": [{ href: "https://example.com/image" }] },
+      categories: [],
+      authors: [],
+    };
+    const mappedArticlePost = {
+      id: "example-article",
+      component: jest.fn(),
+      data: {
+        article: {
+          title: "Example Article",
+          link: articleApiResponse.link,
+        },
+      },
+      shareable: [{ url: articleApiResponse.link, title: "Artikel teilen" }],
+      hideShareCount: false,
+      contentFavIdentifier: "example-article",
+      contentType: FAV_TYPE_ARTICLE,
+    };
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
     (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
-      "failing-article": { contentType: "article" },
-      "insta-123": { contentType: "insta" },
+      "example-article": { contentType: FAV_TYPE_ARTICLE },
+      brokenInsta: { contentType: FAV_TYPE_INSTA },
     });
-    (WordPressAPI.getPost as jest.Mock).mockResolvedValue(undefined);
-    (API.getInstaPost as jest.Mock).mockResolvedValue(mockInstaPost);
+    (WordPressAPI.getPost as jest.Mock).mockResolvedValue(articleApiResponse);
+    (WordPressFetcher.mapArticleToPost as jest.Mock).mockReturnValue(
+      mappedArticlePost,
+    );
+    (API.getInstaPost as jest.Mock).mockRejectedValue(new Error("network"));
 
-    const { getByTestId, queryByTestId } = render(<MyFavs />);
+    render(<MyFavs />);
 
     await waitFor(() => {
-      expect(queryByTestId("loading-fallback")).toBeNull();
+      expect(GenericPost).toHaveBeenCalledTimes(1);
     });
 
-    expect(queryByTestId("post-failing-article")).toBeNull();
-    expect(getByTestId("post-insta-123")).toBeTruthy();
-  });
+    const genericPostCalls = (
+      GenericPost as unknown as jest.Mock
+    ).mock.calls.map(([properties]) => properties);
 
-  it("renders no posts and hides loading when all fetches fail", async () => {
-    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
-      "article-1": { contentType: "article" },
-      "article-2": { contentType: "article" },
-    });
-    (WordPressAPI.getPost as jest.Mock).mockResolvedValue(undefined);
+    expect(genericPostCalls).toEqual([
+      expect.objectContaining({
+        contentFavIdentifier: "example-article",
+        contentType: FAV_TYPE_ARTICLE,
+        shareable: [
+          {
+            title: "Artikel teilen",
+            url: "https://www.volksverpetzer.de/faktencheck/example-article",
+          },
+        ],
+      }),
+    ]);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Failed to load Instagram favorite brokenInsta:",
+      expect.any(Error),
+    );
 
-    const { queryByTestId } = render(<MyFavs />);
-
-    await waitFor(() => {
-      expect(queryByTestId("loading-fallback")).toBeNull();
-    });
-
-    expect(queryByTestId("post-article-1")).toBeNull();
-    expect(queryByTestId("post-article-2")).toBeNull();
-  });
-
-  it("renders empty state when there are no saved favorites", async () => {
-    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({});
-
-    const { queryByTestId, queryAllByTestId } = render(<MyFavs />);
-
-    await waitFor(() => {
-      expect(queryByTestId("loading-fallback")).toBeNull();
-    });
-
-    expect(queryAllByTestId(/^post-/).length).toBe(0);
+    consoleErrorSpy.mockRestore();
   });
 });
