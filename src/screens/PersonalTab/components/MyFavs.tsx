@@ -1,154 +1,138 @@
 import { useIsFocused } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
-import ShareBar from "#/components/bars/ShareBar";
+import LoadingFallback from "#/components/animations/LoadingFallback";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
-import Loader from "#/components/loader/Loader";
-import ArticlePost from "#/components/posts/ArticlePost";
+import GenericPost from "#/components/posts/GenericPost";
 import InstaPost from "#/components/posts/InstaPost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
-import ContentStore from "#/helpers/Stores/ContentStore";
+import Post from "#/helpers/Post";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-import type {
-  ArticleProperties,
-  InstaPostProperties,
-  StoredFavs,
-} from "#/types";
+import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
+import type { ArticleProperties, InstaPostProperties } from "#/types";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
-type FavoriteArticleCardProperties = {
-  slug: string;
+type FavoritePost =
+  | Post<{ article: ArticleProperties }>
+  | Post<InstaPostProperties>;
+
+const loadFavoriteArticlePost = async (
+  slug: string,
+): Promise<Post<{ article: ArticleProperties }> | undefined> => {
+  const article = await WordPressAPI.getPost(slug);
+  if (!article) {
+    console.error(`Article not found for slug: ${slug}`);
+    return undefined;
+  }
+
+  return WordPressFetcher.mapArticleToPost(article, 1);
 };
 
-const FavoriteArticleCard = (properties: FavoriteArticleCardProperties) => {
-  const { slug } = properties;
+const loadFavoriteInstaPost = async (
+  id: string,
+): Promise<Post<InstaPostProperties> | undefined> => {
+  const post = await API.getInstaPost(id);
+  if (post.media_type !== "IMAGE" && post.media_type !== "CAROUSEL_ALBUM") {
+    return undefined;
+  }
 
-  const loadArticle = useCallback((articleSlug: string) => {
-    return WordPressAPI.getPost(articleSlug).then((data) => {
-      if (!data) {
-        return Promise.reject(
-          new Error(`Article not found for slug: ${articleSlug}`),
-        );
-      }
-
-      return WordPressAPI.convertLoadProps(data);
-    });
-  }, []);
-
-  const renderArticle = useCallback(
-    (article: ArticleProperties) => (
-      <>
-        <ArticlePost inView={true} article={article} />
-        <ShareBar
-          shareable={[{ title: article.title, url: article.link }]}
-          contentFavIdentifier={slug}
-          contentType={FAV_TYPE_ARTICLE}
-        />
-      </>
-    ),
-    [slug],
-  );
-
-  return (
-    <Loader
-      keyValue={slug}
-      load={loadArticle}
-      render={renderArticle}
-      loadingText={"Lade Artikel..."}
-    />
-  );
-};
-
-type FavoriteInstaCardProperties = {
-  id: string;
-};
-
-const FavoriteInstaCard = (properties: FavoriteInstaCardProperties) => {
-  const { id } = properties;
-
-  const loadInstaPost = useCallback(
-    (postId: string) => API.getInstaPost(postId),
-    [],
-  );
-
-  const handleLoaded = useCallback(
-    (post: InstaPostProperties) => {
-      ContentStore.setStoredInstaPost(id, post);
-    },
-    [id],
-  );
-
-  const renderPost = useCallback(
-    (post: InstaPostProperties) => (
-      <>
-        <InstaPost inView={true} {...post} />
-        <ShareBar
-          shareable={[{ title: post.caption, url: post.permalink }]}
-          contentFavIdentifier={id}
-          contentType={FAV_TYPE_INSTA}
-        />
-      </>
-    ),
-    [id],
-  );
-
-  return (
-    <Loader
-      keyValue={id}
-      load={loadInstaPost}
-      onLoaded={handleLoaded}
-      render={renderPost}
-      loadingText={"Lade Instagram Beitrag..."}
-    />
+  return new Post<InstaPostProperties>(
+    post.timestamp,
+    post.id,
+    InstaPost,
+    post,
+    [{ url: post.permalink, title: "Instagram Post teilen" }],
+    1,
+    false,
+    post.id,
+    FAV_TYPE_INSTA,
   );
 };
 
 const MyFavs = () => {
-  const [favs, setFavs] = useState<StoredFavs>({});
+  const [posts, setPosts] = useState<FavoritePost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const focused = useIsFocused();
 
   useEffect(() => {
+    let isMounted = true;
+
+    const loadFavorites = async () => {
+      setIsLoading(true);
+      const favs = await FavoritesStore.getAllFavorites();
+      const favoritePosts = await Promise.all(
+        Object.entries(favs)
+          .reverse()
+          .map(async ([fav, { contentType }]) => {
+            switch (contentType) {
+              case FAV_TYPE_ARTICLE:
+                return await loadFavoriteArticlePost(fav);
+              case FAV_TYPE_INSTA:
+                return await loadFavoriteInstaPost(fav);
+            }
+          }),
+      );
+
+      if (!isMounted) {
+        return;
+      }
+
+      setPosts(
+        favoritePosts.filter(
+          (post): post is FavoritePost => typeof post !== "undefined",
+        ),
+      );
+      setIsLoading(false);
+    };
+
     if (focused) {
       updateBadgeState({ personal: false });
       // Register page view for /favs
       registerViews(`${Config.wpUrl}/favs`);
     }
-    FavoritesStore.getAllFavorites().then(setFavs);
+
+    loadFavorites().catch((error) => {
+      console.error("Failed to load favorites:", error);
+      if (isMounted) {
+        setPosts([]);
+        setIsLoading(false);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, [focused]);
 
   const corporate = useCorporateColor();
+
   return (
     <>
-      {Object.keys(favs)
-        .reverse()
-        .map((fav) => {
-          const { contentType } = favs[fav];
-          switch (contentType) {
-            case FAV_TYPE_ARTICLE: {
-              return (
-                <View style={{ ...styles.roundEdges }} key={fav}>
-                  <FavoriteArticleCard slug={fav} />
-                </View>
-              );
-            }
-            case FAV_TYPE_INSTA: {
-              return (
-                <View style={{ ...styles.roundEdges }} key={fav}>
-                  <FavoriteInstaCard id={fav} />
-                </View>
-              );
-            }
-          }
-        })}
+      {isLoading ? (
+        <LoadingFallback text={"Lade Favoriten..."} />
+      ) : (
+        posts.map((post) => (
+          <GenericPost
+            key={post.id}
+            component={post.component}
+            data={post.data}
+            contentFavIdentifier={post.contentFavIdentifier}
+            contentType={post.contentType}
+            shareable={post.shareable}
+            hideShareCount={post.hideShareCount}
+            inView={true}
+          />
+        ))
+      )}
       <Space size={100} />
       <View style={{ ...styles.centered }}>
         <StarIcon color={corporate} />
