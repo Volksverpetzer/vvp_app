@@ -69,15 +69,22 @@ const MyFavs = () => {
     const loadFavorites = async () => {
       setIsLoading(true);
       const favs = await FavoritesStore.getAllFavorites();
-      const favoritePosts = await Promise.all(
+      const results = await Promise.allSettled(
         Object.entries(favs)
           .reverse()
           .map(async ([fav, { contentType }]) => {
-            switch (contentType) {
-              case FAV_TYPE_ARTICLE:
-                return await loadFavoriteArticlePost(fav);
-              case FAV_TYPE_INSTA:
-                return await loadFavoriteInstaPost(fav);
+            try {
+              switch (contentType) {
+                case FAV_TYPE_ARTICLE:
+                  return await loadFavoriteArticlePost(fav);
+                case FAV_TYPE_INSTA:
+                  return await loadFavoriteInstaPost(fav);
+              }
+            } catch (error) {
+              console.error(
+                `Failed to load favorite "${fav}" (${contentType}):`,
+                error,
+              );
             }
           }),
       );
@@ -87,9 +94,12 @@ const MyFavs = () => {
       }
 
       setPosts(
-        favoritePosts.filter(
-          (post): post is FavoritePost => typeof post !== "undefined",
-        ),
+        results
+          .filter(
+            (result): result is PromiseFulfilledResult<FavoritePost> =>
+              result.status === "fulfilled" && result.value !== undefined,
+          )
+          .map((result) => result.value),
       );
       setIsLoading(false);
     };
