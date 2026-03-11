@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react-native";
+import { act, render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import GenericPost from "#/components/posts/GenericPost";
@@ -277,5 +277,102 @@ describe("MyFavs", () => {
     expect(registerViews).not.toHaveBeenCalled();
     expect(WordPressAPI.getPost).not.toHaveBeenCalled();
     expect(API.getInstaPost).not.toHaveBeenCalled();
+  });
+
+  it("discards stale results when focused toggles quickly and a newer request completes first", async () => {
+    let resolveFirst: (value: Record<string, { contentType: string }>) => void;
+    let resolveSecond: (value: Record<string, { contentType: string }>) => void;
+
+    const firstRequest = new Promise<Record<string, { contentType: string }>>(
+      (resolve) => {
+        resolveFirst = resolve;
+      },
+    );
+    const secondRequest = new Promise<Record<string, { contentType: string }>>(
+      (resolve) => {
+        resolveSecond = resolve;
+      },
+    );
+
+    (FavoritesStore.getAllFavorites as jest.Mock)
+      .mockReturnValueOnce(firstRequest)
+      .mockReturnValueOnce(secondRequest);
+
+    const { rerender } = render(<MyFavs />);
+
+    // Trigger a second request by toggling focused off and back on
+    act(() => {
+      mockUseIsFocused.mockReturnValue(false);
+    });
+    rerender(<MyFavs />);
+
+    act(() => {
+      mockUseIsFocused.mockReturnValue(true);
+    });
+    rerender(<MyFavs />);
+
+    // Resolve the second (newer) request first with one article
+    act(() => {
+      resolveSecond({ "newer-article": { contentType: FAV_TYPE_ARTICLE } });
+    });
+
+    const newerArticleApiResponse = {
+      id: 2,
+      date: "2026-01-02T12:00:00Z",
+      date_gmt: "2026-01-02T12:00:00Z",
+      link: "https://www.volksverpetzer.de/faktencheck/newer-article",
+      slug: "newer-article",
+      title: { rendered: "Newer Article" },
+      yoast_head_json: { description: "Newer description" },
+      _links: { "wp:featuredmedia": [{ href: "https://example.com/image2" }] },
+      categories: [],
+      authors: [],
+    };
+    const newerMappedPost = {
+      id: "newer-article",
+      component: jest.fn(),
+      data: { article: { title: "Newer Article" } },
+      shareable: [
+        {
+          url: newerArticleApiResponse.link,
+          title: "Artikel teilen",
+        },
+      ],
+      hideShareCount: false,
+      contentFavIdentifier: "newer-article",
+      contentType: FAV_TYPE_ARTICLE,
+    };
+    (WordPressAPI.getPost as jest.Mock).mockResolvedValue(
+      newerArticleApiResponse,
+    );
+    (WordPressFetcher.mapArticleToPost as jest.Mock).mockReturnValue(
+      newerMappedPost,
+    );
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+
+    const callsAfterNewer = (
+      GenericPost as unknown as jest.Mock
+    ).mock.calls.map(([properties]) => properties);
+    expect(callsAfterNewer[0]).toEqual(
+      expect.objectContaining({ contentFavIdentifier: "newer-article" }),
+    );
+
+    // Now resolve the first (older/stale) request — its results must be ignored
+    (GenericPost as unknown as jest.Mock).mockClear();
+    act(() => {
+      resolveFirst({ "stale-article": { contentType: FAV_TYPE_ARTICLE } });
+    });
+
+    // Wait a tick to give any potential stale setState a chance to fire
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    // GenericPost must not have been re-rendered with the stale result
+    expect(GenericPost).not.toHaveBeenCalledWith(
+      expect.objectContaining({ contentFavIdentifier: "stale-article" }),
+      expect.anything(),
+    );
   });
 });

@@ -1,5 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
@@ -67,9 +67,11 @@ const MyFavs = () => {
   const [posts, setPosts] = useState<FavoritePost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const focused = useIsFocused();
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     let isMounted = true;
+    const currentRequestId = ++requestIdRef.current;
 
     const loadFavorites = async () => {
       setIsLoading(true);
@@ -94,7 +96,7 @@ const MyFavs = () => {
           }),
       );
 
-      if (!isMounted) {
+      if (!isMounted || currentRequestId !== requestIdRef.current) {
         return;
       }
 
@@ -115,7 +117,7 @@ const MyFavs = () => {
       registerViews(`${Config.wpUrl}/favs`);
       loadFavorites().catch((error) => {
         console.error("Failed to load favorites:", error);
-        if (isMounted) {
+        if (isMounted && currentRequestId === requestIdRef.current) {
           setIsLoading(false);
         }
       });
