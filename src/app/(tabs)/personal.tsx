@@ -1,5 +1,4 @@
 import { useFocusEffect } from "expo-router";
-import type { JSX } from "react";
 import { useCallback, useState } from "react";
 import { Animated, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -16,11 +15,7 @@ import MyFavs from "#/screens/PersonalTab/components/MyFavs";
 import MySources from "#/screens/PersonalTab/components/MySources";
 
 const PersonalTab = () => {
-  const tabs: Record<string, JSX.Element> = {
-    sources: MySources(),
-    favs: MyFavs(),
-  };
-  const [activeTab, setActiveTab] = useState<keyof typeof tabs>("favs");
+  const [activeTab, setActiveTab] = useState<"favs" | "sources">("favs");
   useFocusEffect(
     useCallback(() => {
       updateBadgeState({ personal: false });
@@ -126,7 +121,7 @@ const PersonalTab = () => {
           paddingTop: HEADER_HEIGHT,
         }}
       >
-        {tabs[activeTab]}
+        {activeTab === "favs" ? <MyFavs /> : <MySources />}
       </ScrollView>
     </>
   );
