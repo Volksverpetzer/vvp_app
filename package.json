@@ -2,7 +2,7 @@
   "name": "vvp_app",
   "version": "2.1.6",
   "main": "expo-router/entry",
-  "packageManager": "pnpm@10.32.1",
+  "packageManager": "pnpm@10.26.0",
   "engines": {
     "node": "24.x"
   },
