@@ -5,6 +5,8 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 
+import type { HttpsUrl } from "#/types";
+
 /**
  * Create an Axios client with default headers.
  *
@@ -14,7 +16,7 @@ import { Platform } from "react-native";
  *
  * @param baseURL Base URL for requests
  */
-export function createClient(baseURL: string): AxiosInstance {
+export function createClient(baseURL: HttpsUrl): AxiosInstance {
   return axios.create({
     baseURL,
     headers: {
@@ -52,6 +54,12 @@ export async function fetchWithTimeout<T>(
     clearTimeout(id);
   }
 }
+
+/**
+ * Type guard for URLs that use the https scheme.
+ */
+export const isHttpsUrl = (url: string): url is HttpsUrl =>
+  url.startsWith("https://");
 
 /**
  * GET request wrapper. Accepts optional config and abortTime.

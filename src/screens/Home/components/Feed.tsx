@@ -17,9 +17,9 @@ import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
-import type Post from "#/helpers/Post";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
+import type { Post } from "#/types";
 
 export type FeedFetcherProperties = {
   page?: number;

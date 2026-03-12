@@ -17,7 +17,7 @@ jobs:
       - name: 🏗 Setup environment
         uses: ./.github/actions/setup-node-pnpm-expo
         with:
-          setup-node: "false"
+          setup-node: "true"
 
       - name: ✅ Check code
         run: pnpm check

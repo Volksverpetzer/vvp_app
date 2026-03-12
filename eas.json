@@ -7,6 +7,7 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "node": "24.14.0",
       "channel": "development",
       "env": {
         "APP": "volksverpetzer"
@@ -14,6 +15,7 @@
     },
     "internal": {
       "autoIncrement": true,
+      "node": "24.14.0",
       "channel": "preview",
       "android": {
         "image": "latest"
@@ -24,10 +26,12 @@
     },
     "preview": {
       "distribution": "internal",
+      "node": "24.14.0",
       "channel": "preview"
     },
     "production": {
       "autoIncrement": true,
+      "node": "24.14.0",
       "ios": {
         "resourceClass": "m-medium"
       },
@@ -40,6 +44,7 @@
       }
     },
     "local-apk": {
+      "node": "24.14.0",
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
@@ -51,6 +56,7 @@
     },
     "mimikama": {
       "autoIncrement": true,
+      "node": "24.14.0",
       "ios": {
         "resourceClass": "m-medium"
       },

@@ -1,6 +1,6 @@
-import { ExpoConfig } from "@expo/config";
+import type { ExpoConfig } from "@expo/config";
 
-import { ExtraConfigType, colorSchemeType } from "#/types";
+import type { ExtraConfigType, colorSchemeType } from "#/types";
 
 const colorScheme: colorSchemeType = {
   light: {
@@ -91,7 +91,9 @@ const extraConfig: ExtraConfigType = {
     shop: "https://volksverpetzer-shop.de/",
     platformPay: true,
   },
-  enabledActions: true,
+  enableActions: true,
+  enableAnalytics: true,
+  enableEngagement: true,
   feeds: {
     reddit: { enabled: true },
     wp: { enabled: true },
@@ -103,7 +105,6 @@ const extraConfig: ExtraConfigType = {
   },
   colorScheme: colorScheme,
   themeColor: "#1b7194",
-  analytics: true,
   assets: assets,
   about: `
     Diese Aufgabe ist bei der hohen Geschwindigkeit der sozialen Medien, sowie der starken Emotionalisierung der politischen Auseinandersetzungen, mehr als notwendig!

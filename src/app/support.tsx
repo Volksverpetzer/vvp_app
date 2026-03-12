@@ -9,9 +9,11 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles as globalStyles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 const SupportScreen = () => {
   const wpUrl = Config.wpUrl;
+  const supportUrl = `${wpUrl}/unterstutzen` satisfies HttpsUrl;
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].secondaryBackground;
 
@@ -32,10 +34,10 @@ const SupportScreen = () => {
         }}
       >
         <HeartIcon width={50} />
-        <Support article_link={wpUrl + "/unterstutzen"} />
+        <Support article_link={supportUrl} />
         <Space size={100} />
       </ScrollView>
-      <NavBar link={wpUrl + "/unterstutzen"} />
+      <NavBar link={supportUrl} />
     </View>
   );
 };

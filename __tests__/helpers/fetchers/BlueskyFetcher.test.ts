@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import API from "#/helpers/network/ServerAPI";
 import { BlueskyFetcher } from "#/screens/Home/fetchers/BlueskyFetcher";
 
-import "../../mocks/commonMocks";
+import "#tests/mocks/commonMocks";
 
 // Mock the BskyPost component to avoid complex dependencies
 jest.mock("#/components/posts/BlueskyPost", () => ({

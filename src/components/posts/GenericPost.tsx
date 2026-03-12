@@ -5,8 +5,7 @@ import type { ViewStyle } from "react-native";
 import ShareBar from "#/components/bars/ShareBar";
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
-import type { ShareableType } from "#/helpers/Sharing";
-import type { FaveableType } from "#/types";
+import type { FaveableType, ShareableType } from "#/types";
 
 interface ComponentProperty<T> {
   component: FC<{ inView: boolean } & T>;

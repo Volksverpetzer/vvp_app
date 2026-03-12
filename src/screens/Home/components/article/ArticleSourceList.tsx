@@ -4,14 +4,15 @@ import { Pressable, View } from "react-native";
 import Collapsable from "#/components/design/Collapsable";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
-import { getLinks } from "#/helpers/network/Analytics";
+import { getLinks } from "#/helpers/network/Engagement";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
 interface ArticleSourceListProperties {
-  article_link: string;
+  article_link: HttpsUrl;
   article_title?: string;
   slug: string;
 }
@@ -30,6 +31,11 @@ export const ArticleSourceList = ({
   const corporate = Colors[colorScheme].corporate;
 
   useEffect(() => {
+    if (!Config.enableEngagement) {
+      setLinks([]);
+      return;
+    }
+
     if (article_link && open) {
       getLinks(article_link)
         .then((results) => {
@@ -41,11 +47,9 @@ export const ArticleSourceList = ({
   }, [open, article_link]);
 
   const onPress = async (extension_url: HttpsUrl) => {
-    await SourcesStore.onAddSource(
-      extension_url as HttpsUrl,
-      slug,
-      article_title,
-    );
+    if (Config.enableEngagement) {
+      await SourcesStore.onAddSource(extension_url, slug, article_title);
+    }
     outBoundLinkPress(extension_url, article_link);
   };
 

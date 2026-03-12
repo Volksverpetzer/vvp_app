@@ -66,7 +66,7 @@ const RedditPost = (properties: RedditProperties) => {
       await _onShare(properties.url_overridden_by_dest, {
         location: "RedditPost",
       });
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error);
     }
   };

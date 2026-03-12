@@ -9,8 +9,8 @@ import { WebView } from "react-native-webview";
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
+import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import type { HttpsUrl } from "#/types";
 
 interface Cookie {
   name: string;
@@ -124,6 +124,7 @@ const EdgelessWebview = ({
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
+  const navLink = isHttpsUrl(uri) ? uri : undefined;
   // Function to convert cookies to cookie string
   const getCookieString = useCallback((cookie: Cookie) => {
     const parts = [
@@ -199,13 +200,14 @@ const EdgelessWebview = ({
           const { path } = Linking.parse(url);
           const { path: origPath } = Linking.parse(uri);
           if (
+            !isHttpsUrl(url) ||
             !isTopFrame ||
             !url ||
             path.replace("/", "") === origPath.replace("/", "")
           )
             return true;
           // Route natively instead
-          onLinkPress(url as HttpsUrl, router, uri);
+          onLinkPress(url, router, uri);
           return false;
         }}
         allowsBackForwardNavigationGestures={true}
@@ -226,7 +228,7 @@ const EdgelessWebview = ({
         overScrollMode="always"
         containerStyle={{ backgroundColor }}
       />
-      {showNavBar && <NavBar link={uri} />}
+      {showNavBar && <NavBar link={navLink} />}
     </View>
   );
 };

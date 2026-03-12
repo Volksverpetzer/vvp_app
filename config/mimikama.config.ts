@@ -1,6 +1,6 @@
-import { ExpoConfig } from "@expo/config";
+import type { ExpoConfig } from "@expo/config";
 
-import { ExtraConfigType, colorSchemeType } from "#/types";
+import type { ExtraConfigType, colorSchemeType } from "#/types";
 
 const colorScheme: colorSchemeType = {
   light: {
@@ -92,14 +92,15 @@ const extraConfig: ExtraConfigType = {
     ],
     platformPay: false,
   },
-  enabledActions: false,
+  enableActions: false,
+  enableAnalytics: false,
+  enableEngagement: false,
   feeds: {
     wp: { enabled: true },
     insta: { enabled: true },
   },
   colorScheme: colorScheme,
   assets: assets,
-  analytics: false,
   themeColor: "#db0301",
   about: `
     Diese Aufgabe ist bei der hohen Geschwindigkeit der sozialen Medien, sowie der starken Emotionalisierung der politischen Auseinandersetzungen, mehr als notwendig!

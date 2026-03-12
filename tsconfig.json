@@ -11,6 +11,7 @@
     "baseUrl": "./",
     "paths": {
       "#assets/*": ["assets/*"],
+      "#tests/*": ["__tests__/*"],
       "#/*": ["src/*"]
     }
   },
@@ -19,7 +20,6 @@
     "**/*.tsx",
     "**/*.d.ts",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts",
-    "metro.config.js"
+    "expo-env.d.ts"
   ]
 }

@@ -11,7 +11,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { registerViews } from "#/helpers/network/Analytics";
+import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
 import { DISPLAY_TEXT_FULL, type InstaPostProperties } from "#/types";
 

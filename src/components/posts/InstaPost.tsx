@@ -20,7 +20,7 @@ import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { registerViews } from "#/helpers/network/Analytics";
+import { registerViews } from "#/helpers/network/Engagement";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import {

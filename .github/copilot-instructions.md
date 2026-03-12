@@ -25,6 +25,7 @@ This repository contains the official React Native mobile app for Volksverpetzer
 ### Import Order
 
 Imports are automatically sorted by Prettier with this order:
+
 1. Core imports (`@core/`)
 2. Server imports (`@server/`)
 3. UI imports (`@ui/`)
@@ -182,6 +183,7 @@ describe("ComponentName", () => {
 ## Multi-App Configuration
 
 This repository supports two app variants:
+
 - **Volksverpetzer** (default): `APP=volksverpetzer`
 - **Mimikama**: `APP=mimikama`
 
@@ -213,6 +215,7 @@ Configuration files are in `config/` directory and are selected based on `APP` e
 ## CI/CD
 
 The project uses GitHub Actions:
+
 - **check-test-and-lint.yml**: Runs on every push, executes type checking, spell checking, tests, and linting
 - Type checking continues on error (TODO: fix all TypeScript issues)
 - Gitleaks scans for secrets
