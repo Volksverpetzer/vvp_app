@@ -1,17 +1,24 @@
-import { getShareExtensionKey } from "expo-share-intent";
-
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 
-export function redirectSystemPath({ path }) {
+export function redirectSystemPath({ path }: { path: string }) {
   const wpUrl = Config.wpUrl;
-  if (path.includes(`dataUrl=${getShareExtensionKey()}`)) {
-    return "/shareintent";
+
+  // 1. Option: the URL is from the share extension/intent
+  try {
+    if (new URL(path).hostname === "expo-sharing") {
+      console.log("expo-sharing");
+      return "/handle-share";
+    }
+  } catch {
+    // Fallback to the root path on error
+    return "/";
   }
 
-  // Check if the path should be excluded from deep linking
+  // 2. Option: the URL is from our registered url handler
   if (path.startsWith(wpUrl)) {
     const urlPath = path.replace(wpUrl, "");
+    // Check if path should be excluded from deep linking
     if (shouldExcludeFromDeepLink(urlPath)) {
       // Return undefined to prevent routing for excluded paths
       // The app will not handle this path and it will be opened by OS
@@ -19,5 +26,7 @@ export function redirectSystemPath({ path }) {
     }
     return urlPath;
   }
+
+  // 3. Option: Profit
   return path;
 }

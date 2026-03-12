@@ -4,9 +4,8 @@ import { Redirect, useRouter } from "expo-router";
 import { Button, Text, View } from "react-native";
 
 import Config from "#/constants/Config";
-import { useOptionalShareIntent } from "#/hooks/useOptionalShareIntent";
 
-const ShareIntent = () => {
+const HandleShare = () => {
   const router = useRouter();
   const { hasShareIntent, shareIntent, error } = useOptionalShareIntent();
 
@@ -50,4 +49,4 @@ const ShareIntent = () => {
   );
 };
 
-export default ShareIntent;
+export default HandleShare;
