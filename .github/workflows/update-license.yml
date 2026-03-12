@@ -10,14 +10,14 @@
 #
 # Setup Instructions:
 # 1. Create a Personal Access Token (PAT) OR GitHub App:
-#    
+#
 #    Option A - Personal Access Token:
 #    - Go to GitHub Settings > Developer settings > Personal access tokens > Fine-grained tokens
 #    - Create a token with these permissions:
 #      * Contents: Read and write
 #      * Pull requests: Read and write
 #      * Workflows: Read and write
-#    
+#
 #    Option B - GitHub App:
 #    - Create a GitHub App with the same permissions as above
 #    - Install the app on this repository
@@ -94,4 +94,3 @@ jobs:
           PR_NUMBER: ${{ steps.create-pr.outputs.pull-request-number }}
         run: |
           gh pr merge $PR_NUMBER --auto --squash --repo ${{ github.repository }}
-
