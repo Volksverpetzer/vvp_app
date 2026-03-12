@@ -7,11 +7,6 @@ settings:
 overrides:
   domhandler: 5.0.3
 
-patchedDependencies:
-  xcode@3.0.1:
-    hash: 725863c0591d89ca053226c49fe7bc321f320391ec5f78b6c2e8e41ab1868805
-    path: patches/xcode+3.0.1.patch
-
 importers:
 
   .:
@@ -127,9 +122,6 @@ importers:
       expo-router:
         specifier: 55.0.5
         version: 55.0.5(ee816198a101ea5dae821f670a464c68)
-      expo-share-intent:
-        specifier: 6.0.0
-        version: 6.0.0(expo-constants@55.0.7)(expo-linking@55.0.7)(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       expo-sharing:
         specifier: 55.0.11
         version: 55.0.11(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -311,9 +303,6 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
-      xcode:
-        specifier: 3.0.1
-        version: 3.0.1(patch_hash=725863c0591d89ca053226c49fe7bc321f320391ec5f78b6c2e8e41ab1868805)
 
 packages:
 
@@ -3747,15 +3736,6 @@ packages:
   expo-server@55.0.6:
     resolution: {integrity: sha512-xI72FTm469FfuuBL2R5aNtthgH+GR7ygOpsx/KcPS0K8AZaZd7VjtEExbzn9/qyyYkWW3T+3dAmCDKOMX8gdmQ==}
     engines: {node: '>=20.16.0'}
-
-  expo-share-intent@6.0.0:
-    resolution: {integrity: sha512-n7493qFcGfqWFyVNIw8zokZhXvuQaiecamk1k2cO9qk1+qgQ9/e3QvsFwbJDZ0OjuI05OFxI4Nk8vr1vddWD7w==}
-    peerDependencies:
-      expo: ^55
-      expo-constants: '>=55.0.7'
-      expo-linking: '>=55.0.7'
-      react: '*'
-      react-native: '*'
 
   expo-sharing@55.0.11:
     resolution: {integrity: sha512-YlVez832W0sYR2KJY4Dr8ON9aC+Wp8a/r40eQyhoHT9Tetkr2KBM7tWLT0CGKRuTTnrqJL1C51UacLkHJ9zmNA==}
@@ -7661,7 +7641,7 @@ snapshots:
       resolve-from: 5.0.0
       semver: 7.7.4
       slugify: 1.6.6
-      xcode: 3.0.1(patch_hash=725863c0591d89ca053226c49fe7bc321f320391ec5f78b6c2e8e41ab1868805)
+      xcode: 3.0.1
       xml2js: 0.6.0
     transitivePeerDependencies:
       - supports-color
@@ -10683,17 +10663,6 @@ snapshots:
       - supports-color
 
   expo-server@55.0.6: {}
-
-  expo-share-intent@6.0.0(expo-constants@55.0.7)(expo-linking@55.0.7)(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
-    dependencies:
-      '@expo/config-plugins': 55.0.6
-      expo: 55.0.6(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@55.0.5)(react-dom@19.2.0(react@19.2.0))(react-native-webview@13.16.0(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
-      expo-constants: 55.0.7(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(typescript@5.9.3)
-      expo-linking: 55.0.7(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
-      react: 19.2.0
-      react-native: 0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)
-    transitivePeerDependencies:
-      - supports-color
 
   expo-sharing@55.0.11(expo@55.0.6)(react-native@0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0):
     dependencies:
@@ -13879,7 +13848,7 @@ snapshots:
 
   ws@8.19.0: {}
 
-  xcode@3.0.1(patch_hash=725863c0591d89ca053226c49fe7bc321f320391ec5f78b6c2e8e41ab1868805):
+  xcode@3.0.1:
     dependencies:
       simple-plist: 1.3.1
       uuid: 7.0.3
