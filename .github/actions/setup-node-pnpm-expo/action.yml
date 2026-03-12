@@ -35,16 +35,7 @@ runs:
         packager: pnpm
         token: ${{ inputs.setup-expo-token }}
 
-    - name: ♻️ Cache pnpm store
-      id: cache
-      uses: actions/cache@v5
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-
-
     - name: 📦 Install dependencies
-      if: ${{ inputs.install-deps == 'true' && steps.cache.outputs.cache-hit != 'true' }}
+      if: ${{ inputs.install-deps == 'true' }}
       run: pnpm install --frozen-lockfile
       shell: bash
