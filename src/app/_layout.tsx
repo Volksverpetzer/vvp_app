@@ -101,57 +101,65 @@ const RootLayout = () => {
     ),
   };
 
+  // Create the main app content
+  const appContent = (
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SettingsProvider>
+          <BadgeProvider>
+            <View
+              style={{
+                flex: 1,
+                paddingTop: insets.top,
+                backgroundColor: systemBackgroundColor,
+              }}
+            >
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  gestureEnabled: true,
+                }}
+              >
+                <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
+                <Stack.Screen
+                  name="[category]/[slug]"
+                  options={{ title: "Artikel" }}
+                />
+                <Stack.Screen
+                  name="insta/[post_id]"
+                  options={{ title: "Artikel" }}
+                />
+                <Stack.Screen name="search" options={{ title: "Suche" }} />
+                <Stack.Screen
+                  name="+not-found"
+                  options={{ title: "Nicht gefunden" }}
+                />
+                <Stack.Screen
+                  name="support"
+                  options={{ title: "Unterstutzen" }}
+                />
+                <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
+              </Stack>
+              <Toast config={toastConfig} />
+            </View>
+          </BadgeProvider>
+        </SettingsProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
+  );
+
+  // On web, skip native-only providers (Stripe)
+  if (Platform.OS === "web") {
+    return appContent;
+  }
+
+  // On native platforms, wrap with native-only providers
   return (
     <StripeProvider
       publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
       merchantIdentifier={Config.donations.merchantIdentifier}
     >
-      <SafeAreaProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <SettingsProvider>
-            <BadgeProvider>
-              <View
-                style={{
-                  flex: 1,
-                  paddingTop: insets.top,
-                  backgroundColor: systemBackgroundColor,
-                }}
-              >
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    gestureEnabled: true,
-                  }}
-                >
-                  <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
-                  <Stack.Screen
-                    name="[category]/[slug]"
-                    options={{ title: "Artikel" }}
-                  />
-                  <Stack.Screen
-                    name="insta/[post_id]"
-                    options={{ title: "Artikel" }}
-                  />
-                  <Stack.Screen name="search" options={{ title: "Suche" }} />
-                  <Stack.Screen
-                    name="+not-found"
-                    options={{ title: "Nicht gefunden" }}
-                  />
-                  <Stack.Screen
-                    name="support"
-                    options={{ title: "Unterstutzen" }}
-                  />
-                  <Stack.Screen
-                    name="licenses"
-                    options={{ title: "Lizenzen" }}
-                  />
-                </Stack>
-                <Toast config={toastConfig} />
-              </View>
-            </BadgeProvider>
-          </SettingsProvider>
-        </GestureHandlerRootView>
-      </SafeAreaProvider>
+      {appContent}
     </StripeProvider>
   );
 };
