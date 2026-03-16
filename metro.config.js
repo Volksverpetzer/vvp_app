@@ -22,16 +22,6 @@ config.resolver = {
         };
       }
 
-      // Handle native-only expo-share-intent on web
-      if (
-        moduleName.startsWith("expo-share-intent") ||
-        moduleName === "expo-share-intent"
-      ) {
-        return {
-          type: "empty",
-        };
-      }
-
       // Handle React Native native codegen commands
       if (
         moduleName.includes(

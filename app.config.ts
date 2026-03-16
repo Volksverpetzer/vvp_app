@@ -30,13 +30,20 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       ["expo-router"],
       ["expo-asset"],
       [
-        "expo-share-intent",
+        "expo-sharing",
         {
-          iosActivationRules: {
-            NSExtensionActivationSupportsWebURLWithMaxCount: 1,
-            NSExtensionActivationSupportsWebPageWithMaxCount: 0,
+          ios: {
+            enabled: true,
+            activationRule: {
+              supportsText: true,
+              supportsWebUrlWithMaxCount: 1,
+              supportsWebPageWithMaxCount: 0,
+            },
           },
-          androidIntentFilters: ["text/*"],
+          android: {
+            enabled: true,
+            singleShareMimeTypes: ["text/*"],
+          },
         },
       ],
       [
@@ -63,7 +70,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       "expo-font",
       "expo-image",
       "expo-mail-composer",
-      "expo-sharing",
       "expo-web-browser",
     ],
     splash: {

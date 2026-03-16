@@ -5,10 +5,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
 import { StripeProvider } from "@stripe/stripe-react-native";
-import * as Linking from "expo-linking";
-import type { Href } from "expo-router";
-import { Stack, useRouter, useSegments } from "expo-router";
-import { ShareIntentProvider } from "expo-share-intent";
+import { Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import * as SystemUI from "expo-system-ui";
 import { useEffect } from "react";
@@ -27,14 +24,12 @@ import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
-import { useOptionalShareIntent } from "#/hooks/useOptionalShareIntent";
 
 // Hide warning for new native event emitter
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
@@ -153,22 +148,19 @@ const RootLayout = () => {
     </SafeAreaProvider>
   );
 
-  // On web, skip native-only providers (ShareIntent and Stripe)
+  // On web, skip native-only providers (Stripe)
   if (Platform.OS === "web") {
     return appContent;
   }
 
   // On native platforms, wrap with native-only providers
   return (
-    <ShareIntentProvider options={{ debug: false }}>
-      <ShareIntentRunner />
-      <StripeProvider
-        publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
-        merchantIdentifier={Config.donations.merchantIdentifier}
-      >
-        {appContent}
-      </StripeProvider>
-    </ShareIntentProvider>
+    <StripeProvider
+      publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
+      merchantIdentifier={Config.donations.merchantIdentifier}
+    >
+      {appContent}
+    </StripeProvider>
   );
 };
 
@@ -178,73 +170,6 @@ const RootLayout = () => {
  */
 export const unstable_settings = {
   initialRouteName: "(tabs)",
-};
-
-/**
- * Inline runner that handles incoming share intents and routes them.
- */
-const ShareIntentRunner = () => {
-  const router = useRouter();
-  const { hasShareIntent, shareIntent } = useOptionalShareIntent();
-
-  useEffect(() => {
-    if (!hasShareIntent || !shareIntent) return;
-
-    // Delay routing to allow root layout to finish mounting
-    const t = setTimeout(() => {
-      if (shareIntent?.type === "weburl") {
-        try {
-          const { hostname, path } = Linking.parse(shareIntent.webUrl);
-          const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
-          if (hostname !== baseHostname) {
-            router.push({
-              pathname: "/search",
-              params: { tag: shareIntent.webUrl },
-            });
-            return;
-          }
-
-          // Check if the path should be excluded from deep linking (e.g., /wp-content/uploads/)
-          if (shouldExcludeFromDeepLink(path)) {
-            // Open excluded URLs with OS default handler instead of in-app
-            Linking.openURL(shareIntent.webUrl).catch((error) => {
-              console.warn(
-                "Failed to open excluded URL:",
-                shareIntent.webUrl,
-                error,
-              );
-            });
-            return;
-          }
-
-          const safePath =
-            typeof path === "string" && path.length > 0
-              ? path.startsWith("/")
-                ? path
-                : `/${path}`
-              : "/search";
-
-          router.push(safePath as Href);
-        } catch {
-          // Fallback to search when URL parsing fails - treats malformed URL as search query
-          router.push({
-            pathname: "/search",
-            params: { tag: shareIntent.webUrl },
-          });
-        }
-      } else if (shareIntent?.type === "text" && shareIntent.text) {
-        // Route text share intents to search page
-        router.push({
-          pathname: "/search",
-          params: { tag: shareIntent.text },
-        });
-      }
-    }, 0);
-
-    return () => clearTimeout(t);
-  }, [hasShareIntent, router, shareIntent]);
-
-  return null;
 };
 
 export default RootLayout;

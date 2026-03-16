@@ -224,13 +224,6 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-share-intent@6.0.0": {
-    licenses: "MIT",
-    repository: "https://github.com/achorein/expo-share-intent",
-    licenseUrl:
-      "https://github.com/achorein/expo-share-intent/raw/master/LICENSE",
-    parents: "vvp_app",
-  },
   "expo-sharing@55.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",

@@ -21,8 +21,8 @@ import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
  * HomeScreen is the main feed view. It fetches multiple social feeds
  * and displays content with an animated header and search shortcut.
  *
- * Note: Share intent routing is handled by the dedicated /shareintent screen
- * (src/app/shareintent.tsx), which is routed via +native-intent.tsx.
+ * Note: Share intent routing is handled by the dedicated /handle-share screen
+ * (src/app/handle-share.tsx), which is routed via +native-intent.tsx.
  *
  * @returns React element for the home feed screen.
  */
