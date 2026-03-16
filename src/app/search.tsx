@@ -6,7 +6,6 @@ import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { useOptionalShareIntent } from "#/hooks/useOptionalShareIntent";
 import AISearch from "#/screens/Search/components/AISearch";
 import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";
 import SearchHeader from "#/screens/Search/components/SearchHeader";
@@ -14,9 +13,8 @@ import SearchManager from "#/screens/Search/components/SearchManager";
 import SearchTutorial from "#/screens/Search/components/SearchTutorial";
 
 const SearchScreen = () => {
-  const { shareIntent } = useOptionalShareIntent();
   const parameters = useLocalSearchParams<{ tag: string }>();
-  const tag: string | undefined = parameters?.tag ?? shareIntent?.webUrl;
+  const tag: string | undefined = parameters?.tag;
   const searchReference = useRef<TextInput>(null);
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].secondaryBackground;

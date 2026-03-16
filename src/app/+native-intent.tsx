@@ -7,7 +7,6 @@ export function redirectSystemPath({ path }: { path: string }) {
   // 1. Option: the URL is from the share extension/intent
   try {
     if (new URL(path).hostname === "expo-sharing") {
-      console.log("expo-sharing");
       return "/handle-share";
     }
   } catch {
