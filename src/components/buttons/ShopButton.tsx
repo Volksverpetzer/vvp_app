@@ -17,6 +17,8 @@ const ShopButton = ({
 }: ShopButtonProperties) => (
   <UiButton
     source={ButtonVVPShop}
+    accessibilityLabel="Unseren Shop besuchen"
+    accessibilityHint="Öffnet den Shop im Browser"
     onPress={() => {
       registerEvent(article_link, "Shop", { location });
       Linking.openURL(Config.donations.shop);

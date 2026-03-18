@@ -31,6 +31,8 @@ const PaypalButton = ({ amount, onSuccess }: PaypalButtonProperties) => {
   return (
     <UiButton
       source={Paypal}
+      accessibilityLabel="Mit PayPal spenden"
+      accessibilityHint="Öffnet PayPal im Browser"
       onPress={() => {
         const url = getPaypalUrlForAmount(amount);
         Linking.openURL(url).then(() => {

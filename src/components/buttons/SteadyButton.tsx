@@ -19,6 +19,8 @@ const SteadyButton = ({
   return (
     <UiButton
       source={ButtonSteady}
+      accessibilityLabel="Steady-Mitglied werden"
+      accessibilityHint="Öffnet Steady im Browser"
       onPress={() => {
         registerEvent(link, "Steady", { location });
         Linking.openURL(Config.donations.steady);
