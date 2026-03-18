@@ -6,7 +6,7 @@ import { clearSharedPayloads, useIncomingShare } from "expo-sharing";
 import { useEffect } from "react";
 import { Button, Text, View } from "react-native";
 
-import UiSpinner from "#/components/animations/UiSpinner";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 

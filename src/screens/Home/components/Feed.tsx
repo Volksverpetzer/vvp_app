@@ -10,11 +10,11 @@ import { FlatList, Pressable, RefreshControl } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
-import UiSpinner from "#/components/animations/UiSpinner";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";

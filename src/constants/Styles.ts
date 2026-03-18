@@ -59,9 +59,4 @@ export const styles = StyleSheet.create({
   whiteText: {
     color: "white",
   },
-  button: {
-    width: 220,
-    height: 40,
-    borderRadius: 4,
-  },
 });

@@ -10,10 +10,10 @@ import type {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import ErrorCard from "#/components/design/ErrorCard";
 import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";

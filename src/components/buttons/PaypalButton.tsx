@@ -1,8 +1,7 @@
-import { Image } from "expo-image";
-import { Linking, Pressable } from "react-native";
+import { Linking } from "react-native";
 
+import UiButton from "#/components/ui/UiButton";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 
 import Paypal from "#assets/images/button_paypal.webp";
 
@@ -30,17 +29,17 @@ const PaypalButton = ({ amount, onSuccess }: PaypalButtonProperties) => {
   };
 
   return (
-    <Pressable
-      accessibilityRole="button"
+    <UiButton
+      source={Paypal}
+      accessibilityLabel="Mit PayPal spenden"
+      accessibilityHint="Öffnet PayPal im Browser"
       onPress={() => {
         const url = getPaypalUrlForAmount(amount);
         Linking.openURL(url).then(() => {
           onSuccess();
         });
       }}
-    >
-      <Image source={Paypal} style={styles.button} />
-    </Pressable>
+    />
   );
 };
 

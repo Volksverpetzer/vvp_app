@@ -8,9 +8,8 @@ import Constants from "expo-constants";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import type { StripeButtonProperties } from "#/components/buttons/StripeButton";
-import { styles as globalStyles } from "#/constants/Styles";
+import UiSpinner from "#/components/ui/UiSpinner";
 import API from "#/helpers/network/ServerAPI";
 
 const styles = StyleSheet.create({
@@ -122,7 +121,7 @@ const StripeButton = (props: StripeButtonProperties) => {
       type={PlatformPay?.ButtonType?.Donate}
       appearance={PlatformPay?.ButtonStyle?.Black}
       borderRadius={4}
-      style={globalStyles.button}
+      style={{ width: 220, height: 40 }}
       disabled={isProcessing}
     />
   );

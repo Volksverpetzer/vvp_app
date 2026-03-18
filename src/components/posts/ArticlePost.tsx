@@ -4,11 +4,11 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { DimensionValue } from "react-native";
 import { TouchableOpacity } from "react-native";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
