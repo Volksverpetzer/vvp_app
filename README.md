@@ -50,10 +50,10 @@ if (!AppImages.shopButton) return null;
 
 **Available entries**
 
-| Key                | VVP                    | Mimikama |
-| ------------------ | ---------------------- | -------- |
-| `shopButton`       | `button_vvp_shop.webp` | `null`   |
-| `loadingAnimation` | `logo_animated.gif`    | `null`   |
+| Key                | VVP                    | Mimikama                                                                    |
+| ------------------ | ---------------------- | --------------------------------------------------------------------------- |
+| `shopButton`       | `button_vvp_shop.webp` | `null` (image ready: `button_mimikama_shop.webp`, needs shop URL in config) |
+| `loadingAnimation` | `logo_animated.gif`    | `null`                                                                      |
 
 **Adding a new variant asset**
 
