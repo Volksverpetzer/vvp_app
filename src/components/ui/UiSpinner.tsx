@@ -4,7 +4,7 @@ import { ActivityIndicator } from "react-native";
 
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";
-import { AppImages } from "#/helpers/utils/AppImages";
+import { AppImages } from "#/helpers/AppImages";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 /**

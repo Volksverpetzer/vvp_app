@@ -2,8 +2,8 @@ import { Linking } from "react-native";
 
 import UiButton from "#/components/ui/UiButton";
 import Config from "#/constants/Config";
+import { AppImages } from "#/helpers/AppImages";
 import { registerEvent } from "#/helpers/network/Analytics";
-import { AppImages } from "#/helpers/utils/AppImages";
 
 interface ShopButtonProperties {
   article_link: string;
