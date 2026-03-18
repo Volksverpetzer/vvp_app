@@ -1,4 +1,4 @@
-import { isVolksverpetzer } from "src/helpers/utils/variant";
+import { isVolksverpetzer } from "#/helpers/utils/variant";
 
 import VVPShopButton from "#assets/images/button_vvp_shop.webp";
 import VVPLogoAnimation from "#assets/images/logo_animated.gif";
