@@ -32,6 +32,46 @@ The app expects a `./.env` file in the project root for some minor configuration
 
 See `.env.example` for reference.
 
+## App variants
+
+The app supports two variants — **Volksverpetzer** and **Mimikama** — selected via the `APP` environment variable (see `app.config.ts`).
+
+### Variant-specific images (`AppImages`)
+
+`src/helpers/utils/AppImages.ts` is the central registry for assets that differ between variants. Instead of importing image files directly in components, always go through `AppImages`:
+
+```ts
+import { AppImages } from "#/helpers/utils/AppImages";
+
+// AppImages.shopButton is null for Mimikama — guard before use
+if (!AppImages.shopButton) return null;
+<UiButton source={AppImages.shopButton} ... />
+```
+
+**Available entries**
+
+| Key                | VVP                    | Mimikama |
+| ------------------ | ---------------------- | -------- |
+| `shopButton`       | `button_vvp_shop.webp` | `null`   |
+| `loadingAnimation` | `logo_animated.gif`    | `null`   |
+
+**Adding a new variant asset**
+
+1. Place the asset file(s) under `assets/images/`.
+2. Import them in `AppImages.ts` and add a new key using the `isVolksverpetzer` flag:
+
+   ```ts
+   import MimikamaMyAsset from "#assets/images/mimikama_my_asset.webp";
+   import VVPMyAsset from "#assets/images/my_asset.webp";
+
+   export const AppImages = {
+     // ...existing keys
+     myAsset: isVolksverpetzer ? VVPMyAsset : MimikamaMyAsset,
+   } as const;
+   ```
+
+3. Use `AppImages.myAsset` in your component. If a variant has no asset, use `null` and guard against it in the component.
+
 ## Running the App
 
 For platform-specific runs:
