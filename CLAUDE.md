@@ -86,4 +86,4 @@ Defined in `babel.config.cts` and `tsconfig.json`:
 - Arrow functions, 2-space indent, Prettier with sorted imports (enforced by lint-staged on commit)
 - PascalCase for components, camelCase for hooks/utils
 - TypeScript non-strict (no `strict: true`); avoid adding `any` types
-- Pre-commit hooks via Husky run lint + type checks automatically
+- Pre-commit hooks via Husky run Prettier formatting automatically (lint-staged)
