@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm check:ts)",
+      "Bash(echo \"Exit: $?\")"
+    ]
+  }
+}
