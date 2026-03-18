@@ -5,8 +5,8 @@ import { useCallback } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
 import Faktenbot from "#/components/animations/Faktenbot";
-import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
 import { styles as globalStyles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";

@@ -4,9 +4,9 @@ import debounce from "lodash/debounce";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";

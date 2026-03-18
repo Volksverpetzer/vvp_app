@@ -18,10 +18,10 @@ import {
 import type { ToastConfig } from "react-native-toast-message";
 import Toast from "react-native-toast-message";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import View from "#/components/design/View";
 import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import NotificationManager from "#/helpers/Notifications";

@@ -8,8 +8,8 @@ import Constants from "expo-constants";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import type { StripeButtonProperties } from "#/components/buttons/StripeButton";
+import UiSpinner from "#/components/ui/UiSpinner";
 import { styles as globalStyles } from "#/constants/Styles";
 import API from "#/helpers/network/ServerAPI";
 
