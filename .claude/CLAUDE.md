@@ -48,9 +48,9 @@ src/
 │   ├── provider/     # React Context providers
 │   └── utils/        # Shared utilities
 ├── hooks/            # Custom React hooks
-├── constants/        # Colors and app-wide constants
-└── config/           # Per-variant config (volksverpetzer.config, mimikama.config)
+└── constants/        # Colors and app-wide constants
 __tests__/            # Jest tests mirroring src/ structure
+config/               # Per-variant config (volksverpetzer.config, mimikama.config)
 plugins/              # Custom Expo config plugins
 ```
 
