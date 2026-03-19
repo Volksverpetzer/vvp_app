@@ -14,7 +14,7 @@ const ShopButton = ({
   article_link,
   location = "ArticleBottom",
 }: ShopButtonProperties) => {
-  if (!AppImages.shopButton) return null;
+  if (!Config.donations.shop) return null;
 
   return (
     <UiButton
