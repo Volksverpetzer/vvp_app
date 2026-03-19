@@ -23,6 +23,7 @@ describe("Post", () => {
     expect(post.data).toEqual(data);
     expect(post.inView).toBe(false); // Default value
     expect(post.priority).toBe(1); // Default value
+    expect(post.hideShareCount).toBe(false); // Default value
     expect(post.shareable).toBeUndefined();
     expect(post.contentFavIdentifier).toBeUndefined();
     expect(post.contentType).toBeUndefined();
@@ -38,6 +39,7 @@ describe("Post", () => {
       { url: "https://example.com/twitter", title: "Twitter Share" },
     ];
     const priority = 5;
+    const hideShareCount = true;
     const contentFavIdentifier = "fav-123";
     const contentType = "article" as FaveableType;
 
@@ -49,6 +51,7 @@ describe("Post", () => {
       data,
       shareable,
       priority,
+      hideShareCount,
       contentFavIdentifier,
       contentType,
     );
@@ -60,6 +63,7 @@ describe("Post", () => {
     expect(post.data).toEqual(data);
     expect(post.shareable).toEqual(shareable);
     expect(post.priority).toBe(priority);
+    expect(post.hideShareCount).toBe(hideShareCount);
     expect(post.contentFavIdentifier).toBe(contentFavIdentifier);
     expect(post.contentType).toBe(contentType);
     expect(post.inView).toBe(false); // Default value that can't be set through constructor
@@ -79,6 +83,7 @@ describe("Post", () => {
       data,
       undefined, // shareable
       undefined, // priority
+      undefined, // hideShareCount
       undefined, // contentFavIdentifier
       undefined, // contentType
     );
@@ -86,6 +91,7 @@ describe("Post", () => {
     // Assert
     expect(post.shareable).toBeUndefined();
     expect(post.priority).toBe(1); // Default value
+    expect(post.hideShareCount).toBe(false); // Default value
     expect(post.contentFavIdentifier).toBeUndefined();
     expect(post.contentType).toBeUndefined();
   });
