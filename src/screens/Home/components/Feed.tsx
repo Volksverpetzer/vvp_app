@@ -150,6 +150,7 @@ const Feed = (properties: FeedProperties) => {
           contentType={item.contentType}
           shareable={item.shareable}
           inView={inView.has(item.id)}
+          hideShareCount={item.hideShareCount}
         />
       );
     },
