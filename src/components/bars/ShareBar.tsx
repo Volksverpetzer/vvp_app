@@ -55,16 +55,13 @@ const ShareBar = (properties: ShareBarProperties) => {
           };
         }}
       >
-        {hideShareCount ? (
-          <View style={{ width: "70%" }} />
-        ) : (
-          <ShareCounter
-            shares={shares}
-            shareable={shareable}
-            style={{ color, fontSize }}
-            color={color}
-          />
-        )}
+        <ShareCounter
+          shares={shares}
+          shareable={shareable}
+          style={{ color, fontSize }}
+          color={color}
+          hideCount={hideShareCount}
+        />
       </Pressable>
       {contentFavIdentifier && contentType && (
         <FavCounter

@@ -14,11 +14,12 @@ interface ShareCounterProperties {
   shares?: number;
   color?: string;
   size?: number;
+  hideCount?: boolean;
 }
 
 const ShareCounter = (properties: ShareCounterProperties) => {
   const [shares, setShares] = useState(0);
-  const { color, size = 30 } = properties;
+  const { color, size = 30, hideCount } = properties;
 
   const getAllShares = useCallback(async () => {
     let _shares = 0;
@@ -45,7 +46,11 @@ const ShareCounter = (properties: ShareCounterProperties) => {
       }}
     >
       <ShareIcon size={size} color={color} />
-      <Text style={properties.style}>{shares + (properties.shares ?? 0)}</Text>
+      {!hideCount && (
+        <Text style={properties.style}>
+          {shares + (properties.shares ?? 0)}
+        </Text>
+      )}
     </View>
   );
 };
