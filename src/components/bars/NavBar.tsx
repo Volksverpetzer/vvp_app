@@ -99,9 +99,10 @@ const NavBar = (properties: NavBarProperties) => {
               margin: 0,
             }}
           >
-            <ShareIcon color={corporate} />
             <ShareCounter
+              color={corporate}
               shareable={[{ title: "title", url: link }]}
+              size={24}
               style={{ color: corporate, fontSize: 16 }}
             />
           </Pressable>
@@ -124,17 +125,13 @@ const NavBar = (properties: NavBarProperties) => {
           style={{
             color: corporate,
             fontSize: 16,
-            paddingRight: 12,
-            lineHeight: 30,
           }}
         />
       ) : (
         <View
           style={{
             ...styles.noBackground,
-            padding: 20,
-            paddingRight: 50,
-            borderBottomLeftRadius: 20,
+            width: 40,
           }}
         />
       )}
