@@ -5,7 +5,7 @@ import MimikamaShopButton from "#assets/images/mimikama/button_shop.webp";
 import VVPShopButton from "#assets/images/volksverpetzer/button_shop.webp";
 
 export const AppImages = {
-  /** Shop button overlay image, or null if variant has no shop configured */
+  /** Shop button overlay image */
   shopButton: isVolksverpetzer ? VVPShopButton : MimikamaShopButton,
   /** Loading animation, or null to fall back to ActivityIndicator */
   loadingAnimation: isVolksverpetzer ? VVPLogoAnimation : null,
