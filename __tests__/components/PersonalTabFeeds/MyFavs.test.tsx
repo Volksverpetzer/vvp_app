@@ -121,7 +121,6 @@ describe("MyFavs", () => {
         },
       },
       shareable: [{ url: articleApiResponse.link, title: "Artikel teilen" }],
-      hideShareCount: false,
       contentFavIdentifier: "example-article",
       contentType: FAV_TYPE_ARTICLE,
     };
@@ -216,7 +215,6 @@ describe("MyFavs", () => {
         },
       },
       shareable: [{ url: articleApiResponse.link, title: "Artikel teilen" }],
-      hideShareCount: false,
       contentFavIdentifier: "example-article",
       contentType: FAV_TYPE_ARTICLE,
     };
@@ -338,7 +336,6 @@ describe("MyFavs", () => {
           title: "Artikel teilen",
         },
       ],
-      hideShareCount: false,
       contentFavIdentifier: "newer-article",
       contentType: FAV_TYPE_ARTICLE,
     };
