@@ -33,7 +33,7 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
       <ViewCounter
         {...{ url: article_link }}
         color={color}
-        style={{ fontSize: 16, paddingHorizontal: 5 }}
+        style={{ fontSize: 16, paddingLeft: 5, paddingRight: 15 }}
       />
       <ShareIcon color={color} size={20} />
       <ShareCounter

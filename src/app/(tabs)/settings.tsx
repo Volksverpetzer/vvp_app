@@ -124,7 +124,7 @@ const SettingsScreen = () => {
         )}
       >
         <Collapsable
-          icon={<FeedIcon color={corporate} />}
+          icon={<FeedIcon color={corporate} size={24} />}
           title="Feed"
           titleStyle={globalStyles.heading}
         >
@@ -137,7 +137,7 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={<NotificationIcon size={24} color={corporate} />}
+          icon={<NotificationIcon color={corporate} size={24} />}
           title="Benachrichtigungen"
           titleStyle={globalStyles.heading}
         >
@@ -147,7 +147,7 @@ const SettingsScreen = () => {
           />
         </Collapsable>
         <Collapsable
-          icon={<SettingsIcon size={24} color={corporate} />}
+          icon={<SettingsIcon color={corporate} size={24} />}
           title="Erweitert"
           titleStyle={globalStyles.heading}
         >
@@ -160,22 +160,22 @@ const SettingsScreen = () => {
         <View style={styles.linksContainer}>
           <DesignedLink
             url={Config.aboutUrl}
-            icon={<SearchIcon color={corporate} width={20} />}
+            icon={<SearchIcon color={corporate} size={24} />}
             text="Über uns"
           />
           <DesignedLink
             url={Config.donations.support}
-            icon={<GiveIcon color={corporate} />}
+            icon={<GiveIcon color={corporate} size={24} />}
             text="Unterstützen"
           />
           <DesignedLink
             url={encodeURI("mailto:app@volksverpetzer.de")}
-            icon={<FeedbackIcon size={24} color={corporate} />}
+            icon={<FeedbackIcon color={corporate} size={24} />}
             text="App-Feedback"
           />
           <DesignedLink
             url={Config.dataProtectionUrl}
-            icon={<LockIcon size={24} color={corporate} />}
+            icon={<LockIcon color={corporate} size={24} />}
             text="Datenschutz"
           />
         </View>

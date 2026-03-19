@@ -15,6 +15,7 @@ export const ArticleViewIcon = ({ ...rest }: OcticonsProps) => (
 export const CheckboxIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="check" />
 );
+
 export const ChevronIcon = ({
   direction,
   size,
@@ -35,6 +36,7 @@ export const CloseIcon = ({ size, style, ...rest }: OcticonsProps) => (
     style={[{ lineHeight: size ?? 30 }, style]}
   />
 );
+
 export const DeleteIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="trash" />
 );
@@ -46,6 +48,7 @@ export const ExternalLinkIcon = ({ ...rest }: OcticonsProps) => (
 export const FeedbackIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="report" />
 );
+
 export const FeedIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="rows" />
 );
@@ -73,6 +76,7 @@ export const NotificationIcon = ({ ...rest }: OcticonsProps) => (
 export const PlayIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="play" />
 );
+
 export const ReportIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="report" />
 );
@@ -92,9 +96,11 @@ export const ReportStatusIcon = ({
 export const SafetyIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="shield-check" />
 );
+
 export const SearchIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="search" />
 );
+
 export const SettingsIcon = ({ size, ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="gear" size={size ?? 30} />
 );

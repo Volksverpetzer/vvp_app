@@ -99,7 +99,7 @@ const NavBar = (properties: NavBarProperties) => {
               margin: 0,
             }}
           >
-            <ShareIcon color={corporate} />
+            <ShareIcon color={corporate} size={24} />
             <ShareCounter
               shareable={[{ title: "title", url: link }]}
               style={{ color: corporate, fontSize: 16 }}
