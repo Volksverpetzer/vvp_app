@@ -90,6 +90,7 @@ const extraConfig: ExtraConfigType = {
         url: "https://www.paypal.com/donate?business=buero@mimikama.at&no_recurring=0&item_name=unabhängige%20Berichterstattung&amount=100&currency_code=EUR",
       },
     ],
+    shop: "https://www.mimikama.org/webshop/",
     platformPay: false,
   },
   enableActions: false,
