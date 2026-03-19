@@ -40,20 +40,20 @@ The app supports two variants — **Volksverpetzer** and **Mimikama** — select
 
 `src/helpers/AppImages.ts` is the central registry for assets that differ between variants. Instead of importing image files directly in components, always go through `AppImages`:
 
-```ts
+```tsx
 import { AppImages } from "#/helpers/AppImages";
 
-// Some AppImages entries can be null — guard before use
-if (!AppImages.shopButton) return null;
-<UiButton source={AppImages.shopButton} ... />
+// Some AppImages entries can be null — guard before use (see table below)
+if (!AppImages.loadingAnimation) return null;
+<Image source={AppImages.loadingAnimation} ... />
 ```
 
 **Available entries**
 
-| Key                | Volksverpetzer asset path                      | Mimikama asset path                           |
-| ------------------ | ---------------------------------------------- | --------------------------------------------- |
-| `shopButton`       | `assets/images/volksverpetzer/button_shop.webp` | `assets/images/mimikama/button_shop.webp`     |
-| `loadingAnimation` | `assets/images/logo_animated.gif`              | `null`                                        |
+| Key                | Volksverpetzer asset path                       | Mimikama asset path                       |
+| ------------------ | ----------------------------------------------- | ----------------------------------------- |
+| `shopButton`       | `assets/images/volksverpetzer/button_shop.webp` | `assets/images/mimikama/button_shop.webp` |
+| `loadingAnimation` | `assets/images/logo_animated.gif`               | `null`                                    |
 
 **Adding a new variant asset**
 
@@ -61,6 +61,8 @@ if (!AppImages.shopButton) return null;
 2. Import them in `AppImages.ts` and add a new key using the `isVolksverpetzer` flag:
 
    ```ts
+   import { isVolksverpetzer } from "#/config/variants";
+
    import MimikamaMyAsset from "#assets/images/mimikama_my_asset.webp";
    import VVPMyAsset from "#assets/images/my_asset.webp";
 
