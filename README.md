@@ -38,22 +38,22 @@ The app supports two variants — **Volksverpetzer** and **Mimikama** — select
 
 ### Variant-specific images (`AppImages`)
 
-`src/helpers/utils/AppImages.ts` is the central registry for assets that differ between variants. Instead of importing image files directly in components, always go through `AppImages`:
+`src/helpers/AppImages.ts` is the central registry for assets that differ between variants. Instead of importing image files directly in components, always go through `AppImages`:
 
 ```ts
-import { AppImages } from "#/helpers/utils/AppImages";
+import { AppImages } from "#/helpers/AppImages";
 
-// AppImages.shopButton is null for Mimikama — guard before use
+// Some AppImages entries can be null — guard before use
 if (!AppImages.shopButton) return null;
 <UiButton source={AppImages.shopButton} ... />
 ```
 
 **Available entries**
 
-| Key                | VVP                    | Mimikama                                                                    |
-| ------------------ | ---------------------- | --------------------------------------------------------------------------- |
-| `shopButton`       | `button_vvp_shop.webp` | `null` (image ready: `button_mimikama_shop.webp`, needs shop URL in config) |
-| `loadingAnimation` | `logo_animated.gif`    | `null`                                                                      |
+| Key                | Volksverpetzer asset path                      | Mimikama asset path                           |
+| ------------------ | ---------------------------------------------- | --------------------------------------------- |
+| `shopButton`       | `assets/images/volksverpetzer/button_shop.webp` | `assets/images/mimikama/button_shop.webp`     |
+| `loadingAnimation` | `assets/images/logo_animated.gif`              | `null`                                        |
 
 **Adding a new variant asset**
 
