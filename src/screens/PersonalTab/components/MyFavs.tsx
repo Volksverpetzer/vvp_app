@@ -143,7 +143,6 @@ const MyFavs = () => {
             contentFavIdentifier={post.contentFavIdentifier}
             contentType={post.contentType}
             shareable={post.shareable}
-            hideShareCount={post.hideShareCount}
             inView={true}
           />
         ))
