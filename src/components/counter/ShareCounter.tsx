@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import type { TextStyle } from "react-native";
+import { type TextStyle, View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
-import View from "#/components/design/View";
 import Config from "#/constants/Config";
 import { getShares } from "#/helpers/network/Engagement";
 import type { ShareableType } from "#/types";

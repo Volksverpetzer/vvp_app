@@ -45,13 +45,9 @@ const ShareBar = (properties: ShareBarProperties) => {
         hitSlop={20}
         style={({ pressed }) => {
           return {
-            left: 0,
             flexDirection: "row",
             justifyContent: "flex-start",
-            alignItems: "center",
-            alignContent: "center",
             backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
-            height: "100%",
           };
         }}
       >

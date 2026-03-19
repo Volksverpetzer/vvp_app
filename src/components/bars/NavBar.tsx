@@ -92,11 +92,12 @@ const NavBar = (properties: NavBarProperties) => {
             accessibilityRole="button"
             onPress={() => onShare(link, { location: "ArticleTop" })}
             hitSlop={20}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              margin: 0,
+            style={({ pressed }) => {
+              return {
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
+              };
             }}
           >
             <ShareCounter
