@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Button, Modal, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { TouchIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
@@ -92,10 +91,6 @@ const RedditPost = (properties: RedditProperties) => {
                 ? properties.url_overridden_by_dest
                 : properties.thumbnail
             }
-          />
-          <TouchIcon
-            color={"#ffffff"}
-            style={{ alignSelf: "flex-end", marginTop: -40 }}
           />
           <Text
             style={{

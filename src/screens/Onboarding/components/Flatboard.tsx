@@ -8,7 +8,7 @@ import type {
 } from "react-native";
 import { FlatList, useWindowDimensions } from "react-native";
 
-import { Logo } from "#/components/Icons";
+import { Logo } from "#/components/SvgIcons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import { styles } from "#/constants/Styles";

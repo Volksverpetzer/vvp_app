@@ -1,4 +1,4 @@
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Octicons from "@expo/vector-icons/Octicons";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 import Colors from "#/constants/Colors";
@@ -39,15 +39,12 @@ const TabLayout = () => {
         <NativeTabs.Trigger.Icon
           src={{
             default: (
-              <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="home-outline"
-              />
+              <NativeTabs.Trigger.VectorIcon family={Octicons} name="home" />
             ),
             selected: (
               <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="home"
+                family={Octicons}
+                name="home-fill"
               />
             ),
           }}
@@ -59,15 +56,12 @@ const TabLayout = () => {
         <NativeTabs.Trigger.Icon
           src={{
             default: (
-              <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="star-outline"
-              />
+              <NativeTabs.Trigger.VectorIcon family={Octicons} name="star" />
             ),
             selected: (
               <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="star"
+                family={Octicons}
+                name="star-fill"
               />
             ),
           }}
@@ -80,16 +74,10 @@ const TabLayout = () => {
         <NativeTabs.Trigger.Icon
           src={{
             default: (
-              <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="trophy-outline"
-              />
+              <NativeTabs.Trigger.VectorIcon family={Octicons} name="trophy" />
             ),
             selected: (
-              <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="trophy"
-              />
+              <NativeTabs.Trigger.VectorIcon family={Octicons} name="trophy" />
             ),
           }}
         />
@@ -101,16 +89,10 @@ const TabLayout = () => {
         <NativeTabs.Trigger.Icon
           src={{
             default: (
-              <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="alert-circle-outline"
-              />
+              <NativeTabs.Trigger.VectorIcon family={Octicons} name="report" />
             ),
             selected: (
-              <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="alert-circle"
-              />
+              <NativeTabs.Trigger.VectorIcon family={Octicons} name="report" />
             ),
           }}
         />
@@ -121,16 +103,10 @@ const TabLayout = () => {
         <NativeTabs.Trigger.Icon
           src={{
             default: (
-              <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="cog-outline"
-              />
+              <NativeTabs.Trigger.VectorIcon family={Octicons} name="gear" />
             ),
             selected: (
-              <NativeTabs.Trigger.VectorIcon
-                family={MaterialCommunityIcons}
-                name="cog"
-              />
+              <NativeTabs.Trigger.VectorIcon family={Octicons} name="gear" />
             ),
           }}
         />

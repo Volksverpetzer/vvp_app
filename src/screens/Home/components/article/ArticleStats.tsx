@@ -29,13 +29,13 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
         justifyContent: "flex-start",
       }}
     >
-      <ArticleViewIcon size={20} color={color} />
+      <ArticleViewIcon color={color} size={20} />
       <ViewCounter
         {...{ url: article_link }}
         color={color}
         style={{ fontSize: 16, paddingHorizontal: 5 }}
       />
-      <ShareIcon size={20} color={color} />
+      <ShareIcon color={color} size={20} />
       <ShareCounter
         style={{ color, fontSize: 16, paddingHorizontal: 5 }}
         shareable={[{ title: "Link teilen", url: article_link }]}
