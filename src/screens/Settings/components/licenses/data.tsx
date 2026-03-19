@@ -6,7 +6,7 @@ export default {
       "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@atproto/api@0.19.3": {
+  "@atproto/api@0.19.4": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -25,7 +25,7 @@ export default {
     licenseUrl: "https://github.com/expo/google-fonts/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@expo/config@55.0.9": {
+  "@expo/config@55.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/master/LICENSE",
@@ -121,7 +121,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-asset@55.0.9": {
+  "expo-asset@55.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -139,7 +139,7 @@ export default {
     licenseUrl: "https://gitlab.com/breadboxio/expo-config",
     parents: "vvp_app",
   },
-  "expo-constants@55.0.8": {
+  "expo-constants@55.0.9": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -152,7 +152,7 @@ export default {
       "https://github.com/malaa-tech/expo-custom-assets/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "expo-dev-client@55.0.17": {
+  "expo-dev-client@55.0.18": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -200,7 +200,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-linking@55.0.7": {
+  "expo-linking@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -218,19 +218,19 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-router@55.0.6": {
+  "expo-router@55.0.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-sharing@55.0.12": {
+  "expo-sharing@55.0.14": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-splash-screen@55.0.11": {
+  "expo-splash-screen@55.0.12": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -248,7 +248,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-updates@55.0.14": {
+  "expo-updates@55.0.15": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -260,7 +260,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo@55.0.7": {
+  "expo@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
