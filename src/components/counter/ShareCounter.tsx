@@ -31,8 +31,9 @@ const ShareCounter = (properties: ShareCounterProperties) => {
 
   useEffect(() => {
     if (!Config.enableEngagement) return;
+    if (hideCount) return;
     getAllShares();
-  }, [getAllShares]);
+  }, [getAllShares, hideCount]);
 
   if (!Config.enableEngagement) return <View />;
 
