@@ -27,6 +27,7 @@ export const WordPressFetcher = {
       { article: formattedArticle },
       [{ url: article.link, title: "Artikel teilen" }],
       index === 0 ? 2 : 1,
+      undefined,
       article.slug,
       "article",
     );

@@ -28,6 +28,7 @@ export const InstagramFetcher = {
             post,
             [{ url: post.permalink, title: "Instagram Post teilen" }],
             1,
+            undefined,
             post.id,
             "insta",
           ),
