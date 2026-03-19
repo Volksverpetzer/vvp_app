@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { ChevronIcon, ShareIcon } from "#/components/Icons";
+import { ChevronIcon } from "#/components/Icons";
 import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
 import Colors from "#/constants/Colors";

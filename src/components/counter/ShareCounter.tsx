@@ -18,7 +18,7 @@ interface ShareCounterProperties {
 
 const ShareCounter = (properties: ShareCounterProperties) => {
   const [shares, setShares] = useState(0);
-  const { color, size = 10 } = properties;
+  const { color, size = 30 } = properties;
 
   const getAllShares = useCallback(async () => {
     let _shares = 0;
