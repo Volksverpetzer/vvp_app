@@ -106,7 +106,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
             IBAN: {Config.donations.account.IBAN} {`\n`}
             Verwendungszweck: {Config.donations.account.note} {`\n`}
           </Text>
-          <HeartIcon />
+          <HeartIcon color={corporate} size={24} />
         </View>
       </Modal>
     </View>

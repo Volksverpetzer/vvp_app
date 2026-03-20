@@ -16,6 +16,7 @@ export const Logo = ({ width, color, ...rest }: SvgIconProperties) => (
     <Path d="M62.383 24.5 39 65 15.617 24.5h46.766Z" stroke="#fff" />
   </Svg>
 );
+
 export const LogoBig = ({ color, ...rest }: SvgIconProperties) => (
   <View style={{ width: 233, height: 116, ...styles.centered, minHeight: 50 }}>
     <Svg viewBox="0 0 233 116" width="100%" height="100%" {...rest}>
@@ -31,6 +32,7 @@ export const LogoBig = ({ color, ...rest }: SvgIconProperties) => (
     </Svg>
   </View>
 );
+
 export const FirstPlaceIcon = ({ ...rest }: SvgIconProperties) => (
   <Svg width={24} height={24} fill="none" {...rest}>
     <Path
@@ -43,6 +45,7 @@ export const FirstPlaceIcon = ({ ...rest }: SvgIconProperties) => (
     />
   </Svg>
 );
+
 export const SecondPlaceIcon = ({ ...rest }: SvgIconProperties) => (
   <Svg width={24} height={24} fill="none" {...rest}>
     <Path
@@ -55,6 +58,7 @@ export const SecondPlaceIcon = ({ ...rest }: SvgIconProperties) => (
     />
   </Svg>
 );
+
 export const ThirdPlaceIcon = ({ ...rest }: SvgIconProperties) => (
   <Svg width={24} height={24} fill="none" {...rest}>
     <Path

@@ -41,8 +41,12 @@ export const DeleteIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="trash" />
 );
 
+export const ErrorIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="alert" />
+);
+
 export const ExternalLinkIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="arrow-up-right" />
+  <Octicons {...rest} name="link-external" />
 );
 
 export const FeedbackIcon = ({ ...rest }: OcticonsProps) => (
@@ -58,11 +62,11 @@ export const GiveIcon = ({ ...rest }: OcticonsProps) => (
 );
 
 export const HeartIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="heart" />
+  <Octicons {...rest} name="heart-fill" />
 );
 
 export const LinkIcon = ({ size, ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="link-external" size={size ?? 30} />
+  <Octicons {...rest} name="link" size={size ?? 30} />
 );
 
 export const LockIcon = ({ ...rest }: OcticonsProps) => (

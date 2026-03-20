@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-import type { MaterialCommunityIconName } from "#/components/Icons";
+import type { OcticonsIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import { styles } from "#/constants/Styles";
@@ -9,7 +9,7 @@ import type { StatisticsType, StatisticsValueKey } from "#/types";
 import StatisticsBox from "./StatisticsBox";
 
 interface StatsPanelProperties {
-  icon: MaterialCommunityIconName;
+  icon: OcticonsIconName;
   title: string;
   subtitle?: string;
   streakKeyToExclude: string;

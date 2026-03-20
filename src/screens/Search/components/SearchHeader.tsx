@@ -101,7 +101,7 @@ const SearchHeader = ({
           returnKeyType="search"
         />
         <Pressable accessibilityRole="button" onPress={handleSubmit}>
-          <SearchIcon color="white" width={20} />
+          <SearchIcon color="white" size={20} />
         </Pressable>
       </View>
     </>

@@ -16,6 +16,7 @@ const SupportScreen = () => {
   const supportUrl = `${wpUrl}/unterstutzen` satisfies HttpsUrl;
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].secondaryBackground;
+  const corporate = Colors[colorScheme].corporate;
 
   const HEADER_HEIGHT = 50;
 
@@ -33,7 +34,7 @@ const SupportScreen = () => {
           gap: 20,
         }}
       >
-        <HeartIcon width={50} />
+        <HeartIcon color={corporate} size={50} />
         <Support article_link={supportUrl} />
         <Space size={100} />
       </ScrollView>

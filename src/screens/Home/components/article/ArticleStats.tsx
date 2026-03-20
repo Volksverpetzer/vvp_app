@@ -26,12 +26,13 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
         paddingHorizontal: 20,
         ...styles.row,
         justifyContent: "flex-start",
+        gap: 20,
       }}
     >
       <ViewCounter
         {...{ url: article_link }}
         color={color}
-        style={{ fontSize: 16, paddingLeft: 5, paddingRight: 15 }}
+        style={{ fontSize: 16 }}
       />
       <ShareCounter
         style={{ fontSize: 16, color: color }}

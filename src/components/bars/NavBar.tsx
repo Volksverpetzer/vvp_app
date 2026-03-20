@@ -77,7 +77,7 @@ const NavBar = (properties: NavBarProperties) => {
           onPress={() => router.back()}
           hitSlop={20}
         >
-          <ChevronIcon direction="left" size={40} color={corporate} />
+          <ChevronIcon direction="left" size={30} color={corporate} />
         </Pressable>
       </View>
 
@@ -86,7 +86,7 @@ const NavBar = (properties: NavBarProperties) => {
           <ShareCounter
             color={corporate}
             shareable={[{ title: "title", url: link }]}
-            size={24}
+            size={20}
             style={{ color: corporate, fontSize: 16, alignSelf: "center" }}
             onPress={() => onShare(link, { location: "ArticleTop" })}
           />
