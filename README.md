@@ -76,7 +76,7 @@ if (!AppImages.loadingAnimation) return null;
 
 ## Icons
 
-Icons are sourced from the **Octicons** icon set via `@expo/vector-icons`. Use the [icon browser](https://oblador.github.io/react-native-vector-icons/#Octicons) to find available icon names. All icon usage goes through `src/components/Icons.tsx`.
+Icons are sourced from the **Octicons** icon set via `@expo/vector-icons`. Use the [icon browser](https://oblador.github.io/react-native-vector-icons/#Octicons) to find available icon names. Standard UI icons should go through `src/components/Icons.tsx`, while custom SVG icons (e.g. logos, place icons) are provided via `src/components/SvgIcons.tsx`.
 
 ## Running the App
 
