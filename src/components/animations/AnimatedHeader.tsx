@@ -47,7 +47,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
   } = properties;
 
   const colorScheme = useAppColorScheme();
-  const corporate = Colors["dark"].corporate;
+  const corporate = Colors[colorScheme].corporate;
   const router = useRouter();
   // Memoize the background color based on the current scheme.
   const backgroundColor = useMemo(
@@ -161,7 +161,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
             }}
             style={{ position: "absolute", top: 20, right: "10%" }}
           >
-            <HeartIcon color={corporate} />
+            <HeartIcon color={corporate} size={32} />
           </Pressable>
         )}
         {title && <Animated.Text style={titleTextStyle}>{title}</Animated.Text>}

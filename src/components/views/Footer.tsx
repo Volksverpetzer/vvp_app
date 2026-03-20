@@ -61,7 +61,7 @@ const Footer = (properties: FooterProperties) => {
             })
           }
         >
-          <ShareIcon color={"white"} size={50} />
+          <ShareIcon color={"white"} size={36} />
         </Pressable>
       </View>
       <View

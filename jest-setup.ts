@@ -17,15 +17,7 @@ jest.mock("react-native/Libraries/Interaction/InteractionManager", () => ({
 }));
 
 jest.mock("@expo/vector-icons", () => ({
-  MaterialCommunityIcons: jest.fn(),
-  Ionicons: jest.fn(),
-  FontAwesome: jest.fn(),
-  MaterialIcons: jest.fn(),
-  Entypo: jest.fn(),
-  Feather: jest.fn(),
-  AntDesign: jest.fn(),
-  Fontisto: jest.fn(),
-  EvilIcons: jest.fn(),
+  Octicons: jest.fn(),
 }));
 
 jest.mock("expo-constants", () => ({

@@ -6,7 +6,7 @@ import {
   FirstPlaceIcon,
   SecondPlaceIcon,
   ThirdPlaceIcon,
-} from "#/components/Icons";
+} from "#/components/SvgIcons";
 import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";

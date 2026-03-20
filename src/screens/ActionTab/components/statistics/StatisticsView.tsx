@@ -58,7 +58,7 @@ const StatisticsView = () => {
         )}
       >
         <StatisticsPanel
-          icon="fire"
+          icon="zap"
           title="Meine Streaks"
           subtitle="Einmal pro Woche."
           streakKeyToExclude="sourcesChecked"
@@ -73,7 +73,7 @@ const StatisticsView = () => {
         />
 
         <StatisticsPanel
-          icon="account"
+          icon="person"
           title="Meine Stats"
           subtitle={undefined}
           streakKeyToExclude="appOpened"

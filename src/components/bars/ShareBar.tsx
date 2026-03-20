@@ -44,6 +44,7 @@ const ShareBar = (properties: ShareBarProperties) => {
         color={color}
         hideCount={hideShareCount}
         onPress={onPress}
+        size={20}
       />
       {contentFavIdentifier && contentType && (
         <FavCounter

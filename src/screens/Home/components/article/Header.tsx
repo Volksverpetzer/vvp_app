@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import ViewShot from "react-native-view-shot";
 
-import { TouchIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -117,17 +116,6 @@ const Header = (properties: HeaderProperties) => {
 
   return (
     <>
-      <TouchIcon
-        size={25}
-        color={corporate}
-        style={{
-          zIndex: 20,
-          position: "absolute",
-          alignSelf: "flex-end",
-          marginTop: Math.round(0.5125 * width) - 28,
-          marginRight: 10,
-        }}
-      />
       <Pressable
         accessibilityRole="button"
         onLongPress={() => setVisible(true)}

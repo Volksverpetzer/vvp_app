@@ -74,6 +74,10 @@ if (!AppImages.loadingAnimation) return null;
 
 3. Use `AppImages.myAsset` in your component. If a variant has no asset, use `null` and guard against it in the component.
 
+## Icons
+
+Icons are sourced from the **Octicons** icon set via `@expo/vector-icons`. Use the [icon browser](https://oblador.github.io/react-native-vector-icons/#Octicons) to find available icon names. Standard UI icons should go through `src/components/Icons.tsx`, while custom SVG icons (e.g. logos, place icons) are provided via `src/components/SvgIcons.tsx`.
+
 ## Running the App
 
 For platform-specific runs:
