@@ -1,3 +1,4 @@
+// Icon browser: https://oblador.github.io/react-native-vector-icons/#Octicons
 import { Octicons } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
