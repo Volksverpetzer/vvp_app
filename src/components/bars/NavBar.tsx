@@ -7,7 +7,6 @@ import { ChevronIcon } from "#/components/Icons";
 import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
 import { onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -53,6 +52,7 @@ const NavBar = (properties: NavBarProperties) => {
         position: "relative",
         flexGrow: 0,
         flexDirection: "row",
+        alignItems: "center",
         paddingBottom: insets.bottom + 10,
         paddingTop: 15,
         paddingHorizontal: 25,
@@ -70,60 +70,42 @@ const NavBar = (properties: NavBarProperties) => {
           height: 30,
         }}
       />
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => router.back()}
-        hitSlop={20}
-      >
-        <ChevronIcon direction="left" size={40} color={corporate} />
-      </Pressable>
 
-      {link ? (
-        <View
-          style={{
-            flexDirection: "row",
-            ...styles.noBackground,
-            ...styles.centered,
-            padding: 0,
-            borderBottomLeftRadius: 20,
-          }}
+      <View style={{ flex: 1, alignItems: "flex-start" }}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.back()}
+          hitSlop={20}
         >
+          <ChevronIcon direction="left" size={40} color={corporate} />
+        </Pressable>
+      </View>
+
+      <View style={{ flex: 1, alignItems: "center" }}>
+        {link && (
           <ShareCounter
             color={corporate}
             shareable={[{ title: "title", url: link }]}
             size={24}
-            style={{ color: corporate, fontSize: 16 }}
+            style={{ color: corporate, fontSize: 16, alignSelf: "center" }}
             onPress={() => onShare(link, { location: "ArticleTop" })}
           />
-        </View>
-      ) : (
-        <View
-          style={{
-            ...styles.noBackground,
-            padding: 0,
-            borderBottomLeftRadius: 20,
-          }}
-        />
-      )}
+        )}
+      </View>
 
-      {contentFavIdentifier ? (
-        <FavCounter
-          shareable={shareable}
-          contentFavIdentifier={contentFavIdentifier}
-          contentType={contentType}
-          style={{
-            color: corporate,
-            fontSize: 16,
-          }}
-        />
-      ) : (
-        <View
-          style={{
-            ...styles.noBackground,
-            width: 40,
-          }}
-        />
-      )}
+      <View style={{ flex: 1, alignItems: "flex-end" }}>
+        {contentFavIdentifier && (
+          <FavCounter
+            shareable={shareable}
+            contentFavIdentifier={contentFavIdentifier}
+            contentType={contentType}
+            style={{
+              color: corporate,
+              fontSize: 16,
+            }}
+          />
+        )}
+      </View>
     </View>
   );
 };
