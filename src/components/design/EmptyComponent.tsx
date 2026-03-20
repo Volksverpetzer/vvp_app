@@ -26,7 +26,7 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
         ...styles.centered,
       }}
     >
-      <WorldIcon color={corporate} />
+      <WorldIcon color={corporate} size={60} />
       {reload && (
         <>
           <Text style={{ fontSize: 18, textAlign: "center" }}>
