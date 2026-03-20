@@ -34,8 +34,6 @@ const ShareCounter = (properties: ShareCounterProperties) => {
     getAllShares();
   }, [getAllShares, hideCount]);
 
-  if (!Config.enableEngagement) return <View />;
-
   return (
     <View
       style={{
@@ -46,7 +44,7 @@ const ShareCounter = (properties: ShareCounterProperties) => {
       }}
     >
       <ShareIcon size={size} color={color} />
-      {!hideCount && (
+      {Config.enableEngagement && !hideCount && (
         <Text style={properties.style}>
           {shares + (properties.shares ?? 0)}
         </Text>
