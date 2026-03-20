@@ -37,7 +37,7 @@ jest.mock("#/constants/Config", () => ({
   default: { enableActions: true, enableEngagement: true },
 }));
 
-describe("TabLayout", () => {
+describe("TabsNavigation", () => {
   const { NativeTabs } = jest.requireMock("expo-router/unstable-native-tabs");
 
   const getPersonalTriggerProps = (): { hidden?: boolean } | undefined => {
