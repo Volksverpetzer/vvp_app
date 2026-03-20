@@ -1,6 +1,7 @@
 import { Pressable } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
+import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
@@ -64,16 +65,14 @@ const Footer = (properties: FooterProperties) => {
           <ShareIcon color={"white"} size={36} />
         </Pressable>
       </View>
-      <View
+      <Card
         style={{
           marginHorizontal: 12,
-          paddingVertical: 12,
-          borderRadius: 20,
           backgroundColor: Colors[colorScheme].secondaryBackground,
         }}
       >
         <Support article_link={properties.article_link} />
-      </View>
+      </Card>
       <Space size={100} />
     </>
   );

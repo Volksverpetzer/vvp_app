@@ -7,6 +7,7 @@ import Swipeable, {
 
 import { DeleteIcon, LinkIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
+import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import Colors from "#/constants/Colors";
@@ -15,16 +16,13 @@ import { styles } from "#/constants/Styles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { HttpsUrl, StoredSources } from "#/types";
 
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});
   const wpUrl = Config.wpUrl;
 
-  const { width } = useFeedDimensions();
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].background;
   const corporate = Colors[colorScheme].corporate;
   useFocusEffect(
     useCallback(() => {
@@ -42,7 +40,7 @@ const MySources = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: undefined }}>
+    <View style={{ flex: 1, gap: 20, backgroundColor: undefined }}>
       {Object.keys(sources)
         .sort((keyA, keyB) => {
           return sources[keyB].date.localeCompare(sources[keyA].date);
@@ -52,7 +50,6 @@ const MySources = () => {
           return (
             <Swipeable
               key={href}
-              rightThreshold={width * 0.6}
               onSwipeableOpen={async (direction) => {
                 if (direction === SwipeDirection.LEFT) {
                   await handleDelete(href);
@@ -72,15 +69,7 @@ const MySources = () => {
                 />
               )}
             >
-              <View
-                style={{
-                  marginVertical: 15,
-                  borderRadius: 10,
-                  width,
-                  backgroundColor,
-                  overflow: "hidden",
-                }}
-              >
+              <Card style={{ padding: 0 }}>
                 <Pressable
                   accessibilityRole="button"
                   style={{ padding: 30 }}
@@ -99,7 +88,7 @@ const MySources = () => {
                   )}
                   <Text style={{ color: corporate }}>{href}</Text>
                 </Pressable>
-              </View>
+              </Card>
             </Swipeable>
           );
         })}
