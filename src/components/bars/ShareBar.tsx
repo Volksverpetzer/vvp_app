@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Pressable } from "react-native";
 
 import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
@@ -38,27 +37,14 @@ const ShareBar = (properties: ShareBarProperties) => {
         gap: 30,
       }}
     >
-      <Pressable
-        accessibilityRole="button"
+      <ShareCounter
+        shares={shares}
+        shareable={shareable}
+        style={{ color, fontSize }}
+        color={color}
+        hideCount={hideShareCount}
         onPress={onPress}
-        onLongPress={onPress}
-        hitSlop={20}
-        style={({ pressed }) => {
-          return {
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
-          };
-        }}
-      >
-        <ShareCounter
-          shares={shares}
-          shareable={shareable}
-          style={{ color, fontSize }}
-          color={color}
-          hideCount={hideShareCount}
-        />
-      </Pressable>
+      />
       {contentFavIdentifier && contentType && (
         <FavCounter
           shareable={shareable}

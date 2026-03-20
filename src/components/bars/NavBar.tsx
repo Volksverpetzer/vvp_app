@@ -88,25 +88,13 @@ const NavBar = (properties: NavBarProperties) => {
             borderBottomLeftRadius: 20,
           }}
         >
-          <Pressable
-            accessibilityRole="button"
+          <ShareCounter
+            color={corporate}
+            shareable={[{ title: "title", url: link }]}
+            size={24}
+            style={{ color: corporate, fontSize: 16 }}
             onPress={() => onShare(link, { location: "ArticleTop" })}
-            hitSlop={20}
-            style={({ pressed }) => {
-              return {
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
-              };
-            }}
-          >
-            <ShareCounter
-              color={corporate}
-              shareable={[{ title: "title", url: link }]}
-              size={24}
-              style={{ color: corporate, fontSize: 16 }}
-            />
-          </Pressable>
+          />
         </View>
       ) : (
         <View

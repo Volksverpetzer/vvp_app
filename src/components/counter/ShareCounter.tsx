@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { type TextStyle, View } from "react-native";
+import { Pressable, type TextStyle, View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
@@ -14,11 +14,12 @@ interface ShareCounterProperties {
   color?: string;
   size?: number;
   hideCount?: boolean;
+  onPress?: () => void;
 }
 
 const ShareCounter = (properties: ShareCounterProperties) => {
   const [shares, setShares] = useState(0);
-  const { color, size = 30, hideCount } = properties;
+  const { color, size = 30, hideCount, onPress } = properties;
 
   const getAllShares = useCallback(async () => {
     let _shares = 0;
@@ -36,7 +37,7 @@ const ShareCounter = (properties: ShareCounterProperties) => {
 
   if (!Config.enableEngagement) return <View />;
 
-  return (
+  const content = (
     <View
       style={{
         flexDirection: "row",
@@ -54,6 +55,24 @@ const ShareCounter = (properties: ShareCounterProperties) => {
         {shares + (properties.shares ?? 0)}
       </Text>
     </View>
+  );
+
+  if (!onPress) return content;
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      onLongPress={onPress}
+      hitSlop={20}
+      style={({ pressed }) => ({
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
+      })}
+    >
+      {content}
+    </Pressable>
   );
 };
 
