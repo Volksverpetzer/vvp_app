@@ -1,5 +1,6 @@
 import { Octicons } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
+import type { StyleProp, ViewStyle } from "react-native";
 import { Platform, View } from "react-native";
 
 type OcticonsProps = Omit<ComponentProps<typeof Octicons>, "name">;
@@ -77,7 +78,11 @@ export const NotificationIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="bell" />
 );
 
-export const PlayIcon = ({ style, size = 30, ...rest }: OcticonsProps) => (
+export const PlayIcon = ({
+  style,
+  size = 30,
+  ...rest
+}: Omit<OcticonsProps, "style"> & { style?: StyleProp<ViewStyle> }) => (
   <View
     style={[
       {
