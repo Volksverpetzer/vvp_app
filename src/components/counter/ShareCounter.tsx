@@ -46,11 +46,13 @@ const ShareCounter = (properties: ShareCounterProperties) => {
       }}
     >
       <ShareIcon size={size} color={color} />
-      {!hideCount && (
-        <Text style={properties.style}>
-          {shares + (properties.shares ?? 0)}
-        </Text>
-      )}
+      <Text
+        style={[properties.style, { opacity: hideCount ? 0 : 1 }]}
+        accessibilityElementsHidden={hideCount}
+        importantForAccessibility={hideCount ? "no" : "auto"}
+      >
+        {shares + (properties.shares ?? 0)}
+      </Text>
     </View>
   );
 };
