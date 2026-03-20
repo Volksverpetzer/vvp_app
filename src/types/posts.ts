@@ -22,7 +22,6 @@ export interface Post<T> {
   contentType?: FaveableType;
   priority?: number;
   inView: boolean;
-  hideShareCount?: boolean;
   data: T;
 }
 

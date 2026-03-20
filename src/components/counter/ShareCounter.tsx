@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import type { TextStyle } from "react-native";
+import { Pressable, type TextStyle, View } from "react-native";
 
+import { ShareIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
-import View from "#/components/design/View";
 import Config from "#/constants/Config";
 import { getShares } from "#/helpers/network/Engagement";
 import type { ShareableType } from "#/types";
@@ -11,10 +11,15 @@ interface ShareCounterProperties {
   shareable: ShareableType[];
   style: TextStyle;
   shares?: number;
+  color?: string;
+  size?: number;
+  hideCount?: boolean;
+  onPress?: () => void;
 }
 
 const ShareCounter = (properties: ShareCounterProperties) => {
   const [shares, setShares] = useState(0);
+  const { color, size = 30, hideCount, onPress } = properties;
 
   const getAllShares = useCallback(async () => {
     let _shares = 0;
@@ -26,13 +31,48 @@ const ShareCounter = (properties: ShareCounterProperties) => {
 
   useEffect(() => {
     if (!Config.enableEngagement) return;
+    if (hideCount) return;
     getAllShares();
-  }, [getAllShares]);
+  }, [getAllShares, hideCount]);
 
   if (!Config.enableEngagement) return <View />;
 
+  const content = (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        gap: 5,
+      }}
+    >
+      <ShareIcon size={size} color={color} />
+      <Text
+        style={[properties.style, { opacity: hideCount ? 0 : 1 }]}
+        accessibilityElementsHidden={hideCount}
+        importantForAccessibility={hideCount ? "no" : "auto"}
+      >
+        {shares + (properties.shares ?? 0)}
+      </Text>
+    </View>
+  );
+
+  if (!onPress) return content;
+
   return (
-    <Text style={properties.style}>{shares + (properties.shares ?? 0)}</Text>
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      onLongPress={onPress}
+      hitSlop={20}
+      style={({ pressed }) => ({
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
+      })}
+    >
+      {content}
+    </Pressable>
   );
 };
 

@@ -15,7 +15,6 @@ interface ComponentProperty<T> {
   contentFavIdentifier?: string;
   contentType?: FaveableType;
   inView: boolean;
-  hideShareCount?: boolean;
 }
 
 /**
@@ -27,7 +26,6 @@ const GenericPost = (properties: ComponentProperty<object>) => {
     contentFavIdentifier,
     contentType,
     data,
-    hideShareCount,
     inView,
     shareable,
     style,
@@ -53,7 +51,7 @@ const GenericPost = (properties: ComponentProperty<object>) => {
       {shareable ? (
         <ShareBar
           shareable={shareable}
-          hideShareCount={hideShareCount || !inView}
+          hideShareCount={!inView}
           contentFavIdentifier={contentFavIdentifier}
           contentType={contentType}
         />

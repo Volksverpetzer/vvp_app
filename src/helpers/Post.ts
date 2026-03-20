@@ -13,7 +13,6 @@ export default class Post<T> implements P<T> {
     public data: P<T>["data"],
     public shareable: P<T>["shareable"] = undefined,
     public priority: P<T>["priority"] = 1,
-    public hideShareCount: P<T>["hideShareCount"] = false,
     public contentFavIdentifier?: P<T>["contentFavIdentifier"],
     public contentType?: P<T>["contentType"],
     public inView: P<T>["inView"] = false,

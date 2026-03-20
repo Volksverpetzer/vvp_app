@@ -69,14 +69,11 @@ const FavCounter = (properties: FavCounterProperties) => {
           justifyContent: "space-evenly",
           alignItems: "center",
           backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
-          margin: 0,
+          gap: 5,
         };
       }}
     >
-      <View>
-        <StarIcon filled={isFav} color={color} size={24} />
-      </View>
-      <View style={{ width: 5 }} />
+      <StarIcon filled={isFav} color={color} size={24} />
       <Text style={properties.style}>{(isFav ? 1 : 0) + favs}</Text>
     </Pressable>
   );
