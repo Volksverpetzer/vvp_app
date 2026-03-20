@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import Svg, { Defs, Path, Rect } from "react-native-svg";
+import Svg, { Path, Rect } from "react-native-svg";
 import type { SvgProps } from "react-native-svg";
 
 import { styles } from "#/constants/Styles";
