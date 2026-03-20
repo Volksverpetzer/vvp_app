@@ -1,6 +1,6 @@
 import { Octicons } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 
 type OcticonsProps = Omit<ComponentProps<typeof Octicons>, "name">;
 
@@ -77,8 +77,20 @@ export const NotificationIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="bell" />
 );
 
-export const PlayIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="play" />
+export const PlayIcon = ({ style, size = 30, ...rest }: OcticonsProps) => (
+  <View
+    style={[
+      {
+        backgroundColor: "rgba(0,0,0,0.85)",
+        borderRadius: 999,
+        justifyContent: "center",
+        alignItems: "center",
+      },
+      style,
+    ]}
+  >
+    <Octicons {...rest} name="play" size={size} />
+  </View>
 );
 
 export const ReportIcon = ({ ...rest }: OcticonsProps) => (
@@ -122,7 +134,7 @@ export const StarIcon = ({
   size,
   ...rest
 }: OcticonsProps & { filled?: boolean }) => (
-  <Octicons {...rest} name={filled ? "star" : "star-fill"} size={size ?? 30} />
+  <Octicons {...rest} name={filled ? "star-fill" : "star"} size={size ?? 30} />
 );
 
 export const StatisticsIcon = (
