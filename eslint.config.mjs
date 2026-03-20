@@ -3,6 +3,7 @@ import tsESLintPlugin from "@typescript-eslint/eslint-plugin";
 import expoConfig from "eslint-config-expo/flat.js";
 import importAlias from "eslint-plugin-import-alias";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
 import { fileURLToPath } from "node:url";
 
@@ -31,8 +32,10 @@ export default defineConfig([
     plugins: {
       "@typescript-eslint": tsESLintPlugin,
       "import-alias": importAlias,
+      "unused-imports": unusedImports,
     },
     rules: {
+      "unused-imports/no-unused-imports": "error",
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",

@@ -119,6 +119,7 @@
     "eslint-config-expo": "55.0.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import-alias": "1.2.0",
+    "eslint-plugin-unused-imports": "^4.4.1",
     "expo-atlas": "0.4.3",
     "expo-build-properties": "55.0.10",
     "husky": "9.1.7",
