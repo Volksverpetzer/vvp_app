@@ -53,7 +53,6 @@ const loadFavoriteInstaPost = async (
       post,
       [{ url: post.permalink, title: "Instagram Post teilen" }],
       1,
-      false,
       post.id,
       FAV_TYPE_INSTA,
     );
@@ -143,7 +142,6 @@ const MyFavs = () => {
             contentFavIdentifier={post.contentFavIdentifier}
             contentType={post.contentType}
             shareable={post.shareable}
-            hideShareCount={post.hideShareCount}
             inView={true}
           />
         ))
