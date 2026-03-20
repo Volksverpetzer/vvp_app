@@ -92,7 +92,7 @@ const MySources = () => {
             </Swipeable>
           );
         })}
-      <Space size={100} />
+      <Space size={50} />
       <View style={{ ...styles.centered }}>
         <LinkIcon color={corporate} />
         <Text style={{ textAlign: "center", fontSize: 18 }}>

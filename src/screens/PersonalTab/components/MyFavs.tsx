@@ -146,7 +146,7 @@ const MyFavs = () => {
           />
         ))
       )}
-      <Space size={100} />
+      <Space size={50} />
       <View style={{ ...styles.centered }}>
         <StarIcon color={corporate} />
         <Text style={{ textAlign: "center", fontSize: 18 }}>
