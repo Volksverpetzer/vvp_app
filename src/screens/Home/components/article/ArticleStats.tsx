@@ -1,7 +1,6 @@
 import { useKeepAwake } from "expo-keep-awake";
 import { View } from "react-native";
 
-import { ArticleViewIcon } from "#/components/Icons";
 import ShareCounter from "#/components/counter/ShareCounter";
 import ViewCounter from "#/components/counter/ViewCounter";
 import Colors from "#/constants/Colors";
@@ -29,7 +28,6 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
         justifyContent: "flex-start",
       }}
     >
-      <ArticleViewIcon size={20} color={color} />
       <ViewCounter
         {...{ url: article_link }}
         color={color}
