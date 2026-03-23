@@ -195,7 +195,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         )}
         {inView && (
           <Badge position="topRight" color={Colors[colorScheme].highlight}>
-            <ViewCounter url={article.link} />
+            <ViewCounter url={article.link} size={16} />
           </Badge>
         )}
         <Text style={{ paddingHorizontal: 30, fontSize: 16 }}>{excerpt}</Text>

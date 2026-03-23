@@ -34,7 +34,7 @@ const SupportScreen = () => {
           gap: 20,
         }}
       >
-        <HeartIcon color={corporate} size={50} />
+        <HeartIcon color={corporate} size={56} />
         <Support article_link={supportUrl} />
         <Space size={100} />
       </ScrollView>

@@ -42,7 +42,7 @@ const StatisticsPanel = ({
       <View
         style={{ ...styles.row, justifyContent: "flex-start", paddingLeft: 30 }}
       >
-        <StatisticsIcon name={icon} size={40} color="white" />
+        <StatisticsIcon name={icon} size={32} color="white" />
         <Text
           style={{
             ...styles.whiteText,

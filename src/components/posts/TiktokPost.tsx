@@ -60,7 +60,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
           />
           <PlayIcon
             style={styles.playButton}
-            size={50}
+            size={56}
             color={TIKTOK_BRAND_COLOR}
             accessibilityElementsHidden
           />

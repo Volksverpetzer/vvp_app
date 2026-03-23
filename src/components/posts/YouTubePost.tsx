@@ -43,8 +43,8 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             source={{ uri: preview }}
           />
           <PlayIcon
-            style={{ position: "absolute", top: "45%", left: "45%" }}
-            size={50}
+            style={{ position: "absolute", top: "40%", alignSelf: "center" }}
+            size={56}
             color={YOUTUBE_BRAND_COLOR}
           />
         </TouchableOpacity>
