@@ -58,11 +58,11 @@ const ReportStatusListItem = (props: StoredReport) => {
       return <ActivityIndicator color={colors.activity} />;
     }
     if (error) {
-      return <ReportStatusIcon status="error" size={20} color={colors.error} />;
+      return <ReportStatusIcon status="error" size={16} color={colors.error} />;
     }
     if (status === "posted") {
       return (
-        <ReportStatusIcon status="posted" size={20} color={colors.posted} />
+        <ReportStatusIcon status="posted" size={16} color={colors.posted} />
       );
     }
     return (

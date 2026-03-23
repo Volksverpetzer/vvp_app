@@ -2,7 +2,7 @@ import { Pressable } from "react-native";
 
 import { WorldIcon } from "#/components/Icons";
 import SteadyButton from "#/components/buttons/SteadyButton";
-import View from "#/components/design/View";
+import Card from "#/components/design/Card";
 import Donate from "#/components/views/Donate";
 import { styles } from "#/constants/Styles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -16,17 +16,14 @@ interface EmptyComponentProperties {
 const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
   const corporate = useCorporateColor();
   return (
-    <View
+    <Card
       style={{
         marginBottom: 80,
-        paddingBottom: 40,
-        paddingHorizontal: 30,
         gap: 20,
-        borderRadius: 20,
         ...styles.centered,
       }}
     >
-      <WorldIcon color={corporate} />
+      <WorldIcon color={corporate} size={60} />
       {reload && (
         <>
           <Text style={{ fontSize: 18, textAlign: "center" }}>
@@ -43,7 +40,7 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
       </Text>
       <Donate paypalAlways={true} />
       <SteadyButton />
-    </View>
+    </Card>
   );
 };
 

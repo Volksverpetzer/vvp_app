@@ -19,7 +19,7 @@ interface ViewCounterProperties {
  * Renders View Counter for a given URL
  */
 const ViewCounter = (properties: ViewCounterProperties) => {
-  const { color: colorProp = "#fff", size = 20, style, url } = properties;
+  const { color: colorProp = "#fff", size = 24, style, url } = properties;
 
   const [isLoading, setLoading] = useState(true);
   const [views, setViews] = useState(0);

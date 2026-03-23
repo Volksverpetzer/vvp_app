@@ -104,7 +104,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
             <ExternalLinkIcon
-              size={15}
+              size={16}
               color={Colors[colorScheme].tabIconDefault}
             />
           </TouchableOpacity>

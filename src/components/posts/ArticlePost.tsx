@@ -8,7 +8,6 @@ import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
-import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -46,8 +45,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Local state.
   const [imageUrl, setImgURL] = useState("");
   const [scrollProgress, setScrollProgress] = useState<DimensionValue>("0%");
-  const [isLoading, setLoading] = useState(true);
-  const [date, setDate] = useState("");
 
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
@@ -60,11 +57,9 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Memoize importantCats mapping (optional, here we rely on the static outside mapping).
   const importantCats = useMemo(() => Config.importantCats, []);
 
-  // Format date with useCallback.
-  const dateBeautify = useCallback(() => {
-    const d = new Date(article.date);
-    return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
-  }, [article.date]);
+  // Format date.
+  const d = new Date(article.date);
+  const date = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
 
   // Retrieve and set scroll progress when inView.
   useEffect(() => {
@@ -90,11 +85,8 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       });
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
-      setDate(dateBeautify());
     }
-  }, [article, dateBeautify]);
+  }, [article]);
 
   useEffect(() => {
     if (inView) {
@@ -175,14 +167,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     [],
   );
 
-  if (isLoading) {
-    return (
-      <View style={{ height: height * 1.8, width }}>
-        <UiSpinner size={"large"} />
-      </View>
-    );
-  }
-
   return (
     <TouchableOpacity
       accessibilityRole="button"
@@ -211,7 +195,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         )}
         {inView && (
           <Badge position="topRight" color={Colors[colorScheme].highlight}>
-            <ViewCounter url={article.link} />
+            <ViewCounter url={article.link} size={16} />
           </Badge>
         )}
         <Text style={{ paddingHorizontal: 30, fontSize: 16 }}>{excerpt}</Text>

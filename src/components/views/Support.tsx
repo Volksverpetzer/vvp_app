@@ -86,7 +86,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
               accessibilityRole="button"
               onPress={() => setShowBank(false)}
             >
-              <CloseIcon size={40} color={corporate} />
+              <CloseIcon size={48} color={corporate} />
             </Pressable>
           </View>
           <Text style={{ fontSize: 25 }}>Banküberweisung</Text>
@@ -106,7 +106,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
             IBAN: {Config.donations.account.IBAN} {`\n`}
             Verwendungszweck: {Config.donations.account.note} {`\n`}
           </Text>
-          <HeartIcon color={corporate} size={24} />
+          <HeartIcon color={corporate} size={32} />
         </View>
       </Modal>
     </View>

@@ -88,7 +88,7 @@ const HomeScreen = () => {
             >
               Suche ...
             </Text>
-            <SearchIcon color={"white"} />
+            <SearchIcon color={"white"} size={24} />
           </View>
         </Pressable>
       </AnimatedHeader>
