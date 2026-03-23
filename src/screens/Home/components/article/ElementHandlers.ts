@@ -1,5 +1,5 @@
-import type { ChildNode } from "domhandler";
-import { Element, isTag } from "domhandler";
+import type { ChildNode, Element } from "domhandler";
+import { isTag } from "domhandler";
 import { append, removeElement, replaceElement } from "domutils";
 
 /**
@@ -66,10 +66,9 @@ export const handleEmbeddedContent = (element: Element): boolean => {
   // Handle YouTube embeds
   if (element.attribs?.class?.includes("__youtube_prefs__") ?? false) {
     if (element.tagName === "div") {
-      const post = new Element("iframe", {
-        src: element.attribs["data-facadesrc"],
-      }) as unknown as ChildNode;
-      replaceElement(element, post);
+      element.tagName = "iframe";
+      element.attribs = { src: element.attribs["data-facadesrc"] };
+      element.children = [];
     } else {
       removeElement(element);
     }
