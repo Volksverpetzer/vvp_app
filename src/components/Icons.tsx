@@ -58,6 +58,14 @@ export const GiveIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="gift" />
 );
 
+export const HomeIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="home" />
+);
+
+export const TrophyIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="trophy" />
+);
+
 export const HeartIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="heart-fill" />
 );
