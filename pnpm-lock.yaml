@@ -59,6 +59,9 @@ importers:
       domhandler:
         specifier: 6.0.1
         version: 6.0.1
+      domutils:
+        specifier: 4.0.2
+        version: 4.0.2
       eslint-plugin-prettier:
         specifier: 5.5.5
         version: 5.5.5(eslint-config-prettier@10.1.8(eslint@9.39.4))(eslint@9.39.4)(prettier@3.8.1)
@@ -252,9 +255,6 @@ importers:
       cspell:
         specifier: 9.7.0
         version: 9.7.0
-      domutils:
-        specifier: 4.0.2
-        version: 4.0.2
       eslint:
         specifier: 9.39.4
         version: 9.39.4
@@ -268,7 +268,7 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       eslint-plugin-unused-imports:
-        specifier: ^4.4.1
+        specifier: 4.4.1
         version: 4.4.1(@typescript-eslint/eslint-plugin@8.57.1(@typescript-eslint/parser@8.57.1(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)
       expo-atlas:
         specifier: 0.4.3
