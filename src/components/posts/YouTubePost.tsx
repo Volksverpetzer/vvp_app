@@ -1,11 +1,11 @@
 import { Image } from "expo-image";
 import { useState } from "react";
-import { TouchableOpacity, useWindowDimensions } from "react-native";
+import { TouchableOpacity, View, useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
-import View from "#/components/design/View";
 import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { YouTubePostProperties } from "#/types";
 
@@ -42,11 +42,9 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             style={{ flex: 1, width: width - 24, backgroundColor: corporate }}
             source={{ uri: preview }}
           />
-          <PlayIcon
-            style={{ position: "absolute", top: "40%", alignSelf: "center" }}
-            size={56}
-            color={YOUTUBE_BRAND_COLOR}
-          />
+          <View style={styles.centeredAbsolute} pointerEvents="none">
+            <PlayIcon size={56} color={YOUTUBE_BRAND_COLOR} />
+          </View>
         </TouchableOpacity>
       </View>
     );
