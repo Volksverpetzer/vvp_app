@@ -5,7 +5,6 @@ jest.mock("domutils", () => ({
   removeElement: jest.fn(),
   replaceElement: jest.fn(),
   append: jest.fn(),
-  isTag: jest.fn((node) => node && node.tagName),
 }));
 
 describe("ElementHandlers", () => {
@@ -38,12 +37,14 @@ describe("ElementHandlers", () => {
         attribs: {},
         children: [
           {
+            type: "tag",
             tagName: "img",
             attribs: {
               src: "https://example.com/image.jpg",
             },
           },
           {
+            type: "tag",
             tagName: "figcaption",
           },
         ],
