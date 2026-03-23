@@ -10,6 +10,7 @@ import WebView from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
 import UiSpinner from "#/components/ui/UiSpinner";
+import { styles as globalStyles } from "#/constants/Styles";
 import type { TiktokPostProperties } from "#/types";
 
 const TIKTOK_BRAND_COLOR = "#FF0050";
@@ -58,12 +59,13 @@ const TiktokPost = (properties: TiktokPostProperties) => {
             accessibilityHint="Thumbnail for the TikTok video"
             importantForAccessibility="yes"
           />
-          <PlayIcon
-            style={styles.playButton}
-            size={50}
-            color={TIKTOK_BRAND_COLOR}
-            accessibilityElementsHidden
-          />
+          <View style={globalStyles.centeredAbsolute} pointerEvents="none">
+            <PlayIcon
+              size={56}
+              color={TIKTOK_BRAND_COLOR}
+              accessibilityElementsHidden
+            />
+          </View>
         </TouchableOpacity>
       </View>
     );
@@ -102,17 +104,11 @@ const styles = StyleSheet.create({
   thumbnailContainer: {
     width: "100%",
     height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: BLACK,
   },
   thumbnailImage: {
     width: "100%",
     height: "100%",
-    opacity: 0.9,
-  },
-  playButton: {
-    position: "absolute",
     opacity: 0.9,
   },
   videoContainer: {
