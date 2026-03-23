@@ -102,10 +102,16 @@ export default {
     licenseUrl: "https://github.com/feross/buffer/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "domhandler@5.0.3": {
+  "domhandler@6.0.1": {
     licenses: "BSD-2-Clause",
     repository: "https://github.com/fb55/domhandler",
     licenseUrl: "https://github.com/fb55/domhandler/raw/master/LICENSE",
+    parents: "vvp_app",
+  },
+  "domutils@4.0.2": {
+    licenses: "BSD-2-Clause",
+    repository: "https://github.com/fb55/domutils",
+    licenseUrl: "https://github.com/fb55/domutils/raw/master/LICENSE",
     parents: "vvp_app",
   },
   "eslint-plugin-prettier@5.5.5": {
