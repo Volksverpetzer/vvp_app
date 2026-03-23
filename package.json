@@ -47,7 +47,7 @@
     "@vseslav/react-native-horizontal-picker": "0.1.1",
     "axios": "1.13.6",
     "buffer": "6.0.3",
-    "domhandler": "5.0.3",
+    "domhandler": "6.0.1",
     "eslint-plugin-prettier": "5.5.5",
     "expo": "55.0.8",
     "expo-application": "55.0.10",
@@ -114,7 +114,7 @@
     "babel-plugin-module-resolver": "5.0.3",
     "babel-preset-expo": "55.0.12",
     "cspell": "9.7.0",
-    "domutils": "3.2.2",
+    "domutils": "4.0.2",
     "eslint": "9.39.4",
     "eslint-config-expo": "55.0.0",
     "eslint-config-prettier": "10.1.8",
@@ -130,7 +130,7 @@
     "prettier": "3.8.1",
     "ts-node": "10.9.2",
     "tsx": "4.21.0",
-    "typedoc": "0.28.17",
+    "typedoc": "0.28.18",
     "typescript": "5.9.3"
   }
 }

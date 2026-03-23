@@ -1,17 +1,13 @@
 import type { ChildNode } from "domhandler";
-import { Node } from "domhandler";
-import { append, isTag, removeElement, replaceElement } from "domutils";
-import { Element } from "react-native-render-html";
-
-// Type definition to help with compatibility issues between Element types
-export type DomElement = ChildNode & Element;
+import { Element, isTag } from "domhandler";
+import { append, removeElement, replaceElement } from "domutils";
 
 /**
  * Handles elements that should be immediately removed
  * @param element The element to check
  * @returns True if the element was handled
  */
-export const handleRemovableElements = (element: DomElement): boolean => {
+export const handleRemovableElements = (element: Element): boolean => {
   // Remove Blockquote Embed Stubs - only remove if it's specifically an embed stub
   // Check for more specific indicators that this is an embed stub rather than a real quote
   if (
@@ -43,7 +39,7 @@ export const handleRemovableElements = (element: DomElement): boolean => {
  * @param element The element to process
  * @returns True if the element was handled
  */
-export const handleSpecialElements = (element: DomElement): boolean => {
+export const handleSpecialElements = (element: Element): boolean => {
   // Handle iframes
   if (element.tagName === "iframe") {
     makeElementRoot(element);
@@ -66,7 +62,7 @@ export const handleSpecialElements = (element: DomElement): boolean => {
  * @param element The element to process
  * @returns True if the element was handled
  */
-export const handleEmbeddedContent = (element: DomElement): boolean => {
+export const handleEmbeddedContent = (element: Element): boolean => {
   // Handle YouTube embeds
   if (element.attribs?.class?.includes("__youtube_prefs__") ?? false) {
     if (element.tagName === "div") {
@@ -94,7 +90,7 @@ export const handleEmbeddedContent = (element: DomElement): boolean => {
  * @param element The element to process
  * @returns True if the element was handled
  */
-export const handleContainerElements = (element: DomElement): boolean => {
+export const handleContainerElements = (element: Element): boolean => {
   // Be more selective about which containers to remove
   // Only remove containers that don't have important styling classes
   if (element.tagName === "figure") {
@@ -115,7 +111,7 @@ export const handleContainerElements = (element: DomElement): boolean => {
 
     // Only remove simple figure containers without captions or special classes
     for (const child of element.children) {
-      if (child instanceof Node && isTag(child)) {
+      if (isTag(child)) {
         append(element, child as unknown as ChildNode);
       }
     }
@@ -140,7 +136,7 @@ export const handleContainerElements = (element: DomElement): boolean => {
     // Only remove divs that appear to be simple wrappers with few children
     if (element.children.length <= 2) {
       for (const child of element.children) {
-        if (child instanceof Node && isTag(child)) {
+        if (isTag(child)) {
           append(element, child as unknown as ChildNode);
         }
       }
@@ -156,7 +152,7 @@ export const handleContainerElements = (element: DomElement): boolean => {
  * Handles image elements
  * @param element The element to process
  */
-export const handleImageElements = (element: DomElement): void => {
+export const handleImageElements = (element: Element): void => {
   if (element.tagName !== "img") return;
 
   // Check for problematic image sources (blob URLs, invalid URLs)
@@ -178,7 +174,7 @@ export const handleImageElements = (element: DomElement): void => {
  * @param parentTagName The parent tag name to check for
  */
 export const moveElementIfParentMatches = (
-  element: DomElement,
+  element: Element,
   parentTagName: string,
 ): void => {
   const parent = element.parent;
@@ -197,7 +193,7 @@ export const moveElementIfParentMatches = (
  * Moves an element up in the DOM until it is a root element
  * @param element The element to potentially move
  */
-export const makeElementRoot = (element: DomElement): void => {
+export const makeElementRoot = (element: Element): void => {
   const parent = element.parent;
   if (!parent || !isTag(parent)) return;
 
