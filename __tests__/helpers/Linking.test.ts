@@ -4,7 +4,6 @@ import type { Router } from "expo-router";
 
 import { onLinkPress, outBoundLinkPress } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
-import type { HttpsUrl } from "#/types";
 
 // Mock dependencies
 jest.mock("expo-linking", () => ({
@@ -50,7 +49,7 @@ describe("Linking helpers", () => {
     it("should navigate to internal links with path", () => {
       // Setup
       const internalUrl = "https://www.volksverpetzer.de/politik/some-article";
-      parseSpy.mockImplementation((url: HttpsUrl) => {
+      parseSpy.mockImplementation((url: string) => {
         if (url === internalUrl) {
           return {
             hostname: "www.volksverpetzer.de",
