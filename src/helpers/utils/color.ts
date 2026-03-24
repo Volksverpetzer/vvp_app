@@ -1,6 +1,5 @@
-import type { ColorSchemeName } from "react-native";
-
 import Colors from "#/constants/Colors";
+import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 
 /**
  * Converts a hex color string into its RGB components.
@@ -21,7 +20,7 @@ export const hexToRgb = (hex: string): [number, number, number] => {
  * @param colorScheme The color scheme to use
  * @returns The tag styles
  */
-export const getTagStyles = (colorScheme: ColorSchemeName) => {
+export const getTagStyles = (colorScheme: AppColorScheme) => {
   const corporate = Colors[colorScheme].corporate;
   const textColor = Colors[colorScheme].text;
 
