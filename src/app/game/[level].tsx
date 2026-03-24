@@ -3,6 +3,7 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import MemoryGame from "#/screens/Games/Memory";
+import type { DisinfoPair } from "#/types";
 
 type GameParameters = {
   gameId: string;
@@ -13,7 +14,7 @@ const GameScreen = () => {
   const [level, setLevel] = useState<number>(1);
 
   // Für Demo: Nur für 'DesinformationMemory'
-  let memoryPairs = [];
+  let memoryPairs: DisinfoPair[] = [];
   if (gameId === "DesinformationMemory") {
     const allPairs = [
       {
