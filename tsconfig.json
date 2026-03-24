@@ -8,11 +8,10 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "baseUrl": "./",
     "paths": {
-      "#assets/*": ["assets/*"],
-      "#tests/*": ["__tests__/*"],
-      "#/*": ["src/*"]
+      "#assets/*": ["./assets/*"],
+      "#tests/*": ["./__tests__/*"],
+      "#/*": ["./src/*"]
     }
   },
   "include": [
