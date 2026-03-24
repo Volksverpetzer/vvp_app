@@ -3,6 +3,7 @@ import * as Linking from "expo-linking";
 import React from "react";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
 
+import { ColorScheme } from "#/hooks/useAppColorScheme";
 import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
 
 // Mock Config to provide wpUrl
@@ -33,7 +34,7 @@ jest.mock("@native-html/iframe-plugin", () => ({
   useHtmlIframeProps: () => mockUseHtmlIframeProps(),
 }));
 
-const mockUseAppColorScheme = jest.fn(() => "light");
+const mockUseAppColorScheme = jest.fn(() => ColorScheme.light);
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => mockUseAppColorScheme(),
 }));
@@ -64,7 +65,7 @@ describe("IframeRenderer dynamic height", () => {
     mockUseHtmlIframeProps.mockReturnValue({
       htmlAttribs: { src: "https://example.com/embed" },
     });
-    mockUseAppColorScheme.mockReturnValue("light");
+    mockUseAppColorScheme.mockReturnValue(ColorScheme.light);
   });
 
   it("updates webview height when onMessage posts a height", async () => {
@@ -358,7 +359,7 @@ describe("IframeRenderer dynamic height", () => {
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
     // Mock useAppColorScheme to return "dark"
-    mockUseAppColorScheme.mockReturnValue("dark");
+    mockUseAppColorScheme.mockReturnValue(ColorScheme.dark);
 
     // Mock useHtmlIframeProps to return a Datawrapper URL
     mockUseHtmlIframeProps.mockReturnValue({
@@ -387,7 +388,7 @@ describe("IframeRenderer dynamic height", () => {
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
     // Mock useAppColorScheme to return "light"
-    mockUseAppColorScheme.mockReturnValue("light");
+    mockUseAppColorScheme.mockReturnValue(ColorScheme.light);
 
     // Mock useHtmlIframeProps to return a Datawrapper URL
     mockUseHtmlIframeProps.mockReturnValue({
@@ -423,7 +424,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
     mockUseHtmlIframeProps.mockReturnValue({
       htmlAttribs: { src: "https://example.com/embed" },
     });
-    mockUseAppColorScheme.mockReturnValue("light");
+    mockUseAppColorScheme.mockReturnValue(ColorScheme.light);
   });
 
   describe("YouTube URL handling", () => {

@@ -15,8 +15,8 @@ import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 export interface IframeRendererProperties {
   renderProps: CustomRendererProps<TBlock>;
@@ -133,7 +133,10 @@ const prepareWebViewSource = (
   }
 
   if (isDatawrapper) {
-    u.searchParams.set("dark", colorScheme === "dark" ? "true" : "false");
+    u.searchParams.set(
+      "dark",
+      colorScheme === ColorScheme.dark ? "true" : "false",
+    );
   }
 
   return { uri: u.toString() };

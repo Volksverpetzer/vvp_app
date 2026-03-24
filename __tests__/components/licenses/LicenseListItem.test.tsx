@@ -5,9 +5,10 @@ import React from "react";
 import LicensesListItem from "#/screens/Settings/components/licenses/LicenseListItem";
 
 // Mock the color scheme hook to avoid native platform differences in tests
-jest.mock("#/hooks/useAppColorScheme", () => ({
-  useAppColorScheme: () => "light",
-}));
+jest.mock("#/hooks/useAppColorScheme", () => {
+  const { ColorScheme } = jest.requireActual("#/hooks/useAppColorScheme");
+  return { useAppColorScheme: () => ColorScheme.light };
+});
 
 describe("LicensesListItem", () => {
   it("renders the title text and has single-line truncation props", () => {

@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 // Mock the useRouter hook
 jest.mock("expo-router", () => ({
@@ -23,7 +23,7 @@ describe("MissionPopup Logic", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
-    (useAppColorScheme as jest.Mock).mockReturnValue("dark");
+    (useAppColorScheme as jest.Mock).mockReturnValue(ColorScheme.dark);
   });
 
   it("should have useRouter hook available", () => {

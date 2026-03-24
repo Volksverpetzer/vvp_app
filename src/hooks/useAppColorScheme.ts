@@ -8,6 +8,11 @@ import type { colorSchemeType } from "#/types/colors";
 
 export type AppColorScheme = keyof colorSchemeType;
 
+export const ColorScheme = {
+  light: "light",
+  dark: "dark",
+} as const satisfies Record<AppColorScheme, AppColorScheme>;
+
 /**
  * A hook that returns the color scheme of the device, or "dark" if the user has set the advanced setting "Always Dark Mode".
  * @returns The color scheme of the device, or "dark" if the user has set the advanced setting "Always Dark Mode".
@@ -15,8 +20,8 @@ export type AppColorScheme = keyof colorSchemeType;
 export const useAppColorScheme = (): AppColorScheme => {
   const { advancedSettings } = useContext(SettingsContext);
   const scheme: ColorSchemeName = useColorScheme();
-  if (advancedSettings?.alwaysDarkMode?.value ?? false) return "dark";
-  return scheme === "dark" ? "dark" : "light";
+  if (advancedSettings?.alwaysDarkMode?.value ?? false) return ColorScheme.dark;
+  return scheme === ColorScheme.dark ? ColorScheme.dark : ColorScheme.light;
 };
 
 /**
@@ -30,5 +35,7 @@ export const useCorporateColor = () => {
 
 export const useReverseColorScheme = () => {
   const colorScheme = useAppColorScheme();
-  return colorScheme === "dark" ? "light" : "dark";
+  return colorScheme === ColorScheme.dark
+    ? ColorScheme.light
+    : ColorScheme.dark;
 };
