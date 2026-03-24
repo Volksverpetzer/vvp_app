@@ -63,7 +63,7 @@ const HomeScreen = () => {
           )
         }
         scrollOffsetY={scrollOffsetY}
-        minHeight={0}
+        minHeight={95}
         maxHeight={HEADER_HEIGHT}
       >
         <Pressable

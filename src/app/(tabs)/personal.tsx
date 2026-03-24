@@ -35,7 +35,7 @@ const PersonalTab = () => {
       <AnimatedHeader
         title="Sammlung"
         scrollOffsetY={scrollOffsetY}
-        minHeight={80}
+        minHeight={110}
         maxHeight={200}
         headerComponent={
           <View

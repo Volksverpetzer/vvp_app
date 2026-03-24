@@ -116,7 +116,9 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
   const gradientContainerStyle = useMemo(
     () => ({
       width: "100%" as const,
-      ...styles.centered,
+      flex: 1,
+      alignItems: "center" as const,
+      justifyContent: "flex-end" as const,
     }),
     [],
   );
