@@ -19,7 +19,12 @@ export const shouldExcludeFromDeepLink = (
   }
 
   // Expo Linking can return paths with or without a leading slash depending on context.
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  // Also ensure leading slash, and ensure trailing slash so that
+  // e.g. "/wp-admin" matches the "/wp-admin/" prefix.
+  const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;
+  const normalizedPath = withLeadingSlash.endsWith("/")
+    ? withLeadingSlash
+    : `${withLeadingSlash}/`;
 
   return EXCLUDED_PATH_PREFIXES.some((prefix) =>
     normalizedPath.startsWith(prefix),
