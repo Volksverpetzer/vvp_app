@@ -13,11 +13,12 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 import Donate from "./Donate";
 
 interface SupportProperties {
-  article_link: string;
+  article_link: HttpsUrl;
   location?: string;
 }
 

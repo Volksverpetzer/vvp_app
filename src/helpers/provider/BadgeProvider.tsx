@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 
 import BadgeStore from "#/helpers/Stores/BadgeStore";
 
@@ -28,7 +29,7 @@ let externalSetBadgeState: SetBadgeState;
  *
  * @param {React.ReactNode} children - The child components that will consume the badge context.
  */
-export const BadgeProvider = ({ children }) => {
+export const BadgeProvider = ({ children }: { children: ReactNode }) => {
   const [badgeState, setBadgeState] = useState(BadgeStore.defaultState);
 
   useEffect(() => {

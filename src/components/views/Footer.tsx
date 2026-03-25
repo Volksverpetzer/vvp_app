@@ -8,12 +8,13 @@ import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 import Support from "./Support";
 
 interface FooterProperties {
-  article_link: string;
-  onShare: (article_link: string, properties: unknown) => void;
+  article_link: HttpsUrl;
+  onShare: (article_link: string, properties: object) => void;
 }
 
 /**

@@ -4,9 +4,10 @@ import UiButton from "#/components/ui/UiButton";
 import Config from "#/constants/Config";
 import { AppImages } from "#/helpers/AppImages";
 import { registerEvent } from "#/helpers/network/Analytics";
+import type { HttpsUrl } from "#/types";
 
 interface ShopButtonProperties {
-  article_link: string;
+  article_link: HttpsUrl;
   location?: string;
 }
 
@@ -14,7 +15,8 @@ const ShopButton = ({
   article_link,
   location = "ArticleBottom",
 }: ShopButtonProperties) => {
-  if (!Config.donations.shop) return null;
+  const shopUrl = Config.donations.shop;
+  if (!shopUrl) return null;
 
   return (
     <UiButton
@@ -23,7 +25,7 @@ const ShopButton = ({
       accessibilityHint="Öffnet den Shop im Browser"
       onPress={() => {
         registerEvent(article_link, "Shop", { location });
-        Linking.openURL(Config.donations.shop);
+        Linking.openURL(shopUrl);
       }}
     />
   );

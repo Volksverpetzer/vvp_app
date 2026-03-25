@@ -139,7 +139,6 @@ const AISearch = ({
 
 const localStyles = StyleSheet.create({
   centeredContainer: {
-    flex: 1,
     ...globalStyles.centered,
   },
   counterText: {

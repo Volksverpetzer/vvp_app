@@ -9,7 +9,7 @@ import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { hexToRgb } from "#/helpers/utils/color";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 /**
  * Props for the AnimatedHeader component.
@@ -52,7 +52,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
   // Memoize the background color based on the current scheme.
   const backgroundColor = useMemo(
     () =>
-      colorScheme === "light"
+      colorScheme === ColorScheme.light
         ? Colors.light.background
         : Colors.dark.secondaryBackground,
     [colorScheme],

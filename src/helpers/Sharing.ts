@@ -101,7 +101,7 @@ const handleAndroidImageShare = async (
  */
 const handleSuccessfulShare = async (
   url: string,
-  activityType: string | null,
+  activityType: string | null | undefined,
   properties: object,
 ): Promise<boolean> => {
   await registerEvent(url, "Share", {

@@ -5,6 +5,7 @@ import type {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ViewStyle,
+  ViewToken,
 } from "react-native";
 import { FlatList, Pressable, RefreshControl } from "react-native";
 
@@ -117,18 +118,21 @@ const Feed = (properties: FeedProperties) => {
   }, [loadmore, page, getPosts, posts]);
 
   // Update inView set immutably – do not mutate state directly.
-  const onViewableItemsChanged = useCallback(({ viewableItems }) => {
-    setInView((previous) => {
-      const newSet = new Set(previous);
-      for (const item of viewableItems) {
-        if (item.isViewable) {
-          newSet.add(item.item.id);
+  const onViewableItemsChanged = useCallback(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      setInView((previous) => {
+        const newSet = new Set(previous);
+        for (const item of viewableItems) {
+          if (item.isViewable) {
+            newSet.add(item.item.id);
+          }
         }
-      }
-      setRerender(newSet.size);
-      return newSet;
-    });
-  }, []);
+        setRerender(newSet.size);
+        return newSet;
+      });
+    },
+    [],
+  );
 
   const viewabilityConfigCallbackPairs = useRef([
     {

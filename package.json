@@ -2,7 +2,7 @@
   "name": "vvp_app",
   "version": "2.1.7",
   "main": "expo-router/entry",
-  "packageManager": "pnpm@10.32.1",
+  "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": "24.x"
   },
@@ -31,7 +31,7 @@
     "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\""
   },
   "dependencies": {
-    "@algolia/client-search": "5.49.2",
+    "@algolia/client-search": "5.50.0",
     "@atproto/api": "0.19.4",
     "@babel/runtime": "7.29.2",
     "@expo-google-fonts/source-sans-3": "0.4.1",
@@ -109,8 +109,8 @@
     "@types/lodash": "4.17.24",
     "@types/node": "24.12.0",
     "@types/react": "19.2.14",
-    "@typescript-eslint/eslint-plugin": "8.57.1",
-    "@typescript-eslint/parser": "8.57.1",
+    "@typescript-eslint/eslint-plugin": "8.57.2",
+    "@typescript-eslint/parser": "8.57.2",
     "babel-jest": "30.3.0",
     "babel-plugin-module-resolver": "5.0.3",
     "babel-preset-expo": "55.0.12",
@@ -131,6 +131,6 @@
     "ts-node": "10.9.2",
     "tsx": "4.21.0",
     "typedoc": "0.28.18",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   }
 }

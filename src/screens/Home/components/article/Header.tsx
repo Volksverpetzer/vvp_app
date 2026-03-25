@@ -186,7 +186,7 @@ const Header = (properties: HeaderProperties) => {
             style={{
               width: width,
               height: (16 / 9) * width,
-              backgroundColor: Colors["dark"].background,
+              backgroundColor: Colors.dark.background,
               paddingTop: ((width * 16) / 9) * 0.2,
             }}
           >
@@ -213,7 +213,7 @@ const Header = (properties: HeaderProperties) => {
             <Space size={20} />
             <Text
               style={{
-                color: Colors["dark"].text,
+                color: Colors.dark.text,
                 paddingHorizontal: 20,
                 fontSize: 26,
                 fontWeight: "bold",
@@ -226,7 +226,7 @@ const Header = (properties: HeaderProperties) => {
             <Space size={20} />
             <Text
               style={{
-                color: Colors["dark"].text,
+                color: Colors.dark.text,
                 paddingHorizontal: 20,
                 fontSize: 18,
                 textAlign: "left",

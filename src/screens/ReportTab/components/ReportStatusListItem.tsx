@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 import { ReportStatusIcon } from "#/components/Icons";
 import API from "#/helpers/network/ServerAPI";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatusResponse, StoredReport } from "#/types";
 
 /**
@@ -15,7 +15,7 @@ const ReportStatusListItem = (props: StoredReport) => {
   const colorScheme = useAppColorScheme();
 
   const colors =
-    colorScheme === "dark"
+    colorScheme === ColorScheme.dark
       ? {
           text: "#FFFFFF",
           posted: "#34D399",
