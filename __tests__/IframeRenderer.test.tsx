@@ -3,7 +3,7 @@ import * as Linking from "expo-linking";
 import React from "react";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
 
-import { ColorScheme } from "#/hooks/useAppColorScheme";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
 
 // Mock Config to provide wpUrl
@@ -34,10 +34,7 @@ jest.mock("@native-html/iframe-plugin", () => ({
   useHtmlIframeProps: () => mockUseHtmlIframeProps(),
 }));
 
-const mockUseAppColorScheme = jest.fn(() => ColorScheme.light);
-jest.mock("#/hooks/useAppColorScheme", () => ({
-  useAppColorScheme: () => mockUseAppColorScheme(),
-}));
+const mockUseAppColorScheme = useAppColorScheme as jest.Mock;
 
 // We'll capture the last props passed to the WebView to inspect style.height updates
 let mockLastWebViewProps: any = null;

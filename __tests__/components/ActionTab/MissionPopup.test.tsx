@@ -7,11 +7,6 @@ jest.mock("expo-router", () => ({
   useRouter: jest.fn(),
 }));
 
-// Mock the useColorScheme hook
-jest.mock("#/hooks/useAppColorScheme", () => ({
-  useAppColorScheme: jest.fn(),
-}));
-
 describe("MissionPopup Logic", () => {
   const mockRouter = {
     navigate: jest.fn(),

@@ -28,10 +28,6 @@ jest.mock("#/helpers/provider/BadgeProvider", () => ({
   useBadge: jest.fn(),
 }));
 
-jest.mock("#/hooks/useAppColorScheme", () => ({
-  useAppColorScheme: jest.fn(),
-}));
-
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: { enableActions: true, enableEngagement: true },
