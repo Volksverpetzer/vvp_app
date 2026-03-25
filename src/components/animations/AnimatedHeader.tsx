@@ -153,7 +153,12 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
         )}
         {title &&
           (typeof title === "string" ? (
-            <Animated.Text style={[titleTextStyle, { opacity: titleOpacity }]}>
+            <Animated.Text
+              style={[
+                titleTextStyle,
+                children ? { opacity: titleOpacity } : null,
+              ]}
+            >
               {title}
             </Animated.Text>
           ) : (
