@@ -33,6 +33,7 @@ const HomeScreen = () => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
+  const corporate = Colors[colorScheme].corporate;
 
   const HEADER_HEIGHT = 220;
 
@@ -56,40 +57,37 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <AnimatedHeader
-        title={!isVolksverpetzer ? Constants.expoConfig.name : ""}
-        headerComponent={
-          isVolksverpetzer && (
+        title={
+          isVolksverpetzer ? (
             <LogoBig color={color} style={{ marginLeft: 20 }} />
+          ) : (
+            Constants.expoConfig.name
           )
         }
         scrollOffsetY={scrollOffsetY}
-        minHeight={0}
+        minHeight={95}
         maxHeight={HEADER_HEIGHT}
       >
         <Pressable
           accessibilityRole="button"
           onPress={() => router.push("/search")}
+          style={{
+            ...styles.row,
+            ...styles.input,
+            ...styles.feed,
+            backgroundColor: corporate,
+          }}
         >
-          <View
+          <Text
             style={{
-              ...styles.row,
-              padding: 0,
-              width: "100%",
-              height: "100%",
-              ...styles.noBackground,
+              ...styles.whiteText,
+              fontFamily: "SourceSansPro",
+              fontSize: 16,
             }}
           >
-            <Text
-              style={{
-                ...styles.whiteText,
-                fontFamily: "SourceSansPro",
-                fontSize: 16,
-              }}
-            >
-              Suche ...
-            </Text>
-            <SearchIcon color={"white"} size={24} />
-          </View>
+            Suche ...
+          </Text>
+          <SearchIcon color={"white"} size={24} />
         </Pressable>
       </AnimatedHeader>
       <Feed
