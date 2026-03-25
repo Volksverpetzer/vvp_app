@@ -29,8 +29,8 @@ interface AnimatedHeaderProperties extends PropsWithChildren {
 
 /**
  * AnimatedHeader renders a collapsible header bar that shrinks and fades
- * based on scroll position. It can include a title, custom component,
- * and arbitrary children below it.
+ * based on scroll position. It accepts an optional title (string or node)
+ * and optional children rendered below it.
  */
 const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
   const {
@@ -151,15 +151,16 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
             <HeartIcon color={corporate} size={32} />
           </Pressable>
         )}
-        {typeof title === "string" ? (
-          <Animated.Text style={[titleTextStyle, { opacity: titleOpacity }]}>
-            {title}
-          </Animated.Text>
-        ) : (
-          <Animated.View style={{ opacity: titleOpacity, flex: 1 }}>
-            {title}
-          </Animated.View>
-        )}
+        {title &&
+          (typeof title === "string" ? (
+            <Animated.Text style={[titleTextStyle, { opacity: titleOpacity }]}>
+              {title}
+            </Animated.Text>
+          ) : (
+            <Animated.View style={{ opacity: titleOpacity, flex: 1 }}>
+              {title}
+            </Animated.View>
+          ))}
         {children}
         <Space size={45} />
       </LinearGradient>
