@@ -15,7 +15,7 @@ jest.mock("expo-linking", () => ({
 
 jest.mock("expo-web-browser", () => ({
   __esModule: true,
-  openBrowserAsync: jest.fn(),
+  openBrowserAsync: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("#/helpers/network/Analytics", () => ({
