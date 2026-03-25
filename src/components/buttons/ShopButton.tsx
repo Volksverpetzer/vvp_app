@@ -16,7 +16,7 @@ const ShopButton = ({
   location = "ArticleBottom",
 }: ShopButtonProperties) => {
   const shopUrl = Config.donations.shop;
-  if (shopUrl) return null;
+  if (!shopUrl) return null;
 
   return (
     <UiButton
