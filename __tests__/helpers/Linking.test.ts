@@ -198,6 +198,13 @@ describe("Linking helpers", () => {
       const externalUrl = "https://example.com";
       const articleContext = "https://www.volksverpetzer.de/article";
 
+      parseSpy.mockImplementation((url: string) => {
+        if (url === externalUrl) {
+          return { hostname: "example.com", path: "/page" };
+        }
+        return { hostname: "www.volksverpetzer.de", path: "" };
+      });
+
       // Execute
       outBoundLinkPress(externalUrl, articleContext);
 
@@ -214,6 +221,13 @@ describe("Linking helpers", () => {
     it("should handle missing article context", () => {
       // Setup
       const externalUrl = "https://example.com";
+
+      parseSpy.mockImplementation((url: string) => {
+        if (url === externalUrl) {
+          return { hostname: "example.com", path: "/page" };
+        }
+        return { hostname: "www.volksverpetzer.de", path: "" };
+      });
 
       // Execute
       outBoundLinkPress(externalUrl);
