@@ -11,8 +11,8 @@ import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 /**
  * Handles in-app navigation for links. Internal links (same hostname)
  * are pushed to the router; external links open in the browser.
- * Links under /wp-content/uploads/ are treated as external and opened
- * with the OS default handler.
+ * Excluded paths (e.g. /wp-content/uploads/, /wp-admin/) are treated
+ * as external and opened with the OS default handler.
  * @param href - The URL to handle.
  * @param router - Expo Router instance for navigation.
  * @param article_link - Optional article URL for analytics context.
