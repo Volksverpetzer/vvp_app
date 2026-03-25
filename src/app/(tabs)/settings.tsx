@@ -6,6 +6,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
 import {
+  CodeIcon,
   FeedIcon,
   FeedbackIcon,
   GiveIcon,
@@ -177,6 +178,11 @@ const SettingsScreen = () => {
             url={Config.dataProtectionUrl}
             icon={<LockIcon color={corporate} size={24} />}
             text="Datenschutz"
+          />
+          <DesignedLink
+            url={Config.sourceUrl}
+            icon={<CodeIcon color={corporate} size={24} />}
+            text="Quellcode"
           />
         </View>
         <View style={styles.donateContainer}>

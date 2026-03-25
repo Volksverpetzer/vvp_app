@@ -48,6 +48,7 @@ const extraConfig: ExtraConfigType = {
   apiUrl: "https://mimikamaserver.azurewebsites.net",
   wpUrl: "https://www.mimikama.org",
   aboutUrl: "https://www.mimikama.org/ueber-uns/",
+  sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
   dataProtectionUrl: "https://www.mimikama.org/datenschutzbestimmungen/",
   eas: {
     projectId: "4b724abf-ec92-4eb0-8cdf-ed25835b5825",
