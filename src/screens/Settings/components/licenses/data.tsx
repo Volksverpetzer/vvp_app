@@ -1,5 +1,5 @@
 export default {
-  "@algolia/client-search@5.49.2": {
+  "@algolia/client-search@5.50.0": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
