@@ -1,8 +1,10 @@
 /**
  * Utility functions to determine if a URL should be excluded from deep linking.
- * URLs under /wp-content/uploads/ should be opened by the OS default handler
+ * URLs under these prefixes should be opened by the OS default handler
  * instead of being handled by the app.
  */
+
+const EXCLUDED_PATH_PREFIXES = ["/wp-content/uploads/", "/wp-admin/"];
 
 /**
  * Checks if a path should be excluded from deep linking.
@@ -16,7 +18,5 @@ export const shouldExcludeFromDeepLink = (
     return false;
   }
 
-  // Exclude paths that start with /wp-content/uploads/
-  // This ensures we only match actual upload paths and not paths that merely contain this string
-  return path.startsWith("/wp-content/uploads/");
+  return EXCLUDED_PATH_PREFIXES.some((prefix) => path.startsWith(prefix));
 };
