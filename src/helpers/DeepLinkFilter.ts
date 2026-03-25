@@ -18,5 +18,10 @@ export const shouldExcludeFromDeepLink = (
     return false;
   }
 
-  return EXCLUDED_PATH_PREFIXES.some((prefix) => path.startsWith(prefix));
+  // Expo Linking can return paths with or without a leading slash depending on context.
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  return EXCLUDED_PATH_PREFIXES.some((prefix) =>
+    normalizedPath.startsWith(prefix),
+  );
 };
