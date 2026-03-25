@@ -50,6 +50,7 @@ const extraConfig: ExtraConfigType = {
   aiUrl: "https://ai.volksverpetzer-app.de",
   wpUrl: "https://www.volksverpetzer.de",
   aboutUrl: "https://www.volksverpetzer.de/ueber-uns/",
+  sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
   dataProtectionUrl: "https://www.volksverpetzer.de/datenschutzerklaerung/",
   eas: {
     projectId: "fd591077-fcb9-48ce-88d9-8bdff41c5564",

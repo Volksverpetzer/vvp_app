@@ -17,6 +17,7 @@ export interface ExtraConfigType {
   wpUrl: HttpsUrl; // URL to the WordPress site
   analyticsUrl?: HttpsUrl; // URL to the analytics site
   aboutUrl: HttpsUrl; // URL to the about page
+  sourceUrl: HttpsUrl; // URL to the source code repository
   colorScheme: colorSchemeType; // color scheme for the app is defined with type colorSchemeType
   assets: {
     splash: string;

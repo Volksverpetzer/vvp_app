@@ -18,6 +18,10 @@ export const CheckboxIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="check" />
 );
 
+export const CodeIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="mark-github" />
+);
+
 export const ChevronIcon = ({
   direction,
   size,
