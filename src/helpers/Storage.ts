@@ -35,11 +35,11 @@ const BaseStore = {
 
   /**
    * Safely parses a JSON string.
-   * @param {string | null} json - The JSON string to parse.
+   * @param {string | undefined} json - The JSON string to parse.
    * @param {T} defaultValue - The default value if parsing fails.
    * @returns {T} The parsed value or the default.
    */
-  parseJSON<T>(json: string | null, defaultValue?: T): T | undefined {
+  parseJSON<T>(json: string | undefined, defaultValue?: T): T | undefined {
     if (!json) return defaultValue;
     try {
       return JSON.parse(json);

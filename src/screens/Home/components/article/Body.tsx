@@ -38,7 +38,7 @@ interface BodyProperties {
   article_link: HttpsUrl;
   slug: string;
   article_title: string;
-  onLinkPress: (event: GestureResponderEvent, href: string) => void;
+  onLinkPress: (event: GestureResponderEvent, href: HttpsUrl) => void;
   width: number;
   maxWidth: number;
   scrollRef: RefObject<ScrollView>;
@@ -101,7 +101,7 @@ const Body = (properties: BodyProperties) => {
          * @param {GestureResponderEvent} event - The event object
          * @param {string} href - The URL of the link
          */
-        onPress: (event: GestureResponderEvent, href: string) => {
+        onPress: (event: GestureResponderEvent, href: HttpsUrl) => {
           if (
             href.includes(article_link) ||
             href.startsWith("about:///blank#")

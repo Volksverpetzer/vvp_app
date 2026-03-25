@@ -14,7 +14,7 @@ import Support from "./Support";
 
 interface FooterProperties {
   article_link: HttpsUrl;
-  onShare: (article_link: string, properties: unknown) => void;
+  onShare: (article_link: string, properties: object) => void;
 }
 
 /**

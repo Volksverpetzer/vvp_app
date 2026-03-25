@@ -17,12 +17,13 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 export interface IframeRendererProperties {
   renderProps: CustomRendererProps<TBlock>;
   width: number;
   maxWidth: number;
-  onLinkPress: (event: unknown, href: string) => void;
+  onLinkPress: (event: unknown, href: HttpsUrl) => void;
 }
 
 // Injected JS constants for WebView
