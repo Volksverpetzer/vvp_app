@@ -1,5 +1,6 @@
 import * as Linking from "expo-linking";
 import type { Href, Router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -10,8 +11,8 @@ import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 /**
  * Handles in-app navigation for links. Internal links (same hostname)
  * are pushed to the router; external links open in the browser.
- * Links under /wp-content/uploads/ are treated as external and opened
- * with the OS default handler.
+ * Excluded paths (e.g. /wp-content/uploads/, /wp-admin/) are treated
+ * as external and opened with the OS default handler.
  * @param href - The URL to handle.
  * @param router - Expo Router instance for navigation.
  * @param article_link - Optional article URL for analytics context.
@@ -46,7 +47,20 @@ const onLinkPress = (href: HttpsUrl, router: Router, article_link?: string) => {
  */
 const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
   registerEvent(article_link, "Outbound Link: Click", { url: href });
-  Linking.openURL(href);
+
+  const { hostname, path } = Linking.parse(href);
+  const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
+
+  // Upload/admin links on our own domain should open in a browser context.
+  // Using Linking.openURL here can recurse into app links on Android.
+  if (hostname === baseHostname && shouldExcludeFromDeepLink(path)) {
+    void WebBrowser.openBrowserAsync(href).catch(() => {
+      void Linking.openURL(href);
+    });
+    return;
+  }
+
+  void Linking.openURL(href);
 };
 
 export { onLinkPress, outBoundLinkPress };
