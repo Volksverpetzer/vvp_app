@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
 import type { Router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 
 import { onLinkPress, outBoundLinkPress } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -10,6 +11,11 @@ jest.mock("expo-linking", () => ({
   __esModule: true,
   parse: jest.fn(),
   openURL: jest.fn(),
+}));
+
+jest.mock("expo-web-browser", () => ({
+  __esModule: true,
+  openBrowserAsync: jest.fn(),
 }));
 
 jest.mock("#/helpers/network/Analytics", () => ({
@@ -97,7 +103,8 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: uploadUrl },
       );
-      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
     it("should handle internal links without path", () => {
@@ -144,6 +151,7 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
+      expect(WebBrowser.openBrowserAsync).not.toHaveBeenCalled();
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
     });
 
@@ -199,6 +207,7 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
+      expect(WebBrowser.openBrowserAsync).not.toHaveBeenCalled();
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
     });
 
@@ -215,6 +224,7 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
+      expect(WebBrowser.openBrowserAsync).not.toHaveBeenCalled();
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
     });
   });

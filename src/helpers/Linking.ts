@@ -1,5 +1,6 @@
 import * as Linking from "expo-linking";
 import type { Href, Router } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -46,6 +47,17 @@ const onLinkPress = (href: HttpsUrl, router: Router, article_link?: string) => {
  */
 const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
   registerEvent(article_link, "Outbound Link: Click", { url: href });
+
+  const { hostname, path } = Linking.parse(href);
+  const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
+
+  // Upload links on our own domain should open in a browser context.
+  // Using Linking.openURL here can recurse into app links on Android.
+  if (hostname === baseHostname && shouldExcludeFromDeepLink(path)) {
+    void WebBrowser.openBrowserAsync(href);
+    return;
+  }
+
   Linking.openURL(href);
 };
 
