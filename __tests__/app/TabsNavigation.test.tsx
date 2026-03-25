@@ -3,7 +3,7 @@ import { render } from "@testing-library/react-native";
 import TabLayout from "#/app/(tabs)/_layout";
 import Config from "#/constants/Config";
 import { useBadge } from "#/helpers/provider/BadgeProvider";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 jest.mock("@expo/vector-icons/Octicons", () => jest.fn(() => null));
 
@@ -28,10 +28,6 @@ jest.mock("#/helpers/provider/BadgeProvider", () => ({
   useBadge: jest.fn(),
 }));
 
-jest.mock("#/hooks/useAppColorScheme", () => ({
-  useAppColorScheme: jest.fn(),
-}));
-
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: { enableActions: true, enableEngagement: true },
@@ -52,7 +48,7 @@ describe("TabsNavigation", () => {
     (useBadge as jest.Mock).mockReturnValue({
       badgeState: { personal: false, action: false },
     });
-    (useAppColorScheme as jest.Mock).mockReturnValue("light");
+    (useAppColorScheme as jest.Mock).mockReturnValue(ColorScheme.light);
     Config.enableEngagement = true;
   });
 

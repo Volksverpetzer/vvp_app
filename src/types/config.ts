@@ -23,7 +23,7 @@ export interface ExtraConfigType {
     icon: string;
     iconMono: string;
   };
-  feeds?: FeedsConfig; // feeds configuration
+  feeds: FeedsConfig; // feeds configuration
   enableActions: boolean; // enables actions tab
   enableAnalytics: boolean; // enables analytics collection and analytics UI
   enableEngagement: boolean; // enables engagement features (favorites, views, shares, link tracking, and related UI)

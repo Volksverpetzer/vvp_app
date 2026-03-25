@@ -1,13 +1,8 @@
-import { describe, expect, it, jest } from "@jest/globals";
+import { describe, expect, it } from "@jest/globals";
 import { render } from "@testing-library/react-native";
 import React from "react";
 
 import LicensesListItem from "#/screens/Settings/components/licenses/LicenseListItem";
-
-// Mock the color scheme hook to avoid native platform differences in tests
-jest.mock("#/hooks/useAppColorScheme", () => ({
-  useAppColorScheme: () => "light",
-}));
 
 describe("LicensesListItem", () => {
   it("renders the title text and has single-line truncation props", () => {

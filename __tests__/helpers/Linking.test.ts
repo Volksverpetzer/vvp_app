@@ -49,7 +49,7 @@ describe("Linking helpers", () => {
     it("should navigate to internal links with path", () => {
       // Setup
       const internalUrl = "https://www.volksverpetzer.de/politik/some-article";
-      parseSpy.mockImplementation((url) => {
+      parseSpy.mockImplementation((url: string) => {
         if (url === internalUrl) {
           return {
             hostname: "www.volksverpetzer.de",

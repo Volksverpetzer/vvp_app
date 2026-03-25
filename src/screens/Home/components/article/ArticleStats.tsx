@@ -16,7 +16,7 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
   useKeepAwake();
 
   const { article_link } = properties;
-  const color = Colors["light"].tint;
+  const color = Colors.light.tint;
 
   if (!Config.enableEngagement) return undefined;
 

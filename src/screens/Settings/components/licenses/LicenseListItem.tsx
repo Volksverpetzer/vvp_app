@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
 
@@ -41,7 +41,7 @@ const LicensesListItem = (
   Properties: LicensesListItemProperties,
 ): JSX.Element => {
   const colorScheme = useAppColorScheme();
-  const isDark = colorScheme === "dark";
+  const isDark = colorScheme === ColorScheme.dark;
   const styles = getStyles(isDark);
   const textColor = isDark ? "#e5e7eb" : "#34495e";
   const iconColor = textColor;
@@ -107,7 +107,7 @@ const LicensesListItem = (
 
 const Link = (properties: LinkProperties) => {
   const colorScheme = useAppColorScheme();
-  const isDark = colorScheme === "dark";
+  const isDark = colorScheme === ColorScheme.dark;
   const defaultColor = isDark ? "#e5e7eb" : "#34495e";
 
   return (

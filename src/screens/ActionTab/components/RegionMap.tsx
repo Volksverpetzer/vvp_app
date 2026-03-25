@@ -45,8 +45,8 @@ const RegionMap = () => {
   }, []);
   const { width } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors["light"].corporate;
-  const corporateColor = Colors["dark"].corporate;
+  const corporate = Colors.light.corporate;
+  const corporateColor = Colors.dark.corporate;
   const highlight = Colors[colorScheme].highlight;
   return (
     <View

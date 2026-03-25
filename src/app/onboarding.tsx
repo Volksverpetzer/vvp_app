@@ -161,7 +161,7 @@ const Onboarding = () => {
       <FlatBoard
         data={data}
         onFinish={agreeToTerms}
-        accentColor={Colors["light"].heading}
+        accentColor={Colors.light.heading}
         buttonTitle="Los geht's"
         hideIndicator
         variant="standard"

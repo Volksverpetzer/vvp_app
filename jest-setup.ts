@@ -92,6 +92,11 @@ jest.mock("expo-device", () => ({
   isDevice: true,
 }));
 
+jest.mock("#/hooks/useAppColorScheme", () => ({
+  useAppColorScheme: jest.fn(() => "light"),
+  ColorScheme: { light: "light", dark: "dark" },
+}));
+
 jest.mock("expo-application", () => ({
   nativeBuildVersion: "1.0.0",
 }));
