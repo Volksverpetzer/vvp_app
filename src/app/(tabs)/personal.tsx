@@ -37,76 +37,75 @@ const PersonalTab = () => {
         scrollOffsetY={scrollOffsetY}
         minHeight={110}
         maxHeight={200}
-        headerComponent={
+      >
+        <View
+          style={{
+            width: "100%",
+            ...styles.noBackground,
+          }}
+        >
           <View
             style={{
-              width: "100%",
-              ...styles.noBackground,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              height: 60,
+              width: 200,
+              alignSelf: "center",
+              borderRadius: 20,
+              overflow: "hidden",
             }}
           >
-            <View
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setActiveTab("favs")}
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                height: 60,
-                width: 200,
-                alignSelf: "center",
-                borderRadius: 20,
-                overflow: "hidden",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                width: 100,
+                backgroundColor:
+                  activeTab === "favs" ? corporateColor : tabIconColor,
               }}
             >
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => setActiveTab("favs")}
+              <StarIcon color={"white"} />
+              <Text
                 style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100%",
-                  width: 100,
-                  backgroundColor:
-                    activeTab === "favs" ? corporateColor : tabIconColor,
+                  alignSelf: "center",
+                  marginTop: 0,
+                  ...styles.whiteText,
+                  fontFamily: "SourceSansProBold",
                 }}
               >
-                <StarIcon color={"white"} />
-                <Text
-                  style={{
-                    alignSelf: "center",
-                    marginTop: 0,
-                    ...styles.whiteText,
-                    fontFamily: "SourceSansProBold",
-                  }}
-                >
-                  Favoriten
-                </Text>
-              </Pressable>
-              <Pressable
-                accessibilityRole="button"
-                onPress={() => setActiveTab("sources")}
+                Favoriten
+              </Text>
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setActiveTab("sources")}
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                width: 100,
+                backgroundColor:
+                  activeTab === "sources" ? corporateColor : tabIconColor,
+              }}
+            >
+              <LinkIcon color={"white"} />
+              <Text
                 style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100%",
-                  width: 100,
-                  backgroundColor:
-                    activeTab === "sources" ? corporateColor : tabIconColor,
+                  alignSelf: "center",
+                  marginTop: 0,
+                  ...styles.whiteText,
+                  fontFamily: "SourceSansProBold",
                 }}
               >
-                <LinkIcon color={"white"} />
-                <Text
-                  style={{
-                    alignSelf: "center",
-                    marginTop: 0,
-                    ...styles.whiteText,
-                    fontFamily: "SourceSansProBold",
-                  }}
-                >
-                  Quellen
-                </Text>
-              </Pressable>
-            </View>
+                Quellen
+              </Text>
+            </Pressable>
           </View>
-        }
-      />
+        </View>
+      </AnimatedHeader>
       <ScrollView
         style={{
           flex: 1,

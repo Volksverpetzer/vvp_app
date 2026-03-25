@@ -14,20 +14,17 @@ import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 /**
  * Props for the AnimatedHeader component.
  * @property title - The header title text.
- * @property headerComponent - Optional React node to render next to the title.
  * @property hideSupportHeart - If true, hides the support heart icon.
  * @property scrollOffsetY - Animated.Value tracking vertical scroll offset.
  * @property maxHeight - Header height when fully expanded.
  * @property minHeight - Header height when collapsed.
  */
 interface AnimatedHeaderProperties extends PropsWithChildren {
-  title?: string;
-  headerComponent?: ReactNode;
+  title?: ReactNode;
   hideSupportHeart?: boolean;
   scrollOffsetY: Animated.Value;
   maxHeight: number;
   minHeight: number;
-  // Children are allowed too
 }
 
 /**
@@ -43,7 +40,6 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
     maxHeight,
     minHeight,
     children,
-    headerComponent,
   } = properties;
 
   const colorScheme = useAppColorScheme();
@@ -78,21 +74,21 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
     [scrollOffsetY, H_SCROLL_DISTANCE, maxHeight, minHeight],
   );
 
-  const headerInputHeight = useMemo(
-    () =>
-      scrollOffsetY.interpolate({
-        inputRange: [0, H_SCROLL_DISTANCE],
-        outputRange: [50, 45],
-        extrapolate: "clamp",
-      }),
-    [scrollOffsetY, H_SCROLL_DISTANCE],
-  );
-
   const headerFontSize = useMemo(
     () =>
       scrollOffsetY.interpolate({
         inputRange: [0, H_SCROLL_DISTANCE],
         outputRange: [45, 30],
+        extrapolate: "clamp",
+      }),
+    [scrollOffsetY, H_SCROLL_DISTANCE],
+  );
+
+  const titleOpacity = useMemo(
+    () =>
+      scrollOffsetY.interpolate({
+        inputRange: [0, H_SCROLL_DISTANCE * 0.5],
+        outputRange: [1, 0],
         extrapolate: "clamp",
       }),
     [scrollOffsetY, H_SCROLL_DISTANCE],
@@ -134,17 +130,6 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
     [headerFontSize, corporate],
   );
 
-  const inputContainerStyle = useMemo(
-    () => ({
-      ...styles.row,
-      ...styles.input,
-      ...styles.feed,
-      height: headerInputHeight,
-      backgroundColor: corporate,
-    }),
-    [headerInputHeight, corporate],
-  );
-
   // Define gradient locations as a constant
   const locations: [number, number] = useMemo(() => [0.7, 1], []);
 
@@ -166,11 +151,14 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
             <HeartIcon color={corporate} size={32} />
           </Pressable>
         )}
-        {title && <Animated.Text style={titleTextStyle}>{title}</Animated.Text>}
-        {headerComponent}
-        {children && (
-          <Animated.View style={inputContainerStyle}>{children}</Animated.View>
+        {typeof title === "string" ? (
+          <Animated.Text style={titleTextStyle}>{title}</Animated.Text>
+        ) : (
+          <Animated.View style={{ opacity: titleOpacity, flex: 1 }}>
+            {title}
+          </Animated.View>
         )}
+        {children}
         <Space size={45} />
       </LinearGradient>
     </Animated.View>
