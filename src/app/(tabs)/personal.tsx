@@ -1,11 +1,10 @@
 import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Animated, Pressable } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { LinkIcon, StarIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
@@ -22,13 +21,44 @@ const PersonalTab = () => {
     }, []),
   );
 
-  const scrollOffsetY = new Animated.Value(0);
+  const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
   const corporateColor = Colors[colorScheme].corporate;
   const backgroundColor = Colors[colorScheme].secondaryBackground;
   const tabIconColor = Colors[colorScheme].tabIconDefault;
 
   const HEADER_HEIGHT = 200;
+  const MIN_HEIGHT = 110;
+
+  const labelOpacity = useMemo(
+    () =>
+      scrollOffsetY.interpolate({
+        inputRange: [0, (HEADER_HEIGHT - MIN_HEIGHT) * 0.5],
+        outputRange: [1, 0],
+        extrapolate: "clamp",
+      }),
+    [scrollOffsetY],
+  );
+
+  const labelHeight = useMemo(
+    () =>
+      scrollOffsetY.interpolate({
+        inputRange: [0, (HEADER_HEIGHT - MIN_HEIGHT) * 0.5],
+        outputRange: [20, 0],
+        extrapolate: "clamp",
+      }),
+    [scrollOffsetY],
+  );
+
+  const toggleHeight = useMemo(
+    () =>
+      scrollOffsetY.interpolate({
+        inputRange: [0, (HEADER_HEIGHT - MIN_HEIGHT) * 0.5],
+        outputRange: [60, 40],
+        extrapolate: "clamp",
+      }),
+    [scrollOffsetY],
+  );
 
   return (
     <>
@@ -44,11 +74,11 @@ const PersonalTab = () => {
             ...styles.noBackground,
           }}
         >
-          <View
+          <Animated.View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              height: 60,
+              height: toggleHeight,
               width: 200,
               alignSelf: "center",
               borderRadius: 20,
@@ -68,16 +98,21 @@ const PersonalTab = () => {
               }}
             >
               <StarIcon color={"white"} />
-              <Text
-                style={{
-                  alignSelf: "center",
-                  marginTop: 0,
-                  ...styles.whiteText,
-                  fontFamily: "SourceSansProBold",
-                }}
+              <Animated.View
+                style={{ height: labelHeight, overflow: "hidden" }}
               >
-                Favoriten
-              </Text>
+                <Animated.Text
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 0,
+                    ...styles.whiteText,
+                    fontFamily: "SourceSansProBold",
+                    opacity: labelOpacity,
+                  }}
+                >
+                  Favoriten
+                </Animated.Text>
+              </Animated.View>
             </Pressable>
             <Pressable
               accessibilityRole="button"
@@ -92,18 +127,23 @@ const PersonalTab = () => {
               }}
             >
               <LinkIcon color={"white"} />
-              <Text
-                style={{
-                  alignSelf: "center",
-                  marginTop: 0,
-                  ...styles.whiteText,
-                  fontFamily: "SourceSansProBold",
-                }}
+              <Animated.View
+                style={{ height: labelHeight, overflow: "hidden" }}
               >
-                Quellen
-              </Text>
+                <Animated.Text
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 0,
+                    ...styles.whiteText,
+                    fontFamily: "SourceSansProBold",
+                    opacity: labelOpacity,
+                  }}
+                >
+                  Quellen
+                </Animated.Text>
+              </Animated.View>
             </Pressable>
-          </View>
+          </Animated.View>
         </View>
       </AnimatedHeader>
       <ScrollView

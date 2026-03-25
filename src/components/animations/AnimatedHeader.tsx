@@ -152,7 +152,9 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
           </Pressable>
         )}
         {typeof title === "string" ? (
-          <Animated.Text style={titleTextStyle}>{title}</Animated.Text>
+          <Animated.Text style={[titleTextStyle, { opacity: titleOpacity }]}>
+            {title}
+          </Animated.Text>
         ) : (
           <Animated.View style={{ opacity: titleOpacity, flex: 1 }}>
             {title}
