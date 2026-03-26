@@ -55,7 +55,7 @@ const Index = () => {
       });
     })();
   }, [router]);
-  return <UiSpinner size={"large"} />;
+  return <UiSpinner size="large" />;
 };
 
 export default Index;

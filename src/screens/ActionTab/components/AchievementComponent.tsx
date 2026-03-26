@@ -70,7 +70,7 @@ const AchievementComponent = () => {
         <View style={{ alignItems: "flex-start", marginLeft: -20 }}>
           <Parallelogram
             backgroundColor={highlight}
-            color={"white"}
+            color="white"
             textStyle={{
               fontSize: 22,
               fontWeight: "bold",
@@ -82,7 +82,7 @@ const AchievementComponent = () => {
           </Parallelogram>
           <Parallelogram
             backgroundColor={corporateColor}
-            color={"white"}
+            color="white"
             containerStyle={{ height: 30, marginTop: 0, marginLeft: -20 }}
           >
             Level {level + 1 + ": " + AchievementConfig[level].name}

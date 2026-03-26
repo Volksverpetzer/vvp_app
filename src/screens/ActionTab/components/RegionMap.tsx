@@ -82,11 +82,11 @@ const RegionMap = () => {
           }}
         />
         <Space size={20} />
-        <Legend text={"Vorreiter"} color={highlight} />
+        <Legend text="Vorreiter" color={highlight} />
         <Space size={8} />
-        <Legend text={"Durchschnitt"} color={corporateColor} />
+        <Legend text="Durchschnitt" color={corporateColor} />
         <Space size={8} />
-        <Legend text={"Schlusslicht"} color={corporate} />
+        <Legend text="Schlusslicht" color={corporate} />
         <Space size={8} />
         <View>
           <Text style={{ fontSize: 12, marginTop: 20, ...styles.whiteText }}>

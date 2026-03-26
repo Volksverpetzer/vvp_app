@@ -40,7 +40,7 @@ const LoadArticlePost = (properties: LoadProperties) => {
       keyValue={slug}
       load={loadArticle}
       render={renderArticle}
-      loadingText={"Lade Artikel..."}
+      loadingText="Lade Artikel..."
     />
   );
 };

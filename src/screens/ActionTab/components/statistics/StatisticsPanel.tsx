@@ -65,7 +65,7 @@ const StatisticsPanel = ({
       <View style={styles.row}>
         {showLeftChevron ? (
           <View style={{ width: 24 }}>
-            <ChevronIcon direction="left" size={24} color={"white"} />
+            <ChevronIcon direction="left" size={24} color="white" />
           </View>
         ) : (
           <View style={{ width: 24 }} />

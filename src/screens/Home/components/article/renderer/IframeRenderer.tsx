@@ -197,7 +197,7 @@ const IframeRenderer = ({
     return (
       <ErrorCard
         style={{ marginHorizontal: 10 }}
-        text={"Error rendering iframe"}
+        text="Error rendering iframe"
       />
     );
 
@@ -264,7 +264,7 @@ const IframeRenderer = ({
         overScrollMode="never"
         scrollEnabled={false}
         bounces={false}
-        renderLoading={() => <UiSpinner size={"large"} />}
+        renderLoading={() => <UiSpinner size="large" />}
         onShouldStartLoadWithRequest={(request) =>
           shouldStartRequest(request, source, onLinkPress)
         }

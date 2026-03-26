@@ -42,7 +42,7 @@ const ReportingWrapper = ({
           progress={p}
           drag={d}
           swipeable={s}
-          icon={<ReportIcon color={"white"} size={24} />}
+          icon={<ReportIcon color="white" size={24} />}
           label="Fehler melden"
           backgroundColor={Colors[colorScheme].errorBackground}
           onAction={errorReport}

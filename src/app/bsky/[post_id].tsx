@@ -35,7 +35,7 @@ const BskyScreen = () => {
   if (!post) {
     return (
       <LoadingFallback
-        text={"Lade Bluesky Beitrag..."}
+        text="Lade Bluesky Beitrag..."
         spinnerProps={{ size: "large" }}
       />
     );
