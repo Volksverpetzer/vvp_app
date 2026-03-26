@@ -29,7 +29,7 @@ const TabLayout = () => {
       disableTransparentOnScrollEdge
       iconColor={{
         default: Colors[colorScheme].tabIconDefault,
-        selected: Colors[colorScheme].text,
+        selected: "white",
       }}
       indicatorColor={corporate}
       labelVisibilityMode="unlabeled"
