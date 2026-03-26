@@ -10,7 +10,6 @@ const colorScheme: colorSchemeType = {
     secondaryBackground: "#E2F0F5",
     errorBackground: "#C62828",
     errorText: "#FFFFFF",
-    tint: "#3893C0",
     tabIconDefault: "#aaa",
     tabIconSelected: "#fff",
     grayedOut: "#bbb",
@@ -18,6 +17,7 @@ const colorScheme: colorSchemeType = {
     inputBackground: "#BADDE8",
     highlight: "#DB2685",
     corporate: "#1b7194",
+    corporateTint: "#3893C0",
   },
   dark: {
     text: "#F7F7F7",
@@ -28,12 +28,12 @@ const colorScheme: colorSchemeType = {
     errorText: "#FEE2E2",
     grayedOut: "#333",
     grayedOutText: "#aaa",
-    tint: "#fff",
     tabIconDefault: "#777",
     tabIconSelected: "#fff",
     inputBackground: "#777",
     highlight: "#D31C74",
     corporate: "#3893c0",
+    corporateTint: "#1b7194",
   },
 };
 

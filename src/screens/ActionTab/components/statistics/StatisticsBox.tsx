@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
 
+import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
@@ -8,7 +9,6 @@ interface StatsBoxProperties {
   statistic: StatisticsType;
   valueKey: StatisticsValueKey;
   descriptionMap: Record<string, string>;
-  corporateColor: string;
 }
 
 const StatisticsBox = ({
@@ -16,15 +16,16 @@ const StatisticsBox = ({
   statistic,
   valueKey,
   descriptionMap,
-  corporateColor,
 }: StatsBoxProperties) => {
+  const corporateTint = Colors.dark.corporateTint;
+
   return (
     <View
       key={statisticsKey}
       style={{
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor: corporateColor,
+        backgroundColor: corporateTint,
         padding: 10,
         borderRadius: 10,
       }}

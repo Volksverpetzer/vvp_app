@@ -37,7 +37,7 @@ const SettingsList = (properties: SettingsListProperties) => {
   }, [properties.settings, update]);
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
-  const activeColor = Colors[colorScheme].tint;
+  const corporateTint = Colors[colorScheme].corporateTint;
   const activeSettings = getEnabledFeeds(Config.feeds);
 
   return (
@@ -60,10 +60,10 @@ const SettingsList = (properties: SettingsListProperties) => {
           // (like `activeThumbColor`) without TypeScript complaining about them.
           const switchProps: ExtendedSwitchProps = {
             testID: "settingSwitch",
-            trackColor: { false: "#E6E6E6", true: activeColor },
+            trackColor: { false: "#E6E6E6", true: "#E6E6E6" },
             activeThumbColor: setting.value ? corporate : "#C4C4C4",
             thumbColor: setting.value ? corporate : "#C4C4C4",
-            ios_backgroundColor: activeColor,
+            ios_backgroundColor: corporateTint,
             disabled,
             onValueChange: (value: boolean) => {
               setDisabled(true);

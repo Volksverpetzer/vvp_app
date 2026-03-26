@@ -3,9 +3,9 @@ import { View } from "react-native";
 
 import ShareCounter from "#/components/counter/ShareCounter";
 import ViewCounter from "#/components/counter/ViewCounter";
-import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
 interface ArticleStatsProperties {
@@ -16,7 +16,7 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
   useKeepAwake();
 
   const { article_link } = properties;
-  const color = Colors.light.tint;
+  const color = useCorporateColor();
 
   if (!Config.enableEngagement) return undefined;
 

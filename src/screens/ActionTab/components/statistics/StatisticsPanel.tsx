@@ -3,7 +3,9 @@ import { Text, View } from "react-native";
 import type { OcticonsIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
+import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
 import StatisticsBox from "./StatisticsBox";
@@ -19,8 +21,6 @@ interface StatsPanelProperties {
   width: number;
   statistics: Record<string, StatisticsType>;
   descriptionMap: Record<string, string>;
-  corporateColor: string;
-  grayed: string;
 }
 
 const StatisticsPanel = ({
@@ -34,9 +34,10 @@ const StatisticsPanel = ({
   width,
   statistics,
   descriptionMap,
-  corporateColor,
-  grayed,
 }: StatsPanelProperties) => {
+  const colorScheme = useAppColorScheme();
+  const grayedOutText = Colors[colorScheme].grayedOutText;
+
   return (
     <View style={{ ...styles.centered, width }}>
       <View
@@ -54,7 +55,7 @@ const StatisticsPanel = ({
           {title}
         </Text>
         {subtitle && (
-          <Text style={{ fontSize: 12, color: grayed, paddingLeft: 10 }}>
+          <Text style={{ fontSize: 12, color: grayedOutText, paddingLeft: 10 }}>
             {subtitle}
           </Text>
         )}
@@ -80,7 +81,6 @@ const StatisticsPanel = ({
               statistic={s}
               valueKey={valueKey}
               descriptionMap={descriptionMap}
-              corporateColor={corporateColor}
             />
           ))}
 
