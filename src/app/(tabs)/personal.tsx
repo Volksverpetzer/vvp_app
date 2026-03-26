@@ -97,7 +97,7 @@ const PersonalTab = () => {
                   activeTab === "favs" ? corporateColor : tabIconColor,
               }}
             >
-              <StarIcon color={"white"} />
+              <StarIcon color="white" />
               <Animated.View
                 style={{ height: labelHeight, overflow: "hidden" }}
               >
@@ -126,7 +126,7 @@ const PersonalTab = () => {
                   activeTab === "sources" ? corporateColor : tabIconColor,
               }}
             >
-              <LinkIcon color={"white"} />
+              <LinkIcon color="white" />
               <Animated.View
                 style={{ height: labelHeight, overflow: "hidden" }}
               >

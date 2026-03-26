@@ -61,7 +61,7 @@ const AISearch = ({
     return (
       <View style={[localStyles.centeredContainer, { paddingTop: 100 }]}>
         <Text>{loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}</Text>
-        <UiSpinner size={"large"} />
+        <UiSpinner size="large" />
         {showFaktenbot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
             <Faktenbot search={true} reaction={reactionValue} />

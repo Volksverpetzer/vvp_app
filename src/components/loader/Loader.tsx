@@ -85,9 +85,7 @@ const Loader = <TData,>({
         return renderError(error);
       }
       return (
-        <ErrorCard
-          text={"Beitrag konnte nicht geladen werden. Bitte erneut versuchen."}
-        />
+        <ErrorCard text="Beitrag konnte nicht geladen werden. Bitte erneut versuchen." />
       );
     }
     return null;

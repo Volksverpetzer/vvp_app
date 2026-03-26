@@ -199,7 +199,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
               <Zoomable doubleTapScale={2} maxScale={3} minScale={1}>
                 <Image
                   onLoad={onLoadHandler}
-                  contentFit={"cover"}
+                  contentFit="cover"
                   source={
                     page >= index - 1 && inView
                       ? {

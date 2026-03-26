@@ -48,10 +48,10 @@ describe("Loader", () => {
 
     const { getByText } = render(
       <Loader
-        keyValue={"id-1"}
+        keyValue="id-1"
         load={() => deferred.promise}
         render={(data) => <Text>{data.value}</Text>}
-        loadingText={"Lade Test..."}
+        loadingText="Lade Test..."
       />,
     );
 
@@ -64,7 +64,7 @@ describe("Loader", () => {
 
     const { getByText } = render(
       <Loader
-        keyValue={"id-2"}
+        keyValue="id-2"
         load={() => deferred.promise}
         render={(data) => <Text>{`data:${data.value}`}</Text>}
         onLoaded={onLoaded}
@@ -84,7 +84,7 @@ describe("Loader", () => {
 
     const { getByText } = render(
       <Loader
-        keyValue={"id-3"}
+        keyValue="id-3"
         load={() => deferred.promise}
         render={(data) => <Text>{data.value}</Text>}
       />,
@@ -106,7 +106,7 @@ describe("Loader", () => {
 
     const { getByText, queryByText } = render(
       <Loader
-        keyValue={"id-4"}
+        keyValue="id-4"
         load={() => deferred.promise}
         render={(data) => <Text>{data.value}</Text>}
         renderError={(error: unknown) => (

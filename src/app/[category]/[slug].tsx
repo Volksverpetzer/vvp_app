@@ -86,7 +86,7 @@ const LoadArticle = () => {
   if (isLoading) {
     return (
       <LoadingFallback
-        text={"Lade Artikel..."}
+        text="Lade Artikel..."
         spinnerProps={{ size: "large" }}
       />
     );
@@ -120,10 +120,7 @@ const LoadArticle = () => {
 
   // Fallback: Show loading state (shouldn't normally be reached)
   return (
-    <LoadingFallback
-      text={"Lade Artikel..."}
-      spinnerProps={{ size: "large" }}
-    />
+    <LoadingFallback text="Lade Artikel..." spinnerProps={{ size: "large" }} />
   );
 };
 
