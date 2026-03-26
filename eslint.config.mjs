@@ -58,6 +58,10 @@ export default defineConfig([
       "no-unused-labels": "error",
       "no-unused-private-class-members": "error",
       "no-unused-vars": "off",
+      "react/jsx-curly-brace-presence": [
+        "error",
+        { props: "never", children: "never" },
+      ],
       "react/function-component-definition": [
         2,
         { namedComponents: "arrow-function" },
