@@ -66,7 +66,7 @@ const InstaScreen = () => {
 
   // If still loading or data is not available, render a loading state.
   if (isLoading || !data) {
-    return <LoadingFallback text={"Lade Instagram Beitrag..."} />;
+    return <LoadingFallback text="Lade Instagram Beitrag..." />;
   }
 
   // Render the post content: the Instagram post,

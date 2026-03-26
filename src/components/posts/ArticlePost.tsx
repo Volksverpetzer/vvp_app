@@ -180,7 +180,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           style={imageStyle}
           source={{ uri: imageUrl }}
           placeholder={LoadingImage}
-          contentFit={"cover"}
+          contentFit="cover"
         />
         <View style={progressBarStyle} />
         <Space size={10} />

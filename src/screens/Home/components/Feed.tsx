@@ -171,7 +171,7 @@ const Feed = (properties: FeedProperties) => {
   if (!initialLoad) {
     return (
       <LoadingFallback
-        text={"Lade Feed..."}
+        text="Lade Feed..."
         containerStyle={properties?.style}
         spinnerProps={{ size: "large" }}
       />
@@ -223,7 +223,7 @@ const Feed = (properties: FeedProperties) => {
         ListFooterComponent={
           posts.length > 0 &&
           (isLoadingMore ? (
-            <UiSpinner size={"large"} />
+            <UiSpinner size="large" />
           ) : (
             <Pressable
               accessibilityRole="button"

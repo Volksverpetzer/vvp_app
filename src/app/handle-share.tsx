@@ -100,7 +100,7 @@ const HandleShare = () => {
           gap: 12,
         }}
       >
-        <UiSpinner size={"large"} />
+        <UiSpinner size="large" />
         <Text>Share wird verarbeitet...</Text>
       </View>
     );

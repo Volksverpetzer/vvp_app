@@ -79,7 +79,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
         javaScriptEnabled
         domStorageEnabled
         startInLoadingState
-        renderLoading={() => <UiSpinner size={"large"} />}
+        renderLoading={() => <UiSpinner size="large" />}
         mediaPlaybackRequiresUserAction={false}
         allowsFullscreenVideo
         scrollEnabled={false}

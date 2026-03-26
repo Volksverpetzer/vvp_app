@@ -42,7 +42,7 @@ const LoadInstaPost = (properties: LoadProperties) => {
       load={loadInstaPost}
       onLoaded={handleLoaded}
       render={renderPost}
-      loadingText={"Lade Instagram Beitrag..."}
+      loadingText="Lade Instagram Beitrag..."
     />
   );
 };

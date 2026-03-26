@@ -132,7 +132,7 @@ const MyFavs = () => {
   return (
     <>
       {isLoading ? (
-        <LoadingFallback text={"Lade Favoriten..."} />
+        <LoadingFallback text="Lade Favoriten..." />
       ) : (
         posts.map((post) => (
           <GenericPost

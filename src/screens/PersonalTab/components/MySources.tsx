@@ -61,8 +61,8 @@ const MySources = () => {
                   drag={d}
                   swipeable={s}
                   icon={<DeleteIcon size={24} color="white" />}
-                  label={"Löschen"}
-                  hint={"Lösche diese Quelle"}
+                  label="Löschen"
+                  hint="Lösche diese Quelle"
                   onAction={async () => {
                     await handleDelete(href);
                   }}
