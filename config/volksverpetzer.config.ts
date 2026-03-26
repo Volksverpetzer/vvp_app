@@ -22,8 +22,8 @@ const colorScheme: colorSchemeType = {
   dark: {
     text: "#F7F7F7",
     heading: "#8EC9E1",
-    background: "#142228",
-    secondaryBackground: "#050d0f",
+    background: "#050d0f",
+    secondaryBackground: "#142228",
     errorBackground: "#7F1D1D",
     errorText: "#FEE2E2",
     grayedOut: "#333",

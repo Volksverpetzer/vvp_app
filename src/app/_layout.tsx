@@ -7,8 +7,9 @@ import {
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
-import { useEffect } from "react";
+import { type PropsWithChildren, useEffect } from "react";
 import { LogBox, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
@@ -28,7 +29,7 @@ import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
 
 // Hide warning for new native event emitter
@@ -37,24 +38,52 @@ LogBox.ignoreLogs(["new NativeEventEmitter"]);
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
+const SECONDARY_BG_SCREENS = ["action", "support"];
+
+/**
+ * Manages the background color for the app shell — including the notch/status bar
+ * area — based on the current screen and color scheme. Lives inside all providers
+ * so forced dark mode is respected.
+ */
+const AppFrame = ({ children }: PropsWithChildren) => {
+  const colorScheme = useAppColorScheme();
+  const insets = useSafeAreaInsets();
+  const segments = useSegments() as string[];
+
+  const isSecondaryBg = segments.some((s) => SECONDARY_BG_SCREENS.includes(s));
+  const backgroundColor = isSecondaryBg
+    ? Colors[colorScheme].secondaryBackground
+    : Colors[colorScheme].background;
+
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    SystemUI.setBackgroundColorAsync(backgroundColor).catch((error) => {
+      console.warn("Failed to set system background color", error);
+    });
+  }, [backgroundColor]);
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        backgroundColor,
+      }}
+    >
+      <StatusBar style={colorScheme === ColorScheme.dark ? "light" : "dark"} />
+      {children}
+    </View>
+  );
+};
+
 const RootLayout = () => {
   useNotificationObserver();
-
-  const segments = useSegments() as string[];
-  const isTabsAndAction =
-    segments.includes("(tabs)") && segments.includes("action");
 
   const [loaded] = useFonts({
     SourceSansPro: SourceSans3_400Regular,
     SourceSansProSemiBold: SourceSans3_600SemiBold,
     SourceSansProBold: SourceSans3_700Bold,
   });
-
-  const colorScheme = useAppColorScheme();
-  const insets = useSafeAreaInsets();
-  const systemBackgroundColor = isTabsAndAction
-    ? Colors[colorScheme].secondaryBackground
-    : Colors[colorScheme].background;
 
   // On first mount check notification permissions and request if appropriate.
   // The NotificationManager itself will skip simulators and respects canAskAgain.
@@ -80,14 +109,6 @@ const RootLayout = () => {
     }
   }, [loaded]);
 
-  useEffect(() => {
-    if (Platform.OS === "web") return;
-
-    SystemUI.setBackgroundColorAsync(systemBackgroundColor).catch((error) => {
-      console.warn("Failed to set system background color", error);
-    });
-  }, [systemBackgroundColor]);
-
   if (!loaded) {
     return <UiSpinner size="large" />;
   }
@@ -107,13 +128,7 @@ const RootLayout = () => {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SettingsProvider>
           <BadgeProvider>
-            <View
-              style={{
-                flex: 1,
-                paddingTop: insets.top,
-                backgroundColor: systemBackgroundColor,
-              }}
-            >
+            <AppFrame>
               <Stack
                 screenOptions={{
                   headerShown: false,
@@ -141,7 +156,7 @@ const RootLayout = () => {
                 <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
               </Stack>
               <Toast config={toastConfig} />
-            </View>
+            </AppFrame>
           </BadgeProvider>
         </SettingsProvider>
       </GestureHandlerRootView>
