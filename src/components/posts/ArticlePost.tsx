@@ -8,9 +8,11 @@ import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -19,8 +21,6 @@ import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { ArticleProperties } from "#/types";
-
-import LoadingImage from "#assets/images/logo_animated.gif";
 
 import Badge from "./Badge";
 
@@ -179,9 +179,19 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         <Image
           style={imageStyle}
           source={{ uri: imageUrl }}
-          placeholder={LoadingImage}
+          placeholder={AppImages.loadingAnimation}
           contentFit="cover"
         />
+        {!imageUrl && !AppImages.loadingAnimation && (
+          <UiSpinner
+            containerStyle={{
+              position: "absolute",
+              height,
+              top: 0,
+              left: 0,
+            }}
+          />
+        )}
         <View style={progressBarStyle} />
         <Space size={10} />
         <Text style={titleStyle}>{article.title}</Text>
