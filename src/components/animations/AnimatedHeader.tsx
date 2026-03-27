@@ -9,7 +9,7 @@ import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { hexToRgb } from "#/helpers/utils/color";
-import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 /**
  * Props for the AnimatedHeader component.
@@ -44,15 +44,8 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
 
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
+  const backgroundColor = Colors[colorScheme].background;
   const router = useRouter();
-  // Memoize the background color based on the current scheme.
-  const backgroundColor = useMemo(
-    () =>
-      colorScheme === ColorScheme.light
-        ? Colors.light.background
-        : Colors.dark.secondaryBackground,
-    [colorScheme],
-  );
 
   // Compute the RGB values only when backgroundColor changes.
   const [r, g, b] = useMemo(() => hexToRgb(backgroundColor), [backgroundColor]);
@@ -153,7 +146,12 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
         )}
         {title &&
           (typeof title === "string" ? (
-            <Animated.Text style={[titleTextStyle, { opacity: titleOpacity }]}>
+            <Animated.Text
+              style={[
+                titleTextStyle,
+                children ? { opacity: titleOpacity } : null,
+              ]}
+            >
               {title}
             </Animated.Text>
           ) : (

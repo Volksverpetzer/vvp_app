@@ -1,11 +1,12 @@
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, Pressable, Text } from "react-native";
+import { Animated, Pressable } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import { LogoBig } from "#/components/SvgIcons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
+import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -75,6 +76,7 @@ const HomeScreen = () => {
             ...styles.row,
             ...styles.input,
             ...styles.feed,
+            height: 50,
             backgroundColor: corporate,
           }}
         >

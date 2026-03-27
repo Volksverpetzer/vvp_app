@@ -45,14 +45,14 @@ const ReportScreen = () => {
   const { url: parameterUrl, index } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
-
-  // Color constants
-  const highlight = Colors[colorScheme].highlight;
-  const errorColor = Colors[colorScheme].errorBackground;
-  const grayedOut = Colors[colorScheme].grayedOut;
-  const inputBackground = Colors[colorScheme].background;
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
-  const textColor = Colors[colorScheme].text;
+  const {
+    highlight,
+    errorBackground: errorColor,
+    grayedOut,
+    background: inputBackground,
+    secondaryBackground: backgroundColor,
+    text: textColor,
+  } = Colors[colorScheme];
 
   // Memoized local styles to avoid re-creating on every render
   const localStyles = useMemo(

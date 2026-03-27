@@ -7,7 +7,6 @@ type styleColors = {
   secondaryBackground: CSSProperties["color"];
   errorBackground: CSSProperties["color"];
   errorText: CSSProperties["color"];
-  tint: CSSProperties["color"];
   tabIconDefault: CSSProperties["color"];
   grayedOut: CSSProperties["color"];
   grayedOutText: CSSProperties["color"];
@@ -15,6 +14,7 @@ type styleColors = {
   inputBackground: CSSProperties["color"];
   highlight: CSSProperties["color"];
   corporate: CSSProperties["color"];
+  corporateTint: CSSProperties["color"];
 };
 
 export type colorSchemeType = {
