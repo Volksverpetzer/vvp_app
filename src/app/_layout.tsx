@@ -163,12 +163,12 @@ const RootLayout = () => {
     </SafeAreaProvider>
   );
 
-  // On web, skip native-only providers (Stripe)
-  if (Platform.OS === "web") {
+  // On web or FOSS builds, skip native-only providers (Stripe)
+  if (Platform.OS === "web" || Config.isFoss) {
     return appContent;
   }
 
-  // On native platforms, wrap with native-only providers
+  // On native non-FOSS platforms, wrap with native-only providers
   return (
     <StripeProvider
       publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line

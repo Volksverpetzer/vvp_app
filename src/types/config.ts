@@ -47,4 +47,5 @@ export interface ExtraConfigType {
     merchantIdentifier?: string; // required for Apple Pay, can be obtained from Apple Developer Account
   };
   importantCats: Record<number, string>;
+  isFoss?: boolean; // true when built as a FOSS variant (Stripe and other proprietary modules are excluded)
 }

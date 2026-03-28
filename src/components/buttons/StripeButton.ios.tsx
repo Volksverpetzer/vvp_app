@@ -10,6 +10,7 @@ import { StyleSheet, View } from "react-native";
 
 import type { StripeButtonProperties } from "#/components/buttons/StripeButton";
 import UiSpinner from "#/components/ui/UiSpinner";
+import Config from "#/constants/Config";
 import API from "#/helpers/network/ServerAPI";
 
 const styles = StyleSheet.create({
@@ -22,6 +23,8 @@ const styles = StyleSheet.create({
 });
 
 const StripeButton = (props: StripeButtonProperties) => {
+  if (Config.isFoss) return null;
+
   const { amount, onSuccess, onSupportChecked } = props;
   const [isLoading, setIsLoading] = useState(true);
   const [isSupported, setIsSupported] = useState(false);

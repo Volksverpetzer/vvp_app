@@ -27,6 +27,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     userInterfaceStyle: "automatic",
     plugins: [
       "./plugins/gradleproperties.plugin.ts",
+      ...(process.env.IS_FOSS === "true" ? ["./plugins/withFossBuild"] : []),
       ["expo-router"],
       ["expo-asset"],
       [
@@ -126,6 +127,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       ...variableConfig.extraConfig,
+      isFoss: process.env.IS_FOSS === "true",
     },
     runtimeVersion: {
       policy: "sdkVersion",
