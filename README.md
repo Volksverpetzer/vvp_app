@@ -1,7 +1,7 @@
 # Volksverpetzer App
 
 <a href="https://github.com/Volksverpetzer/vvp_app/releases/latest">
-  <img src="https://img.shields.io/github/v/release/Volksverpetzer/vvp_app?color=3893C0&logo=github&style=for-the-badge&labelColor=1b7194"/>
+  <img src="https://img.shields.io/github/v/release/Volksverpetzer/vvp_app?color=3893C0&logo=github&style=for-the-badge&labelColor=1b7194" alt="Latest release"/>
 </a>
 
 [![Check Test and Lint](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml/badge.svg)](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml)
