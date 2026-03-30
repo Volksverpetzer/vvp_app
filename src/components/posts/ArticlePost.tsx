@@ -28,7 +28,7 @@ import Badge from "./Badge";
 type ArticlePostScreenProperties = {
   article: ArticleProperties;
   inView?: boolean;
-  level?: 0 | 1;
+  backgroundVariant?: "primary" | "secondary";
 };
 
 /**
@@ -41,7 +41,7 @@ type ArticlePostScreenProperties = {
  * - The component is wrapped with React.memo to prevent unnecessary re-renders.
  */
 const ArticlePost = (properties: ArticlePostScreenProperties) => {
-  const { article, inView, level = 0 } = properties;
+  const { article, inView, backgroundVariant = "primary" } = properties;
 
   // Local state.
   const [imageUrl, setImgURL] = useState("");
@@ -129,11 +129,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     () => ({
       paddingBottom: 0,
       backgroundColor:
-        level === 1
+        backgroundVariant === "secondary"
           ? Colors[colorScheme].secondaryBackground
           : Colors[colorScheme].background,
     }),
-    [level, colorScheme],
+    [backgroundVariant, colorScheme],
   );
   const imageStyle = useMemo(
     () => ({

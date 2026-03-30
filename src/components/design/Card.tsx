@@ -4,19 +4,22 @@ import { useThemeColor } from "#/hooks/useThemeColor";
 import type { ThemeProperties } from "#/types";
 
 export type CardProperties = ThemeProperties &
-  DefaultView["props"] & { key?: string; level?: 0 | 1 };
+  DefaultView["props"] & {
+    key?: string;
+    backgroundVariant?: "primary" | "secondary";
+  };
 
 const Card = (properties: CardProperties) => {
   const {
     style,
     lightColor,
     darkColor,
-    level = 0,
+    backgroundVariant = "primary",
     ...otherProperties
   } = properties;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    level === 1 ? "secondaryBackground" : "background",
+    backgroundVariant === "secondary" ? "secondaryBackground" : "background",
   );
 
   return (
