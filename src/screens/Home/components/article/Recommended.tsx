@@ -6,9 +6,10 @@ import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
+import { HttpsUrl } from "#/types";
 
 type RecommendedProperties = {
-  article_link: string;
+  article_link: HttpsUrl;
 };
 
 /**
@@ -30,7 +31,19 @@ const Recommended = (properties: RecommendedProperties) => {
 
   return (
     <>
-      <Text style={{ padding: 10, fontSize: 18 }}>Passend dazu:</Text>
+      {matches.length > 0 && (
+        <>
+          <Text
+            style={{
+              padding: 10,
+              fontSize: 20,
+              fontFamily: "SourceSansProBold",
+            }}
+          >
+            Passend dazu:
+          </Text>
+        </>
+      )}
       {matches?.map((match, index) => {
         if (!match.url.includes(Config.wpUrl)) {
           return;

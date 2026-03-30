@@ -55,7 +55,7 @@ class IntelligenceAPI {
   }
 
   static async recommendations(
-    url: string,
+    url: HttpsUrl,
   ): Promise<{ results: { url: string; title: string }[] }> {
     return await this.get<{
       results: { url: string; title: string }[];
