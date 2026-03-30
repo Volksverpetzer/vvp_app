@@ -5,6 +5,8 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { Platform } from "react-native";
 
+import Config from "#/constants/Config";
+
 /**
  * Hook to handle initial and response-based notification redirects.
  * On mount, checks last notification response and listens for new ones.
@@ -12,8 +14,8 @@ import { Platform } from "react-native";
  */
 export const useNotificationObserver = () => {
   useEffect(() => {
-    // Skip on web as expo-notifications is not fully supported
-    if (Platform.OS === "web") return;
+    // Skip on web and FOSS builds — FCM is not available
+    if (Platform.OS === "web" || Config.isFoss) return;
 
     let isMounted = true;
 

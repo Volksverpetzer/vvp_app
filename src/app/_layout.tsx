@@ -4,7 +4,6 @@ import {
   SourceSans3_700Bold,
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
-import { StripeProvider } from "@stripe/stripe-react-native";
 import { Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -22,9 +21,9 @@ import Toast from "react-native-toast-message";
 import View from "#/components/design/View";
 import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
+import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
-import Config from "#/constants/Config";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
@@ -163,20 +162,7 @@ const RootLayout = () => {
     </SafeAreaProvider>
   );
 
-  // On web, skip native-only providers (Stripe)
-  if (Platform.OS === "web") {
-    return appContent;
-  }
-
-  // On native platforms, wrap with native-only providers
-  return (
-    <StripeProvider
-      publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
-      merchantIdentifier={Config.donations.merchantIdentifier}
-    >
-      {appContent}
-    </StripeProvider>
-  );
+  return <StripeWrapper>{appContent}</StripeWrapper>;
 };
 
 /**

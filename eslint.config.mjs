@@ -18,6 +18,7 @@ export default defineConfig([
       "**/pnpm-lock.yaml",
       "android/**",
       "ios/**",
+      "expo-env.d.ts",
       "src/screens/Settings/components/licenses/data.tsx",
     ],
   },

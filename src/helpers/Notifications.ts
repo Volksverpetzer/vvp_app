@@ -10,16 +10,18 @@ import type { NotificationSettingType } from "#/types";
 
 import SettingsStore from "./Stores/SettingsStore";
 
-// Configure the notification handler
-Notifications.setNotificationHandler({
-  handleNotification: () =>
-    Promise.resolve({
-      shouldShowBanner: true,
-      shouldShowList: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-    }),
-});
+// Configure the notification handler (no-op on FOSS builds — FCM is not linked)
+if (!Config.isFoss) {
+  Notifications.setNotificationHandler({
+    handleNotification: () =>
+      Promise.resolve({
+        shouldShowBanner: true,
+        shouldShowList: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+  });
+}
 
 const NotificationManager = {
   /**
@@ -27,6 +29,15 @@ const NotificationManager = {
    * @returns A promise that resolves to the current notification permissions.
    */
   getPermissions(): Promise<Notifications.NotificationPermissionsStatus> {
+    if (Config.isFoss)
+      return Promise.resolve({
+        status: Notifications.PermissionStatus.DENIED,
+        canAskAgain: false,
+        granted: false,
+        expires: "never",
+        ios: undefined,
+        android: undefined,
+      });
     return Notifications.getPermissionsAsync();
   },
 
@@ -36,8 +47,8 @@ const NotificationManager = {
    */
   async getToken(): Promise<string> {
     try {
-      // Skip on web as expo-notifications is not fully supported
-      if (Platform.OS === "web") return "";
+      // Skip on web and FOSS builds — FCM is not available
+      if (Platform.OS === "web" || Config.isFoss) return "";
 
       const { data } = await Notifications.getExpoPushTokenAsync({
         projectId: Config.eas.projectId,
@@ -53,6 +64,7 @@ const NotificationManager = {
    * Refreshes the server with the current notification settings.
    */
   async refreshServer() {
+    if (Config.isFoss) return;
     try {
       const permissions = await NotificationManager.getPermissions();
       if (permissions.status === Notifications.PermissionStatus.UNDETERMINED) {
@@ -97,6 +109,11 @@ const NotificationManager = {
     status: string;
     notificationSettings: NotificationSettingType;
   }> {
+    if (Config.isFoss) {
+      const storedSettings = await SettingsStore.getNotificationSettings();
+      return { status: "foss", notificationSettings: storedSettings };
+    }
+
     let token: string;
 
     const storedSettings = await SettingsStore.getNotificationSettings();
@@ -180,6 +197,7 @@ const NotificationManager = {
    * This function is safe on simulators and will not attempt requests there.
    */
   async checkAndRequestOnLaunch(): Promise<void> {
+    if (Config.isFoss) return;
     try {
       // Don't request on simulators/emulators
       if (!Device.isDevice) {

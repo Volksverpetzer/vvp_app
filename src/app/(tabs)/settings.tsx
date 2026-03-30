@@ -137,16 +137,18 @@ const SettingsScreen = () => {
             settings={contentSettings}
           />
         </Collapsable>
-        <Collapsable
-          icon={<NotificationIcon color={corporate} size={24} />}
-          title="Benachrichtigungen"
-          titleStyle={globalStyles.heading}
-        >
-          <SettingsList
-            saveSettings={saveNotificationSetting}
-            settings={notificationSettings}
-          />
-        </Collapsable>
+        {!Config.isFoss && (
+          <Collapsable
+            icon={<NotificationIcon color={corporate} size={24} />}
+            title="Benachrichtigungen"
+            titleStyle={globalStyles.heading}
+          >
+            <SettingsList
+              saveSettings={saveNotificationSetting}
+              settings={notificationSettings}
+            />
+          </Collapsable>
+        )}
         <Collapsable
           icon={<SettingsIcon color={corporate} size={24} />}
           title="Erweitert"
@@ -205,13 +207,15 @@ const SettingsScreen = () => {
           >
             <Text>Intro zurücksetzen</Text>
           </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            style={pressableStyle}
-            onPress={() => Notifications.registerForPushNotifications()}
-          >
-            <Text>Benachrichtigungen zurücksetzen</Text>
-          </Pressable>
+          {!Config.isFoss && (
+            <Pressable
+              accessibilityRole="button"
+              style={pressableStyle}
+              onPress={() => Notifications.registerForPushNotifications()}
+            >
+              <Text>Benachrichtigungen zurücksetzen</Text>
+            </Pressable>
+          )}
           <Pressable
             accessibilityRole="button"
             style={pressableStyle}
@@ -243,8 +247,8 @@ const SettingsScreen = () => {
             Versionskennung: {Application.nativeApplicationVersion}
             &nbsp;-&nbsp;
             {Application.nativeBuildVersion}
-            {"\n"}
-            Token: {token}
+            {Config.isFoss && " - FOSS"}
+            {!Config.isFoss && `\nToken: ${token}`}
           </Text>
         </View>
         <Space size={100} />

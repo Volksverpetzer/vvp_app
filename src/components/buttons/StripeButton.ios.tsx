@@ -10,6 +10,7 @@ import { StyleSheet, View } from "react-native";
 
 import type { StripeButtonProperties } from "#/components/buttons/StripeButton";
 import UiSpinner from "#/components/ui/UiSpinner";
+import Config from "#/constants/Config";
 import API from "#/helpers/network/ServerAPI";
 
 const styles = StyleSheet.create({
@@ -56,6 +57,8 @@ const StripeButton = (props: StripeButtonProperties) => {
       mounted = false;
     };
   }, [isPlatformPaySupported]);
+
+  if (Config.isFoss) return null;
 
   /**
    * Fetch the client secret from "payment/paymentIntent" endpoint
