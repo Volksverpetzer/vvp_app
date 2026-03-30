@@ -21,9 +21,9 @@ import Toast from "react-native-toast-message";
 import View from "#/components/design/View";
 import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
+import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
-import Config from "#/constants/Config";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
@@ -162,24 +162,7 @@ const RootLayout = () => {
     </SafeAreaProvider>
   );
 
-  // On web or FOSS builds, skip native-only providers (Stripe)
-  if (Platform.OS === "web" || Config.isFoss) {
-    return appContent;
-  }
-
-  // On native non-FOSS platforms, wrap with native-only providers.
-  // Lazy require avoids loading the Stripe native module on FOSS builds where it isn't linked.
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { StripeProvider } =
-    require("@stripe/stripe-react-native") as typeof import("@stripe/stripe-react-native");
-  return (
-    <StripeProvider
-      publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
-      merchantIdentifier={Config.donations.merchantIdentifier}
-    >
-      {appContent}
-    </StripeProvider>
-  );
+  return <StripeWrapper>{appContent}</StripeWrapper>;
 };
 
 /**
