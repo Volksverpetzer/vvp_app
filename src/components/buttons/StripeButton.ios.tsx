@@ -23,8 +23,6 @@ const styles = StyleSheet.create({
 });
 
 const StripeButton = (props: StripeButtonProperties) => {
-  if (Config.isFoss) return null;
-
   const { amount, onSuccess, onSupportChecked } = props;
   const [isLoading, setIsLoading] = useState(true);
   const [isSupported, setIsSupported] = useState(false);
@@ -59,6 +57,8 @@ const StripeButton = (props: StripeButtonProperties) => {
       mounted = false;
     };
   }, [isPlatformPaySupported]);
+
+  if (Config.isFoss) return null;
 
   /**
    * Fetch the client secret from "payment/paymentIntent" endpoint
