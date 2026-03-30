@@ -63,6 +63,9 @@ jobs:
       - name: 🚀 EAS Build - android apk
         run: APP=volksverpetzer eas build --profile preview --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
 
+      - name: 🚀 EAS Build - android apk (FOSS)
+        run: IS_FOSS=true APP=volksverpetzer eas build --profile preview --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss.apk
+
       - name: 🎂 Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -71,4 +74,6 @@ jobs:
           draft: false
           prerelease: true
           generate_release_notes: true
-          files: ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
+          files: |
+            ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
+            ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss.apk

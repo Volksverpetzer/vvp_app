@@ -59,13 +59,17 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
             ] as [string, any],
           ]
         : []),
-      [
-        "expo-notifications",
-        {
-          icon: variableConfig.assets.notificationIcon,
-          color: variableConfig.extraConfig.themeColor,
-        },
-      ],
+      ...(process.env.IS_FOSS !== "true"
+        ? [
+            [
+              "expo-notifications",
+              {
+                icon: variableConfig.assets.notificationIcon,
+                color: variableConfig.extraConfig.themeColor,
+              },
+            ] as [string, any],
+          ]
+        : []),
       [
         "expo-custom-assets",
         {
@@ -107,7 +111,10 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: variableConfig.packageName,
-      googleServicesFile: variableConfig.googleServicesFile,
+      googleServicesFile:
+        process.env.IS_FOSS !== "true"
+          ? variableConfig.googleServicesFile
+          : undefined,
       allowBackup: true,
       intentFilters: [
         {

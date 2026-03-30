@@ -4,7 +4,6 @@ import {
   SourceSans3_700Bold,
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
-import { StripeProvider } from "@stripe/stripe-react-native";
 import { Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -168,7 +167,11 @@ const RootLayout = () => {
     return appContent;
   }
 
-  // On native non-FOSS platforms, wrap with native-only providers
+  // On native non-FOSS platforms, wrap with native-only providers.
+  // Lazy require avoids loading the Stripe native module on FOSS builds where it isn't linked.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { StripeProvider } =
+    require("@stripe/stripe-react-native") as typeof import("@stripe/stripe-react-native");
   return (
     <StripeProvider
       publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
