@@ -56,7 +56,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
                   variableConfig.extraConfig.donations.merchantIdentifier,
                 enableGooglePay: false,
               },
-            ],
+            ] as [string, any],
           ]
         : []),
       [
