@@ -47,14 +47,18 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
-      [
-        "@stripe/stripe-react-native",
-        {
-          merchantIdentifier:
-            variableConfig.extraConfig.donations.merchantIdentifier,
-          enableGooglePay: false,
-        },
-      ],
+      ...(process.env.IS_FOSS !== "true"
+        ? [
+            [
+              "@stripe/stripe-react-native",
+              {
+                merchantIdentifier:
+                  variableConfig.extraConfig.donations.merchantIdentifier,
+                enableGooglePay: false,
+              },
+            ],
+          ]
+        : []),
       [
         "expo-notifications",
         {
