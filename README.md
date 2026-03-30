@@ -1,9 +1,12 @@
 # Volksverpetzer App
 
+<a href="https://github.com/Volksverpetzer/vvp_app/releases/latest">
+  <img src="https://img.shields.io/github/v/release/Volksverpetzer/vvp_app?color=3893C0&logo=github&style=for-the-badge&labelColor=1b7194" alt="Latest release"/>
+</a>
+
 [![Check Test and Lint](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml/badge.svg)](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/gitleaks/gitleaks-action)
-[![GitHub release](https://img.shields.io/github/release/Volksverpetzer/vvp_app.svg)](https://github.com/Volksverpetzer/vvp_app/releases/)
 
 Official mobile app for Volksverpetzer (build with Expo + TypeScript).
 

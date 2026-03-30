@@ -230,7 +230,7 @@ const IframeRenderer = ({
         }}
       >
         <View style={{ ...styles.roundEdges, margin: 12 }}>
-          <LoadArticlePost slug={slug} />
+          <LoadArticlePost slug={slug} backgroundVariant="secondary" />
         </View>
       </View>
     );

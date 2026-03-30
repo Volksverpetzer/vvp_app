@@ -43,7 +43,7 @@ const Recommended = (properties: RecommendedProperties) => {
             key={String(index)}
             style={{ ...styles.roundEdges, margin: 12 }}
           >
-            <LoadArticlePost slug={slug} />
+            <LoadArticlePost slug={slug} backgroundVariant="secondary" />
           </View>
         );
       })}
