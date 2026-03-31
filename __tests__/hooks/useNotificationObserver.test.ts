@@ -34,10 +34,6 @@ jest.mock("expo-router", () => ({
   router: { push: jest.fn() },
 }));
 
-jest.mock("react-native", () => ({
-  Platform: { OS: "ios" },
-}));
-
 describe("useNotificationObserver", () => {
   beforeEach(() => {
     jest.clearAllMocks();
