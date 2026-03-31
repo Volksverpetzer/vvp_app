@@ -43,7 +43,7 @@ const Recommended = (properties: RecommendedProperties) => {
       )}
       {matches?.map((match, index) => {
         if (!match.url.includes(Config.wpUrl)) {
-          return;
+          return null;
         }
         const url = new URL(match.url);
         const path = url.pathname;
