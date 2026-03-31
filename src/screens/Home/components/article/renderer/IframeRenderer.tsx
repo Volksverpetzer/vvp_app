@@ -229,8 +229,8 @@ const IframeRenderer = ({
           overflow: "visible",
         }}
       >
-        <View style={{ ...styles.roundEdges, margin: 12 }}>
-          <LoadArticlePost slug={slug} backgroundVariant="secondary" />
+        <View style={{ margin: 12 }}>
+          <LoadArticlePost slug={slug} elevated />
         </View>
       </View>
     );

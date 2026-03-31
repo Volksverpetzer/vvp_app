@@ -4,7 +4,6 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import { HttpsUrl } from "#/types";
 
@@ -52,11 +51,8 @@ const Recommended = (properties: RecommendedProperties) => {
         const path = url.pathname;
         const slug = path.replace(/\/+$/, "").split("/").pop();
         return (
-          <View
-            key={String(index)}
-            style={{ ...styles.roundEdges, margin: 12 }}
-          >
-            <LoadArticlePost slug={slug} backgroundVariant="secondary" />
+          <View key={String(index)} style={{ margin: 12 }}>
+            <LoadArticlePost slug={slug} elevated />
           </View>
         );
       })}
