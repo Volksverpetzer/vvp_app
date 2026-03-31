@@ -8,14 +8,14 @@ import type { ArticleProperties } from "#/types";
 export type LoadProperties = {
   slug: string;
   inView?: boolean;
-  backgroundVariant?: "primary" | "secondary";
+  elevated?: boolean;
 };
 
 /**
  * This component takes an article slug, pulls WordPress API and then Renders an Article Post with the Response
  */
 const LoadArticlePost = (properties: LoadProperties) => {
-  const { slug, inView = true, backgroundVariant } = properties;
+  const { slug, inView = true, elevated } = properties;
 
   const loadArticle = useCallback((articleSlug: string) => {
     return WordPressAPI.getPost(articleSlug).then((data) => {
@@ -31,13 +31,9 @@ const LoadArticlePost = (properties: LoadProperties) => {
 
   const renderArticle = useCallback(
     (article: ArticleProperties) => (
-      <ArticlePost
-        inView={inView}
-        article={article}
-        backgroundVariant={backgroundVariant}
-      />
+      <ArticlePost inView={inView} elevated={elevated} article={article} />
     ),
-    [inView, backgroundVariant],
+    [inView, elevated],
   );
 
   return (

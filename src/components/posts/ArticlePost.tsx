@@ -28,6 +28,7 @@ import Badge from "./Badge";
 type ArticlePostScreenProperties = {
   article: ArticleProperties;
   inView?: boolean;
+  elevated?: boolean;
   backgroundVariant?: "primary" | "secondary";
 };
 
@@ -41,7 +42,12 @@ type ArticlePostScreenProperties = {
  * - The component is wrapped with React.memo to prevent unnecessary re-renders.
  */
 const ArticlePost = (properties: ArticlePostScreenProperties) => {
-  const { article, inView, backgroundVariant = "primary" } = properties;
+  const {
+    article,
+    inView,
+    elevated = false,
+    backgroundVariant = "primary",
+  } = properties;
 
   // Local state.
   const [imageUrl, setImgURL] = useState("");
@@ -132,9 +138,23 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         backgroundVariant === "secondary"
           ? Colors[colorScheme].secondaryBackground
           : Colors[colorScheme].background,
+      ...(elevated && { borderRadius: 15, overflow: "hidden" as const }),
     }),
-    [backgroundVariant, colorScheme],
+    [backgroundVariant, colorScheme, elevated],
   );
+
+  const elevatedWrapperStyle = useMemo(() => {
+    if (!elevated) return undefined;
+    const isDark = colorScheme === "dark";
+    return {
+      borderRadius: 15,
+      shadowColor: isDark ? "#fff" : "#000",
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: isDark ? 0.12 : 0.2,
+      shadowRadius: 1.41,
+      elevation: 2,
+    };
+  }, [elevated, colorScheme]);
   const imageStyle = useMemo(
     () => ({
       left: 0,
@@ -177,7 +197,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     [],
   );
 
-  return (
+  const content = (
     <TouchableOpacity
       accessibilityRole="button"
       style={{ padding: 0, flex: 1 }}
@@ -223,6 +243,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       </View>
     </TouchableOpacity>
   );
+
+  if (elevated) {
+    return <View style={elevatedWrapperStyle}>{content}</View>;
+  }
+
+  return content;
 };
 
 export default React.memo(ArticlePost);

@@ -14,7 +14,6 @@ import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
@@ -229,8 +228,8 @@ const IframeRenderer = ({
           overflow: "visible",
         }}
       >
-        <View style={{ ...styles.roundEdges, margin: 12 }}>
-          <LoadArticlePost slug={slug} backgroundVariant="secondary" />
+        <View style={{ margin: 12 }}>
+          <LoadArticlePost slug={slug} elevated />
         </View>
       </View>
     );

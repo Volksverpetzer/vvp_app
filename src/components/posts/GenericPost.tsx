@@ -4,7 +4,6 @@ import type { ViewStyle } from "react-native";
 
 import ShareBar from "#/components/bars/ShareBar";
 import View from "#/components/design/View";
-import { styles } from "#/constants/Styles";
 import type { FaveableType, ShareableType } from "#/types";
 
 interface ComponentProperty<T> {
@@ -41,7 +40,13 @@ const GenericPost = (properties: ComponentProperty<object>) => {
 
   // Memoize the combined style to avoid re-creating the style object on every render.
   const combinedStyle: ViewStyle = useMemo(
-    () => ({ ...styles.roundEdges, ...style }),
+    () => ({
+      borderRadius: 15,
+      marginBottom: "7%",
+      minHeight: 200,
+      overflow: "hidden",
+      ...style,
+    }),
     [style],
   );
 

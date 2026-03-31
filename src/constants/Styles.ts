@@ -44,12 +44,6 @@ export const styles = StyleSheet.create({
   noBackground: {
     backgroundColor: "transparent",
   },
-  roundEdges: {
-    borderRadius: 15,
-    marginBottom: "7%",
-    minHeight: 200,
-    overflow: "hidden",
-  },
   row: {
     alignItems: "center",
     flexDirection: "row",
