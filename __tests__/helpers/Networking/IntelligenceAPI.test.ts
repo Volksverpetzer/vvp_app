@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 import RealIntelligenceAPI from "#/helpers/network/IntelligenceAPI";
-// Import dependencies after mocking
 import * as Networking from "#/helpers/utils/networking";
 
 // Mock dependencies
@@ -235,20 +234,14 @@ describe("IntelligenceAPI", () => {
   });
 
   describe("recommendations", () => {
-    let getSpy: ReturnType<typeof jest.spyOn>;
-
-    beforeEach(() => {
-      getSpy = jest.spyOn(Networking, "get");
-    });
-
     it("encodes the url query parameter so ?/& do not break the request path", async () => {
       const url =
         "https://example.com/article?utm_source=twitter&utm_medium=social" as any;
-      getSpy.mockResolvedValue({ results: [] });
+      jest.mocked(Networking.get).mockResolvedValue({ results: [] });
 
       await RealIntelligenceAPI.recommendations(url);
 
-      expect(getSpy).toHaveBeenCalledWith(
+      expect(Networking.get).toHaveBeenCalledWith(
         expect.anything(),
         `/api/recommend/?url=${encodeURIComponent(url)}`,
       );
@@ -259,11 +252,11 @@ describe("IntelligenceAPI", () => {
       const mockResponse = {
         results: [{ url: "https://example.com/related", title: "Related" }],
       };
-      getSpy.mockResolvedValue(mockResponse);
+      jest.mocked(Networking.get).mockResolvedValue(mockResponse);
 
       const result = await RealIntelligenceAPI.recommendations(url);
 
-      expect(getSpy).toHaveBeenCalledWith(
+      expect(Networking.get).toHaveBeenCalledWith(
         expect.anything(),
         `/api/recommend/?url=${encodeURIComponent(url)}`,
       );
