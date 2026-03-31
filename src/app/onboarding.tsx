@@ -35,10 +35,14 @@ const Onboarding = () => {
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
 
+  const isFoss = Constants.expoConfig.extra.isFoss;
+
   const agreeToTerms = async () => {
-    await Notifications.registerForPushNotifications().catch((error) => {
-      console.error("Failed to register for push notifications:", error);
-    });
+    if (!isFoss) {
+      await Notifications.registerForPushNotifications().catch((error) => {
+        console.error("Failed to register for push notifications:", error);
+      });
+    }
     await PersonalStore.setOnboardingDone().finally(() => {
       updateBadgeState({ personal: false, action: true });
       router.replace("/");
@@ -102,33 +106,41 @@ const Onboarding = () => {
         </View>
       ),
     },
-    {
-      id: 7,
-      title: "Push Benachrichtigungen",
-      description: `Faktenchecks hinken naturgemäß immer hinterher. Um schnellstmöglich Faktenchecks zu erhalten und zu teilen, kannst du dir Push-Benachrichtigungen aktivieren. Das kann wichtig sein, damit die Fakten deine Freunde oder Familie erreichen, bevor der Fake sie aufs Glatteis führt.`,
-      Component: () => (
-        <View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <FeedIcon color={corporate} />
-            <Text
-              style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
-            >
-              Feed-Einstellungen
-            </Text>
-          </View>
-          <SettingsList
-            saveSettings={saveNotificationSetting}
-            settings={notificationSettings}
-          />
-        </View>
-      ),
-    },
+    ...(!isFoss
+      ? [
+          {
+            id: 7,
+            title: "Push Benachrichtigungen",
+            description: `Faktenchecks hinken naturgemäß immer hinterher. Um schnellstmöglich Faktenchecks zu erhalten und zu teilen, kannst du dir Push-Benachrichtigungen aktivieren. Das kann wichtig sein, damit die Fakten deine Freunde oder Familie erreichen, bevor der Fake sie aufs Glatteis führt.`,
+            Component: () => (
+              <View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <FeedIcon color={corporate} />
+                  <Text
+                    style={{
+                      ...styles.heading,
+                      textAlign: "left",
+                      paddingLeft: 30,
+                    }}
+                  >
+                    Feed-Einstellungen
+                  </Text>
+                </View>
+                <SettingsList
+                  saveSettings={saveNotificationSetting}
+                  settings={notificationSettings}
+                />
+              </View>
+            ),
+          },
+        ]
+      : []),
     {
       id: 8,
       title: "Prio: Datenschutz",
