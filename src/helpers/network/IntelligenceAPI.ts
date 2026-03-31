@@ -59,7 +59,7 @@ class IntelligenceAPI {
   ): Promise<{ results: { url: string; title: string }[] }> {
     return await this.get<{
       results: { url: string; title: string }[];
-    }>(`/api/recommend/?url=${url}`);
+    }>(`/api/recommend/?url=${encodeURIComponent(url)}`);
   }
 }
 
