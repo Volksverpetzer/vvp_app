@@ -1,7 +1,15 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from "@jest/globals";
 import * as Notifications from "expo-notifications";
 
 import NotificationManager from "#/helpers/Notifications";
+import SettingsStore from "#/helpers/Stores/SettingsStore";
 
 // Mock dependencies
 jest.mock("react-native", () => ({
@@ -61,9 +69,11 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
   },
 }));
 
+let mockIsFoss = false;
 jest.mock("#/constants/Config", () => ({
-  eas: {
-    projectId: "test-project-id",
+  eas: { projectId: "test-project-id" },
+  get isFoss() {
+    return mockIsFoss;
   },
 }));
 
@@ -229,6 +239,83 @@ describe("NotificationManager", () => {
 
       expect(requestSpy).not.toHaveBeenCalled();
       expect(registerSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("FOSS mode (Config.isFoss = true)", () => {
+    beforeEach(() => {
+      jest.restoreAllMocks(); // clear any lingering spies from checkAndRequestOnLaunch tests
+      mockIsFoss = true;
+    });
+
+    afterEach(() => {
+      mockIsFoss = false;
+    });
+
+    describe("getPermissions", () => {
+      it("returns DENIED without calling the system API", async () => {
+        const spy = jest.spyOn(Notifications, "getPermissionsAsync");
+
+        const result = await NotificationManager.getPermissions();
+
+        expect(spy).not.toHaveBeenCalled();
+        expect(result.status).toBe(Notifications.PermissionStatus.DENIED);
+        expect(result.canAskAgain).toBe(false);
+      });
+    });
+
+    describe("getToken", () => {
+      it("returns an empty string without calling the push token API", async () => {
+        const spy = jest.spyOn(Notifications, "getExpoPushTokenAsync");
+
+        const result = await NotificationManager.getToken();
+
+        expect(spy).not.toHaveBeenCalled();
+        expect(result).toBe("");
+      });
+    });
+
+    describe("refreshServer", () => {
+      it("returns early without checking permissions or calling the API", async () => {
+        const permissionsSpy = jest.spyOn(
+          NotificationManager,
+          "getPermissions",
+        );
+
+        await NotificationManager.refreshServer();
+
+        expect(permissionsSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("registerForPushNotifications", () => {
+      it("returns stored settings with status 'foss' without registering", async () => {
+        const mockSettings = {
+          new_post: { value: true, name: "Neue Artikel" },
+        };
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue(mockSettings);
+        const permissionsSpy = jest.spyOn(Notifications, "getPermissionsAsync");
+
+        const result = await NotificationManager.registerForPushNotifications();
+
+        expect(permissionsSpy).not.toHaveBeenCalled();
+        expect(result.status).toBe("foss");
+        expect(result.notificationSettings).toEqual(mockSettings);
+      });
+    });
+
+    describe("checkAndRequestOnLaunch", () => {
+      it("returns early without checking permissions", async () => {
+        const spy = jest.spyOn(Notifications, "getPermissionsAsync");
+
+        await NotificationManager.checkAndRequestOnLaunch();
+
+        expect(spy).not.toHaveBeenCalled();
+      });
     });
   });
 });
