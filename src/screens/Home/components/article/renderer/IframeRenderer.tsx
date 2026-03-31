@@ -14,7 +14,6 @@ import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
