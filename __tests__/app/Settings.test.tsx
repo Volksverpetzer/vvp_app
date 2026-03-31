@@ -37,10 +37,10 @@ jest.mock("expo-application", () => ({
 jest.mock("#/helpers/Notifications", () => ({
   __esModule: true,
   default: {
-    getToken: jest.fn().mockResolvedValue("test-token"),
-    registerForPushNotifications: jest.fn().mockResolvedValue({
-      notificationSettings: {},
-    }),
+    getToken: jest.fn(() => Promise.resolve("")),
+    registerForPushNotifications: jest.fn(() =>
+      Promise.resolve({ notificationSettings: {} }),
+    ),
   },
 }));
 
@@ -53,7 +53,7 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
   __esModule: true,
   default: {
     defaultNotificationSettings: {},
-    getNotificationSettings: jest.fn().mockResolvedValue({}),
+    getNotificationSettings: jest.fn(() => Promise.resolve({})),
   },
 }));
 

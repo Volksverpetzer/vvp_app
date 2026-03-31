@@ -45,14 +45,14 @@ jest.mock("#/screens/Onboarding/components/Flatboard", () => ({
 jest.mock("#/helpers/Notifications", () => ({
   __esModule: true,
   default: {
-    registerForPushNotifications: jest.fn().mockResolvedValue({}),
+    registerForPushNotifications: jest.fn(() => Promise.resolve({})),
   },
 }));
 
 jest.mock("#/helpers/Stores/PersonalStore", () => ({
   __esModule: true,
   default: {
-    setOnboardingDone: jest.fn().mockResolvedValue(undefined),
+    setOnboardingDone: jest.fn(() => Promise.resolve()),
   },
 }));
 

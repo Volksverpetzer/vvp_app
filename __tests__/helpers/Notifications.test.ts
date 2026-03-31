@@ -293,9 +293,11 @@ describe("NotificationManager", () => {
         const mockSettings = {
           new_post: { value: true, name: "Neue Artikel" },
         };
-        (SettingsStore.getNotificationSettings as jest.Mock).mockResolvedValue(
-          mockSettings,
-        );
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue(mockSettings);
         const permissionsSpy = jest.spyOn(Notifications, "getPermissionsAsync");
 
         const result = await NotificationManager.registerForPushNotifications();

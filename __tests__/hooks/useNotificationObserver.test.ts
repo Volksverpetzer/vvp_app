@@ -20,7 +20,7 @@ jest.mock("#/constants/Config", () => ({
 }));
 
 jest.mock("expo-notifications", () => ({
-  getLastNotificationResponseAsync: jest.fn().mockResolvedValue(null),
+  getLastNotificationResponseAsync: jest.fn(() => Promise.resolve(null)),
   addNotificationResponseReceivedListener: jest.fn(() => ({
     remove: jest.fn(),
   })),
