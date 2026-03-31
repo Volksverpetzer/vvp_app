@@ -11,6 +11,7 @@ import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -35,7 +36,7 @@ const Onboarding = () => {
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
 
-  const isFoss = Constants.expoConfig.extra.isFoss;
+  const isFoss = Config.isFoss ?? false;
 
   const agreeToTerms = async () => {
     if (!isFoss) {
