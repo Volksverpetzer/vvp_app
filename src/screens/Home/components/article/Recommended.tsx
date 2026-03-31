@@ -31,17 +31,15 @@ const Recommended = (properties: RecommendedProperties) => {
   return (
     <>
       {matches.length > 0 && (
-        <>
-          <Text
-            style={{
-              padding: 10,
-              fontSize: 20,
-              fontFamily: "SourceSansProBold",
-            }}
-          >
-            Passend dazu:
-          </Text>
-        </>
+        <Text
+          style={{
+            padding: 10,
+            fontSize: 20,
+            fontFamily: "SourceSansProBold",
+          }}
+        >
+          Passend dazu:
+        </Text>
       )}
       {matches?.map((match, index) => {
         if (!match.url.includes(Config.wpUrl)) {
