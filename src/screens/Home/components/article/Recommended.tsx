@@ -5,7 +5,7 @@ import View from "#/components/design/View";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import Config from "#/constants/Config";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
-import { HttpsUrl } from "#/types";
+import type { HttpsUrl } from "#/types";
 
 type RecommendedProperties = {
   article_link: HttpsUrl;
