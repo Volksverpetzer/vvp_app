@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 import { Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { FeedIcon, SafetyIcon } from "#/components/Icons";
+import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
 import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import SettingsList from "#/components/views/SettingsList";
@@ -93,7 +93,7 @@ const Onboarding = () => {
               alignItems: "center",
             }}
           >
-            <FeedIcon color={corporate} />
+            <FeedIcon color={corporate} size={20} />
             <Text
               style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
             >
@@ -122,7 +122,7 @@ const Onboarding = () => {
                     alignItems: "center",
                   }}
                 >
-                  <FeedIcon color={corporate} />
+                  <NotificationIcon color={corporate} size={20} />
                   <Text
                     style={{
                       ...styles.heading,
@@ -130,7 +130,7 @@ const Onboarding = () => {
                       paddingLeft: 30,
                     }}
                   >
-                    Feed-Einstellungen
+                    Benachrichtigungen
                   </Text>
                 </View>
                 <SettingsList

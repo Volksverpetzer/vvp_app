@@ -93,6 +93,7 @@ jest.mock("#/helpers/utils/variant", () => ({
 
 jest.mock("#/components/Icons", () => ({
   FeedIcon: jest.fn(() => null),
+  NotificationIcon: jest.fn(() => null),
   SafetyIcon: jest.fn(() => null),
 }));
 
