@@ -1,9 +1,10 @@
 import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
 import type { StyleProp, TextStyle } from "react-native";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -49,7 +50,7 @@ const Collapsable = ({
       >
         <View style={styles.title}>
           {icon}
-          <Text style={[{ color: textColor }, titleStyle]}>{title}</Text>
+          <UiText style={[{ color: textColor }, titleStyle]}>{title}</UiText>
         </View>
         <ChevronIcon
           direction={open ? "up" : "down"}

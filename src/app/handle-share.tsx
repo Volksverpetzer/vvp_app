@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { Button, Text, View } from "react-native";
 
 import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 
@@ -101,7 +102,7 @@ const HandleShare = () => {
         }}
       >
         <UiSpinner size="large" />
-        <Text>Share wird verarbeitet...</Text>
+        <UiText>Share wird verarbeitet...</UiText>
       </View>
     );
   }
@@ -116,8 +117,10 @@ const HandleShare = () => {
         gap: 12,
       }}
     >
-      {!hasShareIntent ? <Text>Kein geteilter Inhalt gefunden.</Text> : null}
-      {error ? <Text>{error.message}</Text> : null}
+      {!hasShareIntent ? (
+        <UiText>Kein geteilter Inhalt gefunden.</UiText>
+      ) : null}
+      {error ? <UiText>{error.message}</UiText> : null}
       {!hasShareIntent || error ? (
         <Button onPress={() => router.replace("/")} title="Go home" />
       ) : null}

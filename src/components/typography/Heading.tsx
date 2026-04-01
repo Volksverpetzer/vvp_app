@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { TextProps, TextStyle } from "react-native";
-import { Text } from "react-native";
 
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles as _styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -15,7 +15,7 @@ const Heading = (properties: HeadingProperties) => {
   const { styles, children } = properties;
   const colorScheme = useAppColorScheme();
   return (
-    <Text
+    <UiText
       style={{
         ...styles,
         ..._styles.heading,
@@ -23,7 +23,7 @@ const Heading = (properties: HeadingProperties) => {
       }}
     >
       {children}
-    </Text>
+    </UiText>
   );
 };
 

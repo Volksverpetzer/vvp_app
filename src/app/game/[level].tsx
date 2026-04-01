@@ -1,7 +1,8 @@
 import { Link, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
+import UiText from "#/components/ui/UiText";
 import MemoryGame from "#/screens/Games/Memory";
 import type { DisinfoPair } from "#/types";
 
@@ -71,9 +72,9 @@ const GameScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Memory-Spiel: {gameId}</Text>
+      <UiText style={styles.title}>Memory-Spiel: {gameId}</UiText>
       <View style={styles.levelContainer}>
-        <Text style={styles.levelText}>Wählen Sie Ihr Level:</Text>
+        <UiText style={styles.levelText}>Wählen Sie Ihr Level:</UiText>
         <TouchableOpacity
           accessibilityRole="button"
           style={[
@@ -82,7 +83,7 @@ const GameScreen = () => {
           ]}
           onPress={() => setLevel(1)}
         >
-          <Text style={styles.levelButtonText}>Level 1 (einfach)</Text>
+          <UiText style={styles.levelButtonText}>Level 1 (einfach)</UiText>
         </TouchableOpacity>
         <TouchableOpacity
           accessibilityRole="button"
@@ -92,7 +93,7 @@ const GameScreen = () => {
           ]}
           onPress={() => setLevel(2)}
         >
-          <Text style={styles.levelButtonText}>Level 2 (schwer)</Text>
+          <UiText style={styles.levelButtonText}>Level 2 (schwer)</UiText>
         </TouchableOpacity>
       </View>
       <MemoryGame pairs={memoryPairs} />

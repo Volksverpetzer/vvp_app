@@ -1,9 +1,10 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import { CheckboxIcon, CircleIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import type { LevelType, TaskType } from "#/helpers/Achievements";
@@ -65,7 +66,9 @@ const AchievementComponent = () => {
             zIndex: 4,
           }}
         >
-          <Text style={{ fontSize: 30 }}>{AchievementConfig[level].logo}</Text>
+          <UiText style={{ fontSize: 30 }}>
+            {AchievementConfig[level].logo}
+          </UiText>
         </View>
         <View style={{ alignItems: "flex-start", marginLeft: -20 }}>
           <Parallelogram
@@ -106,7 +109,7 @@ const AchievementComponent = () => {
               ) : (
                 <CircleIcon size={16} color="white" />
               )}
-              <Text
+              <UiText
                 style={{
                   fontSize: 16,
                   padding: 5,
@@ -115,7 +118,7 @@ const AchievementComponent = () => {
                 }}
               >
                 {task.verbose}
-              </Text>
+              </UiText>
             </View>
           );
         })}

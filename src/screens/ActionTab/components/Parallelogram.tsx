@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import type { TextStyle, ViewStyle } from "react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+
+import UiText from "#/components/ui/UiText";
 
 interface Properties {
   children: ReactNode;
@@ -16,9 +18,9 @@ const Parallelogram = (properties: Properties) => {
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={{ ...styles.parallelogram, backgroundColor }}>
-        <Text style={{ ...styles.parallelogramText, color, ...textStyle }}>
+        <UiText style={{ ...styles.parallelogramText, color, ...textStyle }}>
           {children}
-        </Text>
+        </UiText>
       </View>
     </View>
   );
