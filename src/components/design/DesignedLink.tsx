@@ -3,13 +3,12 @@ import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
 import type { ReactElement } from "react";
 import { Pressable, View } from "react-native";
+import Text from "src/components/ui/Text";
 
 import { ExternalLinkIcon } from "#/components/Icons";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-
-import Text from "./Text";
 
 type DesignedLinksProperties = {
   url: string;

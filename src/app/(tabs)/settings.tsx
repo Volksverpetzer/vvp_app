@@ -21,7 +21,7 @@ import Collapsable from "#/components/design/Collapsable";
 import DesignedLink from "#/components/design/DesignedLink";
 import Divider from "#/components/design/Divider";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
@@ -129,9 +129,9 @@ const SettingsScreen = () => {
           title="Feed"
           titleStyle={globalStyles.heading}
         >
-          <Text style={styles.sectionText}>
+          <UiText style={styles.sectionText}>
             Was möchtest du in deinem Feed sehen?
-          </Text>
+          </UiText>
           <SettingsList
             saveSettings={saveContentSetting}
             settings={contentSettings}
@@ -198,14 +198,14 @@ const SettingsScreen = () => {
             onPress={() => router.push("/licenses")}
             style={pressableStyle}
           >
-            <Text>Lizenzen</Text>
+            <UiText>Lizenzen</UiText>
           </Pressable>
           <Pressable
             accessibilityRole="button"
             style={pressableStyle}
             onPress={() => PersonalStore.setOnboardingDone(false)}
           >
-            <Text>Intro zurücksetzen</Text>
+            <UiText>Intro zurücksetzen</UiText>
           </Pressable>
           {!Config.isFoss && (
             <Pressable
@@ -213,7 +213,7 @@ const SettingsScreen = () => {
               style={pressableStyle}
               onPress={() => Notifications.registerForPushNotifications()}
             >
-              <Text>Benachrichtigungen zurücksetzen</Text>
+              <UiText>Benachrichtigungen zurücksetzen</UiText>
             </Pressable>
           )}
           <Pressable
@@ -241,15 +241,15 @@ const SettingsScreen = () => {
               });
             }}
           >
-            <Text>Alle Erfolge zurücksetzen</Text>
+            <UiText>Alle Erfolge zurücksetzen</UiText>
           </Pressable>
-          <Text selectable>
+          <UiText selectable>
             Versionskennung: {Application.nativeApplicationVersion}
             &nbsp;-&nbsp;
             {Application.nativeBuildVersion}
             {Config.isFoss && " - FOSS"}
             {!Config.isFoss && `\nToken: ${token}`}
-          </Text>
+          </UiText>
         </View>
         <Space size={100} />
       </ScrollView>

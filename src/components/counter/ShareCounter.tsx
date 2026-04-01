@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Pressable, type TextStyle, View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { getShares } from "#/helpers/network/Engagement";
 import type { ShareableType } from "#/types";
@@ -47,13 +47,13 @@ const ShareCounter = (properties: ShareCounterProperties) => {
       }}
     >
       <ShareIcon size={size} color={color} />
-      <Text
+      <UiText
         style={[properties.style, { opacity: hideCount ? 0 : 1 }]}
         accessibilityElementsHidden={hideCount}
         importantForAccessibility={hideCount ? "no" : "auto"}
       >
         {shares + (properties.shares ?? 0)}
-      </Text>
+      </UiText>
     </View>
   );
 

@@ -12,10 +12,10 @@ import { FlatList, Pressable, RefreshControl } from "react-native";
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
 import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -189,7 +189,9 @@ const Feed = (properties: FeedProperties) => {
           ...properties?.style,
         }}
       >
-        <Text style={styles.heading}>Bitte wähle mindestens ein Feed aus:</Text>
+        <UiText style={styles.heading}>
+          Bitte wähle mindestens ein Feed aus:
+        </UiText>
         <Pressable
           accessibilityRole="button"
           onPress={() => router.push("/settings")}

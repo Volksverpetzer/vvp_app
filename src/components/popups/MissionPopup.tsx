@@ -3,8 +3,8 @@ import { Pressable, StyleSheet } from "react-native";
 
 import { SuccessIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -33,12 +33,14 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
     >
       <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
         <SuccessIcon size={24} color={corporate} />
-        <Text style={{ paddingLeft: 10, color: corporate, fontWeight: "bold" }}>
+        <UiText
+          style={{ paddingLeft: 10, color: corporate, fontWeight: "bold" }}
+        >
           {text1}
-        </Text>
+        </UiText>
       </View>
       <Space size={10} />
-      <Text>{text2}</Text>
+      <UiText>{text2}</UiText>
     </Pressable>
   );
 };

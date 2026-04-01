@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Dimensions } from "react-native";
 
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -108,10 +108,10 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
           },
         ]}
       >
-        <Text style={{ color: "#fff", fontSize: 50 }}>Danke</Text>
-        <Text style={{ color: "#fff", fontSize: 20 }}>
+        <UiText style={{ color: "#fff", fontSize: 50 }}>Danke</UiText>
+        <UiText style={{ color: "#fff", fontSize: 20 }}>
           Du hast einen wichtigen Beitrag geleistet!
-        </Text>
+        </UiText>
       </Animated.View>
       <Animated.Image
         style={[

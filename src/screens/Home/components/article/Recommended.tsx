@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import type { HttpsUrl } from "#/types";
@@ -31,7 +31,7 @@ const Recommended = (properties: RecommendedProperties) => {
   return (
     <>
       {matches.length > 0 && (
-        <Text
+        <UiText
           style={{
             padding: 10,
             fontSize: 20,
@@ -39,7 +39,7 @@ const Recommended = (properties: RecommendedProperties) => {
           }}
         >
           Passend dazu:
-        </Text>
+        </UiText>
       )}
       {matches?.map((match, index) => {
         if (!match.url.includes(Config.wpUrl)) {

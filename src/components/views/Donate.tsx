@@ -9,7 +9,7 @@ import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import PaypalButton from "#/components/buttons/PaypalButton";
 import StripeButton from "#/components/buttons/StripeButton";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -113,7 +113,7 @@ const Donate = (properties: DonateProperties) => {
                       ...styles.noBackground,
                     }}
                   >
-                    <Text
+                    <UiText
                       style={{
                         textAlign: "center",
                         fontSize: 18,
@@ -121,7 +121,7 @@ const Donate = (properties: DonateProperties) => {
                       }}
                     >
                       {item}€
-                    </Text>
+                    </UiText>
                   </View>
                 );
               }}

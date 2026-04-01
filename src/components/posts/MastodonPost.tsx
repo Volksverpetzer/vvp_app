@@ -5,8 +5,8 @@ import { TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
@@ -76,7 +76,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
             <View style={{ marginLeft: 10 }}>
-              <Text
+              <UiText
                 style={{
                   ...styles.heading,
                   paddingHorizontal: 0,
@@ -84,21 +84,21 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
                 }}
               >
                 &nbsp;{account.display_name}&nbsp;
-              </Text>
-              <Text style={{ fontSize: 14, color: grey }}>
+              </UiText>
+              <UiText style={{ fontSize: 14, color: grey }}>
                 &nbsp;@{account.acct}&nbsp;
-              </Text>
+              </UiText>
             </View>
           </View>
           <Space size={20} />
           {displayText !== DISPLAY_TEXT_NONE && (
-            <Text style={{ lineHeight: 24, fontSize: 18 }}>
+            <UiText style={{ lineHeight: 24, fontSize: 18 }}>
               {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
-            </Text>
+            </UiText>
           )}
           {displayText === DISPLAY_TEXT_EXCERPT &&
             excerpt.length < fulltext.length && (
-              <Text
+              <UiText
                 style={{
                   lineHeight: 24,
                   fontSize: 18,
@@ -107,11 +107,11 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
                 }}
               >
                 Mehr Lesen
-              </Text>
+              </UiText>
             )}
           {displayText !== DISPLAY_TEXT_FULL && (
             <View style={styles.row}>
-              <Text style={{ lineHeight: 24, fontSize: 18, color: grey }}>
+              <UiText style={{ lineHeight: 24, fontSize: 18, color: grey }}>
                 {new Date(created_at).toLocaleTimeString("de-DE", {
                   year: "numeric",
                   month: "numeric",
@@ -119,13 +119,13 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
                   hour: "numeric",
                   minute: "numeric",
                 })}
-              </Text>
+              </UiText>
               {answers && answers.length > 0 && (
-                <Text
+                <UiText
                   style={{ lineHeight: 24, fontSize: 18, color: corporate }}
                 >
                   Thread 1 von {answers.length + 1}
-                </Text>
+                </UiText>
               )}
             </View>
           )}
@@ -142,12 +142,12 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
                   .replaceAll(htmlPattern, ""),
               );
               return (
-                <Text
+                <UiText
                   key={String(index)}
                   style={{ lineHeight: 24, fontSize: 18 }}
                 >
                   {fullText}
-                </Text>
+                </UiText>
               );
             })}
         </View>

@@ -9,7 +9,7 @@ import { DeleteIcon, LinkIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
 import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -76,7 +76,7 @@ const MySources = () => {
                   onPress={() => outBoundLinkPress(href, wpUrl + "/" + slug)}
                 >
                   {text && (
-                    <Text
+                    <UiText
                       style={{
                         ...styles.heading,
                         padding: 0,
@@ -84,9 +84,9 @@ const MySources = () => {
                       }}
                     >
                       {text}
-                    </Text>
+                    </UiText>
                   )}
-                  <Text style={{ color: corporate }}>{href}</Text>
+                  <UiText style={{ color: corporate }}>{href}</UiText>
                 </Pressable>
               </Card>
             </Swipeable>
@@ -95,9 +95,9 @@ const MySources = () => {
       <Space size={50} />
       <View style={{ ...styles.centered }}>
         <LinkIcon color={corporate} />
-        <Text style={{ textAlign: "center", fontSize: 18 }}>
+        <UiText style={{ textAlign: "center", fontSize: 18 }}>
           Klicke auf Links in Artikeln, dann tauchen sie hier auf
-        </Text>
+        </UiText>
       </View>
       <Space size={100} />
     </View>

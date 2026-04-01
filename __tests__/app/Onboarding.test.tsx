@@ -97,7 +97,7 @@ jest.mock("#/components/Icons", () => ({
   SafetyIcon: jest.fn(() => null),
 }));
 
-jest.mock("#/components/design/Text", () => {
+jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children, style }: any) => (
     <Text style={style}>{children}</Text>

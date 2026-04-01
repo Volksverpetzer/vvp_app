@@ -6,8 +6,8 @@ import { Animated, Pressable } from "react-native";
 import { SearchIcon } from "#/components/Icons";
 import { LogoBig } from "#/components/SvgIcons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -80,7 +80,7 @@ const HomeScreen = () => {
             backgroundColor: corporate,
           }}
         >
-          <Text
+          <UiText
             style={{
               ...styles.whiteText,
               fontFamily: "SourceSansPro",
@@ -88,7 +88,7 @@ const HomeScreen = () => {
             }}
           >
             Suche ...
-          </Text>
+          </UiText>
           <SearchIcon color="white" size={24} />
         </Pressable>
       </AnimatedHeader>

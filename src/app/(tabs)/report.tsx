@@ -14,10 +14,10 @@ import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import Checkbox from "#/components/design/Checkbox";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import TextInput from "#/components/design/TextInput";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -203,7 +203,7 @@ const ReportScreen = () => {
           />
           <Space size={20} />
           {error ? (
-            <Text style={localStyles.errorText}>{error}</Text>
+            <UiText style={localStyles.errorText}>{error}</UiText>
           ) : undefined}
           <View
             style={{
@@ -217,10 +217,10 @@ const ReportScreen = () => {
               checked={allowedPublic}
               onChange={(checked: boolean) => setAllowedPublic(checked)}
             />
-            <Text>
+            <UiText>
               Der Report darf veröffentlicht werden, sodass andere ihn
               kommentieren können.
-            </Text>
+            </UiText>
           </View>
           <Space size={20} />
           <Pressable
@@ -233,7 +233,7 @@ const ReportScreen = () => {
               pressed && buttonEnabled && { backgroundColor: inputBackground },
             ]}
           >
-            <Text
+            <UiText
               style={{
                 ...styles.whiteText,
                 textAlign: "center",
@@ -241,7 +241,7 @@ const ReportScreen = () => {
               }}
             >
               Report
-            </Text>
+            </UiText>
           </Pressable>
           <ReportStatusList reports={reports} />
           <Space size={100} />

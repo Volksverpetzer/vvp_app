@@ -1,4 +1,5 @@
 import { Pressable } from "react-native";
+import Text from "src/components/ui/Text";
 
 import { WorldIcon } from "#/components/Icons";
 import SteadyButton from "#/components/buttons/SteadyButton";
@@ -6,8 +7,6 @@ import Card from "#/components/design/Card";
 import Donate from "#/components/views/Donate";
 import { styles } from "#/constants/Styles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-
-import Text from "./Text";
 
 interface EmptyComponentProperties {
   reload?: () => void;
