@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import type { SharePayload, ShareType } from "expo-sharing";
 import { clearSharedPayloads, useIncomingShare } from "expo-sharing";
 import { useEffect } from "react";
-import { Button, Text, View } from "react-native";
+import { Button, View } from "react-native";
 
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";

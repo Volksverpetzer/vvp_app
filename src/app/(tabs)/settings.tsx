@@ -26,7 +26,6 @@ import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles as globalStyles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -127,7 +126,6 @@ const SettingsScreen = () => {
         <Collapsable
           icon={<FeedIcon color={corporate} size={24} />}
           title="Feed"
-          titleStyle={globalStyles.heading}
         >
           <UiText style={styles.sectionText}>
             Was möchtest du in deinem Feed sehen?
@@ -141,7 +139,6 @@ const SettingsScreen = () => {
           <Collapsable
             icon={<NotificationIcon color={corporate} size={24} />}
             title="Benachrichtigungen"
-            titleStyle={globalStyles.heading}
           >
             <SettingsList
               saveSettings={saveNotificationSetting}
@@ -152,7 +149,6 @@ const SettingsScreen = () => {
         <Collapsable
           icon={<SettingsIcon color={corporate} size={24} />}
           title="Erweitert"
-          titleStyle={globalStyles.heading}
         >
           <SettingsList
             saveSettings={saveAdvancedSetting}

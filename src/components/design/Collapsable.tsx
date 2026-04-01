@@ -6,6 +6,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { ChevronIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { styles as globalStyles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface CollapsableProps {
@@ -22,7 +23,7 @@ const Collapsable = ({
   defaultOpen = false,
   onToggle,
   children,
-  titleStyle,
+  titleStyle = globalStyles.heading,
   icon,
 }: CollapsableProps): ReactElement => {
   const [open, setOpen] = useState(defaultOpen);
