@@ -131,9 +131,7 @@ const RegionMap = () => {
               }}
             >
               <Icon style={{ left: -8 }} />
-              <UiText
-                style={{ fontSize: 12, lineHeight: 18, color: corporate }}
-              >
+              <UiText style={{ fontSize: 12, color: corporate }}>
                 {` ${region.name}`}
               </UiText>
             </View>

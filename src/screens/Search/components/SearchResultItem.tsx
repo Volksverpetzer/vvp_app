@@ -39,7 +39,7 @@ const SearchResultItem = ({
   const baseStyle = useMemo(
     () => ({
       fontFamily: "SourceSansPro",
-      lineHeight: 27,
+      lineHeight: 24,
       color: Colors[colorScheme].text,
     }),
     [colorScheme],

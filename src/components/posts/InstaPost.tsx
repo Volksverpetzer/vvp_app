@@ -225,7 +225,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
               paddingHorizontal: 10,
               paddingBottom: 50,
               fontSize: 18,
-              lineHeight: 25,
+              lineHeight: 24,
             }}
           >
             {caption}
