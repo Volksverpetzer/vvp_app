@@ -9,12 +9,9 @@ import { useThemeColor } from "#/hooks/useThemeColor";
 type ErrorCardProperties = CardProperties & { text?: string };
 
 const ErrorCard = (properties: ErrorCardProperties) => {
-  const { text, style, lightColor, darkColor, ...otherProperties } = properties;
+  const { text, style, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    "errorBackground",
-  );
+  const backgroundColor = useThemeColor("errorBackground");
 
   return (
     <Card

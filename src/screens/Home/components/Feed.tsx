@@ -51,6 +51,7 @@ const Feed = (properties: FeedProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
+  const backgroundColor = Colors[colorScheme].secondaryBackground;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
 
@@ -204,9 +205,11 @@ const Feed = (properties: FeedProperties) => {
 
   return (
     <View
-      style={{ ...styles.centered, flexDirection: "row" }}
-      lightColor={Colors.light.secondaryBackground}
-      darkColor={Colors.dark.secondaryBackground}
+      style={{
+        ...styles.centered,
+        backgroundColor,
+        flexDirection: "row",
+      }}
     >
       <FlatList
         onScroll={properties.onScroll}

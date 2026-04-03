@@ -1,18 +1,13 @@
 import { TextInput as DefaultTextInput } from "react-native";
 
 import { useThemeColor } from "#/hooks/useThemeColor";
-import type { ThemeProperties } from "#/types";
 
-type TextInputProperties = ThemeProperties &
-  DefaultTextInput["props"] & { key?: string };
+type TextInputProperties = DefaultTextInput["props"] & { key?: string };
 
 const TextInput = (properties: TextInputProperties) => {
-  const { style, lightColor, darkColor, key, ...otherProperties } = properties;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    "inputBackground",
-  );
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+  const { style, key, ...otherProperties } = properties;
+  const backgroundColor = useThemeColor("inputBackground");
+  const color = useThemeColor("text");
 
   return (
     <DefaultTextInput

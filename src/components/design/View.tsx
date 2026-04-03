@@ -1,16 +1,12 @@
 import { View as DefaultView } from "react-native";
 
 import { useThemeColor } from "#/hooks/useThemeColor";
-import type { ThemeProperties } from "#/types";
 
-type ViewProperties = ThemeProperties & DefaultView["props"] & { key?: string };
+type ViewProperties = DefaultView["props"] & { key?: string };
 
 const View = (properties: ViewProperties) => {
-  const { style, lightColor, darkColor, ...otherProperties } = properties;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    "background",
-  );
+  const { style, ...otherProperties } = properties;
+  const backgroundColor = useThemeColor("background");
 
   return (
     <DefaultView style={[{ backgroundColor }, style]} {...otherProperties} />

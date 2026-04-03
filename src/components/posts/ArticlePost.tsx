@@ -29,7 +29,6 @@ type ArticlePostScreenProperties = {
   article: ArticleProperties;
   inView?: boolean;
   elevated?: boolean;
-  backgroundVariant?: "primary" | "secondary";
 };
 
 /**
@@ -42,12 +41,7 @@ type ArticlePostScreenProperties = {
  * - The component is wrapped with React.memo to prevent unnecessary re-renders.
  */
 const ArticlePost = (properties: ArticlePostScreenProperties) => {
-  const {
-    article,
-    inView,
-    elevated = false,
-    backgroundVariant = "primary",
-  } = properties;
+  const { article, inView, elevated = false } = properties;
 
   // Local state.
   const [imageUrl, setImgURL] = useState("");
@@ -134,13 +128,10 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const containerStyle = useMemo(
     () => ({
       paddingBottom: 0,
-      backgroundColor:
-        backgroundVariant === "secondary"
-          ? Colors[colorScheme].secondaryBackground
-          : Colors[colorScheme].background,
+      backgroundColor: Colors[colorScheme].background,
       ...(elevated && { borderRadius: 15, overflow: "hidden" as const }),
     }),
-    [backgroundVariant, colorScheme, elevated],
+    [colorScheme, elevated],
   );
 
   const elevatedWrapperStyle = useMemo(() => {
