@@ -4,18 +4,11 @@ import { useThemeColor } from "#/hooks/useThemeColor";
 
 export type CardProperties = DefaultView["props"] & {
   key?: string;
-  backgroundVariant?: "primary" | "secondary";
 };
 
 const Card = (properties: CardProperties) => {
-  const {
-    style,
-    backgroundVariant = "primary",
-    ...otherProperties
-  } = properties;
-  const backgroundColor = useThemeColor(
-    backgroundVariant === "secondary" ? "secondaryBackground" : "background",
-  );
+  const { style, ...otherProperties } = properties;
+  const backgroundColor = useThemeColor("background");
 
   return (
     <DefaultView
