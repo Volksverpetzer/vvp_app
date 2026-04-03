@@ -8,11 +8,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
 import View from "#/components/design/View";
+import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
@@ -94,11 +94,9 @@ const Onboarding = () => {
             }}
           >
             <FeedIcon color={corporate} size={20} />
-            <UiText
-              style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
-            >
+            <Heading styles={{ textAlign: "left", paddingLeft: 30 }}>
               Feed-Einstellungen
-            </UiText>
+            </Heading>
           </View>
           <SettingsList
             saveSettings={saveContentSetting}
@@ -123,15 +121,9 @@ const Onboarding = () => {
                   }}
                 >
                   <NotificationIcon color={corporate} size={20} />
-                  <UiText
-                    style={{
-                      ...styles.heading,
-                      textAlign: "left",
-                      paddingLeft: 30,
-                    }}
-                  >
+                  <Heading styles={{ textAlign: "left", paddingLeft: 30 }}>
                     Benachrichtigungen
-                  </UiText>
+                  </Heading>
                 </View>
                 <SettingsList
                   saveSettings={saveNotificationSetting}

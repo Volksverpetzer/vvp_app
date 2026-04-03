@@ -14,8 +14,8 @@ import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
+import Heading from "#/components/typography/Heading";
 import UiSpinner from "#/components/ui/UiSpinner";
-import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -190,9 +190,7 @@ const Feed = (properties: FeedProperties) => {
           ...properties?.style,
         }}
       >
-        <UiText style={styles.heading}>
-          Bitte wähle mindestens ein Feed aus:
-        </UiText>
+        <Heading>Bitte wähle mindestens ein Feed aus:</Heading>
         <Pressable
           accessibilityRole="button"
           onPress={() => router.push("/settings")}

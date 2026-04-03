@@ -3,7 +3,6 @@ import type { TextProps, TextStyle } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles as _styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface HeadingProperties extends TextProps {
@@ -17,9 +16,12 @@ const Heading = (properties: HeadingProperties) => {
   return (
     <UiText
       style={{
-        ...styles,
-        ..._styles.heading,
+        fontFamily: "SourceSansProSemiBold",
+        fontSize: 18,
+        fontWeight: "bold",
+        padding: 10,
         color: Colors[colorScheme].heading,
+        ...styles,
       }}
     >
       {children}

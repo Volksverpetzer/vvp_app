@@ -4,9 +4,8 @@ import type { StyleProp, TextStyle } from "react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
-import UiText from "#/components/ui/UiText";
+import Heading from "#/components/typography/Heading";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface CollapsableProps {
@@ -23,7 +22,7 @@ const Collapsable = ({
   defaultOpen = false,
   onToggle,
   children,
-  titleStyle = globalStyles.heading,
+  titleStyle,
   icon,
 }: CollapsableProps): ReactElement => {
   const [open, setOpen] = useState(defaultOpen);
@@ -51,7 +50,7 @@ const Collapsable = ({
       >
         <View style={styles.title}>
           {icon}
-          <UiText style={[{ color: textColor }, titleStyle]}>{title}</UiText>
+          <Heading style={[{ color: textColor }, titleStyle]}>{title}</Heading>
         </View>
         <ChevronIcon
           direction={open ? "up" : "down"}
