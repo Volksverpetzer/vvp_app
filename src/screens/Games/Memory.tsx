@@ -3,8 +3,8 @@ import type { ViewStyle } from "react-native";
 import { Dimensions, StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
 
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import type { DisinfoPair, MemoryCard } from "#/types";
 
 import CardComponent from "./CardComponent";
@@ -96,11 +96,11 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
           <View style={styles.headerCardsContainer}>
             {cardsToRender.map((card) => (
               <View style={styles.headerCard} key={card.instanceId}>
-                <Text style={styles.headerCardText}>
+                <UiText style={styles.headerCardText}>
                   {card.cardType === "misinfo" && card.fullContent
                     ? card.fullContent
                     : card.content}
-                </Text>
+                </UiText>
               </View>
             ))}
           </View>
@@ -109,9 +109,9 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
     }
     return (
       <View style={headerStyle}>
-        <Text style={styles.headerText}>
+        <UiText style={styles.headerText}>
           Tippen Sie auf eine Karte, um deren Inhalt anzuzeigen.
-        </Text>
+        </UiText>
       </View>
     );
   };

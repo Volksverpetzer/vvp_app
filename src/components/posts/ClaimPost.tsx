@@ -1,8 +1,8 @@
 import * as WebBrowser from "expo-web-browser";
 import { TouchableOpacity } from "react-native";
 
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ClaimProperties } from "#/types";
@@ -21,7 +21,7 @@ const ClaimPost = (properties: ClaimProperties) => {
   return (
     <TouchableOpacity accessibilityRole="button" onPress={handleSelectClaim}>
       <View style={{ paddingBottom: 0, flex: 1 }}>
-        <Text
+        <UiText
           style={{
             fontFamily: "SourceSansProBold",
             paddingHorizontal: 30,
@@ -32,11 +32,13 @@ const ClaimPost = (properties: ClaimProperties) => {
           }}
         >
           {review.publisher.name}: {review.title}
-        </Text>
-        <Text style={{ paddingHorizontal: 30, paddingVertical: 5, color }}>
+        </UiText>
+        <UiText style={{ paddingHorizontal: 30, paddingVertical: 5, color }}>
           {review.publisher.name} | {review.reviewDate?.split("T")[0]}
-        </Text>
-        <Text style={{ paddingHorizontal: 30 }}>{review.textualRating}</Text>
+        </UiText>
+        <UiText style={{ paddingHorizontal: 30 }}>
+          {review.textualRating}
+        </UiText>
       </View>
     </TouchableOpacity>
   );

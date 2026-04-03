@@ -1,7 +1,7 @@
 import { type ComponentProps, useEffect, useState } from "react";
 import { Switch, View } from "react-native";
 
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -82,7 +82,7 @@ const SettingsList = (properties: SettingsListProperties) => {
                 maxHeight: 45,
               }}
             >
-              <Text style={{ fontSize: 16 }}>{setting.name}</Text>
+              <UiText style={{ fontSize: 16 }}>{setting.name}</UiText>
               {/* cast to native Switch props to satisfy TypeScript while keeping runtime props */}
               <Switch {...(switchProps as ComponentProps<typeof Switch>)} />
             </View>

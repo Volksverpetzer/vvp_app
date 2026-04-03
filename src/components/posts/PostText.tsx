@@ -3,7 +3,7 @@ import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/
 import { useRouter } from "expo-router";
 import { Hyperlink } from "react-native-hyperlink";
 
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import { normalizeFacets } from "#/helpers/utils/posts";
@@ -56,7 +56,7 @@ export const PostText = ({ feedViewPost, uri }: Props) => {
       linkText={(url) => linkTextToUrlMap[url]}
       onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
     >
-      <Text style={{ lineHeight: 24, fontSize: 18 }}>{decodedText}</Text>
+      <UiText style={{ lineHeight: 24, fontSize: 18 }}>{decodedText}</UiText>
     </Hyperlink>
   );
 };

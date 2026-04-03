@@ -38,7 +38,7 @@ jest.mock("#/components/design/Space", () => ({
   default: jest.fn(() => null),
 }));
 
-jest.mock("#/components/design/Text", () => ({
+jest.mock("#/components/ui/UiText", () => ({
   __esModule: true,
   default: jest.fn(({ children }) => children),
 }));

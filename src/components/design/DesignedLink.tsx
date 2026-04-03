@@ -5,11 +5,10 @@ import type { ReactElement } from "react";
 import { Pressable, View } from "react-native";
 
 import { ExternalLinkIcon } from "#/components/Icons";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-
-import Text from "./Text";
 
 type DesignedLinksProperties = {
   url: string;
@@ -48,13 +47,13 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
       ]}
     >
       {properties.icon && <View style={{ width: 24 }}>{properties.icon}</View>}
-      <Text
+      <UiText
         style={{
           ...styles.heading,
         }}
       >
         {properties.text}
-      </Text>
+      </UiText>
       <ExternalLinkIcon size={15} color={Colors[colorScheme].tabIconDefault} />
     </Pressable>
   );

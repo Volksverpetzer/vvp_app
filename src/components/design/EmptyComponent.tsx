@@ -3,11 +3,10 @@ import { Pressable } from "react-native";
 import { WorldIcon } from "#/components/Icons";
 import SteadyButton from "#/components/buttons/SteadyButton";
 import Card from "#/components/design/Card";
+import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import { styles } from "#/constants/Styles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-
-import Text from "./Text";
 
 interface EmptyComponentProperties {
   reload?: () => void;
@@ -26,18 +25,20 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
       <WorldIcon color={corporate} size={60} />
       {reload && (
         <>
-          <Text style={{ fontSize: 18, textAlign: "center" }}>
+          <UiText style={{ fontSize: 18, textAlign: "center" }}>
             Keine Ergebnisse. Versuche:
-          </Text>
+          </UiText>
           <Pressable accessibilityRole="button" onPress={() => reload()}>
-            <Text style={{ fontSize: 18, color: corporate }}>Neu laden</Text>
+            <UiText style={{ fontSize: 18, color: corporate }}>
+              Neu laden
+            </UiText>
           </Pressable>
         </>
       )}
-      <Text style={{ fontSize: 18 }}>
+      <UiText style={{ fontSize: 18 }}>
         Unterstütze uns im unermüdlichen Kampf gegen Fake News und verzerrte
         Narrative
-      </Text>
+      </UiText>
       <Donate paypalAlways={true} />
       <SteadyButton />
     </Card>

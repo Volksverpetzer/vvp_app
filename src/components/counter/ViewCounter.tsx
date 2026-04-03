@@ -3,7 +3,7 @@ import type { ColorValue, TextStyle } from "react-native";
 import { ActivityIndicator, View } from "react-native";
 
 import { ArticleViewIcon } from "#/components/Icons";
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { getViews } from "#/helpers/network/Engagement";
 import type { HttpsUrl } from "#/types";
@@ -49,7 +49,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
       {isLoading ? (
         <ActivityIndicator color={color} />
       ) : (
-        <Text
+        <UiText
           style={{
             color: color,
             fontSize: 14,
@@ -57,7 +57,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
           }}
         >
           {views.toString().replaceAll(/\B(?=(\d{3})+(?!\d))/g, ".")}
-        </Text>
+        </UiText>
       )}
     </View>
   );

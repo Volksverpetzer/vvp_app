@@ -4,8 +4,8 @@ import { Keyboard, Pressable, TextInput } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import Faktenbot from "#/components/animations/Faktenbot";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -62,7 +62,7 @@ const SearchHeader = ({
           backgroundColor,
         }}
       >
-        <Text
+        <UiText
           style={{
             paddingTop: 20,
             fontFamily: "SourceSansProBold",
@@ -71,7 +71,7 @@ const SearchHeader = ({
           }}
         >
           Fact Check
-        </Text>
+        </UiText>
         {showFaktenbot && (
           <Faktenbot reaction={faktenBotReaction} search={isLoading} />
         )}

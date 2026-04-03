@@ -14,8 +14,8 @@ import {
 import ViewShot from "react-native-view-shot";
 
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { outBoundLinkPress } from "#/helpers/Linking";
@@ -128,7 +128,7 @@ const Header = (properties: HeaderProperties) => {
         />
       </Pressable>
       <Space size={30} />
-      <Text
+      <UiText
         style={{
           paddingHorizontal: 20,
           fontSize: 26,
@@ -138,8 +138,8 @@ const Header = (properties: HeaderProperties) => {
         }}
       >
         {article_title}
-      </Text>
-      <Text
+      </UiText>
+      <UiText
         style={{
           fontSize: 18,
           textAlign: "left",
@@ -149,7 +149,7 @@ const Header = (properties: HeaderProperties) => {
       >
         von&nbsp;
         {article?.authors.map((author, index, array) => (
-          <Text
+          <UiText
             key={author.slug}
             onPress={() =>
               outBoundLinkPress(
@@ -161,7 +161,7 @@ const Header = (properties: HeaderProperties) => {
           >
             {author.display_name}
             {index < array.length - 1 ? ", " : ""}
-          </Text>
+          </UiText>
         ))}
         &nbsp;| {date} |
         {
@@ -171,7 +171,7 @@ const Header = (properties: HeaderProperties) => {
               : "";
           })[0]
         }
-      </Text>
+      </UiText>
       <ArticleStats article_link={article_link} />
       <Space size={10} />
       <ArticleSourceList
@@ -211,7 +211,7 @@ const Header = (properties: HeaderProperties) => {
               onLoad={() => setImageLoaded(true)}
             />
             <Space size={20} />
-            <Text
+            <UiText
               style={{
                 color: Colors.dark.text,
                 paddingHorizontal: 20,
@@ -222,9 +222,9 @@ const Header = (properties: HeaderProperties) => {
               }}
             >
               {article_title}
-            </Text>
+            </UiText>
             <Space size={20} />
-            <Text
+            <UiText
               style={{
                 color: Colors.dark.text,
                 paddingHorizontal: 20,
@@ -234,14 +234,14 @@ const Header = (properties: HeaderProperties) => {
             >
               von&nbsp;
               {article?.authors?.map((author, index, array) => (
-                <Text
+                <UiText
                   key={author.slug}
                   onPress={() => router.push(`/author/${author.slug}` as Href)}
                   style={{ color: corporate }}
                 >
                   {author.display_name}
                   {index < array.length - 1 ? ", " : ""}
-                </Text>
+                </UiText>
               ))}
               &nbsp;| {date} |
               {
@@ -251,7 +251,7 @@ const Header = (properties: HeaderProperties) => {
                     : "";
                 })[0]
               }
-            </Text>
+            </UiText>
           </View>
         </ViewShot>
       </Modal>

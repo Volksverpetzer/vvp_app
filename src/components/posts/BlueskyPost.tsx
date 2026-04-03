@@ -7,8 +7,8 @@ import { TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -121,25 +121,25 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
               source={{ uri: author.avatar }}
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
-            <Text
+            <UiText
               style={{
                 ...styles.heading,
               }}
             >
               {displayName}
-            </Text>
+            </UiText>
           </View>
 
           {displayText !== DISPLAY_TEXT_NONE && (
-            <Text style={{ lineHeight: 24, fontSize: 18 }}>
+            <UiText style={{ lineHeight: 24, fontSize: 18 }}>
               {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
-            </Text>
+            </UiText>
           )}
 
           {displayText === DISPLAY_TEXT_EXCERPT && (
             <>
               <View style={styles.row}>
-                <Text
+                <UiText
                   style={{
                     fontSize: 16,
                     color: grey,
@@ -153,11 +153,11 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
                     hour: "numeric",
                     minute: "numeric",
                   })}
-                </Text>
+                </UiText>
                 {replies?.length > 0 && (
-                  <Text style={{ fontSize: 16, color: corporate }}>
+                  <UiText style={{ fontSize: 16, color: corporate }}>
                     Thread (1 von {replies.length + 1})
-                  </Text>
+                  </UiText>
                 )}
               </View>
             </>

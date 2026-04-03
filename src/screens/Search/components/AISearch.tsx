@@ -5,8 +5,8 @@ import { useCallback } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
 import Faktenbot from "#/components/animations/Faktenbot";
-import Text from "#/components/design/Text";
 import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles as globalStyles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
@@ -45,11 +45,11 @@ const AISearch = ({
           onPress={() => onLinkPress(item.url, router)}
           text={item.text}
           subtitle={
-            <Text
+            <UiText
               style={{ fontWeight: "bold", color: textColor, fontSize: 16 }}
             >
               {hostname ?? item.url}
-            </Text>
+            </UiText>
           }
         />
       );
@@ -60,7 +60,9 @@ const AISearch = ({
   if (results.length === 0 && !error) {
     return (
       <View style={[localStyles.centeredContainer, { paddingTop: 100 }]}>
-        <Text>{loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}</Text>
+        <UiText>
+          {loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}
+        </UiText>
         <UiSpinner size="large" />
         {showFaktenbot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
@@ -74,8 +76,8 @@ const AISearch = ({
   if (error) {
     return (
       <View style={[localStyles.centeredContainer, { paddingTop: 100 }]}>
-        <Text>{error}</Text>
-        <Text>Melde uns den Fake hier:</Text>
+        <UiText>{error}</UiText>
+        <UiText>Melde uns den Fake hier:</UiText>
         <Pressable
           accessibilityRole="button"
           onPress={() => {
@@ -87,7 +89,7 @@ const AISearch = ({
             { backgroundColor: corporate },
           ]}
         >
-          <Text style={globalStyles.whiteText}>Jetzt melden</Text>
+          <UiText style={globalStyles.whiteText}>Jetzt melden</UiText>
         </Pressable>
         <Pressable
           accessibilityRole="button"
@@ -100,7 +102,7 @@ const AISearch = ({
             { backgroundColor: corporate, marginTop: 10 },
           ]}
         >
-          <Text style={globalStyles.whiteText}>Neu Laden</Text>
+          <UiText style={globalStyles.whiteText}>Neu Laden</UiText>
         </Pressable>
         {showFaktenbot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
@@ -127,9 +129,9 @@ const AISearch = ({
           gap: 20,
         }}
         ListHeaderComponent={
-          <Text style={{ textAlign: "center", marginVertical: 10 }}>
+          <UiText style={{ textAlign: "center", marginVertical: 10 }}>
             Ergebnisse der KI-Suche
-          </Text>
+          </UiText>
         }
         renderItem={renderItem}
       />

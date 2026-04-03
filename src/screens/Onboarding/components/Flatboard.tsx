@@ -9,8 +9,8 @@ import type {
 import { FlatList, useWindowDimensions } from "react-native";
 
 import { Logo } from "#/components/SvgIcons";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import { styles } from "#/constants/Styles";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -84,7 +84,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
           {isVolksverpetzer && <Logo color={corporate} />}
         </View>
         <View style={{ ...styles.centered, width, marginBottom: 100 }}>
-          <Text
+          <UiText
             style={{
               ...headingStyle,
               fontSize: height < 600 ? 22 : 24,
@@ -93,7 +93,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
             }}
           >
             {title}
-          </Text>
+          </UiText>
           {icon && (
             <Image
               style={{ height: height / 3, width: height / 3 }}
@@ -113,7 +113,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
             </View>
           )}
 
-          <Text
+          <UiText
             style={{
               fontSize: 18,
               paddingVertical: 10,
@@ -123,7 +123,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
             }}
           >
             {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
-          </Text>
+          </UiText>
           {Component && height > 600 && (
             <View style={{ width: 300, height: "auto" }}>
               <Component />

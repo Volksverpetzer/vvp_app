@@ -2,8 +2,8 @@ import { useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native";
 
 import EmptyComponent from "#/components/design/EmptyComponent";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import { styles } from "#/constants/Styles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
@@ -17,17 +17,17 @@ const NotFoundScreen = () => {
         ...styles.centered,
       }}
     >
-      <Text style={{ ...styles.heading, textAlign: "center" }}>
+      <UiText style={{ ...styles.heading, textAlign: "center" }}>
         Hier könnte ein Artikel stehen. Tut er aber irgendwie nicht. Das ist
         wohl ein Fehler.
-      </Text>
+      </UiText>
       <TouchableOpacity
         accessibilityRole="button"
         onPress={() => router.back()}
       >
-        <Text style={{ padding: 20, fontSize: 18, color: corporate }}>
+        <UiText style={{ padding: 20, fontSize: 18, color: corporate }}>
           Zurück!
-        </Text>
+        </UiText>
       </TouchableOpacity>
       <EmptyComponent />
     </View>

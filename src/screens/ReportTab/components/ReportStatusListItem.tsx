@@ -1,8 +1,9 @@
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import { ReportStatusIcon } from "#/components/Icons";
+import UiText from "#/components/ui/UiText";
 import API from "#/helpers/network/ServerAPI";
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatusResponse, StoredReport } from "#/types";
@@ -72,9 +73,9 @@ const ReportStatusListItem = (props: StoredReport) => {
 
   return (
     <View style={styles.item}>
-      <Text selectable style={[styles.text, { color: colors.text }]}>
+      <UiText selectable style={[styles.text, { color: colors.text }]}>
         {id}
-      </Text>
+      </UiText>
       {renderIcon()}
     </View>
   );

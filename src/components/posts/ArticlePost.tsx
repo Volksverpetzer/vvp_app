@@ -6,9 +6,9 @@ import { TouchableOpacity } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -224,13 +224,13 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         )}
         <View style={progressBarStyle} />
         <Space size={10} />
-        <Text style={titleStyle}>{article.title}</Text>
+        <UiText style={titleStyle}>{article.title}</UiText>
         <Space size={10} />
-        <Text style={authorDateStyle}>{authorDateText}</Text>
+        <UiText style={authorDateStyle}>{authorDateText}</UiText>
         <Space size={10} />
         {categoryText && (
           <Badge position="topLeft" color={corporate}>
-            <Text style={categoryTextStyle}>{categoryText}</Text>
+            <UiText style={categoryTextStyle}>{categoryText}</UiText>
           </Badge>
         )}
         {inView && (
@@ -238,7 +238,9 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
             <ViewCounter url={article.link} size={16} />
           </Badge>
         )}
-        <Text style={{ paddingHorizontal: 30, fontSize: 16 }}>{excerpt}</Text>
+        <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
+          {excerpt}
+        </UiText>
         <Space size={20} />
       </View>
     </TouchableOpacity>

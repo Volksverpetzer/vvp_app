@@ -5,9 +5,9 @@ import { View } from "react-native";
 import { StarIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import GenericPost from "#/components/posts/GenericPost";
 import InstaPost from "#/components/posts/InstaPost";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import Post from "#/helpers/Post";
@@ -149,9 +149,9 @@ const MyFavs = () => {
       <Space size={50} />
       <View style={{ ...styles.centered }}>
         <StarIcon color={corporate} />
-        <Text style={{ textAlign: "center", fontSize: 18 }}>
+        <UiText style={{ textAlign: "center", fontSize: 18 }}>
           Klick den Stern, um zu den Favoriten hinzuzufügen
-        </Text>
+        </UiText>
       </View>
       <Space size={100} />
     </>

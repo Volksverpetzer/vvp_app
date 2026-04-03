@@ -1,8 +1,9 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import type { OcticonsIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -44,7 +45,7 @@ const StatisticsPanel = ({
         style={{ ...styles.row, justifyContent: "flex-start", paddingLeft: 30 }}
       >
         <StatisticsIcon name={icon} size={32} color="white" />
-        <Text
+        <UiText
           style={{
             ...styles.whiteText,
             fontSize: 20,
@@ -53,11 +54,13 @@ const StatisticsPanel = ({
           }}
         >
           {title}
-        </Text>
+        </UiText>
         {subtitle && (
-          <Text style={{ fontSize: 12, color: grayedOutText, paddingLeft: 10 }}>
+          <UiText
+            style={{ fontSize: 12, color: grayedOutText, paddingLeft: 10 }}
+          >
             {subtitle}
-          </Text>
+          </UiText>
         )}
       </View>
 

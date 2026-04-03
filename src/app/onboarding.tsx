@@ -7,8 +7,8 @@ import { Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -94,11 +94,11 @@ const Onboarding = () => {
             }}
           >
             <FeedIcon color={corporate} size={20} />
-            <Text
+            <UiText
               style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
             >
               Feed-Einstellungen
-            </Text>
+            </UiText>
           </View>
           <SettingsList
             saveSettings={saveContentSetting}
@@ -123,7 +123,7 @@ const Onboarding = () => {
                   }}
                 >
                   <NotificationIcon color={corporate} size={20} />
-                  <Text
+                  <UiText
                     style={{
                       ...styles.heading,
                       textAlign: "left",
@@ -131,7 +131,7 @@ const Onboarding = () => {
                     }}
                   >
                     Benachrichtigungen
-                  </Text>
+                  </UiText>
                 </View>
                 <SettingsList
                   saveSettings={saveNotificationSetting}
@@ -154,7 +154,7 @@ const Onboarding = () => {
             openBrowserAsync(Constants.expoConfig.extra.dataProtectionUrl);
           }}
         >
-          <Text
+          <UiText
             style={{
               color: corporate,
               textAlign: "center",
@@ -163,7 +163,7 @@ const Onboarding = () => {
             }}
           >
             Datenschutzerklärung
-          </Text>
+          </UiText>
         </Pressable>
       ),
     },

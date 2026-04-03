@@ -10,9 +10,9 @@ import type {
 } from "react-native-webview/lib/WebViewTypes";
 
 import ErrorCard from "#/components/design/ErrorCard";
-import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
@@ -214,7 +214,7 @@ const IframeRenderer = ({
             borderRadius: 8,
           }}
         >
-          <Text>Debug: Empty slug extracted from src: {source}</Text>
+          <UiText>Debug: Empty slug extracted from src: {source}</UiText>
         </View>
       );
     }
@@ -258,7 +258,7 @@ const IframeRenderer = ({
         incognito
         mediaPlaybackRequiresUserAction
         allowsInlineMediaPlayback
-        renderError={() => <Text>Render Error</Text>}
+        renderError={() => <UiText>Render Error</UiText>}
         scalesPageToFit={false}
         overScrollMode="never"
         scrollEnabled={false}

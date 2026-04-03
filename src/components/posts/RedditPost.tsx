@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Button, Modal, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { onShare as _onShare } from "#/helpers/Sharing";
@@ -92,7 +92,7 @@ const RedditPost = (properties: RedditProperties) => {
                 : properties.thumbnail
             }
           />
-          <Text
+          <UiText
             style={{
               paddingHorizontal: 30,
               fontSize: size,
@@ -102,8 +102,8 @@ const RedditPost = (properties: RedditProperties) => {
             }}
           >
             {properties.title}
-          </Text>
-          <Text
+          </UiText>
+          <UiText
             style={{
               paddingHorizontal: 30,
               fontSize: 16,
@@ -112,7 +112,7 @@ const RedditPost = (properties: RedditProperties) => {
             }}
           >
             von {author} | {date}
-          </Text>
+          </UiText>
         </View>
       </TouchableOpacity>
       <Modal style={styles.centered} visible={isModalOpen}>

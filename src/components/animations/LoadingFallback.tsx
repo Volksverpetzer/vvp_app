@@ -5,9 +5,9 @@ import type {
   ViewStyle,
 } from "react-native";
 
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 
 interface LoadingFallbackProps {
   text?: string;
@@ -39,7 +39,7 @@ const LoadingFallback = ({
         {...spinnerProps}
         containerStyle={{ flex: 0, alignSelf: "center" }}
       />
-      <Text style={{ textAlign: "center" }}>{text}</Text>
+      <UiText style={{ textAlign: "center" }}>{text}</UiText>
     </View>
   );
 };

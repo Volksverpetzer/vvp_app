@@ -1,5 +1,6 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
@@ -30,12 +31,12 @@ const StatisticsBox = ({
         borderRadius: 10,
       }}
     >
-      <Text style={{ ...styles.whiteText, fontSize: 20 }}>
+      <UiText style={{ ...styles.whiteText, fontSize: 20 }}>
         {statistic[valueKey]}
-      </Text>
-      <Text style={{ ...styles.whiteText, fontSize: 12 }}>
+      </UiText>
+      <UiText style={{ ...styles.whiteText, fontSize: 12 }}>
         {descriptionMap[statisticsKey]}
-      </Text>
+      </UiText>
     </View>
   );
 };

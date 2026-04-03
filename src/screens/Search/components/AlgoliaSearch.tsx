@@ -4,9 +4,9 @@ import debounce from "lodash/debounce";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -93,7 +93,7 @@ const AlgoliaSearchResults = ({
         <SearchResultItem
           title={item.post_title}
           text={`<div>${item._highlightResult?.content?.value?.slice(0, 200) || ""}...</div>`}
-          subtitle={<Text style={{ textAlign: "right" }}>{date}</Text>}
+          subtitle={<UiText style={{ textAlign: "right" }}>{date}</UiText>}
           onPress={() => handleResultPress(item)}
         />
       );
@@ -112,7 +112,7 @@ const AlgoliaSearchResults = ({
   if (results.length === 0 && searchString.length >= 2) {
     return (
       <View style={itemStyles.emptyContainer}>
-        <Text>Keine Ergebnisse gefunden</Text>
+        <UiText>Keine Ergebnisse gefunden</UiText>
       </View>
     );
   }
