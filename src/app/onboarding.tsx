@@ -11,7 +11,6 @@ import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
-import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -91,12 +90,11 @@ const Onboarding = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              gap: 30,
             }}
           >
             <FeedIcon color={corporate} size={20} />
-            <Heading styles={{ textAlign: "left", paddingLeft: 30 }}>
-              Feed-Einstellungen
-            </Heading>
+            <Heading style={{ textAlign: "left" }}>Feed-Einstellungen</Heading>
           </View>
           <SettingsList
             saveSettings={saveContentSetting}
@@ -118,10 +116,15 @@ const Onboarding = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    gap: 30,
                   }}
                 >
                   <NotificationIcon color={corporate} size={20} />
-                  <Heading styles={{ textAlign: "left", paddingLeft: 30 }}>
+                  <Heading
+                    style={{
+                      textAlign: "left",
+                    }}
+                  >
                     Benachrichtigungen
                   </Heading>
                 </View>
@@ -166,7 +169,7 @@ const Onboarding = () => {
       <FlatBoard
         data={data}
         onFinish={agreeToTerms}
-        accentColor={Colors.light.heading}
+        accentColor={corporate}
         buttonTitle="Los geht's"
         hideIndicator
         variant="standard"

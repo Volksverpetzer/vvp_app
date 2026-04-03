@@ -18,7 +18,7 @@ const NotFoundScreen = () => {
         ...styles.centered,
       }}
     >
-      <Heading styles={{ textAlign: "center" }}>
+      <Heading style={{ textAlign: "center" }}>
         Hier könnte ein Artikel stehen. Tut er aber irgendwie nicht. Das ist
         wohl ein Fehler.
       </Heading>

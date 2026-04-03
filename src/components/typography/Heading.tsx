@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { TextProps, TextStyle } from "react-native";
+import type { TextProps } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -7,22 +7,23 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface HeadingProperties extends TextProps {
   children: ReactNode;
-  styles?: TextStyle;
 }
 
-const Heading = (properties: HeadingProperties) => {
-  const { styles, children } = properties;
+const Heading = ({ style, children, ...props }: HeadingProperties) => {
   const colorScheme = useAppColorScheme();
   return (
     <UiText
-      style={{
-        fontFamily: "SourceSansProSemiBold",
-        fontSize: 18,
-        fontWeight: "bold",
-        padding: 10,
-        color: Colors[colorScheme].heading,
-        ...styles,
-      }}
+      style={[
+        {
+          color: Colors[colorScheme].heading,
+          fontFamily: "SourceSansProSemiBold",
+          fontSize: 18,
+          fontWeight: "bold",
+          paddingBottom: 10,
+        },
+        style,
+      ]}
+      {...props}
     >
       {children}
     </UiText>

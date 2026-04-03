@@ -77,14 +77,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
             <View style={{ marginLeft: 10 }}>
-              <Heading
-                styles={{
-                  paddingHorizontal: 0,
-                  paddingVertical: 0,
-                }}
-              >
-                &nbsp;{account.display_name}&nbsp;
-              </Heading>
+              <Heading>&nbsp;{account.display_name}&nbsp;</Heading>
               <UiText style={{ fontSize: 14, color: grey }}>
                 &nbsp;@{account.acct}&nbsp;
               </UiText>

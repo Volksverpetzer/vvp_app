@@ -27,6 +27,7 @@ const SearchResultItem = ({
   onPress,
 }: SearchResultItemProps) => {
   const colorScheme = useAppColorScheme();
+  const textColor = Colors[colorScheme].text;
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
   const { width } = useWindowDimensions();
 
@@ -39,15 +40,17 @@ const SearchResultItem = ({
     () => ({
       fontFamily: "SourceSansPro",
       lineHeight: 24,
-      color: Colors[colorScheme].text,
+      color: textColor,
     }),
-    [colorScheme],
+    [textColor],
   );
 
   const content = (
     <Card>
       {title ? (
-        <Heading style={{ marginBottom: 10 }}>{decode(title)}</Heading>
+        <Heading style={{ color: textColor, marginBottom: 10 }}>
+          {decode(title)}
+        </Heading>
       ) : null}
 
       <RenderHtml

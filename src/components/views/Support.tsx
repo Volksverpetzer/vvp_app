@@ -62,9 +62,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
         onPress={banktransfer}
         style={{ padding: 10 }}
       >
-        <Heading styles={{ color: corporate, padding: 0 }}>
-          Dauerauftrag
-        </Heading>
+        <Heading style={{ color: corporate }}>Dauerauftrag</Heading>
       </Pressable>
       <UiText style={{ textAlign: "center", fontSize: 16 }}>
         direkt bei der Bank einrichten.

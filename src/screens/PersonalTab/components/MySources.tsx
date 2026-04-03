@@ -76,7 +76,11 @@ const MySources = () => {
                   style={{ padding: 30 }}
                   onPress={() => outBoundLinkPress(href, wpUrl + "/" + slug)}
                 >
-                  {text && <Heading>{text}</Heading>}
+                  {text && (
+                    <Heading style={{ color: Colors[colorScheme].text }}>
+                      {text}
+                    </Heading>
+                  )}
                   <UiText style={{ color: corporate }}>{href}</UiText>
                 </Pressable>
               </Card>
