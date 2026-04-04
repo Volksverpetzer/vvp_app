@@ -77,7 +77,12 @@ const MySources = () => {
                   onPress={() => outBoundLinkPress(href, wpUrl + "/" + slug)}
                 >
                   {text && (
-                    <Heading style={{ color: Colors[colorScheme].text }}>
+                    <Heading
+                      style={{
+                        color: Colors[colorScheme].text,
+                        marginBottom: 10,
+                      }}
+                    >
                       {text}
                     </Heading>
                   )}

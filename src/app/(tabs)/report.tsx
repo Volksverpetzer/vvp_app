@@ -167,7 +167,7 @@ const ReportScreen = () => {
             paddingTop: HEADER_HEIGHT,
           }}
         >
-          <Heading>Zusammenfassung</Heading>
+          <Heading style={{ marginBottom: 10 }}>Zusammenfassung</Heading>
           <TextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib eine kurze Zusammenfassung ein"
@@ -179,7 +179,7 @@ const ReportScreen = () => {
             style={[localStyles.input, { height: 80 }]}
           />
           <Space size={20} />
-          <Heading>Link zum Fake</Heading>
+          <Heading style={{ marginBottom: 10 }}>Link zum Fake</Heading>
           <TextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib einen Link ein"
@@ -190,7 +190,7 @@ const ReportScreen = () => {
             style={localStyles.input}
           />
           <Space size={20} />
-          <Heading>Links zum Thema</Heading>
+          <Heading style={{ marginBottom: 10 }}>Links zum Thema</Heading>
           <TextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib Links zum Thema ein"

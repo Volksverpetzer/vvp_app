@@ -19,7 +19,6 @@ const Heading = ({ style, children, ...props }: HeadingProperties) => {
           fontFamily: "SourceSansProSemiBold",
           fontSize: 18,
           fontWeight: "bold",
-          paddingBottom: 10,
         },
         style,
       ]}

@@ -110,13 +110,12 @@ const SettingsScreen = () => {
         maxHeight={HEADER_HEIGHT}
       />
       <ScrollView
-        style={{
-          flex: 1,
-          backgroundColor,
-        }}
+        style={{}}
         contentContainerStyle={{
           backgroundColor,
+          flex: 1,
           paddingTop: HEADER_HEIGHT,
+          gap: 20,
         }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
@@ -259,7 +258,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   linksContainer: {
+    flex: 1,
     paddingHorizontal: 20,
+    gap: 20,
   },
   infoContainer: {
     flex: 1,

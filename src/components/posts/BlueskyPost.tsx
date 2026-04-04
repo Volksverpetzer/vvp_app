@@ -112,8 +112,8 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
           <View
             style={{
               flexDirection: "row",
-              alignItems: "flex-start",
               justifyContent: "flex-start",
+              alignItems: "center",
               width: "100%",
               gap: 10,
             }}
