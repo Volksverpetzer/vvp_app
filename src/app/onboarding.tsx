@@ -8,11 +8,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
 import View from "#/components/design/View";
+import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
-import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
@@ -91,14 +90,11 @@ const Onboarding = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              gap: 30,
             }}
           >
             <FeedIcon color={corporate} size={20} />
-            <UiText
-              style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
-            >
-              Feed-Einstellungen
-            </UiText>
+            <Heading style={{ textAlign: "left" }}>Feed-Einstellungen</Heading>
           </View>
           <SettingsList
             saveSettings={saveContentSetting}
@@ -120,18 +116,17 @@ const Onboarding = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    gap: 30,
                   }}
                 >
                   <NotificationIcon color={corporate} size={20} />
-                  <UiText
+                  <Heading
                     style={{
-                      ...styles.heading,
                       textAlign: "left",
-                      paddingLeft: 30,
                     }}
                   >
                     Benachrichtigungen
-                  </UiText>
+                  </Heading>
                 </View>
                 <SettingsList
                   saveSettings={saveNotificationSetting}
@@ -174,7 +169,7 @@ const Onboarding = () => {
       <FlatBoard
         data={data}
         onFinish={agreeToTerms}
-        accentColor={Colors.light.heading}
+        accentColor={corporate}
         buttonTitle="Los geht's"
         hideIndicator
         variant="standard"

@@ -5,7 +5,7 @@ import type { ReactElement } from "react";
 import { Pressable, View } from "react-native";
 
 import { ExternalLinkIcon } from "#/components/Icons";
-import UiText from "#/components/ui/UiText";
+import Heading from "#/components/typography/Heading";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -43,17 +43,15 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
           backgroundColor: pressed ? "#909090" : undefined,
           paddingVertical: 10,
           justifyContent: "flex-start",
+          alignItems: "flex-start",
+          gap: 10,
         },
       ]}
     >
       {properties.icon && <View style={{ width: 24 }}>{properties.icon}</View>}
-      <UiText
-        style={{
-          ...styles.heading,
-        }}
-      >
+      <Heading style={{ color: Colors[colorScheme].text }}>
         {properties.text}
-      </UiText>
+      </Heading>
       <ExternalLinkIcon size={15} color={Colors[colorScheme].tabIconDefault} />
     </Pressable>
   );

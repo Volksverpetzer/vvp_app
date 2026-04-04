@@ -6,6 +6,7 @@ import { Hyperlink } from "react-native-hyperlink";
 
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
+import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
@@ -76,15 +77,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
             <View style={{ marginLeft: 10 }}>
-              <UiText
-                style={{
-                  ...styles.heading,
-                  paddingHorizontal: 0,
-                  paddingVertical: 0,
-                }}
-              >
-                &nbsp;{account.display_name}&nbsp;
-              </UiText>
+              <Heading>&nbsp;{account.display_name}&nbsp;</Heading>
               <UiText style={{ fontSize: 14, color: grey }}>
                 &nbsp;@{account.acct}&nbsp;
               </UiText>

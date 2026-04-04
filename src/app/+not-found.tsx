@@ -3,6 +3,7 @@ import { TouchableOpacity } from "react-native";
 
 import EmptyComponent from "#/components/design/EmptyComponent";
 import View from "#/components/design/View";
+import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import { styles } from "#/constants/Styles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -17,10 +18,10 @@ const NotFoundScreen = () => {
         ...styles.centered,
       }}
     >
-      <UiText style={{ ...styles.heading, textAlign: "center" }}>
+      <Heading style={{ textAlign: "center" }}>
         Hier könnte ein Artikel stehen. Tut er aber irgendwie nicht. Das ist
         wohl ein Fehler.
-      </UiText>
+      </Heading>
       <TouchableOpacity
         accessibilityRole="button"
         onPress={() => router.back()}

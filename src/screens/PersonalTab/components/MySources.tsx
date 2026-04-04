@@ -9,6 +9,7 @@ import { DeleteIcon, LinkIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
 import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
+import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -76,15 +77,14 @@ const MySources = () => {
                   onPress={() => outBoundLinkPress(href, wpUrl + "/" + slug)}
                 >
                   {text && (
-                    <UiText
+                    <Heading
                       style={{
-                        ...styles.heading,
-                        padding: 0,
-                        paddingBottom: 10,
+                        color: Colors[colorScheme].text,
+                        marginBottom: 10,
                       }}
                     >
                       {text}
-                    </UiText>
+                    </Heading>
                   )}
                   <UiText style={{ color: corporate }}>{href}</UiText>
                 </Pressable>

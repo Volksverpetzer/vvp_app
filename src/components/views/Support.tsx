@@ -8,10 +8,10 @@ import ShopButton from "#/components/buttons/ShopButton";
 import SteadyButton from "#/components/buttons/SteadyButton";
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
+import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -62,9 +62,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
         onPress={banktransfer}
         style={{ padding: 10 }}
       >
-        <UiText style={{ ...styles.heading, color: corporate, padding: 0 }}>
-          Dauerauftrag
-        </UiText>
+        <Heading style={{ color: corporate }}>Dauerauftrag</Heading>
       </Pressable>
       <UiText style={{ textAlign: "center", fontSize: 16 }}>
         direkt bei der Bank einrichten.
