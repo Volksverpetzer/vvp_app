@@ -1,4 +1,5 @@
-import { ReactNode, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { CheckboxIcon } from "#/components/Icons";
