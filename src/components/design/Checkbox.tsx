@@ -1,5 +1,6 @@
+import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { CheckboxIcon } from "#/components/Icons";
 import Colors from "#/constants/Colors";
@@ -8,6 +9,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 interface CheckboxProperties {
   checked: boolean;
   onChange: (checked: boolean) => void;
+  children?: ReactNode;
 }
 
 const Checkbox = (properties: CheckboxProperties) => {
@@ -30,10 +32,13 @@ const Checkbox = (properties: CheckboxProperties) => {
     <Pressable
       accessibilityRole="checkbox"
       accessibilityState={{ checked }}
-      style={[styles.checkboxBase, style, checkedStyle]}
+      style={[styles.row]}
       onPress={onPress}
     >
-      {checked && <CheckboxIcon size={24} color="white" />}
+      <View style={[styles.checkboxBase, style, checkedStyle]}>
+        {checked && <CheckboxIcon size={24} color="white" />}
+      </View>
+      {properties.children}
     </Pressable>
   );
 };
@@ -45,6 +50,11 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     height: 28,
     width: 28,
+  },
+  row: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 20,
   },
 });
 
