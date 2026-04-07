@@ -55,7 +55,7 @@ const Collapsable = ({
           color={textColor}
         />
       </Pressable>
-      {open && <View>{children}</View>}
+      {open && <View style={styles.content}>{children}</View>}
     </View>
   );
 };
@@ -65,12 +65,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingTop: 20,
+    paddingBottom: 15,
   },
   title: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 10,
+  },
+  content: {
+    paddingTop: 5,
   },
 });
 
