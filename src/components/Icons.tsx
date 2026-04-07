@@ -46,8 +46,8 @@ export const ErrorIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="alert" />
 );
 
-export const ExternalLinkIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="link-external" />
+export const ExternalLinkIcon = ({ size, ...rest }: OcticonsProps) => (
+  <Octicons size={size ?? 16} {...rest} name="link-external" />
 );
 
 export const FeedbackIcon = ({ ...rest }: OcticonsProps) => (

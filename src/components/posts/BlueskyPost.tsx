@@ -104,10 +104,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             onPress={() => onLinkPress(url, router, wpUrl)}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
-            <ExternalLinkIcon
-              size={16}
-              color={Colors[colorScheme].tabIconDefault}
-            />
+            <ExternalLinkIcon color={Colors[colorScheme].tabIconDefault} />
           </TouchableOpacity>
           <View
             style={{

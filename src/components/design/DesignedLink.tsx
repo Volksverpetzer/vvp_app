@@ -52,7 +52,7 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
       <Heading style={{ color: Colors[colorScheme].text }}>
         {properties.text}
       </Heading>
-      <ExternalLinkIcon size={15} color={Colors[colorScheme].tabIconDefault} />
+      <ExternalLinkIcon color={Colors[colorScheme].tabIconDefault} />
     </Pressable>
   );
 };
