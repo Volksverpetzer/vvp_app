@@ -217,7 +217,8 @@ const ReportScreen = () => {
               checked={allowedPublic}
               onChange={(checked: boolean) => setAllowedPublic(checked)}
             />
-            <UiText>
+            {/* ensure the text wraps and doesnt overflow */}
+            <UiText style={{ flex: 1 }}>
               Der Report darf veröffentlicht werden, sodass andere ihn
               kommentieren können.
             </UiText>
