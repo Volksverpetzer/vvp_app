@@ -15,7 +15,6 @@ import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import Checkbox from "#/components/design/Checkbox";
 import Space from "#/components/design/Space";
 import TextInput from "#/components/design/TextInput";
-import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -205,23 +204,16 @@ const ReportScreen = () => {
           {error ? (
             <UiText style={localStyles.errorText}>{error}</UiText>
           ) : undefined}
-          <View
-            style={{
-              ...styles.row,
-              ...styles.noBackground,
-              justifyContent: "flex-start",
-              gap: 20,
-            }}
+          <Checkbox
+            checked={allowedPublic}
+            onChange={(checked: boolean) => setAllowedPublic(checked)}
           >
-            <Checkbox
-              checked={allowedPublic}
-              onChange={(checked: boolean) => setAllowedPublic(checked)}
-            />
-            <UiText>
+            {/* ensure the text wraps and doesn't overflow */}
+            <UiText style={{ flex: 1 }}>
               Der Report darf veröffentlicht werden, sodass andere ihn
               kommentieren können.
             </UiText>
-          </View>
+          </Checkbox>
           <Space size={20} />
           <Pressable
             accessibilityRole="button"
