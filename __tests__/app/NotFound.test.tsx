@@ -1,17 +1,17 @@
-import { render } from "@testing-library/react-native";
-import * as Linking from "expo-linking";
+import { render, waitFor } from "@testing-library/react-native";
 
 import NotFoundScreen from "#/app/+not-found";
 
 const mockReplace = jest.fn();
+const mockOutBoundLinkPress = jest.fn();
 
 jest.mock("expo-router", () => ({
   useRouter: () => ({ replace: mockReplace, back: jest.fn() }),
   usePathname: jest.fn(),
 }));
 
-jest.mock("expo-linking", () => ({
-  openURL: jest.fn(() => Promise.resolve()),
+jest.mock("#/helpers/Linking", () => ({
+  outBoundLinkPress: (...args: unknown[]) => mockOutBoundLinkPress(...args),
 }));
 
 jest.mock("#/constants/Config", () => ({
@@ -40,12 +40,12 @@ describe("NotFoundScreen", () => {
 
     render(<NotFoundScreen />);
 
-    await Promise.resolve(); // flush useEffect
-
-    expect(Linking.openURL).toHaveBeenCalledWith(
-      `https://www.volksverpetzer.de${path}`,
-    );
-    expect(mockReplace).toHaveBeenCalledWith("/");
+    await waitFor(() => {
+      expect(mockOutBoundLinkPress).toHaveBeenCalledWith(
+        `https://www.volksverpetzer.de${path}`,
+      );
+      expect(mockReplace).toHaveBeenCalledWith("/");
+    });
   });
 
   it("does not open URL or redirect for a regular not-found path", async () => {
@@ -53,22 +53,9 @@ describe("NotFoundScreen", () => {
 
     render(<NotFoundScreen />);
 
-    await Promise.resolve();
-
-    expect(Linking.openURL).not.toHaveBeenCalled();
-    expect(mockReplace).not.toHaveBeenCalled();
-  });
-
-  it("navigates home even when openURL rejects", async () => {
-    const path = "/wp-content/uploads/broken.pdf";
-    (usePathname as jest.Mock).mockReturnValue(path);
-    (Linking.openURL as jest.Mock).mockRejectedValueOnce(new Error("failed"));
-
-    render(<NotFoundScreen />);
-
-    await Promise.resolve();
-    await Promise.resolve(); // flush rejection handling
-
-    expect(mockReplace).toHaveBeenCalledWith("/");
+    await waitFor(() => {
+      expect(mockOutBoundLinkPress).not.toHaveBeenCalled();
+      expect(mockReplace).not.toHaveBeenCalled();
+    });
   });
 });

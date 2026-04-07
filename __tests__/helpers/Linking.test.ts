@@ -241,5 +241,49 @@ describe("Linking helpers", () => {
       expect(WebBrowser.openBrowserAsync).not.toHaveBeenCalled();
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
     });
+
+    it("should open excluded paths via WebBrowser to avoid App Link recursion", () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
+
+      parseSpy.mockImplementation((url: string) => {
+        if (url === uploadUrl) {
+          return {
+            hostname: "www.volksverpetzer.de",
+            path: "/wp-content/uploads/2024/11/file.pdf",
+          };
+        }
+        return { hostname: "www.volksverpetzer.de", path: "" };
+      });
+
+      outBoundLinkPress(uploadUrl);
+
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
+    });
+
+    it("should fall back to Linking.openURL when WebBrowser fails for excluded paths", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
+
+      parseSpy.mockImplementation((url: string) => {
+        if (url === uploadUrl) {
+          return {
+            hostname: "www.volksverpetzer.de",
+            path: "/wp-content/uploads/2024/11/file.pdf",
+          };
+        }
+        return { hostname: "www.volksverpetzer.de", path: "" };
+      });
+      jest
+        .mocked(WebBrowser.openBrowserAsync)
+        .mockRejectedValueOnce(new Error("browser unavailable"));
+
+      outBoundLinkPress(uploadUrl);
+
+      await Promise.resolve(); // flush the rejected promise + catch
+
+      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
+    });
   });
 });
