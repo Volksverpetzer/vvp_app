@@ -8,6 +8,7 @@ import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
 import View from "#/components/design/View";
+import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -103,16 +104,13 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             onPress={() => onLinkPress(url, router, wpUrl)}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
-            <ExternalLinkIcon
-              size={16}
-              color={Colors[colorScheme].tabIconDefault}
-            />
+            <ExternalLinkIcon color={Colors[colorScheme].tabIconDefault} />
           </TouchableOpacity>
           <View
             style={{
               flexDirection: "row",
-              alignItems: "flex-start",
               justifyContent: "flex-start",
+              alignItems: "center",
               width: "100%",
               gap: 10,
             }}
@@ -121,13 +119,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
               source={{ uri: author.avatar }}
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
-            <UiText
-              style={{
-                ...styles.heading,
-              }}
-            >
-              {displayName}
-            </UiText>
+            <Heading>{displayName}</Heading>
           </View>
 
           {displayText !== DISPLAY_TEXT_NONE && (

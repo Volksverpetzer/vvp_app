@@ -111,50 +111,53 @@ const SettingsScreen = () => {
       />
       <ScrollView
         style={{
-          flex: 1,
           backgroundColor,
+          flex: 1,
         }}
         contentContainerStyle={{
           backgroundColor,
           paddingTop: HEADER_HEIGHT,
+          gap: 20,
         }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
         )}
       >
-        <Collapsable
-          icon={<FeedIcon color={corporate} size={24} />}
-          title="Feed"
-        >
-          <UiText style={styles.sectionText}>
-            Was möchtest du in deinem Feed sehen?
-          </UiText>
-          <SettingsList
-            saveSettings={saveContentSetting}
-            settings={contentSettings}
-          />
-        </Collapsable>
-        {!Config.isFoss && (
+        <View>
           <Collapsable
-            icon={<NotificationIcon color={corporate} size={24} />}
-            title="Benachrichtigungen"
+            icon={<FeedIcon color={corporate} size={24} />}
+            title="Feed"
           >
+            <UiText style={styles.sectionText}>
+              Was möchtest du in deinem Feed sehen?
+            </UiText>
             <SettingsList
-              saveSettings={saveNotificationSetting}
-              settings={notificationSettings}
+              saveSettings={saveContentSetting}
+              settings={contentSettings}
             />
           </Collapsable>
-        )}
-        <Collapsable
-          icon={<SettingsIcon color={corporate} size={24} />}
-          title="Erweitert"
-        >
-          <SettingsList
-            saveSettings={saveAdvancedSetting}
-            settings={advancedSettings}
-          />
-        </Collapsable>
+          {!Config.isFoss && (
+            <Collapsable
+              icon={<NotificationIcon color={corporate} size={24} />}
+              title="Benachrichtigungen"
+            >
+              <SettingsList
+                saveSettings={saveNotificationSetting}
+                settings={notificationSettings}
+              />
+            </Collapsable>
+          )}
+          <Collapsable
+            icon={<SettingsIcon color={corporate} size={24} />}
+            title="Erweitert"
+          >
+            <SettingsList
+              saveSettings={saveAdvancedSetting}
+              settings={advancedSettings}
+            />
+          </Collapsable>
+        </View>
         <Divider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
           <DesignedLink
@@ -259,7 +262,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   linksContainer: {
+    flex: 1,
     paddingHorizontal: 20,
+    gap: 20,
   },
   infoContainer: {
     flex: 1,

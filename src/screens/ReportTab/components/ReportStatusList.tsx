@@ -17,7 +17,9 @@ interface ReportStatusListProperties {
 const ReportStatusList = ({ reports }: ReportStatusListProperties) => {
   return (
     <View>
-      {reports.length > 0 && <Heading>Deine Reports</Heading>}
+      {reports.length > 0 && (
+        <Heading style={{ marginBottom: 10 }}>Deine Reports</Heading>
+      )}
       {reports.map((report) => (
         <ReportStatusListItem key={report.id} id={report.id} />
       ))}

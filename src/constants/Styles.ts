@@ -30,12 +30,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
   },
-  heading: {
-    fontFamily: "SourceSansProSemiBold",
-    fontSize: 18,
-    fontWeight: "bold",
-    padding: 10,
-  },
   input: {
     borderRadius: 20,
     minHeight: 40,

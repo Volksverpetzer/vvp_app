@@ -78,7 +78,7 @@ const SettingsList = (properties: SettingsListProperties) => {
               key={key}
               style={{
                 ...styles.row,
-                paddingVertical: 10,
+                paddingTop: 20,
                 maxHeight: 45,
               }}
             >
