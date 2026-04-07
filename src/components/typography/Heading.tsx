@@ -15,7 +15,7 @@ const Heading = ({ style, children, ...props }: HeadingProperties) => {
     <UiText
       style={[
         {
-          color: Colors[colorScheme].heading,
+          color: Colors[colorScheme].text,
           fontFamily: "SourceSansProSemiBold",
           fontSize: 18,
           fontWeight: "bold",
