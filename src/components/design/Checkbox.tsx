@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { ReactNode, useMemo, useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { CheckboxIcon } from "#/components/Icons";
 import Colors from "#/constants/Colors";
@@ -8,7 +8,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 interface CheckboxProperties {
   checked: boolean;
   onChange: (checked: boolean) => void;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const Checkbox = (properties: CheckboxProperties) => {
@@ -34,12 +34,9 @@ const Checkbox = (properties: CheckboxProperties) => {
       style={[styles.row]}
       onPress={onPress}
     >
-      <Pressable
-        style={[styles.checkboxBase, style, checkedStyle]}
-        onPress={onPress}
-      >
+      <View style={[styles.checkboxBase, style, checkedStyle]}>
         {checked && <CheckboxIcon size={24} color="white" />}
-      </Pressable>
+      </View>
       {properties.children}
     </Pressable>
   );
