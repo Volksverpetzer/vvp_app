@@ -1,4 +1,3 @@
-import * as Linking from "expo-linking";
 import { usePathname, useRouter } from "expo-router";
 import { useEffect } from "react";
 import { TouchableOpacity } from "react-native";
@@ -10,7 +9,9 @@ import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
+import { outBoundLinkPress } from "#/helpers/Linking";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types/config";
 
 const NotFoundScreen = () => {
   const corporate = useCorporateColor();
@@ -20,10 +21,8 @@ const NotFoundScreen = () => {
   useEffect(() => {
     if (!shouldExcludeFromDeepLink(pathname)) return;
 
-    const fullUrl = `${Config.wpUrl}${pathname}`;
-    Linking.openURL(fullUrl).catch(() => {
-      // Couldn't open externally — stay on not-found screen
-    });
+    const fullUrl = `${Config.wpUrl}${pathname}` satisfies HttpsUrl;
+    outBoundLinkPress(fullUrl);
     router.replace("/");
   }, [pathname, router]);
 
