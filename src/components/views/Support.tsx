@@ -39,6 +39,7 @@ const Support = ({ article_link, location }: SupportProperties) => {
         backgroundColor: "transparent",
         gap: 20,
         alignItems: "center",
+        overflow: "hidden",
       }}
     >
       <UiText
