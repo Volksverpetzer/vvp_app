@@ -1,12 +1,12 @@
 export default {
-  "@algolia/client-search@5.50.1": {
+  "@algolia/client-search@5.50.0": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@atproto/api@0.19.6": {
+  "@atproto/api@0.19.5": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -63,14 +63,14 @@ export default {
       "https://github.com/react-native-async-storage/async-storage/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/bottom-tabs@7.15.9": {
+  "@react-navigation/bottom-tabs@7.15.5": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/native@7.2.2": {
+  "@react-navigation/native@7.1.33": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
@@ -278,7 +278,7 @@ export default {
     licenseUrl: "https://github.com/mdevils/html-entities/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "lodash@4.18.1": {
+  "lodash@4.17.23": {
     licenses: "MIT",
     repository: "https://github.com/lodash/lodash",
     licenseUrl: "https://github.com/lodash/lodash/raw/master/LICENSE",
