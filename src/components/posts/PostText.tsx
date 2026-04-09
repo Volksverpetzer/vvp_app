@@ -27,9 +27,7 @@ export const PostText = ({ feedViewPost, uri }: Props) => {
     return null;
   }
 
-  const facetsForRichText = normalizeFacets(
-    (record as { text: string; facets?: unknown }).facets,
-  );
+  const facetsForRichText = normalizeFacets(record.facets);
   const richText = new RichText({
     text: record.text,
     facets: facetsForRichText,

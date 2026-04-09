@@ -1,12 +1,13 @@
-export const isObjectRecord = (value: unknown) =>
-  typeof value === "object" && value !== null;
+export const isObjectRecord = (
+  value: unknown,
+): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
 
 export const hasStringProperty = <TKey extends string>(
   value: unknown,
   key: TKey,
-): value is Record<TKey, string> =>
-  isObjectRecord(value) &&
-  typeof (value as Record<string, unknown>)[key] === "string";
+): value is Record<string, unknown> & Record<TKey, string> =>
+  isObjectRecord(value) && typeof value[key] === "string";
 
 export const hasUri = (value: unknown) => hasStringProperty(value, "uri");
 

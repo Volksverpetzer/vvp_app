@@ -62,14 +62,13 @@ export const BotFetcher = {
       );
     });
 
-    return topLevelPosts.map((item) => {
+    return topLevelPosts.flatMap((item) => {
+      if (!hasCreatedAt(item.post.post.record)) return [];
       const postId = item.uri.split("/app.bsky.feed.post/")[1];
       const handle = item.post.post.author.handle;
       const url =
         `https://bsky.app/profile/${handle}/post/${postId}` satisfies HttpsUrl;
-      const createdAt = hasCreatedAt(item.post.post.record)
-        ? item.post.post.record.created_at
-        : "";
+      const createdAt = item.post.post.record.created_at;
       return new Post<BlueskyPostProperties>(
         createdAt.replace("Z", ""),
         item.uri,

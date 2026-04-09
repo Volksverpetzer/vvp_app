@@ -131,21 +131,23 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
           {displayText === DISPLAY_TEXT_EXCERPT && (
             <>
               <View style={styles.row}>
-                <UiText
-                  style={{
-                    fontSize: 16,
-                    color: grey,
-                    textAlign: "right",
-                  }}
-                >
-                  {new Date(createdAt).toLocaleTimeString("de-DE", {
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  })}
-                </UiText>
+                {createdAt && (
+                  <UiText
+                    style={{
+                      fontSize: 16,
+                      color: grey,
+                      textAlign: "right",
+                    }}
+                  >
+                    {new Date(createdAt).toLocaleTimeString("de-DE", {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
+                  </UiText>
+                )}
                 {replies?.length > 0 && (
                   <UiText style={{ fontSize: 16, color: corporate }}>
                     Thread (1 von {replies.length + 1})

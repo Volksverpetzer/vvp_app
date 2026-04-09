@@ -13,6 +13,7 @@ describe("typePredicates", () => {
     expect(isObjectRecord({ a: 1 })).toBe(true);
     expect(isObjectRecord(null)).toBe(false);
     expect(isObjectRecord("test")).toBe(false);
+    expect(isObjectRecord([])).toBe(false);
   });
 
   it("hasStringProperty should validate string fields", () => {
