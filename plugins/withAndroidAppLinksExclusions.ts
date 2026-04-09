@@ -46,7 +46,7 @@ const withAndroidAppLinksExclusions: ConfigPlugin = (config) => {
         // but exclude /wp-content/uploads/ and /wp-admin/ on Android 12+ (API 31+).
         // Also keep the "two segments" behavior (.+/.+) used by the legacy pattern.
         attrs["android:pathAdvancedPattern"] =
-          "^/(?!wp-content/uploads/|wp-admin/).+/.+$";
+          "^/(?!wp-content/uploads/|wp-admin/).+/.+/?$";
       }
     }
 
