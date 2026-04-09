@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
 import type { Router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
+import { Platform } from "react-native";
 
 import { onLinkPress, outBoundLinkPress } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -10,7 +11,7 @@ import { registerEvent } from "#/helpers/network/Analytics";
 jest.mock("expo-linking", () => ({
   __esModule: true,
   parse: jest.fn(),
-  openURL: jest.fn(),
+  openURL: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("expo-web-browser", () => ({
@@ -42,6 +43,7 @@ describe("Linking helpers", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    Object.defineProperty(Platform, "OS", { value: "ios", configurable: true });
 
     parseSpy = jest.spyOn(Linking, "parse");
     pushSpy = jest.spyOn(router, "push").mockImplementation(() => {});
@@ -242,7 +244,7 @@ describe("Linking helpers", () => {
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
     });
 
-    it("should open excluded paths via WebBrowser to avoid App Link recursion", () => {
+    it("should open excluded paths via WebBrowser on iOS to avoid App Link recursion", () => {
       const uploadUrl =
         "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
 
@@ -262,7 +264,37 @@ describe("Linking helpers", () => {
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
-    it("should fall back to Linking.openURL when WebBrowser fails for excluded paths", async () => {
+    it("should use intent:// on Android for excluded paths to bypass App Links", () => {
+      Object.defineProperty(Platform, "OS", {
+        value: "android",
+        configurable: true,
+      });
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
+
+      parseSpy.mockImplementation((url: string) => {
+        if (url === uploadUrl) {
+          return {
+            hostname: "www.volksverpetzer.de",
+            path: "/wp-content/uploads/2024/11/file.pdf",
+          };
+        }
+        return { hostname: "www.volksverpetzer.de", path: "" };
+      });
+
+      outBoundLinkPress(uploadUrl);
+
+      expect(Linking.openURL).toHaveBeenCalledWith(
+        "intent://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf#Intent;scheme=https;end",
+      );
+      expect(WebBrowser.openBrowserAsync).not.toHaveBeenCalled();
+    });
+
+    it("should fall back to WebBrowser when intent:// fails on Android for excluded paths", async () => {
+      Object.defineProperty(Platform, "OS", {
+        value: "android",
+        configurable: true,
+      });
       const uploadUrl =
         "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
 
@@ -276,14 +308,14 @@ describe("Linking helpers", () => {
         return { hostname: "www.volksverpetzer.de", path: "" };
       });
       jest
-        .mocked(WebBrowser.openBrowserAsync)
-        .mockRejectedValueOnce(new Error("browser unavailable"));
+        .mocked(Linking.openURL)
+        .mockRejectedValueOnce(new Error("intent unavailable"));
 
       outBoundLinkPress(uploadUrl);
 
       await Promise.resolve(); // flush the rejected promise + catch
 
-      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
     });
   });
 });

@@ -38,7 +38,8 @@ const Index = () => {
         const hasPath =
           typeof path === "string" && path.replace(/\//g, "").length > 0;
         if (hostname === baseHost && hasPath) {
-          // Launched via a Volksverpetzer article URL. Let router handle it.
+          // Launched via a Volksverpetzer URL. Let Expo Router handle it,
+          // including excluded paths routed through `/external`.
           appOpenRoutine();
           return;
         }
