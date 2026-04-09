@@ -6,7 +6,7 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import { outBoundLinkPress } from "#/helpers/Linking";
-import type { HttpsUrl } from "#/types";
+import { isHttpsUrl } from "#/helpers/utils/networking";
 
 const External = () => {
   const router = useRouter();
@@ -21,8 +21,12 @@ const External = () => {
       try {
         const { hostname, path } = Linking.parse(url);
         const { hostname: baseHost } = Linking.parse(Config.wpUrl);
-        if (hostname === baseHost && shouldExcludeFromDeepLink(path)) {
-          outBoundLinkPress(url as HttpsUrl);
+        if (
+          isHttpsUrl(url) &&
+          hostname === baseHost &&
+          shouldExcludeFromDeepLink(path)
+        ) {
+          outBoundLinkPress(url);
         }
       } catch {
         // Malformed URL — ignore and fall through to router.replace("/")
