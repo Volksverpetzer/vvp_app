@@ -38,12 +38,12 @@ const Index = () => {
 
         const hasPath =
           typeof path === "string" && path.replace(/\//g, "").length > 0;
-        const isExcludedPath =
-          hostname === baseHost && hasPath && shouldExcludeFromDeepLink(path);
-
-        if (hostname === baseHost && hasPath && !isExcludedPath) {
-          // Launched via a Volksverpetzer URL that we handle in-app.
-          // Let Expo Router handle it.
+        if (
+          hostname === baseHost &&
+          hasPath &&
+          !shouldExcludeFromDeepLink(path)
+        ) {
+          // Launched via a Volksverpetzer article URL. Let Expo Router handle it.
           appOpenRoutine();
           return;
         }
