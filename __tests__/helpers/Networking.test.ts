@@ -1,25 +1,16 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import type { AxiosInstance } from "axios";
 
 // Import the module
 import * as Networking from "#/helpers/utils/networking";
-
-// Mock axios
-jest.mock("axios", () => ({
-  create: jest.fn((options: any) => ({
-    request: jest.fn(),
-    defaults: {
-      baseURL: options.baseURL,
-      headers: options.headers || {},
-    },
-  })) as unknown as AxiosInstance,
-}));
 
 // Mock AbortController
 (global as any).AbortController = class {
   signal = {};
   abort = jest.fn();
 };
+
+// Mock fetch
+(global as any).fetch = jest.fn();
 
 // Mock setTimeout and clearTimeout
 const mockSetTimeout = jest.fn().mockImplementation(() => 123 as any) as any;
@@ -42,15 +33,16 @@ describe("Networking utilities", () => {
 
   it("createClient sets baseURL and headers", () => {
     const baseURL = "https://example.com";
-    // axios.create returns an instance
     const instance = Networking.createClient(baseURL);
     expect(instance.defaults.baseURL).toBe(baseURL);
-    expect(instance.defaults.headers["Content-Type"]).toBe("application/json");
-    expect(instance.defaults.headers["User-Agent"]).toBeDefined();
-    expect(instance.defaults.headers["Cache-Control"]).toBe(
+    expect(instance.defaults.headers.common["Content-Type"]).toBe(
+      "application/json",
+    );
+    expect(instance.defaults.headers.common["User-Agent"]).toBeDefined();
+    expect(instance.defaults.headers.common["Cache-Control"]).toBe(
       "no-cache, no-store, must-revalidate",
     );
-    expect(instance.defaults.headers.Expires).toBe("0");
+    expect(instance.defaults.headers.common.Expires).toBe("0");
   });
 
   it("fetchWithTimeout resolves response data", async () => {
