@@ -278,7 +278,7 @@ export default {
     licenseUrl: "https://github.com/mdevils/html-entities/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "lodash@4.17.23": {
+  "lodash@4.18.1": {
     licenses: "MIT",
     repository: "https://github.com/lodash/lodash",
     licenseUrl: "https://github.com/lodash/lodash/raw/master/LICENSE",
