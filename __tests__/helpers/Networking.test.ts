@@ -1,25 +1,15 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import type { AxiosInstance } from "axios";
 
-// Import the module
 import * as Networking from "#/helpers/utils/networking";
-
-// Mock axios
-jest.mock("axios", () => ({
-  create: jest.fn((options: any) => ({
-    request: jest.fn(),
-    defaults: {
-      baseURL: options.baseURL,
-      headers: options.headers || {},
-    },
-  })) as unknown as AxiosInstance,
-}));
 
 // Mock AbortController
 (global as any).AbortController = class {
   signal = {};
   abort = jest.fn();
 };
+
+// Mock fetch
+(global as any).fetch = jest.fn();
 
 // Mock setTimeout and clearTimeout
 const mockSetTimeout = jest.fn().mockImplementation(() => 123 as any) as any;
@@ -31,60 +21,81 @@ const mockClearTimeout = jest.fn() as any;
 // Mock console.error
 (console.error as any) = jest.fn();
 
+const mockJsonResponse =
+  (body: unknown, status = 200) =>
+  () =>
+    Promise.resolve({
+      ok: status >= 200 && status < 300,
+      status,
+      statusText: status === 200 ? "OK" : "Error",
+      text: () => Promise.resolve(JSON.stringify(body)),
+      headers: new Headers(),
+    } as any);
+
 describe("Networking utilities", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // Reset console.error mock
-    if ((console.error as any).mockRestore) {
-      (console.error as any).mockRestore();
-    }
   });
 
-  it("createClient sets baseURL and headers", () => {
-    const baseURL = "https://example.com";
-    // axios.create returns an instance
-    const instance = Networking.createClient(baseURL);
-    expect(instance.defaults.baseURL).toBe(baseURL);
-    expect(instance.defaults.headers["Content-Type"]).toBe("application/json");
-    expect(instance.defaults.headers["User-Agent"]).toBeDefined();
-    expect(instance.defaults.headers["Cache-Control"]).toBe(
-      "no-cache, no-store, must-revalidate",
+  it("createClient sends default headers on every request", async () => {
+    const client = Networking.createClient("https://example.com" as any);
+    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+      mockJsonResponse({}),
     );
-    expect(instance.defaults.headers.Expires).toBe("0");
+
+    await client.request({ url: "/test" });
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://example.com/test",
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Expires: "0",
+        }),
+      }),
+    );
+  });
+
+  it("createClient merges extraHeaders into every request", async () => {
+    const client = Networking.createClient("https://example.com" as any, {
+      Referer: "https://example.com",
+    });
+    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+      mockJsonResponse({}),
+    );
+
+    await client.request({ url: "/test" });
+
+    expect(fetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({ Referer: "https://example.com" }),
+      }),
+    );
   });
 
   it("fetchWithTimeout resolves response data", async () => {
-    // Setup
-    const client = Networking.createClient("https://x");
+    const client = Networking.createClient("https://x" as any);
     const fakeResponse = { data: { foo: "bar" } };
-    const mockRequest = jest.fn() as any;
-    mockRequest.mockResolvedValue(fakeResponse);
+    const mockRequest = jest.fn<any>().mockResolvedValue(fakeResponse);
     client.request = mockRequest;
 
-    // Execute
     const result = await Networking.fetchWithTimeout(client, "/p", {}, 1000);
 
-    // Assert
     expect(result).toEqual(fakeResponse);
     expect(client.request).toHaveBeenCalledWith(
-      expect.objectContaining({
-        url: "/p",
-        signal: expect.any(Object),
-      }),
+      expect.objectContaining({ url: "/p", signal: expect.any(Object) }),
     );
     expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 1000);
     expect(clearTimeout).toHaveBeenCalledWith(123);
   });
 
   it("fetchWithTimeout handles errors correctly", async () => {
-    // Setup
-    const client = Networking.createClient("https://x");
+    const client = Networking.createClient("https://x" as any);
     const error = new Error("Network error");
-    const mockRequest = jest.fn() as any;
-    mockRequest.mockRejectedValue(error);
-    client.request = mockRequest;
+    client.request = jest.fn<any>().mockRejectedValue(error);
 
-    // Execute & Assert
     await expect(Networking.fetchWithTimeout(client, "/p")).rejects.toThrow(
       "Network error",
     );
@@ -94,27 +105,23 @@ describe("Networking utilities", () => {
   });
 
   it("fetchWithTimeout uses default timeout of 60 seconds if not specified", async () => {
-    // Setup
-    const client = Networking.createClient("https://x");
-    const fakeResponse = { data: {} };
-    const mockRequest = jest.fn() as any;
-    mockRequest.mockResolvedValue(fakeResponse);
-    client.request = mockRequest;
+    const client = Networking.createClient("https://x" as any);
+    client.request = jest.fn<any>().mockResolvedValue({ data: {} });
 
-    // Execute
     await Networking.fetchWithTimeout(client, "/p");
 
-    // Assert
     expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), 60000);
   });
 
-  it("get function calls fetchWithTimeout with correct parameters", async () => {
-    // Skip this test since we're having issues with the mock implementation
-    // This is a known limitation of the testing environment
-  });
+  it("FetchError preserves response body", async () => {
+    const client = Networking.createClient("https://example.com" as any);
+    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+      mockJsonResponse({ error: "not found" }, 404),
+    );
 
-  it("post function calls fetchWithTimeout with correct parameters", async () => {
-    // Skip this test since we're having issues with the mock implementation
-    // This is a known limitation of the testing environment
+    await expect(client.request({ url: "/missing" })).rejects.toMatchObject({
+      status: 404,
+      body: { error: "not found" },
+    });
   });
 });
