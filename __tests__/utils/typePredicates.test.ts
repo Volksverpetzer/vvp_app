@@ -26,8 +26,8 @@ describe("typePredicates", () => {
   });
 
   it("hasCreatedAt should validate created_at field", () => {
-    expect(hasCreatedAt({ createdAt: "2026-01-01T12:00:00Z" })).toBe(true);
-    expect(hasCreatedAt({ created_at: "2026-01-01T12:00:00Z" })).toBe(false);
+    expect(hasCreatedAt({ created_at: "2026-01-01T12:00:00Z" })).toBe(true);
+    expect(hasCreatedAt({ createdAt: "2026-01-01T12:00:00Z" })).toBe(false);
   });
 
   it("hasText should validate text field", () => {
