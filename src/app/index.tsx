@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
-import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import NotificationManager from "#/helpers/Notifications";
 import Statistics from "#/helpers/Statistics";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -38,12 +37,9 @@ const Index = () => {
 
         const hasPath =
           typeof path === "string" && path.replace(/\//g, "").length > 0;
-        if (
-          hostname === baseHost &&
-          hasPath &&
-          !shouldExcludeFromDeepLink(path)
-        ) {
-          // Launched via a Volksverpetzer article URL. Let Expo Router handle it.
+        if (hostname === baseHost && hasPath) {
+          // Launched via a Volksverpetzer URL. Let Expo Router handle it,
+          // including excluded paths routed through `/external`.
           appOpenRoutine();
           return;
         }

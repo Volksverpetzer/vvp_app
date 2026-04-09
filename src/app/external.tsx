@@ -1,7 +1,10 @@
+import * as Linking from "expo-linking";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 
 import UiSpinner from "#/components/ui/UiSpinner";
+import Config from "#/constants/Config";
+import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import type { HttpsUrl } from "#/types";
 
@@ -14,8 +17,16 @@ const External = () => {
     if (didOpen.current) return;
     didOpen.current = true;
 
-    if (typeof url === "string" && /^https:\/\//.test(url)) {
-      outBoundLinkPress(url as HttpsUrl);
+    if (typeof url === "string") {
+      try {
+        const { hostname, path } = Linking.parse(url);
+        const { hostname: baseHost } = Linking.parse(Config.wpUrl);
+        if (hostname === baseHost && shouldExcludeFromDeepLink(path)) {
+          outBoundLinkPress(url as HttpsUrl);
+        }
+      } catch {
+        // Malformed URL — ignore and fall through to router.replace("/")
+      }
     }
 
     // Return user to the app shell. If they come back from the OS handler,

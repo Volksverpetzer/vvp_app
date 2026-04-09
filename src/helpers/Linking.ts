@@ -60,11 +60,11 @@ const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
       // intent:// URIs are not matched against App Link filters, so Android
       // will open a browser chooser instead of routing back to the app.
       const intentUrl = `intent://${href.replace(/^https?:\/\//, "")}#Intent;scheme=https;end`;
-      void Linking.openURL(intentUrl).catch(() => {
-        void WebBrowser.openBrowserAsync(href);
-      });
+      void Linking.openURL(intentUrl)
+        .catch(() => WebBrowser.openBrowserAsync(href))
+        .catch(() => Linking.openURL(href));
     } else {
-      void WebBrowser.openBrowserAsync(href);
+      void WebBrowser.openBrowserAsync(href).catch(() => Linking.openURL(href));
     }
     return;
   }
