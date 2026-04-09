@@ -15,6 +15,7 @@ import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
+import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import {
   type BlueskyPostProperties,
@@ -54,7 +55,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
     router.push(`/bsky/${postId}`);
   };
 
-  const textRaw = (record?.text as string) || "";
+  const textRaw = hasText(record) ? record.text : "";
   const fulltext = decode(
     textRaw.replaceAll("</p>", "\n").replaceAll(htmlPattern, ""),
   );
@@ -70,9 +71,8 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
     }
   }
 
-  const createdAt = record.created_at as string;
-  const displayName = (author as unknown as { display_name: string })
-    .display_name;
+  const createdAt = hasCreatedAt(record) ? record.created_at : "";
+  const displayName = author.displayName ?? author.handle;
 
   const handle = author.handle;
   const url: HttpsUrl = `https://bsky.app/profile/${handle}/post/${postId}`;

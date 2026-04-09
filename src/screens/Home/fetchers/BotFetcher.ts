@@ -4,6 +4,7 @@ import BlueskyPost from "#/components/posts/BlueskyPost";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
+import { hasCreatedAt, hasUri } from "#/helpers/utils/typePredicates";
 import type { BlueskyPostProperties, HttpsUrl } from "#/types";
 
 import FetcherUtilities from "./FetcherUtilities";
@@ -39,10 +40,9 @@ export const BotFetcher = {
 
     for (const item of feed) {
       const uri = item.post.uri;
-      const replyParentUri =
-        item.reply?.parent && "uri" in item.reply.parent
-          ? item.reply.parent.uri
-          : undefined;
+      const replyParentUri = hasUri(item.reply?.parent)
+        ? item.reply.parent.uri
+        : undefined;
       if (replyParentUri && postsByUri[replyParentUri]) {
         postsByUri[replyParentUri].replies.push(postsByUri[uri].post);
         allReplies.add(uri);
@@ -67,8 +67,11 @@ export const BotFetcher = {
       const handle = item.post.post.author.handle;
       const url =
         `https://bsky.app/profile/${handle}/post/${postId}` satisfies HttpsUrl;
+      const createdAt = hasCreatedAt(item.post.post.record)
+        ? item.post.post.record.created_at
+        : "";
       return new Post<BlueskyPostProperties>(
-        (item.post.post.record.created_at as string).replace("Z", ""),
+        createdAt.replace("Z", ""),
         item.uri,
         BlueskyPost,
         item,

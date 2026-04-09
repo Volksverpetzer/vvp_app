@@ -7,6 +7,7 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { onLinkPress } from "#/helpers/Linking";
 import { normalizeFacets } from "#/helpers/utils/posts";
+import { hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -18,19 +19,19 @@ type Props = {
 export const PostText = ({ feedViewPost, uri }: Props) => {
   const router = useRouter();
   const record = feedViewPost?.post?.record;
-  const facetsForRichText = normalizeFacets(record.facets);
 
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
 
-  /*
-  if (!AppBskyFeedPost.isRecord(record)) {
-    return <Text />;
+  if (!hasText(record)) {
+    return null;
   }
-  */
 
+  const facetsForRichText = normalizeFacets(
+    (record as { text: string; facets?: unknown }).facets,
+  );
   const richText = new RichText({
-    text: record.text as string,
+    text: record.text,
     facets: facetsForRichText,
   });
 
