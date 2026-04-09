@@ -6,9 +6,10 @@ import {
 } from "#/helpers/utils/networking";
 import type { AISearchResponse, HttpsUrl } from "#/types";
 
-/** Axios client for AI with Referer header set */
-const intelligenceClient = createClient(Config.aiUrl);
-intelligenceClient.defaults.headers.common["Referer"] = Config.aiUrl;
+/** Fetch client for AI with Referer header set */
+const intelligenceClient = createClient(Config.aiUrl, {
+  Referer: Config.aiUrl,
+});
 
 /**
  * The IntelligenceAPI class provides methods for making HTTP requests and fetching data from an API.

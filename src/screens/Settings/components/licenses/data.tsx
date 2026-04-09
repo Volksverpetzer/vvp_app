@@ -90,12 +90,6 @@ export default {
     licenseUrl: "https://github.com/vdor/react-native-horizontal-picker",
     parents: "vvp_app",
   },
-  "axios@1.13.6": {
-    licenses: "MIT",
-    repository: "https://github.com/axios/axios",
-    licenseUrl: "https://github.com/axios/axios/raw/master/LICENSE",
-    parents: "vvp_app",
-  },
   "buffer@6.0.3": {
     licenses: "MIT",
     repository: "https://github.com/feross/buffer",
@@ -278,7 +272,7 @@ export default {
     licenseUrl: "https://github.com/mdevils/html-entities/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "lodash@4.17.23": {
+  "lodash@4.18.1": {
     licenses: "MIT",
     repository: "https://github.com/lodash/lodash",
     licenseUrl: "https://github.com/lodash/lodash/raw/master/LICENSE",

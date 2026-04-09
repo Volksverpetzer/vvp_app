@@ -41,7 +41,7 @@ export default class WordPressAPI {
   }
 
   /**
-   * Search posts by term using axios.
+   * Search posts by term.
    */
   static async searchPosts(
     search: string,
@@ -53,7 +53,7 @@ export default class WordPressAPI {
       {
         params: {
           orderby: "relevance",
-          search: encodeURIComponent(search),
+          search,
           page: page,
         },
       },
@@ -71,7 +71,7 @@ export default class WordPressAPI {
       `/wp-json/wp/v2/posts`,
       {
         params: {
-          slug: encodeURIComponent(slug),
+          slug,
         },
       },
     );
