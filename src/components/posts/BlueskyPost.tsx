@@ -3,7 +3,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
 import { useEffect } from "react";
-import { TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
@@ -89,13 +89,13 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
         style={{ flex: 1 }}
         onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
       >
-        <View
-          style={{
+        <ScrollView
+          scrollEnabled={displayText === DISPLAY_TEXT_FULL}
+          contentContainerStyle={{
             position: "relative",
-            flex: 1,
             gap: 20,
             paddingHorizontal: 30,
-            paddingTop: 20,
+            paddingVertical: 20,
           }}
         >
           <TouchableOpacity
@@ -163,7 +163,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
             replies.map((reply: FeedViewPost, index: number) => {
               return <PostText key={index} feedViewPost={reply} uri={uri} />;
             })}
-        </View>
+        </ScrollView>
       </Hyperlink>
     </TouchableOpacity>
   );
