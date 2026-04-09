@@ -7,8 +7,9 @@ import {
 import type { AISearchResponse, HttpsUrl } from "#/types";
 
 /** Fetch client for AI with Referer header set */
-const intelligenceClient = createClient(Config.aiUrl);
-intelligenceClient.defaults.headers.common["Referer"] = Config.aiUrl;
+const intelligenceClient = createClient(Config.aiUrl, {
+  Referer: Config.aiUrl,
+});
 
 /**
  * The IntelligenceAPI class provides methods for making HTTP requests and fetching data from an API.

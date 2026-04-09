@@ -26,36 +26,28 @@ export type FetchResponse<T> = {
 };
 
 export type FetchClient = {
-  defaults: {
-    baseURL: HttpsUrl;
-    headers: {
-      common: FetchHeaders;
-    };
-  };
   request: <T>(
     config: FetchRequestConfig & { url: string },
   ) => Promise<FetchResponse<T>>;
 };
 
-class FetchError extends Error {
+export class FetchError extends Error {
   status: number;
   statusText: string;
   url: string;
+  body: unknown;
 
   constructor(
     message: string,
-    info: { status: number; statusText: string; url: string },
+    info: { status: number; statusText: string; url: string; body: unknown },
   ) {
     super(message);
     this.name = "FetchError";
     this.status = info.status;
     this.statusText = info.statusText;
     this.url = info.url;
+    this.body = info.body;
   }
-}
-
-function isAbsoluteUrl(url: string): boolean {
-  return url.startsWith("http://") || url.startsWith("https://");
 }
 
 function buildUrl(
@@ -63,7 +55,10 @@ function buildUrl(
   url: string,
   params?: FetchRequestConfig["params"],
 ): string {
-  const finalUrl = isAbsoluteUrl(url) ? new URL(url) : new URL(url, baseURL);
+  const finalUrl =
+    url.startsWith("http://") || url.startsWith("https://")
+      ? new URL(url)
+      : new URL(url, baseURL);
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value === undefined || value === null) continue;
@@ -81,23 +76,22 @@ function buildUrl(
  * YourApp/1.2.3 (ios; iOS 17.3; iPhone 15 Pro)
  *
  * @param baseURL Base URL for requests
+ * @param extraHeaders Additional headers merged into every request
  */
-export function createClient(baseURL: HttpsUrl): FetchClient {
-  const commonHeaders: FetchHeaders = {
+export function createClient(
+  baseURL: HttpsUrl,
+  extraHeaders: FetchHeaders = {},
+): FetchClient {
+  const baseHeaders: FetchHeaders = {
     "Content-Type": "application/json",
     "User-Agent": `${Constants.expoConfig?.slug}/${Application?.nativeApplicationVersion} (${Platform.OS}; ${Device.osName} ${Device.osVersion}; ${Device.modelName})`,
     "Cache-Control": "no-cache, no-store, must-revalidate",
     Pragma: "no-cache",
     Expires: "0",
+    ...extraHeaders,
   };
 
-  const client: FetchClient = {
-    defaults: {
-      baseURL,
-      headers: {
-        common: commonHeaders,
-      },
-    },
+  return {
     request: async <T>({
       url,
       method = "GET",
@@ -109,15 +103,11 @@ export function createClient(baseURL: HttpsUrl): FetchClient {
     }: FetchRequestConfig & { url: string }): Promise<FetchResponse<T>> => {
       const requestUrl = buildUrl(baseURL, url, params);
       const mergedHeaders: FetchHeaders = {
-        ...client.defaults.headers.common,
+        ...baseHeaders,
         ...(headers ?? {}),
       };
 
-      const init: RequestInit = {
-        method,
-        headers: mergedHeaders,
-        signal,
-      };
+      const init: RequestInit = { method, headers: mergedHeaders, signal };
 
       if (data !== undefined && method.toUpperCase() !== "GET") {
         if (
@@ -126,29 +116,34 @@ export function createClient(baseURL: HttpsUrl): FetchClient {
           data instanceof ArrayBuffer ||
           ArrayBuffer.isView(data)
         ) {
-          init.body = data as any;
+          init.body = data as BodyInit;
         } else {
-          if (!("Content-Type" in mergedHeaders)) {
-            mergedHeaders["Content-Type"] = "application/json";
-          }
           init.body = JSON.stringify(data);
         }
       }
 
       const response = await fetch(requestUrl, init);
       const rawText = await response.text();
-      const parsed: any =
-        responseType === "text"
-          ? rawText
-          : rawText.length === 0
-            ? null
-            : JSON.parse(rawText);
+
+      let parsed: unknown;
+      if (responseType === "text") {
+        parsed = rawText;
+      } else if (rawText.length === 0) {
+        parsed = null;
+      } else {
+        try {
+          parsed = JSON.parse(rawText);
+        } catch {
+          parsed = rawText;
+        }
+      }
 
       if (!response.ok) {
         throw new FetchError(`Request failed with status ${response.status}`, {
           status: response.status,
           statusText: response.statusText,
           url: requestUrl,
+          body: parsed,
         });
       }
 
@@ -158,12 +153,10 @@ export function createClient(baseURL: HttpsUrl): FetchClient {
         statusText: response.statusText,
         headers: response.headers,
         url: requestUrl,
-        ok: response.ok,
+        ok: true,
       };
     },
   };
-
-  return client;
 }
 
 /**
@@ -176,14 +169,14 @@ export async function fetchWithTimeout<T>(
   abortTime?: number,
 ): Promise<FetchResponse<T>> {
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), abortTime || 60_000);
+  const id = setTimeout(() => controller.abort(), abortTime ?? 60_000);
   try {
     return await client.request<T>({
       url: path,
       ...config,
       signal: controller.signal,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error(error);
     console.error(path);
     throw error;
