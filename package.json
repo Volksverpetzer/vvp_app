@@ -28,7 +28,9 @@
     "expo:eject": "expo eject",
     "------- npm scripts -------": "-------------",
     "prepare": "husky",
-    "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\""
+    "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\"",
+    "prepare:fdroid": "node scripts/prepare-fdroid.mjs",
+    "prepare:play": "node scripts/prepare-play.mjs"
   },
   "dependencies": {
     "@algolia/client-search": "5.50.1",
@@ -131,5 +133,14 @@
     "tsx": "4.21.0",
     "typedoc": "0.28.18",
     "typescript": "5.9.3"
+  },
+  "expo": {
+    "autolinking": {
+      "android": {
+        "exclude": [
+          "expo-notifications"
+        ]
+      }
+    }
   }
 }

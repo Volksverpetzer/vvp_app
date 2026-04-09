@@ -1,7 +1,6 @@
 import HorizontalPicker from "@vseslav/react-native-horizontal-picker";
 import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
-import * as Notifications from "expo-notifications";
 import { useCallback, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 
@@ -13,6 +12,7 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import NotificationManager from "#/helpers/Notifications";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -58,16 +58,9 @@ const Donate = (properties: DonateProperties) => {
     );
 
     if (Platform.OS !== "web") {
-      Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Danke für deine Spende! 📬",
-          body: "Wir haben uns sehr gefreut, dass du uns im letzten Monat unterstützt hast.",
-        },
-        trigger: {
-          type: Notifications.SchedulableTriggerInputTypes.DATE,
-          date: new Date(Date.now() + WEEK_IN_MS * 3),
-        },
-      });
+      void NotificationManager.scheduleDonationReminder(
+        new Date(Date.now() + WEEK_IN_MS * 3),
+      );
     }
   };
 
