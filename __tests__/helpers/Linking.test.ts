@@ -43,7 +43,7 @@ describe("Linking helpers", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    Platform.OS = "ios";
+    Object.defineProperty(Platform, "OS", { value: "ios", configurable: true });
 
     parseSpy = jest.spyOn(Linking, "parse");
     pushSpy = jest.spyOn(router, "push").mockImplementation(() => {});
@@ -265,7 +265,10 @@ describe("Linking helpers", () => {
     });
 
     it("should use intent:// on Android for excluded paths to bypass App Links", () => {
-      Platform.OS = "android";
+      Object.defineProperty(Platform, "OS", {
+        value: "android",
+        configurable: true,
+      });
       const uploadUrl =
         "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
 
@@ -288,7 +291,10 @@ describe("Linking helpers", () => {
     });
 
     it("should fall back to WebBrowser when intent:// fails on Android for excluded paths", async () => {
-      Platform.OS = "android";
+      Object.defineProperty(Platform, "OS", {
+        value: "android",
+        configurable: true,
+      });
       const uploadUrl =
         "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
 
