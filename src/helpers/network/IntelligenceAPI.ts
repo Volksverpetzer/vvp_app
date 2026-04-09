@@ -6,7 +6,7 @@ import {
 } from "#/helpers/utils/networking";
 import type { AISearchResponse, HttpsUrl } from "#/types";
 
-/** Axios client for AI with Referer header set */
+/** Fetch client for AI with Referer header set */
 const intelligenceClient = createClient(Config.aiUrl);
 intelligenceClient.defaults.headers.common["Referer"] = Config.aiUrl;
 
