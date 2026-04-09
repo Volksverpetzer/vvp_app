@@ -133,12 +133,10 @@ const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data
     {
       scheme: "https",
       host: "www.volksverpetzer.de",
-      // pathPattern for Android < 12 (API 31): broad fallback, code-level
-      // intent:// bypass in outBoundLinkPress handles excluded paths there.
+      // Broad fallback: Android < 12 (API 31) only supports simple-glob matching.
+      // We keep this and apply the actual exclusions via a config plugin that
+      // injects `android:pathAdvancedPattern` into AndroidManifest.xml for API 31+.
       pathPattern: "/.*/.*",
-      // pathAdvancedPattern for Android 12+ (API 31+): full Java regex with
-      // negative lookahead to exclude /wp-content/ and /wp-admin/ from App Links.
-      pathAdvancedPattern: "^/(?!wp-content|wp-admin).+/.+$",
     },
   ];
 

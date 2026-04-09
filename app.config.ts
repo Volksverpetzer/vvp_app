@@ -27,6 +27,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     userInterfaceStyle: "automatic",
     plugins: [
       "./plugins/gradleproperties.plugin.ts",
+      "./plugins/withAndroidAppLinksExclusions",
       ...(process.env.IS_FOSS === "true" ? ["./plugins/withFossBuild"] : []),
       ["expo-router"],
       ["expo-asset"],
