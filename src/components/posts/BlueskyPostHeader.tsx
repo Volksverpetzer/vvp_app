@@ -1,15 +1,21 @@
-import type { ProfileViewBasic } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 import { Image } from "expo-image";
 
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 
+// The AT Proto SDK types use camelCase, but our Python backend returns snake_case.
+type Author = {
+  display_name?: string;
+  handle: string;
+  avatar?: string;
+};
+
 type Props = {
-  author: ProfileViewBasic;
+  author: Author;
 };
 
 export const BlueskyPostHeader = ({ author }: Props) => {
-  const displayName = author.displayName ?? author.handle;
+  const displayName = author.display_name ?? author.handle;
   return (
     <View
       style={{
