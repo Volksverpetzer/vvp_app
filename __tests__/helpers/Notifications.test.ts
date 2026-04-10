@@ -268,7 +268,7 @@ describe("NotificationManager", () => {
     });
 
     it("is a no-op when notifications are unavailable (web platform)", async () => {
-      const platform = jest.requireMock("react-native").Platform;
+      const platform = (jest.requireMock("react-native") as any).Platform;
       platform.OS = "web";
       try {
         await NotificationManager.scheduleDonationReminder(new Date());
