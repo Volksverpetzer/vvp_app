@@ -1,6 +1,6 @@
 import * as Application from "expo-application";
 import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
+import type * as ExpoNotifications from "expo-notifications";
 import { Platform } from "react-native";
 
 import Colors from "#/constants/Colors";
@@ -10,8 +10,25 @@ import type { NotificationSettingType } from "#/types";
 
 import SettingsStore from "./Stores/SettingsStore";
 
-// Configure the notification handler (no-op on FOSS builds — FCM is not linked)
-if (!Config.isFoss) {
+let cachedNotifications: typeof ExpoNotifications | null = null;
+let notificationsConfigured = false;
+
+const getNotifications = (): typeof ExpoNotifications | null => {
+  if (Config.isFoss) return null;
+  if (Platform.OS === "web") return null;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    cachedNotifications ??= require("expo-notifications");
+    return cachedNotifications;
+  } catch {
+    return null;
+  }
+};
+
+const ensureNotificationsConfigured = () => {
+  if (notificationsConfigured) return;
+  const Notifications = getNotifications();
+  if (!Notifications) return;
   Notifications.setNotificationHandler({
     handleNotification: () =>
       Promise.resolve({
@@ -21,24 +38,28 @@ if (!Config.isFoss) {
         shouldSetBadge: true,
       }),
   });
-}
+  notificationsConfigured = true;
+};
 
 const NotificationManager = {
   /**
    * Gets the current notification permissions.
    * @returns A promise that resolves to the current notification permissions.
    */
-  getPermissions(): Promise<Notifications.NotificationPermissionsStatus> {
-    if (Config.isFoss)
-      return Promise.resolve({
-        status: Notifications.PermissionStatus.DENIED,
+  async getPermissions(): Promise<ExpoNotifications.NotificationPermissionsStatus> {
+    ensureNotificationsConfigured();
+    const Notifications = getNotifications();
+    if (!Notifications) {
+      return {
+        status: "denied" as ExpoNotifications.PermissionStatus,
         canAskAgain: false,
         granted: false,
         expires: "never",
         ios: undefined,
         android: undefined,
-      });
-    return Notifications.getPermissionsAsync();
+      } satisfies ExpoNotifications.NotificationPermissionsStatus;
+    }
+    return await Notifications.getPermissionsAsync();
   },
 
   /**
@@ -49,6 +70,9 @@ const NotificationManager = {
     try {
       // Skip on web and FOSS builds — FCM is not available
       if (Platform.OS === "web" || Config.isFoss) return "";
+      ensureNotificationsConfigured();
+      const Notifications = getNotifications();
+      if (!Notifications) return "";
 
       const { data } = await Notifications.getExpoPushTokenAsync({
         projectId: Config.eas.projectId,
@@ -66,6 +90,9 @@ const NotificationManager = {
   async refreshServer() {
     if (Config.isFoss) return;
     try {
+      const Notifications = getNotifications();
+      if (!Notifications) return;
+
       const permissions = await NotificationManager.getPermissions();
       if (permissions.status === Notifications.PermissionStatus.UNDETERMINED) {
         await NotificationManager.registerForPushNotifications();
@@ -112,6 +139,12 @@ const NotificationManager = {
     if (Config.isFoss) {
       const storedSettings = await SettingsStore.getNotificationSettings();
       return { status: "foss", notificationSettings: storedSettings };
+    }
+    ensureNotificationsConfigured();
+    const Notifications = getNotifications();
+    if (!Notifications) {
+      const storedSettings = await SettingsStore.getNotificationSettings();
+      return { status: "unavailable", notificationSettings: storedSettings };
     }
 
     let token: string;
@@ -204,6 +237,10 @@ const NotificationManager = {
         return;
       }
 
+      ensureNotificationsConfigured();
+      const Notifications = getNotifications();
+      if (!Notifications) return;
+
       const permissions = await Notifications.getPermissionsAsync();
 
       if (permissions.status === Notifications.PermissionStatus.GRANTED) {
@@ -232,6 +269,31 @@ const NotificationManager = {
       }
     } catch (error) {
       console.error("Error during checkAndRequestOnLaunch:", error);
+    }
+  },
+
+  /**
+   * Schedules a local "donation reminder" notification (best-effort).
+   * No-op for FOSS builds or when notifications aren't available.
+   */
+  async scheduleDonationReminder(date: Date): Promise<void> {
+    try {
+      if (Config.isFoss) return;
+      ensureNotificationsConfigured();
+      const Notifications = getNotifications();
+      if (!Notifications) return;
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Danke für deine Spende! 📬",
+          body: "Wir haben uns sehr gefreut, dass du uns im letzten Monat unterstützt hast.",
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date,
+        },
+      });
+    } catch (error) {
+      console.info("Notifications: failed to schedule reminder", error);
     }
   },
 };
