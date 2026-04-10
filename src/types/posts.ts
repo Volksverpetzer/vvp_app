@@ -66,7 +66,6 @@ export interface BlueskyPostProperties {
   post: FeedViewPost;
   replies?: FeedViewPost[];
   inView?: boolean;
-  displayText?: DisplayText;
 }
 
 export interface ClaimReview {
