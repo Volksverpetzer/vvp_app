@@ -264,7 +264,7 @@ describe("Linking helpers", () => {
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
-    it("should use intent:// on Android for excluded paths to bypass App Links", () => {
+    it("should use openBrowserAsync on Android for excluded paths (Chrome Custom Tab avoids App Link recursion)", () => {
       Object.defineProperty(Platform, "OS", {
         value: "android",
         configurable: true,
@@ -284,13 +284,11 @@ describe("Linking helpers", () => {
 
       outBoundLinkPress(uploadUrl);
 
-      expect(Linking.openURL).toHaveBeenCalledWith(
-        "intent://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf#Intent;scheme=https;end",
-      );
-      expect(WebBrowser.openBrowserAsync).not.toHaveBeenCalled();
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
-    it("should fall back to WebBrowser when intent:// fails on Android for excluded paths", async () => {
+    it("should fall back to Linking.openURL when openBrowserAsync fails on Android for excluded paths", async () => {
       Object.defineProperty(Platform, "OS", {
         value: "android",
         configurable: true,
@@ -308,14 +306,14 @@ describe("Linking helpers", () => {
         return { hostname: "www.volksverpetzer.de", path: "" };
       });
       jest
-        .mocked(Linking.openURL)
-        .mockRejectedValueOnce(new Error("intent unavailable"));
+        .mocked(WebBrowser.openBrowserAsync)
+        .mockRejectedValueOnce(new Error("browser unavailable"));
 
       outBoundLinkPress(uploadUrl);
 
-      await Promise.resolve(); // flush the rejected promise + catch
+      await Promise.resolve();
 
-      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
     });
   });
 });
