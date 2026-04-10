@@ -134,14 +134,5 @@
     "tsx": "4.21.0",
     "typedoc": "0.28.18",
     "typescript": "5.9.3"
-  },
-  "expo": {
-    "autolinking": {
-      "android": {
-        "exclude": [
-          "expo-notifications"
-        ]
-      }
-    }
   }
 }

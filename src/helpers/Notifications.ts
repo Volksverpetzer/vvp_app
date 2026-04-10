@@ -51,13 +51,13 @@ const NotificationManager = {
     const Notifications = getNotifications();
     if (!Notifications) {
       return {
-        status: "denied",
+        status: "denied" as ExpoNotifications.PermissionStatus,
         canAskAgain: false,
         granted: false,
         expires: "never",
         ios: undefined,
         android: undefined,
-      } as any;
+      } satisfies ExpoNotifications.NotificationPermissionsStatus;
     }
     return await Notifications.getPermissionsAsync();
   },
@@ -90,20 +90,16 @@ const NotificationManager = {
   async refreshServer() {
     if (Config.isFoss) return;
     try {
-      const permissions = await NotificationManager.getPermissions();
       const Notifications = getNotifications();
-      if (
-        Notifications &&
-        permissions.status === Notifications.PermissionStatus.UNDETERMINED
-      ) {
+      if (!Notifications) return;
+
+      const permissions = await NotificationManager.getPermissions();
+      if (permissions.status === Notifications.PermissionStatus.UNDETERMINED) {
         await NotificationManager.registerForPushNotifications();
       }
 
       // Only proceed if we have permission
-      if (
-        Notifications &&
-        permissions.status !== Notifications.PermissionStatus.GRANTED
-      ) {
+      if (permissions.status !== Notifications.PermissionStatus.GRANTED) {
         console.warn("Notification permissions not granted");
         return;
       }
