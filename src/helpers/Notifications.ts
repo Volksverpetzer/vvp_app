@@ -10,10 +10,10 @@ import type { NotificationSettingType } from "#/types";
 
 import SettingsStore from "./Stores/SettingsStore";
 
-let cachedNotifications: typeof import("expo-notifications") | null = null;
+let cachedNotifications: typeof ExpoNotifications | null = null;
 let notificationsConfigured = false;
 
-const getNotifications = (): typeof import("expo-notifications") | null => {
+const getNotifications = (): typeof ExpoNotifications | null => {
   if (Config.isFoss) return null;
   if (Platform.OS === "web") return null;
   try {
@@ -59,7 +59,7 @@ const NotificationManager = {
         android: undefined,
       } as any;
     }
-    return Notifications.getPermissionsAsync();
+    return await Notifications.getPermissionsAsync();
   },
 
   /**

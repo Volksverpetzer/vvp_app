@@ -1,4 +1,5 @@
 import * as Linking from "expo-linking";
+import type * as ExpoNotifications from "expo-notifications";
 import type { Href } from "expo-router";
 import { router } from "expo-router";
 import { useEffect } from "react";
@@ -17,7 +18,7 @@ export const useNotificationObserver = () => {
     if (Platform.OS === "web" || Config.isFoss) return;
 
     let isMounted = true;
-    let Notifications: typeof import("expo-notifications") | null = null;
+    let Notifications: typeof ExpoNotifications | null = null;
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       Notifications = require("expo-notifications");
@@ -29,9 +30,7 @@ export const useNotificationObserver = () => {
      * Redirects to the URL from the notification response.
      * @param response - The notification response containing the URL.
      */
-    const redirect = (
-      response: import("expo-notifications").NotificationResponse,
-    ) => {
+    const redirect = (response: ExpoNotifications.NotificationResponse) => {
       const url = response.notification.request.content.data?.url;
       if (!url || typeof url !== "string") return;
       // delay redirect to allow router to be mounted
