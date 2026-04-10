@@ -22,12 +22,16 @@ jest.mock("expo-notifications", () => ({
   getPermissionsAsync: jest.fn(),
   requestPermissionsAsync: jest.fn(),
   getExpoPushTokenAsync: jest.fn(),
+  scheduleNotificationAsync: jest.fn(),
   setNotificationChannelAsync: jest.fn(),
   setNotificationHandler: jest.fn(),
   PermissionStatus: {
     GRANTED: "granted",
     DENIED: "denied",
     UNDETERMINED: "undetermined",
+  },
+  SchedulableTriggerInputTypes: {
+    DATE: "date",
   },
   AndroidImportance: {
     HIGH: 4,
@@ -242,6 +246,39 @@ describe("NotificationManager", () => {
     });
   });
 
+  describe("scheduleDonationReminder", () => {
+    it("calls scheduleNotificationAsync with the correct content and DATE trigger", async () => {
+      const date = new Date("2026-05-01T10:00:00.000Z");
+      jest
+        .spyOn(Notifications, "scheduleNotificationAsync")
+        .mockResolvedValue("notification-id" as any);
+
+      await NotificationManager.scheduleDonationReminder(date);
+
+      expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith({
+        content: {
+          title: "Danke für deine Spende! 📬",
+          body: "Wir haben uns sehr gefreut, dass du uns im letzten Monat unterstützt hast.",
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date,
+        },
+      });
+    });
+
+    it("is a no-op when notifications are unavailable (web platform)", async () => {
+      const platform = (jest.requireMock("react-native") as any).Platform;
+      platform.OS = "web";
+      try {
+        await NotificationManager.scheduleDonationReminder(new Date());
+        expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+      } finally {
+        platform.OS = "ios";
+      }
+    });
+  });
+
   describe("FOSS mode (Config.isFoss = true)", () => {
     beforeEach(() => {
       jest.restoreAllMocks(); // clear any lingering spies from checkAndRequestOnLaunch tests
@@ -315,6 +352,14 @@ describe("NotificationManager", () => {
         await NotificationManager.checkAndRequestOnLaunch();
 
         expect(spy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("scheduleDonationReminder", () => {
+      it("is a no-op in FOSS mode", async () => {
+        await NotificationManager.scheduleDonationReminder(new Date());
+
+        expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
       });
     });
   });
