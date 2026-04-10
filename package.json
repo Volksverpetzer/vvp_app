@@ -36,6 +36,7 @@
     "@babel/runtime": "7.29.2",
     "@expo-google-fonts/source-sans-3": "0.4.1",
     "@expo/config": "55.0.14",
+    "@expo/dom-webview": "55.0.5",
     "@expo/metro-runtime": "55.0.9",
     "@expo/vector-icons": "15.1.1",
     "@likashefqet/react-native-image-zoom": "4.3.0",
