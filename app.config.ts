@@ -141,6 +141,13 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       ...variableConfig.extraConfig,
       isFoss: process.env.IS_FOSS === "true",
     },
+    ...(process.env.IS_FOSS === "true" && {
+      autolinking: {
+        android: {
+          buildFromSource: [".*"],
+        },
+      },
+    }),
     runtimeVersion: {
       policy: "sdkVersion",
     },
