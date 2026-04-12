@@ -28,7 +28,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     plugins: [
       "./plugins/gradleproperties.plugin.ts",
       "./plugins/withAndroidAppLinksExclusions",
-      ...(process.env.IS_FOSS === "true" ? ["./plugins/withFossBuild"] : []),
+      ...(process.env.BUILD_FLAVOR === "fdroid"
+        ? ["./plugins/withFossBuild"]
+        : []),
       ["expo-router"],
       ["expo-asset"],
       [
@@ -48,7 +50,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
-      ...(process.env.IS_FOSS !== "true"
+      ...(process.env.BUILD_FLAVOR !== "fdroid"
         ? [
             [
               "@stripe/stripe-react-native",
@@ -60,7 +62,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
             ] as [string, any],
           ]
         : []),
-      ...(process.env.IS_FOSS !== "true"
+      ...(process.env.BUILD_FLAVOR !== "fdroid"
         ? [
             [
               "expo-notifications",
@@ -113,7 +115,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     android: {
       package: variableConfig.packageName,
       googleServicesFile:
-        process.env.IS_FOSS !== "true"
+        process.env.BUILD_FLAVOR !== "fdroid"
           ? variableConfig.googleServicesFile
           : undefined,
       allowBackup: true,
@@ -139,9 +141,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       ...variableConfig.extraConfig,
-      isFoss: process.env.IS_FOSS === "true",
+      isFoss: process.env.BUILD_FLAVOR === "fdroid",
     },
-    ...(process.env.IS_FOSS === "true" && {
+    ...(process.env.BUILD_FLAVOR === "fdroid" && {
       autolinking: {
         android: {
           buildFromSource: [".*"],

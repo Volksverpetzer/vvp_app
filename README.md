@@ -100,10 +100,10 @@ For platform-specific runs:
 
 F-Droid builds should avoid bundling non-free Google/Firebase libraries. This project supports a
 FOSS variant by excluding `expo-notifications` from Android autolinking and by disabling the
-notifications config plugin when `IS_FOSS=true`.
+notifications config plugin when `BUILD_FLAVOR=fdroid`.
 
 - Prepare the repo for an F-Droid build: `pnpm prepare:fdroid`
-- Build with FOSS mode enabled: `IS_FOSS=true pnpm android:local` (or your preferred Android build command)
+- Build with FOSS mode enabled: `BUILD_FLAVOR=fdroid pnpm android:local` (or your preferred Android build command)
 - To undo the autolinking exclusion for Play builds: `pnpm prepare:play`
 
 ## Debugging
