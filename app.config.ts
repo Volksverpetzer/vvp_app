@@ -10,7 +10,7 @@ import * as pkg from "./package.json";
 const appEnv = (process.env.APP ?? "volksverpetzer").toLowerCase();
 
 const variableConfig = appEnv === "volksverpetzer" ? vvpConfig : mimikamaConfig;
-const isFdroid = process.env.BUILD_FOSS_ONLY === "true";
+const buildFossOnly = process.env.BUILD_FOSS_ONLY === "true";
 
 const config = ({ config }: ConfigContext): ExpoConfig => {
   return {
@@ -47,8 +47,8 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
-      ...(isFdroid
-        ? ["./plugins/withFdroidBuildConfig.ts"]
+      ...(buildFossOnly
+        ? ["./plugins/withFossOnlyBuildConfig.ts"]
         : [
             [
               "@stripe/stripe-react-native",
@@ -107,7 +107,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: variableConfig.packageName,
-      googleServicesFile: isFdroid
+      googleServicesFile: buildFossOnly
         ? undefined
         : variableConfig.googleServicesFile,
       allowBackup: true,
@@ -133,9 +133,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       ...variableConfig.extraConfig,
-      isFoss: isFdroid,
+      isFoss: buildFossOnly,
     },
-    ...(isFdroid && {
+    ...(buildFossOnly && {
       autolinking: {
         android: {
           buildFromSource: [".*"],

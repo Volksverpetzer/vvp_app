@@ -1,6 +1,6 @@
 import { withAppBuildGradle } from "expo/config-plugins";
 
-const withFdroidBuildConfig = (config: any) => {
+const withFossOnlyBuildConfig = (config: any) => {
   return withAppBuildGradle(config, (config) => {
     config.modResults.contents = config.modResults.contents.replace(
       /enableSeparateBuildPerCPUArchitecture\s*=\s*true/,
@@ -10,4 +10,4 @@ const withFdroidBuildConfig = (config: any) => {
   });
 };
 
-export default withFdroidBuildConfig;
+export default withFossOnlyBuildConfig;
