@@ -5,7 +5,7 @@ import { BlueskyFetcher } from "#/screens/Home/fetchers/BlueskyFetcher";
 
 import "#tests/mocks/commonMocks";
 
-// Mock the BskyPost component to avoid complex dependencies
+// Mock the BlueskyPostCard component to avoid complex dependencies
 jest.mock("#/components/posts/BlueskyPostCard", () => ({
   __esModule: true,
   default: "BlueskyPostCard",

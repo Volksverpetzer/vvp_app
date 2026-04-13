@@ -68,7 +68,11 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
         {replies &&
           replies.length > 0 &&
           replies.map((reply: FeedViewPost, index: number) => (
-            <PostText key={index} feedViewPost={reply} uri={uri} />
+            <PostText
+              key={reply.post.uri ?? index}
+              feedViewPost={reply}
+              uri={uri}
+            />
           ))}
       </ScrollView>
     </Hyperlink>
