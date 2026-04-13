@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
 import type { Router } from "expo-router";
-import * as WebBrowser from "expo-web-browser";
 
 import { onLinkPress, outBoundLinkPress } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -11,11 +10,6 @@ jest.mock("expo-linking", () => ({
   __esModule: true,
   parse: jest.fn(),
   openURL: jest.fn(),
-}));
-
-jest.mock("expo-web-browser", () => ({
-  __esModule: true,
-  openBrowserAsync: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("#/helpers/network/Analytics", () => ({
@@ -103,8 +97,7 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: uploadUrl },
       );
-      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
-      expect(Linking.openURL).not.toHaveBeenCalled();
+      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
     });
 
     it("should handle internal links without path", () => {
@@ -151,7 +144,6 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
-      expect(WebBrowser.openBrowserAsync).not.toHaveBeenCalled();
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
     });
 
@@ -198,13 +190,6 @@ describe("Linking helpers", () => {
       const externalUrl = "https://example.com";
       const articleContext = "https://www.volksverpetzer.de/article";
 
-      parseSpy.mockImplementation((url: string) => {
-        if (url === externalUrl) {
-          return { hostname: "example.com", path: "/page" };
-        }
-        return { hostname: "www.volksverpetzer.de", path: "" };
-      });
-
       // Execute
       outBoundLinkPress(externalUrl, articleContext);
 
@@ -214,20 +199,12 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
-      expect(WebBrowser.openBrowserAsync).not.toHaveBeenCalled();
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
     });
 
     it("should handle missing article context", () => {
       // Setup
       const externalUrl = "https://example.com";
-
-      parseSpy.mockImplementation((url: string) => {
-        if (url === externalUrl) {
-          return { hostname: "example.com", path: "/page" };
-        }
-        return { hostname: "www.volksverpetzer.de", path: "" };
-      });
 
       // Execute
       outBoundLinkPress(externalUrl);
@@ -238,7 +215,6 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
-      expect(WebBrowser.openBrowserAsync).not.toHaveBeenCalled();
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
     });
   });
