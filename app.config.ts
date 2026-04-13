@@ -28,6 +28,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     plugins: [
       "./plugins/gradleproperties.plugin.ts",
       "./plugins/withAndroidAppLinksExclusions",
+      ...(process.env.BUILD_FLAVOR === "fdroid"
+        ? ["./plugins/withFdroidBuildConfig"]
+        : []),
       ["expo-router"],
       ["expo-asset"],
       [
