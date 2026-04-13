@@ -19,18 +19,11 @@ export function redirectSystemPath({ path }: { path: string }) {
     const urlPath = path.replace(wpUrl, "");
     // Check if path should be excluded from deep linking
     if (shouldExcludeFromDeepLink(urlPath)) {
-      // Open excluded paths outside the app (browser / OS handler).
-      // We do this via an internal route so we can trigger the side-effect
-      // (open external URL) from a component instead of from this pure function.
-      return `/external?url=${encodeURIComponent(path)}`;
+      // Return undefined to prevent routing for excluded paths
+      // The app will not handle this path and it will be opened by OS
+      return undefined;
     }
     return urlPath;
-  }
-
-  // Some platforms deliver the path without the base URL (e.g. "/wp-content/...").
-  if (shouldExcludeFromDeepLink(path)) {
-    const withLeadingSlash = path.startsWith("/") ? path : `/${path}`;
-    return `/external?url=${encodeURIComponent(`${wpUrl}${withLeadingSlash}`)}`;
   }
 
   // 3. Option: Profit
