@@ -10,6 +10,7 @@ import * as pkg from "./package.json";
 const appEnv = (process.env.APP ?? "volksverpetzer").toLowerCase();
 
 const variableConfig = appEnv === "volksverpetzer" ? vvpConfig : mimikamaConfig;
+const isFdroid = process.env.BUILD_FLAVOR === "fdroid";
 
 const config = ({ config }: ConfigContext): ExpoConfig => {
   return {
@@ -28,9 +29,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     plugins: [
       "./plugins/gradleproperties.plugin.ts",
       "./plugins/withAndroidAppLinksExclusions",
-      ...(process.env.BUILD_FLAVOR === "fdroid"
-        ? ["./plugins/withFdroidBuildConfig"]
-        : []),
       ["expo-router"],
       ["expo-asset"],
       [
@@ -50,8 +48,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
-      ...(process.env.BUILD_FLAVOR !== "fdroid"
-        ? [
+      ...(isFdroid
+        ? ["./plugins/withFdroidBuildConfig"]
+        : [
             [
               "@stripe/stripe-react-native",
               {
@@ -60,10 +59,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
                 enableGooglePay: false,
               },
             ] as [string, any],
-          ]
-        : []),
-      ...(process.env.BUILD_FLAVOR !== "fdroid"
-        ? [
             [
               "expo-notifications",
               {
@@ -71,8 +66,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
                 color: variableConfig.extraConfig.themeColor,
               },
             ] as [string, any],
-          ]
-        : []),
+          ]),
       [
         "expo-custom-assets",
         {
@@ -114,10 +108,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: variableConfig.packageName,
-      googleServicesFile:
-        process.env.BUILD_FLAVOR !== "fdroid"
-          ? variableConfig.googleServicesFile
-          : undefined,
+      googleServicesFile: isFdroid
+        ? undefined
+        : variableConfig.googleServicesFile,
       allowBackup: true,
       intentFilters: [
         {
@@ -141,9 +134,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       ...variableConfig.extraConfig,
-      isFoss: process.env.BUILD_FLAVOR === "fdroid",
+      isFoss: isFdroid,
     },
-    ...(process.env.BUILD_FLAVOR === "fdroid" && {
+    ...(isFdroid && {
       autolinking: {
         android: {
           buildFromSource: [".*"],
