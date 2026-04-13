@@ -1,7 +1,6 @@
 import * as Linking from "expo-linking";
 import type { Href, Router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
-import { Platform } from "react-native";
 
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -53,19 +52,11 @@ const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
   const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
 
   // Upload/admin links on our own domain should open in a browser context.
-  // On Android, using https:// can recurse into App Links. Use intent:// to
-  // bypass App Link matching and force-open in the system browser instead.
+  // Using Linking.openURL here can recurse into app links on Android.
   if (hostname === baseHostname && shouldExcludeFromDeepLink(path)) {
-    if (Platform.OS === "android") {
-      // intent:// URIs are not matched against App Link filters, so Android
-      // will open a browser chooser instead of routing back to the app.
-      const intentUrl = `intent://${href.replace(/^https?:\/\//, "")}#Intent;scheme=https;end`;
-      void Linking.openURL(intentUrl)
-        .catch(() => WebBrowser.openBrowserAsync(href))
-        .catch(() => Linking.openURL(href));
-    } else {
-      void WebBrowser.openBrowserAsync(href).catch(() => Linking.openURL(href));
-    }
+    void WebBrowser.openBrowserAsync(href).catch(() => {
+      void Linking.openURL(href);
+    });
     return;
   }
 
