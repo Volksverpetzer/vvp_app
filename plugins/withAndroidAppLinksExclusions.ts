@@ -8,7 +8,7 @@ import {
  * Expo config-plugin to inject `android:pathAdvancedPattern` into the
  * generated AndroidManifest.xml. Expo's `android.intentFilters[].data`
  * schema does not support this attribute, but Android 12+ uses it to
- * express exclusions (e.g. negative lookaheads). // cspell:disable-line
+ * express exclusions (e.g. negative lookaheads).
  */
 const withAndroidAppLinksExclusions: ConfigPlugin = (config) => {
   return withAndroidManifest(config, (configWithManifest) => {
@@ -42,15 +42,9 @@ const withAndroidAppLinksExclusions: ConfigPlugin = (config) => {
 
         if (scheme !== "https" || host !== "www.volksverpetzer.de") continue;
 
-        // Remove the legacy path attributes — having both pathPattern and
-        // pathAdvancedPattern on the same <data> element is invalid (Android
-        // docs: only one path attribute per element). When both are present,
-        // Android uses pathPattern and ignores pathAdvancedPattern entirely,
-        // defeating the negative lookahead on API 31+.
-        // On API < 31, pathAdvancedPattern is ignored and the element matches
-        // all paths for this scheme+host (JS handles exclusions via External route).
-        delete attrs["android:pathPattern"];
-        delete attrs["android:pathPrefix"];
+        // Keep the original simple-glob `android:pathPattern` for older Android,
+        // but exclude /wp-content/uploads/ and /wp-admin/ on Android 12+ (API 31+).
+        // Also keep the "two segments" behavior (.+/.+) used by the legacy pattern.
         attrs["android:pathAdvancedPattern"] =
           "^/(?!wp-content/uploads/|wp-admin/).+/.+/?$";
       }
