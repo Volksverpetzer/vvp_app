@@ -52,6 +52,8 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
       >
         <TouchableOpacity
           accessibilityRole="button"
+          accessibilityLabel="In Bluesky öffnen"
+          accessibilityHint="Öffnet diesen Beitrag in der Bluesky-App oder im Browser"
           style={{ position: "absolute", top: 20, right: 20, zIndex: 100 }}
           onPress={() => onLinkPress(url, router, wpUrl)}
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
