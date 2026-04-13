@@ -10,7 +10,7 @@ import * as pkg from "./package.json";
 const appEnv = (process.env.APP ?? "volksverpetzer").toLowerCase();
 
 const variableConfig = appEnv === "volksverpetzer" ? vvpConfig : mimikamaConfig;
-const isFdroid = process.env.BUILD_FLAVOR === "fdroid";
+const isFdroid = process.env.BUILD_FOSS_ONLY === "true";
 
 const config = ({ config }: ConfigContext): ExpoConfig => {
   return {
