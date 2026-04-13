@@ -10,15 +10,18 @@ pkg.expo.autolinking.android ??= {};
 
 const android = pkg.expo.autolinking.android;
 
-// For F-Droid we want to avoid bundling non-free Google/Firebase deps.
-// Excluding `expo-notifications` from Android autolinking prevents its native module
-// (and its firebase-messaging dependency) from being compiled into the APK.
+// Exclude packages that bundle proprietary Google/Firebase deps.
+// The autolinking.android.exclude field in app.config.ts is only respected by
+// EAS cloud builds, not by local `expo prebuild`. Writing to package.json here
+// ensures expo-modules-autolinking picks it up during local prebuild.
 const currentExclude = Array.isArray(android.exclude) ? android.exclude : [];
 android.exclude = Array.from(
-  new Set([...currentExclude, "expo-notifications"]),
+  new Set([
+    ...currentExclude,
+    "expo-notifications", // pulls in firebase-messaging (GMS)
+    "@stripe/stripe-react-native", // bundles play-services-wallet, play-services-maps, Play Integrity
+  ]),
 );
 
 fs.writeFileSync(packageJsonPath, JSON.stringify(pkg, null, 2) + "\n");
-console.log(
-  "[prepare-fdroid] Added expo.autolinking.android.exclude: expo-notifications",
-);
+console.log("[prepare-fdroid] autolinking exclusions written to package.json");

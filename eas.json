@@ -77,7 +77,7 @@
       "distribution": "internal",
       "env": {
         "APP": "volksverpetzer",
-        "IS_FOSS": "true"
+        "BUILD_FOSS_ONLY": "true"
       }
     }
   },

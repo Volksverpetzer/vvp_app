@@ -10,6 +10,7 @@ import * as pkg from "./package.json";
 const appEnv = (process.env.APP ?? "volksverpetzer").toLowerCase();
 
 const variableConfig = appEnv === "volksverpetzer" ? vvpConfig : mimikamaConfig;
+const buildFossOnly = process.env.BUILD_FOSS_ONLY === "true";
 
 const config = ({ config }: ConfigContext): ExpoConfig => {
   return {
@@ -27,7 +28,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     userInterfaceStyle: "automatic",
     plugins: [
       "./plugins/gradleproperties.plugin.ts",
-      ...(process.env.IS_FOSS === "true" ? ["./plugins/withFossBuild"] : []),
       ["expo-router"],
       ["expo-asset"],
       [
@@ -47,8 +47,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
-      ...(process.env.IS_FOSS !== "true"
-        ? [
+      ...(buildFossOnly
+        ? ["./plugins/withFossOnlyBuildConfig.ts"]
+        : [
             [
               "@stripe/stripe-react-native",
               {
@@ -57,10 +58,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
                 enableGooglePay: false,
               },
             ] as [string, any],
-          ]
-        : []),
-      ...(process.env.IS_FOSS !== "true"
-        ? [
             [
               "expo-notifications",
               {
@@ -68,8 +65,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
                 color: variableConfig.extraConfig.themeColor,
               },
             ] as [string, any],
-          ]
-        : []),
+          ]),
       [
         "expo-custom-assets",
         {
@@ -111,10 +107,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: variableConfig.packageName,
-      googleServicesFile:
-        process.env.IS_FOSS !== "true"
-          ? variableConfig.googleServicesFile
-          : undefined,
+      googleServicesFile: buildFossOnly
+        ? undefined
+        : variableConfig.googleServicesFile,
       allowBackup: true,
       intentFilters: [
         {
@@ -138,8 +133,15 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       ...variableConfig.extraConfig,
-      isFoss: process.env.IS_FOSS === "true",
+      isFoss: buildFossOnly,
     },
+    ...(buildFossOnly && {
+      autolinking: {
+        android: {
+          exclude: ["expo-notifications", "@stripe/stripe-react-native"],
+        },
+      },
+    }),
     runtimeVersion: {
       policy: "sdkVersion",
     },

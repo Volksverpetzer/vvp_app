@@ -1,6 +1,6 @@
 module.exports = {
   dependencies: {
-    ...(process.env.IS_FOSS === "true" && {
+    ...(process.env.BUILD_FOSS_ONLY === "true" && {
       "@stripe/stripe-react-native": {
         platforms: { android: null },
       },
