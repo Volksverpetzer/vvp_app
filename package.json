@@ -29,8 +29,7 @@
     "------- npm scripts -------": "-------------",
     "prepare": "husky",
     "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\"",
-    "prepare:fdroid": "node scripts/prepare-fdroid.mjs",
-    "prepare:play": "node scripts/prepare-play.mjs"
+    "prepare:fdroid": "node scripts/prepare-fdroid.mjs"
   },
   "dependencies": {
     "@algolia/client-search": "5.50.1",
