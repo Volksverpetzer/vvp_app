@@ -1,6 +1,6 @@
 import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
-import BlueskyPost from "#/components/posts/BlueskyPost";
+import BlueskyPostCard from "#/components/posts/BlueskyPostCard";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
@@ -86,7 +86,7 @@ export const BlueskyFetcher = {
       return new Post<BlueskyPostProperties>(
         createdAt.replace("Z", ""),
         item.uri,
-        BlueskyPost,
+        BlueskyPostCard,
         item,
         [{ url: url, title: "Bluesky Post teilen" }],
       );
