@@ -48,7 +48,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
         },
       ],
       ...(isFdroid
-        ? ["./plugins/withFdroidBuildConfig"]
+        ? ["./plugins/withFdroidBuildConfig.ts"]
         : [
             [
               "@stripe/stripe-react-native",
