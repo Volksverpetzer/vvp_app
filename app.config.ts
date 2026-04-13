@@ -139,6 +139,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       autolinking: {
         android: {
           buildFromSource: [".*"],
+          exclude: ["expo-notifications", "@stripe/stripe-react-native"],
         },
       },
     }),

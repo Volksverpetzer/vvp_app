@@ -28,8 +28,7 @@
     "expo:eject": "expo eject",
     "------- npm scripts -------": "-------------",
     "prepare": "husky",
-    "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\"",
-    "prepare:fdroid": "node scripts/prepare-fdroid.mjs"
+    "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\""
   },
   "dependencies": {
     "@algolia/client-search": "5.50.1",
