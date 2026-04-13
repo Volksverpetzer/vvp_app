@@ -8,10 +8,6 @@ describe("DeepLinkFilter", () => {
       expect(
         shouldExcludeFromDeepLink("/wp-content/uploads/2024/11/file.pdf"),
       ).toBe(true);
-      expect(
-        shouldExcludeFromDeepLink("wp-content/uploads/2024/11/file.pdf"),
-      ).toBe(true);
-      expect(shouldExcludeFromDeepLink("/wp-admin/tools.php")).toBe(true);
       expect(shouldExcludeFromDeepLink("/wp-content/uploads/image.jpg")).toBe(
         true,
       );

@@ -133,9 +133,6 @@ const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data
     {
       scheme: "https",
       host: "www.volksverpetzer.de",
-      // Broad fallback: Android < 12 (API 31) only supports simple-glob matching.
-      // We keep this and apply the actual exclusions via a config plugin that
-      // injects `android:pathAdvancedPattern` into AndroidManifest.xml for API 31+.
       pathPattern: "/.*/.*",
     },
   ];

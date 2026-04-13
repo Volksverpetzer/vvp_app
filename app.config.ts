@@ -28,7 +28,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     userInterfaceStyle: "automatic",
     plugins: [
       "./plugins/gradleproperties.plugin.ts",
-      "./plugins/withAndroidAppLinksExclusions",
       ["expo-router"],
       ["expo-asset"],
       [

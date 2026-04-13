@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
+import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import NotificationManager from "#/helpers/Notifications";
 import Statistics from "#/helpers/Statistics";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -35,11 +36,26 @@ const Index = () => {
         const { hostname, path } = Linking.parse(initialUrl);
         const { hostname: baseHost } = Linking.parse(Config.wpUrl);
 
+        // Check if the URL should be excluded from deep linking (e.g., /wp-content/uploads/)
+        if (hostname === baseHost && shouldExcludeFromDeepLink(path)) {
+          // Open excluded URLs with OS default handler instead of in-app
+          Linking.openURL(initialUrl);
+          // Continue with normal app initialization
+          appOpenRoutine();
+          PersonalStore.isOnboardingDone().then((onboarded) => {
+            if (onboarded) {
+              router.dismissTo("/home");
+            } else {
+              router.replace("/onboarding");
+            }
+          });
+          return;
+        }
+
         const hasPath =
           typeof path === "string" && path.replace(/\//g, "").length > 0;
         if (hostname === baseHost && hasPath) {
-          // Launched via a Volksverpetzer URL. Let Expo Router handle it,
-          // including excluded paths routed through `/external`.
+          // Launched via a Volksverpetzer article URL. Let router handle it.
           appOpenRoutine();
           return;
         }
