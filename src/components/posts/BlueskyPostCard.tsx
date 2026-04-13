@@ -55,6 +55,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
       break;
     }
   }
+  const isTruncated = excerpt.length < fulltext.length;
 
   const createdAt = hasCreatedAt(record) ? record.created_at : "";
   const handle = author.handle;
@@ -65,7 +66,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
       accessibilityRole="button"
       onPress={navigateToPost}
       style={{ flex: 1 }}
-      disabled={replies?.length === 0}
+      disabled={!isTruncated && !(replies?.length > 0)}
     >
       <Hyperlink
         linkStyle={{ color: corporate }}
@@ -91,7 +92,9 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
 
           <BlueskyPostHeader author={author} />
 
-          <UiText style={{ lineHeight: 24, fontSize: 18 }}>{excerpt}</UiText>
+          <UiText style={{ lineHeight: 24, fontSize: 18 }}>
+            {isTruncated ? `${excerpt}\u2026` : excerpt}
+          </UiText>
 
           <View style={styles.row}>
             {createdAt && (
@@ -111,10 +114,14 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
                 })}
               </UiText>
             )}
-            {replies?.length > 0 && (
+            {replies?.length > 0 ? (
               <UiText style={{ fontSize: 16, color: corporate }}>
                 Thread (1 von {replies.length + 1})
               </UiText>
+            ) : (
+              isTruncated && (
+                <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
+              )
             )}
           </View>
         </View>
