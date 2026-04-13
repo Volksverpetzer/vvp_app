@@ -4,14 +4,10 @@ import { useEffect, useState } from "react";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
-import BlueskyPost from "#/components/posts/BlueskyPost";
+import BlueskyPostDetail from "#/components/posts/BlueskyPostDetail";
 import { styles } from "#/constants/Styles";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import {
-  type BlueskyPostProperties,
-  DISPLAY_TEXT_FULL,
-  type HttpsUrl,
-} from "#/types";
+import { type BlueskyPostProperties, type HttpsUrl } from "#/types";
 
 /**
  * Loads a Bluesky post based on the provided post ID.
@@ -48,7 +44,7 @@ const BskyScreen = () => {
 
   return (
     <View style={styles.container}>
-      <BlueskyPost displayText={DISPLAY_TEXT_FULL} {...post} />
+      <BlueskyPostDetail {...post} />
       <NavBar link={url} />
     </View>
   );

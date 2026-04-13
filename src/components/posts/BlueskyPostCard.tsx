@@ -1,5 +1,3 @@
-import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
 import { useEffect } from "react";
@@ -8,7 +6,6 @@ import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
 import View from "#/components/design/View";
-import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -17,28 +14,15 @@ import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import {
-  type BlueskyPostProperties,
-  DISPLAY_TEXT_EXCERPT,
-  DISPLAY_TEXT_FULL,
-  DISPLAY_TEXT_NONE,
-  type HttpsUrl,
-} from "#/types";
+import type { BlueskyPostProperties, HttpsUrl } from "#/types";
 
-import { PostText } from "./PostText";
+import { BlueskyPostHeader } from "./BlueskyPostHeader";
 
 /**
- * Displays a Bluesky post.
- * @param properties
- * @returns
+ * Displays a Bluesky post as a feed card (excerpt + navigation to thread).
  */
-const BlueskyPost = (properties: BlueskyPostProperties) => {
-  const {
-    post,
-    inView,
-    displayText = DISPLAY_TEXT_EXCERPT,
-    replies,
-  } = properties;
+const BlueskyPostCard = (properties: BlueskyPostProperties) => {
+  const { post, inView, replies } = properties;
   const { record, author, uri } = post.post;
   const { wpUrl } = Config;
   const router = useRouter();
@@ -47,6 +31,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
   const grey = Colors[colorScheme].grayedOutText;
   const postId = uri.split("/app.bsky.feed.post/")[1];
   const htmlPattern = /<[^>]+>/g;
+
   useEffect(() => {
     ContentStore.setStoredBskyPostById(postId, properties);
   }, [inView, postId, properties]);
@@ -70,10 +55,9 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
       break;
     }
   }
+  const isTruncated = excerpt.length < fulltext.length;
 
   const createdAt = hasCreatedAt(record) ? record.created_at : "";
-  const displayName = author.displayName ?? author.handle;
-
   const handle = author.handle;
   const url: HttpsUrl = `https://bsky.app/profile/${handle}/post/${postId}`;
 
@@ -82,7 +66,7 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
       accessibilityRole="button"
       onPress={navigateToPost}
       style={{ flex: 1 }}
-      disabled={displayText === DISPLAY_TEXT_FULL || replies?.length === 0}
+      disabled={!isTruncated && !(replies?.length > 0)}
     >
       <Hyperlink
         linkStyle={{ color: corporate }}
@@ -92,10 +76,9 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
         <View
           style={{
             position: "relative",
-            flex: 1,
             gap: 20,
             paddingHorizontal: 30,
-            paddingTop: 20,
+            paddingVertical: 20,
           }}
         >
           <TouchableOpacity
@@ -106,67 +89,45 @@ const BlueskyPost = (properties: BlueskyPostProperties) => {
           >
             <ExternalLinkIcon color={Colors[colorScheme].tabIconDefault} />
           </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              width: "100%",
-              gap: 10,
-            }}
-          >
-            <Image
-              source={{ uri: author.avatar }}
-              style={{ width: 40, height: 40, borderRadius: 20 }}
-            />
-            <Heading>{displayName}</Heading>
+
+          <BlueskyPostHeader author={author} />
+
+          <UiText style={{ lineHeight: 24, fontSize: 18 }}>
+            {isTruncated ? `${excerpt}\u2026` : excerpt}
+          </UiText>
+
+          <View style={styles.row}>
+            {createdAt && (
+              <UiText
+                style={{
+                  fontSize: 16,
+                  color: grey,
+                  textAlign: "right",
+                }}
+              >
+                {new Date(createdAt).toLocaleTimeString("de-DE", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
+              </UiText>
+            )}
+            {replies?.length > 0 ? (
+              <UiText style={{ fontSize: 16, color: corporate }}>
+                Thread (1 von {replies.length + 1})
+              </UiText>
+            ) : (
+              isTruncated && (
+                <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
+              )
+            )}
           </View>
-
-          {displayText !== DISPLAY_TEXT_NONE && (
-            <UiText style={{ lineHeight: 24, fontSize: 18 }}>
-              {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
-            </UiText>
-          )}
-
-          {displayText === DISPLAY_TEXT_EXCERPT && (
-            <>
-              <View style={styles.row}>
-                {createdAt && (
-                  <UiText
-                    style={{
-                      fontSize: 16,
-                      color: grey,
-                      textAlign: "right",
-                    }}
-                  >
-                    {new Date(createdAt).toLocaleTimeString("de-DE", {
-                      year: "numeric",
-                      month: "numeric",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                    })}
-                  </UiText>
-                )}
-                {replies?.length > 0 && (
-                  <UiText style={{ fontSize: 16, color: corporate }}>
-                    Thread (1 von {replies.length + 1})
-                  </UiText>
-                )}
-              </View>
-            </>
-          )}
-
-          {displayText === DISPLAY_TEXT_FULL &&
-            replies &&
-            replies.length > 0 &&
-            replies.map((reply: FeedViewPost, index: number) => {
-              return <PostText key={index} feedViewPost={reply} uri={uri} />;
-            })}
         </View>
       </Hyperlink>
     </TouchableOpacity>
   );
 };
 
-export default BlueskyPost;
+export default BlueskyPostCard;
