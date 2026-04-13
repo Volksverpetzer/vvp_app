@@ -2,19 +2,13 @@ import { Image } from "expo-image";
 
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
+import type { PostAuthor } from "#/types";
 
-// The AT Proto SDK types use camelCase, but our Python backend returns snake_case.
-type Author = {
-  display_name?: string;
-  handle: string;
-  avatar?: string;
+type BlueskyPostHeaderProps = {
+  author: PostAuthor;
 };
 
-type Props = {
-  author: Author;
-};
-
-export const BlueskyPostHeader = ({ author }: Props) => {
+export const BlueskyPostHeader = ({ author }: BlueskyPostHeaderProps) => {
   const displayName = author.display_name ?? author.handle;
   return (
     <View
