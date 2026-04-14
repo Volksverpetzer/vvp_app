@@ -4,6 +4,7 @@ import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
+import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import GenericPost from "#/components/posts/GenericPost";
 import InstaPost from "#/components/posts/InstaPost";
@@ -132,7 +133,9 @@ const MyFavs = () => {
   return (
     <>
       {isLoading ? (
-        <LoadingFallback text="Lade Favoriten..." />
+        <Card>
+          <LoadingFallback text="Lade Favoriten..." />
+        </Card>
       ) : (
         posts.map((post) => (
           <GenericPost
