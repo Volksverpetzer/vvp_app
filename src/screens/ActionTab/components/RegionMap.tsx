@@ -1,13 +1,14 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import { Text, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import {
   FirstPlaceIcon,
   SecondPlaceIcon,
   ThirdPlaceIcon,
-} from "#/components/Icons";
+} from "#/components/SvgIcons";
 import Space from "#/components/design/Space";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -45,9 +46,11 @@ const RegionMap = () => {
   }, []);
   const { width } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors["light"].corporate;
-  const corporateColor = Colors["dark"].corporate;
+  const corporate = Colors.light.corporate;
+  const corporateColor = Colors.dark.corporate;
+  const corporateTint = Colors.dark.corporateTint;
   const highlight = Colors[colorScheme].highlight;
+
   return (
     <View
       style={{
@@ -55,7 +58,7 @@ const RegionMap = () => {
         justifyContent: "space-between",
         marginTop: -70,
         paddingTop: 90,
-        backgroundColor: corporate,
+        backgroundColor: corporateTint,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         width,
@@ -64,7 +67,7 @@ const RegionMap = () => {
         paddingHorizontal: 30,
       }}
     >
-      <View style={{ backgroundColor: corporate, flex: 1 }}>
+      <View style={{ backgroundColor: corporateTint, flex: 1 }}>
         <Image
           source={{
             uri: `${Config.apiUrl}/proxy/map?week=${weekNumber}`,
@@ -78,32 +81,33 @@ const RegionMap = () => {
           style={{
             width: "100%",
             aspectRatio: 3 / 4,
-            backgroundColor: corporate,
+            backgroundColor: corporateTint,
           }}
         />
         <Space size={20} />
-        <Legend text={"Vorreiter"} color={highlight} />
+        <Legend text="Vorreiter" color={highlight} />
         <Space size={8} />
-        <Legend text={"Durchschnitt"} color={corporateColor} />
+        <Legend text="Durchschnitt" color={corporateColor} />
         <Space size={8} />
-        <Legend text={"Schlusslicht"} color={corporate} />
+        <Legend text="Schlusslicht" color={corporate} />
         <Space size={8} />
         <View>
-          <Text style={{ fontSize: 12, marginTop: 20, ...styles.whiteText }}>
+          <UiText style={{ fontSize: 12, marginTop: 20, ...styles.whiteText }}>
             Shares aus der Volksverpetzer-App pro Kopf im Bundesland
-          </Text>
+          </UiText>
         </View>
         <View style={{ flex: 1, height: "100%", alignItems: "flex-end" }} />
       </View>
       <View
         style={{
           flex: 1,
-          backgroundColor: corporate,
         }}
       >
-        <Text style={{ fontSize: 20, ...styles.whiteText, fontWeight: "bold" }}>
+        <UiText
+          style={{ fontSize: 20, ...styles.whiteText, fontWeight: "bold" }}
+        >
           Bundesländer Ranking
-        </Text>
+        </UiText>
         <Space size={10} />
         {regionData?.slice(0, 3).map((region, index) => {
           const Icon =
@@ -127,15 +131,15 @@ const RegionMap = () => {
               }}
             >
               <Icon style={{ left: -8 }} />
-              <Text style={{ fontSize: 12, lineHeight: 18, color: corporate }}>
+              <UiText style={{ fontSize: 12, color: corporate }}>
                 {` ${region.name}`}
-              </Text>
+              </UiText>
             </View>
           );
         })}
         <Space size={10} />
         {regionData?.slice(3).map((region, idx) => (
-          <Text
+          <UiText
             key={region.region}
             style={{
               fontSize: 13,
@@ -144,7 +148,7 @@ const RegionMap = () => {
             }}
           >
             {`${idx + 4}. ${region.name}`}
-          </Text>
+          </UiText>
         ))}
         <Space size={100} />
       </View>

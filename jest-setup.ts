@@ -17,15 +17,7 @@ jest.mock("react-native/Libraries/Interaction/InteractionManager", () => ({
 }));
 
 jest.mock("@expo/vector-icons", () => ({
-  MaterialCommunityIcons: jest.fn(),
-  Ionicons: jest.fn(),
-  FontAwesome: jest.fn(),
-  MaterialIcons: jest.fn(),
-  Entypo: jest.fn(),
-  Feather: jest.fn(),
-  AntDesign: jest.fn(),
-  Fontisto: jest.fn(),
-  EvilIcons: jest.fn(),
+  Octicons: jest.fn(),
 }));
 
 jest.mock("expo-constants", () => ({
@@ -42,7 +34,6 @@ jest.mock("expo-constants", () => ({
             heading: "#1B7194",
             background: "#fff",
             secondaryBackground: "#E2F0F5",
-            tint: "#3893C0",
             tabIconDefault: "#aaa",
             grayedOut: "#bbb",
             grayedOutText: "#aaa",
@@ -50,13 +41,13 @@ jest.mock("expo-constants", () => ({
             inputBackground: "#BADDE8",
             highlight: "#DB2685",
             corporate: "#1b7194",
+            corporateTint: "#3893C0",
           },
           dark: {
             text: "#111",
             heading: "#1B7194",
             background: "#fff",
             secondaryBackground: "#E2F0F5",
-            tint: "#3893C0",
             tabIconDefault: "#aaa",
             grayedOut: "#bbb",
             grayedOutText: "#aaa",
@@ -64,6 +55,7 @@ jest.mock("expo-constants", () => ({
             inputBackground: "#BADDE8",
             highlight: "#DB2685",
             corporate: "#1b7194",
+            corporateTint: "#3893C0",
           },
         },
       },
@@ -98,6 +90,11 @@ jest.mock("expo-notifications", () => ({
 
 jest.mock("expo-device", () => ({
   isDevice: true,
+}));
+
+jest.mock("#/hooks/useAppColorScheme", () => ({
+  useAppColorScheme: jest.fn(() => "light"),
+  ColorScheme: { light: "light", dark: "dark" },
 }));
 
 jest.mock("expo-application", () => ({

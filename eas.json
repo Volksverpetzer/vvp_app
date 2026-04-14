@@ -67,6 +67,18 @@
       "env": {
         "APP": "mimikama"
       }
+    },
+    "fdroid": {
+      "node": "24.14.0",
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "distribution": "internal",
+      "env": {
+        "APP": "volksverpetzer",
+        "BUILD_FOSS_ONLY": "true"
+      }
     }
   },
   "submit": {

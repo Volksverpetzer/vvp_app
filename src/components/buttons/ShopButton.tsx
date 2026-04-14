@@ -1,14 +1,13 @@
-import { Image } from "expo-image";
-import { Linking, Pressable } from "react-native";
+import { Linking } from "react-native";
 
+import UiButton from "#/components/ui/UiButton";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { AppImages } from "#/helpers/AppImages";
 import { registerEvent } from "#/helpers/network/Analytics";
-
-import ButtonVVPShop from "#assets/images/button_vvp_shop.webp";
+import type { HttpsUrl } from "#/types";
 
 interface ShopButtonProperties {
-  article_link: string;
+  article_link: HttpsUrl;
   location?: string;
 }
 
@@ -16,16 +15,19 @@ const ShopButton = ({
   article_link,
   location = "ArticleBottom",
 }: ShopButtonProperties) => {
+  const shopUrl = Config.donations.shop;
+  if (!shopUrl) return null;
+
   return (
-    <Pressable
-      accessibilityRole="button"
+    <UiButton
+      source={AppImages.shopButton}
+      accessibilityLabel="Unseren Shop besuchen"
+      accessibilityHint="Öffnet den Shop im Browser"
       onPress={() => {
         registerEvent(article_link, "Shop", { location });
-        Linking.openURL(Config.donations.shop);
+        Linking.openURL(shopUrl);
       }}
-    >
-      <Image style={styles.button} source={ButtonVVPShop} />
-    </Pressable>
+    />
   );
 };
 

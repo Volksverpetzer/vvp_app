@@ -4,14 +4,11 @@ import {
   SourceSans3_700Bold,
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
-import { StripeProvider } from "@stripe/stripe-react-native";
-import * as Linking from "expo-linking";
-import type { Href } from "expo-router";
-import { Stack, useRouter, useSegments } from "expo-router";
-import { ShareIntentProvider } from "expo-share-intent";
+import { Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
-import { useEffect } from "react";
+import { type PropsWithChildren, useEffect } from "react";
 import { LogBox, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
@@ -21,20 +18,18 @@ import {
 import type { ToastConfig } from "react-native-toast-message";
 import Toast from "react-native-toast-message";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import View from "#/components/design/View";
 import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
+import StripeWrapper from "#/components/providers/StripeWrapper";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
-import Config from "#/constants/Config";
-import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
-import { useOptionalShareIntent } from "#/hooks/useOptionalShareIntent";
 
 // Hide warning for new native event emitter
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
@@ -42,24 +37,52 @@ LogBox.ignoreLogs(["new NativeEventEmitter"]);
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
+const SECONDARY_BG_SCREENS = ["action", "support"];
+
+/**
+ * Manages the background color for the app shell — including the notch/status bar
+ * area — based on the current screen and color scheme. Lives inside all providers
+ * so forced dark mode is respected.
+ */
+const AppFrame = ({ children }: PropsWithChildren) => {
+  const colorScheme = useAppColorScheme();
+  const insets = useSafeAreaInsets();
+  const segments = useSegments() as string[];
+
+  const isSecondaryBg = segments.some((s) => SECONDARY_BG_SCREENS.includes(s));
+  const backgroundColor = isSecondaryBg
+    ? Colors[colorScheme].secondaryBackground
+    : Colors[colorScheme].background;
+
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    SystemUI.setBackgroundColorAsync(backgroundColor).catch((error) => {
+      console.warn("Failed to set system background color", error);
+    });
+  }, [backgroundColor]);
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        paddingTop: insets.top,
+        backgroundColor,
+      }}
+    >
+      <StatusBar style={colorScheme === ColorScheme.dark ? "light" : "dark"} />
+      {children}
+    </View>
+  );
+};
+
 const RootLayout = () => {
   useNotificationObserver();
-
-  const segments = useSegments() as string[];
-  const isTabsAndAction =
-    segments.includes("(tabs)") && segments.includes("action");
 
   const [loaded] = useFonts({
     SourceSansPro: SourceSans3_400Regular,
     SourceSansProSemiBold: SourceSans3_600SemiBold,
     SourceSansProBold: SourceSans3_700Bold,
   });
-
-  const colorScheme = useAppColorScheme();
-  const insets = useSafeAreaInsets();
-  const systemBackgroundColor = isTabsAndAction
-    ? Colors[colorScheme].secondaryBackground
-    : Colors[colorScheme].background;
 
   // On first mount check notification permissions and request if appropriate.
   // The NotificationManager itself will skip simulators and respects canAskAgain.
@@ -85,16 +108,8 @@ const RootLayout = () => {
     }
   }, [loaded]);
 
-  useEffect(() => {
-    if (Platform.OS === "web") return;
-
-    SystemUI.setBackgroundColorAsync(systemBackgroundColor).catch((error) => {
-      console.warn("Failed to set system background color", error);
-    });
-  }, [systemBackgroundColor]);
-
   if (!loaded) {
-    return <UiSpinner size={"large"} />;
+    return <UiSpinner size="large" />;
   }
 
   const toastConfig: ToastConfig = {
@@ -112,13 +127,7 @@ const RootLayout = () => {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SettingsProvider>
           <BadgeProvider>
-            <View
-              style={{
-                flex: 1,
-                paddingTop: insets.top,
-                backgroundColor: systemBackgroundColor,
-              }}
-            >
+            <AppFrame>
               <Stack
                 screenOptions={{
                   headerShown: false,
@@ -146,30 +155,14 @@ const RootLayout = () => {
                 <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
               </Stack>
               <Toast config={toastConfig} />
-            </View>
+            </AppFrame>
           </BadgeProvider>
         </SettingsProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 
-  // On web, skip native-only providers (ShareIntent and Stripe)
-  if (Platform.OS === "web") {
-    return appContent;
-  }
-
-  // On native platforms, wrap with native-only providers
-  return (
-    <ShareIntentProvider options={{ debug: false }}>
-      <ShareIntentRunner />
-      <StripeProvider
-        publishableKey="pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH" // cspell:disable-line
-        merchantIdentifier={Config.donations.merchantIdentifier}
-      >
-        {appContent}
-      </StripeProvider>
-    </ShareIntentProvider>
-  );
+  return <StripeWrapper>{appContent}</StripeWrapper>;
 };
 
 /**
@@ -178,73 +171,6 @@ const RootLayout = () => {
  */
 export const unstable_settings = {
   initialRouteName: "(tabs)",
-};
-
-/**
- * Inline runner that handles incoming share intents and routes them.
- */
-const ShareIntentRunner = () => {
-  const router = useRouter();
-  const { hasShareIntent, shareIntent } = useOptionalShareIntent();
-
-  useEffect(() => {
-    if (!hasShareIntent || !shareIntent) return;
-
-    // Delay routing to allow root layout to finish mounting
-    const t = setTimeout(() => {
-      if (shareIntent?.type === "weburl") {
-        try {
-          const { hostname, path } = Linking.parse(shareIntent.webUrl);
-          const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
-          if (hostname !== baseHostname) {
-            router.push({
-              pathname: "/search",
-              params: { tag: shareIntent.webUrl },
-            });
-            return;
-          }
-
-          // Check if the path should be excluded from deep linking (e.g., /wp-content/uploads/)
-          if (shouldExcludeFromDeepLink(path)) {
-            // Open excluded URLs with OS default handler instead of in-app
-            Linking.openURL(shareIntent.webUrl).catch((error) => {
-              console.warn(
-                "Failed to open excluded URL:",
-                shareIntent.webUrl,
-                error,
-              );
-            });
-            return;
-          }
-
-          const safePath =
-            typeof path === "string" && path.length > 0
-              ? path.startsWith("/")
-                ? path
-                : `/${path}`
-              : "/search";
-
-          router.push(safePath as Href);
-        } catch {
-          // Fallback to search when URL parsing fails - treats malformed URL as search query
-          router.push({
-            pathname: "/search",
-            params: { tag: shareIntent.webUrl },
-          });
-        }
-      } else if (shareIntent?.type === "text" && shareIntent.text) {
-        // Route text share intents to search page
-        router.push({
-          pathname: "/search",
-          params: { tag: shareIntent.text },
-        });
-      }
-    }, 0);
-
-    return () => clearTimeout(t);
-  }, [hasShareIntent, router, shareIntent]);
-
-  return null;
 };
 
 export default RootLayout;

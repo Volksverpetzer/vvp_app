@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git status:*)",
+      "Bash(git show:*)"
+    ],
+    "deny": ["Bash(git push:*)", "Bash(git reset --hard:*)", "Bash(rm -rf:*)"]
+  }
+}

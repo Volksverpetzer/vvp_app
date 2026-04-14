@@ -5,16 +5,17 @@ import type {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ViewStyle,
+  ViewToken,
 } from "react-native";
 import { FlatList, Pressable, RefreshControl } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
-import UiSpinner from "#/components/animations/UiSpinner";
 import EmptyComponent from "#/components/design/EmptyComponent";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
+import Heading from "#/components/typography/Heading";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -50,6 +51,7 @@ const Feed = (properties: FeedProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
+  const backgroundColor = Colors[colorScheme].secondaryBackground;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
 
@@ -117,18 +119,21 @@ const Feed = (properties: FeedProperties) => {
   }, [loadmore, page, getPosts, posts]);
 
   // Update inView set immutably – do not mutate state directly.
-  const onViewableItemsChanged = useCallback(({ viewableItems }) => {
-    setInView((previous) => {
-      const newSet = new Set(previous);
-      for (const item of viewableItems) {
-        if (item.isViewable) {
-          newSet.add(item.item.id);
+  const onViewableItemsChanged = useCallback(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      setInView((previous) => {
+        const newSet = new Set(previous);
+        for (const item of viewableItems) {
+          if (item.isViewable) {
+            newSet.add(item.item.id);
+          }
         }
-      }
-      setRerender(newSet.size);
-      return newSet;
-    });
-  }, []);
+        setRerender(newSet.size);
+        return newSet;
+      });
+    },
+    [],
+  );
 
   const viewabilityConfigCallbackPairs = useRef([
     {
@@ -150,7 +155,6 @@ const Feed = (properties: FeedProperties) => {
           contentType={item.contentType}
           shareable={item.shareable}
           inView={inView.has(item.id)}
-          hideShareCount={item.hideShareCount}
         />
       );
     },
@@ -168,7 +172,7 @@ const Feed = (properties: FeedProperties) => {
   if (!initialLoad) {
     return (
       <LoadingFallback
-        text={"Lade Feed..."}
+        text="Lade Feed..."
         containerStyle={properties?.style}
         spinnerProps={{ size: "large" }}
       />
@@ -186,7 +190,7 @@ const Feed = (properties: FeedProperties) => {
           ...properties?.style,
         }}
       >
-        <Text style={styles.heading}>Bitte wähle mindestens ein Feed aus:</Text>
+        <Heading>Bitte wähle mindestens ein Feed aus:</Heading>
         <Pressable
           accessibilityRole="button"
           onPress={() => router.push("/settings")}
@@ -199,9 +203,11 @@ const Feed = (properties: FeedProperties) => {
 
   return (
     <View
-      style={{ ...styles.centered, flexDirection: "row" }}
-      lightColor={Colors.light.secondaryBackground}
-      darkColor={Colors.dark.secondaryBackground}
+      style={{
+        ...styles.centered,
+        backgroundColor,
+        flexDirection: "row",
+      }}
     >
       <FlatList
         onScroll={properties.onScroll}
@@ -220,7 +226,7 @@ const Feed = (properties: FeedProperties) => {
         ListFooterComponent={
           posts.length > 0 &&
           (isLoadingMore ? (
-            <UiSpinner size={"large"} />
+            <UiSpinner size="large" />
           ) : (
             <Pressable
               accessibilityRole="button"

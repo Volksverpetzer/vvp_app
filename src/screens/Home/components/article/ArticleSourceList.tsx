@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 
 import Collapsable from "#/components/design/Collapsable";
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { outBoundLinkPress } from "#/helpers/Linking";
@@ -76,15 +76,15 @@ export const ArticleSourceList = ({
                   style={{ width: "80%" }}
                   onPress={() => onPress(link.url)}
                 >
-                  <Text style={{ color: corporate }}>
+                  <UiText style={{ color: corporate }}>
                     {link.url.split("?")[0].split("#")[0]}
-                  </Text>
+                  </UiText>
                 </Pressable>
-                <Text style={{ width: "20%" }}>{link.visitors} Clicks</Text>
+                <UiText style={{ width: "20%" }}>{link.visitors} Clicks</UiText>
               </View>
             ))
         ) : (
-          <Text>Keine Daten</Text>
+          <UiText>Keine Daten</UiText>
         )}
       </View>
     </Collapsable>

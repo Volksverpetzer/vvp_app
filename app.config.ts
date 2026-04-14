@@ -10,6 +10,7 @@ import * as pkg from "./package.json";
 const appEnv = (process.env.APP ?? "volksverpetzer").toLowerCase();
 
 const variableConfig = appEnv === "volksverpetzer" ? vvpConfig : mimikamaConfig;
+const buildFossOnly = process.env.BUILD_FOSS_ONLY === "true";
 
 const config = ({ config }: ConfigContext): ExpoConfig => {
   return {
@@ -30,30 +31,41 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       ["expo-router"],
       ["expo-asset"],
       [
-        "expo-share-intent",
+        "expo-sharing",
         {
-          iosActivationRules: {
-            NSExtensionActivationSupportsWebURLWithMaxCount: 1,
-            NSExtensionActivationSupportsWebPageWithMaxCount: 0,
+          ios: {
+            enabled: true,
+            activationRule: {
+              supportsText: true,
+              supportsWebUrlWithMaxCount: 1,
+              supportsWebPageWithMaxCount: 0,
+            },
           },
-          androidIntentFilters: ["text/*"],
+          android: {
+            enabled: true,
+            singleShareMimeTypes: ["text/*"],
+          },
         },
       ],
-      [
-        "@stripe/stripe-react-native",
-        {
-          merchantIdentifier:
-            variableConfig.extraConfig.donations.merchantIdentifier,
-          enableGooglePay: false,
-        },
-      ],
-      [
-        "expo-notifications",
-        {
-          icon: variableConfig.assets.notificationIcon,
-          color: variableConfig.extraConfig.themeColor,
-        },
-      ],
+      ...(buildFossOnly
+        ? ["./plugins/withFossOnlyBuildConfig.ts"]
+        : [
+            [
+              "@stripe/stripe-react-native",
+              {
+                merchantIdentifier:
+                  variableConfig.extraConfig.donations.merchantIdentifier,
+                enableGooglePay: false,
+              },
+            ] as [string, any],
+            [
+              "expo-notifications",
+              {
+                icon: variableConfig.assets.notificationIcon,
+                color: variableConfig.extraConfig.themeColor,
+              },
+            ] as [string, any],
+          ]),
       [
         "expo-custom-assets",
         {
@@ -63,7 +75,6 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       "expo-font",
       "expo-image",
       "expo-mail-composer",
-      "expo-sharing",
       "expo-web-browser",
     ],
     splash: {
@@ -96,7 +107,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     android: {
       package: variableConfig.packageName,
-      googleServicesFile: variableConfig.googleServicesFile,
+      googleServicesFile: buildFossOnly
+        ? undefined
+        : variableConfig.googleServicesFile,
       allowBackup: true,
       intentFilters: [
         {
@@ -120,7 +133,15 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     },
     extra: {
       ...variableConfig.extraConfig,
+      isFoss: buildFossOnly,
     },
+    ...(buildFossOnly && {
+      autolinking: {
+        android: {
+          exclude: ["expo-notifications", "@stripe/stripe-react-native"],
+        },
+      },
+    }),
     runtimeVersion: {
       policy: "sdkVersion",
     },

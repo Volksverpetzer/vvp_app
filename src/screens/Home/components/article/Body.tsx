@@ -38,7 +38,7 @@ interface BodyProperties {
   article_link: HttpsUrl;
   slug: string;
   article_title: string;
-  onLinkPress: (event: GestureResponderEvent, href: string) => void;
+  onLinkPress: (event: GestureResponderEvent, href: HttpsUrl) => void;
   width: number;
   maxWidth: number;
   scrollRef: RefObject<ScrollView>;
@@ -120,11 +120,8 @@ const Body = (properties: BodyProperties) => {
             }
             return;
           }
-          if (
-            isHttpsUrl(href) &&
-            !href.includes(Config.wpUrl) &&
-            Config.enableEngagement
-          ) {
+          if (!isHttpsUrl(href)) return;
+          if (!href.includes(Config.wpUrl) && Config.enableEngagement) {
             SourcesStore.onAddSource(href, slug, article_title);
             Statistics.countSourceChecked();
           }

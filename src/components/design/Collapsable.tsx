@@ -1,9 +1,9 @@
 import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
-import type { StyleProp, TextStyle } from "react-native";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
+import Heading from "#/components/typography/Heading";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -11,7 +11,6 @@ interface CollapsableProps {
   title: string;
   defaultOpen?: boolean;
   onToggle?: (open: boolean) => void;
-  titleStyle?: StyleProp<TextStyle>;
   children?: ReactNode;
   icon?: ReactNode;
 }
@@ -21,7 +20,6 @@ const Collapsable = ({
   defaultOpen = false,
   onToggle,
   children,
-  titleStyle,
   icon,
 }: CollapsableProps): ReactElement => {
   const [open, setOpen] = useState(defaultOpen);
@@ -49,7 +47,7 @@ const Collapsable = ({
       >
         <View style={styles.title}>
           {icon}
-          <Text style={[{ color: textColor }, titleStyle]}>{title}</Text>
+          <Heading style={[{ color: textColor }]}>{title}</Heading>
         </View>
         <ChevronIcon
           direction={open ? "up" : "down"}
@@ -57,7 +55,7 @@ const Collapsable = ({
           color={textColor}
         />
       </Pressable>
-      {open && <View>{children}</View>}
+      {open && <View style={styles.content}>{children}</View>}
     </View>
   );
 };
@@ -67,11 +65,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 8,
+    paddingTop: 20,
+    paddingBottom: 15,
   },
   title: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
+    gap: 10,
+  },
+  content: {
+    paddingTop: 5,
   },
 });
 

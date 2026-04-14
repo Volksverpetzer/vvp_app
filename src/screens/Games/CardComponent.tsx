@@ -1,8 +1,8 @@
 import type { ViewStyle } from "react-native";
 import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import type { MemoryCard } from "#/types";
 
 interface CardComponentProperties {
@@ -28,9 +28,9 @@ const CardComponent = ({ card, onPress }: CardComponentProperties) => {
       onPress={() => onPress(card)}
     >
       <View style={cardStyles.cardInner}>
-        <Text style={cardStyles.cardText}>
+        <UiText style={cardStyles.cardText}>
           {card.isFlipped || card.isMatched ? card.content : "?"}
-        </Text>
+        </UiText>
       </View>
     </TouchableOpacity>
   );

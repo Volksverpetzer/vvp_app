@@ -14,10 +14,9 @@ import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import Checkbox from "#/components/design/Checkbox";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import TextInput from "#/components/design/TextInput";
-import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -45,14 +44,14 @@ const ReportScreen = () => {
   const { url: parameterUrl, index } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
-
-  // Color constants
-  const highlight = Colors[colorScheme].highlight;
-  const errorColor = Colors[colorScheme].errorBackground;
-  const grayedOut = Colors[colorScheme].grayedOut;
-  const inputBackground = Colors[colorScheme].background;
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
-  const textColor = Colors[colorScheme].text;
+  const {
+    highlight,
+    errorBackground: errorColor,
+    grayedOut,
+    background: inputBackground,
+    secondaryBackground: backgroundColor,
+    text: textColor,
+  } = Colors[colorScheme];
 
   // Memoized local styles to avoid re-creating on every render
   const localStyles = useMemo(
@@ -167,7 +166,7 @@ const ReportScreen = () => {
             paddingTop: HEADER_HEIGHT,
           }}
         >
-          <Heading>Zusammenfassung</Heading>
+          <Heading style={{ marginBottom: 10 }}>Zusammenfassung</Heading>
           <TextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib eine kurze Zusammenfassung ein"
@@ -179,7 +178,7 @@ const ReportScreen = () => {
             style={[localStyles.input, { height: 80 }]}
           />
           <Space size={20} />
-          <Heading>Link zum Fake</Heading>
+          <Heading style={{ marginBottom: 10 }}>Link zum Fake</Heading>
           <TextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib einen Link ein"
@@ -190,7 +189,7 @@ const ReportScreen = () => {
             style={localStyles.input}
           />
           <Space size={20} />
-          <Heading>Links zum Thema</Heading>
+          <Heading style={{ marginBottom: 10 }}>Links zum Thema</Heading>
           <TextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib Links zum Thema ein"
@@ -203,25 +202,18 @@ const ReportScreen = () => {
           />
           <Space size={20} />
           {error ? (
-            <Text style={localStyles.errorText}>{error}</Text>
+            <UiText style={localStyles.errorText}>{error}</UiText>
           ) : undefined}
-          <View
-            style={{
-              ...styles.row,
-              ...styles.noBackground,
-              justifyContent: "flex-start",
-              gap: 20,
-            }}
+          <Checkbox
+            checked={allowedPublic}
+            onChange={(checked: boolean) => setAllowedPublic(checked)}
           >
-            <Checkbox
-              checked={allowedPublic}
-              onChange={(checked: boolean) => setAllowedPublic(checked)}
-            />
-            <Text>
+            {/* ensure the text wraps and doesn't overflow */}
+            <UiText style={{ flex: 1 }}>
               Der Report darf veröffentlicht werden, sodass andere ihn
               kommentieren können.
-            </Text>
-          </View>
+            </UiText>
+          </Checkbox>
           <Space size={20} />
           <Pressable
             accessibilityRole="button"
@@ -233,7 +225,7 @@ const ReportScreen = () => {
               pressed && buttonEnabled && { backgroundColor: inputBackground },
             ]}
           >
-            <Text
+            <UiText
               style={{
                 ...styles.whiteText,
                 textAlign: "center",
@@ -241,7 +233,7 @@ const ReportScreen = () => {
               }}
             >
               Report
-            </Text>
+            </UiText>
           </Pressable>
           <ReportStatusList reports={reports} />
           <Space size={100} />

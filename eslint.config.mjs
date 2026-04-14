@@ -3,6 +3,7 @@ import tsESLintPlugin from "@typescript-eslint/eslint-plugin";
 import expoConfig from "eslint-config-expo/flat.js";
 import importAlias from "eslint-plugin-import-alias";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
 import { fileURLToPath } from "node:url";
 
@@ -17,6 +18,7 @@ export default defineConfig([
       "**/pnpm-lock.yaml",
       "android/**",
       "ios/**",
+      "expo-env.d.ts",
       "src/screens/Settings/components/licenses/data.tsx",
     ],
   },
@@ -31,18 +33,10 @@ export default defineConfig([
     plugins: {
       "@typescript-eslint": tsESLintPlugin,
       "import-alias": importAlias,
+      "unused-imports": unusedImports,
     },
     rules: {
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          args: "after-used",
-          argsIgnorePattern: "^_",
-          ignoreRestSiblings: true,
-          varsIgnorePattern: "^_",
-        },
-      ],
+      "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/consistent-type-imports": [
         "error",
         {
@@ -51,8 +45,6 @@ export default defineConfig([
         },
       ],
       "@typescript-eslint/consistent-type-exports": "error",
-      "no-unused-labels": "error",
-      "no-unused-private-class-members": "error",
       "import-alias/import-alias": [
         "error",
         {
@@ -64,11 +56,28 @@ export default defineConfig([
           ],
         },
       ],
+      "no-unused-labels": "error",
+      "no-unused-private-class-members": "error",
+      "no-unused-vars": "off",
+      "react/jsx-curly-brace-presence": [
+        "error",
+        { props: "never", children: "never" },
+      ],
       "react/function-component-definition": [
         2,
         { namedComponents: "arrow-function" },
       ],
       "require-await": "error",
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "error",
+        {
+          args: "after-used",
+          argsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ]);

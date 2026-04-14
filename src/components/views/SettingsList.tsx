@@ -1,7 +1,7 @@
 import { type ComponentProps, useEffect, useState } from "react";
 import { Switch, View } from "react-native";
 
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -37,7 +37,7 @@ const SettingsList = (properties: SettingsListProperties) => {
   }, [properties.settings, update]);
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].corporate;
-  const activeColor = Colors[colorScheme].tint;
+  const corporateTint = Colors[colorScheme].corporateTint;
   const activeSettings = getEnabledFeeds(Config.feeds);
 
   return (
@@ -60,10 +60,10 @@ const SettingsList = (properties: SettingsListProperties) => {
           // (like `activeThumbColor`) without TypeScript complaining about them.
           const switchProps: ExtendedSwitchProps = {
             testID: "settingSwitch",
-            trackColor: { false: "#E6E6E6", true: activeColor },
+            trackColor: { false: "#E6E6E6", true: "#E6E6E6" },
             activeThumbColor: setting.value ? corporate : "#C4C4C4",
             thumbColor: setting.value ? corporate : "#C4C4C4",
-            ios_backgroundColor: activeColor,
+            ios_backgroundColor: corporateTint,
             disabled,
             onValueChange: (value: boolean) => {
               setDisabled(true);
@@ -78,11 +78,11 @@ const SettingsList = (properties: SettingsListProperties) => {
               key={key}
               style={{
                 ...styles.row,
-                paddingVertical: 10,
+                paddingTop: 20,
                 maxHeight: 45,
               }}
             >
-              <Text style={{ fontSize: 16 }}>{setting.name}</Text>
+              <UiText style={{ fontSize: 16 }}>{setting.name}</UiText>
               {/* cast to native Switch props to satisfy TypeScript while keeping runtime props */}
               <Switch {...(switchProps as ComponentProps<typeof Switch>)} />
             </View>

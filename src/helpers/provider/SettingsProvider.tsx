@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import type { AdvancedSettingType, ContentSettingType } from "#/types";
@@ -21,7 +22,7 @@ export const SettingsContext = createContext<SettContextInterface>({
   },
 });
 
-export const SettingsProvider = ({ children }) => {
+export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const [contentSettings, setContentSettings] = useState(
     SettingsStore.defaultContentSettings,
   );

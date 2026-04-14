@@ -24,8 +24,7 @@ const StatisticsView = () => {
   );
   const [scrollX] = useState(new Animated.Value(0));
   const { width } = useFeedDimensions();
-  const { corporate, grayedOutText: grayed } = Colors.dark;
-  const corporateColor = Colors.light.corporate;
+  const corporate = Colors.dark.corporate;
 
   useEffect(() => {
     Statistics.getAllStatistics().then(setStatistics);
@@ -58,7 +57,7 @@ const StatisticsView = () => {
         )}
       >
         <StatisticsPanel
-          icon="fire"
+          icon="zap"
           title="Meine Streaks"
           subtitle="Einmal pro Woche."
           streakKeyToExclude="sourcesChecked"
@@ -68,12 +67,10 @@ const StatisticsView = () => {
           width={width}
           statistics={statistics}
           descriptionMap={descriptionMap}
-          corporateColor={corporateColor}
-          grayed={grayed}
         />
 
         <StatisticsPanel
-          icon="account"
+          icon="person"
           title="Meine Stats"
           subtitle={undefined}
           streakKeyToExclude="appOpened"
@@ -83,8 +80,6 @@ const StatisticsView = () => {
           width={width}
           statistics={statistics}
           descriptionMap={descriptionMap}
-          corporateColor={corporateColor}
-          grayed={grayed}
         />
       </ScrollView>
 

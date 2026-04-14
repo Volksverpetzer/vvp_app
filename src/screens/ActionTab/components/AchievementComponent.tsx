@@ -1,9 +1,10 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import { CheckboxIcon, CircleIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import type { LevelType, TaskType } from "#/helpers/Achievements";
@@ -16,8 +17,8 @@ import Parallelogram from "./Parallelogram";
 const AchievementComponent = () => {
   const [level, setLevel] = useState<number>(0);
   const [tasks, setTasks] = useState<TaskType[]>([]);
-  const corporate = Colors["dark"].corporate;
-  const corporateColor = Colors["light"].corporate;
+  const corporate = Colors.dark.corporate;
+  const corporateColor = Colors.light.corporate;
   const colorScheme = useAppColorScheme();
   const highlight = Colors[colorScheme].highlight;
   const backgroundColor = Colors[colorScheme].background;
@@ -65,12 +66,14 @@ const AchievementComponent = () => {
             zIndex: 4,
           }}
         >
-          <Text style={{ fontSize: 30 }}>{AchievementConfig[level].logo}</Text>
+          <UiText style={{ fontSize: 30 }}>
+            {AchievementConfig[level].logo}
+          </UiText>
         </View>
         <View style={{ alignItems: "flex-start", marginLeft: -20 }}>
           <Parallelogram
             backgroundColor={highlight}
-            color={"white"}
+            color="white"
             textStyle={{
               fontSize: 22,
               fontWeight: "bold",
@@ -82,7 +85,7 @@ const AchievementComponent = () => {
           </Parallelogram>
           <Parallelogram
             backgroundColor={corporateColor}
-            color={"white"}
+            color="white"
             containerStyle={{ height: 30, marginTop: 0, marginLeft: -20 }}
           >
             Level {level + 1 + ": " + AchievementConfig[level].name}
@@ -106,7 +109,7 @@ const AchievementComponent = () => {
               ) : (
                 <CircleIcon size={16} color="white" />
               )}
-              <Text
+              <UiText
                 style={{
                   fontSize: 16,
                   padding: 5,
@@ -115,7 +118,7 @@ const AchievementComponent = () => {
                 }}
               >
                 {task.verbose}
-              </Text>
+              </UiText>
             </View>
           );
         })}

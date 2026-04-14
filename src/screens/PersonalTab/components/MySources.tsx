@@ -7,24 +7,23 @@ import Swipeable, {
 
 import { DeleteIcon, LinkIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
+import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
+import Heading from "#/components/typography/Heading";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { HttpsUrl, StoredSources } from "#/types";
 
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});
   const wpUrl = Config.wpUrl;
 
-  const { width } = useFeedDimensions();
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].background;
   const corporate = Colors[colorScheme].corporate;
   useFocusEffect(
     useCallback(() => {
@@ -42,7 +41,7 @@ const MySources = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: undefined }}>
+    <View style={{ flex: 1, gap: 20, backgroundColor: undefined }}>
       {Object.keys(sources)
         .sort((keyA, keyB) => {
           return sources[keyB].date.localeCompare(sources[keyA].date);
@@ -52,7 +51,6 @@ const MySources = () => {
           return (
             <Swipeable
               key={href}
-              rightThreshold={width * 0.6}
               onSwipeableOpen={async (direction) => {
                 if (direction === SwipeDirection.LEFT) {
                   await handleDelete(href);
@@ -64,51 +62,42 @@ const MySources = () => {
                   drag={d}
                   swipeable={s}
                   icon={<DeleteIcon size={24} color="white" />}
-                  label={"Löschen"}
-                  hint={"Lösche diese Quelle"}
+                  label="Löschen"
+                  hint="Lösche diese Quelle"
                   onAction={async () => {
                     await handleDelete(href);
                   }}
                 />
               )}
             >
-              <View
-                style={{
-                  marginVertical: 15,
-                  borderRadius: 10,
-                  width,
-                  backgroundColor,
-                  overflow: "hidden",
-                }}
-              >
+              <Card style={{ padding: 0 }}>
                 <Pressable
                   accessibilityRole="button"
                   style={{ padding: 30 }}
                   onPress={() => outBoundLinkPress(href, wpUrl + "/" + slug)}
                 >
                   {text && (
-                    <Text
+                    <Heading
                       style={{
-                        ...styles.heading,
-                        padding: 0,
-                        paddingBottom: 10,
+                        color: Colors[colorScheme].text,
+                        marginBottom: 10,
                       }}
                     >
                       {text}
-                    </Text>
+                    </Heading>
                   )}
-                  <Text style={{ color: corporate }}>{href}</Text>
+                  <UiText style={{ color: corporate }}>{href}</UiText>
                 </Pressable>
-              </View>
+              </Card>
             </Swipeable>
           );
         })}
-      <Space size={100} />
+      <Space size={50} />
       <View style={{ ...styles.centered }}>
         <LinkIcon color={corporate} />
-        <Text style={{ textAlign: "center", fontSize: 18 }}>
+        <UiText style={{ textAlign: "center", fontSize: 18 }}>
           Klicke auf Links in Artikeln, dann tauchen sie hier auf
-        </Text>
+        </UiText>
       </View>
       <Space size={100} />
     </View>

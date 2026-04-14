@@ -12,8 +12,8 @@ import {
 } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
@@ -199,7 +199,7 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
               <Zoomable doubleTapScale={2} maxScale={3} minScale={1}>
                 <Image
                   onLoad={onLoadHandler}
-                  contentFit={"cover"}
+                  contentFit="cover"
                   source={
                     page >= index - 1 && inView
                       ? {
@@ -220,16 +220,16 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
 
       {displayText === DISPLAY_TEXT_FULL && (
         <Hyperlink linkStyle={{ color: corporate }} onPress={handleLinkPress}>
-          <Text
+          <UiText
             style={{
               paddingHorizontal: 10,
               paddingBottom: 50,
               fontSize: 18,
-              lineHeight: 25,
+              lineHeight: 24,
             }}
           >
             {caption}
-          </Text>
+          </UiText>
         </Hyperlink>
       )}
       {displayText === DISPLAY_TEXT_EXCERPT && (
@@ -240,11 +240,11 @@ const InstaPost = (properties: InstaPostScreenProperties) => {
           activeOpacity={1}
           style={{ paddingHorizontal: 30 }}
         >
-          <Text style={{ fontSize: 16, textAlign: "left" }}>
+          <UiText style={{ fontSize: 16, textAlign: "left" }}>
             {excerpt}
             {"... "}
-            <Text style={{ color: corporate, fontSize: 16 }}>mehr</Text>
-          </Text>
+            <UiText style={{ color: corporate, fontSize: 16 }}>mehr</UiText>
+          </UiText>
         </TouchableOpacity>
       )}
     </View>

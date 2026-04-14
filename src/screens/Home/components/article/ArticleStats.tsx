@@ -1,12 +1,11 @@
 import { useKeepAwake } from "expo-keep-awake";
 import { View } from "react-native";
 
-import { ArticleViewIcon, ShareIcon } from "#/components/Icons";
 import ShareCounter from "#/components/counter/ShareCounter";
 import ViewCounter from "#/components/counter/ViewCounter";
-import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
 interface ArticleStatsProperties {
@@ -17,7 +16,7 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
   useKeepAwake();
 
   const { article_link } = properties;
-  const color = Colors["light"].tint;
+  const color = useCorporateColor();
 
   if (!Config.enableEngagement) return undefined;
 
@@ -27,18 +26,20 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
         paddingHorizontal: 20,
         ...styles.row,
         justifyContent: "flex-start",
+        gap: 20,
       }}
     >
-      <ArticleViewIcon size={20} color={color} />
       <ViewCounter
         {...{ url: article_link }}
         color={color}
-        style={{ fontSize: 16, paddingHorizontal: 5 }}
+        style={{ fontSize: 16 }}
+        size={16}
       />
-      <ShareIcon size={20} color={color} />
       <ShareCounter
-        style={{ color, fontSize: 16, paddingHorizontal: 5 }}
+        style={{ fontSize: 16, color: color }}
         shareable={[{ title: "Link teilen", url: article_link }]}
+        color={color}
+        size={16}
       />
     </View>
   );

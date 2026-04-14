@@ -4,14 +4,15 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { DimensionValue } from "react-native";
 import { TouchableOpacity } from "react-native";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
+import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -21,14 +22,13 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { ArticleProperties } from "#/types";
 
-import LoadingImage from "#assets/images/logo_animated.gif";
-
 import Badge from "./Badge";
 
 // Define the component props type.
 type ArticlePostScreenProperties = {
   article: ArticleProperties;
   inView?: boolean;
+  elevated?: boolean;
 };
 
 /**
@@ -41,13 +41,11 @@ type ArticlePostScreenProperties = {
  * - The component is wrapped with React.memo to prevent unnecessary re-renders.
  */
 const ArticlePost = (properties: ArticlePostScreenProperties) => {
-  const { article, inView } = properties;
+  const { article, inView, elevated = false } = properties;
 
   // Local state.
   const [imageUrl, setImgURL] = useState("");
   const [scrollProgress, setScrollProgress] = useState<DimensionValue>("0%");
-  const [isLoading, setLoading] = useState(true);
-  const [date, setDate] = useState("");
 
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
@@ -60,11 +58,9 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Memoize importantCats mapping (optional, here we rely on the static outside mapping).
   const importantCats = useMemo(() => Config.importantCats, []);
 
-  // Format date with useCallback.
-  const dateBeautify = useCallback(() => {
-    const d = new Date(article.date);
-    return `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
-  }, [article.date]);
+  // Format date.
+  const d = new Date(article.date);
+  const date = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
 
   // Retrieve and set scroll progress when inView.
   useEffect(() => {
@@ -90,11 +86,8 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       });
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
-      setDate(dateBeautify());
     }
-  }, [article, dateBeautify]);
+  }, [article]);
 
   useEffect(() => {
     if (inView) {
@@ -132,7 +125,27 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   }, [article.link]);
 
   // Memoized style objects.
-  const containerStyle = useMemo(() => ({ paddingBottom: 0 }), []);
+  const containerStyle = useMemo(
+    () => ({
+      paddingBottom: 0,
+      backgroundColor: Colors[colorScheme].background,
+      ...(elevated && { borderRadius: 15, overflow: "hidden" as const }),
+    }),
+    [colorScheme, elevated],
+  );
+
+  const elevatedWrapperStyle = useMemo(() => {
+    if (!elevated) return undefined;
+    const isDark = colorScheme === "dark";
+    return {
+      borderRadius: 15,
+      shadowColor: isDark ? "#fff" : "#000",
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: isDark ? 0.12 : 0.2,
+      shadowRadius: 1.41,
+      elevation: 2,
+    };
+  }, [elevated, colorScheme]);
   const imageStyle = useMemo(
     () => ({
       left: 0,
@@ -175,15 +188,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     [],
   );
 
-  if (isLoading) {
-    return (
-      <View style={{ height: height * 1.8, width }}>
-        <UiSpinner size={"large"} />
-      </View>
-    );
-  }
-
-  return (
+  const content = (
     <TouchableOpacity
       accessibilityRole="button"
       style={{ padding: 0, flex: 1 }}
@@ -195,30 +200,48 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         <Image
           style={imageStyle}
           source={{ uri: imageUrl }}
-          placeholder={LoadingImage}
-          contentFit={"cover"}
+          placeholder={AppImages.loadingAnimation}
+          contentFit="cover"
         />
+        {!imageUrl && !AppImages.loadingAnimation && (
+          <UiSpinner
+            containerStyle={{
+              position: "absolute",
+              height,
+              top: 0,
+              left: 0,
+            }}
+          />
+        )}
         <View style={progressBarStyle} />
         <Space size={10} />
-        <Text style={titleStyle}>{article.title}</Text>
+        <UiText style={titleStyle}>{article.title}</UiText>
         <Space size={10} />
-        <Text style={authorDateStyle}>{authorDateText}</Text>
+        <UiText style={authorDateStyle}>{authorDateText}</UiText>
         <Space size={10} />
         {categoryText && (
           <Badge position="topLeft" color={corporate}>
-            <Text style={categoryTextStyle}>{categoryText}</Text>
+            <UiText style={categoryTextStyle}>{categoryText}</UiText>
           </Badge>
         )}
         {inView && (
           <Badge position="topRight" color={Colors[colorScheme].highlight}>
-            <ViewCounter url={article.link} />
+            <ViewCounter url={article.link} size={16} />
           </Badge>
         )}
-        <Text style={{ paddingHorizontal: 30, fontSize: 16 }}>{excerpt}</Text>
+        <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
+          {excerpt}
+        </UiText>
         <Space size={20} />
       </View>
     </TouchableOpacity>
   );
+
+  if (elevated) {
+    return <View style={elevatedWrapperStyle}>{content}</View>;
+  }
+
+  return content;
 };
 
 export default React.memo(ArticlePost);

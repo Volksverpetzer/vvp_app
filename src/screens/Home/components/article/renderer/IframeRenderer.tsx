@@ -1,7 +1,6 @@
 import { useHtmlIframeProps } from "@native-html/iframe-plugin";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
-import type { ColorSchemeName } from "react-native";
 import { View } from "react-native";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
 import WebView from "react-native-webview";
@@ -10,19 +9,21 @@ import type {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-import UiSpinner from "#/components/animations/UiSpinner";
 import ErrorCard from "#/components/design/ErrorCard";
-import Text from "#/components/design/Text";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
+import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { isHttpsUrl } from "#/helpers/utils/networking";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
+import type { AppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 export interface IframeRendererProperties {
   renderProps: CustomRendererProps<TBlock>;
   width: number;
   maxWidth: number;
-  onLinkPress: (event: unknown, href: string) => void;
+  onLinkPress: (event: unknown, href: HttpsUrl) => void;
 }
 
 // Injected JS constants for WebView
@@ -95,7 +96,7 @@ type WebViewRequest = {
  */
 const prepareWebViewSource = (
   url: string,
-  colorScheme: NonNullable<ColorSchemeName>,
+  colorScheme: AppColorScheme,
 ): { uri: string; headers?: { Referer: string } } | null => {
   // Linking.parse is tolerant, but it doesn't give us a URL object we can mutate.
   // We'll use it to detect the host, then rebuild the URL with the standard URL API.
@@ -133,7 +134,10 @@ const prepareWebViewSource = (
   }
 
   if (isDatawrapper) {
-    u.searchParams.set("dark", colorScheme === "dark" ? "true" : "false");
+    u.searchParams.set(
+      "dark",
+      colorScheme === ColorScheme.dark ? "true" : "false",
+    );
   }
 
   return { uri: u.toString() };
@@ -142,7 +146,7 @@ const prepareWebViewSource = (
 const shouldStartRequest = (
   request: WebViewRequest,
   iframeSource: string,
-  onLinkPress: (event: unknown, href: string) => void,
+  onLinkPress: (event: unknown, href: HttpsUrl) => void,
 ): boolean => {
   const requestUrl = request.url;
   if (!requestUrl) return true;
@@ -161,7 +165,9 @@ const shouldStartRequest = (
   const frameParts = frameHost?.split(".") || [];
   if (requestHost && requestHost?.includes("platform.twitter")) return true;
   if (requestParts.at(-2) !== frameParts.at(-2)) {
-    onLinkPress(undefined, requestUrl);
+    if (isHttpsUrl(requestUrl)) {
+      onLinkPress(undefined, requestUrl);
+    }
     return false;
   }
   return true;
@@ -193,7 +199,7 @@ const IframeRenderer = ({
     return (
       <ErrorCard
         style={{ marginHorizontal: 10 }}
-        text={"Error rendering iframe"}
+        text="Error rendering iframe"
       />
     );
 
@@ -211,7 +217,7 @@ const IframeRenderer = ({
             borderRadius: 8,
           }}
         >
-          <Text>Debug: Empty slug extracted from src: {source}</Text>
+          <UiText>Debug: Empty slug extracted from src: {source}</UiText>
         </View>
       );
     }
@@ -225,8 +231,8 @@ const IframeRenderer = ({
           overflow: "visible",
         }}
       >
-        <View style={{ ...styles.roundEdges, margin: 12 }}>
-          <LoadArticlePost slug={slug} />
+        <View style={{ margin: 12 }}>
+          <LoadArticlePost slug={slug} elevated />
         </View>
       </View>
     );
@@ -255,12 +261,12 @@ const IframeRenderer = ({
         incognito
         mediaPlaybackRequiresUserAction
         allowsInlineMediaPlayback
-        renderError={() => <Text>Render Error</Text>}
+        renderError={() => <UiText>Render Error</UiText>}
         scalesPageToFit={false}
         overScrollMode="never"
         scrollEnabled={false}
         bounces={false}
-        renderLoading={() => <UiSpinner size={"large"} />}
+        renderLoading={() => <UiSpinner size="large" />}
         onShouldStartLoadWithRequest={(request) =>
           shouldStartRequest(request, source, onLinkPress)
         }

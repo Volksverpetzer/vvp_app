@@ -6,12 +6,12 @@ import { useContext, useState } from "react";
 import { Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { FeedIcon, SafetyIcon } from "#/components/Icons";
-import Text from "#/components/design/Text";
+import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
 import View from "#/components/design/View";
+import Heading from "#/components/typography/Heading";
+import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
-import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import Config from "#/constants/Config";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
@@ -35,10 +35,14 @@ const Onboarding = () => {
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
 
+  const isFoss = Config.isFoss ?? false;
+
   const agreeToTerms = async () => {
-    await Notifications.registerForPushNotifications().catch((error) => {
-      console.error("Failed to register for push notifications:", error);
-    });
+    if (!isFoss) {
+      await Notifications.registerForPushNotifications().catch((error) => {
+        console.error("Failed to register for push notifications:", error);
+      });
+    }
     await PersonalStore.setOnboardingDone().finally(() => {
       updateBadgeState({ personal: false, action: true });
       router.replace("/");
@@ -86,14 +90,11 @@ const Onboarding = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              gap: 30,
             }}
           >
-            <FeedIcon color={corporate} />
-            <Text
-              style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
-            >
-              Feed-Einstellungen
-            </Text>
+            <FeedIcon color={corporate} size={20} />
+            <Heading style={{ textAlign: "left" }}>Feed-Einstellungen</Heading>
           </View>
           <SettingsList
             saveSettings={saveContentSetting}
@@ -102,38 +103,45 @@ const Onboarding = () => {
         </View>
       ),
     },
-    {
-      id: 7,
-      title: "Push Benachrichtigungen",
-      description: `Faktenchecks hinken naturgemäß immer hinterher. Um schnellstmöglich Faktenchecks zu erhalten und zu teilen, kannst du dir Push-Benachrichtigungen aktivieren. Das kann wichtig sein, damit die Fakten deine Freunde oder Familie erreichen, bevor der Fake sie aufs Glatteis führt.`,
-      Component: () => (
-        <View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <FeedIcon color={corporate} />
-            <Text
-              style={{ ...styles.heading, textAlign: "left", paddingLeft: 30 }}
-            >
-              Feed-Einstellungen
-            </Text>
-          </View>
-          <SettingsList
-            saveSettings={saveNotificationSetting}
-            settings={notificationSettings}
-          />
-        </View>
-      ),
-    },
+    ...(!isFoss
+      ? [
+          {
+            id: 7,
+            title: "Push Benachrichtigungen",
+            description: `Faktenchecks hinken naturgemäß immer hinterher. Um schnellstmöglich Faktenchecks zu erhalten und zu teilen, kannst du dir Push-Benachrichtigungen aktivieren. Das kann wichtig sein, damit die Fakten deine Freunde oder Familie erreichen, bevor der Fake sie aufs Glatteis führt.`,
+            Component: () => (
+              <View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 30,
+                  }}
+                >
+                  <NotificationIcon color={corporate} size={20} />
+                  <Heading
+                    style={{
+                      textAlign: "left",
+                    }}
+                  >
+                    Benachrichtigungen
+                  </Heading>
+                </View>
+                <SettingsList
+                  saveSettings={saveNotificationSetting}
+                  settings={notificationSettings}
+                />
+              </View>
+            ),
+          },
+        ]
+      : []),
     {
       id: 8,
       title: "Prio: Datenschutz",
       description: `Unser Versprechen: Wir geben uns alle Mühe, den Datenkraken so wenig zu überliefern wie möglich. Du braucht keine Accounts, wir tracken dich nicht. Mit der Nutzung stimmst du unserer Datenschutzerklärung zu.`,
-      TopComponent: () => <SafetyIcon color={corporate} width={80} />,
+      TopComponent: () => <SafetyIcon color={corporate} size={80} />,
       Component: () => (
         <Pressable
           accessibilityRole="button"
@@ -141,7 +149,7 @@ const Onboarding = () => {
             openBrowserAsync(Constants.expoConfig.extra.dataProtectionUrl);
           }}
         >
-          <Text
+          <UiText
             style={{
               color: corporate,
               textAlign: "center",
@@ -150,7 +158,7 @@ const Onboarding = () => {
             }}
           >
             Datenschutzerklärung
-          </Text>
+          </UiText>
         </Pressable>
       ),
     },
@@ -161,7 +169,7 @@ const Onboarding = () => {
       <FlatBoard
         data={data}
         onFinish={agreeToTerms}
-        accentColor={Colors["light"].heading}
+        accentColor={corporate}
         buttonTitle="Los geht's"
         hideIndicator
         variant="standard"

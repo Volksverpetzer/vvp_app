@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-// Import dependencies after mocking
+import RealIntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import * as Networking from "#/helpers/utils/networking";
 
 // Mock dependencies
@@ -15,6 +15,7 @@ jest.mock("#/helpers/utils/networking", () => {
         },
       },
     })),
+    get: jest.fn(),
     post: jest.fn(),
   };
 });
@@ -229,6 +230,37 @@ describe("IntelligenceAPI", () => {
         "/api/vector-search/",
         { query: "error query", n_results: 20 },
       );
+    });
+  });
+
+  describe("recommendations", () => {
+    it("encodes the url query parameter so ?/& do not break the request path", async () => {
+      const url =
+        "https://example.com/article?utm_source=twitter&utm_medium=social" as any;
+      jest.mocked(Networking.get).mockResolvedValue({ results: [] });
+
+      await RealIntelligenceAPI.recommendations(url);
+
+      expect(Networking.get).toHaveBeenCalledWith(
+        expect.anything(),
+        `/api/recommend/?url=${encodeURIComponent(url)}`,
+      );
+    });
+
+    it("works for plain urls without query parameters", async () => {
+      const url = "https://example.com/article" as any;
+      const mockResponse = {
+        results: [{ url: "https://example.com/related", title: "Related" }],
+      };
+      jest.mocked(Networking.get).mockResolvedValue(mockResponse);
+
+      const result = await RealIntelligenceAPI.recommendations(url);
+
+      expect(Networking.get).toHaveBeenCalledWith(
+        expect.anything(),
+        `/api/recommend/?url=${encodeURIComponent(url)}`,
+      );
+      expect(result).toEqual(mockResponse);
     });
   });
 

@@ -6,9 +6,10 @@ import {
 } from "#/helpers/utils/networking";
 import type { AISearchResponse, HttpsUrl } from "#/types";
 
-/** Axios client for AI with Referer header set */
-const intelligenceClient = createClient(Config.aiUrl);
-intelligenceClient.defaults.headers.common["Referer"] = Config.aiUrl;
+/** Fetch client for AI with Referer header set */
+const intelligenceClient = createClient(Config.aiUrl, {
+  Referer: Config.aiUrl,
+});
 
 /**
  * The IntelligenceAPI class provides methods for making HTTP requests and fetching data from an API.
@@ -55,11 +56,11 @@ class IntelligenceAPI {
   }
 
   static async recommendations(
-    url: string,
+    url: HttpsUrl,
   ): Promise<{ results: { url: string; title: string }[] }> {
     return await this.get<{
       results: { url: string; title: string }[];
-    }>(`/api/recommend/?url=${url}`);
+    }>(`/api/recommend/?url=${encodeURIComponent(url)}`);
   }
 }
 

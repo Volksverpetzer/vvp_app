@@ -5,9 +5,8 @@ import { Pressable, View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
 import Card from "#/components/design/Card";
-import Text from "#/components/design/Text";
+import Heading from "#/components/typography/Heading";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles } from "#/constants/Styles";
 import { getTagStyles } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -28,6 +27,7 @@ const SearchResultItem = ({
   onPress,
 }: SearchResultItemProps) => {
   const colorScheme = useAppColorScheme();
+  const textColor = Colors[colorScheme].text;
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
   const { width } = useWindowDimensions();
 
@@ -39,18 +39,18 @@ const SearchResultItem = ({
   const baseStyle = useMemo(
     () => ({
       fontFamily: "SourceSansPro",
-      lineHeight: 27,
-      color: Colors[colorScheme].text,
+      lineHeight: 24,
+      color: textColor,
     }),
-    [colorScheme],
+    [textColor],
   );
 
   const content = (
     <Card>
       {title ? (
-        <Text style={[globalStyles.heading, { padding: 0, marginBottom: 10 }]}>
+        <Heading style={{ color: textColor, marginBottom: 10 }}>
           {decode(title)}
-        </Text>
+        </Heading>
       ) : null}
 
       <RenderHtml

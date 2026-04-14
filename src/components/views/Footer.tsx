@@ -1,18 +1,20 @@
 import { Pressable } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
+import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 import Support from "./Support";
 
 interface FooterProperties {
-  article_link: string;
-  onShare: (article_link: string, properties: unknown) => void;
+  article_link: HttpsUrl;
+  onShare: (article_link: string, properties: object) => void;
 }
 
 /**
@@ -33,7 +35,7 @@ const Footer = (properties: FooterProperties) => {
           ...styles.noBackground,
         }}
       >
-        <Text
+        <UiText
           style={{
             textAlign: "center",
             paddingVertical: 30,
@@ -43,7 +45,7 @@ const Footer = (properties: FooterProperties) => {
         >
           Überlass es nicht dem Algorithmus,{"\n"}ob deine Freunde{"\n"}von
           diesem Post erfahren:
-        </Text>
+        </UiText>
         <Pressable
           accessibilityRole="button"
           style={{
@@ -61,19 +63,17 @@ const Footer = (properties: FooterProperties) => {
             })
           }
         >
-          <ShareIcon color={"white"} size={50} />
+          <ShareIcon color="white" size={32} />
         </Pressable>
       </View>
-      <View
+      <Card
         style={{
           marginHorizontal: 12,
-          paddingVertical: 12,
-          borderRadius: 20,
           backgroundColor: Colors[colorScheme].secondaryBackground,
         }}
       >
         <Support article_link={properties.article_link} />
-      </View>
+      </Card>
       <Space size={100} />
     </>
   );

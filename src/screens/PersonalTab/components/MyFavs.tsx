@@ -4,10 +4,11 @@ import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
+import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
 import GenericPost from "#/components/posts/GenericPost";
 import InstaPost from "#/components/posts/InstaPost";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import Post from "#/helpers/Post";
@@ -53,7 +54,6 @@ const loadFavoriteInstaPost = async (
       post,
       [{ url: post.permalink, title: "Instagram Post teilen" }],
       1,
-      false,
       post.id,
       FAV_TYPE_INSTA,
     );
@@ -133,7 +133,9 @@ const MyFavs = () => {
   return (
     <>
       {isLoading ? (
-        <LoadingFallback text={"Lade Favoriten..."} />
+        <Card>
+          <LoadingFallback text="Lade Favoriten..." />
+        </Card>
       ) : (
         posts.map((post) => (
           <GenericPost
@@ -143,17 +145,16 @@ const MyFavs = () => {
             contentFavIdentifier={post.contentFavIdentifier}
             contentType={post.contentType}
             shareable={post.shareable}
-            hideShareCount={post.hideShareCount}
             inView={true}
           />
         ))
       )}
-      <Space size={100} />
+      <Space size={50} />
       <View style={{ ...styles.centered }}>
         <StarIcon color={corporate} />
-        <Text style={{ textAlign: "center", fontSize: 18 }}>
+        <UiText style={{ textAlign: "center", fontSize: 18 }}>
           Klick den Stern, um zu den Favoriten hinzuzufügen
-        </Text>
+        </UiText>
       </View>
       <Space size={100} />
     </>

@@ -6,6 +6,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
 import {
+  CodeIcon,
   FeedIcon,
   FeedbackIcon,
   GiveIcon,
@@ -20,12 +21,11 @@ import Collapsable from "#/components/design/Collapsable";
 import DesignedLink from "#/components/design/DesignedLink";
 import Divider from "#/components/design/Divider";
 import Space from "#/components/design/Space";
-import Text from "#/components/design/Text";
+import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles as globalStyles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -111,72 +111,79 @@ const SettingsScreen = () => {
       />
       <ScrollView
         style={{
-          flex: 1,
           backgroundColor,
+          flex: 1,
         }}
         contentContainerStyle={{
           backgroundColor,
           paddingTop: HEADER_HEIGHT,
+          gap: 20,
         }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
         )}
       >
-        <Collapsable
-          icon={<FeedIcon color={corporate} />}
-          title="Feed"
-          titleStyle={globalStyles.heading}
-        >
-          <Text style={styles.sectionText}>
-            Was möchtest du in deinem Feed sehen?
-          </Text>
-          <SettingsList
-            saveSettings={saveContentSetting}
-            settings={contentSettings}
-          />
-        </Collapsable>
-        <Collapsable
-          icon={<NotificationIcon size={24} color={corporate} />}
-          title="Benachrichtigungen"
-          titleStyle={globalStyles.heading}
-        >
-          <SettingsList
-            saveSettings={saveNotificationSetting}
-            settings={notificationSettings}
-          />
-        </Collapsable>
-        <Collapsable
-          icon={<SettingsIcon size={24} color={corporate} />}
-          title="Erweitert"
-          titleStyle={globalStyles.heading}
-        >
-          <SettingsList
-            saveSettings={saveAdvancedSetting}
-            settings={advancedSettings}
-          />
-        </Collapsable>
+        <View>
+          <Collapsable
+            icon={<FeedIcon color={corporate} size={24} />}
+            title="Feed"
+          >
+            <UiText style={styles.sectionText}>
+              Was möchtest du in deinem Feed sehen?
+            </UiText>
+            <SettingsList
+              saveSettings={saveContentSetting}
+              settings={contentSettings}
+            />
+          </Collapsable>
+          {!Config.isFoss && (
+            <Collapsable
+              icon={<NotificationIcon color={corporate} size={24} />}
+              title="Benachrichtigungen"
+            >
+              <SettingsList
+                saveSettings={saveNotificationSetting}
+                settings={notificationSettings}
+              />
+            </Collapsable>
+          )}
+          <Collapsable
+            icon={<SettingsIcon color={corporate} size={24} />}
+            title="Erweitert"
+          >
+            <SettingsList
+              saveSettings={saveAdvancedSetting}
+              settings={advancedSettings}
+            />
+          </Collapsable>
+        </View>
         <Divider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
           <DesignedLink
             url={Config.aboutUrl}
-            icon={<SearchIcon color={corporate} width={20} />}
+            icon={<SearchIcon color={corporate} size={24} />}
             text="Über uns"
           />
           <DesignedLink
             url={Config.donations.support}
-            icon={<GiveIcon color={corporate} />}
+            icon={<GiveIcon color={corporate} size={24} />}
             text="Unterstützen"
           />
           <DesignedLink
             url={encodeURI("mailto:app@volksverpetzer.de")}
-            icon={<FeedbackIcon size={24} color={corporate} />}
+            icon={<FeedbackIcon color={corporate} size={24} />}
             text="App-Feedback"
           />
           <DesignedLink
             url={Config.dataProtectionUrl}
-            icon={<LockIcon size={24} color={corporate} />}
+            icon={<LockIcon color={corporate} size={24} />}
             text="Datenschutz"
+          />
+          <DesignedLink
+            url={Config.sourceUrl}
+            icon={<CodeIcon color={corporate} size={24} />}
+            text="Quellcode"
           />
         </View>
         <View style={styles.donateContainer}>
@@ -190,22 +197,24 @@ const SettingsScreen = () => {
             onPress={() => router.push("/licenses")}
             style={pressableStyle}
           >
-            <Text>Lizenzen</Text>
+            <UiText>Lizenzen</UiText>
           </Pressable>
           <Pressable
             accessibilityRole="button"
             style={pressableStyle}
             onPress={() => PersonalStore.setOnboardingDone(false)}
           >
-            <Text>Intro zurücksetzen</Text>
+            <UiText>Intro zurücksetzen</UiText>
           </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            style={pressableStyle}
-            onPress={() => Notifications.registerForPushNotifications()}
-          >
-            <Text>Benachrichtigungen zurücksetzen</Text>
-          </Pressable>
+          {!Config.isFoss && (
+            <Pressable
+              accessibilityRole="button"
+              style={pressableStyle}
+              onPress={() => Notifications.registerForPushNotifications()}
+            >
+              <UiText>Benachrichtigungen zurücksetzen</UiText>
+            </Pressable>
+          )}
           <Pressable
             accessibilityRole="button"
             style={pressableStyle}
@@ -231,15 +240,15 @@ const SettingsScreen = () => {
               });
             }}
           >
-            <Text>Alle Erfolge zurücksetzen</Text>
+            <UiText>Alle Erfolge zurücksetzen</UiText>
           </Pressable>
-          <Text selectable>
+          <UiText selectable>
             Versionskennung: {Application.nativeApplicationVersion}
             &nbsp;-&nbsp;
             {Application.nativeBuildVersion}
-            {"\n"}
-            Token: {token}
-          </Text>
+            {Config.isFoss && " - FOSS"}
+            {!Config.isFoss && `\nToken: ${token}`}
+          </UiText>
         </View>
         <Space size={100} />
       </ScrollView>
@@ -253,7 +262,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   linksContainer: {
+    flex: 1,
     paddingHorizontal: 20,
+    gap: 20,
   },
   infoContainer: {
     flex: 1,

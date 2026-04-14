@@ -1,16 +1,11 @@
 import { Image } from "expo-image";
 import type { JSX, ReactNode } from "react";
 import type { StyleProp, TextStyle } from "react-native";
-import {
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import UiText from "#/components/ui/UiText";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
 
@@ -41,7 +36,7 @@ const LicensesListItem = (
   Properties: LicensesListItemProperties,
 ): JSX.Element => {
   const colorScheme = useAppColorScheme();
-  const isDark = colorScheme === "dark";
+  const isDark = colorScheme === ColorScheme.dark;
   const styles = getStyles(isDark);
   const textColor = isDark ? "#e5e7eb" : "#34495e";
   const iconColor = textColor;
@@ -82,22 +77,22 @@ const LicensesListItem = (
           style={styles.item}
         >
           <View style={styles.content}>
-            <Text
+            <UiText
               style={[styles.name, { color: textColor }]}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
               {title}
-            </Text>
+            </UiText>
             <Link style={[styles.text, { color: textColor }]} url={licenseUrl}>
               {licenses}
             </Link>
-            <Text style={[styles.name, { color: textColor }]}>
+            <UiText style={[styles.name, { color: textColor }]}>
               {packageVersion}
-            </Text>
+            </UiText>
           </View>
           <View style={styles.icon}>
-            <ChevronIcon direction="right" color={iconColor} size={40} />
+            <ChevronIcon direction="right" color={iconColor} size={32} />
           </View>
         </TouchableOpacity>
       </View>
@@ -107,17 +102,17 @@ const LicensesListItem = (
 
 const Link = (properties: LinkProperties) => {
   const colorScheme = useAppColorScheme();
-  const isDark = colorScheme === "dark";
+  const isDark = colorScheme === ColorScheme.dark;
   const defaultColor = isDark ? "#e5e7eb" : "#34495e";
 
   return (
-    <Text
+    <UiText
       style={[{ color: defaultColor }, properties.style]}
       numberOfLines={1}
       onPress={() => properties.url && Linking.openURL(properties.url)}
     >
       {properties.children}
-    </Text>
+    </UiText>
   );
 };
 

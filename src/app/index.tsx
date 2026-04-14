@@ -2,7 +2,7 @@ import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 
-import UiSpinner from "#/components/animations/UiSpinner";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import NotificationManager from "#/helpers/Notifications";
@@ -72,7 +72,7 @@ const Index = () => {
       });
     })();
   }, [router]);
-  return <UiSpinner size={"large"} />;
+  return <UiSpinner size="large" />;
 };
 
 export default Index;

@@ -33,12 +33,17 @@ jest.mock("#/components/animations/LoadingFallback", () => ({
   default: jest.fn(() => null),
 }));
 
+jest.mock("#/components/design/Card", () => ({
+  __esModule: true,
+  default: jest.fn(({ children }) => children),
+}));
+
 jest.mock("#/components/design/Space", () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));
 
-jest.mock("#/components/design/Text", () => ({
+jest.mock("#/components/ui/UiText", () => ({
   __esModule: true,
   default: jest.fn(({ children }) => children),
 }));
@@ -121,7 +126,6 @@ describe("MyFavs", () => {
         },
       },
       shareable: [{ url: articleApiResponse.link, title: "Artikel teilen" }],
-      hideShareCount: false,
       contentFavIdentifier: "example-article",
       contentType: FAV_TYPE_ARTICLE,
     };
@@ -216,7 +220,6 @@ describe("MyFavs", () => {
         },
       },
       shareable: [{ url: articleApiResponse.link, title: "Artikel teilen" }],
-      hideShareCount: false,
       contentFavIdentifier: "example-article",
       contentType: FAV_TYPE_ARTICLE,
     };
@@ -338,7 +341,6 @@ describe("MyFavs", () => {
           title: "Artikel teilen",
         },
       ],
-      hideShareCount: false,
       contentFavIdentifier: "newer-article",
       contentType: FAV_TYPE_ARTICLE,
     };

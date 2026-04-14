@@ -1,10 +1,11 @@
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import { ReportStatusIcon } from "#/components/Icons";
+import UiText from "#/components/ui/UiText";
 import API from "#/helpers/network/ServerAPI";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatusResponse, StoredReport } from "#/types";
 
 /**
@@ -15,7 +16,7 @@ const ReportStatusListItem = (props: StoredReport) => {
   const colorScheme = useAppColorScheme();
 
   const colors =
-    colorScheme === "dark"
+    colorScheme === ColorScheme.dark
       ? {
           text: "#FFFFFF",
           posted: "#34D399",
@@ -58,11 +59,11 @@ const ReportStatusListItem = (props: StoredReport) => {
       return <ActivityIndicator color={colors.activity} />;
     }
     if (error) {
-      return <ReportStatusIcon status="error" size={20} color={colors.error} />;
+      return <ReportStatusIcon status="error" size={16} color={colors.error} />;
     }
     if (status === "posted") {
       return (
-        <ReportStatusIcon status="posted" size={20} color={colors.posted} />
+        <ReportStatusIcon status="posted" size={16} color={colors.posted} />
       );
     }
     return (
@@ -72,9 +73,9 @@ const ReportStatusListItem = (props: StoredReport) => {
 
   return (
     <View style={styles.item}>
-      <Text selectable style={[styles.text, { color: colors.text }]}>
+      <UiText selectable style={[styles.text, { color: colors.text }]}>
         {id}
-      </Text>
+      </UiText>
       {renderIcon()}
     </View>
   );

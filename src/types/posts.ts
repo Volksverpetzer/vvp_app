@@ -22,8 +22,13 @@ export interface Post<T> {
   contentType?: FaveableType;
   priority?: number;
   inView: boolean;
-  hideShareCount?: boolean;
   data: T;
+}
+
+export interface PostAuthor {
+  display_name?: string; // The AT Proto SDK types use camelCase, but our Python backend returns snake_case.
+  handle: string;
+  avatar?: string;
 }
 
 export interface ArticleProperties {
@@ -67,7 +72,6 @@ export interface BlueskyPostProperties {
   post: FeedViewPost;
   replies?: FeedViewPost[];
   inView?: boolean;
-  displayText?: DisplayText;
 }
 
 export interface ClaimReview {

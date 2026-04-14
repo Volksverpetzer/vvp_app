@@ -4,17 +4,24 @@ import { useColorScheme } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
+import type { colorSchemeType } from "#/types/colors";
+
+export type AppColorScheme = keyof colorSchemeType;
+
+export const ColorScheme = {
+  light: "light",
+  dark: "dark",
+} as const satisfies Record<AppColorScheme, AppColorScheme>;
 
 /**
  * A hook that returns the color scheme of the device, or "dark" if the user has set the advanced setting "Always Dark Mode".
  * @returns The color scheme of the device, or "dark" if the user has set the advanced setting "Always Dark Mode".
  */
-export const useAppColorScheme = (): NonNullable<ColorSchemeName> => {
+export const useAppColorScheme = (): AppColorScheme => {
   const { advancedSettings } = useContext(SettingsContext);
-  const scheme = useColorScheme();
-  if (advancedSettings?.alwaysDarkMode?.value ?? false)
-    return "dark" as NonNullable<ColorSchemeName>;
-  return scheme as NonNullable<ColorSchemeName>;
+  const scheme: ColorSchemeName = useColorScheme();
+  if (advancedSettings?.alwaysDarkMode?.value ?? false) return ColorScheme.dark;
+  return scheme === ColorScheme.dark ? ColorScheme.dark : ColorScheme.light;
 };
 
 /**
@@ -28,5 +35,7 @@ export const useCorporateColor = () => {
 
 export const useReverseColorScheme = () => {
   const colorScheme = useAppColorScheme();
-  return colorScheme === "dark" ? "light" : "dark";
+  return colorScheme === ColorScheme.dark
+    ? ColorScheme.light
+    : ColorScheme.dark;
 };

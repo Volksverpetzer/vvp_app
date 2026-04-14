@@ -1,7 +1,15 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from "@jest/globals";
 import * as Notifications from "expo-notifications";
 
 import NotificationManager from "#/helpers/Notifications";
+import SettingsStore from "#/helpers/Stores/SettingsStore";
 
 // Mock dependencies
 jest.mock("react-native", () => ({
@@ -14,12 +22,16 @@ jest.mock("expo-notifications", () => ({
   getPermissionsAsync: jest.fn(),
   requestPermissionsAsync: jest.fn(),
   getExpoPushTokenAsync: jest.fn(),
+  scheduleNotificationAsync: jest.fn(),
   setNotificationChannelAsync: jest.fn(),
   setNotificationHandler: jest.fn(),
   PermissionStatus: {
     GRANTED: "granted",
     DENIED: "denied",
     UNDETERMINED: "undetermined",
+  },
+  SchedulableTriggerInputTypes: {
+    DATE: "date",
   },
   AndroidImportance: {
     HIGH: 4,
@@ -61,9 +73,11 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
   },
 }));
 
+let mockIsFoss = false;
 jest.mock("#/constants/Config", () => ({
-  eas: {
-    projectId: "test-project-id",
+  eas: { projectId: "test-project-id" },
+  get isFoss() {
+    return mockIsFoss;
   },
 }));
 
@@ -229,6 +243,124 @@ describe("NotificationManager", () => {
 
       expect(requestSpy).not.toHaveBeenCalled();
       expect(registerSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("scheduleDonationReminder", () => {
+    it("calls scheduleNotificationAsync with the correct content and DATE trigger", async () => {
+      const date = new Date("2026-05-01T10:00:00.000Z");
+      jest
+        .spyOn(Notifications, "scheduleNotificationAsync")
+        .mockResolvedValue("notification-id" as any);
+
+      await NotificationManager.scheduleDonationReminder(date);
+
+      expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith({
+        content: {
+          title: "Danke für deine Spende! 📬",
+          body: "Wir haben uns sehr gefreut, dass du uns im letzten Monat unterstützt hast.",
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date,
+        },
+      });
+    });
+
+    it("is a no-op when notifications are unavailable (web platform)", async () => {
+      const platform = (jest.requireMock("react-native") as any).Platform;
+      platform.OS = "web";
+      try {
+        await NotificationManager.scheduleDonationReminder(new Date());
+        expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+      } finally {
+        platform.OS = "ios";
+      }
+    });
+  });
+
+  describe("FOSS mode (Config.isFoss = true)", () => {
+    beforeEach(() => {
+      jest.restoreAllMocks(); // clear any lingering spies from checkAndRequestOnLaunch tests
+      mockIsFoss = true;
+    });
+
+    afterEach(() => {
+      mockIsFoss = false;
+    });
+
+    describe("getPermissions", () => {
+      it("returns DENIED without calling the system API", async () => {
+        const spy = jest.spyOn(Notifications, "getPermissionsAsync");
+
+        const result = await NotificationManager.getPermissions();
+
+        expect(spy).not.toHaveBeenCalled();
+        expect(result.status).toBe(Notifications.PermissionStatus.DENIED);
+        expect(result.canAskAgain).toBe(false);
+      });
+    });
+
+    describe("getToken", () => {
+      it("returns an empty string without calling the push token API", async () => {
+        const spy = jest.spyOn(Notifications, "getExpoPushTokenAsync");
+
+        const result = await NotificationManager.getToken();
+
+        expect(spy).not.toHaveBeenCalled();
+        expect(result).toBe("");
+      });
+    });
+
+    describe("refreshServer", () => {
+      it("returns early without checking permissions or calling the API", async () => {
+        const permissionsSpy = jest.spyOn(
+          NotificationManager,
+          "getPermissions",
+        );
+
+        await NotificationManager.refreshServer();
+
+        expect(permissionsSpy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("registerForPushNotifications", () => {
+      it("returns stored settings with status 'foss' without registering", async () => {
+        const mockSettings = {
+          new_post: { value: true, name: "Neue Artikel" },
+        };
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue(mockSettings);
+        const permissionsSpy = jest.spyOn(Notifications, "getPermissionsAsync");
+
+        const result = await NotificationManager.registerForPushNotifications();
+
+        expect(permissionsSpy).not.toHaveBeenCalled();
+        expect(result.status).toBe("foss");
+        expect(result.notificationSettings).toEqual(mockSettings);
+      });
+    });
+
+    describe("checkAndRequestOnLaunch", () => {
+      it("returns early without checking permissions", async () => {
+        const spy = jest.spyOn(Notifications, "getPermissionsAsync");
+
+        await NotificationManager.checkAndRequestOnLaunch();
+
+        expect(spy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("scheduleDonationReminder", () => {
+      it("is a no-op in FOSS mode", async () => {
+        await NotificationManager.scheduleDonationReminder(new Date());
+
+        expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+      });
     });
   });
 });

@@ -1,8 +1,4 @@
 minimumReleaseAge: 1440 # 1 day cooldown for new releases, see https://pnpm.io/settings#minimumreleaseage
 nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
-overrides:
-  domhandler: 5.0.3 # to fix tsc errors in ElementHandlers
-patchedDependencies:
-  xcode@3.0.1: patches/xcode+3.0.1.patch # see https://github.com/achorein/expo-share-intent?tab=readme-ov-file#installation
 packages:
   - .

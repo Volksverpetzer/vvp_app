@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import type { ReactNode } from "react";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 
-import { ErrorIcon } from "#/components/Icons";
+import { ReportIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -42,7 +42,7 @@ const ReportingWrapper = ({
           progress={p}
           drag={d}
           swipeable={s}
-          icon={<ErrorIcon color={Colors[colorScheme].errorBackground} />}
+          icon={<ReportIcon color="white" size={24} />}
           label="Fehler melden"
           backgroundColor={Colors[colorScheme].errorBackground}
           onAction={errorReport}

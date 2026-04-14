@@ -10,4 +10,3 @@ export type * from "./reports";
 export type * from "./settings";
 export type * from "./statistics";
 export * from "./stores";
-export type * from "./theme";

@@ -1,8 +1,7 @@
-import { Image } from "expo-image";
-import { Linking, Pressable } from "react-native";
+import { Linking } from "react-native";
 
+import UiButton from "#/components/ui/UiButton";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import { registerEvent } from "#/helpers/network/Analytics";
 
 import ButtonSteady from "#assets/images/button_steady.webp";
@@ -12,24 +11,21 @@ interface SteadyButtonProperties {
   location?: string;
 }
 
-/**
- * SteadyButton is a button that opens the Steady donation page.
- * @param article_link - The link to the article that was shared
- * @param location - The location where the button was pressed for analytics
- */
-const SteadyButton = (properties: SteadyButtonProperties) => {
-  const article_link = properties.article_link ?? Config.wpUrl;
-  const location = properties.location ?? "ArticleBottom";
+const SteadyButton = ({
+  article_link,
+  location = "ArticleBottom",
+}: SteadyButtonProperties) => {
+  const link = article_link ?? Config.wpUrl;
   return (
-    <Pressable
-      accessibilityRole="button"
+    <UiButton
+      source={ButtonSteady}
+      accessibilityLabel="Steady-Mitglied werden"
+      accessibilityHint="Öffnet Steady im Browser"
       onPress={() => {
-        registerEvent(article_link, "Steady", { location });
+        registerEvent(link, "Steady", { location });
         Linking.openURL(Config.donations.steady);
       }}
-    >
-      <Image style={styles.button} source={ButtonSteady} />
-    </Pressable>
+    />
   );
 };
 

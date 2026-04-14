@@ -1,11 +1,13 @@
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, Pressable, Text } from "react-native";
+import { Animated, Pressable } from "react-native";
 
-import { LogoBig, SearchIcon } from "#/components/Icons";
+import { SearchIcon } from "#/components/Icons";
+import { LogoBig } from "#/components/SvgIcons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -21,8 +23,8 @@ import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
  * HomeScreen is the main feed view. It fetches multiple social feeds
  * and displays content with an animated header and search shortcut.
  *
- * Note: Share intent routing is handled by the dedicated /shareintent screen
- * (src/app/shareintent.tsx), which is routed via +native-intent.tsx.
+ * Note: Share intent routing is handled by the dedicated /handle-share screen
+ * (src/app/handle-share.tsx), which is routed via +native-intent.tsx.
  *
  * @returns React element for the home feed screen.
  */
@@ -32,6 +34,7 @@ const HomeScreen = () => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
+  const corporate = Colors[colorScheme].corporate;
 
   const HEADER_HEIGHT = 220;
 
@@ -55,40 +58,38 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <AnimatedHeader
-        title={!isVolksverpetzer ? Constants.expoConfig.name : ""}
-        headerComponent={
-          isVolksverpetzer && (
+        title={
+          isVolksverpetzer ? (
             <LogoBig color={color} style={{ marginLeft: 20 }} />
+          ) : (
+            Constants.expoConfig.name
           )
         }
         scrollOffsetY={scrollOffsetY}
-        minHeight={0}
+        minHeight={95}
         maxHeight={HEADER_HEIGHT}
       >
         <Pressable
           accessibilityRole="button"
           onPress={() => router.push("/search")}
+          style={{
+            ...styles.row,
+            ...styles.input,
+            ...styles.feed,
+            height: 50,
+            backgroundColor: corporate,
+          }}
         >
-          <View
+          <UiText
             style={{
-              ...styles.row,
-              padding: 0,
-              width: "100%",
-              height: "100%",
-              ...styles.noBackground,
+              ...styles.whiteText,
+              fontFamily: "SourceSansPro",
+              fontSize: 16,
             }}
           >
-            <Text
-              style={{
-                ...styles.whiteText,
-                fontFamily: "SourceSansPro",
-                fontSize: 16,
-              }}
-            >
-              Suche ...
-            </Text>
-            <SearchIcon color={"white"} />
-          </View>
+            Suche ...
+          </UiText>
+          <SearchIcon color="white" size={24} />
         </Pressable>
       </AnimatedHeader>
       <Feed

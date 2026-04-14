@@ -3,8 +3,8 @@ import type { TextStyle } from "react-native";
 import { Pressable } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
-import Text from "#/components/design/Text";
 import View from "#/components/design/View";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { Achievements } from "#/helpers/Achievements";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
@@ -69,15 +69,12 @@ const FavCounter = (properties: FavCounterProperties) => {
           justifyContent: "space-evenly",
           alignItems: "center",
           backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
-          margin: 0,
+          gap: 5,
         };
       }}
     >
-      <View>
-        <StarIcon filled={isFav} color={color} size={24} />
-      </View>
-      <View style={{ width: 5 }} />
-      <Text style={properties.style}>{(isFav ? 1 : 0) + favs}</Text>
+      <StarIcon filled={isFav} color={color} size={24} />
+      <UiText style={properties.style}>{(isFav ? 1 : 0) + favs}</UiText>
     </Pressable>
   );
 };

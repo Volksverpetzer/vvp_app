@@ -4,7 +4,7 @@ import Colors from "./Colors";
 
 export const styles = StyleSheet.create({
   badge: {
-    backgroundColor: Colors["light"].highlight,
+    backgroundColor: Colors.light.highlight,
     borderRadius: 4,
     height: 8,
     position: "absolute",
@@ -30,12 +30,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
   },
-  heading: {
-    fontFamily: "SourceSansProSemiBold",
-    fontSize: 18,
-    fontWeight: "bold",
-    padding: 10,
-  },
   input: {
     borderRadius: 20,
     minHeight: 40,
@@ -44,24 +38,22 @@ export const styles = StyleSheet.create({
   noBackground: {
     backgroundColor: "transparent",
   },
-  roundEdges: {
-    borderRadius: 15,
-    marginBottom: "7%",
-    minHeight: 200,
-    overflow: "hidden",
-  },
   row: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
   },
+  centeredAbsolute: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   whiteText: {
     color: "white",
-  },
-  button: {
-    width: 220,
-    height: 40,
-    borderRadius: 4,
   },
 });

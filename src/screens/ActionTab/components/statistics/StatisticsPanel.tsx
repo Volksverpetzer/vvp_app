@@ -1,15 +1,18 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
-import type { MaterialCommunityIconName } from "#/components/Icons";
+import type { OcticonsIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
+import UiText from "#/components/ui/UiText";
+import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
 import StatisticsBox from "./StatisticsBox";
 
 interface StatsPanelProperties {
-  icon: MaterialCommunityIconName;
+  icon: OcticonsIconName;
   title: string;
   subtitle?: string;
   streakKeyToExclude: string;
@@ -19,8 +22,6 @@ interface StatsPanelProperties {
   width: number;
   statistics: Record<string, StatisticsType>;
   descriptionMap: Record<string, string>;
-  corporateColor: string;
-  grayed: string;
 }
 
 const StatisticsPanel = ({
@@ -34,16 +35,17 @@ const StatisticsPanel = ({
   width,
   statistics,
   descriptionMap,
-  corporateColor,
-  grayed,
 }: StatsPanelProperties) => {
+  const colorScheme = useAppColorScheme();
+  const grayedOut = Colors[colorScheme].grayedOut;
+
   return (
     <View style={{ ...styles.centered, width }}>
       <View
         style={{ ...styles.row, justifyContent: "flex-start", paddingLeft: 30 }}
       >
-        <StatisticsIcon name={icon} size={40} color="white" />
-        <Text
+        <StatisticsIcon name={icon} size={32} color="white" />
+        <UiText
           style={{
             ...styles.whiteText,
             fontSize: 20,
@@ -52,11 +54,19 @@ const StatisticsPanel = ({
           }}
         >
           {title}
-        </Text>
+        </UiText>
         {subtitle && (
-          <Text style={{ fontSize: 12, color: grayed, paddingLeft: 10 }}>
+          <UiText
+            style={{
+              fontSize: 12,
+              color: grayedOut,
+              paddingLeft: 10,
+              paddingBottom: 3,
+              alignSelf: "flex-end",
+            }}
+          >
             {subtitle}
-          </Text>
+          </UiText>
         )}
       </View>
 
@@ -65,7 +75,7 @@ const StatisticsPanel = ({
       <View style={styles.row}>
         {showLeftChevron ? (
           <View style={{ width: 24 }}>
-            <ChevronIcon direction="left" size={24} color={"white"} />
+            <ChevronIcon direction="left" size={24} color="white" />
           </View>
         ) : (
           <View style={{ width: 24 }} />
@@ -80,7 +90,6 @@ const StatisticsPanel = ({
               statistic={s}
               valueKey={valueKey}
               descriptionMap={descriptionMap}
-              corporateColor={corporateColor}
             />
           ))}
 

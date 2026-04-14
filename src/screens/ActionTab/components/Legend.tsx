@@ -1,5 +1,7 @@
 import type { ColorValue } from "react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+
+import UiText from "#/components/ui/UiText";
 
 interface LegendProperties {
   text: string;
@@ -16,7 +18,7 @@ const Legend = ({ text, color }: LegendProperties) => {
   return (
     <View style={styles.legend}>
       <View style={{ backgroundColor: color, ...styles.dot }} />
-      <Text style={styles.text}>{text}</Text>
+      <UiText style={styles.text}>{text}</UiText>
     </View>
   );
 };
