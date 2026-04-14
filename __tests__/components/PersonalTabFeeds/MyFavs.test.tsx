@@ -33,6 +33,11 @@ jest.mock("#/components/animations/LoadingFallback", () => ({
   default: jest.fn(() => null),
 }));
 
+jest.mock("#/components/design/Card", () => ({
+  __esModule: true,
+  default: jest.fn(({ children }) => children),
+}));
+
 jest.mock("#/components/design/Space", () => ({
   __esModule: true,
   default: jest.fn(() => null),
