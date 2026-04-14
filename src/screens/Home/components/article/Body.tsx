@@ -101,7 +101,7 @@ const Body = (properties: BodyProperties) => {
          * @param {GestureResponderEvent} event - The event object
          * @param {string} href - The URL of the link
          */
-        onPress: (event: GestureResponderEvent, href: HttpsUrl) => {
+        onPress: (event: GestureResponderEvent, href: string) => {
           if (
             href.includes(article_link) ||
             href.startsWith("about:///blank#")
@@ -120,11 +120,8 @@ const Body = (properties: BodyProperties) => {
             }
             return;
           }
-          if (
-            isHttpsUrl(href) &&
-            !href.includes(Config.wpUrl) &&
-            Config.enableEngagement
-          ) {
+          if (!isHttpsUrl(href)) return;
+          if (!href.includes(Config.wpUrl) && Config.enableEngagement) {
             SourcesStore.onAddSource(href, slug, article_title);
             Statistics.countSourceChecked();
           }

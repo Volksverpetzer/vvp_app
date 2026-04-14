@@ -64,7 +64,7 @@ if (!AppImages.loadingAnimation) return null;
 2. Import them in `AppImages.ts` and add a new key using the `isVolksverpetzer` flag:
 
    ```ts
-   import { isVolksverpetzer } from "#/config/variants";
+   import { isVolksverpetzer } from "#/helpers/utils/variant";
 
    import MimikamaMyAsset from "#assets/images/mimikama_my_asset.webp";
    import VVPMyAsset from "#assets/images/my_asset.webp";

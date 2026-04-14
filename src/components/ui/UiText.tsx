@@ -1,8 +1,9 @@
+import type { TextProps } from "react-native";
 import { Text } from "react-native";
 
 import { useThemeColor } from "#/hooks/useThemeColor";
 
-type TextProperties = Text["props"] & { key?: string };
+type TextProperties = TextProps & { key?: string };
 
 const UiText = (properties: TextProperties) => {
   const { style, ...otherProperties } = properties;

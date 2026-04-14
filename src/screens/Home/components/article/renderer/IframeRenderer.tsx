@@ -14,6 +14,7 @@ import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { isHttpsUrl } from "#/helpers/utils/networking";
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
@@ -145,7 +146,7 @@ const prepareWebViewSource = (
 const shouldStartRequest = (
   request: WebViewRequest,
   iframeSource: string,
-  onLinkPress: (event: unknown, href: string) => void,
+  onLinkPress: (event: unknown, href: HttpsUrl) => void,
 ): boolean => {
   const requestUrl = request.url;
   if (!requestUrl) return true;
@@ -164,7 +165,9 @@ const shouldStartRequest = (
   const frameParts = frameHost?.split(".") || [];
   if (requestHost && requestHost?.includes("platform.twitter")) return true;
   if (requestParts.at(-2) !== frameParts.at(-2)) {
-    onLinkPress(undefined, requestUrl);
+    if (isHttpsUrl(requestUrl)) {
+      onLinkPress(undefined, requestUrl);
+    }
     return false;
   }
   return true;

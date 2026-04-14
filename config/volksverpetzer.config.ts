@@ -63,6 +63,8 @@ const extraConfig: ExtraConfigType = {
       note: "Spende",
     },
     merchantIdentifier: "merchant.volksverpetzer.de",
+    stripePublishableKey:
+      "pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH", // cspell:disable-line
     steady: "https://steadyhq.com/volksverpetzer",
     support: "https://www.volksverpetzer.de/unterstutzen/",
     paypal: "https://www.paypal.com/donate/?hosted_button_id=8LXQZGF3BDWVU",
