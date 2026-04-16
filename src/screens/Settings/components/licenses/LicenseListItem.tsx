@@ -5,7 +5,8 @@ import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
-import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { isDarkMode } from "#/helpers/utils/color";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
 
@@ -36,7 +37,7 @@ const LicensesListItem = (
   Properties: LicensesListItemProperties,
 ): JSX.Element => {
   const colorScheme = useAppColorScheme();
-  const isDark = colorScheme === ColorScheme.dark;
+  const isDark = isDarkMode(colorScheme);
   const styles = getStyles(isDark);
   const textColor = isDark ? "#e5e7eb" : "#34495e";
   const iconColor = textColor;
@@ -102,8 +103,7 @@ const LicensesListItem = (
 
 const Link = (properties: LinkProperties) => {
   const colorScheme = useAppColorScheme();
-  const isDark = colorScheme === ColorScheme.dark;
-  const defaultColor = isDark ? "#e5e7eb" : "#34495e";
+  const defaultColor = isDarkMode(colorScheme) ? "#e5e7eb" : "#34495e";
 
   return (
     <UiText

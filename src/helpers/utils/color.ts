@@ -1,6 +1,8 @@
 import Colors from "#/constants/Colors";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 
+export const isDarkMode = (mode: AppColorScheme) => mode === "dark";
+
 /**
  * Converts a hex color string into its RGB components.
  * Supports shorthand (#abc) and full (#aabbcc) formats.

@@ -5,7 +5,8 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { ReportStatusIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
 import API from "#/helpers/network/ServerAPI";
-import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { isDarkMode } from "#/helpers/utils/color";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatusResponse, StoredReport } from "#/types";
 
 /**
@@ -15,22 +16,21 @@ const ReportStatusListItem = (props: StoredReport) => {
   const { id } = props;
   const colorScheme = useAppColorScheme();
 
-  const colors =
-    colorScheme === ColorScheme.dark
-      ? {
-          text: "#FFFFFF",
-          posted: "#34D399",
-          error: "#F87171",
-          pending: "#9CA3AF",
-          activity: "#FFFFFF",
-        }
-      : {
-          text: "#000000",
-          posted: "#059669",
-          error: "#EF4444",
-          pending: "#6B7280",
-          activity: "#000000",
-        };
+  const colors = isDarkMode(colorScheme)
+    ? {
+        text: "#FFFFFF",
+        posted: "#34D399",
+        error: "#F87171",
+        pending: "#9CA3AF",
+        activity: "#FFFFFF",
+      }
+    : {
+        text: "#000000",
+        posted: "#059669",
+        error: "#EF4444",
+        pending: "#6B7280",
+        activity: "#000000",
+      };
 
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<string>("");
