@@ -69,21 +69,21 @@ export default {
       "https://github.com/react-native-async-storage/async-storage/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/bottom-tabs@7.15.5": {
+  "@react-navigation/bottom-tabs@7.15.9": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/native@7.1.33": {
+  "@react-navigation/native@7.2.2": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@stripe/stripe-react-native@0.58.0": {
+  "@stripe/stripe-react-native@0.64.0": {
     licenses: "MIT",
     repository: "https://github.com/stripe/stripe-react-native",
     licenseUrl:
@@ -284,7 +284,7 @@ export default {
     licenseUrl: "https://github.com/lodash/lodash/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-dom@19.2.0": {
+  "react-dom@19.2.5": {
     licenses: "MIT",
     repository: "https://github.com/facebook/react",
     licenseUrl: "https://github.com/facebook/react/raw/master/LICENSE",
@@ -339,7 +339,7 @@ export default {
       "https://github.com/software-mansion/react-native-screens/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native-svg@15.15.3": {
+  "react-native-svg@15.15.4": {
     licenses: "MIT",
     repository: "https://github.com/react-native-community/react-native-svg",
     licenseUrl:
@@ -367,7 +367,7 @@ export default {
       "https://github.com/necolas/react-native-web/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native-webview@13.16.0": {
+  "react-native-webview@13.16.1": {
     licenses: "MIT",
     repository: "https://github.com/react-native-webview/react-native-webview",
     licenseUrl:
@@ -387,7 +387,7 @@ export default {
     licenseUrl: "https://github.com/facebook/react-native/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react@19.2.0": {
+  "react@19.2.5": {
     licenses: "MIT",
     repository: "https://github.com/facebook/react",
     licenseUrl: "https://github.com/facebook/react/raw/master/LICENSE",
