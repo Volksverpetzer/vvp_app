@@ -3,6 +3,8 @@ import { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
+import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MemoryGame from "#/screens/Games/Memory";
 import type { DisinfoPair } from "#/types";
 
@@ -11,6 +13,7 @@ type GameParameters = {
 };
 
 const GameScreen = () => {
+  const colorScheme = useAppColorScheme();
   const { gameId } = useLocalSearchParams<GameParameters>();
   const [level, setLevel] = useState<number>(1);
 
@@ -71,7 +74,12 @@ const GameScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: Colors[colorScheme].background },
+      ]}
+    >
       <UiText style={styles.title}>Memory-Spiel: {gameId}</UiText>
       <View style={styles.levelContainer}>
         <UiText style={styles.levelText}>Wählen Sie Ihr Level:</UiText>
@@ -116,7 +124,6 @@ const styles = StyleSheet.create({
   backLink: { color: "#fff", fontSize: 16 },
   container: {
     alignItems: "center",
-    backgroundColor: "#fff",
     flex: 1,
     padding: 10,
   },

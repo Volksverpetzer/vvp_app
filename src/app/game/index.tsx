@@ -1,9 +1,18 @@
 import { Link } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+
 const HomeScreen = () => {
+  const colorScheme = useAppColorScheme();
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: Colors[colorScheme].background },
+      ]}
+    >
       <Text style={styles.title}>Willkommen zum Memory-Spiel</Text>
       <Text style={styles.description}>
         Erleben Sie verschiedene Memory-Spiele, bei denen Sie z. B.
@@ -30,7 +39,6 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    backgroundColor: "#fff",
     flex: 1,
     justifyContent: "center",
     padding: 20,
