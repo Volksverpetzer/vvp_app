@@ -18,11 +18,15 @@ pnpm check            # Both type check and spell check
 
 # Tests
 pnpm test             # Jest (all tests)
-pnpm test -- --testPathPattern=IframeRenderer  # Run single test file
+pnpm test -- --testPathPattern=IframeRenderer  # Run single test file (by pattern)
+pnpm test -- path/to/test.test.ts  # Run a single test file by path (Jest)
 
 # EAS Builds
 pnpm android:local    # Local APK build
 pnpm android:submit   # Build + submit to store
+
+# F-Droid / FOSS build (run prepare:fdroid first to exclude proprietary modules from autolinking)
+pnpm prepare:fdroid && BUILD_FOSS_ONLY=true npx expo prebuild --platform android --no-install
 ```
 
 ## Architecture
@@ -48,7 +52,8 @@ src/
 │   ├── provider/     # React Context providers
 │   └── utils/        # Shared utilities
 ├── hooks/            # Custom React hooks
-└── constants/        # Colors and app-wide constants
+├── constants/        # Colors and app-wide constants
+└── types/            # Shared TypeScript type definitions
 __tests__/            # Jest tests mirroring src/ structure
 config/               # Per-variant config (volksverpetzer.config, mimikama.config)
 plugins/              # Custom Expo config plugins
@@ -60,7 +65,8 @@ Context API + AsyncStorage — no Redux or Zustand.
 
 - `SettingsProvider` — user content/advanced settings, auto-synced to AsyncStorage
 - `BadgeProvider` — tab badge counts, persisted via `BadgeStore`
-- All stores extend a `BaseStore` wrapper around `@react-native-async-storage/async-storage`
+- Stores in `src/helpers/Stores/*` are plain objects that call `BaseStore.*` helpers around `@react-native-async-storage/async-storage`
+  - Implementation lives in `src/helpers/Storage.ts`, which exports the helper used by `src/helpers/Stores/*`.
 
 ### Navigation
 
@@ -80,6 +86,33 @@ Defined in `babel.config.cts` and `tsconfig.json`:
 - `#/*` → `src/*`
 - `#assets/*` → `assets/*`
 - `#tests/*` → `__tests__/*`
+
+## Quick PR checklist for agents
+
+- Run lint and autofix locally: `pnpm lint:fix`
+- Run type checks and spelling: `pnpm check`
+- Run tests or targeted tests: `pnpm test -- path/to/changed.test.ts`
+- Ensure no secret files are added (CI runs Gitleaks); do not commit new `google-services.json` files.
+
+## Creating a New Release
+
+When bumping the app version for a new release, update **both** fields in `package.json`:
+
+```json
+{
+  "version": "X.Y.Z",
+  "versionCode": 2026041701
+}
+```
+
+**`versionCode`** must be a unique integer that is strictly greater than the previous one. The fdroid bot reads both fields from `package.json` via the `UpdateCheckData` directive in the metadata file. If `versionCode` is missing or not incremented, fdroid will not detect the new release.
+
+A good convention is a date-based code like `YYYYMMDDNN` (e.g. `2026041701` for the first release on 2026-04-17).
+
+After updating `package.json`, also update the fdroid metadata file (`metadata/de.volksverpetzer.app.yml`) in the **separate `fdroiddata` repository**:
+
+- Add a new entry under `Builds:` with the matching `versionName` and `versionCode`
+- Update `CurrentVersion` and `CurrentVersionCode` at the bottom
 
 ### Code Style
 
