@@ -106,6 +106,9 @@ pnpm start
 pnpm android
 pnpm ios
 pnpm web
+
+# F-Droid / FOSS prebuild (prepare:fdroid excludes proprietary modules from autolinking)
+pnpm prepare:fdroid && BUILD_FOSS_ONLY=true npx expo prebuild --platform android --no-install
 ```
 
 ### Testing
@@ -165,7 +168,7 @@ describe("ComponentName", () => {
 
 ## API and Data Fetching
 
-- Helper functions for fetching are in `src/helpers/`
+- Helper functions for fetching are in `src/screens/Home/fetchers/`
 - Analytics functions are in `src/helpers/network/Analytics.ts` (and related files in `src/helpers/network/`)
 - Feed fetchers (WordPress, Instagram, TikTok, YouTube, Bluesky, etc.) are in `src/screens/Home/fetchers/`
 - All fetchers return normalized Post objects

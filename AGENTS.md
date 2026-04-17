@@ -19,9 +19,10 @@ Key directories / responsibilities
 - `src/app/` — router-backed screens (expo-router). Modify routes here.
 - `src/components/` — UI building blocks (animations, buttons, popups). Components are arrow functions and exported default.
 - `src/helpers/` — utilities, network clients (`network/ServerAPI.ts`, `network/WordPressAPI.ts`), providers, stores.
-- `src/screens/Home/fetchers/` — per-feed fetchers (WordPress, Instagram, YouTube, Bluesky, etc.). All fetchers normalize to `Post` objects.
 - `src/screens/` — full-screen feature implementations (e.g. `Home/` with per-feed fetchers).
+  - `src/screens/Home/fetchers/` — per-feed fetchers (WordPress, Instagram, YouTube, Bluesky, etc.). All normalize to `Post` objects.
 - `src/hooks/` — reusable hooks (eg. notification & feed hooks).
+- `src/types/` — shared TypeScript type definitions.
 - `config/` — app-variant configs (`volksverpetzer.config.ts`, `mimikama.config.ts`).
 
 Important files to read before changing behavior (examples)
@@ -30,7 +31,7 @@ Important files to read before changing behavior (examples)
 - `app.config.ts` — picks variant config via `APP` env var.
 - `src/helpers/AppImages.ts` — central registry for variant-specific assets; guard against `null` values.
 - `src/screens/Home/fetchers/` — all feed fetchers; they return normalized `Post` objects.
-- `src/helpers/network/Analytics` — analytics helpers.
+- `src/helpers/network/Analytics.ts` — analytics helpers.
 - `tsconfig.json` — `strict: false` (type checking is relaxed in this repo).
 - `jest.config.ts` and `jest-setup.ts` — how tests are configured (use `jest-expo`).
 
@@ -49,7 +50,8 @@ Dev workflows & commands (copyable)
 - Tests: `pnpm test` (Jest / jest-expo)
 - Type check & spelling: `pnpm check` (`tsc --noEmit` + cspell)
 - Lint: `pnpm lint` and auto-fix: `pnpm lint:fix`
-- F-Droid / FOSS prebuild: `BUILD_FOSS_ONLY=true npx expo prebuild --platform android --no-install`
+- F-Droid / FOSS prebuild: `pnpm prepare:fdroid && BUILD_FOSS_ONLY=true npx expo prebuild --platform android --no-install`
+  (The `prepare:fdroid` step writes autolinking exclusions for `expo-notifications` and `@stripe/stripe-react-native` into `package.json` so proprietary modules are not linked during local prebuild.)
 
 Integration points & external dependencies to be careful about
 
@@ -87,6 +89,44 @@ Quick references (paths and examples)
 - Analytics: `src/helpers/network/Analytics.ts` (and related files in `src/helpers/network/`)
 - Tests & mocks: `__tests__/` and `__tests__/mocks/`
 - Build scripts: `scripts/prepare-fdroid.mjs` and `package.json` scripts
+
+Quick examples & gotchas
+
+- Preferred import (use path aliases):
+
+  ```ts
+  // Good: uses path alias
+  import BaseStore from "#/helpers/Storage";
+
+  // Avoid deep relatives
+  // import BaseStore from "../../../../helpers/Storage";
+  ```
+
+- Guard variant assets from `AppImages` (some entries can be `null`):
+
+  ```tsx
+  import { AppImages } from "#/helpers/AppImages";
+
+  if (!AppImages.loadingAnimation) return null;
+  <Image source={AppImages.loadingAnimation} />;
+  ```
+
+- Common gotchas
+  - Changing native plugins or `app.config.ts` may require `expo prebuild` and native rebuilds — test on a real device/emulator.
+  - FOSS mode (`BUILD_FOSS_ONLY=true`) strips certain native modules (e.g. `expo-notifications`) — check `plugins/` for conditional logic before editing notification code.
+  - Husky + lint-staged run pre-commit; expect formatting and import sorting to be applied automatically on commit.
+
+Quick PR checklist for agents
+
+- Run lint autofix: `pnpm lint:fix`
+- Run type checks and spelling: `pnpm check`
+- Run tests (or targeted tests): `pnpm test -- path/to/changed.test.ts` or `pnpm test -- --testPathPattern=SomePattern`
+- Ensure no secret files are added (CI runs Gitleaks); do not commit `google-services.json` or other credentials.
+
+Tests to run after changing network / fetcher code
+
+- `__tests__/helpers/Networking.test.ts`
+- Any tests under `__tests__/helpers/` and `__tests__/screens/Home/fetchers/` that relate to the code you changed
 
 Limitations of this doc
 
