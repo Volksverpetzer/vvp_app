@@ -45,13 +45,14 @@ const ReportScreen = () => {
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
   const {
-    accent: highlight,
+    accent,
     errorBackground: errorColor,
     muted,
-    background: inputBackground,
+    inputBackground,
     surface: backgroundColor,
     text: textColor,
   } = Colors[colorScheme];
+  const pressedButtonColor = inputBackground;
 
   // Memoized local styles to avoid re-creating on every render
   const localStyles = useMemo(
@@ -74,7 +75,7 @@ const ReportScreen = () => {
         submitButton: {
           alignItems: "center",
           alignSelf: "center",
-          backgroundColor: highlight,
+          backgroundColor: accent,
           borderRadius: 40,
           justifyContent: "center",
           margin: 20,
@@ -85,7 +86,7 @@ const ReportScreen = () => {
           backgroundColor: muted,
         },
       }),
-    [inputBackground, highlight, muted, errorColor],
+    [inputBackground, accent, muted, errorColor],
   );
 
   // Populate initial fields and load reports on component mount or when params change
@@ -222,7 +223,8 @@ const ReportScreen = () => {
             style={({ pressed }) => [
               localStyles.submitButton,
               !buttonEnabled && localStyles.submitButtonDisabled,
-              pressed && buttonEnabled && { backgroundColor: inputBackground },
+              pressed &&
+                buttonEnabled && { backgroundColor: pressedButtonColor },
             ]}
           >
             <UiText

@@ -77,7 +77,7 @@ const SettingsList = (properties: SettingsListProperties) => {
             thumbColor: setting.value ? corporate : iconMuted,
             trackColor: {
               false: isDarkMode(colorScheme) ? textMuted : inputBackground,
-              true: isDarkMode(colorScheme) ? primaryTint : primaryTint,
+              true: primaryTint,
             },
             disabled,
             onValueChange: (value: boolean) => {
