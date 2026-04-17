@@ -6,6 +6,7 @@ import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
+import { isDarkMode } from "#/helpers/utils/color";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ContentSettingType, SettingType } from "#/types";
@@ -27,6 +28,7 @@ interface SettingsListProperties {
 // See https://stackoverflow.com/a/73313139
 type ExtendedSwitchProps = ComponentProps<typeof Switch> & {
   activeThumbColor?: string;
+  activeTrackColor?: string;
 };
 
 const SettingsList = (properties: SettingsListProperties) => {
@@ -36,8 +38,15 @@ const SettingsList = (properties: SettingsListProperties) => {
     setDisabled(false);
   }, [properties.settings, update]);
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
-  const corporateTint = Colors[colorScheme].corporateTint;
+  const {
+    corporate,
+    corporateTint,
+    grayedOutText,
+    tabIconDefault,
+    secondaryBackground,
+    inputBackground,
+    tabIconSelected,
+  } = Colors[colorScheme];
   const activeSettings = getEnabledFeeds(Config.feeds);
 
   return (
@@ -60,10 +69,16 @@ const SettingsList = (properties: SettingsListProperties) => {
           // (like `activeThumbColor`) without TypeScript complaining about them.
           const switchProps: ExtendedSwitchProps = {
             testID: "settingSwitch",
-            trackColor: { false: "#E6E6E6", true: "#E6E6E6" },
-            activeThumbColor: setting.value ? corporate : "#C4C4C4",
-            thumbColor: setting.value ? corporate : "#C4C4C4",
-            ios_backgroundColor: corporateTint,
+            activeTrackColor: corporateTint,
+            activeThumbColor: corporate,
+            ios_backgroundColor: isDarkMode(colorScheme) // ios only
+              ? secondaryBackground
+              : tabIconSelected,
+            thumbColor: setting.value ? corporate : tabIconDefault,
+            trackColor: {
+              false: isDarkMode(colorScheme) ? grayedOutText : inputBackground,
+              true: isDarkMode(colorScheme) ? corporateTint : corporateTint,
+            },
             disabled,
             onValueChange: (value: boolean) => {
               setDisabled(true);
