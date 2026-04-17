@@ -20,6 +20,7 @@ Key directories / responsibilities
 - `src/components/` — UI building blocks (animations, buttons, popups). Components are arrow functions and exported default.
 - `src/helpers/` — utilities, network clients (`network/ServerAPI.ts`, `network/WordPressAPI.ts`), providers, stores.
 - `src/screens/Home/fetchers/` — per-feed fetchers (WordPress, Instagram, YouTube, Bluesky, etc.). All fetchers normalize to `Post` objects.
+- `src/screens/` — full-screen feature implementations (e.g. `Home/` with per-feed fetchers).
 - `src/hooks/` — reusable hooks (eg. notification & feed hooks).
 - `config/` — app-variant configs (`volksverpetzer.config.ts`, `mimikama.config.ts`).
 
@@ -37,7 +38,7 @@ Project-specific conventions (do these exactly)
 
 - Components: use arrow functions and PascalCase filenames (example patterns present across `src/components/*`).
 - Indentation: 2 spaces (see `.editorconfig` + README). Keep imports sorted via Prettier plugin `@trivago/prettier-plugin-sort-imports`.
-- Import order (enforced by tooling): 1) `@core/`, 2) `@server/`, 3) `@ui/`, 4) relative imports (`./` / `../`).
+- Import order: sorted automatically by `@trivago/prettier-plugin-sort-imports` on commit; use path aliases (`#/*`) over deep relative imports.
 - Tests live in `__tests__/` and mirror `src/` structure (use `@testing-library/react-native`).
 
 Dev workflows & commands (copyable)
@@ -82,7 +83,7 @@ Quick references (paths and examples)
 
 - Variant config: `config/volksverpetzer.config.ts`
 - Asset registry: `src/helpers/AppImages.ts`
-- Fetchers: `src/helpers/fetchers/*` (normalizes Post objects)
+- Fetchers: `src/screens/Home/fetchers/*` (normalizes Post objects)
 - Analytics: `src/helpers/Networking/Analytics/*`
 - Tests & mocks: `__tests__/` and `__tests__/mocks/`
 - Build scripts: `scripts/prepare-fdroid.mjs` and `package.json` scripts

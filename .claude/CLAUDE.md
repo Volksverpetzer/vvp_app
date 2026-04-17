@@ -23,6 +23,9 @@ pnpm test -- --testPathPattern=IframeRenderer  # Run single test file
 # EAS Builds
 pnpm android:local    # Local APK build
 pnpm android:submit   # Build + submit to store
+
+# F-Droid / FOSS build
+BUILD_FOSS_ONLY=true npx expo prebuild --platform android --no-install
 ```
 
 ## Architecture
