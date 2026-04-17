@@ -19,7 +19,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 const TabLayout = () => {
   const { badgeState } = useBadge();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
   const actionsActive = Config.enableActions;
   const engagementActive = Config.enableEngagement;
 
@@ -28,7 +28,7 @@ const TabLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: Colors[colorScheme].text,
-        tabBarInactiveTintColor: Colors[colorScheme].tabIconDefault,
+        tabBarInactiveTintColor: Colors[colorScheme].iconMuted,
         tabBarStyle: {
           backgroundColor: Colors[colorScheme].background,
         },

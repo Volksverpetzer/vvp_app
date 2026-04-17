@@ -52,7 +52,7 @@ const AppFrame = ({ children }: PropsWithChildren) => {
 
   const isSecondaryBg = segments.some((s) => SECONDARY_BG_SCREENS.includes(s));
   const backgroundColor = isSecondaryBg
-    ? Colors[colorScheme].secondaryBackground
+    ? Colors[colorScheme].surface
     : Colors[colorScheme].background;
 
   useEffect(() => {

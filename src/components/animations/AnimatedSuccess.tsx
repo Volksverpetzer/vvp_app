@@ -81,7 +81,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
       <Animated.View
         style={[
           {
-            backgroundColor: Colors[colorScheme].highlight,
+            backgroundColor: Colors[colorScheme].accent,
             borderRadius: 10,
             position: "absolute",
             left: screenWidth / 2,

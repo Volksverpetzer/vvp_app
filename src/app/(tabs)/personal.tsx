@@ -23,9 +23,9 @@ const PersonalTab = () => {
 
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
-  const corporateColor = Colors[colorScheme].corporate;
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
-  const tabIconColor = Colors[colorScheme].tabIconDefault;
+  const corporateColor = Colors[colorScheme].primary;
+  const backgroundColor = Colors[colorScheme].surface;
+  const tabIconColor = Colors[colorScheme].iconMuted;
 
   const HEADER_HEIGHT = 200;
   const MIN_HEIGHT = 110;

@@ -43,7 +43,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
   } = properties;
 
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].background;
   const router = useRouter();
 

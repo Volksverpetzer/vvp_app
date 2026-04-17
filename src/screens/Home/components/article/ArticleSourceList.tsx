@@ -28,7 +28,7 @@ export const ArticleSourceList = ({
   const [open, setOpen] = useState(false);
   const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
 
   useEffect(() => {
     if (!Config.enableEngagement) {

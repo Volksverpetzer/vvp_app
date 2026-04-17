@@ -27,8 +27,8 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   const { wpUrl } = Config;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
-  const grey = Colors[colorScheme].grayedOutText;
+  const corporate = Colors[colorScheme].primary;
+  const grey = Colors[colorScheme].textMuted;
   const postId = uri.split("/app.bsky.feed.post/")[1];
   const htmlPattern = /<[^>]+>/g;
 
@@ -87,7 +87,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
             onPress={() => onLinkPress(url, router, wpUrl)}
             hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
           >
-            <ExternalLinkIcon color={Colors[colorScheme].tabIconDefault} />
+            <ExternalLinkIcon color={Colors[colorScheme].iconMuted} />
           </TouchableOpacity>
 
           <BlueskyPostHeader author={author} />

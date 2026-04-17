@@ -45,11 +45,11 @@ const ReportScreen = () => {
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
   const {
-    highlight,
+    accent: highlight,
     errorBackground: errorColor,
-    grayedOut,
+    muted,
     background: inputBackground,
-    secondaryBackground: backgroundColor,
+    surface: backgroundColor,
     text: textColor,
   } = Colors[colorScheme];
 
@@ -82,10 +82,10 @@ const ReportScreen = () => {
           width: 120,
         },
         submitButtonDisabled: {
-          backgroundColor: grayedOut,
+          backgroundColor: muted,
         },
       }),
-    [inputBackground, highlight, grayedOut, errorColor],
+    [inputBackground, highlight, muted, errorColor],
   );
 
   // Populate initial fields and load reports on component mount or when params change

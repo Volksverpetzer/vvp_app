@@ -34,7 +34,7 @@ const HomeScreen = () => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
 
   const HEADER_HEIGHT = 220;
 

@@ -47,7 +47,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const scrollReference = useRef<ScrollView>(null);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].background;
 
   let fullRead = false;

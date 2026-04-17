@@ -23,7 +23,7 @@ export const hexToRgb = (hex: string): [number, number, number] => {
  * @returns The tag styles
  */
 export const getTagStyles = (colorScheme: AppColorScheme) => {
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
   const textColor = Colors[colorScheme].text;
 
   return {

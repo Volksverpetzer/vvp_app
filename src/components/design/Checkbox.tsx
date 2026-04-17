@@ -20,7 +20,7 @@ const Checkbox = (properties: CheckboxProperties) => {
   };
 
   const colorScheme = useAppColorScheme();
-  const highlight = Colors[colorScheme].highlight;
+  const highlight = Colors[colorScheme].accent;
 
   const style = useMemo(() => ({ borderColor: highlight }), [highlight]);
   const checkedStyle = useMemo(

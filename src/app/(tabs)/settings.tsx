@@ -50,9 +50,9 @@ const SettingsScreen = () => {
     setAdvancedSettings,
   } = useContext(SettingsContext);
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
-  const secondaryBackground = Colors[colorScheme].background;
+  const corporate = Colors[colorScheme].primary;
+  const backgroundColor = Colors[colorScheme].surface;
+  const surface = Colors[colorScheme].background;
 
   const HEADER_HEIGHT = 150;
 
@@ -90,7 +90,7 @@ const SettingsScreen = () => {
   };
 
   const pressableStyle = ({ pressed }: { pressed: boolean }) => [
-    pressed && { backgroundColor: secondaryBackground },
+    pressed && { backgroundColor: surface },
   ];
 
   useEffect(() => {
