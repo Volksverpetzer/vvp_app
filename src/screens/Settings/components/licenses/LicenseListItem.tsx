@@ -5,7 +5,7 @@ import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
-import { isDarkMode } from "#/helpers/utils/color";
+import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
@@ -37,9 +37,8 @@ const LicensesListItem = (
   Properties: LicensesListItemProperties,
 ): JSX.Element => {
   const colorScheme = useAppColorScheme();
-  const isDark = isDarkMode(colorScheme);
-  const styles = getStyles(isDark);
-  const textColor = isDark ? "#e5e7eb" : "#34495e";
+  const styles = getStyles(Colors[colorScheme].secondaryBackground);
+  const textColor = Colors[colorScheme].text;
   const iconColor = textColor;
   const {
     image,
@@ -103,7 +102,7 @@ const LicensesListItem = (
 
 const Link = (properties: LinkProperties) => {
   const colorScheme = useAppColorScheme();
-  const defaultColor = isDarkMode(colorScheme) ? "#e5e7eb" : "#34495e";
+  const defaultColor = Colors[colorScheme].text;
 
   return (
     <UiText
@@ -116,11 +115,11 @@ const Link = (properties: LinkProperties) => {
   );
 };
 
-const getStyles = (isDark: boolean) =>
+const getStyles = (cardBackground: string) =>
   StyleSheet.create({
     card: {
       alignItems: "stretch",
-      backgroundColor: isDark ? "#111827" : "#fff",
+      backgroundColor: cardBackground,
       borderRadius: 4,
       flexDirection: "row",
       overflow: "hidden",
