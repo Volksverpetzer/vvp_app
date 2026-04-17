@@ -10,6 +10,12 @@ pkg.expo.autolinking.android ??= {};
 
 const android = pkg.expo.autolinking.android;
 
+// Build all Expo Android modules from Kotlin source instead of using the
+// pre-built .aar files shipped in local-maven-repo/. Required for fdroid
+// compliance ("build from source"). Pattern: same approach used by Ladefuchs
+// (app.ladefuchs.android) since their 3.3.3 release.
+android.buildFromSource = [".*"];
+
 // Exclude packages that bundle proprietary Google/Firebase deps.
 // The autolinking.android.exclude field in app.config.ts is only respected by
 // EAS cloud builds, not by local `expo prebuild`. Writing to package.json here
