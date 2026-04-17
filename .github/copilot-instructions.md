@@ -6,7 +6,7 @@ This repository contains the official React Native mobile app for Volksverpetzer
 
 - **Framework**: React Native 0.83 with Expo SDK 55
 - **Language**: TypeScript (with relaxed strict mode)
-- **Package Manager**: pnpm (v10.26.0)
+- **Package Manager**: pnpm (v10.33.0)
 - **Testing**: Jest with jest-expo preset
 - **Routing**: expo-router
 - **State Management**: React hooks and context

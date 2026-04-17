@@ -65,8 +65,8 @@ Context API + AsyncStorage — no Redux or Zustand.
 
 - `SettingsProvider` — user content/advanced settings, auto-synced to AsyncStorage
 - `BadgeProvider` — tab badge counts, persisted via `BadgeStore`
-- All stores extend a `BaseStore` wrapper around `@react-native-async-storage/async-storage`
-  - Implementation: see `src/helpers/Storage.ts` (exported helper used as BaseStore by `src/helpers/Stores/*`).
+- Stores in `src/helpers/Stores/*` are plain objects that call `BaseStore.*` helpers around `@react-native-async-storage/async-storage`
+  - Implementation lives in `src/helpers/Storage.ts`, which exports the helper used by `src/helpers/Stores/*`.
 
 ### Navigation
 
