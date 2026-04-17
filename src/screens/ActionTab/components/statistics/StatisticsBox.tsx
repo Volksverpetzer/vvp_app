@@ -18,7 +18,7 @@ const StatisticsBox = ({
   valueKey,
   descriptionMap,
 }: StatsBoxProperties) => {
-  const corporateTint = Colors.dark.corporateTint;
+  const primaryTint = Colors.dark.primaryTint;
 
   return (
     <View
@@ -26,7 +26,7 @@ const StatisticsBox = ({
       style={{
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor: corporateTint,
+        backgroundColor: primaryTint,
         padding: 10,
         borderRadius: 10,
       }}

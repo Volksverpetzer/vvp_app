@@ -39,13 +39,13 @@ const SettingsList = (properties: SettingsListProperties) => {
   }, [properties.settings, update]);
   const colorScheme = useAppColorScheme();
   const {
-    corporate,
-    corporateTint,
-    grayedOutText,
-    tabIconDefault,
-    secondaryBackground,
+    primary: corporate,
+    primaryTint,
+    textMuted,
+    iconMuted,
+    surface,
     inputBackground,
-    tabIconSelected,
+    iconOnPrimary,
   } = Colors[colorScheme];
   const activeSettings = getEnabledFeeds(Config.feeds);
 
@@ -69,15 +69,15 @@ const SettingsList = (properties: SettingsListProperties) => {
           // (like `activeThumbColor`) without TypeScript complaining about them.
           const switchProps: ExtendedSwitchProps = {
             testID: "settingSwitch",
-            activeTrackColor: corporateTint,
+            activeTrackColor: primaryTint,
             activeThumbColor: corporate,
             ios_backgroundColor: isDarkMode(colorScheme) // ios only
-              ? secondaryBackground
-              : tabIconSelected,
-            thumbColor: setting.value ? corporate : tabIconDefault,
+              ? surface
+              : iconOnPrimary,
+            thumbColor: setting.value ? corporate : iconMuted,
             trackColor: {
-              false: isDarkMode(colorScheme) ? grayedOutText : inputBackground,
-              true: isDarkMode(colorScheme) ? corporateTint : corporateTint,
+              false: isDarkMode(colorScheme) ? textMuted : inputBackground,
+              true: primaryTint,
             },
             disabled,
             onValueChange: (value: boolean) => {

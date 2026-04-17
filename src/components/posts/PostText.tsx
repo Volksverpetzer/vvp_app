@@ -21,7 +21,7 @@ export const PostText = ({ feedViewPost, uri }: Props) => {
   const record = feedViewPost?.post?.record;
 
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
 
   if (!hasText(record)) {
     return null;

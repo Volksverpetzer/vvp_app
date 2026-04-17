@@ -31,7 +31,7 @@ export const useAppColorScheme = (): AppColorScheme => {
  */
 export const useCorporateColor = () => {
   const colorScheme = useAppColorScheme();
-  return Colors[colorScheme].corporate;
+  return Colors[colorScheme].primary;
 };
 
 export const useReverseColorScheme = () => {

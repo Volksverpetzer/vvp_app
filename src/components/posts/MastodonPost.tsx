@@ -32,8 +32,8 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
   const { account, content, answers, created_at, uri } = post;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
-  const grey = Colors[colorScheme].grayedOutText;
+  const corporate = Colors[colorScheme].primary;
+  const grey = Colors[colorScheme].textMuted;
   const htmlPattern = /<[^>]+>/g;
   const fulltext = decode(
     content.replaceAll("</p>", "\n").replaceAll(htmlPattern, ""),

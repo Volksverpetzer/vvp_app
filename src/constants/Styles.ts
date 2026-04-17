@@ -4,7 +4,7 @@ import Colors from "./Colors";
 
 export const styles = StyleSheet.create({
   badge: {
-    backgroundColor: Colors.light.highlight,
+    backgroundColor: Colors.light.accent,
     borderRadius: 4,
     height: 8,
     position: "absolute",

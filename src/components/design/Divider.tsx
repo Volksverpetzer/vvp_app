@@ -19,7 +19,7 @@ const Divider = ({
   style,
 }: DividerProps) => {
   const colorScheme = useAppColorScheme();
-  const color = Colors[colorScheme].corporate;
+  const color = Colors[colorScheme].primary;
   return (
     <View
       style={[

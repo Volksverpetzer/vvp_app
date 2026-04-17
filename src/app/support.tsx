@@ -15,8 +15,8 @@ const SupportScreen = () => {
   const wpUrl = Config.wpUrl;
   const supportUrl = `${wpUrl}/unterstutzen` satisfies HttpsUrl;
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
-  const corporate = Colors[colorScheme].corporate;
+  const backgroundColor = Colors[colorScheme].surface;
+  const corporate = Colors[colorScheme].primary;
 
   const HEADER_HEIGHT = 50;
 

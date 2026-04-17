@@ -12,7 +12,7 @@ import type { ClaimProperties } from "#/types";
  */
 const ClaimPost = (properties: ClaimProperties) => {
   const colorScheme = useAppColorScheme();
-  const color = Colors[colorScheme].grayedOutText;
+  const color = Colors[colorScheme].textMuted;
   const handleSelectClaim = () => {
     WebBrowser.openBrowserAsync(properties.claimReview[0].url);
   };

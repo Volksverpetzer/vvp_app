@@ -46,10 +46,10 @@ const RegionMap = () => {
   }, []);
   const { width } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors.light.corporate;
-  const corporateColor = Colors.dark.corporate;
-  const corporateTint = Colors.dark.corporateTint;
-  const highlight = Colors[colorScheme].highlight;
+  const corporate = Colors.light.primary;
+  const corporateColor = Colors.dark.primary;
+  const primaryTint = Colors.dark.primaryTint;
+  const highlight = Colors[colorScheme].accent;
 
   return (
     <View
@@ -58,7 +58,7 @@ const RegionMap = () => {
         justifyContent: "space-between",
         marginTop: -70,
         paddingTop: 90,
-        backgroundColor: corporateTint,
+        backgroundColor: primaryTint,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         width,
@@ -67,7 +67,7 @@ const RegionMap = () => {
         paddingHorizontal: 30,
       }}
     >
-      <View style={{ backgroundColor: corporateTint, flex: 1 }}>
+      <View style={{ backgroundColor: primaryTint, flex: 1 }}>
         <Image
           source={{
             uri: `${Config.apiUrl}/proxy/map?week=${weekNumber}`,
@@ -81,7 +81,7 @@ const RegionMap = () => {
           style={{
             width: "100%",
             aspectRatio: 3 / 4,
-            backgroundColor: corporateTint,
+            backgroundColor: primaryTint,
           }}
         />
         <Space size={20} />

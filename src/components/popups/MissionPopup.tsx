@@ -16,7 +16,7 @@ interface MissionPopupProperties {
 const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
   const router = useRouter();
   return (
     <Pressable

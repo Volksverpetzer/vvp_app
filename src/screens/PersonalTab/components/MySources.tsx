@@ -24,7 +24,7 @@ const MySources = () => {
   const wpUrl = Config.wpUrl;
 
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
   useFocusEffect(
     useCallback(() => {
       SourcesStore.getAllSources().then(setSources);

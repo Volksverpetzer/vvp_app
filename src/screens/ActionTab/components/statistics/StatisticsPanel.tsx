@@ -37,7 +37,7 @@ const StatisticsPanel = ({
   descriptionMap,
 }: StatsPanelProperties) => {
   const colorScheme = useAppColorScheme();
-  const grayedOut = Colors[colorScheme].grayedOut;
+  const muted = Colors[colorScheme].muted;
 
   return (
     <View style={{ ...styles.centered, width }}>
@@ -59,7 +59,7 @@ const StatisticsPanel = ({
           <UiText
             style={{
               fontSize: 12,
-              color: grayedOut,
+              color: muted,
               paddingLeft: 10,
               paddingBottom: 3,
               alignSelf: "flex-end",

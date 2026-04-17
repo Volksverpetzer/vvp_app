@@ -24,7 +24,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
   const { wpUrl } = Config;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
   const postId = uri.split("/app.bsky.feed.post/")[1];
   const htmlPattern = /<[^>]+>/g;
 
@@ -58,7 +58,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
           onPress={() => onLinkPress(url, router, wpUrl)}
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >
-          <ExternalLinkIcon color={Colors[colorScheme].tabIconDefault} />
+          <ExternalLinkIcon color={Colors[colorScheme].iconMuted} />
         </TouchableOpacity>
 
         <BlueskyPostHeader author={author} />

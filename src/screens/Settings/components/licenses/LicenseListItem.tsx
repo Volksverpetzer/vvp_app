@@ -37,7 +37,7 @@ const LicensesListItem = (
   Properties: LicensesListItemProperties,
 ): JSX.Element => {
   const colorScheme = useAppColorScheme();
-  const styles = getStyles(Colors[colorScheme].secondaryBackground);
+  const styles = getStyles(Colors[colorScheme].surface);
   const textColor = Colors[colorScheme].text;
   const iconColor = textColor;
   const {

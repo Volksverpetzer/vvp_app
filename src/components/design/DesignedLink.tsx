@@ -40,7 +40,7 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
       style={({ pressed }) => [
         {
           ...styles.row,
-          backgroundColor: pressed ? Colors[colorScheme].grayedOut : undefined,
+          backgroundColor: pressed ? Colors[colorScheme].muted : undefined,
           paddingVertical: 10,
           justifyContent: "flex-start",
           alignItems: "flex-start",
@@ -53,7 +53,7 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
         {properties.text}
       </Heading>
       <ExternalLinkIcon
-        color={Colors[colorScheme].tabIconDefault}
+        color={Colors[colorScheme].iconMuted}
         style={{ marginLeft: "auto" }}
       />
     </Pressable>

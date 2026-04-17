@@ -33,7 +33,7 @@ const AISearch = ({
   );
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
   const textColor = Colors[colorScheme].text;
 
   const renderItem = useCallback(

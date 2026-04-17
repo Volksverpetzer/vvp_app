@@ -17,10 +17,10 @@ import Parallelogram from "./Parallelogram";
 const AchievementComponent = () => {
   const [level, setLevel] = useState<number>(0);
   const [tasks, setTasks] = useState<TaskType[]>([]);
-  const corporate = Colors.dark.corporate;
-  const corporateColor = Colors.light.corporate;
+  const corporate = Colors.dark.primary;
+  const corporateColor = Colors.light.primary;
   const colorScheme = useAppColorScheme();
-  const highlight = Colors[colorScheme].highlight;
+  const highlight = Colors[colorScheme].accent;
   const backgroundColor = Colors[colorScheme].background;
 
   const updateLevelData = () => {
