@@ -93,11 +93,11 @@ When bumping the app version for a new release, update **both** fields in `packa
 "versionCode": XXXXXXXXXX,
 ```
 
-**`versionCode`** must be a unique integer that is strictly greater than the previous one. The fdroid bot reads both fields from `package.json` via the `UpdateCheckData` directive in `fdroiddata/metadata/de.volksverpetzer.app.yml`. If `versionCode` is missing or not incremented, fdroid will not detect the new release.
+**`versionCode`** must be a unique integer that is strictly greater than the previous one. The fdroid bot reads both fields from `package.json` via the `UpdateCheckData` directive in the metadata file. If `versionCode` is missing or not incremented, fdroid will not detect the new release.
 
 A good convention is a date-based code like `YYYYMMDDNN` (e.g. `2026041701` for the first release on 2026-04-17).
 
-After updating `package.json`, also update the fdroid metadata file (`fdroiddata/metadata/de.volksverpetzer.app.yml`):
+After updating `package.json`, also update the fdroid metadata file (`metadata/de.volksverpetzer.app.yml`) in the **separate `fdroiddata` repository**:
 
 - Add a new entry under `Builds:` with the matching `versionName` and `versionCode`
 - Update `CurrentVersion` and `CurrentVersionCode` at the bottom

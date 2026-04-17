@@ -30,7 +30,7 @@ Important files to read before changing behavior (examples)
 - `app.config.ts` — picks variant config via `APP` env var.
 - `src/helpers/AppImages.ts` — central registry for variant-specific assets; guard against `null` values.
 - `src/screens/Home/fetchers/` — all feed fetchers; they return normalized `Post` objects.
-- `src/helpers/Networking/Analytics` — analytics helpers.
+- `src/helpers/network/Analytics` — analytics helpers.
 - `tsconfig.json` — `strict: false` (type checking is relaxed in this repo).
 - `jest.config.ts` and `jest-setup.ts` — how tests are configured (use `jest-expo`).
 
@@ -54,8 +54,8 @@ Dev workflows & commands (copyable)
 Integration points & external dependencies to be careful about
 
 - Native / build plugins: `plugins/*.ts` and `expo` config in `app.config.ts`. Changing native modules or config may require `expo prebuild` / native rebuilds.
-- Google / Firebase config: `google-services.json` and `google-services-mimikama.json` exist in the repo — do NOT commit new secrets. CI uses Gitleaks.
-- Analytics & feeds: modify only in `src/helpers/Networking/` and `src/screens/Home/fetchers/` — these functions return normalized objects consumed app-wide.
+- Google / Firebase config: `google-services.json` / `google-services-mimikama.json` are **gitignored** and injected via env vars (e.g. `process.env.google_services`) locally and in CI. Never commit these files; CI uses Gitleaks to enforce this.
+- Analytics & feeds: modify only in `src/helpers/network/` and `src/screens/Home/fetchers/` — these functions return normalized objects consumed app-wide.
 
 Path aliases (defined in `babel.config.cts` and `tsconfig.json`)
 
@@ -66,7 +66,7 @@ Path aliases (defined in `babel.config.cts` and `tsconfig.json`)
 Creating a new release
 
 - Update **both** `version` (SemVer) and `versionCode` (integer) in `package.json`. `versionCode` must be strictly greater than the previous value — use `YYYYMMDDNN` convention (e.g. `2026041701`).
-- The F-Droid bot reads both fields via `fdroiddata/metadata/de.volksverpetzer.app.yml`. Also update that file: add a new `Builds:` entry and update `CurrentVersion` / `CurrentVersionCode` at the bottom.
+- The F-Droid bot reads both fields from `package.json`. The metadata file (`metadata/de.volksverpetzer.app.yml`) lives in a **separate `fdroiddata` repository** — update it there: add a new `Builds:` entry and update `CurrentVersion` / `CurrentVersionCode` at the bottom.
 
 Agent best practices (project-specific)
 
@@ -84,7 +84,7 @@ Quick references (paths and examples)
 - Variant config: `config/volksverpetzer.config.ts`
 - Asset registry: `src/helpers/AppImages.ts`
 - Fetchers: `src/screens/Home/fetchers/*` (normalizes Post objects)
-- Analytics: `src/helpers/Networking/Analytics/*`
+- Analytics: `src/helpers/network/Analytics.ts` (and related files in `src/helpers/network/`)
 - Tests & mocks: `__tests__/` and `__tests__/mocks/`
 - Build scripts: `scripts/prepare-fdroid.mjs` and `package.json` scripts
 
