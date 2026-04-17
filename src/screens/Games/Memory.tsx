@@ -5,6 +5,8 @@ import Toast from "react-native-toast-message";
 
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
+import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { DisinfoPair, MemoryCard } from "#/types";
 
 import CardComponent from "./CardComponent";
@@ -15,6 +17,7 @@ interface MemoryGameProperties {
 }
 
 const MemoryGame = ({ pairs }: MemoryGameProperties) => {
+  const colorScheme = useAppColorScheme();
   const [deck, setDeck] = useState<MemoryCard[]>([]);
   const [firstCard, setFirstCard] = useState<MemoryCard | undefined>();
   const [secondCard, setSecondCard] = useState<MemoryCard | undefined>();
@@ -117,7 +120,12 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
   };
 
   return (
-    <View style={styles.gameContainer}>
+    <View
+      style={[
+        styles.gameContainer,
+        { backgroundColor: Colors[colorScheme].background },
+      ]}
+    >
       <View style={styles.headerContainer}>{renderHeader()}</View>
       <View style={styles.grid}>
         {deck.map((card) => (
@@ -150,7 +158,7 @@ const styles = StyleSheet.create({
   },
   cardInner: { alignItems: "center", justifyContent: "center" },
   cardText: { fontSize: 16, textAlign: "center" },
-  gameContainer: { alignItems: "center", backgroundColor: "#fff", flex: 1 },
+  gameContainer: { alignItems: "center", flex: 1 },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",

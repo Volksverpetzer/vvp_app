@@ -4,6 +4,7 @@ import { useColorScheme } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
+import { isDarkMode } from "#/helpers/utils/color";
 import type { colorSchemeType } from "#/types/colors";
 
 export type AppColorScheme = keyof colorSchemeType;
@@ -35,7 +36,5 @@ export const useCorporateColor = () => {
 
 export const useReverseColorScheme = () => {
   const colorScheme = useAppColorScheme();
-  return colorScheme === ColorScheme.dark
-    ? ColorScheme.light
-    : ColorScheme.dark;
+  return isDarkMode(colorScheme) ? ColorScheme.light : ColorScheme.dark;
 };
