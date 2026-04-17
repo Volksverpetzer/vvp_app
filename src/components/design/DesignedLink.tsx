@@ -40,7 +40,7 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
       style={({ pressed }) => [
         {
           ...styles.row,
-          backgroundColor: pressed ? "#909090" : undefined,
+          backgroundColor: pressed ? Colors[colorScheme].grayedOut : undefined,
           paddingVertical: 10,
           justifyContent: "flex-start",
           alignItems: "flex-start",
