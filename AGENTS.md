@@ -54,7 +54,7 @@ Dev workflows & commands (copyable)
 Integration points & external dependencies to be careful about
 
 - Native / build plugins: `plugins/*.ts` and `expo` config in `app.config.ts`. Changing native modules or config may require `expo prebuild` / native rebuilds.
-- Google / Firebase config: `google-services.json` / `google-services-mimikama.json` are **gitignored** and injected via env vars (e.g. `process.env.google_services`) locally and in CI. Never commit these files; CI uses Gitleaks to enforce this.
+- Google / Firebase config: `google-services.json` / `google-services-mimikama.json` are often kept out of source (or injected at CI/build time). Do NOT commit secret credential files; CI uses Gitleaks to detect secrets.
 - Analytics & feeds: modify only in `src/helpers/network/` and `src/screens/Home/fetchers/` — these functions return normalized objects consumed app-wide.
 
 Path aliases (defined in `babel.config.cts` and `tsconfig.json`)
