@@ -18,10 +18,7 @@ const currentBuildFromSource = Array.isArray(android.buildFromSource)
   ? android.buildFromSource
   : [];
 android.buildFromSource = Array.from(
-  new Set([
-    ...currentBuildFromSource,
-    ".*",
-  ]),
+  new Set([...currentBuildFromSource, ".*"]),
 );
 
 // Exclude packages that bundle proprietary Google/Firebase deps.
