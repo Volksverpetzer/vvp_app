@@ -374,7 +374,7 @@ export default {
       "https://github.com/react-native-webview/react-native-webview/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native-worklets@0.7.2": {
+  "react-native-worklets@0.7.4": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-reanimated",
     licenseUrl:
@@ -393,7 +393,7 @@ export default {
     licenseUrl: "https://github.com/facebook/react/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "rive-react-native@9.8.1": {
+  "rive-react-native@9.8.2": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-react-native",
     licenseUrl:
