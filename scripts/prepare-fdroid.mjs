@@ -26,6 +26,10 @@ android.exclude = Array.from(
     ...currentExclude,
     "expo-notifications", // pulls in firebase-messaging (GMS)
     "@stripe/stripe-react-native", // bundles play-services-wallet, play-services-maps, Play Integrity
+    "expo-dev-client", // dev-only; depends on expo-dev-menu-interface
+    "expo-dev-launcher", // dev-only, not needed in release builds
+    "expo-dev-menu", // dev-only, not needed in release builds
+    "expo-dev-menu-interface", // dev-only, not needed in release builds
   ]),
 );
 
