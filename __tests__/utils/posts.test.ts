@@ -83,6 +83,25 @@ describe("normalizeFacets", () => {
     expect(input[0].features[0].index.byte_start).toBe(10);
   });
 
+  test("returns empty array for empty array input", () => {
+    expect(normalizeFacets([])).toEqual([]);
+  });
+
+  test("facet without py_type has no $type key", () => {
+    const input = [{ other: "value" }];
+    const out = normalizeFacets(input);
+    expect(out[0]).not.toHaveProperty("$type");
+    expect(out[0].other).toBe("value");
+  });
+
+  test("facet without index has no index key in output", () => {
+    const input = [{ py_type: "t", other: 42 }];
+    const out = normalizeFacets(input);
+    expect(out[0]).not.toHaveProperty("index");
+    expect(out[0]["$type"]).toBe("t");
+    expect(out[0].other).toBe(42);
+  });
+
   test("does not overwrite existing byteStart/byteEnd", () => {
     const input = [
       {
@@ -140,6 +159,10 @@ describe("stripVisualComposerShortcodes", () => {
 
   test("returns empty string unchanged", () => {
     expect(stripVisualComposerShortcodes("")).toBe("");
+  });
+
+  test("removes uppercase VC_ shortcodes (case-insensitive)", () => {
+    expect(stripVisualComposerShortcodes("[VC_ROW]Body[/VC_ROW]")).toBe("Body");
   });
 
   test("returns content without Visual Composer shortcodes unchanged", () => {

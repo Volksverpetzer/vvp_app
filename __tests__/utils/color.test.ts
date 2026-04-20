@@ -1,23 +1,33 @@
-import { hexToRgb } from "#/helpers/utils/color";
+import { hexToRgb, isDarkMode } from "#/helpers/utils/color";
 
 describe("hexToRgb", () => {
-  it("konvertiert 6-stellige Hex mit führendem #", () => {
+  it("converts 6-digit hex with leading #", () => {
     expect(hexToRgb("#1a2b3c")).toEqual([0x1a, 0x2b, 0x3c]);
   });
 
-  it("konvertiert 6-stellige Hex ohne führendes #", () => {
+  it("converts 6-digit hex without leading #", () => {
     expect(hexToRgb("FFFFFF")).toEqual([255, 255, 255]);
   });
 
-  it("konvertiert 3-stellige Hex mit führendem # (Expands korrekt)", () => {
+  it("converts 3-digit hex with leading # (expands correctly)", () => {
     expect(hexToRgb("#abc")).toEqual([0xaa, 0xbb, 0xcc]);
   });
 
-  it("unterstützt Großbuchstaben", () => {
+  it("supports uppercase letters", () => {
     expect(hexToRgb("#ABC")).toEqual([0xaa, 0xbb, 0xcc]);
   });
 
-  it("konvertiert black korrekt", () => {
+  it("converts black correctly", () => {
     expect(hexToRgb("#000000")).toEqual([0, 0, 0]);
+  });
+});
+
+describe("isDarkMode", () => {
+  it("returns true for dark", () => {
+    expect(isDarkMode("dark")).toBe(true);
+  });
+
+  it("returns false for light", () => {
+    expect(isDarkMode("light")).toBe(false);
   });
 });
