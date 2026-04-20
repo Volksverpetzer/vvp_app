@@ -4,9 +4,9 @@ This repository contains the official React Native mobile app for Volksverpetzer
 
 ## Technology Stack
 
-- **Framework**: React Native with Expo SDK 54
+- **Framework**: React Native 0.83 with Expo SDK 55
 - **Language**: TypeScript (with relaxed strict mode)
-- **Package Manager**: pnpm (v10.26.0)
+- **Package Manager**: pnpm (v10.33.0)
 - **Testing**: Jest with jest-expo preset
 - **Routing**: expo-router
 - **State Management**: React hooks and context
@@ -24,12 +24,7 @@ This repository contains the official React Native mobile app for Volksverpetzer
 
 ### Import Order
 
-Imports are automatically sorted by Prettier with this order:
-
-1. Core imports (`@core/`)
-2. Server imports (`@server/`)
-3. UI imports (`@ui/`)
-4. Relative imports (`./` or `../`)
+Imports are automatically sorted by `@trivago/prettier-plugin-sort-imports` on commit. Prefer path aliases (`#/*` → `src/*`, `#assets/*`, `#tests/*`) over deep relative imports.
 
 ### Naming Conventions
 
@@ -83,7 +78,9 @@ src/
 │   └── views/
 ├── constants/        # App configuration and constants
 ├── helpers/          # Utility functions and business logic
-│   ├── Networking/   # API and analytics
+│   ├── network/      # API clients (ServerAPI.ts, WordPressAPI.ts) and analytics
+│   ├── Stores/       # AsyncStorage persistence layer
+│   ├── provider/     # React Context providers
 │   └── utils/        # General utilities
 ├── hooks/            # Custom React hooks
 ├── screens/          # Full screen components
@@ -109,6 +106,9 @@ pnpm start
 pnpm android
 pnpm ios
 pnpm web
+
+# F-Droid / FOSS prebuild (prepare:fdroid excludes proprietary modules from autolinking)
+pnpm prepare:fdroid && BUILD_FOSS_ONLY=true npx expo prebuild --platform android --no-install
 ```
 
 ### Testing
@@ -168,9 +168,9 @@ describe("ComponentName", () => {
 
 ## API and Data Fetching
 
-- Helper functions for fetching are in `src/helpers/`
-- Analytics functions are in `src/helpers/Networking/Analytics`
-- Feed fetchers (WordPress, Instagram, TikTok, YouTube, Bluesky, etc.) are in `src/helpers/fetchers/`
+- Helper functions for fetching are in `src/screens/Home/fetchers/`
+- Analytics functions are in `src/helpers/network/Analytics.ts` (and related files in `src/helpers/network/`)
+- Feed fetchers (WordPress, Instagram, TikTok, YouTube, Bluesky, etc.) are in `src/screens/Home/fetchers/`
 - All fetchers return normalized Post objects
 
 ## Security
@@ -210,7 +210,7 @@ Configuration files are in `config/` directory and are selected based on `APP` e
 1. Use `pnpm add <package>` for production dependencies
 2. Use `pnpm add -D <package>` for dev dependencies
 3. Check compatibility with React Native and Expo
-4. Run `pnpm expo:check` to verify Expo compatibility
+4. Run `npx expo install --check` to verify Expo compatibility
 
 ## CI/CD
 

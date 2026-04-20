@@ -71,9 +71,9 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 
 jest.mock("#/constants/Colors", () => ({
   light: {
-    corporate: "#e63312",
+    primary: "#e63312",
     background: "#fff",
-    secondaryBackground: "#f5f5f5",
+    surface: "#f5f5f5",
   },
 }));
 

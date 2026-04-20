@@ -32,8 +32,8 @@ const SearchHeader = ({
   onSubmit,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
-  const corporate = Colors[colorScheme].corporate;
+  const backgroundColor = Colors[colorScheme].surface;
+  const corporate = Colors[colorScheme].primary;
 
   // Extract the nested ternary operation into an independent variable
   let faktenBotReaction;

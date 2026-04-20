@@ -14,8 +14,9 @@ import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { isDarkMode } from "#/helpers/utils/color";
 import { isHttpsUrl } from "#/helpers/utils/networking";
-import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -134,10 +135,7 @@ const prepareWebViewSource = (
   }
 
   if (isDatawrapper) {
-    u.searchParams.set(
-      "dark",
-      colorScheme === ColorScheme.dark ? "true" : "false",
-    );
+    u.searchParams.set("dark", isDarkMode(colorScheme) ? "true" : "false");
   }
 
   return { uri: u.toString() };

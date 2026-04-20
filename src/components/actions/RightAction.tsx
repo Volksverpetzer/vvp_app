@@ -35,7 +35,7 @@ const RightAction: FC<RightActionProps> = ({
 }) => {
   const colorScheme = useAppColorScheme();
   const fg = color ?? "white";
-  const bg = backgroundColor ?? Colors[colorScheme].highlight;
+  const bg = backgroundColor ?? Colors[colorScheme].accent;
 
   const actionStyle = useAnimatedStyle(() => {
     const translateX = interpolate(

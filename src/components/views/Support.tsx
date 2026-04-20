@@ -25,8 +25,8 @@ interface SupportProperties {
 const Support = ({ article_link, location }: SupportProperties) => {
   const [showBank, setShowBank] = useState(false);
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
-  const corporate = Colors[colorScheme].corporate;
+  const backgroundColor = Colors[colorScheme].surface;
+  const corporate = Colors[colorScheme].primary;
 
   const banktransfer = async () => {
     setShowBank(true);

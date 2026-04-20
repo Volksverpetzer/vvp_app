@@ -39,7 +39,7 @@ const NavBar = (properties: NavBarProperties) => {
   const { contentFavIdentifier, contentType, link, shareable } = properties;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].background;
   const insets = useSafeAreaInsets();
 

@@ -24,7 +24,7 @@ interface FooterProperties {
  */
 const Footer = (properties: FooterProperties) => {
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
+  const corporate = Colors[colorScheme].primary;
 
   return (
     <>
@@ -69,7 +69,7 @@ const Footer = (properties: FooterProperties) => {
       <Card
         style={{
           marginHorizontal: 12,
-          backgroundColor: Colors[colorScheme].secondaryBackground,
+          backgroundColor: Colors[colorScheme].surface,
         }}
       >
         <Support article_link={properties.article_link} />

@@ -17,8 +17,13 @@ export const unstable_settings = {
 const TabLayout = () => {
   const { badgeState } = useBadge();
   const colorScheme = useAppColorScheme();
-  const { corporate, background, tabIconDefault, tabIconSelected, grayedOut } =
-    Colors[colorScheme];
+  const {
+    primary: corporate,
+    background,
+    iconMuted,
+    iconOnPrimary,
+    muted,
+  } = Colors[colorScheme];
   const actionsActive = Config.enableActions;
   const engagementActive = Config.enableEngagement;
 
@@ -29,12 +34,12 @@ const TabLayout = () => {
       badgeBackgroundColor={corporate}
       disableTransparentOnScrollEdge
       iconColor={{
-        default: tabIconDefault,
-        selected: tabIconSelected,
+        default: iconMuted,
+        selected: iconOnPrimary,
       }}
       indicatorColor={corporate}
       labelVisibilityMode="unlabeled"
-      shadowColor={grayedOut}
+      shadowColor={muted}
     >
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Icon

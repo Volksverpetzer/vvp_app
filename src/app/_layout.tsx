@@ -28,7 +28,8 @@ import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
-import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { isDarkMode } from "#/helpers/utils/color";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
 
 // Hide warning for new native event emitter
@@ -51,7 +52,7 @@ const AppFrame = ({ children }: PropsWithChildren) => {
 
   const isSecondaryBg = segments.some((s) => SECONDARY_BG_SCREENS.includes(s));
   const backgroundColor = isSecondaryBg
-    ? Colors[colorScheme].secondaryBackground
+    ? Colors[colorScheme].surface
     : Colors[colorScheme].background;
 
   useEffect(() => {
@@ -69,7 +70,7 @@ const AppFrame = ({ children }: PropsWithChildren) => {
         backgroundColor,
       }}
     >
-      <StatusBar style={colorScheme === ColorScheme.dark ? "light" : "dark"} />
+      <StatusBar style={isDarkMode(colorScheme) ? "light" : "dark"} />
       {children}
     </View>
   );

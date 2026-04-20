@@ -83,7 +83,7 @@ jest.mock("#/constants/Config", () => ({
 
 jest.mock("#/constants/Colors", () => ({
   light: {
-    corporate: "#ff0000",
+    primary: "#ff0000",
   },
 }));
 

@@ -164,7 +164,7 @@ const NotificationManager = {
         description: "Default channel for all notifications",
         importance: Notifications.AndroidImportance.HIGH,
         vibrationPattern: [0, 250, 250, 250],
-        lightColor: Colors.light.corporate,
+        lightColor: Colors.light.primary,
         enableLights: true,
         enableVibrate: true,
         showBadge: true,
@@ -176,7 +176,7 @@ const NotificationManager = {
         description: "Notifications for new articles and updates",
         importance: Notifications.AndroidImportance.DEFAULT,
         vibrationPattern: [0, 250, 250, 250],
-        lightColor: Colors.light.corporate,
+        lightColor: Colors.light.primary,
         enableLights: true,
       });
     }

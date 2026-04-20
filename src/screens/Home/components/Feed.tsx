@@ -50,8 +50,8 @@ const Feed = (properties: FeedProperties) => {
   const [page, setPage] = useState(1);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
+  const corporate = Colors[colorScheme].primary;
+  const backgroundColor = Colors[colorScheme].surface;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
 

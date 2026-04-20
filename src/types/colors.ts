@@ -2,19 +2,19 @@ import type { CSSProperties } from "react";
 
 type styleColors = {
   text: CSSProperties["color"];
-  heading: CSSProperties["color"];
+  textHeading: CSSProperties["color"];
   background: CSSProperties["color"];
-  secondaryBackground: CSSProperties["color"];
+  surface: CSSProperties["color"];
   errorBackground: CSSProperties["color"];
   errorText: CSSProperties["color"];
-  tabIconDefault: CSSProperties["color"];
-  grayedOut: CSSProperties["color"];
-  grayedOutText: CSSProperties["color"];
-  tabIconSelected: CSSProperties["color"];
+  iconMuted: CSSProperties["color"];
+  muted: CSSProperties["color"];
+  textMuted: CSSProperties["color"];
+  iconOnPrimary: CSSProperties["color"];
   inputBackground: CSSProperties["color"];
-  highlight: CSSProperties["color"];
-  corporate: CSSProperties["color"];
-  corporateTint: CSSProperties["color"];
+  accent: CSSProperties["color"];
+  primary: CSSProperties["color"];
+  primaryTint: CSSProperties["color"];
 };
 
 export type colorSchemeType = {

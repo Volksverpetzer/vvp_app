@@ -8,7 +8,7 @@ import StatisticsView from "#/screens/ActionTab/components/statistics/Statistics
 
 const ActionTab = () => {
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
+  const backgroundColor = Colors[colorScheme].surface;
   return (
     <ScrollView style={{ flex: 1, backgroundColor }}>
       <AchievementComponent />

@@ -50,9 +50,9 @@ const SettingsScreen = () => {
     setAdvancedSettings,
   } = useContext(SettingsContext);
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
-  const secondaryBackground = Colors[colorScheme].background;
+  const primary = Colors[colorScheme].primary;
+  const backgroundColor = Colors[colorScheme].surface;
+  const pressedBackground = Colors[colorScheme].background;
 
   const HEADER_HEIGHT = 150;
 
@@ -90,7 +90,7 @@ const SettingsScreen = () => {
   };
 
   const pressableStyle = ({ pressed }: { pressed: boolean }) => [
-    pressed && { backgroundColor: secondaryBackground },
+    pressed && { backgroundColor: pressedBackground },
   ];
 
   useEffect(() => {
@@ -126,7 +126,7 @@ const SettingsScreen = () => {
       >
         <View>
           <Collapsable
-            icon={<FeedIcon color={corporate} size={24} />}
+            icon={<FeedIcon color={primary} size={24} />}
             title="Feed"
           >
             <UiText style={styles.sectionText}>
@@ -139,7 +139,7 @@ const SettingsScreen = () => {
           </Collapsable>
           {!Config.isFoss && (
             <Collapsable
-              icon={<NotificationIcon color={corporate} size={24} />}
+              icon={<NotificationIcon color={primary} size={24} />}
               title="Benachrichtigungen"
             >
               <SettingsList
@@ -149,7 +149,7 @@ const SettingsScreen = () => {
             </Collapsable>
           )}
           <Collapsable
-            icon={<SettingsIcon color={corporate} size={24} />}
+            icon={<SettingsIcon color={primary} size={24} />}
             title="Erweitert"
           >
             <SettingsList
@@ -162,27 +162,27 @@ const SettingsScreen = () => {
         <View style={styles.linksContainer}>
           <DesignedLink
             url={Config.aboutUrl}
-            icon={<SearchIcon color={corporate} size={24} />}
+            icon={<SearchIcon color={primary} size={24} />}
             text="Über uns"
           />
           <DesignedLink
             url={Config.donations.support}
-            icon={<GiveIcon color={corporate} size={24} />}
+            icon={<GiveIcon color={primary} size={24} />}
             text="Unterstützen"
           />
           <DesignedLink
             url={encodeURI("mailto:app@volksverpetzer.de")}
-            icon={<FeedbackIcon color={corporate} size={24} />}
+            icon={<FeedbackIcon color={primary} size={24} />}
             text="App-Feedback"
           />
           <DesignedLink
             url={Config.dataProtectionUrl}
-            icon={<LockIcon color={corporate} size={24} />}
+            icon={<LockIcon color={primary} size={24} />}
             text="Datenschutz"
           />
           <DesignedLink
             url={Config.sourceUrl}
-            icon={<CodeIcon color={corporate} size={24} />}
+            icon={<CodeIcon color={primary} size={24} />}
             text="Quellcode"
           />
         </View>

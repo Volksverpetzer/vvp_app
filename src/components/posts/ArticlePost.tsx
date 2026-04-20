@@ -49,8 +49,8 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
 
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].corporate;
-  const greyText = Colors[colorScheme].grayedOutText;
+  const corporate = Colors[colorScheme].primary;
+  const greyText = Colors[colorScheme].textMuted;
   const { width } = useFeedDimensions();
   const router = useRouter();
   const height = useMemo(() => 0.5125 * (width - 26), [width]);
@@ -225,7 +225,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           </Badge>
         )}
         {inView && (
-          <Badge position="topRight" color={Colors[colorScheme].highlight}>
+          <Badge position="topRight" color={Colors[colorScheme].accent}>
             <ViewCounter url={article.link} size={16} />
           </Badge>
         )}

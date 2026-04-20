@@ -17,7 +17,7 @@ const SearchScreen = () => {
   const tag: string | undefined = parameters?.tag;
   const searchReference = useRef<TextInput>(null);
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].secondaryBackground;
+  const backgroundColor = Colors[colorScheme].surface;
 
   // Focus the search input when the screen is focused (unless there's a tag)
   useFocusEffect(

@@ -24,7 +24,7 @@ const StatisticsView = () => {
   );
   const [scrollX] = useState(new Animated.Value(0));
   const { width } = useFeedDimensions();
-  const corporate = Colors.dark.corporate;
+  const corporate = Colors.dark.primary;
 
   useEffect(() => {
     Statistics.getAllStatistics().then(setStatistics);

@@ -1,6 +1,8 @@
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
+import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 export type ToastShareSheetProperties = {
   items: { title: string; onPress: () => void }[];
@@ -8,8 +10,14 @@ export type ToastShareSheetProperties = {
 };
 
 const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
+  const colorScheme = useAppColorScheme();
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: Colors[colorScheme].background },
+      ]}
+    >
       <UiText style={styles.title}>Teilen</UiText>
       <ScrollView style={styles.list}>
         {items.map((item, index) => (
@@ -58,7 +66,6 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    backgroundColor: "white",
     borderRadius: 12,
     minWidth: 250,
     padding: 16,
