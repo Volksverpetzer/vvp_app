@@ -1,8 +1,7 @@
+import { RiveView, useRive, useRiveFile } from "@rive-app/react-native";
 import Constants from "expo-constants";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Platform } from "react-native";
-import type { RiveRef } from "rive-react-native";
-import Rive from "rive-react-native";
 
 export type FaktenBotReaction = 0 | 5 | 10;
 
@@ -11,48 +10,50 @@ interface FaktenBotProperties {
   search?: boolean;
 }
 
-/**
- * Animated FaktenBot component that displays different reactions based on search state
- * @param reaction - The reaction state (0, 5, or 10)
- * @param search - Whether the component is in search mode
- */
-const FaktenBot = ({ reaction, search }: FaktenBotProperties) => {
-  const riveReference = useRef<RiveRef>(null);
-  useEffect(() => {
-    if (reaction === undefined || !riveReference.current) return;
-    riveReference.current?.setInputState(
-      "State Machine Search",
-      "Reaktion",
-      reaction,
-    );
-    riveReference.current?.fireState("State Machine Search", "ResultIn");
-  }, [reaction]);
+const FaktenBotRive = ({ reaction, search }: FaktenBotProperties) => {
+  const { riveFile } = useRiveFile("faktenbot5");
+  const { riveViewRef, setHybridRef } = useRive();
 
   useEffect(() => {
-    if (search === undefined || !riveReference.current) return;
-    riveReference.current?.setInputState(
-      "State Machine Search",
-      "Suche",
-      search,
-    );
-  }, [search]);
+    if (reaction === undefined || !riveViewRef) return;
+    riveViewRef.setNumberInputValue("Reaktion", reaction);
+    riveViewRef.triggerInput("ResultIn");
+  }, [reaction, riveViewRef]);
 
-  // Don't render in Web or Expo Go
-  if (Platform.OS === "web" || Constants.executionEnvironment === "storeClient")
-    return null;
+  useEffect(() => {
+    if (search === undefined || !riveViewRef) return;
+    riveViewRef.setBooleanInputValue("Suche", search);
+  }, [search, riveViewRef]);
+
+  if (!riveFile) return null;
 
   return (
-    <Rive
-      resourceName="faktenbot5"
+    <RiveView
+      autoPlay={true}
+      file={riveFile}
+      hybridRef={setHybridRef}
+      stateMachineName="State Machine Search"
       style={{
         maxWidth: 150,
         maxHeight: 150,
         width: "100%",
         height: "100%",
       }}
-      ref={riveReference}
     />
   );
+};
+
+/**
+ * Animated FaktenBot component that displays different reactions based on search state
+ * @param reaction - The reaction state (0, 5, or 10)
+ * @param search - Whether the component is in search mode
+ */
+const FaktenBot = ({ reaction, search }: FaktenBotProperties) => {
+  // Don't render in Web or Expo Go
+  if (Platform.OS === "web" || Constants.executionEnvironment === "storeClient")
+    return null;
+
+  return <FaktenBotRive reaction={reaction} search={search} />;
 };
 
 export default FaktenBot;
