@@ -1,6 +1,6 @@
 import type { StyleProp, TextStyle } from "react-native";
 
-import Faktenbot from "#/components/animations/Faktenbot";
+import FaktenBot from "#/components/animations/FaktenBot";
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 
@@ -19,14 +19,14 @@ const SearchTutorial = ({ textStyle }: SearchTutorialProperties) => (
   >
     <UiText style={textStyle}>
       So funktioniert die Suche:{"\n"}• Echtzeit-Vorschläge beim Tippen{"\n"}•
-      KI-Faktenbot für die Suche{"\n"}• Gib eine URL ein für einen Faktencheck
+      KI-FaktenBot für die Suche{"\n"}• Gib eine URL ein für einen Faktencheck
       dazu{"\n"}
       {"\n"}
       Gib einen Begriff ein und drücke &quot;Suchen&quot; für Ergebnislisten!
     </UiText>
-    {/* Show Faktenbot on initial tutorial screen */}
+    {/* Show FaktenBot on initial tutorial screen */}
     <View style={{ position: "absolute", top: 20, right: 20 }}>
-      <Faktenbot search={false} reaction={undefined} />
+      <FaktenBot search={false} reaction={undefined} />
     </View>
   </View>
 );

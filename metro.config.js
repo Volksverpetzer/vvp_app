@@ -35,8 +35,8 @@ config.resolver = {
 
       // Handle native-only Rive animations on web
       if (
-        moduleName.startsWith("rive-react-native") ||
-        moduleName === "rive-react-native"
+        moduleName.startsWith("@rive-app/react-native") ||
+        moduleName === "@rive-app/react-native"
       ) {
         return {
           type: "empty",

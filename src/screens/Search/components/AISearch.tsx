@@ -4,7 +4,7 @@ import { decode } from "html-entities";
 import { useCallback } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
-import Faktenbot from "#/components/animations/Faktenbot";
+import FaktenBot from "#/components/animations/FaktenBot";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -19,14 +19,14 @@ interface AISearchProperties {
   search: string;
   setResultsLength: (results: number) => void;
   setIsLoading: (loading: boolean) => void;
-  showFaktenbot?: boolean;
+  showFaktenBot?: boolean;
 }
 
 const AISearch = ({
   search,
   setResultsLength,
   setIsLoading,
-  showFaktenbot = false,
+  showFaktenBot = false,
 }: AISearchProperties) => {
   const { results, error, loadingMessage, reactionValue, reload } = useAISearch(
     { search, setResultsLength, setIsLoading },
@@ -64,9 +64,9 @@ const AISearch = ({
           {loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}
         </UiText>
         <UiSpinner size="large" />
-        {showFaktenbot && (
+        {showFaktenBot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
-            <Faktenbot search={true} reaction={reactionValue} />
+            <FaktenBot search={true} reaction={reactionValue} />
           </View>
         )}
       </View>
@@ -104,9 +104,9 @@ const AISearch = ({
         >
           <UiText style={globalStyles.whiteText}>Neu Laden</UiText>
         </Pressable>
-        {showFaktenbot && (
+        {showFaktenBot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
-            <Faktenbot search={false} reaction={reactionValue} />
+            <FaktenBot search={false} reaction={reactionValue} />
           </View>
         )}
       </View>
@@ -115,9 +115,9 @@ const AISearch = ({
 
   return (
     <View style={{ flex: 1, height: "100%", paddingTop: 20 }}>
-      {showFaktenbot && (
+      {showFaktenBot && (
         <View style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}>
-          <Faktenbot search={false} reaction={reactionValue} />
+          <FaktenBot search={false} reaction={reactionValue} />
         </View>
       )}
       <FlatList

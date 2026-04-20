@@ -1,6 +1,4 @@
 minimumReleaseAge: 1440 # 1 day cooldown for new releases, see https://pnpm.io/settings#minimumreleaseage
 nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
-overrides:
-  "@xmldom/xmldom": 0.9.10
 packages:
   - .
