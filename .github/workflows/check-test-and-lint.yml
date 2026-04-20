@@ -34,3 +34,5 @@ jobs:
 
       - name: 🏃‍♀️ Run tests and linter
         uses: ./.github/actions/test-and-lint
+        with:
+          codecov-token: ${{ secrets.CODECOV_TOKEN }}

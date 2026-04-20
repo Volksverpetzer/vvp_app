@@ -5,6 +5,7 @@
 </a>
 
 [![Check Test and Lint](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml/badge.svg)](https://github.com/Volksverpetzer/vvp_app/actions/workflows/check-test-and-lint.yml)
+[![codecov](https://codecov.io/gh/Volksverpetzer/vvp_app/graph/badge.svg)](https://codecov.io/gh/Volksverpetzer/vvp_app)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/gitleaks/gitleaks-action)
 

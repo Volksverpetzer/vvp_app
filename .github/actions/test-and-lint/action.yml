@@ -1,5 +1,9 @@
 name: Test and Lint
 description: Composite action to run lint and tests
+inputs:
+  codecov-token:
+    description: Codecov upload token
+    required: false
 runs:
   using: composite
   steps:
@@ -10,3 +14,10 @@ runs:
     - name: ✅ Run tests
       run: pnpm test --silent
       shell: bash
+
+    - name: 📊 Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ inputs.codecov-token }}
+        files: ./coverage/coverage-final.json
+        fail_ci_if_error: false
