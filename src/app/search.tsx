@@ -53,7 +53,7 @@ const SearchScreen = () => {
               searchRef={searchReference}
               resultsLength={resultsLength}
               isLoading={isLoading}
-              showFaktenbot={true}
+              showFaktenBot={true}
             />
 
             {/* Show Algolia results while typing */}
@@ -72,7 +72,7 @@ const SearchScreen = () => {
                 setIsLoading={setIsLoading}
                 search={searchParams}
                 setResultsLength={setResultsLength}
-                showFaktenbot={true}
+                showFaktenBot={true}
               />
             )}
 

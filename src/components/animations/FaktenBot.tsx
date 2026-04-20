@@ -4,19 +4,19 @@ import { Platform } from "react-native";
 import type { RiveRef } from "rive-react-native";
 import Rive from "rive-react-native";
 
-export type FaktenbotReaction = 0 | 5 | 10;
+export type FaktenBotReaction = 0 | 5 | 10;
 
-interface FaktenbotProperties {
-  reaction?: FaktenbotReaction;
+interface FaktenBotProperties {
+  reaction?: FaktenBotReaction;
   search?: boolean;
 }
 
 /**
- * Animated Faktenbot component that displays different reactions based on search state
+ * Animated FaktenBot component that displays different reactions based on search state
  * @param reaction - The reaction state (0, 5, or 10)
  * @param search - Whether the component is in search mode
  */
-const Faktenbot = ({ reaction, search }: FaktenbotProperties) => {
+const FaktenBot = ({ reaction, search }: FaktenBotProperties) => {
   const riveReference = useRef<RiveRef>(null);
   useEffect(() => {
     if (reaction === undefined || !riveReference.current) return;
@@ -55,4 +55,4 @@ const Faktenbot = ({ reaction, search }: FaktenbotProperties) => {
   );
 };
 
-export default Faktenbot;
+export default FaktenBot;

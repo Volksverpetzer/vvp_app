@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { Keyboard, Pressable, TextInput } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
-import Faktenbot from "#/components/animations/Faktenbot";
+import FaktenBot from "#/components/animations/FaktenBot";
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -17,7 +17,7 @@ interface SearchHeaderProperties {
   searchRef: RefObject<TextInput>;
   resultsLength?: number;
   isLoading: boolean;
-  showFaktenbot?: boolean;
+  showFaktenBot?: boolean;
   onSubmit?: () => void;
 }
 
@@ -28,7 +28,7 @@ const SearchHeader = ({
   searchRef,
   resultsLength,
   isLoading,
-  showFaktenbot = true,
+  showFaktenBot = true,
   onSubmit,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
@@ -72,8 +72,8 @@ const SearchHeader = ({
         >
           Fact Check
         </UiText>
-        {showFaktenbot && (
-          <Faktenbot reaction={faktenBotReaction} search={isLoading} />
+        {showFaktenBot && (
+          <FaktenBot reaction={faktenBotReaction} search={isLoading} />
         )}
       </View>
       <View
