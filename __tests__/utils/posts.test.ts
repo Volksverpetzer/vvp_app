@@ -90,14 +90,15 @@ describe("normalizeFacets", () => {
   test("facet without py_type has no $type key", () => {
     const input = [{ other: "value" }];
     const out = normalizeFacets(input);
-    expect(out[0]["$type"]).toBeUndefined();
+    expect(out[0]).not.toHaveProperty("$type");
     expect(out[0].other).toBe("value");
   });
 
-  test("facet without index is copied as-is", () => {
+  test("facet without index has no index key in output", () => {
     const input = [{ py_type: "t", other: 42 }];
     const out = normalizeFacets(input);
-    expect(out[0].index).toBeUndefined();
+    expect(out[0]).not.toHaveProperty("index");
+    expect(out[0]["$type"]).toBe("t");
     expect(out[0].other).toBe(42);
   });
 
