@@ -50,6 +50,9 @@ importers:
       '@react-navigation/native':
         specifier: ^7.2.2
         version: 7.2.2(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
+      '@rive-app/react-native':
+        specifier: ^0.4.5
+        version: 0.4.5(react-native-nitro-modules@0.35.4(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5))(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
       '@stripe/stripe-react-native':
         specifier: 0.64.0
         version: 0.64.0(expo@55.0.15)(react-native-webview@13.16.1(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5))(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
@@ -167,6 +170,9 @@ importers:
       react-native-modal:
         specifier: 14.0.0-rc.1
         version: 14.0.0-rc.1(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
+      react-native-nitro-modules:
+        specifier: ^0.35.4
+        version: 0.35.4(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
       react-native-reanimated:
         specifier: 4.2.1
         version: 4.2.1(react-native-worklets@0.7.4(@babel/core@7.29.0)(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5))(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
@@ -197,9 +203,6 @@ importers:
       react-native-worklets:
         specifier: 0.7.4
         version: 0.7.4(@babel/core@7.29.0)(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
-      rive-react-native:
-        specifier: 9.8.2
-        version: 9.8.2(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@babel/core':
         specifier: 7.29.0
@@ -2093,6 +2096,13 @@ packages:
 
   '@react-navigation/routers@7.5.3':
     resolution: {integrity: sha512-1tJHg4KKRJuQ1/EvJxatrMef3NZXEPzwUIUZ3n1yJ2t7Q97siwRtbynRpQG9/69ebbtiZ8W3ScOZF/OmhvM4Rg==}
+
+  '@rive-app/react-native@0.4.5':
+    resolution: {integrity: sha512-oeQz5h1IZHPe93ptBQGSZChxYpOAzjxiLXJYgF07KJdSJ4dHOd4uhFCRgbl/+88NOkV+BICq2YZ2In8esXy0tA==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+      react-native-nitro-modules: '>=0.35.0 <0.36'
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -5441,6 +5451,12 @@ packages:
       react: '*'
       react-native: '>=0.70.0'
 
+  react-native-nitro-modules@0.35.4:
+    resolution: {integrity: sha512-4qZa+1kgR/sPRNZv+UShxyArEPpovWxw76Dfd/DtCVtkQ92wOOxGIzdYvndprabd+t+r8zNYgYEPYE74gzkuVQ==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+
   react-native-reanimated@4.2.1:
     resolution: {integrity: sha512-/NcHnZMyOvsD/wYXug/YqSKw90P9edN0kEPL5lP4PFf1aQ4F1V7MKe/E0tvfkXKIajy3Qocp5EiEnlcrK/+BZg==}
     peerDependencies:
@@ -5652,13 +5668,6 @@ packages:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
-
-  rive-react-native@9.8.2:
-    resolution: {integrity: sha512-bHDzlSJS7WWLvu8jsCfFIAU2Wi5CLn/rtLiGEYHycX6yzeJmSOVnM085c9BeYN24yPnDKp/K435FZrEJlVxZ+Q==}
-    engines: {node: '>=16'}
-    peerDependencies:
-      react: '*'
-      react-native: '*'
 
   safe-array-concat@1.1.3:
     resolution: {integrity: sha512-AURm5f0jYEOydBj7VQlVvDrjeFgthDdEF5H1dP+6mNpoXOMo1quQqJ4wvJDyRZ9+pO3kGWoOdmV08cSv2aJV6Q==}
@@ -8681,6 +8690,12 @@ snapshots:
   '@react-navigation/routers@7.5.3':
     dependencies:
       nanoid: 3.3.11
+
+  '@rive-app/react-native@0.4.5(react-native-nitro-modules@0.35.4(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5))(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)':
+    dependencies:
+      react: 19.2.5
+      react-native: 0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5)
+      react-native-nitro-modules: 0.35.4(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
 
   '@rtsao/scc@1.1.0': {}
 
@@ -12793,6 +12808,11 @@ snapshots:
       react-native: 0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5)
       react-native-animatable: 1.4.0
 
+  react-native-nitro-modules@0.35.4(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5):
+    dependencies:
+      react: 19.2.5
+      react-native: 0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5)
+
   react-native-reanimated@4.2.1(react-native-worklets@0.7.4(@babel/core@7.29.0)(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5))(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5):
     dependencies:
       react: 19.2.5
@@ -13079,11 +13099,6 @@ snapshots:
   rimraf@3.0.2:
     dependencies:
       glob: 7.2.3
-
-  rive-react-native@9.8.2(react-native@0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5))(react@19.2.5):
-    dependencies:
-      react: 19.2.5
-      react-native: 0.83.4(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.5)
 
   safe-array-concat@1.1.3:
     dependencies:
