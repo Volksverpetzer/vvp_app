@@ -1,7 +1,7 @@
 import { Buffer } from "buffer";
 import { useCallback, useEffect, useState } from "react";
 
-import type { FaktenbotReaction } from "#/components/animations/Faktenbot";
+import type { FaktenBotReaction } from "#/components/animations/FaktenBot";
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
@@ -17,7 +17,7 @@ interface UseAISearchResultProperties {
   results: AISearchResponse[];
   error: string;
   loadingMessage: string;
-  reactionValue: FaktenbotReaction;
+  reactionValue: FaktenBotReaction;
   reload: () => void;
 }
 
@@ -108,7 +108,7 @@ export const useAISearch = ({
   }, [fetchResults]);
 
   // Determine reaction value based on error state and results length
-  let reactionValue: FaktenbotReaction = 0;
+  let reactionValue: FaktenBotReaction = 0;
 
   if (!error && results.length > 0) {
     reactionValue = results.length <= 3 ? 5 : 10;
