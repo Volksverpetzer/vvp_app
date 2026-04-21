@@ -131,7 +131,7 @@ const MyFavs = () => {
   const corporate = useCorporateColor();
 
   return (
-    <>
+    <View style={{ flex: 1, gap: 20 }}>
       {isLoading ? (
         <Card>
           <LoadingFallback text="Lade Favoriten..." />
@@ -157,7 +157,7 @@ const MyFavs = () => {
         </UiText>
       </View>
       <Space size={100} />
-    </>
+    </View>
   );
 };
 

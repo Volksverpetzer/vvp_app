@@ -95,7 +95,7 @@ const HomeScreen = () => {
       <Feed
         {...feedprops}
         key={0}
-        style={{ paddingTop: HEADER_HEIGHT }}
+        style={{ paddingTop: HEADER_HEIGHT, gap: 20 }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           {
