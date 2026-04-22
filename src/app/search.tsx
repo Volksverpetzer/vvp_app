@@ -1,10 +1,11 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useRef } from "react";
-import type { StyleProp, TextInput, TextStyle } from "react-native";
+import type { TextInput } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import AISearch from "#/screens/Search/components/AISearch";
 import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";
@@ -30,8 +31,6 @@ const SearchScreen = () => {
     }, [tag]),
   );
 
-  const textStyle: StyleProp<TextStyle> = { fontSize: 17, textAlign: "left" };
-
   return (
     <SearchManager initialSearch={tag}>
       {({
@@ -45,7 +44,7 @@ const SearchScreen = () => {
         setIsLoading,
       }) => {
         return (
-          <View style={{ flex: 1, backgroundColor }}>
+          <View style={{ ...styles.feed, flex: 1, backgroundColor }}>
             <SearchHeader
               search={search}
               setSearch={setSearch}
@@ -62,9 +61,7 @@ const SearchScreen = () => {
             )}
 
             {/* Show tutorial when no search is active */}
-            {searchParams === "" && search === "" && (
-              <SearchTutorial textStyle={textStyle} />
-            )}
+            {searchParams === "" && search === "" && <SearchTutorial />}
 
             {/* Show search results when search is active */}
             {searchParams !== "" && (
