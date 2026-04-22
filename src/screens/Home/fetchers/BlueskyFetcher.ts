@@ -1,6 +1,6 @@
 import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 
-import BlueskyPostCard from "#/components/posts/BlueskyPostCard";
+import BlueskyPostCard from "#/components/posts/bsky/BlueskyPostCard";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";

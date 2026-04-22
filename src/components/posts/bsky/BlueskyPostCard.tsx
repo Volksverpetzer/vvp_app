@@ -6,6 +6,7 @@ import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
 import View from "#/components/design/View";
+import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -15,8 +16,6 @@ import ContentStore from "#/helpers/Stores/ContentStore";
 import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { BlueskyPostProperties, HttpsUrl } from "#/types";
-
-import { BlueskyPostHeader } from "./BlueskyPostHeader";
 
 /**
  * Displays a Bluesky post as a feed card (excerpt + navigation to thread).
