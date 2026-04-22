@@ -24,6 +24,7 @@
   "license": "MIT",
   "scripts": {
     "start": "expo start",
+    "prebuild": "expo prebuild --clean",
     "android": "expo run:android",
     "android:device": "expo run:android --device",
     "android:local": "pnpx eas-cli build -p android --profile local-apk",
