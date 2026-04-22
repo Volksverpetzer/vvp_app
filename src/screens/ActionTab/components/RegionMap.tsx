@@ -102,7 +102,11 @@ const RegionMap = () => {
         }}
       >
         <UiText
-          style={{ fontSize: 20, ...styles.whiteText, fontWeight: "bold" }}
+          style={{
+            fontSize: 20,
+            ...styles.whiteText,
+            fontFamily: "SourceSansProBold",
+          }}
         >
           Bundesländer Ranking
         </UiText>

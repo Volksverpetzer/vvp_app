@@ -132,9 +132,8 @@ const Header = (properties: HeaderProperties) => {
         style={{
           paddingHorizontal: 20,
           fontSize: 26,
-          fontWeight: "bold",
           textAlign: "left",
-          fontFamily: "SourceSansProSemiBold",
+          fontFamily: "SourceSansProBold",
         }}
       >
         {article_title}
@@ -216,9 +215,8 @@ const Header = (properties: HeaderProperties) => {
                 color: Colors.dark.text,
                 paddingHorizontal: 20,
                 fontSize: 26,
-                fontWeight: "bold",
                 textAlign: "left",
-                fontFamily: "SourceSansProSemiBold",
+                fontFamily: "SourceSansProBold",
               }}
             >
               {article_title}

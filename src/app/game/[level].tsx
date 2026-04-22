@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   levelText: { fontSize: 16, marginRight: 10 },
-  title: { fontSize: 20, fontWeight: "bold", marginBottom: 20 },
+  title: { fontSize: 20, fontFamily: "SourceSansProBold", marginBottom: 20 },
 });
 
 export default GameScreen;

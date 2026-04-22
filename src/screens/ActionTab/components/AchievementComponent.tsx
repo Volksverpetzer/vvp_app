@@ -76,7 +76,7 @@ const AchievementComponent = () => {
             color="white"
             textStyle={{
               fontSize: 22,
-              fontWeight: "bold",
+              fontFamily: "SourceSansProBold",
               fontStyle: "italic",
             }}
             containerStyle={{ height: 45, marginTop: -30 }}

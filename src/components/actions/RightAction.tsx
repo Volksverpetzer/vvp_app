@@ -79,7 +79,9 @@ const RightAction: FC<RightActionProps> = ({
         >
           {icon}
           {label && (
-            <RNText style={{ color: fg, fontWeight: "bold" }}>{label}</RNText>
+            <RNText style={{ color: fg, fontFamily: "SourceSansProBold" }}>
+              {label}
+            </RNText>
           )}
         </Animated.View>
       </Pressable>

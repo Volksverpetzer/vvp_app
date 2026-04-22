@@ -38,8 +38,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     p: { color: textColor, padding: 10, fontSize: 18 },
     strong: {
       color: textColor,
-      fontWeight: "bold" as const,
-      fontFamily: "SourceSansProSemiBold",
+      fontFamily: "SourceSansProBold",
     },
     h1: {
       textTransform: "uppercase" as const,

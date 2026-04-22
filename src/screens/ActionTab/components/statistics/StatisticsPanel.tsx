@@ -49,7 +49,7 @@ const StatisticsPanel = ({
           style={{
             ...styles.whiteText,
             fontSize: 20,
-            fontWeight: "bold",
+            fontFamily: "SourceSansProBold",
             marginLeft: 10,
           }}
         >

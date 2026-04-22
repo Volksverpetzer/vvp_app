@@ -96,7 +96,7 @@ const RedditPost = (properties: RedditProperties) => {
             style={{
               paddingHorizontal: 30,
               fontSize: size,
-              fontWeight: "bold",
+              fontFamily: "SourceSansProBold",
               textAlign: "left",
               paddingTop: 20,
             }}
