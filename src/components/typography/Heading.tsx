@@ -18,6 +18,7 @@ const Heading = ({ style, children, ...props }: HeadingProperties) => {
           color: Colors[colorScheme].text,
           fontFamily: "SourceSansProBold",
           fontSize: 18,
+          lineHeight: 22,
         },
         style,
       ]}

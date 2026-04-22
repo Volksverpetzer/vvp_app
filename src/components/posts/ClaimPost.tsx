@@ -26,6 +26,7 @@ const ClaimPost = (properties: ClaimProperties) => {
             fontFamily: "SourceSansProBold",
             paddingHorizontal: 30,
             fontSize: 20,
+            lineHeight: 26,
             textAlign: "left",
             paddingTop: 20,
           }}
