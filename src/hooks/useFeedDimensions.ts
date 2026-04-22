@@ -2,8 +2,8 @@ import { useWindowDimensions } from "react-native";
 
 import { styles } from "#/constants/Styles";
 
-const FEED_MAX_WIDTH = styles.feed.maxWidth;
-const FEED_WIDTH_PERCENT = Number.parseFloat(styles.feed.width) / 100;
+const FEED_MAX_WIDTH = styles.content.maxWidth;
+const FEED_WIDTH_PERCENT = Number.parseFloat(styles.content.width) / 100;
 
 /**
  * TODO do we really need this?

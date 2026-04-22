@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  feed: {
+  content: {
     marginHorizontal: "auto",
     maxWidth: 700,
     width: "94%",

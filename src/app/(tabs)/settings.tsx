@@ -116,7 +116,7 @@ const SettingsScreen = () => {
           flex: 1,
         }}
         contentContainerStyle={{
-          ...globalStyles.feed,
+          ...globalStyles.content,
           backgroundColor,
           paddingTop: HEADER_HEIGHT,
           gap: 20,

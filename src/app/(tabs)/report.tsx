@@ -163,7 +163,7 @@ const ReportScreen = () => {
           )}
           scrollEventThrottle={16}
           contentContainerStyle={{
-            ...globalStyles.feed,
+            ...globalStyles.content,
             paddingTop: HEADER_HEIGHT,
           }}
         >

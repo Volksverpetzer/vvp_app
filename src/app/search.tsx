@@ -44,7 +44,7 @@ const SearchScreen = () => {
         setIsLoading,
       }) => {
         return (
-          <View style={{ ...styles.feed, flex: 1, backgroundColor }}>
+          <View style={{ ...styles.content, flex: 1, backgroundColor }}>
             <SearchHeader
               search={search}
               setSearch={setSearch}

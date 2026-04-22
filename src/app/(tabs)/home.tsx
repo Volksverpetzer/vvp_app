@@ -75,7 +75,7 @@ const HomeScreen = () => {
           style={{
             ...styles.row,
             ...styles.input,
-            ...styles.feed,
+            ...styles.content,
             height: 50,
             backgroundColor: corporate,
           }}

@@ -40,7 +40,7 @@ const StatisticsView = () => {
     <View
       style={{
         ...styles.centered,
-        ...styles.feed,
+        ...styles.content,
         zIndex: 99,
         backgroundColor: corporate,
         borderRadius: 30,
