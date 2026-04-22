@@ -45,10 +45,10 @@ const AchievementComponent = () => {
     <View
       style={{
         backgroundColor: corporate,
-        margin: 20,
+        marginHorizontal: 20,
+        marginTop: 30,
         borderRadius: 10,
         padding: 20,
-        marginTop: 40,
       }}
     >
       <View style={{ ...styles.row, justifyContent: "flex-start" }}>

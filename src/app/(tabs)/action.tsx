@@ -13,7 +13,11 @@ const ActionTab = () => {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor }}
-      contentContainerStyle={{ ...styles.content, paddingHorizontal: 0 }}
+      contentContainerStyle={{
+        ...styles.content,
+        paddingHorizontal: 0,
+        gap: 20,
+      }}
     >
       <AchievementComponent />
       <StatisticsView />
