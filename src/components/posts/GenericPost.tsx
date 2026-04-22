@@ -42,7 +42,6 @@ const GenericPost = (properties: ComponentProperty<object>) => {
   const combinedStyle: ViewStyle = useMemo(
     () => ({
       borderRadius: 15,
-      marginBottom: "7%",
       minHeight: 200,
       overflow: "hidden",
       ...style,

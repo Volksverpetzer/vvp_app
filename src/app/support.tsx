@@ -32,6 +32,7 @@ const SupportScreen = () => {
           flexGrow: 1,
           paddingTop: HEADER_HEIGHT,
           gap: 20,
+          marginHorizontal: 12,
         }}
       >
         <HeartIcon color={corporate} size={56} />

@@ -7,12 +7,11 @@ import type {
   ViewStyle,
   ViewToken,
 } from "react-native";
-import { FlatList, Pressable, RefreshControl } from "react-native";
+import { FlatList, Pressable, RefreshControl, View } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
-import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
 import Heading from "#/components/typography/Heading";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -51,7 +50,6 @@ const Feed = (properties: FeedProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  const backgroundColor = Colors[colorScheme].surface;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
 
@@ -164,7 +162,7 @@ const Feed = (properties: FeedProperties) => {
   const contentContainerStyle = useMemo(
     () => ({
       ...properties?.style,
-      ...styles.feed,
+      ...styles.content,
     }),
     [properties?.style],
   );
@@ -202,13 +200,7 @@ const Feed = (properties: FeedProperties) => {
   }
 
   return (
-    <View
-      style={{
-        ...styles.centered,
-        backgroundColor,
-        flexDirection: "row",
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <FlatList
         onScroll={properties.onScroll}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
