@@ -1,6 +1,5 @@
 import {
   SourceSans3_400Regular,
-  SourceSans3_600SemiBold,
   SourceSans3_700Bold,
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
@@ -81,7 +80,6 @@ const RootLayout = () => {
 
   const [loaded] = useFonts({
     SourceSansPro: SourceSans3_400Regular,
-    SourceSansProSemiBold: SourceSans3_600SemiBold,
     SourceSansProBold: SourceSans3_700Bold,
   });
 
