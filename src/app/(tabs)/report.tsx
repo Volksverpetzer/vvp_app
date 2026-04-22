@@ -18,7 +18,7 @@ import TextInput from "#/components/design/TextInput";
 import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { styles as globalStyles } from "#/constants/Styles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import API from "#/helpers/network/ServerAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -55,7 +55,7 @@ const ReportScreen = () => {
   const pressedButtonColor = inputBackground;
 
   // Memoized local styles to avoid re-creating on every render
-  const localStyles = useMemo(
+  const styles = useMemo(
     () =>
       StyleSheet.create({
         errorText: {
@@ -67,7 +67,7 @@ const ReportScreen = () => {
           textAlign: "center",
         },
         input: {
-          ...styles.input,
+          ...globalStyles.input,
           backgroundColor: inputBackground,
           borderRadius: 5,
           padding: 10,
@@ -148,7 +148,7 @@ const ReportScreen = () => {
       />
       <AnimatedSuccess animated={animation} />
       <KeyboardAvoidingView
-        style={styles.container}
+        style={globalStyles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={0}
       >
@@ -163,7 +163,7 @@ const ReportScreen = () => {
           )}
           scrollEventThrottle={16}
           contentContainerStyle={{
-            ...styles.feed,
+            ...globalStyles.content,
             paddingTop: HEADER_HEIGHT,
           }}
         >
@@ -176,7 +176,7 @@ const ReportScreen = () => {
             value={description}
             onChangeText={setDescription}
             multiline
-            style={[localStyles.input, { height: 80 }]}
+            style={[styles.input, { height: 80 }]}
           />
           <Space size={20} />
           <Heading style={{ marginBottom: 10 }}>Link zum Fake</Heading>
@@ -187,7 +187,7 @@ const ReportScreen = () => {
             placeholderTextColor={textColor}
             value={url}
             onChangeText={setUrl}
-            style={localStyles.input}
+            style={styles.input}
           />
           <Space size={20} />
           <Heading style={{ marginBottom: 10 }}>Links zum Thema</Heading>
@@ -199,11 +199,11 @@ const ReportScreen = () => {
             value={moreInfo}
             onChangeText={setMoreInfo}
             multiline
-            style={[localStyles.input, { height: 80 }]}
+            style={[styles.input, { height: 80 }]}
           />
           <Space size={20} />
           {error ? (
-            <UiText style={localStyles.errorText}>{error}</UiText>
+            <UiText style={styles.errorText}>{error}</UiText>
           ) : undefined}
           <Checkbox
             checked={allowedPublic}
@@ -221,15 +221,15 @@ const ReportScreen = () => {
             disabled={!buttonEnabled}
             onPress={onSubmit}
             style={({ pressed }) => [
-              localStyles.submitButton,
-              !buttonEnabled && localStyles.submitButtonDisabled,
+              styles.submitButton,
+              !buttonEnabled && styles.submitButtonDisabled,
               pressed &&
                 buttonEnabled && { backgroundColor: pressedButtonColor },
             ]}
           >
             <UiText
               style={{
-                ...styles.whiteText,
+                ...globalStyles.whiteText,
                 textAlign: "center",
                 fontSize: 18,
               }}

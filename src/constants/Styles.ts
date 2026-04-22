@@ -21,10 +21,11 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  feed: {
-    marginHorizontal: "auto",
+  content: {
+    margin: "auto",
     maxWidth: 700,
-    width: "94%",
+    paddingHorizontal: 10,
+    width: "100%",
   },
   header: {
     flex: 1,

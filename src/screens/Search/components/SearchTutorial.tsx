@@ -1,23 +1,17 @@
-import type { StyleProp, TextStyle } from "react-native";
+import { StyleSheet } from "react-native";
 
 import FaktenBot from "#/components/animations/FaktenBot";
+import Card from "#/components/design/Card";
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 
-interface SearchTutorialProperties {
-  textStyle: StyleProp<TextStyle>;
-}
-
-const SearchTutorial = ({ textStyle }: SearchTutorialProperties) => (
-  <View
+const SearchTutorial = () => (
+  <Card
     style={{
-      flex: 1,
       alignItems: "center",
-      paddingHorizontal: 30,
-      paddingTop: 40,
     }}
   >
-    <UiText style={textStyle}>
+    <UiText style={styles.text}>
       So funktioniert die Suche:{"\n"}• Echtzeit-Vorschläge beim Tippen{"\n"}•
       KI-FaktenBot für die Suche{"\n"}• Gib eine URL ein für einen Faktencheck
       dazu{"\n"}
@@ -28,7 +22,11 @@ const SearchTutorial = ({ textStyle }: SearchTutorialProperties) => (
     <View style={{ position: "absolute", top: 20, right: 20 }}>
       <FaktenBot search={false} reaction={undefined} />
     </View>
-  </View>
+  </Card>
 );
+
+const styles = StyleSheet.create({
+  text: { fontSize: 17, textAlign: "left" },
+});
 
 export default SearchTutorial;

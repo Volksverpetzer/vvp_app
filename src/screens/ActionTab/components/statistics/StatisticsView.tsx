@@ -23,6 +23,7 @@ const StatisticsView = () => {
     {},
   );
   const [scrollX] = useState(new Animated.Value(0));
+  const [panelWidth, setPanelWidth] = useState(0);
   const { width } = useFeedDimensions();
   const corporate = Colors.dark.primary;
 
@@ -40,17 +41,18 @@ const StatisticsView = () => {
     <View
       style={{
         ...styles.centered,
-        ...styles.feed,
         zIndex: 99,
         backgroundColor: corporate,
         borderRadius: 30,
         paddingVertical: 20,
+        marginHorizontal: 10,
       }}
     >
       <ScrollView
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        onLayout={(e) => setPanelWidth(e.nativeEvent.layout.width)}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
           { useNativeDriver: false },
@@ -64,7 +66,7 @@ const StatisticsView = () => {
           valueKey="streak"
           showLeftChevron={false}
           showRightChevron={true}
-          width={width}
+          width={panelWidth || width}
           statistics={statistics}
           descriptionMap={descriptionMap}
         />
@@ -77,7 +79,7 @@ const StatisticsView = () => {
           valueKey="count"
           showLeftChevron={true}
           showRightChevron={false}
-          width={width}
+          width={panelWidth || width}
           statistics={statistics}
           descriptionMap={descriptionMap}
         />
