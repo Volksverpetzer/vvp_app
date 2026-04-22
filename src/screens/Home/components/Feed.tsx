@@ -7,12 +7,11 @@ import type {
   ViewStyle,
   ViewToken,
 } from "react-native";
-import { FlatList, Pressable, RefreshControl } from "react-native";
+import { FlatList, Pressable, RefreshControl, View } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
-import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
 import Heading from "#/components/typography/Heading";
 import UiSpinner from "#/components/ui/UiSpinner";
