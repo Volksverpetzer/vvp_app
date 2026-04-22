@@ -51,7 +51,6 @@ const Feed = (properties: FeedProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  const backgroundColor = Colors[colorScheme].surface;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
 
@@ -202,13 +201,7 @@ const Feed = (properties: FeedProperties) => {
   }
 
   return (
-    <View
-      style={{
-        ...styles.centered,
-        backgroundColor,
-        flexDirection: "row",
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <FlatList
         onScroll={properties.onScroll}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}

@@ -22,9 +22,10 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    marginHorizontal: "auto",
+    margin: "auto",
     maxWidth: 700,
-    width: "94%",
+    paddingHorizontal: 10,
+    width: "100%",
   },
   header: {
     flex: 1,

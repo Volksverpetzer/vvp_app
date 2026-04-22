@@ -80,7 +80,6 @@ const SearchHeader = ({
         style={{
           ...styles.row,
           ...styles.input,
-          ...styles.content,
           height: 50,
           paddingRight: 40,
           backgroundColor: corporate,

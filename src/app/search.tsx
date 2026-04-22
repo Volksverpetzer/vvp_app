@@ -1,9 +1,9 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useRef } from "react";
 import type { TextInput } from "react-native";
+import { View } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
-import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -44,35 +44,46 @@ const SearchScreen = () => {
         setIsLoading,
       }) => {
         return (
-          <View style={{ ...styles.content, flex: 1, backgroundColor }}>
-            <SearchHeader
-              search={search}
-              setSearch={setSearch}
-              setSearchParams={setSearchParams}
-              searchRef={searchReference}
-              resultsLength={resultsLength}
-              isLoading={isLoading}
-              showFaktenBot={true}
-            />
-
-            {/* Show Algolia results while typing */}
-            {search !== searchParams && search.length > 0 && (
-              <AlgoliaSearchResults searchString={search} />
-            )}
-
-            {/* Show tutorial when no search is active */}
-            {searchParams === "" && search === "" && <SearchTutorial />}
-
-            {/* Show search results when search is active */}
-            {searchParams !== "" && (
-              <AISearch
-                setIsLoading={setIsLoading}
-                search={searchParams}
-                setResultsLength={setResultsLength}
+          <View
+            style={{
+              ...styles.container,
+              backgroundColor,
+            }}
+          >
+            <View
+              style={{
+                ...styles.content,
+                flex: 1,
+              }}
+            >
+              <SearchHeader
+                search={search}
+                setSearch={setSearch}
+                setSearchParams={setSearchParams}
+                searchRef={searchReference}
+                resultsLength={resultsLength}
+                isLoading={isLoading}
                 showFaktenBot={true}
               />
-            )}
 
+              {/* Show Algolia results while typing */}
+              {search !== searchParams && search.length > 0 && (
+                <AlgoliaSearchResults searchString={search} />
+              )}
+
+              {/* Show tutorial when no search is active */}
+              {searchParams === "" && search === "" && <SearchTutorial />}
+
+              {/* Show search results when search is active */}
+              {searchParams !== "" && (
+                <AISearch
+                  setIsLoading={setIsLoading}
+                  search={searchParams}
+                  setResultsLength={setResultsLength}
+                  showFaktenBot={true}
+                />
+              )}
+            </View>
             {/* NavBar at the bottom */}
             <NavBar />
           </View>

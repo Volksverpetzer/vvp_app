@@ -1,12 +1,11 @@
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, Pressable } from "react-native";
+import { Animated, Pressable, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import { LogoBig } from "#/components/SvgIcons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -35,6 +34,7 @@ const HomeScreen = () => {
   const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
   const corporate = Colors[colorScheme].primary;
+  const backgroundColor = Colors[colorScheme].surface;
 
   const HEADER_HEIGHT = 220;
 
@@ -56,7 +56,7 @@ const HomeScreen = () => {
   }, [contentSettings]);
 
   return (
-    <View style={styles.container}>
+    <>
       <AnimatedHeader
         title={
           isVolksverpetzer ? (
@@ -75,7 +75,6 @@ const HomeScreen = () => {
           style={{
             ...styles.row,
             ...styles.input,
-            ...styles.content,
             height: 50,
             backgroundColor: corporate,
           }}
@@ -92,18 +91,25 @@ const HomeScreen = () => {
           <SearchIcon color="white" size={24} />
         </Pressable>
       </AnimatedHeader>
-      <Feed
-        {...feedprops}
-        key={0}
-        style={{ paddingTop: HEADER_HEIGHT, gap: 20 }}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-          {
-            useNativeDriver: false,
-          },
-        )}
-      />
-    </View>
+      <View
+        style={{
+          ...styles.container,
+          backgroundColor,
+        }}
+      >
+        <Feed
+          {...feedprops}
+          key={0}
+          style={{ paddingTop: HEADER_HEIGHT, gap: 20 }}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+            {
+              useNativeDriver: false,
+            },
+          )}
+        />
+      </View>
+    </>
   );
 };
 

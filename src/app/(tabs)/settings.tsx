@@ -120,6 +120,7 @@ const SettingsScreen = () => {
           backgroundColor,
           paddingTop: HEADER_HEIGHT,
           gap: 20,
+          paddingHorizontal: 0,
         }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
