@@ -6,6 +6,7 @@ import View from "#/components/design/View";
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { styles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -73,13 +74,12 @@ const InstaPostCard = (properties: InstaPostCardProperties) => {
         onPress={handlePress}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         activeOpacity={1}
-        style={{ paddingHorizontal: 30 }}
+        style={{ paddingHorizontal: 30, paddingVertical: 10 }}
       >
-        <UiText style={{ fontSize: 16, textAlign: "left" }}>
-          {excerpt}
-          {"... "}
-          <UiText style={{ color: corporate, fontSize: 16 }}>mehr</UiText>
-        </UiText>
+        <UiText style={{ fontSize: 16 }}>{excerpt}…</UiText>
+        <View style={styles.row}>
+          <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
+        </View>
       </TouchableOpacity>
     </View>
   );
