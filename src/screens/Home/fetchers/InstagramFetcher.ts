@@ -1,4 +1,4 @@
-import InstaPost from "#/components/posts/InstaPost";
+import InstaPostCard from "#/components/posts/insta/InstaPostCard";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
 
@@ -24,7 +24,7 @@ export const InstagramFetcher = {
           new Post(
             post.timestamp,
             post.id,
-            InstaPost,
+            InstaPostCard,
             post,
             [{ url: post.permalink, title: "Instagram Post teilen" }],
             1,
@@ -46,7 +46,7 @@ export const InstagramFetcher = {
       )
       .map(
         (post) =>
-          new Post(post.timestamp, post.id, InstaPost, post, [
+          new Post(post.timestamp, post.id, InstaPostCard, post, [
             { url: post.permalink, title: "Instagram Post teilen" },
           ]),
       );
