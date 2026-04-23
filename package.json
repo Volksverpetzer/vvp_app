@@ -17,7 +17,7 @@
       ]
     }
   },
-  "packageManager": "pnpm@10.33.1",
+  "packageManager": "pnpm@10.33.2",
   "engines": {
     "node": "24.x"
   },
@@ -62,9 +62,9 @@
     "@likashefqet/react-native-image-zoom": "4.3.0",
     "@native-html/iframe-plugin": "2.6.1",
     "@react-native-async-storage/async-storage": "2.2.0",
-    "@react-navigation/bottom-tabs": "^7.15.9",
-    "@react-navigation/native": "^7.2.2",
-    "@rive-app/react-native": "^0.4.5",
+    "@react-navigation/bottom-tabs": "7.15.9",
+    "@react-navigation/native": "7.2.2",
+    "@rive-app/react-native": "0.4.6",
     "@stripe/stripe-react-native": "0.64.0",
     "@vseslav/react-native-horizontal-picker": "0.1.1",
     "buffer": "6.0.3",
@@ -100,11 +100,11 @@
     "lodash": "4.18.1",
     "react": "19.2.5",
     "react-dom": "19.2.5",
-    "react-native": "0.83.4",
+    "react-native": "0.83.6",
     "react-native-gesture-handler": "2.30.0",
     "react-native-hyperlink": "0.1.2",
     "react-native-modal": "14.0.0-rc.1",
-    "react-native-nitro-modules": "^0.35.4",
+    "react-native-nitro-modules": "0.35.5",
     "react-native-reanimated": "4.2.1",
     "react-native-render-html": "6.3.4",
     "react-native-safe-area-context": "5.6.2",
