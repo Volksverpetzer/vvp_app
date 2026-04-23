@@ -208,7 +208,7 @@ const Feed = (properties: FeedProperties) => {
         initialNumToRender={3}
         maxToRenderPerBatch={3}
         onEndReachedThreshold={0.7}
-        windowSize={100}
+        windowSize={10}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
