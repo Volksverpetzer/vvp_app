@@ -153,7 +153,7 @@ const Body = (properties: BodyProperties) => {
       ignoredDomTags={["script", "style", "noscript", "input"]}
       renderersProps={renderersProperties}
       defaultTextProps={{ selectable: true }}
-      systemFonts={["SourceSansPro"]}
+      systemFonts={["SourceSansPro", "SourceSansProBold"]}
       contentWidth={width}
       customHTMLElementModels={customHTMLElementModels}
       domVisitors={{ onElement }}
