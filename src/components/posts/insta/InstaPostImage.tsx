@@ -117,7 +117,8 @@ const InstaPostImage = ({
         >
           {photos.map((source, index) => (
             <TouchableOpacity
-              accessibilityRole={onPress ? "button" : "image"}
+              accessibilityRole="button"
+              accessibilityHint="Gedrückt halten zum Teilen"
               key={index * 163 + id}
               activeOpacity={0.95}
               onPress={onPress}
