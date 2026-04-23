@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { TouchableOpacity } from "react-native";
 
 import View from "#/components/design/View";
@@ -20,6 +20,7 @@ type InstaPostCardProperties = InstaPostProperties & { inView?: boolean };
 const InstaPostCard = (properties: InstaPostCardProperties) => {
   const { id, permalink, media_url, caption, children, inView } = properties;
   const [registered, setRegistered] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   const router = useRouter();
   const corporate = useCorporateColor();
@@ -48,13 +49,15 @@ const InstaPostCard = (properties: InstaPostCardProperties) => {
 
   const handleFirstLoad = useCallback(() => {
     ContentStore.setStoredInstaPost(id, properties);
+    setLoaded(true);
   }, [id, properties]);
 
-  const handlePageChange = useCallback(() => {
-    if (registered) return;
-    registerViews(computedPermalink);
-    setRegistered(true);
-  }, [registered, computedPermalink]);
+  useEffect(() => {
+    if (inView && loaded && !registered) {
+      registerViews(computedPermalink);
+      setRegistered(true);
+    }
+  }, [inView, loaded, registered, computedPermalink]);
 
   return (
     <View>
@@ -67,7 +70,6 @@ const InstaPostCard = (properties: InstaPostCardProperties) => {
         onPress={handlePress}
         onLongPress={handleLongPress}
         onFirstLoad={handleFirstLoad}
-        onPageChange={handlePageChange}
       />
       <TouchableOpacity
         accessibilityRole="button"
