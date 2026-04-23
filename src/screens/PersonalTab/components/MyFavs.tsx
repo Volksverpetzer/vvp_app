@@ -7,7 +7,7 @@ import LoadingFallback from "#/components/animations/LoadingFallback";
 import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import GenericPost from "#/components/posts/GenericPost";
-import InstaPost from "#/components/posts/InstaPost";
+import InstaPostCard from "#/components/posts/insta/InstaPostCard";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -50,7 +50,7 @@ const loadFavoriteInstaPost = async (
     return new Post<InstaPostProperties>(
       post.timestamp,
       post.id,
-      InstaPost,
+      InstaPostCard,
       post,
       [{ url: post.permalink, title: "Instagram Post teilen" }],
       1,
