@@ -15,9 +15,7 @@ import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { InstaPostProperties } from "#/types";
 
-type InstaPostCardProperties = InstaPostProperties & { inView?: boolean };
-
-const InstaPostCard = (properties: InstaPostCardProperties) => {
+const InstaPostCard = (properties: InstaPostProperties) => {
   const { id, permalink, media_url, caption, children, inView } = properties;
   const [registered, setRegistered] = useState(false);
   const [loaded, setLoaded] = useState(false);
