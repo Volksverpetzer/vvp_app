@@ -17,6 +17,8 @@ import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { BlueskyPostProperties, HttpsUrl } from "#/types";
 
+const htmlPattern = /<[^>]+>/g;
+
 /**
  * Displays a Bluesky post as a feed card (excerpt + navigation to thread).
  */
@@ -29,7 +31,6 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   const corporate = Colors[colorScheme].primary;
   const grey = Colors[colorScheme].textMuted;
   const postId = uri.split("/app.bsky.feed.post/")[1];
-  const htmlPattern = /<[^>]+>/g;
 
   useEffect(() => {
     ContentStore.setStoredBskyPostById(postId, properties);
