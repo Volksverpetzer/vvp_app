@@ -89,6 +89,34 @@ For platform-specific runs:
 - `pnpm android`
 - `pnpm web`
 
+## Development Builds (EAS)
+
+Development builds include `expo-dev-client` and support full native modules — unlike Expo Go. They are built via EAS and can be shared with the team via a URL.
+
+```bash
+pnpm dev:android   # Android
+pnpm dev:ios       # iOS
+pnpm dev:all       # Both platforms at once
+```
+
+After the build finishes, EAS generates a shareable URL. Team members can open it on their device to download and install directly, or use:
+
+```bash
+pnpx eas-cli build:run --profile development
+```
+
+**iOS notes:**
+
+- iOS 16+: enable Developer Mode on the device (_Settings → Privacy & Security → Developer Mode_)
+- Devices must be registered in your Apple Developer account — EAS will prompt you to register new ones via QR code during the build
+- To add a new device without a full rebuild: `pnpx eas-cli build:resign`
+
+After installing the build, start the dev server as usual:
+
+```bash
+pnpm start
+```
+
 ## Other useful scripts
 
 - Run tests: `pnpm test`
