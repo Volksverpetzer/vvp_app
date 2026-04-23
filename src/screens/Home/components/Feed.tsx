@@ -15,6 +15,7 @@ import EmptyComponent from "#/components/design/EmptyComponent";
 import GenericPost from "#/components/posts/GenericPost";
 import Heading from "#/components/typography/Heading";
 import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -207,7 +208,7 @@ const Feed = (properties: FeedProperties) => {
         initialNumToRender={3}
         maxToRenderPerBatch={3}
         onEndReachedThreshold={0.7}
-        windowSize={100}
+        windowSize={10}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -220,13 +221,32 @@ const Feed = (properties: FeedProperties) => {
           (isLoadingMore ? (
             <UiSpinner size="large" />
           ) : (
-            <Pressable
-              accessibilityRole="button"
-              style={styles.centered}
-              onPress={() => router.push("/search")}
+            <View
+              style={{
+                paddingBottom: 30,
+                alignItems: "center",
+                ...styles.noBackground,
+              }}
             >
-              <SearchIcon color={corporate} />
-            </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                style={styles.centered}
+                onPress={() => router.push("/search")}
+              >
+                <UiText
+                  style={{
+                    textAlign: "center",
+                    paddingVertical: 30,
+                    fontSize: 18,
+                    color: corporate,
+                  }}
+                >
+                  Nicht gefunden, wonach du gesucht hast? Probiere die Suche
+                  aus!
+                </UiText>
+                <SearchIcon color={corporate} size={24} />
+              </Pressable>
+            </View>
           ))
         }
         keyExtractor={(item) => item.id}

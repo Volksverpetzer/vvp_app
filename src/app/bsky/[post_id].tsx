@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
-import BlueskyPostDetail from "#/components/posts/BlueskyPostDetail";
+import BlueskyPostDetail from "#/components/posts/bsky/BlueskyPostDetail";
 import { styles } from "#/constants/Styles";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { type BlueskyPostProperties, type HttpsUrl } from "#/types";
