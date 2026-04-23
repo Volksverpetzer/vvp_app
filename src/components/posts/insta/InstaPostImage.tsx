@@ -14,7 +14,7 @@ interface InstaPostImageProps {
   corporate: string;
   inView?: boolean;
   id: string;
-  onPress: () => void;
+  onPress?: () => void;
   onLongPress: (source: string) => void;
   onFirstLoad?: () => void;
   onPageChange?: () => void;
@@ -117,7 +117,7 @@ const InstaPostImage = ({
         >
           {photos.map((source, index) => (
             <TouchableOpacity
-              accessibilityRole="button"
+              accessibilityRole={onPress ? "button" : "image"}
               key={index * 163 + id}
               activeOpacity={0.95}
               onPress={onPress}

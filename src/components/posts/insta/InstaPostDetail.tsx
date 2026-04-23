@@ -51,7 +51,6 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
         corporate={corporate}
         inView={true}
         id={id}
-        onPress={() => {}}
         onLongPress={handleLongPress}
       />
       <Hyperlink linkStyle={{ color: corporate }} onPress={handleLinkPress}>
