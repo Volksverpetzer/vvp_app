@@ -10,8 +10,12 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
+import {
+  isObjectRecord,
+  isValidFavorites,
+  isValidSources,
+} from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import type { StoredFavs, StoredSources } from "#/types";
 
 const BackupView = () => {
   const [busy, setBusy] = useState<"export" | "import" | null>(null);
@@ -51,18 +55,34 @@ const BackupView = () => {
       if (result.canceled) return;
 
       const content = await new File(result.assets[0].uri).text();
-      const data = JSON.parse(content) as {
-        favorites?: StoredFavs;
-        sources?: StoredSources;
-      };
+      const data: unknown = JSON.parse(content);
 
-      if (!data.favorites && !data.sources) {
+      if (!isObjectRecord(data)) {
         Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
         return;
       }
 
-      if (data.favorites) await FavoritesStore.setStoredFavs(data.favorites);
-      if (data.sources) await SourcesStore.setStoredSources(data.sources);
+      const { favorites, sources } = data;
+
+      if (favorites !== undefined && !isValidFavorites(favorites)) {
+        Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
+        return;
+      }
+      if (sources !== undefined && !isValidSources(sources)) {
+        Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
+        return;
+      }
+      if (!favorites && !sources) {
+        Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
+        return;
+      }
+
+      if (isValidFavorites(favorites)) {
+        await FavoritesStore.setStoredFavs(favorites);
+      }
+      if (isValidSources(sources)) {
+        await SourcesStore.setStoredSources(sources);
+      }
 
       Toast.show({
         type: "success",
