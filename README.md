@@ -89,6 +89,17 @@ For platform-specific runs:
 - `pnpm android`
 - `pnpm web`
 
+## EAS Build Profiles
+
+| Profile       | `distribution`  | Used for                                                                  |
+| ------------- | --------------- | ------------------------------------------------------------------------- |
+| `development` | `internal`      | Dev builds with `expo-dev-client` for the team (`dev:*` scripts)          |
+| `preview`     | `internal`      | Direct APK sharing with designers (`preview:build`)                       |
+| `internal`    | store (default) | Play Store + App Store submission (`expo-release-beta.yml --auto-submit`) |
+| `local-apk`   | `internal`      | Local APK build → GitHub release artifact                                 |
+| `mimikama`    | store (default) | Mimikama variant store submission                                         |
+| `fdroid`      | `internal`      | F-Droid / FOSS local build (no push notifications)                        |
+
 ## Development Builds (EAS)
 
 Development builds include `expo-dev-client` and support full native modules — unlike Expo Go. They are built via EAS and can be shared with the team via a URL.

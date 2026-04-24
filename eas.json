@@ -14,6 +14,17 @@
       }
     },
     "internal": {
+      "autoIncrement": true,
+      "node": "24.14.0",
+      "channel": "preview",
+      "android": {
+        "image": "latest"
+      },
+      "env": {
+        "APP": "volksverpetzer"
+      }
+    },
+    "preview": {
       "distribution": "internal",
       "autoIncrement": true,
       "node": "24.14.0",

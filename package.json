@@ -32,7 +32,7 @@
     "dev:android": "pnpx eas-cli build -p android --profile development",
     "dev:ios": "pnpx eas-cli build -p ios --profile development",
     "dev:all": "pnpx eas-cli build --platform all --profile development",
-    "preview:build": "pnpx eas-cli build -p android --profile internal",
+    "preview:build": "pnpx eas-cli build -p android --profile preview",
     "preview:update": "pnpx eas-cli update --channel preview --auto",
     "ios": "expo run:ios",
     "web": "expo start --web",
