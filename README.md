@@ -90,6 +90,78 @@ For platform-specific runs:
 - `pnpm android`
 - `pnpm web`
 
+## EAS Build Profiles
+
+| Profile       | `distribution`  | Used for                                                                           |
+| ------------- | --------------- | ---------------------------------------------------------------------------------- |
+| `development` | `internal`      | Dev builds with `expo-dev-client` for the team (`dev:*` scripts)                   |
+| `preview`     | `internal`      | Direct APK sharing with designers (`preview:build`)                                |
+| `internal`    | store (default) | Beta store submission — Play Store + App Store (`expo-release-beta.yml`)           |
+| `production`  | store (default) | Stable store submission + GitHub release APK (`expo-release.yml`, default profile) |
+| `local-apk`   | `internal`      | Beta GitHub release APK (`expo-release-beta.yml`)                                  |
+| `mimikama`    | store (default) | Mimikama variant store submission                                                  |
+| `fdroid`      | `internal`      | F-Droid / FOSS local build (no push notifications)                                 |
+
+## Development Builds (EAS)
+
+Development builds include `expo-dev-client` and support full native modules — unlike Expo Go. They are built via EAS and can be shared with the team via a URL.
+
+```bash
+pnpm dev:android   # Android
+pnpm dev:ios       # iOS
+pnpm dev:all       # Both platforms at once
+```
+
+After the build finishes, EAS generates a shareable URL. Team members can open it on their device to download and install directly, or use:
+
+```bash
+pnpx eas-cli build:run --profile development
+```
+
+**iOS notes:**
+
+- iOS 16+: enable Developer Mode on the device (_Settings → Privacy & Security → Developer Mode_)
+- Devices must be registered in your Apple Developer account — EAS will prompt you to register new ones via QR code during the build
+- To add a new device without a full rebuild: `pnpx eas-cli build:resign`
+
+After installing the build, start the dev server as usual:
+
+```bash
+pnpm start
+```
+
+## Preview Builds (Internal Distribution)
+
+Preview builds are standalone release builds intended for sharing with testers or designers who are **not on the same network**. Unlike development builds, they do not require a running dev server.
+
+```bash
+pnpm preview:build   # Build Android APK via EAS (internal distribution)
+```
+
+When the build finishes, EAS generates a shareable install link with a QR code — no Expo account required for the recipient. Testers just open the link on their Android device and install the APK.
+
+**iOS:** Apple requires either TestFlight (invite testers by email, recommended) or ad-hoc distribution (device UDIDs must be registered in your Apple Developer account first). There is no equivalent one-click install link for iOS.
+
+### Iterating without a full rebuild (OTA updates)
+
+For JS-only changes (UI, fonts, copy) you can push an over-the-air update to everyone who already has the preview build installed — no reinstall needed:
+
+```bash
+pnpm preview:update
+```
+
+This publishes the current branch's JS bundle to the `preview` channel. The app picks it up silently on next launch.
+
+**Typical workflow when sharing a branch with designers:**
+
+```bash
+# First time — send them the install link EAS prints
+pnpm preview:build
+
+# Every subsequent change on the same branch
+pnpm preview:update
+```
+
 ## Other useful scripts
 
 - Run tests: `pnpm test`

@@ -48,7 +48,7 @@ jest.mock("#/components/ui/UiText", () => ({
   default: jest.fn(({ children }) => children),
 }));
 
-jest.mock("#/components/posts/InstaPost", () => ({
+jest.mock("#/components/posts/insta/InstaPostCard", () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));

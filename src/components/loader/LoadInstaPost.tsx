@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 import Loader from "#/components/loader/Loader";
-import InstaPost from "#/components/posts/InstaPost";
+import InstaPostCard from "#/components/posts/insta/InstaPostCard";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import API from "#/helpers/network/ServerAPI";
 import type { InstaPostProperties } from "#/types";
@@ -32,7 +32,7 @@ const LoadInstaPost = (properties: LoadProperties) => {
   );
 
   const renderPost = useCallback(
-    (post: InstaPostProperties) => <InstaPost inView={inView} {...post} />,
+    (post: InstaPostProperties) => <InstaPostCard inView={inView} {...post} />,
     [inView],
   );
 

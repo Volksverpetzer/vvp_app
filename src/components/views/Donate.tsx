@@ -88,7 +88,6 @@ const Donate = (properties: DonateProperties) => {
             style={{
               height: 50,
               marginBottom: 20,
-              ...styles.feed,
               ...styles.noBackground,
             }}
           >

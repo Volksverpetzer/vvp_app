@@ -20,6 +20,7 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
         marginBottom: 80,
         gap: 20,
         ...styles.centered,
+        overflow: "hidden",
       }}
     >
       <WorldIcon color={corporate} size={60} />

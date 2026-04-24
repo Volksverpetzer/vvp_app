@@ -5,6 +5,8 @@ import { ScrollView, TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
+import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
+import { PostText } from "#/components/posts/bsky/PostText";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -12,9 +14,6 @@ import { onLinkPress } from "#/helpers/Linking";
 import { hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { BlueskyPostProperties, HttpsUrl } from "#/types";
-
-import { BlueskyPostHeader } from "./BlueskyPostHeader";
-import { PostText } from "./PostText";
 
 /**
  * Displays a full Bluesky thread (post + replies) for the detail screen.

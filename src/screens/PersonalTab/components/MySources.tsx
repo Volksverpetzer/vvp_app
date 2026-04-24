@@ -41,7 +41,7 @@ const MySources = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1, gap: 20, backgroundColor: undefined }}>
+    <View style={{ flex: 1, gap: 20 }}>
       {Object.keys(sources)
         .sort((keyA, keyB) => {
           return sources[keyB].date.localeCompare(sources[keyA].date);
