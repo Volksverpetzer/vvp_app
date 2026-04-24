@@ -19,6 +19,9 @@ jobs:
         with:
           setup-expo-token: ${{ secrets.EXPO_TOKEN }}
 
+      # --auto derives the EAS Update branch from the git branch (for per-PR QR codes).
+      # --environment preview injects EAS env vars — separate from --channel, which targets installed builds.
+      # To push to all installed preview builds instead, use: pnpm preview:update
       - name: 🚀 Publish preview
         uses: expo/expo-github-action/preview@v8
         with:
