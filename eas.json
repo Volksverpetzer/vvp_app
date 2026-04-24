@@ -9,6 +9,9 @@
       "distribution": "internal",
       "node": "24.14.0",
       "channel": "development",
+      "android": {
+        "image": "auto"
+      },
       "env": {
         "APP": "volksverpetzer"
       }
@@ -18,7 +21,7 @@
       "node": "24.14.0",
       "channel": "preview",
       "android": {
-        "image": "latest"
+        "image": "auto"
       },
       "env": {
         "APP": "volksverpetzer"
@@ -26,8 +29,15 @@
     },
     "preview": {
       "distribution": "internal",
+      "autoIncrement": true,
       "node": "24.14.0",
-      "channel": "preview"
+      "channel": "preview",
+      "android": {
+        "image": "auto"
+      },
+      "env": {
+        "APP": "volksverpetzer"
+      }
     },
     "production": {
       "autoIncrement": true,
@@ -36,7 +46,7 @@
         "resourceClass": "m-medium"
       },
       "android": {
-        "image": "latest"
+        "image": "auto"
       },
       "channel": "production",
       "env": {
@@ -46,6 +56,7 @@
     "local-apk": {
       "node": "24.14.0",
       "android": {
+        "image": "auto",
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
       },
@@ -61,7 +72,7 @@
         "resourceClass": "m-medium"
       },
       "android": {
-        "image": "latest"
+        "image": "auto"
       },
       "channel": "production",
       "env": {
@@ -71,6 +82,7 @@
     "fdroid": {
       "node": "24.14.0",
       "android": {
+        "image": "auto",
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
       },
