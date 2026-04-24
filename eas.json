@@ -25,11 +25,6 @@
         "APP": "volksverpetzer"
       }
     },
-    "preview": {
-      "distribution": "internal",
-      "node": "24.14.0",
-      "channel": "preview"
-    },
     "production": {
       "autoIncrement": true,
       "node": "24.14.0",
