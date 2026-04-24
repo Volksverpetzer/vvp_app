@@ -104,6 +104,7 @@ jest.mock("#/components/views/SettingsList", () => jest.fn(() => null));
 jest.mock("#/components/buttons/ShopButton", () => jest.fn(() => null));
 jest.mock("#/components/Icons", () => ({
   CodeIcon: jest.fn(() => null),
+  DownloadIcon: jest.fn(() => null),
   FeedIcon: jest.fn(() => null),
   FeedbackIcon: jest.fn(() => null),
   GiveIcon: jest.fn(() => null),
@@ -111,6 +112,7 @@ jest.mock("#/components/Icons", () => ({
   NotificationIcon: jest.fn(() => null),
   SearchIcon: jest.fn(() => null),
   SettingsIcon: jest.fn(() => null),
+  UploadIcon: jest.fn(() => null),
 }));
 jest.mock("react-native-gesture-handler", () => ({
   ScrollView: jest.fn(({ children }: any) => children),
@@ -123,6 +125,8 @@ jest.mock("react-native-toast-message", () => ({
 describe("SettingsScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsFoss = false;
+
     jest.spyOn(React, "useContext").mockReturnValue({
       contentSettings: {},
       setContentSettings: jest.fn(),
