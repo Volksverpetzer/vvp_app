@@ -16,6 +16,7 @@ runs:
       shell: bash
 
     - name: 📊 Upload coverage to Codecov
+      if: ${{ inputs.codecov-token != '' }}
       uses: codecov/codecov-action@v5
       with:
         token: ${{ inputs.codecov-token }}
