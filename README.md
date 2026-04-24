@@ -117,6 +117,38 @@ After installing the build, start the dev server as usual:
 pnpm start
 ```
 
+## Preview Builds (Internal Distribution)
+
+Preview builds are standalone release builds intended for sharing with testers or designers who are **not on the same network**. Unlike development builds, they do not require a running dev server.
+
+```bash
+pnpm preview:build   # Build Android APK via EAS (internal distribution)
+```
+
+When the build finishes, EAS generates a shareable install link with a QR code — no Expo account required for the recipient. Testers just open the link on their Android device and install the APK.
+
+**iOS:** Apple requires either TestFlight (invite testers by email, recommended) or ad-hoc distribution (device UDIDs must be registered in your Apple Developer account first). There is no equivalent one-click install link for iOS.
+
+### Iterating without a full rebuild (OTA updates)
+
+For JS-only changes (UI, fonts, copy) you can push an over-the-air update to everyone who already has the preview build installed — no reinstall needed:
+
+```bash
+pnpm preview:update
+```
+
+This publishes the current branch's JS bundle to the `preview` channel. The app picks it up silently on next launch.
+
+**Typical workflow when sharing a branch with designers:**
+
+```bash
+# First time — send them the install link EAS prints
+pnpm preview:build
+
+# Every subsequent change on the same branch
+pnpm preview:update
+```
+
 ## Other useful scripts
 
 - Run tests: `pnpm test`
