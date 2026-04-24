@@ -1,4 +1,3 @@
-import { Octicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
@@ -6,6 +5,7 @@ import { useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 
+import { DownloadIcon, UploadIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
@@ -99,7 +99,7 @@ const BackupView = () => {
             <ActivityIndicator color={iconOnPrimary} size="small" />
           ) : (
             <>
-              <Octicons name="upload" size={18} color={iconOnPrimary} />
+              <UploadIcon size={18} color={iconOnPrimary} />
               <UiText style={[styles.buttonLabel, { color: iconOnPrimary }]}>
                 Exportieren
               </UiText>
@@ -122,7 +122,7 @@ const BackupView = () => {
             <ActivityIndicator color={iconOnPrimary} size="small" />
           ) : (
             <>
-              <Octicons name="download" size={18} color={iconOnPrimary} />
+              <DownloadIcon size={18} color={iconOnPrimary} />
               <UiText style={[styles.buttonLabel, { color: iconOnPrimary }]}>
                 Importieren
               </UiText>
