@@ -9,7 +9,12 @@ const EmRenderer = (properties: InternalRendererProps<TText>) => {
     parentFontFamily === "SourceSansProBold"
       ? "SourceSansProBoldItalic"
       : "SourceSansProItalic";
-  return <Renderer {...rendererProps} style={{ fontFamily }} />;
+  return (
+    <Renderer
+      {...rendererProps}
+      style={[rendererProps.style, { fontFamily }]}
+    />
+  );
 };
 
 export default EmRenderer;
