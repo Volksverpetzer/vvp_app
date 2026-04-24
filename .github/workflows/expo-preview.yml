@@ -20,4 +20,9 @@ jobs:
           setup-expo-token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 Publish preview
-        run: APP=volksverpetzer eas update --non-interactive --auto --environment preview
+        uses: expo/expo-github-action/preview@v8
+        with:
+          command: eas update --non-interactive --auto --environment preview
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          APP: volksverpetzer
