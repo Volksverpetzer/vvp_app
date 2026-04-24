@@ -20,6 +20,7 @@ import { getTagStyles } from "#/helpers/utils/color";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
+import EmRenderer from "#/screens/Home/components/article/renderer/EmRenderer";
 import HeaderRenderer from "#/screens/Home/components/article/renderer/HeaderRenderer";
 import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
 import ImageRenderer from "#/screens/Home/components/article/renderer/ImageRenderer";
@@ -85,6 +86,7 @@ const Body = (properties: BodyProperties) => {
       HeaderRenderer({ ...renderProperties, componentRefs: headerReferences }),
     blockquote: (renderProperties) =>
       BlockRenderer({ renderProps: renderProperties, url: article_link }),
+    em: (renderProperties) => EmRenderer(renderProperties),
   };
 
   const customHTMLElementModels = {
