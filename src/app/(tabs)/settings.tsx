@@ -166,6 +166,7 @@ const SettingsScreen = () => {
             icon={<DatabaseIcon color={primary} size={24} />}
             title="Backup"
           ></Collapsable>
+          <BackupView />
         </View>
         <Divider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
