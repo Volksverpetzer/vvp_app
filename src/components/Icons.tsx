@@ -161,3 +161,7 @@ export const SuccessIcon = ({ ...rest }: OcticonsProps) => (
 export const WorldIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="globe" />
 );
+
+export const DatabaseIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="database" />
+);

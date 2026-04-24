@@ -48,6 +48,10 @@ const SourcesStore = {
    *
    * @param source - The URL of the source to remove in the format `https://${string}`.
    */
+  async setStoredSources(sources: StoredSources): Promise<void> {
+    await BaseStore.setItem(this.sourcesKey, JSON.stringify(sources));
+  },
+
   async removeSource(source: HttpsUrl): Promise<void> {
     const storedSourcesJson =
       (await BaseStore.getItem(this.sourcesKey)) ?? undefined;

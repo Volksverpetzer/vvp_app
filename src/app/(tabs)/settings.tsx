@@ -7,6 +7,7 @@ import Toast from "react-native-toast-message";
 
 import {
   CodeIcon,
+  DatabaseIcon,
   FeedIcon,
   FeedbackIcon,
   GiveIcon,
@@ -33,6 +34,7 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import BackupView from "#/screens/Settings/components/BackupView";
 import type { NotificationSettingType, SettingType } from "#/types";
 
 const SettingsScreen = () => {
@@ -160,6 +162,10 @@ const SettingsScreen = () => {
               settings={advancedSettings}
             />
           </Collapsable>
+          <Collapsable
+            icon={<DatabaseIcon color={primary} size={24} />}
+            title="Backup"
+          ></Collapsable>
         </View>
         <Divider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
