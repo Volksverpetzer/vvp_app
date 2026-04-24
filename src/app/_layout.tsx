@@ -1,6 +1,8 @@
 import {
   SourceSans3_400Regular,
+  SourceSans3_400Regular_Italic,
   SourceSans3_700Bold,
+  SourceSans3_700Bold_Italic,
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
 import { Stack, useSegments } from "expo-router";
@@ -80,7 +82,9 @@ const RootLayout = () => {
 
   const [loaded] = useFonts({
     SourceSansPro: SourceSans3_400Regular,
+    SourceSansProItalic: SourceSans3_400Regular_Italic,
     SourceSansProBold: SourceSans3_700Bold,
+    SourceSansProBoldItalic: SourceSans3_700Bold_Italic,
   });
 
   // On first mount check notification permissions and request if appropriate.
