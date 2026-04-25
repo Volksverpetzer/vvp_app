@@ -11,20 +11,25 @@ import type { StatisticsType, StatisticsValueKey } from "#/types";
 
 import StatisticsBox from "./StatisticsBox";
 
-interface StatsPanelProperties {
+type LeftChevronProp =
+  | { showLeftChevron: true; onLeftPress: () => void }
+  | { showLeftChevron?: false; onLeftPress?: never };
+
+type RightChevronProp =
+  | { showRightChevron: true; onRightPress: () => void }
+  | { showRightChevron?: false; onRightPress?: never };
+
+type StatsPanelProperties = {
   icon: OcticonsIconName;
   title: string;
   subtitle?: string;
   streakKeyToExclude: string;
   valueKey: StatisticsValueKey;
-  showLeftChevron?: boolean;
-  showRightChevron?: boolean;
-  onLeftPress?: () => void;
-  onRightPress?: () => void;
   width: number;
   statistics: Record<string, StatisticsType>;
   descriptionMap: Record<string, string>;
-}
+} & LeftChevronProp &
+  RightChevronProp;
 
 const StatisticsPanel = ({
   icon,
@@ -77,8 +82,10 @@ const StatisticsPanel = ({
       <Space size={10} />
 
       <View style={styles.row}>
-        {showLeftChevron ? (
+        {showLeftChevron && onLeftPress ? (
           <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Vorherige Seite"
             onPress={onLeftPress}
             style={{ paddingHorizontal: 8, paddingVertical: 12 }}
           >
@@ -100,8 +107,10 @@ const StatisticsPanel = ({
             />
           ))}
 
-        {showRightChevron ? (
+        {showRightChevron && onRightPress ? (
           <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Nächste Seite"
             onPress={onRightPress}
             style={{ paddingHorizontal: 8, paddingVertical: 12 }}
           >

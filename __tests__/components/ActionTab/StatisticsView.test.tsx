@@ -14,36 +14,14 @@ import StatisticsView from "#/screens/ActionTab/components/statistics/Statistics
 
 jest.mock("#/helpers/Statistics", () => ({
   __esModule: true,
-  default: { getAllStatistics: jest.fn(() => Promise.resolve({})) },
+  // Never-resolving promise: setStatistics is never called, so no async
+  // state update occurs and no act(...) wrapping is needed.
+  default: { getAllStatistics: jest.fn(() => new Promise(() => {})) },
 }));
 
 jest.mock("#/hooks/useFeedDimensions", () => ({
   useFeedDimensions: () => ({ width: 300 }),
 }));
-
-// Thin stub that renders labelled pressables for each visible chevron.
-jest.mock(
-  "#/screens/ActionTab/components/statistics/StatisticsPanel",
-  () =>
-    ({ onLeftPress, onRightPress, showLeftChevron, showRightChevron }: any) => {
-      const R = require("react");
-      const { Pressable, View } = require("react-native");
-      return R.createElement(
-        View,
-        null,
-        showRightChevron &&
-          R.createElement(Pressable, {
-            testID: "right-chevron",
-            onPress: onRightPress,
-          }),
-        showLeftChevron &&
-          R.createElement(Pressable, {
-            testID: "left-chevron",
-            onPress: onLeftPress,
-          }),
-      );
-    },
-);
 
 jest.mock("#/components/animations/AnimatedPageDots", () =>
   jest.fn(() => null),
@@ -64,14 +42,14 @@ describe("StatisticsView chevron navigation", () => {
   });
 
   it("right chevron scrolls to panel width", () => {
-    const { getByTestId } = render(<StatisticsView />);
-    fireEvent.press(getByTestId("right-chevron"));
+    const { getByRole } = render(<StatisticsView />);
+    fireEvent.press(getByRole("button", { name: "Nächste Seite" }));
     expect(mockScrollTo).toHaveBeenCalledWith({ x: 300, animated: true });
   });
 
   it("left chevron scrolls back to start", () => {
-    const { getByTestId } = render(<StatisticsView />);
-    fireEvent.press(getByTestId("left-chevron"));
+    const { getByRole } = render(<StatisticsView />);
+    fireEvent.press(getByRole("button", { name: "Vorherige Seite" }));
     expect(mockScrollTo).toHaveBeenCalledWith({ x: 0, animated: true });
   });
 });

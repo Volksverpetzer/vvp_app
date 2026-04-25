@@ -24,7 +24,7 @@ const StatisticsView = () => {
   );
   const [scrollX] = useState(new Animated.Value(0));
   const [containerWidth, setContainerWidth] = useState(0);
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<ScrollView | null>(null);
   const { width } = useFeedDimensions();
   const panelWidth = containerWidth || width;
   const corporate = Colors.dark.primary;
