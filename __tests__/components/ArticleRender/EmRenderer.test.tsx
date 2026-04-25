@@ -1,6 +1,5 @@
 import { describe, expect, it, jest } from "@jest/globals";
 import { render } from "@testing-library/react-native";
-import React from "react";
 import type { InternalRendererProps, TText } from "react-native-render-html";
 
 import EmRenderer from "#/screens/Home/components/article/renderer/EmRenderer";
