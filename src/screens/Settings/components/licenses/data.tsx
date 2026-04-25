@@ -83,7 +83,7 @@ export default {
       "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@rive-app/react-native@0.4.5": {
+  "@rive-app/react-native@0.4.6": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-nitro-react-native",
     licenseUrl:
@@ -319,7 +319,7 @@ export default {
       "https://github.com/react-native-modal/react-native-modal/raw/master/LICENSE.md",
     parents: "vvp_app",
   },
-  "react-native-nitro-modules@0.35.4": {
+  "react-native-nitro-modules@0.35.5": {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
     licenseUrl: "https://github.com/mrousavy/nitro",
@@ -394,7 +394,7 @@ export default {
       "https://github.com/software-mansion/react-native-reanimated/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-native@0.83.4": {
+  "react-native@0.83.6": {
     licenses: "MIT",
     repository: "https://github.com/facebook/react-native",
     licenseUrl: "https://github.com/facebook/react-native/raw/master/LICENSE",
