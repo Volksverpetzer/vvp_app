@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     color: "#b00",
-    fontWeight: "bold",
+    fontFamily: "SourceSansProBold",
   },
   container: {
     alignItems: "center",
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   title: {
     color: "#333",
     fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "SourceSansProBold",
     marginBottom: 12,
   },
 });

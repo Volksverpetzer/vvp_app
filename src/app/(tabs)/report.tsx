@@ -61,7 +61,7 @@ const ReportScreen = () => {
         errorText: {
           color: errorColor,
           fontSize: 18,
-          fontWeight: "bold",
+          fontFamily: "SourceSansProBold",
           marginBottom: 20,
           paddingHorizontal: 12,
           textAlign: "center",

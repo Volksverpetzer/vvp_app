@@ -14,12 +14,14 @@ import RenderHtml, { defaultHTMLElementModels } from "react-native-render-html";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { SOURCE_SANS_FONTS } from "#/constants/Styles";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getTagStyles } from "#/helpers/utils/color";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
+import EmRenderer from "#/screens/Home/components/article/renderer/EmRenderer";
 import HeaderRenderer from "#/screens/Home/components/article/renderer/HeaderRenderer";
 import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
 import ImageRenderer from "#/screens/Home/components/article/renderer/ImageRenderer";
@@ -85,6 +87,7 @@ const Body = (properties: BodyProperties) => {
       HeaderRenderer({ ...renderProperties, componentRefs: headerReferences }),
     blockquote: (renderProperties) =>
       BlockRenderer({ renderProps: renderProperties, url: article_link }),
+    em: (renderProperties) => EmRenderer(renderProperties),
   };
 
   const customHTMLElementModels = {
@@ -153,7 +156,7 @@ const Body = (properties: BodyProperties) => {
       ignoredDomTags={["script", "style", "noscript", "input"]}
       renderersProps={renderersProperties}
       defaultTextProps={{ selectable: true }}
-      systemFonts={["SourceSansPro"]}
+      systemFonts={SOURCE_SANS_FONTS}
       contentWidth={width}
       customHTMLElementModels={customHTMLElementModels}
       domVisitors={{ onElement }}

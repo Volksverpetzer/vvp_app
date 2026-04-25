@@ -34,7 +34,11 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
       <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
         <SuccessIcon size={24} color={corporate} />
         <UiText
-          style={{ paddingLeft: 10, color: corporate, fontWeight: "bold" }}
+          style={{
+            paddingLeft: 10,
+            color: corporate,
+            fontFamily: "SourceSansProBold",
+          }}
         >
           {text1}
         </UiText>

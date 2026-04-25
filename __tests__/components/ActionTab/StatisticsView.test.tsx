@@ -7,7 +7,6 @@ import {
   jest,
 } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
-import React from "react";
 import { ScrollView } from "react-native";
 
 import StatisticsView from "#/screens/ActionTab/components/statistics/StatisticsView";
