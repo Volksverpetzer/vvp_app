@@ -7,6 +7,7 @@ import RenderHtml from "react-native-render-html";
 import Card from "#/components/design/Card";
 import Heading from "#/components/typography/Heading";
 import Colors from "#/constants/Colors";
+import { SOURCE_SANS_FONTS } from "#/constants/Styles";
 import { getTagStyles } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -57,12 +58,7 @@ const SearchResultItem = ({
         source={{ html: text }}
         tagsStyles={styles}
         ignoredDomTags={IGNORED_DOM_TAGS}
-        systemFonts={[
-          "SourceSansPro",
-          "SourceSansProItalic",
-          "SourceSansProBold",
-          "SourceSansProBoldItalic",
-        ]}
+        systemFonts={SOURCE_SANS_FONTS}
         contentWidth={contentWidth}
         baseStyle={baseStyle}
       />

@@ -14,6 +14,7 @@ import RenderHtml, { defaultHTMLElementModels } from "react-native-render-html";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { SOURCE_SANS_FONTS } from "#/constants/Styles";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getTagStyles } from "#/helpers/utils/color";
@@ -155,12 +156,7 @@ const Body = (properties: BodyProperties) => {
       ignoredDomTags={["script", "style", "noscript", "input"]}
       renderersProps={renderersProperties}
       defaultTextProps={{ selectable: true }}
-      systemFonts={[
-        "SourceSansPro",
-        "SourceSansProItalic",
-        "SourceSansProBold",
-        "SourceSansProBoldItalic",
-      ]}
+      systemFonts={SOURCE_SANS_FONTS}
       contentWidth={width}
       customHTMLElementModels={customHTMLElementModels}
       domVisitors={{ onElement }}
