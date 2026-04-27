@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import type { OcticonsIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
@@ -11,18 +11,25 @@ import type { StatisticsType, StatisticsValueKey } from "#/types";
 
 import StatisticsBox from "./StatisticsBox";
 
-interface StatsPanelProperties {
+type LeftChevronProp =
+  | { showLeftChevron: true; onLeftPress: () => void }
+  | { showLeftChevron?: false; onLeftPress?: never };
+
+type RightChevronProp =
+  | { showRightChevron: true; onRightPress: () => void }
+  | { showRightChevron?: false; onRightPress?: never };
+
+type StatsPanelProperties = {
   icon: OcticonsIconName;
   title: string;
   subtitle?: string;
   streakKeyToExclude: string;
   valueKey: StatisticsValueKey;
-  showLeftChevron?: boolean;
-  showRightChevron?: boolean;
   width: number;
   statistics: Record<string, StatisticsType>;
   descriptionMap: Record<string, string>;
-}
+} & LeftChevronProp &
+  RightChevronProp;
 
 const StatisticsPanel = ({
   icon,
@@ -32,6 +39,8 @@ const StatisticsPanel = ({
   valueKey,
   showLeftChevron = false,
   showRightChevron = false,
+  onLeftPress,
+  onRightPress,
   width,
   statistics,
   descriptionMap,
@@ -49,7 +58,7 @@ const StatisticsPanel = ({
           style={{
             ...styles.whiteText,
             fontSize: 20,
-            fontWeight: "bold",
+            fontFamily: "SourceSansProBold",
             marginLeft: 10,
           }}
         >
@@ -73,12 +82,17 @@ const StatisticsPanel = ({
       <Space size={10} />
 
       <View style={styles.row}>
-        {showLeftChevron ? (
-          <View style={{ width: 24 }}>
+        {showLeftChevron && onLeftPress ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Vorherige Seite"
+            onPress={onLeftPress}
+            style={{ paddingHorizontal: 8, paddingVertical: 12 }}
+          >
             <ChevronIcon direction="left" size={24} color="white" />
-          </View>
+          </Pressable>
         ) : (
-          <View style={{ width: 24 }} />
+          <View style={{ width: 40 }} />
         )}
 
         {Object.entries(statistics)
@@ -93,12 +107,17 @@ const StatisticsPanel = ({
             />
           ))}
 
-        {showRightChevron ? (
-          <View style={{ width: 24 }}>
+        {showRightChevron && onRightPress ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Nächste Seite"
+            onPress={onRightPress}
+            style={{ paddingHorizontal: 8, paddingVertical: 12 }}
+          >
             <ChevronIcon direction="right" size={24} color="white" />
-          </View>
+          </Pressable>
         ) : (
-          <View style={{ width: 24 }} />
+          <View style={{ width: 40 }} />
         )}
       </View>
 

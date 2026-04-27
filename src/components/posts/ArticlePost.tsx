@@ -169,7 +169,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       fontFamily: "SourceSansProBold",
       paddingHorizontal: 30,
       fontSize: 20,
-      fontWeight: "bold" as const,
+      lineHeight: 26,
       textAlign: "left" as const,
     }),
     [],

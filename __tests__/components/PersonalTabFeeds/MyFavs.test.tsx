@@ -1,5 +1,4 @@
 import { act, render, waitFor } from "@testing-library/react-native";
-import React from "react";
 
 import GenericPost from "#/components/posts/GenericPost";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";

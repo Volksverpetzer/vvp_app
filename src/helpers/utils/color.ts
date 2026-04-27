@@ -33,13 +33,12 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       textDecorationColor: corporate,
     },
     em: {
-      fontStyle: "italic" as const,
+      fontFamily: "SourceSansProItalic",
     },
     p: { color: textColor, padding: 10, fontSize: 18 },
     strong: {
       color: textColor,
-      fontWeight: "bold" as const,
-      fontFamily: "SourceSansProSemiBold",
+      fontFamily: "SourceSansProBold",
     },
     h1: {
       textTransform: "uppercase" as const,
@@ -86,7 +85,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     blockquote: {
       color: textColor,
       fontSize: 18,
-      fontStyle: "italic" as const,
+      fontFamily: "SourceSansProItalic",
       paddingLeft: 20,
       paddingRight: 10,
       paddingVertical: 15,
@@ -98,7 +97,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     cite: {
       color: textColor,
       fontSize: 14,
-      fontStyle: "italic" as const,
+      fontFamily: "SourceSansProItalic",
       textAlign: "right" as const,
       paddingTop: 5,
     },

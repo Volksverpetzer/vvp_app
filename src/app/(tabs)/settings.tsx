@@ -270,16 +270,13 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   donateContainer: {
     alignItems: "center",
-    paddingVertical: 20,
   },
   linksContainer: {
-    flex: 1,
     paddingHorizontal: 20,
     gap: 20,
   },
   infoContainer: {
-    flex: 1,
-    padding: 20,
+    paddingHorizontal: 20,
     gap: 20,
   },
   sectionText: {

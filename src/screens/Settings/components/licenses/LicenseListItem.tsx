@@ -149,7 +149,7 @@ const getStyles = (cardBackground: string) =>
     },
     name: {
       fontSize: 16,
-      fontWeight: "bold",
+      fontFamily: "SourceSansProBold",
       flexShrink: 1, // ensure the title can shrink instead of overflowing
     },
     text: {

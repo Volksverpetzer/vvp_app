@@ -1,5 +1,5 @@
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, ScrollView, View } from "react-native";
 
 import AnimatedPageDots from "#/components/animations/AnimatedPageDots";
@@ -23,8 +23,10 @@ const StatisticsView = () => {
     {},
   );
   const [scrollX] = useState(new Animated.Value(0));
-  const [panelWidth, setPanelWidth] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const scrollViewRef = useRef<ScrollView | null>(null);
   const { width } = useFeedDimensions();
+  const panelWidth = containerWidth || width;
   const corporate = Colors.dark.primary;
 
   useEffect(() => {
@@ -47,12 +49,14 @@ const StatisticsView = () => {
         paddingVertical: 20,
         marginHorizontal: 10,
       }}
+      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
     >
       <ScrollView
+        ref={scrollViewRef}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onLayout={(e) => setPanelWidth(e.nativeEvent.layout.width)}
+        style={{ width: panelWidth }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
           { useNativeDriver: false },
@@ -66,7 +70,10 @@ const StatisticsView = () => {
           valueKey="streak"
           showLeftChevron={false}
           showRightChevron={true}
-          width={panelWidth || width}
+          onRightPress={() =>
+            scrollViewRef.current?.scrollTo({ x: panelWidth, animated: true })
+          }
+          width={panelWidth}
           statistics={statistics}
           descriptionMap={descriptionMap}
         />
@@ -79,7 +86,10 @@ const StatisticsView = () => {
           valueKey="count"
           showLeftChevron={true}
           showRightChevron={false}
-          width={panelWidth || width}
+          onLeftPress={() =>
+            scrollViewRef.current?.scrollTo({ x: 0, animated: true })
+          }
+          width={panelWidth}
           statistics={statistics}
           descriptionMap={descriptionMap}
         />

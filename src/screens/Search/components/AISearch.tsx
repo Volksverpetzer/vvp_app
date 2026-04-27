@@ -46,7 +46,11 @@ const AISearch = ({
           text={item.text}
           subtitle={
             <UiText
-              style={{ fontWeight: "bold", color: textColor, fontSize: 16 }}
+              style={{
+                fontFamily: "SourceSansProBold",
+                color: textColor,
+                fontSize: 16,
+              }}
             >
               {hostname ?? item.url}
             </UiText>
