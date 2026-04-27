@@ -7,7 +7,6 @@ import Toast from "react-native-toast-message";
 
 import {
   CodeIcon,
-  DatabaseIcon,
   FeedIcon,
   FeedbackIcon,
   GiveIcon,
@@ -161,11 +160,6 @@ const SettingsScreen = () => {
               saveSettings={saveAdvancedSetting}
               settings={advancedSettings}
             />
-          </Collapsable>
-          <Collapsable
-            icon={<DatabaseIcon color={primary} size={24} />}
-            title="Backup"
-          >
             <BackupView />
           </Collapsable>
         </View>

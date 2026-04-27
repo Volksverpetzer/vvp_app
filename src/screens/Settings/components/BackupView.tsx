@@ -2,12 +2,13 @@ import * as DocumentPicker from "expo-document-picker";
 import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 import { DownloadIcon, UploadIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { styles } from "#/constants/Styles";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import {
@@ -20,7 +21,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 const BackupView = () => {
   const [busy, setBusy] = useState<"export" | "import" | null>(null);
   const colorScheme = useAppColorScheme();
-  const { primary, iconOnPrimary } = Colors[colorScheme];
+  const { primary, iconMuted } = Colors[colorScheme];
 
   const handleExport = async () => {
     setBusy("export");
@@ -96,91 +97,42 @@ const BackupView = () => {
     }
   };
 
+  const rowStyle = { ...styles.row, paddingBottom: 20, maxHeight: 45 };
+
   return (
-    <View style={styles.container}>
-      <UiText style={styles.description}>
-        Exportiere deine Favoriten und gespeicherten Quellen als JSON-Datei oder
-        stelle sie aus einem Backup wieder her.
-      </UiText>
-      <View style={styles.buttons}>
-        <Pressable
-          accessibilityRole="button"
-          onPress={handleExport}
-          disabled={!!busy}
-          style={({ pressed }) => [
-            styles.button,
-            {
-              backgroundColor: primary,
-              opacity: pressed || !!busy ? 0.7 : 1,
-            },
-          ]}
-        >
-          {busy === "export" ? (
-            <ActivityIndicator color={iconOnPrimary} size="small" />
-          ) : (
-            <>
-              <UploadIcon size={18} color={iconOnPrimary} />
-              <UiText style={[styles.buttonLabel, { color: iconOnPrimary }]}>
-                Exportieren
-              </UiText>
-            </>
-          )}
-        </Pressable>
-        <Pressable
-          accessibilityRole="button"
-          onPress={handleImport}
-          disabled={!!busy}
-          style={({ pressed }) => [
-            styles.button,
-            {
-              backgroundColor: primary,
-              opacity: pressed || !!busy ? 0.7 : 1,
-            },
-          ]}
-        >
-          {busy === "import" ? (
-            <ActivityIndicator color={iconOnPrimary} size="small" />
-          ) : (
-            <>
-              <DownloadIcon size={18} color={iconOnPrimary} />
-              <UiText style={[styles.buttonLabel, { color: iconOnPrimary }]}>
-                Importieren
-              </UiText>
-            </>
-          )}
-        </Pressable>
-      </View>
+    <View style={{ padding: 20 }}>
+      <Pressable
+        accessibilityRole="button"
+        onPress={handleExport}
+        disabled={!!busy}
+        style={rowStyle}
+      >
+        <UiText style={{ fontSize: 16, opacity: busy === "import" ? 0.4 : 1 }}>
+          Sammlung exportieren
+        </UiText>
+        {busy === "export" ? (
+          <ActivityIndicator color={primary} size="small" />
+        ) : (
+          <UploadIcon size={18} color={busy ? iconMuted : primary} />
+        )}
+      </Pressable>
+      <Pressable
+        accessibilityRole="button"
+        onPress={handleImport}
+        disabled={!!busy}
+        style={rowStyle}
+      >
+        <UiText style={{ fontSize: 16, opacity: busy === "export" ? 0.4 : 1 }}>
+          Sammlung importieren
+        </UiText>
+        {busy === "import" ? (
+          <ActivityIndicator color={primary} size="small" />
+        ) : (
+          <DownloadIcon size={18} color={busy ? iconMuted : primary} />
+        )}
+      </Pressable>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 16,
-    paddingHorizontal: 4,
-    gap: 16,
-  },
-  description: {
-    fontSize: 14,
-  },
-  buttons: {
-    flexDirection: "row",
-    gap: 10,
-    paddingBottom: 8,
-  },
-  button: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingVertical: 12,
-    borderRadius: 10,
-  },
-  buttonLabel: {
-    fontSize: 15,
-    fontWeight: "600",
-  },
-});
 
 export default BackupView;
