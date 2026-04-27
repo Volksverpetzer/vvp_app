@@ -76,6 +76,29 @@ describe("isValidStoredSource", () => {
   it("rejects non-object", () => {
     expect(isValidStoredSource(null)).toBe(false);
   });
+
+  it("accepts source with a string date", () => {
+    expect(
+      isValidStoredSource({ slug: "s", date: "2026-01-01T00:00:00.000Z" }),
+    ).toBe(true);
+  });
+
+  it("rejects source with a non-string date", () => {
+    expect(isValidStoredSource({ slug: "s", date: 0 })).toBe(false);
+    expect(isValidStoredSource({ slug: "s", date: null })).toBe(false);
+  });
+
+  it("accepts source with a string text", () => {
+    expect(isValidStoredSource({ slug: "s", text: "label" })).toBe(true);
+  });
+
+  it("rejects source with a non-string text", () => {
+    expect(isValidStoredSource({ slug: "s", text: 42 })).toBe(false);
+  });
+
+  it("accepts source with neither date nor text", () => {
+    expect(isValidStoredSource({ slug: "s" })).toBe(true);
+  });
 });
 
 describe("isValidFavorites", () => {

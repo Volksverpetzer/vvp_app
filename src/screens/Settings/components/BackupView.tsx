@@ -55,7 +55,13 @@ const BackupView = () => {
       });
       if (result.canceled) return;
 
-      const content = await new File(result.assets[0].uri).text();
+      const uri = result.assets?.[0]?.uri;
+      if (!uri) {
+        Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
+        return;
+      }
+
+      const content = await new File(uri).text();
       const data: unknown = JSON.parse(content);
 
       if (!isObjectRecord(data)) {

@@ -158,6 +158,23 @@ describe("BackupView", () => {
       });
     });
 
+    it("shows an error toast when assets is empty after a non-canceled result", async () => {
+      jest.mocked(DocumentPicker.getDocumentAsync).mockResolvedValue({
+        canceled: false,
+        assets: [],
+      } as any);
+
+      const { getByText } = render(<BackupView />);
+      fireEvent.press(getByText("Sammlung importieren"));
+
+      await waitFor(() => {
+        expect(Toast.show).toHaveBeenCalledWith(
+          expect.objectContaining({ type: "error" }),
+        );
+        expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
+      });
+    });
+
     it("does nothing when the picker is canceled", async () => {
       jest.mocked(DocumentPicker.getDocumentAsync).mockResolvedValue({
         canceled: true,

@@ -30,7 +30,10 @@ export const isValidStoredFav = (v: unknown): v is StoredFav =>
   (v.contentType === FAV_TYPE_ARTICLE || v.contentType === FAV_TYPE_INSTA);
 
 export const isValidStoredSource = (v: unknown): v is StoredSource =>
-  isObjectRecord(v) && typeof v.slug === "string";
+  isObjectRecord(v) &&
+  typeof v.slug === "string" &&
+  (v.date === undefined || typeof v.date === "string") &&
+  (v.text === undefined || typeof v.text === "string");
 
 export const isValidFavorites = (v: unknown): v is StoredFavs =>
   isObjectRecord(v) && Object.values(v).every(isValidStoredFav);
