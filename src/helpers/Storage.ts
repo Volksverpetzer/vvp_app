@@ -23,9 +23,7 @@ const BaseStore = {
   async getItem(key: string): Promise<string | undefined> {
     try {
       const value = await AsyncStorage.getItem(key);
-      if (value === null) {
-        console.warn("Item " + key + " was null");
-      } else {
+      if (value !== null) {
         return value;
       }
     } catch (error) {
