@@ -12,10 +12,14 @@ import React from "react";
 import SettingsScreen from "#/app/(tabs)/settings";
 
 let mockIsFoss = false;
+let mockEnableEngagement = false;
 
 jest.mock("#/constants/Config", () => ({
   get isFoss() {
     return mockIsFoss;
+  },
+  get enableEngagement() {
+    return mockEnableEngagement;
   },
   aboutUrl: "https://example.com/about",
   donations: { support: "https://example.com/donate" },
@@ -121,11 +125,16 @@ jest.mock("react-native-toast-message", () => ({
   show: jest.fn(),
   hide: jest.fn(),
 }));
+jest.mock("#/screens/Settings/components/BackupView", () => {
+  const { Text } = require("react-native");
+  return jest.fn(() => <Text>BackupView</Text>);
+});
 
 describe("SettingsScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsFoss = false;
+    mockEnableEngagement = false;
 
     jest.spyOn(React, "useContext").mockReturnValue({
       contentSettings: {},
@@ -160,6 +169,20 @@ describe("SettingsScreen", () => {
       mockIsFoss = true;
       const { queryByText } = render(<SettingsScreen />);
       expect(queryByText("Benachrichtigungen zurücksetzen")).toBeNull();
+    });
+  });
+
+  describe("backup (import/export)", () => {
+    it("is visible when enableEngagement is true", () => {
+      mockEnableEngagement = true;
+      const { queryByText } = render(<SettingsScreen />);
+      expect(queryByText("BackupView")).not.toBeNull();
+    });
+
+    it("is hidden when enableEngagement is false", () => {
+      mockEnableEngagement = false;
+      const { queryByText } = render(<SettingsScreen />);
+      expect(queryByText("BackupView")).toBeNull();
     });
   });
 

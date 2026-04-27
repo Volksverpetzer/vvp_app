@@ -160,7 +160,7 @@ const SettingsScreen = () => {
               saveSettings={saveAdvancedSetting}
               settings={advancedSettings}
             />
-            <BackupView />
+            {Config.enableEngagement && <BackupView />}
           </Collapsable>
         </View>
         <Divider paddingHorizontal={35} paddingVertical={5} />
