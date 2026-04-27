@@ -9,6 +9,9 @@ export const useFeedDimensions = () => {
   const { width } = useWindowDimensions();
 
   return {
-    width: Math.min(width, FEED_MAX_WIDTH) - FEED_HORIZONTAL_PADDING,
+    width: Math.max(
+      0,
+      Math.min(width, FEED_MAX_WIDTH) - FEED_HORIZONTAL_PADDING,
+    ),
   };
 };
