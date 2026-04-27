@@ -33,6 +33,7 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import BackupView from "#/screens/Settings/components/BackupView";
 import type { NotificationSettingType, SettingType } from "#/types";
 
 const SettingsScreen = () => {
@@ -159,6 +160,7 @@ const SettingsScreen = () => {
               saveSettings={saveAdvancedSetting}
               settings={advancedSettings}
             />
+            {Config.enableEngagement && <BackupView />}
           </Collapsable>
         </View>
         <Divider paddingHorizontal={35} paddingVertical={5} />

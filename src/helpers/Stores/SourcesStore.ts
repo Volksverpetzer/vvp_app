@@ -44,6 +44,15 @@ const SourcesStore = {
   },
 
   /**
+   * Replaces all stored sources with the provided object.
+   *
+   * @param sources - The complete `StoredSources` object to persist.
+   */
+  async setStoredSources(sources: StoredSources): Promise<void> {
+    await BaseStore.setItem(this.sourcesKey, JSON.stringify(sources));
+  },
+
+  /**
    * Removes a source by its URL from the stored sources.
    *
    * @param source - The URL of the source to remove in the format `https://${string}`.
