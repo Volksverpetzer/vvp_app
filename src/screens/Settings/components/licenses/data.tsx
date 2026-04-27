@@ -177,6 +177,12 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
+  "expo-document-picker@55.0.13": {
+    licenses: "MIT",
+    repository: "https://github.com/expo/expo",
+    licenseUrl: "https://github.com/expo/expo",
+    parents: "vvp_app",
+  },
   "expo-file-system@55.0.17": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
