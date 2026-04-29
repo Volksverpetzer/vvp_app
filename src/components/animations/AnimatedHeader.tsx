@@ -2,7 +2,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import type { PropsWithChildren, ReactNode } from "react";
 import React, { useMemo } from "react";
-import { Animated, Pressable } from "react-native";
+import { Animated, Pressable, View } from "react-native";
 
 import { HeartIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
@@ -159,7 +159,13 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
               {title}
             </Animated.View>
           ))}
-        {children}
+        <View
+          style={{
+            marginHorizontal: 12,
+          }}
+        >
+          {children}
+        </View>
         <Space size={45} />
       </LinearGradient>
     </Animated.View>

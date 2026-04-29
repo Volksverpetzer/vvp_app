@@ -7,15 +7,15 @@ import type {
   ViewStyle,
   ViewToken,
 } from "react-native";
-import { FlatList, Pressable, RefreshControl } from "react-native";
+import { FlatList, Pressable, RefreshControl, View } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
-import View from "#/components/design/View";
 import GenericPost from "#/components/posts/GenericPost";
 import Heading from "#/components/typography/Heading";
 import UiSpinner from "#/components/ui/UiSpinner";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -51,7 +51,6 @@ const Feed = (properties: FeedProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  const backgroundColor = Colors[colorScheme].surface;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
 
@@ -164,7 +163,7 @@ const Feed = (properties: FeedProperties) => {
   const contentContainerStyle = useMemo(
     () => ({
       ...properties?.style,
-      ...styles.feed,
+      ...styles.content,
     }),
     [properties?.style],
   );
@@ -202,20 +201,14 @@ const Feed = (properties: FeedProperties) => {
   }
 
   return (
-    <View
-      style={{
-        ...styles.centered,
-        backgroundColor,
-        flexDirection: "row",
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <FlatList
         onScroll={properties.onScroll}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         initialNumToRender={3}
         maxToRenderPerBatch={3}
         onEndReachedThreshold={0.7}
-        windowSize={100}
+        windowSize={10}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -228,13 +221,32 @@ const Feed = (properties: FeedProperties) => {
           (isLoadingMore ? (
             <UiSpinner size="large" />
           ) : (
-            <Pressable
-              accessibilityRole="button"
-              style={styles.centered}
-              onPress={() => router.push("/search")}
+            <View
+              style={{
+                paddingBottom: 30,
+                alignItems: "center",
+                ...styles.noBackground,
+              }}
             >
-              <SearchIcon color={corporate} />
-            </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                style={styles.centered}
+                onPress={() => router.push("/search")}
+              >
+                <UiText
+                  style={{
+                    textAlign: "center",
+                    paddingVertical: 30,
+                    fontSize: 18,
+                    color: corporate,
+                  }}
+                >
+                  Nicht gefunden, wonach du gesucht hast? Probiere die Suche
+                  aus!
+                </UiText>
+                <SearchIcon color={corporate} size={24} />
+              </Pressable>
+            </View>
           ))
         }
         keyExtractor={(item) => item.id}

@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 
 import {
   FirstPlaceIcon,
@@ -44,7 +44,6 @@ const RegionMap = () => {
   useEffect(() => {
     parseRegionsData().then(setRegionData);
   }, []);
-  const { width } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
   const corporate = Colors.light.primary;
   const corporateColor = Colors.dark.primary;
@@ -56,15 +55,14 @@ const RegionMap = () => {
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: -70,
-        paddingTop: 90,
+        marginTop: -80,
+        paddingTop: 80,
         backgroundColor: primaryTint,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        width,
         gap: 20,
         overflow: "hidden",
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
       }}
     >
       <View style={{ backgroundColor: primaryTint, flex: 1 }}>
@@ -104,7 +102,11 @@ const RegionMap = () => {
         }}
       >
         <UiText
-          style={{ fontSize: 20, ...styles.whiteText, fontWeight: "bold" }}
+          style={{
+            fontSize: 20,
+            ...styles.whiteText,
+            fontFamily: "SourceSansProBold",
+          }}
         >
           Bundesländer Ranking
         </UiText>

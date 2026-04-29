@@ -6,6 +6,7 @@ import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
 import View from "#/components/design/View";
+import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -16,7 +17,7 @@ import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { BlueskyPostProperties, HttpsUrl } from "#/types";
 
-import { BlueskyPostHeader } from "./BlueskyPostHeader";
+const htmlPattern = /<[^>]+>/g;
 
 /**
  * Displays a Bluesky post as a feed card (excerpt + navigation to thread).
@@ -30,7 +31,6 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   const corporate = Colors[colorScheme].primary;
   const grey = Colors[colorScheme].textMuted;
   const postId = uri.split("/app.bsky.feed.post/")[1];
-  const htmlPattern = /<[^>]+>/g;
 
   useEffect(() => {
     ContentStore.setStoredBskyPostById(postId, properties);
@@ -68,64 +68,63 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
       style={{ flex: 1 }}
       disabled={!isTruncated && !(replies?.length > 0)}
     >
-      <Hyperlink
-        linkStyle={{ color: corporate }}
-        style={{ flex: 1 }}
-        onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
+      <View
+        style={{
+          position: "relative",
+          gap: 20,
+          paddingHorizontal: 30,
+          paddingVertical: 20,
+        }}
       >
-        <View
-          style={{
-            position: "relative",
-            gap: 20,
-            paddingHorizontal: 30,
-            paddingVertical: 20,
-          }}
+        <TouchableOpacity
+          accessibilityRole="button"
+          style={{ position: "absolute", top: 20, right: 20, zIndex: 100 }}
+          onPress={() => onLinkPress(url, router, wpUrl)}
+          hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >
-          <TouchableOpacity
-            accessibilityRole="button"
-            style={{ position: "absolute", top: 20, right: 20, zIndex: 100 }}
-            onPress={() => onLinkPress(url, router, wpUrl)}
-            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
-          >
-            <ExternalLinkIcon color={Colors[colorScheme].iconMuted} />
-          </TouchableOpacity>
+          <ExternalLinkIcon color={Colors[colorScheme].iconMuted} />
+        </TouchableOpacity>
 
-          <BlueskyPostHeader author={author} />
+        <BlueskyPostHeader author={author} />
 
+        <Hyperlink
+          linkStyle={{ color: corporate }}
+          onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
+        >
           <UiText style={{ lineHeight: 24, fontSize: 18 }}>
-            {isTruncated ? `${excerpt}\u2026` : excerpt}
+            {isTruncated ? `${excerpt}…` : excerpt}
           </UiText>
+        </Hyperlink>
 
-          <View style={styles.row}>
-            {createdAt && (
-              <UiText
-                style={{
-                  fontSize: 16,
-                  color: grey,
-                  textAlign: "right",
-                }}
-              >
-                {new Date(createdAt).toLocaleTimeString("de-DE", {
-                  year: "numeric",
-                  month: "numeric",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                })}
-              </UiText>
-            )}
-            {replies?.length > 0 ? (
-              <UiText style={{ fontSize: 16, color: corporate }}>
-                Thread (1 von {replies.length + 1})
-              </UiText>
-            ) : (
-              isTruncated && (
-                <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
-              )
-            )}
-          </View>
+        <View style={styles.row}>
+          {createdAt && (
+            <UiText
+              style={{
+                fontSize: 16,
+                color: grey,
+                textAlign: "right",
+              }}
+            >
+              {new Date(createdAt).toLocaleTimeString("de-DE", {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+              })}
+            </UiText>
+          )}
+          {replies?.length > 0 ? (
+            <UiText style={{ fontSize: 16, color: corporate }}>
+              Thread (1 von {replies.length + 1})
+            </UiText>
+          ) : (
+            isTruncated && (
+              <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
+            )
+          )}
         </View>
-      </Hyperlink>
+      </View>
     </TouchableOpacity>
   );
 };

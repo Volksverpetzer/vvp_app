@@ -15,6 +15,7 @@ import type { FaveableType, ShareableType } from "#/types";
 
 interface FavCounterProperties {
   shareable: ShareableType[];
+  size?: number;
   style: TextStyle;
   contentFavIdentifier?: string;
   contentType?: FaveableType;
@@ -24,7 +25,12 @@ const FavCounter = (properties: FavCounterProperties) => {
   const [favs, setFavs] = useState(0);
   const [isFav, setIsFav] = useState(false);
   const color = useCorporateColor();
-  const { contentFavIdentifier, contentType, shareable } = properties;
+  const {
+    contentFavIdentifier,
+    contentType,
+    shareable,
+    size = 20,
+  } = properties;
 
   const getAllFavs = useCallback(async () => {
     let _favs = 0;
@@ -73,7 +79,7 @@ const FavCounter = (properties: FavCounterProperties) => {
         };
       }}
     >
-      <StarIcon filled={isFav} color={color} size={24} />
+      <StarIcon filled={isFav} color={color} size={size} />
       <UiText style={properties.style}>{(isFav ? 1 : 0) + favs}</UiText>
     </Pressable>
   );

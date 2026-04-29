@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   description: { fontSize: 16, marginBottom: 30, textAlign: "center" },
   link: { color: "#fff", fontSize: 16 },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
+  title: { fontSize: 24, fontFamily: "SourceSansProBold", marginBottom: 20 },
 });
 
 export default HomeScreen;

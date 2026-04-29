@@ -70,7 +70,10 @@ const Licenses = () => {
       keyExtractor={(item) => item.id}
       data={licenses}
       renderItem={renderItem}
-      style={styles.container}
+      contentContainerStyle={{
+        ...styles.content,
+        gap: 10,
+      }}
     />
   );
 };

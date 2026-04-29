@@ -1,5 +1,4 @@
 import { act, render, waitFor } from "@testing-library/react-native";
-import React from "react";
 
 import GenericPost from "#/components/posts/GenericPost";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
@@ -48,7 +47,7 @@ jest.mock("#/components/ui/UiText", () => ({
   default: jest.fn(({ children }) => children),
 }));
 
-jest.mock("#/components/posts/InstaPost", () => ({
+jest.mock("#/components/posts/insta/InstaPostCard", () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));

@@ -1,5 +1,5 @@
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, ScrollView, View } from "react-native";
 
 import AnimatedPageDots from "#/components/animations/AnimatedPageDots";
@@ -23,7 +23,10 @@ const StatisticsView = () => {
     {},
   );
   const [scrollX] = useState(new Animated.Value(0));
+  const [containerWidth, setContainerWidth] = useState(0);
+  const scrollViewRef = useRef<ScrollView | null>(null);
   const { width } = useFeedDimensions();
+  const panelWidth = containerWidth || width;
   const corporate = Colors.dark.primary;
 
   useEffect(() => {
@@ -40,17 +43,20 @@ const StatisticsView = () => {
     <View
       style={{
         ...styles.centered,
-        ...styles.feed,
         zIndex: 99,
         backgroundColor: corporate,
         borderRadius: 30,
         paddingVertical: 20,
+        marginHorizontal: 10,
       }}
+      onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
     >
       <ScrollView
+        ref={scrollViewRef}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        style={{ width: panelWidth }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
           { useNativeDriver: false },
@@ -64,7 +70,10 @@ const StatisticsView = () => {
           valueKey="streak"
           showLeftChevron={false}
           showRightChevron={true}
-          width={width}
+          onRightPress={() =>
+            scrollViewRef.current?.scrollTo({ x: panelWidth, animated: true })
+          }
+          width={panelWidth}
           statistics={statistics}
           descriptionMap={descriptionMap}
         />
@@ -77,7 +86,10 @@ const StatisticsView = () => {
           valueKey="count"
           showLeftChevron={true}
           showRightChevron={false}
-          width={width}
+          onLeftPress={() =>
+            scrollViewRef.current?.scrollTo({ x: 0, animated: true })
+          }
+          width={panelWidth}
           statistics={statistics}
           descriptionMap={descriptionMap}
         />

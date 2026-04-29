@@ -7,7 +7,7 @@ describe("tagStyles", () => {
 
     expect(styles.blockquote).toBeDefined();
     expect(styles.blockquote.fontSize).toBe(18);
-    expect(styles.blockquote.fontStyle).toBe("italic");
+    expect(styles.blockquote.fontFamily).toBe("SourceSansProItalic");
     expect(styles.blockquote.borderLeftWidth).toBe(4);
   });
 
@@ -16,7 +16,7 @@ describe("tagStyles", () => {
 
     expect(styles.cite).toBeDefined();
     expect(styles.cite.fontSize).toBe(14);
-    expect(styles.cite.fontStyle).toBe("italic");
+    expect(styles.cite.fontFamily).toBe("SourceSansProItalic");
     expect(styles.cite.textAlign).toBe("right");
   });
 
@@ -24,7 +24,7 @@ describe("tagStyles", () => {
     const styles = getTagStyles(ColorScheme.dark);
 
     expect(styles.em).toBeDefined();
-    expect(styles.em.fontStyle).toBe("italic");
+    expect(styles.em.fontFamily).toBe("SourceSansProItalic");
   });
 
   it("should use corporate color for blockquote border", () => {

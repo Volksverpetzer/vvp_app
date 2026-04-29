@@ -4,6 +4,7 @@ import type { StyleProp, TextStyle } from "react-native";
 import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
+import Card from "#/components/design/Card";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -57,46 +58,44 @@ const LicensesListItem = (
   }
 
   return (
-    <View style={styles.cardShadow}>
-      <View style={styles.card}>
-        {image && (
-          <TouchableOpacity
-            accessibilityRole="button"
-            onPress={() => userUrl && Linking.openURL(userUrl)}
-          >
-            <Image
-              source={{ uri: image }}
-              style={styles.image}
-              placeholder={LoadingImage}
-            />
-          </TouchableOpacity>
-        )}
+    <Card style={styles.card}>
+      {image && (
         <TouchableOpacity
           accessibilityRole="button"
-          onPress={() => repository && Linking.openURL(repository)}
-          style={styles.item}
+          onPress={() => userUrl && Linking.openURL(userUrl)}
         >
-          <View style={styles.content}>
-            <UiText
-              style={[styles.name, { color: textColor }]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {title}
-            </UiText>
-            <Link style={[styles.text, { color: textColor }]} url={licenseUrl}>
-              {licenses}
-            </Link>
-            <UiText style={[styles.name, { color: textColor }]}>
-              {packageVersion}
-            </UiText>
-          </View>
-          <View style={styles.icon}>
-            <ChevronIcon direction="right" color={iconColor} size={32} />
-          </View>
+          <Image
+            source={{ uri: image }}
+            style={styles.image}
+            placeholder={LoadingImage}
+          />
         </TouchableOpacity>
-      </View>
-    </View>
+      )}
+      <TouchableOpacity
+        accessibilityRole="button"
+        onPress={() => repository && Linking.openURL(repository)}
+        style={styles.item}
+      >
+        <View style={styles.content}>
+          <UiText
+            style={[styles.name, { color: textColor }]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {title}
+          </UiText>
+          <Link style={[styles.text, { color: textColor }]} url={licenseUrl}>
+            {licenses}
+          </Link>
+          <UiText style={[styles.name, { color: textColor }]}>
+            {packageVersion}
+          </UiText>
+        </View>
+        <View style={styles.icon}>
+          <ChevronIcon direction="right" color={iconColor} size={32} />
+        </View>
+      </TouchableOpacity>
+    </Card>
   );
 };
 
@@ -120,16 +119,11 @@ const getStyles = (cardBackground: string) =>
     card: {
       alignItems: "stretch",
       backgroundColor: cardBackground,
-      borderRadius: 4,
       flexDirection: "row",
+      padding: 0,
       overflow: "hidden",
     },
-    cardShadow: {
-      marginHorizontal: 12,
-      marginVertical: 6,
-    },
     image: {
-      borderRadius: 0,
       flex: 1,
       maxWidth: 96,
       width: 96,
@@ -155,7 +149,7 @@ const getStyles = (cardBackground: string) =>
     },
     name: {
       fontSize: 16,
-      fontWeight: "bold",
+      fontFamily: "SourceSansProBold",
       flexShrink: 1, // ensure the title can shrink instead of overflowing
     },
     text: {

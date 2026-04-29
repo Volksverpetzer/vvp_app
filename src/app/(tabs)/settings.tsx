@@ -26,12 +26,14 @@ import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { styles as globalStyles } from "#/constants/Styles";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import BackupView from "#/screens/Settings/components/BackupView";
 import type { NotificationSettingType, SettingType } from "#/types";
 
 const SettingsScreen = () => {
@@ -115,9 +117,11 @@ const SettingsScreen = () => {
           flex: 1,
         }}
         contentContainerStyle={{
+          ...globalStyles.content,
           backgroundColor,
           paddingTop: HEADER_HEIGHT,
           gap: 20,
+          paddingHorizontal: 0,
         }}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
@@ -156,6 +160,7 @@ const SettingsScreen = () => {
               saveSettings={saveAdvancedSetting}
               settings={advancedSettings}
             />
+            {Config.enableEngagement && <BackupView />}
           </Collapsable>
         </View>
         <Divider paddingHorizontal={35} paddingVertical={5} />
@@ -259,16 +264,13 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   donateContainer: {
     alignItems: "center",
-    paddingVertical: 20,
   },
   linksContainer: {
-    flex: 1,
     paddingHorizontal: 20,
     gap: 20,
   },
   infoContainer: {
-    flex: 1,
-    padding: 20,
+    paddingHorizontal: 20,
     gap: 20,
   },
   sectionText: {

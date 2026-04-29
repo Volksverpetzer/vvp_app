@@ -156,7 +156,7 @@ const PersonalTab = () => {
           { useNativeDriver: false },
         )}
         contentContainerStyle={{
-          ...styles.feed,
+          ...styles.content,
           paddingTop: HEADER_HEIGHT,
         }}
       >

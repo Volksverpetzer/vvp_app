@@ -120,7 +120,7 @@ class API {
   static async getTikTokFeed(): Promise<TiktokPostProperties[]> {
     const response = await API.get<{
       data: { data: { videos: TiktokPostProperties[] } };
-    }>("/tiktok/tiktokFeed");
+    }>("/proxy/tiktokFeed");
     return response?.data?.data?.videos ?? [];
   }
 

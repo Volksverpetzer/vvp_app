@@ -5,7 +5,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
-import InstaPost from "#/components/posts/InstaPost";
+import InstaPostDetail from "#/components/posts/insta/InstaPostDetail";
 import Footer from "#/components/views/Footer";
 import Config from "#/constants/Config";
 import { styles } from "#/constants/Styles";
@@ -13,7 +13,7 @@ import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
-import { DISPLAY_TEXT_FULL, type InstaPostProperties } from "#/types";
+import type { InstaPostProperties } from "#/types";
 
 /**
  * InstaScreen renders an Instagram post and its caption,
@@ -75,11 +75,7 @@ const InstaScreen = () => {
     <View style={styles.container}>
       <ScrollView>
         {/* Render the Instagram post; pass all fetched post data */}
-        <InstaPost
-          displayText={DISPLAY_TEXT_FULL}
-          disableLink={true}
-          {...data}
-        />
+        <InstaPostDetail {...data} />
 
         {/* Render article footer with sharing functionality */}
         <Footer article_link={data.permalink} onShare={onShare} />

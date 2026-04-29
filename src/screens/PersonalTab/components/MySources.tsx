@@ -41,10 +41,12 @@ const MySources = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1, gap: 20, backgroundColor: undefined }}>
+    <View style={{ flex: 1, gap: 20 }}>
       {Object.keys(sources)
         .sort((keyA, keyB) => {
-          return sources[keyB].date.localeCompare(sources[keyA].date);
+          return (sources[keyB].date ?? "").localeCompare(
+            sources[keyA].date ?? "",
+          );
         })
         .map((href: HttpsUrl) => {
           const { slug, text } = sources[href];
