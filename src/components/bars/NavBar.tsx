@@ -86,7 +86,6 @@ const NavBar = (properties: NavBarProperties) => {
           <ShareCounter
             color={corporate}
             shareable={[{ title: "title", url: link }]}
-            size={24}
             style={{ color: corporate, fontSize: 16, alignSelf: "center" }}
             onPress={() => onShare(link, { location: "ArticleTop" })}
           />
