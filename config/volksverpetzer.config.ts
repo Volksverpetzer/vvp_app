@@ -98,13 +98,10 @@ const extraConfig: ExtraConfigType = {
   enableAnalytics: true,
   enableEngagement: true,
   feeds: {
-    reddit: { enabled: true },
     wp: { enabled: true },
     insta: { enabled: true },
     yt: { enabled: true },
-    tiktok: { enabled: true },
     bsky: { handle: "volksverpetzer.de", enabled: true },
-    bot: { handle: "volksverpetzer.de", enabled: true },
   },
   colorScheme: colorScheme,
   themeColor: "#1b7194",
