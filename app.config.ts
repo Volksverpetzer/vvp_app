@@ -47,9 +47,8 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
-      ...(buildFossOnly
-        ? ["./plugins/withFossOnlyBuildConfig.ts"]
-        : [
+      ...(!buildFossOnly
+        ? [
             [
               "@stripe/stripe-react-native",
               {
@@ -65,7 +64,8 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
                 color: variableConfig.extraConfig.themeColor,
               },
             ] as [string, any],
-          ]),
+          ]
+        : []),
       [
         "expo-custom-assets",
         {
