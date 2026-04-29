@@ -41,12 +41,21 @@ jobs:
   prepare-release-pr:
     runs-on: ubuntu-slim
     steps:
-      - name: ⬇️ Checkout source branch
+      - name: ⬇️ Checkout source branch for dry run
+        if: ${{ inputs.dry_run }}
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ inputs.source_branch }}
-          token: ${{ secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ⬇️ Checkout source branch for release
+        if: ${{ !inputs.dry_run }}
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.source_branch }}
+          token: ${{ secrets.AUTO_MERGE_TOKEN }}
 
       - name: 🏗 Setup environment
         uses: ./.github/actions/setup-node-pnpm-expo
@@ -54,9 +63,17 @@ jobs:
           setup-node: "true"
 
       - name: 🔎 Validate release input
+        env:
+          AUTO_MERGE_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
         run: |
           if [[ ! "${{ inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Version must be a final SemVer value like 2.1.10."
+            exit 1
+          fi
+
+          if [[ "${{ inputs.dry_run }}" != "true" && -z "$AUTO_MERGE_TOKEN" ]]; then
+            echo "AUTO_MERGE_TOKEN is required for non-dry-run releases."
+            echo "Without it, PR and tag pushes may not trigger the follow-up release workflows."
             exit 1
           fi
 
@@ -114,7 +131,7 @@ jobs:
         id: create-pr
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.AUTO_MERGE_TOKEN }}
           commit-message: "Release v${{ inputs.version }}"
           committer: "github-actions <actions@github.com>"
           author: "github-actions <actions@github.com>"
@@ -138,7 +155,7 @@ jobs:
         if: ${{ !inputs.dry_run && inputs.auto_merge && steps.create-pr.outputs.pull-request-number }}
         continue-on-error: true
         env:
-          GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
           PR_NUMBER: ${{ steps.create-pr.outputs.pull-request-number }}
         run: gh pr merge "$PR_NUMBER" --auto --merge --repo "${{ github.repository }}"
         shell: bash

@@ -19,12 +19,19 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-          token: ${{ secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.AUTO_MERGE_TOKEN }}
 
       - name: 🏷️ Tag merge commit
         env:
+          AUTO_MERGE_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
           MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
         run: |
+          if [[ -z "$AUTO_MERGE_TOKEN" ]]; then
+            echo "AUTO_MERGE_TOKEN is required to push release tags."
+            echo "Tags pushed with GITHUB_TOKEN may not trigger the final release workflow."
+            exit 1
+          fi
+
           git fetch origin main --tags
 
           VERSION="$(node -p "require('./package.json').version")"
