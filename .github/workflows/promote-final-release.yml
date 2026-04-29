@@ -1,0 +1,116 @@
+name: Promote final release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Final SemVer version, for example 2.1.10"
+        required: true
+        type: string
+      source_branch:
+        description: "Branch to promote"
+        required: true
+        default: "prerelease"
+        type: string
+      target_branch:
+        description: "Branch to release from"
+        required: true
+        default: "main"
+        type: string
+      dry_run:
+        description: "Prepare files and show the diff without creating a PR"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-release-pr:
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout source branch
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.source_branch }}
+          token: ${{ secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-node: "true"
+
+      - name: 🔎 Validate release input
+        run: |
+          if [[ ! "${{ inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Version must be a final SemVer value like 2.1.10."
+            exit 1
+          fi
+
+          git fetch origin "${{ inputs.target_branch }}" "${{ inputs.source_branch }}" --tags
+
+          if git rev-parse "v${{ inputs.version }}" >/dev/null 2>&1; then
+            echo "Tag v${{ inputs.version }} already exists."
+            exit 1
+          fi
+
+          echo "RELEASE_BRANCH=release/v${{ inputs.version }}" >> "$GITHUB_ENV"
+        shell: bash
+
+      - name: 📄 Install license crawler
+        run: pnpm install -g npm-license-crawler
+        shell: bash
+
+      - name: 🧰 Prepare final release files
+        env:
+          RELEASE_BASE_REF: origin/${{ inputs.target_branch }}
+          TZ: Europe/Berlin
+        run: pnpm release:prepare -- ${{ inputs.version }}
+        shell: bash
+
+      - name: ✅ Check code
+        run: pnpm check
+        shell: bash
+
+      - name: 🏃‍♀️ Run tests and linter
+        uses: ./.github/actions/test-and-lint
+
+      - name: 🧪 Show dry-run diff
+        if: ${{ inputs.dry_run }}
+        run: git diff -- package.json src/screens/Settings/components/licenses/data.tsx
+        shell: bash
+
+      - name: 🫸 Create final release PR
+        if: ${{ !inputs.dry_run }}
+        id: create-pr
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+          commit-message: "Release v${{ inputs.version }}"
+          committer: "github-actions <actions@github.com>"
+          author: "github-actions <actions@github.com>"
+          branch: ${{ env.RELEASE_BRANCH }}
+          base: ${{ inputs.target_branch }}
+          title: "Release v${{ inputs.version }}"
+          labels: final-release
+          delete-branch: true
+          body: |
+            Promotes `${{ inputs.source_branch }}` to `${{ inputs.target_branch }}` for final release `v${{ inputs.version }}`.
+
+            This PR includes the final release preparation commit:
+            - updates `package.json` version and `versionCode`
+            - refreshes `src/screens/Settings/components/licenses/data.tsx`
+
+            Merge this PR with a merge commit. After the merge, `tag-final-release.yml` will tag the merge commit as `v${{ inputs.version }}` and trigger the existing final release workflow.
+
+      - name: 🤖 Enable auto-merge with merge commit
+        if: ${{ !inputs.dry_run && steps.create-pr.outputs.pull-request-number }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.create-pr.outputs.pull-request-number }}
+        run: gh pr merge "$PR_NUMBER" --auto --merge --repo "${{ github.repository }}"
+        shell: bash

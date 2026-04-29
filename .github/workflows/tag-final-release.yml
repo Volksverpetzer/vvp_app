@@ -1,0 +1,54 @@
+name: Tag final release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag-release:
+    if: ${{ github.event.pull_request.merged && startsWith(github.event.pull_request.head.ref, 'release/v') }}
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout main
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: main
+          token: ${{ secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: 🏷️ Tag merge commit
+        env:
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          git fetch origin main --tags
+
+          VERSION="$(node -p "require('./package.json').version")"
+          TAG="v${VERSION}"
+          EXPECTED_BRANCH="release/${TAG}"
+
+          if [[ "${{ github.event.pull_request.head.ref }}" != "$EXPECTED_BRANCH" ]]; then
+            echo "Release branch ${{ github.event.pull_request.head.ref }} does not match package version ${VERSION}."
+            exit 1
+          fi
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists."
+            exit 1
+          fi
+
+          PARENT_COUNT="$(git cat-file -p "$MERGE_SHA" | grep -c '^parent ')"
+          if [[ "$PARENT_COUNT" != "2" ]]; then
+            echo "Expected $MERGE_SHA to be a merge commit, but found $PARENT_COUNT parent(s)."
+            exit 1
+          fi
+
+          git config --local user.name "github-actions"
+          git config --local user.email "actions@github.com"
+          git tag -a "$TAG" "$MERGE_SHA" -m "Release $TAG"
+          git push origin "$TAG"
+        shell: bash
