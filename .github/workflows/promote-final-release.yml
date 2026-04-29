@@ -22,6 +22,16 @@ on:
         required: true
         default: false
         type: boolean
+      auto_merge:
+        description: "Enable auto-merge for the created PR"
+        required: true
+        default: true
+        type: boolean
+      create_target_branch:
+        description: "Create the target branch from main if it does not exist"
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -50,7 +60,23 @@ jobs:
             exit 1
           fi
 
-          git fetch origin "${{ inputs.target_branch }}" "${{ inputs.source_branch }}" --tags
+          git fetch origin "${{ inputs.source_branch }}" main --tags
+
+          if ! git fetch origin "${{ inputs.target_branch }}" --tags; then
+            if [[ "${{ inputs.create_target_branch }}" != "true" ]]; then
+              echo "Target branch ${{ inputs.target_branch }} does not exist."
+              echo "Set create_target_branch=true for a throwaway test target branch."
+              exit 1
+            fi
+
+            if [[ "${{ inputs.target_branch }}" == "main" ]]; then
+              echo "Refusing to create main as a target branch."
+              exit 1
+            fi
+
+            git push origin "origin/main:refs/heads/${{ inputs.target_branch }}"
+            git fetch origin "${{ inputs.target_branch }}" --tags
+          fi
 
           if git rev-parse "v${{ inputs.version }}" >/dev/null 2>&1; then
             echo "Tag v${{ inputs.version }} already exists."
@@ -106,8 +132,10 @@ jobs:
 
             Merge this PR with a merge commit. After the merge, `tag-final-release.yml` will tag the merge commit as `v${{ inputs.version }}` and trigger the existing final release workflow.
 
+            For test runs against a non-`main` target branch, no release tag is created.
+
       - name: 🤖 Enable auto-merge with merge commit
-        if: ${{ !inputs.dry_run && steps.create-pr.outputs.pull-request-number }}
+        if: ${{ !inputs.dry_run && inputs.auto_merge && steps.create-pr.outputs.pull-request-number }}
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN || secrets.GITHUB_TOKEN }}
