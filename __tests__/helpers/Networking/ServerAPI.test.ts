@@ -293,7 +293,7 @@ describe("ServerAPI", () => {
       // Assert
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/tiktok/tiktokFeed",
+        "/proxy/tiktokFeed",
         undefined,
         undefined,
       );
