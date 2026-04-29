@@ -1,4 +1,4 @@
-import { Pressable, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import type { OcticonsIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
@@ -81,43 +81,46 @@ const StatisticsPanel = ({
 
       <Space size={10} />
 
-      <View style={styles.row}>
+      <View style={panelStyles.contentRow}>
         {showLeftChevron && onLeftPress ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Vorherige Seite"
             onPress={onLeftPress}
-            style={{ paddingHorizontal: 8, paddingVertical: 12 }}
+            style={panelStyles.chevronButton}
           >
             <ChevronIcon direction="left" size={24} color="white" />
           </Pressable>
         ) : (
-          <View style={{ width: 40 }} />
+          <View style={panelStyles.chevronSlot} />
         )}
 
-        {Object.entries(statistics)
-          .filter(([key]) => key !== streakKeyToExclude)
-          .map(([key, s]) => (
-            <StatisticsBox
-              key={key}
-              statisticsKey={key}
-              statistic={s}
-              valueKey={valueKey}
-              descriptionMap={descriptionMap}
-            />
-          ))}
+        <View style={panelStyles.statisticsRow}>
+          {Object.entries(statistics)
+            .filter(([key]) => key !== streakKeyToExclude)
+            .map(([key, s]) => (
+              <StatisticsBox
+                key={key}
+                statisticsKey={key}
+                statistic={s}
+                valueKey={valueKey}
+                descriptionMap={descriptionMap}
+                style={panelStyles.statisticsBox}
+              />
+            ))}
+        </View>
 
         {showRightChevron && onRightPress ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Nächste Seite"
             onPress={onRightPress}
-            style={{ paddingHorizontal: 8, paddingVertical: 12 }}
+            style={panelStyles.chevronButton}
           >
             <ChevronIcon direction="right" size={24} color="white" />
           </Pressable>
         ) : (
-          <View style={{ width: 40 }} />
+          <View style={panelStyles.chevronSlot} />
         )}
       </View>
 
@@ -125,5 +128,30 @@ const StatisticsPanel = ({
     </View>
   );
 };
+
+const panelStyles = StyleSheet.create({
+  contentRow: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  chevronButton: {
+    width: 40,
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  chevronSlot: {
+    width: 32,
+  },
+  statisticsRow: {
+    flex: 1,
+    flexDirection: "row",
+    gap: 5,
+  },
+  statisticsBox: {
+    flex: 1,
+    minWidth: 0,
+  },
+});
 
 export default StatisticsPanel;

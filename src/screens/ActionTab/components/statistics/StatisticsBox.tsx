@@ -1,4 +1,5 @@
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import type { StyleProp, ViewStyle } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -10,6 +11,7 @@ interface StatsBoxProperties {
   statistic: StatisticsType;
   valueKey: StatisticsValueKey;
   descriptionMap: Record<string, string>;
+  style?: StyleProp<ViewStyle>;
 }
 
 const StatisticsBox = ({
@@ -17,28 +19,43 @@ const StatisticsBox = ({
   statistic,
   valueKey,
   descriptionMap,
+  style,
 }: StatsBoxProperties) => {
   const primaryTint = Colors.dark.primaryTint;
 
   return (
     <View
-      key={statisticsKey}
-      style={{
-        flexDirection: "column",
-        alignItems: "center",
-        backgroundColor: primaryTint,
-        padding: 10,
-        borderRadius: 10,
-      }}
+      style={[boxStyles.container, { backgroundColor: primaryTint }, style]}
     >
-      <UiText style={{ ...styles.whiteText, fontSize: 20 }}>
+      <UiText style={boxStyles.valueText} numberOfLines={1}>
         {statistic[valueKey]}
       </UiText>
-      <UiText style={{ ...styles.whiteText, fontSize: 12 }}>
+      <UiText style={boxStyles.labelText} numberOfLines={2}>
         {descriptionMap[statisticsKey]}
       </UiText>
     </View>
   );
 };
+
+const boxStyles = StyleSheet.create({
+  container: {
+    flexDirection: "column",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  valueText: {
+    ...styles.whiteText,
+    width: "100%",
+    fontSize: 20,
+    textAlign: "center",
+  },
+  labelText: {
+    ...styles.whiteText,
+    width: "100%",
+    fontSize: 12,
+    textAlign: "center",
+  },
+});
 
 export default StatisticsBox;
