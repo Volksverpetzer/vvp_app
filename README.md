@@ -8,7 +8,7 @@
 [![codecov](https://codecov.io/gh/Volksverpetzer/vvp_app/graph/badge.svg)](https://codecov.io/gh/Volksverpetzer/vvp_app)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 [![Gitleaks](https://img.shields.io/badge/protected%20by-gitleaks-blue)](https://github.com/gitleaks/gitleaks-action)
-[![F-Droid release](https://img.shields.io/f-droid/v/APP.ID.svg?logo=F-Droid)](https://f-droid.org/en/packages/de.volksverpetzer.app/)
+[![F-Droid release](https://img.shields.io/f-droid/v/de.volksverpetzer.app.svg?logo=F-Droid)](https://f-droid.org/en/packages/de.volksverpetzer.app/)
 
 Official mobile app for Volksverpetzer (build with Expo + TypeScript).
 
