@@ -69,7 +69,7 @@ export default {
       "https://github.com/react-native-async-storage/async-storage/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/bottom-tabs@7.15.9": {
+  "@react-navigation/bottom-tabs@7.15.11": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
@@ -90,7 +90,7 @@ export default {
       "https://github.com/rive-app/rive-nitro-react-native/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@stripe/stripe-react-native@0.64.0": {
+  "@stripe/stripe-react-native@0.65.0": {
     licenses: "MIT",
     repository: "https://github.com/stripe/stripe-react-native",
     licenseUrl:
@@ -231,7 +231,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-notifications@55.0.20": {
+  "expo-notifications@55.0.21": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -279,7 +279,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo@55.0.17": {
+  "expo@55.0.18": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -325,7 +325,7 @@ export default {
       "https://github.com/react-native-modal/react-native-modal/raw/master/LICENSE.md",
     parents: "vvp_app",
   },
-  "react-native-nitro-modules@0.35.5": {
+  "react-native-nitro-modules@0.35.6": {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
     licenseUrl: "https://github.com/mrousavy/nitro",
