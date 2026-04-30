@@ -65,7 +65,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
               },
             ] as [string, any],
           ]
-        : []),
+        : ["./plugins/withSplitAbi.plugin.ts" as const]),
       [
         "expo-custom-assets",
         {
