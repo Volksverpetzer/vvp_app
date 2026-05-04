@@ -1,6 +1,6 @@
 import { useIsFocused } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -8,6 +8,7 @@ import {
   Platform,
   Pressable,
   StyleSheet,
+  View,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -30,7 +31,19 @@ interface Report {
 }
 
 const ReportScreen = () => {
-  const isFocused = useIsFocused();
+  // Defer multiline TextInput mount to avoid iOS 26 UIKit crash during cold start.
+  // NativeTabs mounts all tab screens eagerly; multiline inputs trigger a UIKit
+  // regression in UIAssistantBarButtonItemProvider/SFSSymbolAssetInfo (data abort
+  // in __CF_IS_OBJC) when created before the app is fully initialized.
+  // Related RN issue (same SIGABRT class, different root): https://github.com/facebook/react-native/issues/54859
+  // UIKit-side root cause is not yet publicly tracked; file via Apple Feedback against UIKit.
+  // Only render multiline inputs once this tab is first focused.
+  const [formReady, setFormReady] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      setFormReady(true);
+    }, []),
+  );
 
   // Local state variables
   const [reports, setReports] = useState<Report[]>([]);
@@ -94,8 +107,6 @@ const ReportScreen = () => {
 
   // Populate initial fields and load reports on component mount or when params change
   useEffect(() => {
-    if (!isFocused) return;
-
     if (index) {
       setDescription(`Absatz ${index}`);
     }
@@ -109,7 +120,7 @@ const ReportScreen = () => {
     PersonalStore.getReports().then((storedReports) => {
       setReports(storedReports || []);
     });
-  }, [isFocused, parameterUrl, index]);
+  }, [parameterUrl, index]);
 
   // Callback to handle the submit action
   const onSubmit = useCallback(async () => {
@@ -143,11 +154,6 @@ const ReportScreen = () => {
 
   const HEADER_HEIGHT = 150;
 
-  // NativeTabs renders inactive tabs too; keep iOS TextInputs out of cold-start deep links.
-  if (!isFocused) {
-    return null;
-  }
-
   return (
     <>
       <AnimatedHeader
@@ -178,16 +184,20 @@ const ReportScreen = () => {
           }}
         >
           <Heading style={{ marginBottom: 10 }}>Zusammenfassung</Heading>
-          <TextInput
-            accessibilityLabel="Text input field"
-            accessibilityHint="Gib eine kurze Zusammenfassung ein"
-            placeholder="..."
-            placeholderTextColor={textColor}
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            style={[styles.input, { height: 80 }]}
-          />
+          {formReady ? (
+            <TextInput
+              accessibilityLabel="Text input field"
+              accessibilityHint="Gib eine kurze Zusammenfassung ein"
+              placeholder="..."
+              placeholderTextColor={textColor}
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              style={[styles.input, { height: 80 }]}
+            />
+          ) : (
+            <View style={[styles.input, { height: 80 }]} />
+          )}
           <Space size={20} />
           <Heading style={{ marginBottom: 10 }}>Link zum Fake</Heading>
           <TextInput
@@ -201,16 +211,20 @@ const ReportScreen = () => {
           />
           <Space size={20} />
           <Heading style={{ marginBottom: 10 }}>Links zum Thema</Heading>
-          <TextInput
-            accessibilityLabel="Text input field"
-            accessibilityHint="Gib Links zum Thema ein"
-            placeholder="..."
-            placeholderTextColor={textColor}
-            value={moreInfo}
-            onChangeText={setMoreInfo}
-            multiline
-            style={[styles.input, { height: 80 }]}
-          />
+          {formReady ? (
+            <TextInput
+              accessibilityLabel="Text input field"
+              accessibilityHint="Gib Links zum Thema ein"
+              placeholder="..."
+              placeholderTextColor={textColor}
+              value={moreInfo}
+              onChangeText={setMoreInfo}
+              multiline
+              style={[styles.input, { height: 80 }]}
+            />
+          ) : (
+            <View style={[styles.input, { height: 80 }]} />
+          )}
           <Space size={20} />
           {error ? (
             <UiText style={styles.errorText}>{error}</UiText>
