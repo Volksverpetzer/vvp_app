@@ -65,6 +65,17 @@
         "APP": "volksverpetzer"
       }
     },
+    "local-ios": {
+      "node": "24.14.0",
+      "ios": {
+        "simulator": true,
+        "buildConfiguration": "Release"
+      },
+      "distribution": "internal",
+      "env": {
+        "APP": "volksverpetzer"
+      }
+    },
     "mimikama": {
       "autoIncrement": true,
       "node": "24.14.0",
