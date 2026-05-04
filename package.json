@@ -27,7 +27,7 @@
     "prebuild": "expo prebuild --clean",
     "android": "expo run:android",
     "android:device": "expo run:android --device",
-    "android:local": "pnpx eas-cli build -p android --profile local-apk",
+    "android:local": "pnpx eas-cli build -p android --profile local-apk --local",
     "android:submit": "pnpx eas-cli build -p android --auto-submit",
     "dev:android": "pnpx eas-cli build -p android --profile development",
     "dev:ios": "pnpx eas-cli build -p ios --profile development",
