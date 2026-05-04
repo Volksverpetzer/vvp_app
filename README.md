@@ -100,6 +100,7 @@ For platform-specific runs:
 | `internal`    | store (default) | Beta store submission — Play Store + App Store (`expo-release-beta.yml`)           |
 | `production`  | store (default) | Stable store submission + GitHub release APK (`expo-release.yml`, default profile) |
 | `local-apk`   | `internal`      | Beta GitHub release APK (`expo-release-beta.yml`)                                  |
+| `local-ios`   | `internal`      | Local iOS simulator build — run via `pnpm ios:local`                               |
 | `mimikama`    | store (default) | Mimikama variant store submission                                                  |
 | `fdroid`      | `internal`      | F-Droid / FOSS local build (no push notifications)                                 |
 
