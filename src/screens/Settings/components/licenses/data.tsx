@@ -1,12 +1,12 @@
 export default {
-  "@algolia/client-search@5.51.0": {
+  "@algolia/client-search@5.52.0": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@atproto/api@0.19.11": {
+  "@atproto/api@0.19.12": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -69,7 +69,7 @@ export default {
       "https://github.com/react-native-async-storage/async-storage/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/bottom-tabs@7.15.9": {
+  "@react-navigation/bottom-tabs@7.15.11": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
@@ -90,7 +90,7 @@ export default {
       "https://github.com/rive-app/rive-nitro-react-native/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@stripe/stripe-react-native@0.64.0": {
+  "@stripe/stripe-react-native@0.65.0": {
     licenses: "MIT",
     repository: "https://github.com/stripe/stripe-react-native",
     licenseUrl:
@@ -165,7 +165,7 @@ export default {
       "https://github.com/malaa-tech/expo-custom-assets/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "expo-dev-client@55.0.28": {
+  "expo-dev-client@55.0.32": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -207,7 +207,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-keep-awake@55.0.6": {
+  "expo-keep-awake@55.0.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -231,7 +231,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-notifications@55.0.20": {
+  "expo-notifications@55.0.22": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -279,7 +279,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo@55.0.17": {
+  "expo@55.0.20": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -325,7 +325,7 @@ export default {
       "https://github.com/react-native-modal/react-native-modal/raw/master/LICENSE.md",
     parents: "vvp_app",
   },
-  "react-native-nitro-modules@0.35.5": {
+  "react-native-nitro-modules@0.35.6": {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
     licenseUrl: "https://github.com/mrousavy/nitro",

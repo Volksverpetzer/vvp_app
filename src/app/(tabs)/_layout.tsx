@@ -43,34 +43,14 @@ const TabLayout = () => {
     >
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Icon
-          src={{
-            default: (
-              <NativeTabs.Trigger.VectorIcon family={Octicons} name="home" />
-            ),
-            selected: (
-              <NativeTabs.Trigger.VectorIcon
-                family={Octicons}
-                name="home-fill"
-              />
-            ),
-          }}
+          src={<NativeTabs.Trigger.VectorIcon family={Octicons} name="home" />}
         />
         <NativeTabs.Trigger.Label hidden>Startseite</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger hidden={!engagementActive} name="personal">
         <NativeTabs.Trigger.Icon
-          src={{
-            default: (
-              <NativeTabs.Trigger.VectorIcon family={Octicons} name="star" />
-            ),
-            selected: (
-              <NativeTabs.Trigger.VectorIcon
-                family={Octicons}
-                name="star-fill"
-              />
-            ),
-          }}
+          src={<NativeTabs.Trigger.VectorIcon family={Octicons} name="star" />}
         />
         <NativeTabs.Trigger.Badge hidden={!badgeState.personal} />
         <NativeTabs.Trigger.Label hidden>Favoriten</NativeTabs.Trigger.Label>
@@ -78,14 +58,9 @@ const TabLayout = () => {
 
       <NativeTabs.Trigger hidden={!actionsActive} name="action">
         <NativeTabs.Trigger.Icon
-          src={{
-            default: (
-              <NativeTabs.Trigger.VectorIcon family={Octicons} name="trophy" />
-            ),
-            selected: (
-              <NativeTabs.Trigger.VectorIcon family={Octicons} name="trophy" />
-            ),
-          }}
+          src={
+            <NativeTabs.Trigger.VectorIcon family={Octicons} name="trophy" />
+          }
         />
         <NativeTabs.Trigger.Badge hidden={!badgeState.action} />
         <NativeTabs.Trigger.Label hidden>Aktionen</NativeTabs.Trigger.Label>
@@ -93,28 +68,16 @@ const TabLayout = () => {
 
       <NativeTabs.Trigger name="report">
         <NativeTabs.Trigger.Icon
-          src={{
-            default: (
-              <NativeTabs.Trigger.VectorIcon family={Octicons} name="report" />
-            ),
-            selected: (
-              <NativeTabs.Trigger.VectorIcon family={Octicons} name="report" />
-            ),
-          }}
+          src={
+            <NativeTabs.Trigger.VectorIcon family={Octicons} name="report" />
+          }
         />
         <NativeTabs.Trigger.Label hidden>Fake melden</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="settings">
         <NativeTabs.Trigger.Icon
-          src={{
-            default: (
-              <NativeTabs.Trigger.VectorIcon family={Octicons} name="gear" />
-            ),
-            selected: (
-              <NativeTabs.Trigger.VectorIcon family={Octicons} name="gear" />
-            ),
-          }}
+          src={<NativeTabs.Trigger.VectorIcon family={Octicons} name="gear" />}
         />
         <NativeTabs.Trigger.Label hidden>
           Einstellungen

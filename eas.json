@@ -1,6 +1,6 @@
 {
   "cli": {
-    "version": "18.8.1",
+    "version": ">=18.0.0",
     "appVersionSource": "remote"
   },
   "build": {
@@ -59,6 +59,17 @@
         "image": "auto",
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
+      },
+      "distribution": "internal",
+      "env": {
+        "APP": "volksverpetzer"
+      }
+    },
+    "local-ios": {
+      "node": "24.14.0",
+      "ios": {
+        "simulator": true,
+        "buildConfiguration": "Release"
       },
       "distribution": "internal",
       "env": {
