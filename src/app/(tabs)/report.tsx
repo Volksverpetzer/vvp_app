@@ -1,4 +1,3 @@
-import { useIsFocused } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -30,8 +29,6 @@ interface Report {
 }
 
 const ReportScreen = () => {
-  const isFocused = useIsFocused();
-
   // Local state variables
   const [reports, setReports] = useState<Report[]>([]);
   const [buttonEnabled, setButtonEnabled] = useState(true);
@@ -94,8 +91,6 @@ const ReportScreen = () => {
 
   // Populate initial fields and load reports on component mount or when params change
   useEffect(() => {
-    if (!isFocused) return;
-
     if (index) {
       setDescription(`Absatz ${index}`);
     }
@@ -109,7 +104,7 @@ const ReportScreen = () => {
     PersonalStore.getReports().then((storedReports) => {
       setReports(storedReports || []);
     });
-  }, [isFocused, parameterUrl, index]);
+  }, [parameterUrl, index]);
 
   // Callback to handle the submit action
   const onSubmit = useCallback(async () => {
@@ -142,11 +137,6 @@ const ReportScreen = () => {
   }, [description, moreInfo, url, allowedPublic, reports]);
 
   const HEADER_HEIGHT = 150;
-
-  // NativeTabs renders inactive tabs too; keep iOS TextInputs out of cold-start deep links.
-  if (!isFocused) {
-    return null;
-  }
 
   return (
     <>
