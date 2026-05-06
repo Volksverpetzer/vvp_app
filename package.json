@@ -1,6 +1,6 @@
 {
   "name": "vvp_app",
-  "version": "2.1.10",
+  "version": "2.1.11",
   "versionCode": 2026050501,
   "main": "expo-router/entry",
   "expo": {
@@ -31,7 +31,7 @@
     "android:submit": "pnpx eas-cli build -p android --auto-submit",
     "dev:android": "pnpx eas-cli build -p android --profile development",
     "dev:ios": "pnpx eas-cli build -p ios --profile development",
-    "dev:all": "pnpx eas-cli build --platform all --profile development",
+    "dev:all": "pnpx eas-cli build -p all --profile development",
     "ios": "expo run:ios",
     "ios:local": "pnpx eas-cli build -p ios --profile local-ios --local",
     "preview:build": "pnpx eas-cli build -p android --profile preview",
