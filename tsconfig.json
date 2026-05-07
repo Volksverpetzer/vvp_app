@@ -12,6 +12,7 @@
     "paths": {
       "#assets/*": ["./assets/*"],
       "#tests/*": ["./__tests__/*"],
+      "#plugins/*": ["./plugins/*"],
       "#/*": ["./src/*"]
     }
   },
