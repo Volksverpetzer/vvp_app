@@ -25,10 +25,6 @@ runs:
         node-version: "24"
         cache: "pnpm"
 
-    - name: 🛠️ Allow pnpm build scripts needed by eas-cli
-      run: pnpm approve-builds dtrace-provider
-      shell: bash
-
     - name: 🏗 Setup Expo and EAS
       if: ${{ inputs.setup-expo-token }}
       uses: expo/expo-github-action@v8
