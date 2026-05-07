@@ -1,5 +1,5 @@
 import withSplitAbi from "#plugins/withSplitAbi.plugin";
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { beforeEach, describe, expect, it } from "@jest/globals";
 
 let capturedCallback: ((mod: any) => any) | undefined;
 
