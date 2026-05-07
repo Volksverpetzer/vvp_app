@@ -65,7 +65,7 @@ describe("withSplitAbi plugin", () => {
     expect(contents).not.toContain("universalApk true");
   });
 
-  it("leaves gradle without an android block unchanged except for the injection point", () => {
+  it("leaves gradle without an android block unchanged", () => {
     withSplitAbi({});
     const result = capturedCallback!(makeGradleMod("// no android block here"));
     // replace() finds nothing — content is unchanged
