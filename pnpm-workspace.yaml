@@ -3,5 +3,6 @@ resolution-mode: highest # see https://pnpm.io/settings#resolution-mode
 packages:
   - .
 allowBuilds:
+  dtrace-provider: true
   esbuild: true
   unrs-resolver: true
