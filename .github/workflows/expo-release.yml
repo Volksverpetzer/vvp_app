@@ -70,8 +70,14 @@ jobs:
 
       - name: 📦 Stage FOSS split APKs
         run: |
-          cp android/app/build/outputs/apk/release/app-arm64-v8a-release.apk "${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss-arm64-v8a.apk"
-          cp android/app/build/outputs/apk/release/app-armeabi-v7a-release.apk "${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss-armeabi-v7a.apk"
+          mkdir -p "${{ github.workspace }}/build/fdroid-extracted"
+          tar -xzf "${{ github.workspace }}/build/fdroid-build.tar.gz" -C "${{ github.workspace }}/build/fdroid-extracted"
+
+          cp "${{ github.workspace }}/build/fdroid-extracted/android/app/build/outputs/apk/release/app-arm64-v8a-release.apk" \
+            "${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss-arm64-v8a.apk"
+
+          cp "${{ github.workspace }}/build/fdroid-extracted/android/app/build/outputs/apk/release/app-armeabi-v7a-release.apk" \
+            "${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss-armeabi-v7a.apk"
 
       - name: 🎂 Create GitHub Release
         uses: softprops/action-gh-release@v2
