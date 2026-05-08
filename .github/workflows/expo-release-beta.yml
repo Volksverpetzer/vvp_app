@@ -61,17 +61,20 @@ jobs:
           setup-expo-token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 EAS Build - android apk
-        run: APP=volksverpetzer eas build --profile local-apk --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
+        run: eas build --profile local-apk --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
 
       - name: 🛠 Prepare F-Droid build
         run: pnpm prepare:fdroid
 
       - name: 🚀 EAS Build - android apk (FOSS)
-        run: BUILD_FOSS_ONLY=true APP=volksverpetzer eas build --profile local-apk --platform android --local
+        run: eas build --profile fdroid --platform android --local
 
       - name: 📦 Stage FOSS split APKs
         run: |
-          for apk in android/app/build/outputs/apk/release/app-*-release.apk; do
+          shopt -s nullglob
+          apks=(android/app/build/outputs/apk/release/app-*-release.apk)
+          [[ ${#apks[@]} -gt 0 ]] || { echo "::error::No FOSS split APKs found — check build output path"; exit 1; }
+          for apk in "${apks[@]}"; do
             arch=$(basename "$apk" | sed 's/app-\(.*\)-release\.apk/\1/')
             cp "$apk" "${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss-${arch}.apk"
           done
