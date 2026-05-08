@@ -71,13 +71,8 @@ jobs:
 
       - name: 📦 Stage FOSS split APKs
         run: |
-          shopt -s nullglob
-          apks=(android/app/build/outputs/apk/release/app-*-release.apk)
-          [[ ${#apks[@]} -gt 0 ]] || { echo "::error::No FOSS split APKs found — check build output path"; exit 1; }
-          for apk in "${apks[@]}"; do
-            arch=$(basename "$apk" | sed 's/app-\(.*\)-release\.apk/\1/')
-            cp "$apk" "${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss-${arch}.apk"
-          done
+          cp android/app/build/outputs/apk/release/app-arm64-v8a-release.apk "${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss-arm64-v8a.apk"
+          cp android/app/build/outputs/apk/release/app-armeabi-v7a-release.apk "${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss-armeabi-v7a.apk"
 
       - name: 🎂 Create GitHub Release
         uses: softprops/action-gh-release@v2
