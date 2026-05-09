@@ -2,6 +2,7 @@
   "import": ["@cspell/dict-de-de/cspell-ext.json"],
   "language": "de, de_DE, en, en_GB",
   "words": [
+    "armeabi",
     "atproto",
     "bsky",
     "cmplz",

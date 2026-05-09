@@ -61,10 +61,13 @@ jobs:
           setup-expo-token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 EAS Build - android apk
-        run: APP=volksverpetzer eas build --profile local-apk --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
+        run: eas build --profile local-apk --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
+
+      - name: 🛠 Prepare F-Droid build
+        run: pnpm prepare:fdroid
 
       - name: 🚀 EAS Build - android apk (FOSS)
-        run: BUILD_FOSS_ONLY=true APP=volksverpetzer eas build --profile local-apk --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss.apk
+        run: eas build --profile fdroid --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss.apk
 
       - name: 🎂 Create GitHub Release
         uses: softprops/action-gh-release@v2

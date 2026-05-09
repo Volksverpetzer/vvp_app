@@ -1,12 +1,12 @@
 export default {
-  "@algolia/client-search@5.52.0": {
+  "@algolia/client-search@5.52.1": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@atproto/api@0.19.12": {
+  "@atproto/api@0.19.15": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -25,19 +25,19 @@ export default {
     licenseUrl: "https://github.com/expo/google-fonts/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@expo/config@55.0.15": {
+  "@expo/config@55.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@expo/dom-webview@55.0.5": {
+  "@expo/dom-webview@55.0.6": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "@expo/metro-runtime@55.0.10": {
+  "@expo/metro-runtime@55.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -69,14 +69,14 @@ export default {
       "https://github.com/react-native-async-storage/async-storage/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/bottom-tabs@7.15.11": {
+  "@react-navigation/bottom-tabs@7.15.12": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "@react-navigation/native@7.2.2": {
+  "@react-navigation/native@7.2.3": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
@@ -134,7 +134,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-asset@55.0.16": {
+  "expo-asset@55.0.17": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -152,7 +152,7 @@ export default {
     licenseUrl: "https://gitlab.com/breadboxio/expo-config",
     parents: "vvp_app",
   },
-  "expo-constants@55.0.15": {
+  "expo-constants@55.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -171,7 +171,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-device@55.0.15": {
+  "expo-device@55.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -183,13 +183,13 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-file-system@55.0.17": {
+  "expo-file-system@55.0.19": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-font@55.0.6": {
+  "expo-font@55.0.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -201,13 +201,13 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-image@55.0.9": {
+  "expo-image@55.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-keep-awake@55.0.7": {
+  "expo-keep-awake@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -219,7 +219,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-linking@55.0.14": {
+  "expo-linking@55.0.15": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -237,7 +237,7 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-router@55.0.13": {
+  "expo-router@55.0.14": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -249,19 +249,19 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-splash-screen@55.0.19": {
+  "expo-splash-screen@55.0.20": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-status-bar@55.0.5": {
+  "expo-status-bar@55.0.6": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-system-ui@55.0.16": {
+  "expo-system-ui@55.0.17": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -273,13 +273,13 @@ export default {
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo-web-browser@55.0.14": {
+  "expo-web-browser@55.0.15": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
     parents: "vvp_app",
   },
-  "expo@55.0.20": {
+  "expo@55.0.23": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo",
@@ -297,7 +297,7 @@ export default {
     licenseUrl: "https://github.com/lodash/lodash/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react-dom@19.2.5": {
+  "react-dom@19.2.6": {
     licenses: "MIT",
     repository: "https://github.com/facebook/react",
     licenseUrl: "https://github.com/facebook/react/raw/master/LICENSE",
@@ -406,7 +406,7 @@ export default {
     licenseUrl: "https://github.com/facebook/react-native/raw/master/LICENSE",
     parents: "vvp_app",
   },
-  "react@19.2.5": {
+  "react@19.2.6": {
     licenses: "MIT",
     repository: "https://github.com/facebook/react",
     licenseUrl: "https://github.com/facebook/react/raw/master/LICENSE",

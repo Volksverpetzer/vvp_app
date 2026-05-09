@@ -18,6 +18,7 @@ module.exports = (api: ConfigAPI) => {
           alias: {
             "#assets": "./assets",
             "#tests": "./__tests__",
+            "#plugins": "./plugins",
             "#": "./src",
           },
         },
