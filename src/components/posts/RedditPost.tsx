@@ -21,14 +21,14 @@ interface RedditPreviewImage {
 }
 
 interface RedditProperties {
-  preview: { images: RedditPreviewImage[]; enabled: boolean };
+  preview?: { images: RedditPreviewImage[]; enabled: boolean };
   is_reddit_media_domain: boolean;
   url_overridden_by_dest: string;
   title: string;
   created_utc: number;
   permalink: string;
   author: string;
-  crosspost_parent_list: { author: string }[];
+  crosspost_parent_list?: { author: string }[];
   inView?: boolean;
   thumbnail: string;
 }
@@ -49,9 +49,7 @@ const RedditPost = (properties: RedditProperties) => {
     : 0.5125;
   const size = properties.title.length > 100 ? 16 : 18;
   const author =
-    properties?.crosspost_parent_list === undefined
-      ? properties.author
-      : properties.crosspost_parent_list[0].author;
+    properties.crosspost_parent_list?.[0]?.author ?? properties.author;
   const inView = properties.inView ?? true;
 
   const datebeautify = () => {

@@ -34,7 +34,11 @@ const ImageModal = ({ uri, visible, onClose }: ImageModalProperties) => {
           isPanEnabled
           isPinchEnabled
         >
-          <Image source={{ uri }} style={{ width, height: "100%" }} />
+          <Image
+            source={{ uri }}
+            style={{ width, height: "100%" }}
+            contentFit="contain"
+          />
         </Zoomable>
       </GestureHandlerRootView>
       <View style={{ padding: 50 }}>
