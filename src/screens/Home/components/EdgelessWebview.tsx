@@ -3,7 +3,6 @@ import { useRouter } from "expo-router";
 import { useCallback, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import type { WebViewNavigation } from "react-native-webview";
 import { WebView } from "react-native-webview";
 import type { WebViewErrorEvent } from "react-native-webview/lib/WebViewTypes";
 
@@ -142,11 +141,6 @@ const EdgelessWebview = ({
     return parts.join("; ");
   }, []);
 
-  const handleNavigationStateChange = useCallback(
-    (_navState: WebViewNavigation) => {},
-    [],
-  );
-
   return (
     <View
       style={[
@@ -187,7 +181,6 @@ const EdgelessWebview = ({
         }}
         onLoadEnd={onLoadEnd}
         onError={onError}
-        onNavigationStateChange={handleNavigationStateChange}
         onShouldStartLoadWithRequest={({ url, isTopFrame }) => {
           // Allow the first load of the provided URI
           const { path } = Linking.parse(url);

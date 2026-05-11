@@ -38,7 +38,7 @@ const Index = () => {
           const { hostname: baseHost } = Linking.parse(Config.wpUrl);
 
           if (hostname === baseHost && shouldExcludeFromDeepLink(path)) {
-            Linking.openURL(initialUrl);
+            await Linking.openURL(initialUrl);
             appOpenRoutine();
             const onboarded = await PersonalStore.isOnboardingDone();
             router.dismissTo(onboarded ? "/home" : "/onboarding");

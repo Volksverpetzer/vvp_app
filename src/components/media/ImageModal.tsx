@@ -24,7 +24,7 @@ const ImageModal = ({ uri, visible, onClose }: ImageModalProperties) => {
   const backgroundColor = Colors[colorScheme].background;
 
   return (
-    <Modal style={styles.centered} visible={visible} onRequestClose={onClose}>
+    <Modal visible={visible} onRequestClose={onClose}>
       <GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
         <Zoomable
           style={{ width, height: "90%", ...styles.centered }}
