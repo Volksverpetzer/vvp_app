@@ -35,11 +35,16 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     Promise.all([
       SettingsStore.getContentSettings(),
       SettingsStore.getAdvancedSettings(),
-    ]).then(([contentSettings, advancedSettings]) => {
-      setContentSettings((previous) => ({ ...previous, ...contentSettings }));
-      setAdvancedSettings((previous) => ({ ...previous, ...advancedSettings }));
-      setSettingsLoaded(true);
-    });
+    ])
+      .then(([contentSettings, advancedSettings]) => {
+        setContentSettings((previous) => ({ ...previous, ...contentSettings }));
+        setAdvancedSettings((previous) => ({
+          ...previous,
+          ...advancedSettings,
+        }));
+      })
+      .catch(console.error)
+      .finally(() => setSettingsLoaded(true));
   }, []);
 
   //propagate state changes to storage:

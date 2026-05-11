@@ -23,9 +23,15 @@ const Recommended = (properties: RecommendedProperties) => {
   const { article_link } = properties;
 
   useEffect(() => {
-    IntelligenceAPI.recommendations(article_link).then((data) => {
-      setMatches(data.results);
-    });
+    let mounted = true;
+    IntelligenceAPI.recommendations(article_link)
+      .then((data) => {
+        if (mounted) setMatches(data.results);
+      })
+      .catch(console.error);
+    return () => {
+      mounted = false;
+    };
   }, [article_link]);
 
   return (
