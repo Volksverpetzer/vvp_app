@@ -8,6 +8,11 @@ import View from "#/components/design/View";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import {
+  ALGOLIA_APP_ID,
+  ALGOLIA_INDEX_NAME,
+  ALGOLIA_SEARCH_KEY,
+} from "#/constants/Search";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
@@ -25,8 +30,7 @@ const AlgoliaSearchResults = ({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  // Initialize Algolia client
-  const client = searchClient("W8YO8C6SIN", "f8211e7620b2d30da0d73f451fe36634");
+  const client = searchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
   const colorScheme = useAppColorScheme();
   const highlightColor = Colors[colorScheme].primary;
 
@@ -42,7 +46,7 @@ const AlgoliaSearchResults = ({
       try {
         // Search across multiple indices
         const { hits } = await client.searchSingleIndex({
-          indexName: "wp_searchable_posts",
+          indexName: ALGOLIA_INDEX_NAME,
           searchParams: {
             query,
             hitsPerPage: maxResults,
