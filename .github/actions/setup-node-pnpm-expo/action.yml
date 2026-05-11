@@ -30,7 +30,8 @@ runs:
       uses: expo/expo-github-action@v8
       with:
         eas-version: latest
-        packager: npm
+        packager: npm # eas-cli is installed in a runner temp dir, outside the project; pnpm v11 blocks build scripts there (dtrace-provider), npm does not
+
         token: ${{ inputs.setup-expo-token }}
 
     - name: 📦 Install dependencies
