@@ -43,7 +43,7 @@ export interface FeedProperties {
  */
 const Feed = (properties: FeedProperties) => {
   const [posts, setPosts] = useState<Post<unknown>[]>([]);
-  const [inView, setInView] = useState(new Set<string>());
+  const inViewRef = useRef(new Set<string>());
   const [rerender, setRerender] = useState(0);
   const [initialLoad, setInitialLoad] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(true);
@@ -117,19 +117,16 @@ const Feed = (properties: FeedProperties) => {
     else setIsLoadingMore(false);
   }, [loadmore, page, getPosts, posts]);
 
-  // Update inView set immutably – do not mutate state directly.
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      setInView((previous) => {
-        const newSet = new Set(previous);
-        for (const item of viewableItems) {
-          if (item.isViewable) {
-            newSet.add(item.item.id);
-          }
+      let changed = false;
+      for (const item of viewableItems) {
+        if (item.isViewable && !inViewRef.current.has(item.item.id)) {
+          inViewRef.current.add(item.item.id);
+          changed = true;
         }
-        setRerender(newSet.size);
-        return newSet;
-      });
+      }
+      if (changed) setRerender((n) => n + 1);
     },
     [],
   );
@@ -141,24 +138,20 @@ const Feed = (properties: FeedProperties) => {
     },
   ]);
 
-  const renderItem: ListRenderItem<Post<unknown>> = useCallback(
-    ({ item }) => {
-      // Skip rendering if item.data is not an object.
-      if (typeof item.data !== "object") return undefined;
-      return (
-        <GenericPost
-          key={item.id}
-          component={item.component}
-          data={item.data}
-          contentFavIdentifier={item.contentFavIdentifier}
-          contentType={item.contentType}
-          shareable={item.shareable}
-          inView={inView.has(item.id)}
-        />
-      );
-    },
-    [inView],
-  );
+  const renderItem: ListRenderItem<Post<unknown>> = useCallback(({ item }) => {
+    if (typeof item.data !== "object") return undefined;
+    return (
+      <GenericPost
+        key={item.id}
+        component={item.component}
+        data={item.data}
+        contentFavIdentifier={item.contentFavIdentifier}
+        contentType={item.contentType}
+        shareable={item.shareable}
+        inView={inViewRef.current.has(item.id)}
+      />
+    );
+  }, []);
 
   const contentContainerStyle = useMemo(
     () => ({

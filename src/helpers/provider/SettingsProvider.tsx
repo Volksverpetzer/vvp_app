@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
 import SettingsStore from "#/helpers/Stores/SettingsStore";
@@ -51,20 +51,27 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     SettingsStore.setContentSettings(contentSettings);
   }, [contentSettings]);
 
+  const contextValue = useMemo(
+    () => ({
+      contentSettings,
+      setContentSettings,
+      advancedSettings,
+      setAdvancedSettings,
+    }),
+    [
+      contentSettings,
+      advancedSettings,
+      setContentSettings,
+      setAdvancedSettings,
+    ],
+  );
+
   if (!settingsLoaded) {
-    // Optionally, you could render a loading indicator here
     return;
   }
 
   return (
-    <SettingsContext.Provider
-      value={{
-        contentSettings,
-        setContentSettings,
-        advancedSettings,
-        setAdvancedSettings,
-      }}
-    >
+    <SettingsContext.Provider value={contextValue}>
       {children}
     </SettingsContext.Provider>
   );
