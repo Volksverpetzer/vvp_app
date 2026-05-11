@@ -1,12 +1,11 @@
-import { ImageZoom } from "@likashefqet/react-native-image-zoom";
+import { Image } from "expo-image";
 import { useState } from "react";
-import { Button, Modal, TouchableOpacity } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native";
 
 import View from "#/components/design/View";
+import ImageModal from "#/components/media/ImageModal";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
 import { onShare as _onShare } from "#/helpers/Sharing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -41,7 +40,6 @@ const RedditPost = (properties: RedditProperties) => {
   const [dims, setDims] = useState({ width: 0, height: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
   const img_dim = properties.preview?.images[0].source ?? {
     width: 100,
     height: 100,
@@ -64,7 +62,6 @@ const RedditPost = (properties: RedditProperties) => {
   };
   const date = datebeautify();
 
-  const onModalClose = () => setIsModalOpen(false);
   const onLayout = (event) => {
     const { height, width } = event.nativeEvent.layout;
     setDims({ width: width, height: height });
@@ -80,6 +77,10 @@ const RedditPost = (properties: RedditProperties) => {
     }
   };
 
+  const imageUri = inView
+    ? properties.url_overridden_by_dest
+    : properties.thumbnail;
+
   return (
     <>
       <TouchableOpacity
@@ -90,15 +91,13 @@ const RedditPost = (properties: RedditProperties) => {
         activeOpacity={0.8}
       >
         <View>
-          <ImageZoom
+          <Image
             style={{
               left: 0,
               width: dims.width,
               height: Math.round(height_relation * dims.width),
             }}
-            uri={
-              inView ? properties.url_overridden_by_dest : properties.thumbnail
-            }
+            source={{ uri: imageUri }}
           />
           <UiText
             style={{
@@ -124,25 +123,11 @@ const RedditPost = (properties: RedditProperties) => {
           </UiText>
         </View>
       </TouchableOpacity>
-      <Modal style={styles.centered} visible={isModalOpen}>
-        <GestureHandlerRootView
-          style={{ flex: 1, backgroundColor: Colors[colorScheme].background }}
-        >
-          <ImageZoom
-            style={{ left: 0, width: "100%", height: "80%" }}
-            uri={
-              inView ? properties.url_overridden_by_dest : properties.thumbnail
-            }
-          />
-          <View style={{ padding: 70 }}>
-            <Button
-              color={corporate}
-              title="Schließen"
-              onPress={onModalClose}
-            />
-          </View>
-        </GestureHandlerRootView>
-      </Modal>
+      <ImageModal
+        uri={properties.url_overridden_by_dest}
+        visible={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 };

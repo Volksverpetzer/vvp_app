@@ -1,13 +1,11 @@
-import { Zoomable } from "@likashefqet/react-native-image-zoom";
 import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
 import { useState } from "react";
-import { Button, Modal, Pressable, useWindowDimensions } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Pressable, useWindowDimensions } from "react-native";
 import type { InternalRendererProps, TBlock } from "react-native-render-html";
 import { useInternalRenderer } from "react-native-render-html";
 
-import View from "#/components/design/View";
+import ImageModal from "#/components/media/ImageModal";
 import Colors from "#/constants/Colors";
 import { styles } from "#/constants/Styles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -27,9 +25,7 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
     setIsLoaded(true);
     const { width, height } = event.source;
     const _ratio = Math.round((height / width) * 100) / 100;
-    if (ratio !== _ratio) {
-      setRatio(_ratio);
-    }
+    if (ratio !== _ratio) setRatio(_ratio);
   };
 
   return (
@@ -43,29 +39,11 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
         source={{ uri }}
         style={{ width, height: width * ratio, backgroundColor }}
       />
-      <Modal
-        style={styles.centered}
+      <ImageModal
+        uri={uri}
         visible={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-      >
-        <GestureHandlerRootView
-          style={{ flex: 1, backgroundColor: Colors[colorScheme].background }}
-        >
-          <Zoomable
-            style={{ width, height: "90%", ...styles.centered }}
-            isDoubleTapEnabled
-            doubleTapScale={3}
-            maxScale={5}
-            isPanEnabled
-            isPinchEnabled
-          >
-            <Image source={{ uri }} style={{ width, height: width * ratio }} />
-          </Zoomable>
-        </GestureHandlerRootView>
-        <View style={{ padding: 50 }}>
-          <Button title="Schließen" onPress={() => setIsModalOpen(false)} />
-        </View>
-      </Modal>
+        onClose={() => setIsModalOpen(false)}
+      />
     </Pressable>
   );
 };
