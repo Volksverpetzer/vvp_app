@@ -1,25 +1,32 @@
-import { ImageZoom } from "@likashefqet/react-native-image-zoom";
+import { Image } from "expo-image";
 import { useState } from "react";
-import { Button, Modal, TouchableOpacity } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native";
 
 import View from "#/components/design/View";
+import ImageModal from "#/components/media/ImageModal";
 import UiText from "#/components/ui/UiText";
-import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
 import { onShare as _onShare } from "#/helpers/Sharing";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+
+interface RedditImageSource {
+  url: string;
+  width: number;
+  height: number;
+}
+
+interface RedditPreviewImage {
+  source: RedditImageSource;
+  resolutions?: RedditImageSource[];
+}
 
 interface RedditProperties {
-  preview: { images: any; enabled: boolean };
+  preview?: { images: RedditPreviewImage[]; enabled: boolean };
   is_reddit_media_domain: boolean;
   url_overridden_by_dest: string;
   title: string;
-  navigation: any;
   created_utc: number;
   permalink: string;
   author: string;
-  crosspost_parent_list: any[];
+  crosspost_parent_list?: { author: string }[];
   inView?: boolean;
   thumbnail: string;
 }
@@ -30,8 +37,6 @@ interface RedditProperties {
 const RedditPost = (properties: RedditProperties) => {
   const [dims, setDims] = useState({ width: 0, height: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
   const img_dim = properties.preview?.images[0].source ?? {
     width: 100,
     height: 100,
@@ -41,10 +46,8 @@ const RedditPost = (properties: RedditProperties) => {
     : 0.5125;
   const size = properties.title.length > 100 ? 16 : 18;
   const author =
-    properties?.crosspost_parent_list === undefined
-      ? properties.author
-      : properties.crosspost_parent_list[0].author;
-  properties.inView = properties.inView ?? true;
+    properties.crosspost_parent_list?.[0]?.author ?? properties.author;
+  const inView = properties.inView ?? true;
 
   const datebeautify = () => {
     const date = new Date(properties.created_utc * 1000);
@@ -54,7 +57,6 @@ const RedditPost = (properties: RedditProperties) => {
   };
   const date = datebeautify();
 
-  const onModalClose = () => setIsModalOpen(false);
   const onLayout = (event) => {
     const { height, width } = event.nativeEvent.layout;
     setDims({ width: width, height: height });
@@ -70,6 +72,10 @@ const RedditPost = (properties: RedditProperties) => {
     }
   };
 
+  const imageUri = inView
+    ? properties.url_overridden_by_dest
+    : properties.thumbnail;
+
   return (
     <>
       <TouchableOpacity
@@ -80,17 +86,13 @@ const RedditPost = (properties: RedditProperties) => {
         activeOpacity={0.8}
       >
         <View>
-          <ImageZoom
+          <Image
             style={{
               left: 0,
               width: dims.width,
               height: Math.round(height_relation * dims.width),
             }}
-            uri={
-              properties.inView
-                ? properties.url_overridden_by_dest
-                : properties.thumbnail
-            }
+            source={{ uri: imageUri }}
           />
           <UiText
             style={{
@@ -116,27 +118,11 @@ const RedditPost = (properties: RedditProperties) => {
           </UiText>
         </View>
       </TouchableOpacity>
-      <Modal style={styles.centered} visible={isModalOpen}>
-        <GestureHandlerRootView
-          style={{ flex: 1, backgroundColor: Colors[colorScheme].background }}
-        >
-          <ImageZoom
-            style={{ left: 0, width: "100%", height: "80%" }}
-            uri={
-              properties.inView
-                ? properties.url_overridden_by_dest
-                : properties.thumbnail
-            }
-          />
-          <View style={{ padding: 70 }}>
-            <Button
-              color={corporate}
-              title="Schließen"
-              onPress={onModalClose}
-            />
-          </View>
-        </GestureHandlerRootView>
-      </Modal>
+      <ImageModal
+        uri={properties.url_overridden_by_dest}
+        visible={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 };
