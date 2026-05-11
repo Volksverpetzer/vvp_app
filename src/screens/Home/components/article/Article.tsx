@@ -50,9 +50,10 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const corporate = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].background;
 
-  let fullRead = false;
-  let savedPosition = 0;
-  let heightCaptured = false;
+  const fullRead = useRef(false);
+  const savedPosition = useRef(0);
+  const heightCaptured = useRef(false);
+  const mounted = useRef(true);
   const slug = article.slug;
   const article_image = article.imageUrl;
   const article_title = article.title;
@@ -68,6 +69,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     _date.getDate() + "." + (_date.getMonth() + 1) + "." + _date.getFullYear();
 
   useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     registerViews(article_link);
     Statistics.countArticleRead();
   }, [article_link]);
@@ -79,13 +87,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
    * @param event LayoutChangeEvent containing nativeEvent.layout.height
    */
   const onRender = (event: LayoutChangeEvent) => {
-    if (heightCaptured) return;
-    heightCaptured = true;
+    if (heightCaptured.current) return;
+    heightCaptured.current = true;
     const height = event.nativeEvent.layout.height;
     PersonalStore.getScrollPosition(slug).then((progress) => {
-      if (progress > 0.8) return;
-      savedPosition = progress;
-      scrollReference.current.scrollTo({
+      if (!mounted.current || progress > 0.8) return;
+      savedPosition.current = progress;
+      scrollReference.current?.scrollTo({
         y: height * progress,
         animated: false,
       });
@@ -102,13 +110,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     const progress =
       event.nativeEvent.contentOffset.y / event.nativeEvent.contentSize.height;
     scrollProgress.setValue(progress * 1.1 * width);
-    if (progress > 0.7 && !fullRead) {
-      fullRead = true;
+    if (progress > 0.7 && !fullRead.current) {
+      fullRead.current = true;
       registerEvent(article_link, "FullRead");
       Achievements.setAchievementValue("reader", true);
     }
-    if (Math.abs(progress - savedPosition) > 0.02) {
-      savedPosition = progress;
+    if (Math.abs(progress - savedPosition.current) > 0.02) {
+      savedPosition.current = progress;
       PersonalStore.setScrollPosition(progress, slug);
     }
   };
