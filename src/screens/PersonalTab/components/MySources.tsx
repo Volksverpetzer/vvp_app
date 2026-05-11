@@ -34,9 +34,8 @@ const MySources = () => {
   const handleDelete = useCallback(async (href: HttpsUrl) => {
     await SourcesStore.removeSource(href);
     setSources((prev) => {
-      const updated = { ...prev };
-      delete (updated as any)[href];
-      return updated;
+      const { [href]: _removed, ...rest } = prev;
+      return rest as StoredSources;
     });
   }, []);
 

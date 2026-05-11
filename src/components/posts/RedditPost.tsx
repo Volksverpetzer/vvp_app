@@ -10,16 +10,26 @@ import { styles } from "#/constants/Styles";
 import { onShare as _onShare } from "#/helpers/Sharing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
+interface RedditImageSource {
+  url: string;
+  width: number;
+  height: number;
+}
+
+interface RedditPreviewImage {
+  source: RedditImageSource;
+  resolutions?: RedditImageSource[];
+}
+
 interface RedditProperties {
-  preview: { images: any; enabled: boolean };
+  preview: { images: RedditPreviewImage[]; enabled: boolean };
   is_reddit_media_domain: boolean;
   url_overridden_by_dest: string;
   title: string;
-  navigation: any;
   created_utc: number;
   permalink: string;
   author: string;
-  crosspost_parent_list: any[];
+  crosspost_parent_list: { author: string }[];
   inView?: boolean;
   thumbnail: string;
 }
@@ -44,7 +54,7 @@ const RedditPost = (properties: RedditProperties) => {
     properties?.crosspost_parent_list === undefined
       ? properties.author
       : properties.crosspost_parent_list[0].author;
-  properties.inView = properties.inView ?? true;
+  const inView = properties.inView ?? true;
 
   const datebeautify = () => {
     const date = new Date(properties.created_utc * 1000);
@@ -87,9 +97,7 @@ const RedditPost = (properties: RedditProperties) => {
               height: Math.round(height_relation * dims.width),
             }}
             uri={
-              properties.inView
-                ? properties.url_overridden_by_dest
-                : properties.thumbnail
+              inView ? properties.url_overridden_by_dest : properties.thumbnail
             }
           />
           <UiText
@@ -123,9 +131,7 @@ const RedditPost = (properties: RedditProperties) => {
           <ImageZoom
             style={{ left: 0, width: "100%", height: "80%" }}
             uri={
-              properties.inView
-                ? properties.url_overridden_by_dest
-                : properties.thumbnail
+              inView ? properties.url_overridden_by_dest : properties.thumbnail
             }
           />
           <View style={{ padding: 70 }}>

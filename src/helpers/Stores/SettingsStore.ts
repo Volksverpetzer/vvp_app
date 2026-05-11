@@ -52,7 +52,7 @@ const SettingsStore = {
   async getContentSettings(): Promise<ContentSettingType> {
     const jsonValue = await BaseStore.getItem(this.keys.contentSettings);
     const parsed = BaseStore.parseJSON<Record<string, any>>(jsonValue, {});
-    const result: ContentSettingType = {} as any;
+    const result = {} as ContentSettingType;
     const newStore: Record<string, boolean> = {};
     for (const key in this.defaultContentSettings) {
       const defaultSetting = this.defaultContentSettings[key];

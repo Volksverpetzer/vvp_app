@@ -5,6 +5,7 @@ import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { WebViewNavigation } from "react-native-webview";
 import { WebView } from "react-native-webview";
+import type { WebViewErrorEvent } from "react-native-webview/lib/WebViewTypes";
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
@@ -39,7 +40,7 @@ interface EdgelessWebviewProperties {
   /**
    * Callback function when there's an error loading the WebView
    */
-  onError?: (error: any) => void;
+  onError?: (error: WebViewErrorEvent) => void;
   /**
    * Custom styles for the WebView container
    */
@@ -141,16 +142,8 @@ const EdgelessWebview = ({
     return parts.join("; ");
   }, []);
 
-  /**
-   * Handles navigation state changes in the WebView
-   * @param navState - The new navigation state
-   */
   const handleNavigationStateChange = useCallback(
-    (navState: WebViewNavigation) => {
-      // Navigation state changes can be handled here if needed
-      // console.warn is used instead of console.log as per linting rules
-      console.warn("Navigation state changed:", navState);
-    },
+    (_navState: WebViewNavigation) => {},
     [],
   );
 
