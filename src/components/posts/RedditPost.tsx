@@ -5,9 +5,7 @@ import { TouchableOpacity } from "react-native";
 import View from "#/components/design/View";
 import ImageModal from "#/components/media/ImageModal";
 import UiText from "#/components/ui/UiText";
-import Colors from "#/constants/Colors";
 import { onShare as _onShare } from "#/helpers/Sharing";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface RedditImageSource {
   url: string;
@@ -39,7 +37,6 @@ interface RedditProperties {
 const RedditPost = (properties: RedditProperties) => {
   const [dims, setDims] = useState({ width: 0, height: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const colorScheme = useAppColorScheme();
   const img_dim = properties.preview?.images[0].source ?? {
     width: 100,
     height: 100,
