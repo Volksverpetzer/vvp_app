@@ -30,7 +30,7 @@ runs:
       uses: expo/expo-github-action@v8
       with:
         eas-version: latest
-        packager: pnpm
+        packager: npm
         token: ${{ inputs.setup-expo-token }}
 
     - name: 📦 Install dependencies
