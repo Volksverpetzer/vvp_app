@@ -8,6 +8,9 @@ on:
         required: false
         default: "prerelease"
 
+permissions:
+  contents: write
+
 jobs:
   update-licenses:
     runs-on: ubuntu-slim

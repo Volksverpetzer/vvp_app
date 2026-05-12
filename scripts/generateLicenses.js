@@ -6,13 +6,25 @@ const { execSync } = require("node:child_process");
 const OUTPUT = "src/screens/Settings/components/licenses/data.tsx";
 
 const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-const directDeps = new Set(Object.keys(pkg.dependencies ?? {}));
+const directDepKeys = new Set(
+  Object.entries(pkg.dependencies ?? {}).map(
+    ([name, ver]) => `${name}@${ver.replace(/^[\^~>=<]+/, "")}`,
+  ),
+);
+
+function normalizeRepoUrl(url) {
+  if (!url) return url;
+  return url.replace(/^git\+/, "").replace(/\.git$/, "");
+}
 
 function buildLicenseUrl(repository, licenseFile) {
   if (!repository || !licenseFile) return undefined;
-  const match = repository.match(/^https?:\/\/github\.com\/([^/]+\/[^/.]+)/);
+  const basename = path.basename(licenseFile);
+  if (!/^(LICENSE|LICENCE|COPYING)/i.test(basename)) return undefined;
+  const normalized = normalizeRepoUrl(repository);
+  const match = normalized.match(/^https?:\/\/github\.com\/([^/]+\/[^/]+)/);
   if (!match) return undefined;
-  return `https://github.com/${match[1]}/raw/HEAD/${path.basename(licenseFile)}`;
+  return `https://github.com/${match[1]}/raw/HEAD/${basename}`;
 }
 
 licenseChecker.init({ start: ".", production: true }, (err, packages) => {
@@ -25,19 +37,21 @@ licenseChecker.init({ start: ".", production: true }, (err, packages) => {
   for (const [key, { licenses, repository, licenseFile }] of Object.entries(
     packages,
   )) {
-    const lastAt = key.lastIndexOf("@");
-    const name = key.slice(0, lastAt);
-    if (!directDeps.has(name)) continue;
+    if (!directDepKeys.has(key)) continue;
 
-    const entry = { licenses, repository };
+    const entry = { licenses, repository: normalizeRepoUrl(repository) };
     const licenseUrl = buildLicenseUrl(repository, licenseFile);
     if (licenseUrl) entry.licenseUrl = licenseUrl;
     filtered[key] = entry;
   }
 
+  const sorted = Object.fromEntries(
+    Object.entries(filtered).sort(([a], [b]) => a.localeCompare(b)),
+  );
+
   fs.writeFileSync(
     OUTPUT,
-    `export default ${JSON.stringify(filtered, null, 2)};\n`,
+    `export default ${JSON.stringify(sorted, null, 2)};\n`,
   );
   execSync(`pnpm exec prettier --write ${OUTPUT}`, { stdio: "inherit" });
   console.log(
