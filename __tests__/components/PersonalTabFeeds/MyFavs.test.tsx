@@ -12,17 +12,16 @@ import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
 const mockUseIsFocused = jest.fn(() => true);
 
+jest.mock("expo-router/react-navigation", () => ({
+  useIsFocused: () => mockUseIsFocused(),
+}));
+
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
   },
 }));
-
-jest.mock("@react-navigation/native", () => ({
-  useIsFocused: () => mockUseIsFocused(),
-}));
-
 jest.mock("#/components/Icons", () => ({
   StarIcon: jest.fn(() => null),
 }));
