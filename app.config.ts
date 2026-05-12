@@ -72,15 +72,18 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
           assetsPaths: ["./assets/rive"],
         },
       ],
+      [
+        "expo-splash-screen",
+        {
+          image: variableConfig.assets.splash,
+          backgroundColor: variableConfig.extraConfig.themeColor,
+        },
+      ],
       "expo-font",
       "expo-image",
       "expo-mail-composer",
       "expo-web-browser",
     ],
-    splash: {
-      image: variableConfig.assets.splash,
-      backgroundColor: variableConfig.extraConfig.themeColor,
-    },
     updates: {
       // Disable EAS updates for production builds
       enabled: false,
