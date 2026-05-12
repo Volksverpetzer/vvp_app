@@ -124,7 +124,7 @@ const Donate = (properties: DonateProperties) => {
             />
             <LinearGradient
               pointerEvents="none"
-              style={{ ...StyleSheet.absoluteFillObject }}
+              style={{ ...StyleSheet.absoluteFill }}
               colors={[
                 pickerColor,
                 pickerColor + "aa",
