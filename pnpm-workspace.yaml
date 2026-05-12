@@ -1,4 +1,7 @@
-minimumReleaseAge: 1440 # 1 day cooldown for new releases, see https://pnpm.io/settings#minimumreleaseage
+allowBuilds:
+  dtrace-provider: true # required by eas-cli; pnpm v11 blocks its build scripts otherwise
+  esbuild: true
+  unrs-resolver: true
 nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 packages:
   - .

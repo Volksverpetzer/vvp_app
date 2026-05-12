@@ -7,8 +7,15 @@
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(git status:*)",
-      "Bash(git show:*)"
+      "Bash(git show:*)",
+      "Bash(git push origin:*)"
     ],
-    "deny": ["Bash(git push:*)", "Bash(git reset --hard:*)", "Bash(rm -rf:*)"]
+    "deny": [
+      "Bash(git reset --hard:*)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f *)",
+      "Bash(git push * --tags*)",
+      "Bash(rm -rf:*)"
+    ]
   }
 }
