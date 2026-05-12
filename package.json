@@ -148,7 +148,7 @@
     "license-checker-rseidelsohn": "4.4.2",
     "lint-staged": "17.0.5",
     "prettier": "3.8.3",
-    "react-test-renderer": "19.2.6",
+    "react-test-renderer": "19.2.3",
     "ts-node": "10.9.2",
     "tsx": "4.22.3",
     "typedoc": "0.28.19",
