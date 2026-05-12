@@ -50,8 +50,8 @@
     "expo:eject": "expo eject",
     "------- npm scripts -------": "-------------",
     "prepare": "husky",
+    "prepare:fdroid": "node scripts/prepare-xfdroid.mjs",
     "prepare:licenses": "node scripts/generateLicenses.js",
-    "prepare:fdroid": "node scripts/prepare-fdroid.mjs",
     "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\""
   },
   "dependencies": {
