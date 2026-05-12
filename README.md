@@ -168,7 +168,7 @@ pnpm preview:update
 
 ### Beta release
 
-Beta releases target the Play Store internal track and TestFlight, and produce a GitHub prerelease with APK artifacts. They are triggered by a tag on the `prerelease` branch.
+Beta releases target the Play Store internal track and TestFlight, and produce a GitHub prerelease with APK artifacts. The `expo-release-beta.yml` workflow is triggered by pushing a beta-version tag, so make sure the tag points to the intended commit from `prerelease`.
 
 Feature branches are merged into `prerelease` via GitHub PRs as soon as they are ready, using **squash merge**.
 
