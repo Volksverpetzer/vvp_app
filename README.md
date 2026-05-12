@@ -164,6 +164,70 @@ pnpm preview:build
 pnpm preview:update
 ```
 
+## Releasing
+
+### Beta release
+
+Beta releases target the Play Store internal track and TestFlight, and produce a GitHub prerelease with APK artifacts. They are triggered by a tag on the `prerelease` branch.
+
+Feature branches are merged into `prerelease` via GitHub PRs as soon as they are ready, using **squash merge**.
+
+When enough features have accumulated to warrant a beta:
+
+1. **Bump the version** in `package.json` — both `version` (e.g. `1.2.3-beta.1`) and `versionCode` (use `YYYYMMDDNN`, must be strictly greater than the previous value):
+
+   ```json
+   { "version": "1.2.3-beta.1", "versionCode": 2026051201 }
+   ```
+
+2. **Refresh license data** if any dependencies were added, removed, or updated since the last release. Skip this step if `package.json` dependencies are unchanged.
+
+   Run locally and include the result in the same prep commit:
+
+   ```bash
+   pnpm prepare:licenses
+   ```
+
+   Alternatively, trigger it via GitHub Actions without a local checkout: go to **Actions → Update license data → Run workflow**, select the `prerelease` branch, and click **Run workflow**. The workflow commits the updated file directly to the branch — pull before tagging.
+
+   Commit both changes together and push to `prerelease`:
+
+   ```bash
+   git add package.json src/screens/Settings/components/licenses/data.tsx
+   git commit -m "chore: prepare 1.2.3-beta.1"
+   git push origin prerelease
+   ```
+
+3. **Tag and push** — the tag triggers `expo-release-beta.yml`:
+
+   ```bash
+   git tag 1.2.3-beta.1
+   git push origin 1.2.3-beta.1
+   ```
+
+   The workflow runs lint/tests, submits to both stores, and creates a GitHub prerelease with the APK attached.
+
+---
+
+### Stable release
+
+Stable releases target the public Play Store and App Store tracks and produce a GitHub release.
+
+1. **Open a PR** on GitHub from `prerelease` into `main`, titled **"Release vX.Y.Z"**, and merge it with a **regular merge commit** (not squash).
+
+2. **Tag and push** — the tag triggers `expo-release.yml`:
+
+   ```bash
+   git tag v1.2.3
+   git push origin v1.2.3
+   ```
+
+3. **Update the F-Droid metadata** in the separate `fdroiddata` repository:
+   - Add a new entry under `Builds:` in `metadata/de.volksverpetzer.app.yml` with the matching `versionName` and `versionCode`.
+   - Update `CurrentVersion` and `CurrentVersionCode` at the bottom of that file.
+
+---
+
 ## Other useful scripts
 
 - Run tests: `pnpm test`

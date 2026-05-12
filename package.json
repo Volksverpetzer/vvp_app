@@ -50,6 +50,7 @@
     "expo:eject": "expo eject",
     "------- npm scripts -------": "-------------",
     "prepare": "husky",
+    "prepare:licenses": "node scripts/generateLicenses.js",
     "prepare:fdroid": "node scripts/prepare-fdroid.mjs",
     "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\""
   },
@@ -149,6 +150,7 @@
     "expo-build-properties": "55.0.13",
     "husky": "9.1.7",
     "jest": "29.7.0",
+    "license-checker-rseidelsohn": "4.4.2",
     "jest-expo": "55.0.17",
     "jest-react-native": "18.0.0",
     "lint-staged": "17.0.2",
