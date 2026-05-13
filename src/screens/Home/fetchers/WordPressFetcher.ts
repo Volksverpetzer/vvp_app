@@ -18,7 +18,14 @@ export const WordPressFetcher = {
   ): Post<{ article: ArticleProperties }> {
     article.description = article.yoast_head_json?.description ?? "";
     const title = decode(article.title?.rendered ?? "");
-    const formattedArticle: ArticleProperties = { ...article, title };
+    const authors =
+      article.authors?.length > 0
+        ? article.authors
+        : (article._embedded?.author ?? []).map((a) => ({
+            display_name: a.name,
+            slug: a.slug,
+          }));
+    const formattedArticle: ArticleProperties = { ...article, title, authors };
 
     return new Post<{ article: ArticleProperties }>(
       article.date_gmt,

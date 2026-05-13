@@ -30,6 +30,7 @@ export default class WordPressAPI {
           orderby: "date",
           order: "desc", // descending order (newest first)
           _: timestamp, // Cache-busting parameter
+          _embed: "author",
         },
         headers: {
           "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -55,6 +56,7 @@ export default class WordPressAPI {
           orderby: "relevance",
           search,
           page: page,
+          _embed: "author",
         },
       },
     );
@@ -72,6 +74,7 @@ export default class WordPressAPI {
       {
         params: {
           slug,
+          _embed: "author",
         },
       },
     );
@@ -97,6 +100,13 @@ export default class WordPressAPI {
   static convertLoadProps(data: LoadArticlePostProperties): ArticleProperties {
     const description = data.yoast_head_json?.description ?? "";
     const title = decode(data.title.rendered);
-    return { ...data, title, description };
+    const authors =
+      data.authors?.length > 0
+        ? data.authors
+        : (data._embedded?.author ?? []).map((a) => ({
+            display_name: a.name,
+            slug: a.slug,
+          }));
+    return { ...data, title, description, authors };
   }
 }

@@ -51,6 +51,9 @@ export interface ArticleProperties {
 export type LoadArticlePostProperties = Omit<ArticleProperties, "title"> & {
   title: { rendered: string };
   yoast_head_json?: { description?: string };
+  _embedded?: {
+    author?: { name: string; slug: string }[];
+  };
 };
 
 export interface InstaPostProperties {
