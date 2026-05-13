@@ -6,6 +6,7 @@ import defaultExport, {
   FeedFetcher,
 } from "#/screens/Home/fetchers/FeedFetcher";
 import { InstagramFetcher } from "#/screens/Home/fetchers/InstagramFetcher";
+import { PruefpunktFetcher } from "#/screens/Home/fetchers/PruefpunktFetcher";
 import { TikTokFetcher } from "#/screens/Home/fetchers/TikTokFetcher";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import { YouTubeFetcher } from "#/screens/Home/fetchers/YouTubeFetcher";
@@ -51,6 +52,13 @@ jest.mock("#/screens/Home/fetchers/BotFetcher", () => ({
   },
 }));
 
+jest.mock("#/screens/Home/fetchers/PruefpunktFetcher", () => ({
+  PruefpunktFetcher: {
+    feedFetcher: jest.fn(),
+    searchFetcher: jest.fn(),
+  },
+}));
+
 describe("FeedFetcher", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -67,6 +75,8 @@ describe("FeedFetcher", () => {
     expect(FeedFetcher.fetchers.tiktok).toBeDefined();
     expect(FeedFetcher.fetchers.bsky).toBeDefined();
     expect(FeedFetcher.fetchers.bot).toBeDefined();
+    expect(FeedFetcher.fetchers.wp2).toBeDefined();
+    expect(FeedFetcher.fetchers.wp2Search).toBeDefined();
   });
 
   it("should map fetchers to the correct implementations", () => {
@@ -79,6 +89,10 @@ describe("FeedFetcher", () => {
     expect(FeedFetcher.fetchers.tiktok).toBe(TikTokFetcher.feedFetcher);
     expect(FeedFetcher.fetchers.bsky).toBe(BlueskyFetcher.feedFetcher);
     expect(FeedFetcher.fetchers.bot).toBe(BotFetcher.feedFetcher);
+    expect(FeedFetcher.fetchers.wp2).toBe(PruefpunktFetcher.feedFetcher);
+    expect(FeedFetcher.fetchers.wp2Search).toBe(
+      PruefpunktFetcher.searchFetcher,
+    );
   });
 
   it("should export fetchers as default export", () => {
