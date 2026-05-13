@@ -6,7 +6,7 @@ export type FeedType =
   | "tiktok"
   | "bsky"
   | "bot"
-  | "pruefpunkt";
+  | "wp2";
 
 export type FeedEntry = {
   handle?: string;

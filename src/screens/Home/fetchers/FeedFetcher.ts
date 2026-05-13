@@ -27,8 +27,8 @@ export class FeedFetcher {
     tiktok: TikTokFetcher.feedFetcher,
     bsky: BlueskyFetcher.feedFetcher,
     bot: BotFetcher.feedFetcher,
-    pruefpunkt: PruefpunktFetcher.feedFetcher,
-    pruefpunktSearch: PruefpunktFetcher.searchFetcher,
+    wp2: PruefpunktFetcher.feedFetcher,
+    wp2Search: PruefpunktFetcher.searchFetcher,
   };
 }
 

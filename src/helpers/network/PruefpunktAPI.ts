@@ -2,7 +2,7 @@ import Config from "#/constants/Config";
 import { createClient, get as netGet } from "#/helpers/utils/networking";
 import type { LoadArticlePostProperties } from "#/types";
 
-const BASE_URL = Config.pruefpunktUrl ?? "https://www.pruefpunkt.org";
+const BASE_URL = Config.wp2Url ?? "https://www.pruefpunkt.org";
 
 export default class PruefpunktAPI {
   static readonly client = createClient(BASE_URL);

@@ -15,7 +15,7 @@ export interface ExtraConfigType {
     projectId: string;
   };
   wpUrl: HttpsUrl; // URL to the WordPress site
-  pruefpunktUrl?: HttpsUrl; // URL to the Prüfpunkt WordPress site
+  wp2Url?: HttpsUrl; // URL to a second WordPress site
   analyticsUrl?: HttpsUrl; // URL to the analytics site
   aboutUrl: HttpsUrl; // URL to the about page
   sourceUrl: HttpsUrl; // URL to the source code repository
