@@ -224,10 +224,16 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
             <UiText style={categoryTextStyle}>{categoryText}</UiText>
           </Badge>
         )}
-        {inView && (
+        {article.sourceName ? (
           <Badge position="topRight" color={Colors[colorScheme].accent}>
-            <ViewCounter url={article.link} size={16} />
+            <UiText style={categoryTextStyle}>{article.sourceName}</UiText>
           </Badge>
+        ) : (
+          inView && (
+            <Badge position="topRight" color={Colors[colorScheme].accent}>
+              <ViewCounter url={article.link} size={16} />
+            </Badge>
+          )
         )}
         <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
           {excerpt}

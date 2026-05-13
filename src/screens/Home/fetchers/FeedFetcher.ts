@@ -3,6 +3,7 @@ import type { ContentSettingType, FeedFetcherType } from "#/types";
 import { BlueskyFetcher } from "./BlueskyFetcher";
 import { BotFetcher } from "./BotFetcher";
 import { InstagramFetcher } from "./InstagramFetcher";
+import { PruefpunktFetcher } from "./PruefpunktFetcher";
 import { TikTokFetcher } from "./TikTokFetcher";
 import { WordPressFetcher } from "./WordPressFetcher";
 import { YouTubeFetcher } from "./YouTubeFetcher";
@@ -26,6 +27,8 @@ export class FeedFetcher {
     tiktok: TikTokFetcher.feedFetcher,
     bsky: BlueskyFetcher.feedFetcher,
     bot: BotFetcher.feedFetcher,
+    pruefpunkt: PruefpunktFetcher.feedFetcher,
+    pruefpunktSearch: PruefpunktFetcher.searchFetcher,
   };
 }
 
