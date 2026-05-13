@@ -11,6 +11,7 @@ export type ContentSettingType = {
   tiktok: SettingType;
   bsky: SettingType;
   bot: SettingType;
+  wp2: SettingType;
 };
 
 export type NotificationSettingType = {

@@ -74,6 +74,7 @@ describe("SettingsContext Logic", () => {
         yt: { value: false, name: "Videos" },
         bsky: { value: true, name: "Tweets" },
         bot: { value: false, name: "Fact" },
+        wp2: { value: true, name: "Prüfpunkt Artikel" },
       };
 
       await SettingsStore.setContentSettings(newSettings);

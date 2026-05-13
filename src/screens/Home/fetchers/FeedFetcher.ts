@@ -1,3 +1,5 @@
+import Config from "#/constants/Config";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
 import type { ContentSettingType, FeedFetcherType } from "#/types";
 
 import { BlueskyFetcher } from "./BlueskyFetcher";
@@ -6,6 +8,17 @@ import { InstagramFetcher } from "./InstagramFetcher";
 import { TikTokFetcher } from "./TikTokFetcher";
 import { WordPressFetcher } from "./WordPressFetcher";
 import { YouTubeFetcher } from "./YouTubeFetcher";
+
+const wpFetchers = WordPressFetcher.createFetchers(WordPressAPI);
+const wp2Fetchers = Config.wp2Url
+  ? WordPressFetcher.createFetchers(
+      WordPressAPI.create(Config.wp2Url),
+      "Prüfpunkt",
+    )
+  : WordPressFetcher.createFetchers({
+      getPosts: () => Promise.resolve([]),
+      searchPosts: () => Promise.resolve([]),
+    });
 
 /**
  * FeedFetcher is responsible for fetching data from different sources
@@ -18,14 +31,16 @@ export class FeedFetcher {
   > & {
     [key: string]: FeedFetcherType<unknown>;
   } = {
-    wp: WordPressFetcher.feedFetcher,
-    wpSearch: WordPressFetcher.searchFetcher,
+    wp: wpFetchers.feedFetcher,
+    wpSearch: wpFetchers.searchFetcher,
     insta: InstagramFetcher.feedFetcher,
     reddit: InstagramFetcher.memeFetcher,
     yt: YouTubeFetcher.feedFetcher,
     tiktok: TikTokFetcher.feedFetcher,
     bsky: BlueskyFetcher.feedFetcher,
     bot: BotFetcher.feedFetcher,
+    wp2: wp2Fetchers.feedFetcher,
+    wp2Search: wp2Fetchers.searchFetcher,
   };
 }
 

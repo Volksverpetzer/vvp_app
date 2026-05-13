@@ -3,6 +3,14 @@ import Post from "#/helpers/Post";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import type { ArticleProperties, LoadArticlePostProperties } from "#/types";
 
+type WpApi = {
+  getPosts(page?: number): Promise<LoadArticlePostProperties[]>;
+  searchPosts(
+    search: string,
+    page?: number,
+  ): Promise<LoadArticlePostProperties[]>;
+};
+
 export const WordPressFetcher = {
   /**
    * Maps a WordPress article to a Post object.
@@ -51,24 +59,28 @@ export const WordPressFetcher = {
   },
 
   /**
-   * Fetches posts from WordPress
-   * @param page The page number to fetch (pagination)
-   * @returns An array of posts.
+   * Creates a feed/search fetcher pair for any WordPress-compatible API.
+   * Pass sourceName to stamp a source label on every returned article.
    */
-  feedFetcher: async ({ page = 1 }) => {
-    return await WordPressFetcher.wpBaseFetcher(() =>
-      WordPressAPI.getPosts(page),
-    );
-  },
+  createFetchers(api: WpApi, sourceName?: string) {
+    const stamp = (posts: Post<{ article: ArticleProperties }>[]) => {
+      if (sourceName) {
+        posts.forEach((p) => {
+          p.data.article.sourceName = sourceName;
+        });
+      }
+      return posts;
+    };
 
-  /**
-   * Fetches posts from WordPress based on a search parameter.
-   * @param param The search parameter.
-   * @returns An array of posts.
-   */
-  searchFetcher: async ({ param: parameter = "" }) => {
-    return await WordPressFetcher.wpBaseFetcher(() =>
-      WordPressAPI.searchPosts(parameter),
-    );
+    return {
+      feedFetcher: async ({ page = 1 }) =>
+        stamp(await WordPressFetcher.wpBaseFetcher(() => api.getPosts(page))),
+      searchFetcher: async ({ param: parameter = "", page = 1 }) =>
+        stamp(
+          await WordPressFetcher.wpBaseFetcher(() =>
+            api.searchPosts(parameter, page),
+          ),
+        ),
+    };
   },
 };

@@ -1,6 +1,5 @@
 import Post from "#/helpers/Post";
 import type WordPressAPIClass from "#/helpers/network/WordPressAPI";
-import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { LoadArticlePostProperties } from "#/types";
 
@@ -103,31 +102,74 @@ describe("WordPressFetcher", () => {
     });
   });
 
-  describe("feedFetcher and searchFetcher", () => {
-    it("calls WordPressAPI.getPosts in feedFetcher", async () => {
-      const page = 2;
-      const articles = [makeArticle()];
-      const spy = jest
-        .spyOn(WordPressAPI, "getPosts" as any)
-        .mockResolvedValue(articles);
+  describe("createFetchers", () => {
+    const mockApi = {
+      getPosts: jest.fn(),
+      searchPosts: jest.fn(),
+    };
 
-      const result = await WordPressFetcher.feedFetcher({ page });
-
-      expect(spy).toHaveBeenCalledWith(page);
-      expect(result[0]).toBeInstanceOf(Post);
+    beforeEach(() => {
+      jest.clearAllMocks();
+      // Make mapArticleToPost return a post with a real data.article so stamp() can write sourceName.
+      jest
+        .spyOn(WordPressFetcher, "mapArticleToPost")
+        .mockImplementation(
+          (article) => ({ data: { article: { ...article } } }) as any,
+        );
     });
 
-    it("calls WordPressAPI.searchPosts in searchFetcher", async () => {
-      const parameter = "query";
-      const articles = [makeArticle()];
-      const spy = jest
-        .spyOn(WordPressAPI, "searchPosts" as any)
-        .mockResolvedValue(articles);
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
 
-      const result = await WordPressFetcher.searchFetcher({ param: parameter });
+    it("returns feedFetcher and searchFetcher functions", () => {
+      const { feedFetcher, searchFetcher } =
+        WordPressFetcher.createFetchers(mockApi);
+      expect(typeof feedFetcher).toBe("function");
+      expect(typeof searchFetcher).toBe("function");
+    });
 
-      expect(spy).toHaveBeenCalledWith(parameter);
-      expect(result[0]).toBeInstanceOf(Post);
+    it("feedFetcher calls the provided api.getPosts", async () => {
+      mockApi.getPosts.mockResolvedValue([makeArticle({})]);
+      const { feedFetcher } = WordPressFetcher.createFetchers(mockApi);
+      await feedFetcher({ page: 2 });
+      expect(mockApi.getPosts).toHaveBeenCalledWith(2);
+    });
+
+    it("searchFetcher calls the provided api.searchPosts", async () => {
+      mockApi.searchPosts.mockResolvedValue([makeArticle({})]);
+      const { searchFetcher } = WordPressFetcher.createFetchers(mockApi);
+      await searchFetcher({ param: "test" });
+      expect(mockApi.searchPosts).toHaveBeenCalledWith("test", 1);
+    });
+
+    it("searchFetcher forwards page to api.searchPosts", async () => {
+      mockApi.searchPosts.mockResolvedValue([makeArticle({})]);
+      const { searchFetcher } = WordPressFetcher.createFetchers(mockApi);
+      await searchFetcher({ param: "test", page: 3 });
+      expect(mockApi.searchPosts).toHaveBeenCalledWith("test", 3);
+    });
+
+    it("stamps sourceName on every post when provided", async () => {
+      mockApi.getPosts.mockResolvedValue([
+        makeArticle({ id: 1 }),
+        makeArticle({ id: 2 }),
+      ]);
+      const { feedFetcher } = WordPressFetcher.createFetchers(
+        mockApi,
+        "TestSource",
+      );
+      const result = await feedFetcher({ page: 1 });
+      expect(
+        result.every((p) => p.data.article.sourceName === "TestSource"),
+      ).toBe(true);
+    });
+
+    it("does not set sourceName when not provided", async () => {
+      mockApi.getPosts.mockResolvedValue([makeArticle({})]);
+      const { feedFetcher } = WordPressFetcher.createFetchers(mockApi);
+      const result = await feedFetcher({ page: 1 });
+      expect(result[0].data.article.sourceName).toBeUndefined();
     });
   });
 });

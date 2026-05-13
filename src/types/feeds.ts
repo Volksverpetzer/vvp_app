@@ -5,7 +5,8 @@ export type FeedType =
   | "yt"
   | "tiktok"
   | "bsky"
-  | "bot";
+  | "bot"
+  | "wp2";
 
 export type FeedEntry = {
   handle?: string;

@@ -4,6 +4,7 @@ import Config from "#/constants/Config";
 import { createClient, get as netGet } from "#/helpers/utils/networking";
 import type {
   ArticleProperties,
+  HttpsUrl,
   LoadArticlePostProperties,
   MediaResponse,
 } from "#/types";
@@ -95,11 +96,53 @@ export default class WordPressAPI {
   }
 
   /**
+   * Creates a minimal WpApi object for any WordPress-compatible base URL.
+   */
+  static create(baseUrl: HttpsUrl) {
+    const client = createClient(baseUrl);
+    return {
+      getPosts(page = 1): Promise<LoadArticlePostProperties[]> {
+        return netGet<LoadArticlePostProperties[]>(
+          client,
+          `/wp-json/wp/v2/posts`,
+          {
+            params: {
+              per_page: 10,
+              page,
+              orderby: "date",
+              order: "desc",
+              _: Date.now(),
+              _embed: "author",
+            },
+            headers: {
+              "Cache-Control": "no-cache, no-store, must-revalidate",
+              Pragma: "no-cache",
+              Expires: "0",
+            },
+          },
+        );
+      },
+      searchPosts(
+        search: string,
+        page = 10,
+      ): Promise<LoadArticlePostProperties[]> {
+        return netGet<LoadArticlePostProperties[]>(
+          client,
+          `/wp-json/wp/v2/posts`,
+          {
+            params: { orderby: "relevance", search, page, _embed: "author" },
+          },
+        );
+      },
+    };
+  }
+
+  /**
    * Convert loaded article properties to ArticleProps.
    */
   static convertLoadProps(data: LoadArticlePostProperties): ArticleProperties {
     const description = data.yoast_head_json?.description ?? "";
-    const title = decode(data.title.rendered);
+    const title = decode(data.title?.rendered ?? "");
     const authors =
       data.authors?.length > 0
         ? data.authors
