@@ -16,8 +16,8 @@ const wp2Fetchers = Config.wp2Url
       "Prüfpunkt",
     )
   : WordPressFetcher.createFetchers({
-      getPosts: async () => [],
-      searchPosts: async () => [],
+      getPosts: () => Promise.resolve([]),
+      searchPosts: () => Promise.resolve([]),
     });
 
 /**
