@@ -62,6 +62,7 @@ const ShareCounter = (properties: ShareCounterProperties) => {
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel="Teilen"
       onPress={onPress}
       onLongPress={onPress}
       hitSlop={20}
