@@ -42,6 +42,10 @@ export const DeleteIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="trash" />
 );
 
+export const DownloadIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="download" />
+);
+
 export const ErrorIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="alert" />
 );
@@ -66,12 +70,12 @@ export const HomeIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="home" />
 );
 
-export const TrophyIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="trophy" />
-);
-
 export const HeartIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="heart-fill" />
+);
+
+export const ImprintIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="file-badge" />
 );
 
 export const LinkIcon = ({ size, ...rest }: OcticonsProps) => (
@@ -158,12 +162,12 @@ export const SuccessIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="feed-issue-closed" />
 );
 
-export const WorldIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="globe" />
+export const TrophyIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="trophy" />
 );
 
-export const DownloadIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="download" />
+export const WorldIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="globe" />
 );
 
 export const UploadIcon = ({ ...rest }: OcticonsProps) => (

@@ -50,6 +50,7 @@ const extraConfig: ExtraConfigType = {
   aboutUrl: "https://www.mimikama.org/ueber-uns/",
   sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
   dataProtectionUrl: "https://www.mimikama.org/datenschutzbestimmungen/",
+  imprintUrl: "https://www.mimikama.org/impressum/",
   eas: {
     projectId: "4b724abf-ec92-4eb0-8cdf-ed25835b5825",
   },
