@@ -1,11 +1,12 @@
 import Post from "#/helpers/Post";
+import type WordPressAPIClass from "#/helpers/network/WordPressAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { LoadArticlePostProperties } from "#/types";
 
 jest.mock("#/helpers/network/WordPressAPI", () => {
   const actual = jest.requireActual<{
-    default: typeof import("#/helpers/network/WordPressAPI").default;
+    default: typeof WordPressAPIClass;
   }>("#/helpers/network/WordPressAPI");
   return {
     __esModule: true,
@@ -75,7 +76,7 @@ describe("WordPressFetcher", () => {
       (Post as jest.Mock).mock.calls[0][3].article.authors;
 
     it("uses article.authors when present and non-empty", () => {
-      const authors = [{ display_name: "Alice", slug: "alice" }];
+      const authors = [{ display_name: "Anna", slug: "anna" }];
       WordPressFetcher.mapArticleToPost(
         makeArticle({ authors }) as LoadArticlePostProperties,
         0,

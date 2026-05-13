@@ -63,7 +63,7 @@ describe("WordPressAPI", () => {
         {
           params: {
             orderby: "relevance",
-            search: encodeURIComponent(term),
+            search: term,
             page: 10,
             _embed: "author",
           },
@@ -86,7 +86,7 @@ describe("WordPressAPI", () => {
         `/wp-json/wp/v2/posts`,
         {
           params: {
-            slug: encodeURIComponent("slug"),
+            slug: "slug",
             _embed: "author",
           },
         },
@@ -154,7 +154,7 @@ describe("WordPressAPI", () => {
     });
 
     it("uses explicit authors when present and non-empty", () => {
-      const authors = [{ display_name: "Alice", slug: "alice" }];
+      const authors = [{ display_name: "Anna", slug: "anna" }];
       const article = WordPressAPI.convertLoadProps({
         ...baseData,
         authors,
