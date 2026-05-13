@@ -4,6 +4,7 @@ import Config from "#/constants/Config";
 import { createClient, get as netGet } from "#/helpers/utils/networking";
 import type {
   ArticleProperties,
+  HttpsUrl,
   LoadArticlePostProperties,
   MediaResponse,
 } from "#/types";
@@ -89,6 +90,47 @@ export default class WordPressAPI {
     const image = sizes?.medium_large?.source_url ?? sizes?.medium?.source_url;
     const thumb = sizes?.thumbnail?.source_url;
     return { image, thumb };
+  }
+
+  /**
+   * Creates a minimal WpApi object for any WordPress-compatible base URL.
+   */
+  static create(baseUrl: HttpsUrl) {
+    const client = createClient(baseUrl);
+    return {
+      async getPosts(page = 1): Promise<LoadArticlePostProperties[]> {
+        return netGet<LoadArticlePostProperties[]>(
+          client,
+          `/wp-json/wp/v2/posts`,
+          {
+            params: {
+              per_page: 10,
+              page,
+              orderby: "date",
+              order: "desc",
+              _: Date.now(),
+            },
+            headers: {
+              "Cache-Control": "no-cache, no-store, must-revalidate",
+              Pragma: "no-cache",
+              Expires: "0",
+            },
+          },
+        );
+      },
+      async searchPosts(
+        search: string,
+        page = 10,
+      ): Promise<LoadArticlePostProperties[]> {
+        return netGet<LoadArticlePostProperties[]>(
+          client,
+          `/wp-json/wp/v2/posts`,
+          {
+            params: { orderby: "relevance", search, page },
+          },
+        );
+      },
+    };
   }
 
   /**
