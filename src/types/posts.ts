@@ -48,8 +48,12 @@ export interface ArticleProperties {
   imageUrl?: string;
 }
 
-export type LoadArticlePostProperties = Omit<ArticleProperties, "title"> & {
+export type LoadArticlePostProperties = Omit<
+  ArticleProperties,
+  "title" | "authors"
+> & {
   title: { rendered: string };
+  authors?: { display_name: string; slug: string }[];
   yoast_head_json?: { description?: string };
   _embedded?: {
     author?: { name: string; slug: string }[];
