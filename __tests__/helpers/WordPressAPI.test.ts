@@ -64,6 +64,7 @@ describe("WordPressAPI", () => {
             orderby: "relevance",
             search: encodeURIComponent(term),
             page: 10,
+            _embed: "author",
           },
         },
       );
@@ -85,6 +86,7 @@ describe("WordPressAPI", () => {
         {
           params: {
             slug: encodeURIComponent("slug"),
+            _embed: "author",
           },
         },
       );
