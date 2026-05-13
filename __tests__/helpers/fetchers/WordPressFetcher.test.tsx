@@ -1,15 +1,22 @@
 import Post from "#/helpers/Post";
+import type WordPressAPIClass from "#/helpers/network/WordPressAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { LoadArticlePostProperties } from "#/types";
 
-jest.mock("#/helpers/network/WordPressAPI", () => ({
-  __esModule: true,
-  default: {
-    getPosts: jest.fn(),
-    searchPosts: jest.fn(),
-  },
-}));
+jest.mock("#/helpers/network/WordPressAPI", () => {
+  const actual = jest.requireActual<{
+    default: typeof WordPressAPIClass;
+  }>("#/helpers/network/WordPressAPI");
+  return {
+    __esModule: true,
+    default: {
+      convertLoadProps: actual.default.convertLoadProps,
+      getPosts: jest.fn(),
+      searchPosts: jest.fn(),
+    },
+  };
+});
 
 jest.mock("#/helpers/Post", () => ({
   __esModule: true,
@@ -57,6 +64,42 @@ describe("WordPressFetcher", () => {
 
       expect(result).toEqual([]);
       expect(spy).toHaveBeenCalledWith("WP Error:", error);
+    });
+  });
+
+  describe("mapArticleToPost", () => {
+    beforeEach(() => {
+      (Post as jest.Mock).mockClear();
+    });
+
+    const getAuthors = () =>
+      (Post as jest.Mock).mock.calls[0][3].article.authors;
+
+    it("uses article.authors when present and non-empty", () => {
+      const authors = [{ display_name: "Anna", slug: "anna" }];
+      WordPressFetcher.mapArticleToPost(
+        makeArticle({ authors }) as LoadArticlePostProperties,
+        0,
+      );
+      expect(getAuthors()).toEqual(authors);
+    });
+
+    it("maps _embedded.author when article.authors is absent", () => {
+      WordPressFetcher.mapArticleToPost(
+        makeArticle({
+          _embedded: { author: [{ name: "Bob", slug: "bob" }] },
+        }) as LoadArticlePostProperties,
+        0,
+      );
+      expect(getAuthors()).toEqual([{ display_name: "Bob", slug: "bob" }]);
+    });
+
+    it("falls back to empty array when neither authors nor _embedded.author is present", () => {
+      WordPressFetcher.mapArticleToPost(
+        makeArticle() as LoadArticlePostProperties,
+        0,
+      );
+      expect(getAuthors()).toEqual([]);
     });
   });
 

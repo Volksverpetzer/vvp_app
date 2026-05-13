@@ -229,10 +229,16 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
             <ViewCounter url={article.link} size={16} />
           </Badge>
         )}
-        <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
-          {excerpt}
-        </UiText>
-        <Space size={20} />
+        {excerpt ? (
+          <>
+            <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
+              {excerpt}
+            </UiText>
+            <Space size={20} />
+          </>
+        ) : (
+          <Space size={10} />
+        )}
       </View>
     </TouchableOpacity>
   );

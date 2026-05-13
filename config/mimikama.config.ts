@@ -10,7 +10,7 @@ const colorScheme: colorSchemeType = {
     errorBackground: "#B71C1C",
     errorText: "#FFF",
     muted: "#BBB",
-    textMuted: "#F7F7F7",
+    textMuted: "#888",
     textHeading: "#313131",
     accent: "#414141",
     inputBackground: "#A1A1A1",
