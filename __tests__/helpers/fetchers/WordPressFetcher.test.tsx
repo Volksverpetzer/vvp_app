@@ -140,7 +140,14 @@ describe("WordPressFetcher", () => {
       mockApi.searchPosts.mockResolvedValue([makeArticle({})]);
       const { searchFetcher } = WordPressFetcher.createFetchers(mockApi);
       await searchFetcher({ param: "test" });
-      expect(mockApi.searchPosts).toHaveBeenCalledWith("test");
+      expect(mockApi.searchPosts).toHaveBeenCalledWith("test", 1);
+    });
+
+    it("searchFetcher forwards page to api.searchPosts", async () => {
+      mockApi.searchPosts.mockResolvedValue([makeArticle({})]);
+      const { searchFetcher } = WordPressFetcher.createFetchers(mockApi);
+      await searchFetcher({ param: "test", page: 3 });
+      expect(mockApi.searchPosts).toHaveBeenCalledWith("test", 3);
     });
 
     it("stamps sourceName on every post when provided", async () => {

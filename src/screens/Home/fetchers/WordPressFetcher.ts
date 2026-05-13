@@ -75,10 +75,10 @@ export const WordPressFetcher = {
     return {
       feedFetcher: async ({ page = 1 }) =>
         stamp(await WordPressFetcher.wpBaseFetcher(() => api.getPosts(page))),
-      searchFetcher: async ({ param: parameter = "" }) =>
+      searchFetcher: async ({ param: parameter = "", page = 1 }) =>
         stamp(
           await WordPressFetcher.wpBaseFetcher(() =>
-            api.searchPosts(parameter),
+            api.searchPosts(parameter, page),
           ),
         ),
     };
