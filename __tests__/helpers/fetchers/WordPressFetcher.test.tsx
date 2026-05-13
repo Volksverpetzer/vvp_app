@@ -3,13 +3,19 @@ import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { LoadArticlePostProperties } from "#/types";
 
-jest.mock("#/helpers/network/WordPressAPI", () => ({
-  __esModule: true,
-  default: {
-    getPosts: jest.fn(),
-    searchPosts: jest.fn(),
-  },
-}));
+jest.mock("#/helpers/network/WordPressAPI", () => {
+  const actual = jest.requireActual<{
+    default: typeof import("#/helpers/network/WordPressAPI").default;
+  }>("#/helpers/network/WordPressAPI");
+  return {
+    __esModule: true,
+    default: {
+      convertLoadProps: actual.default.convertLoadProps,
+      getPosts: jest.fn(),
+      searchPosts: jest.fn(),
+    },
+  };
+});
 
 jest.mock("#/helpers/Post", () => ({
   __esModule: true,
