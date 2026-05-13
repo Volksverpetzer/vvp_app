@@ -142,7 +142,7 @@ export default class WordPressAPI {
    */
   static convertLoadProps(data: LoadArticlePostProperties): ArticleProperties {
     const description = data.yoast_head_json?.description ?? "";
-    const title = decode(data.title.rendered);
+    const title = decode(data.title?.rendered ?? "");
     const authors =
       data.authors?.length > 0
         ? data.authors
