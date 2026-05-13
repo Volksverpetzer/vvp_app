@@ -112,6 +112,7 @@ export default class WordPressAPI {
               orderby: "date",
               order: "desc",
               _: Date.now(),
+              _embed: "author",
             },
             headers: {
               "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -129,7 +130,7 @@ export default class WordPressAPI {
           client,
           `/wp-json/wp/v2/posts`,
           {
-            params: { orderby: "relevance", search, page },
+            params: { orderby: "relevance", search, page, _embed: "author" },
           },
         );
       },

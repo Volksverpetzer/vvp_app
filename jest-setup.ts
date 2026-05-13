@@ -28,6 +28,8 @@ jest.mock("expo-constants", () => ({
         enableActions: true,
         enableAnalytics: true,
         enableEngagement: true,
+        wpUrl: "https://www.volksverpetzer.de",
+        wp2Url: "https://www.pruefpunkt.org",
         colorScheme: {
           light: {
             text: "#111",

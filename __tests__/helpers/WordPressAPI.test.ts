@@ -148,6 +148,7 @@ describe("WordPressAPI", () => {
             orderby: "date",
             order: "desc",
             _: mockTimestamp,
+            _embed: "author",
           }),
           headers: expect.objectContaining({
             "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -189,7 +190,14 @@ describe("WordPressAPI", () => {
       expect(spy).toHaveBeenCalledWith(
         expect.anything(),
         `/wp-json/wp/v2/posts`,
-        { params: { orderby: "relevance", search: "faktencheck", page: 10 } },
+        {
+          params: {
+            orderby: "relevance",
+            search: "faktencheck",
+            page: 10,
+            _embed: "author",
+          },
+        },
       );
       expect(result).toEqual([{ id: 2 }]);
       spy.mockRestore();
@@ -204,7 +212,14 @@ describe("WordPressAPI", () => {
       expect(spy).toHaveBeenCalledWith(
         expect.anything(),
         `/wp-json/wp/v2/posts`,
-        { params: { orderby: "relevance", search: "foo", page: 5 } },
+        {
+          params: {
+            orderby: "relevance",
+            search: "foo",
+            page: 5,
+            _embed: "author",
+          },
+        },
       );
       spy.mockRestore();
     });

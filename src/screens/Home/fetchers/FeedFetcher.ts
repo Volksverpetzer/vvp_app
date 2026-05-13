@@ -10,10 +10,15 @@ import { WordPressFetcher } from "./WordPressFetcher";
 import { YouTubeFetcher } from "./YouTubeFetcher";
 
 const wpFetchers = WordPressFetcher.createFetchers(WordPressAPI);
-const wp2Fetchers = WordPressFetcher.createFetchers(
-  WordPressAPI.create(Config.wp2Url ?? "https://www.pruefpunkt.org"),
-  "Prüfpunkt",
-);
+const wp2Fetchers = Config.wp2Url
+  ? WordPressFetcher.createFetchers(
+      WordPressAPI.create(Config.wp2Url),
+      "Prüfpunkt",
+    )
+  : WordPressFetcher.createFetchers({
+      getPosts: async () => [],
+      searchPosts: async () => [],
+    });
 
 /**
  * FeedFetcher is responsible for fetching data from different sources

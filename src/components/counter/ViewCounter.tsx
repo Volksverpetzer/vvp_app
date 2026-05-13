@@ -46,7 +46,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
     return () => {
       isCancelled = true;
     };
-  }, [url]);
+  }, [url, onLoad]);
 
   if (!Config.enableEngagement) return null;
 
