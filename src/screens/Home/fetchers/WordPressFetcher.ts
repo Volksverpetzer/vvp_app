@@ -1,7 +1,6 @@
-import { decode } from "html-entities";
-
 import ArticlePost from "#/components/posts/ArticlePost";
 import Post from "#/helpers/Post";
+import WordPressAPI from "#/helpers/network/WordPressAPI";
 import type { ArticleProperties, LoadArticlePostProperties } from "#/types";
 
 type WpApi = {
@@ -23,9 +22,7 @@ export const WordPressFetcher = {
     article: LoadArticlePostProperties,
     index: number,
   ): Post<{ article: ArticleProperties }> {
-    article.description = article.yoast_head_json?.description ?? "";
-    const title = decode(article.title?.rendered ?? "");
-    const formattedArticle: ArticleProperties = { ...article, title };
+    const formattedArticle = WordPressAPI.convertLoadProps(article);
 
     return new Post<{ article: ArticleProperties }>(
       article.date_gmt,

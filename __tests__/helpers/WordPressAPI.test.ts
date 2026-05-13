@@ -30,6 +30,7 @@ describe("WordPressAPI", () => {
             page: 2,
             orderby: "date",
             order: "desc",
+            _embed: "author",
             _: expect.any(Number), // We expect a timestamp but don't care about its exact value
           }),
           headers: expect.objectContaining({
@@ -62,8 +63,9 @@ describe("WordPressAPI", () => {
         {
           params: {
             orderby: "relevance",
-            search: encodeURIComponent(term),
+            search: term,
             page: 10,
+            _embed: "author",
           },
         },
       );
@@ -84,7 +86,8 @@ describe("WordPressAPI", () => {
         `/wp-json/wp/v2/posts`,
         {
           params: {
-            slug: encodeURIComponent("slug"),
+            slug: "slug",
+            _embed: "author",
           },
         },
       );
@@ -208,25 +211,53 @@ describe("WordPressAPI", () => {
   });
 
   describe("convertLoadProps", () => {
+    const baseData = {
+      title: { rendered: "Hello &amp; World" },
+      yoast_head_json: { description: "Desc" },
+      _links: { "wp:featuredmedia": [{ href: "h" }] },
+      date: "d",
+      link: "l",
+      description: "",
+      categories: [],
+      id: 4,
+      slug: "s",
+      date_gmt: "dg",
+      content: { rendered: "c" },
+    };
+
     it("decodes title and sets description", () => {
-      const data = {
-        title: { rendered: "Hello &amp; World" },
-        yoast_head_json: { description: "Desc" },
-        _links: { "wp:featuredmedia": [{ href: "h" }] },
-        date: "d",
-        link: "l",
-        description: "",
-        categories: [],
-        id: 4,
-        slug: "s",
-        date_gmt: "dg",
-        content: { rendered: "c" },
+      const article = WordPressAPI.convertLoadProps({
+        ...baseData,
         authors: [],
-      } as any;
-      const article = WordPressAPI.convertLoadProps(data);
+      } as any);
       expect(article.title).toBe("Hello & World");
       expect(article.description).toBe("Desc");
-      expect(article._links).toBe(data._links);
+      expect(article._links).toBe(baseData._links);
+    });
+
+    it("maps _embedded.author to authors when authors is absent", () => {
+      const article = WordPressAPI.convertLoadProps({
+        ...baseData,
+        _embedded: { author: [{ name: "Bob", slug: "bob" }] },
+      } as any);
+      expect(article.authors).toEqual([{ display_name: "Bob", slug: "bob" }]);
+    });
+
+    it("uses explicit authors when present and non-empty", () => {
+      const authors = [{ display_name: "Anna", slug: "anna" }];
+      const article = WordPressAPI.convertLoadProps({
+        ...baseData,
+        authors,
+        _embedded: { author: [{ name: "Bob", slug: "bob" }] },
+      } as any);
+      expect(article.authors).toEqual(authors);
+    });
+
+    it("falls back to empty array when neither authors nor _embedded.author is present", () => {
+      const article = WordPressAPI.convertLoadProps({
+        ...baseData,
+      } as any);
+      expect(article.authors).toEqual([]);
     });
   });
 });
