@@ -35,7 +35,7 @@ const ShareCounter = (properties: ShareCounterProperties) => {
     getAllShares();
   }, [getAllShares, hideCount]);
 
-  if (!Config.enableEngagement) return <View />;
+  const hideCountResolved = hideCount || !Config.enableEngagement;
 
   const content = (
     <View
@@ -48,9 +48,9 @@ const ShareCounter = (properties: ShareCounterProperties) => {
     >
       <ShareIcon size={size} color={color} />
       <UiText
-        style={[properties.style, { opacity: hideCount ? 0 : 1 }]}
-        accessibilityElementsHidden={hideCount}
-        importantForAccessibility={hideCount ? "no" : "auto"}
+        style={[properties.style, { opacity: hideCountResolved ? 0 : 1 }]}
+        accessibilityElementsHidden={hideCountResolved}
+        importantForAccessibility={hideCountResolved ? "no" : "auto"}
       >
         {shares + (properties.shares ?? 0)}
       </UiText>
