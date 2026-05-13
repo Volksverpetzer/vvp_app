@@ -21,6 +21,7 @@ jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
+    wp2Url: "https://www.pruefpunkt.org",
   },
 }));
 
@@ -117,6 +118,27 @@ describe("Linking helpers", () => {
       // Assert
       expect(Linking.parse).toHaveBeenCalledWith(internalUrl);
       expect(pushSpy).toHaveBeenCalledWith("www.volksverpetzer.de");
+      expect(Linking.openURL).not.toHaveBeenCalled();
+    });
+
+    it("should navigate to wp2 internal links in-app", () => {
+      const wp2Url = "https://www.pruefpunkt.org/faktencheck/some-article";
+      parseSpy.mockImplementation((url: string) => {
+        if (url === wp2Url) {
+          return {
+            hostname: "www.pruefpunkt.org",
+            path: "/faktencheck/some-article",
+          };
+        }
+        if (url === "https://www.pruefpunkt.org") {
+          return { hostname: "www.pruefpunkt.org", path: "" };
+        }
+        return { hostname: "www.volksverpetzer.de", path: "" };
+      });
+
+      onLinkPress(wp2Url, router);
+
+      expect(pushSpy).toHaveBeenCalledWith("/faktencheck/some-article");
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 

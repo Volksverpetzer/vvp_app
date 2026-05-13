@@ -18,16 +18,16 @@ import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
  */
 const onLinkPress = (href: HttpsUrl, router: Router, article_link?: string) => {
   const { hostname, path } = Linking.parse(href);
-  const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
+  const internalHostnames = [Config.wpUrl, Config.wp2Url]
+    .filter(Boolean)
+    .map((url) => Linking.parse(url!).hostname);
 
-  // Check if the path should be excluded from deep linking
-  if (hostname === baseHostname && shouldExcludeFromDeepLink(path)) {
-    // Treat excluded paths as external links
+  if (internalHostnames.includes(hostname) && shouldExcludeFromDeepLink(path)) {
     outBoundLinkPress(href, article_link);
     return;
   }
 
-  if (hostname === baseHostname) {
+  if (internalHostnames.includes(hostname)) {
     if (path) {
       const cleanPath = path.replace(/^\//, "").replace(/\/$/, "");
       router.push(`/${cleanPath}` as Href);

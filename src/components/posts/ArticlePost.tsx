@@ -46,6 +46,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Local state.
   const [imageUrl, setImgURL] = useState("");
   const [scrollProgress, setScrollProgress] = useState<DimensionValue>("0%");
+  const [viewCount, setViewCount] = useState<number | null>(null);
 
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
@@ -99,7 +100,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const authorDateText = useMemo(() => {
     const authors =
       article?.authors?.map((author) => author.display_name).join(", ") || "";
-    return `${authors} | ${date}`;
+    return authors ? `${authors} | ${date}` : date;
   }, [article.authors, date]);
 
   const excerpt = useMemo(
@@ -219,21 +220,17 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         <Space size={10} />
         <UiText style={authorDateStyle}>{authorDateText}</UiText>
         <Space size={10} />
-        {categoryText && (
+        {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>
-            <UiText style={categoryTextStyle}>{categoryText}</UiText>
+            <UiText style={categoryTextStyle}>
+              {article.sourceName || categoryText}
+            </UiText>
           </Badge>
         )}
-        {article.sourceName ? (
+        {inView && viewCount !== 0 && (
           <Badge position="topRight" color={Colors[colorScheme].accent}>
-            <UiText style={categoryTextStyle}>{article.sourceName}</UiText>
+            <ViewCounter url={article.link} size={16} onLoad={setViewCount} />
           </Badge>
-        ) : (
-          inView && (
-            <Badge position="topRight" color={Colors[colorScheme].accent}>
-              <ViewCounter url={article.link} size={16} />
-            </Badge>
-          )
         )}
         <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
           {excerpt}
