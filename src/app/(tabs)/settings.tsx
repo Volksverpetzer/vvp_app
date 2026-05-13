@@ -10,6 +10,7 @@ import {
   FeedIcon,
   FeedbackIcon,
   GiveIcon,
+  ImprintIcon,
   LockIcon,
   NotificationIcon,
   SearchIcon,
@@ -184,6 +185,11 @@ const SettingsScreen = () => {
             url={Config.dataProtectionUrl}
             icon={<LockIcon color={primary} size={24} />}
             text="Datenschutz"
+          />
+          <DesignedLink
+            url={Config.imprintUrl}
+            icon={<ImprintIcon color={primary} size={24} />}
+            text="Impressum"
           />
           <DesignedLink
             url={Config.sourceUrl}

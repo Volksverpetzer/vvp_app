@@ -11,6 +11,7 @@ export interface ExtraConfigType {
   apiUrl: HttpsUrl;
   aiUrl?: HttpsUrl;
   dataProtectionUrl: HttpsUrl;
+  imprintUrl: HttpsUrl;
   eas: {
     projectId: string;
   };
