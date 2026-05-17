@@ -80,6 +80,7 @@ const MySources = () => {
               {group.entries.map((entry) => (
                 <Swipeable
                   key={entry.href}
+                  testID={`source-row-${entry.href}`}
                   onSwipeableOpen={async (direction) => {
                     if (direction === SwipeDirection.LEFT) {
                       await handleDeleteSingle(entry.href);

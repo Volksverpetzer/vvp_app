@@ -1,4 +1,9 @@
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import {
+  fireEvent,
+  render,
+  waitFor,
+  within,
+} from "@testing-library/react-native";
 import { useFocusEffect } from "expo-router";
 
 import SourcesStore from "#/helpers/Stores/SourcesStore";
@@ -8,8 +13,8 @@ jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
   const { View } = require("react-native");
   return {
     __esModule: true,
-    default: ({ children, renderRightActions }: any) => (
-      <View>
+    default: ({ children, renderRightActions, testID }: any) => (
+      <View testID={testID}>
         {children}
         {renderRightActions?.({}, {}, { close: jest.fn() })}
       </View>
@@ -90,15 +95,16 @@ describe("MySources", () => {
   });
 
   it("removes only the tapped entry and keeps the rest visible", async () => {
-    const { getAllByLabelText, queryByText } = render(<MySources />);
+    const { getByTestId, queryByText } = render(<MySources />);
 
     await waitFor(() => {
-      expect(getAllByLabelText("Löschen").length).toBe(3);
+      expect(
+        getByTestId("source-row-https://example.com/source-a2"),
+      ).toBeTruthy();
     });
 
-    // Groups sort newest-first: article-b [0], article-a source-a2 [1], source-a1 [2]
-    // Press [1] to delete source-a2 while leaving source-a1 in the same group
-    fireEvent.press(getAllByLabelText("Löschen")[1]);
+    const row = getByTestId("source-row-https://example.com/source-a2");
+    fireEvent.press(within(row).getByLabelText("Löschen"));
 
     await waitFor(() => {
       expect(SourcesStore.removeSource).toHaveBeenCalledTimes(1);
