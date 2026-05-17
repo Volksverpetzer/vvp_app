@@ -42,19 +42,6 @@ const MySources = () => {
     });
   }, []);
 
-  const handleDeleteGroup = useCallback(async (hrefs: HttpsUrl[]) => {
-    for (const href of hrefs) {
-      await SourcesStore.removeSource(href);
-    }
-    setSources((prev) => {
-      const next = { ...prev };
-      for (const href of hrefs) {
-        delete next[href];
-      }
-      return next as StoredSources;
-    });
-  }, []);
-
   const slugGroups = useMemo<SlugGroup[]>(() => {
     const groupMap: Record<string, SlugGroup> = {};
     for (const [href, source] of Object.entries(sources)) {
@@ -68,80 +55,62 @@ const MySources = () => {
         group.latestDate = date ?? "";
       }
     }
-    return Object.values(groupMap).sort((a, b) =>
-      b.latestDate.localeCompare(a.latestDate),
-    );
+    return Object.values(groupMap)
+      .sort((a, b) => b.latestDate.localeCompare(a.latestDate))
+      .map((group) => ({
+        ...group,
+        entries: group.entries.sort((a, b) =>
+          (b.date ?? "").localeCompare(a.date ?? ""),
+        ),
+      }));
   }, [sources]);
 
   return (
     <View style={{ flex: 1, gap: 20 }}>
       {slugGroups.map((group) => {
-        const hrefs = group.entries.map((e) => e.href);
         const title = group.entries.find((e) => e.text)?.text;
         return (
-          <Swipeable
-            key={group.slug}
-            onSwipeableOpen={async (direction) => {
-              if (direction === SwipeDirection.LEFT) {
-                await handleDeleteGroup(hrefs);
-              }
-            }}
-            renderRightActions={(p, d, s) => (
-              <RightAction
-                progress={p}
-                drag={d}
-                swipeable={s}
-                icon={<DeleteIcon size={24} color="white" />}
-                label="Löschen"
-                hint="Lösche diese Quelle"
-                onAction={async () => {
-                  await handleDeleteGroup(hrefs);
-                }}
-              />
-            )}
-          >
-            <Card style={{ padding: 0 }}>
-              <View style={{ padding: 30, gap: 10 }}>
-                {title && (
-                  <Heading style={{ color: Colors[colorScheme].text }}>
-                    {title}
-                  </Heading>
-                )}
-                {group.entries.map((entry) => (
-                  <Swipeable
-                    key={entry.href}
-                    onSwipeableOpen={async (direction) => {
-                      if (direction === SwipeDirection.LEFT) {
+          <Card key={group.slug} style={{ padding: 0 }}>
+            <View style={{ padding: 30, gap: 10 }}>
+              {title && (
+                <Heading style={{ color: Colors[colorScheme].text }}>
+                  {title}
+                </Heading>
+              )}
+              {group.entries.map((entry) => (
+                <Swipeable
+                  key={entry.href}
+                  onSwipeableOpen={async (direction) => {
+                    if (direction === SwipeDirection.LEFT) {
+                      await handleDeleteSingle(entry.href);
+                    }
+                  }}
+                  renderRightActions={(p, d, s) => (
+                    <RightAction
+                      progress={p}
+                      drag={d}
+                      swipeable={s}
+                      icon={<DeleteIcon size={24} color="white" />}
+                      label="Löschen"
+                      hint="Lösche diese Quelle"
+                      onAction={async () => {
                         await handleDeleteSingle(entry.href);
-                      }
-                    }}
-                    renderRightActions={(p, d, s) => (
-                      <RightAction
-                        progress={p}
-                        drag={d}
-                        swipeable={s}
-                        icon={<DeleteIcon size={24} color="white" />}
-                        label="Löschen"
-                        hint="Lösche diese Quelle"
-                        onAction={async () => {
-                          await handleDeleteSingle(entry.href);
-                        }}
-                      />
-                    )}
+                      }}
+                    />
+                  )}
+                >
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() =>
+                      outBoundLinkPress(entry.href, wpUrl + "/" + group.slug)
+                    }
                   >
-                    <Pressable
-                      accessibilityRole="button"
-                      onPress={() =>
-                        outBoundLinkPress(entry.href, wpUrl + "/" + group.slug)
-                      }
-                    >
-                      <UiText style={{ color: corporate }}>{entry.href}</UiText>
-                    </Pressable>
-                  </Swipeable>
-                ))}
-              </View>
-            </Card>
-          </Swipeable>
+                    <UiText style={{ color: corporate }}>{entry.href}</UiText>
+                  </Pressable>
+                </Swipeable>
+              ))}
+            </View>
+          </Card>
         );
       })}
       <Space size={50} />
