@@ -1,5 +1,5 @@
 import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 import Swipeable, {
   SwipeDirection,
@@ -19,6 +19,9 @@ import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl, StoredSources } from "#/types";
 
+type SourceEntry = { href: HttpsUrl; text?: string; date?: string };
+type SlugGroup = { slug: string; latestDate: string; entries: SourceEntry[] };
+
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});
   const wpUrl = Config.wpUrl;
@@ -31,68 +34,87 @@ const MySources = () => {
     }, []),
   );
 
-  const handleDelete = useCallback(async (href: HttpsUrl) => {
-    await SourcesStore.removeSource(href);
+  const handleDeleteGroup = useCallback(async (hrefs: HttpsUrl[]) => {
+    for (const href of hrefs) {
+      await SourcesStore.removeSource(href);
+    }
     setSources((prev) => {
-      const { [href]: _removed, ...rest } = prev;
-      return rest as StoredSources;
+      const next = { ...prev };
+      for (const href of hrefs) {
+        delete next[href];
+      }
+      return next as StoredSources;
     });
   }, []);
 
+  const slugGroups = useMemo<SlugGroup[]>(() => {
+    const groupMap: Record<string, SlugGroup> = {};
+    for (const [href, source] of Object.entries(sources)) {
+      const { slug, text, date } = source;
+      if (!groupMap[slug]) {
+        groupMap[slug] = { slug, latestDate: date ?? "", entries: [] };
+      }
+      const group = groupMap[slug];
+      group.entries.push({ href: href as HttpsUrl, text, date });
+      if ((date ?? "") > group.latestDate) {
+        group.latestDate = date ?? "";
+      }
+    }
+    return Object.values(groupMap).sort((a, b) =>
+      b.latestDate.localeCompare(a.latestDate),
+    );
+  }, [sources]);
+
   return (
     <View style={{ flex: 1, gap: 20 }}>
-      {Object.keys(sources)
-        .sort((keyA, keyB) => {
-          return (sources[keyB].date ?? "").localeCompare(
-            sources[keyA].date ?? "",
-          );
-        })
-        .map((href: HttpsUrl) => {
-          const { slug, text } = sources[href];
-          return (
-            <Swipeable
-              key={href}
-              onSwipeableOpen={async (direction) => {
-                if (direction === SwipeDirection.LEFT) {
-                  await handleDelete(href);
-                }
-              }}
-              renderRightActions={(p, d, s) => (
-                <RightAction
-                  progress={p}
-                  drag={d}
-                  swipeable={s}
-                  icon={<DeleteIcon size={24} color="white" />}
-                  label="Löschen"
-                  hint="Lösche diese Quelle"
-                  onAction={async () => {
-                    await handleDelete(href);
-                  }}
-                />
-              )}
-            >
-              <Card style={{ padding: 0 }}>
-                <Pressable
-                  accessibilityRole="button"
-                  style={{ padding: 30 }}
-                  onPress={() => outBoundLinkPress(href, wpUrl + "/" + slug)}
-                >
-                  {text && (
-                    <Heading
-                      style={{
-                        color: Colors[colorScheme].text,
-                        marginBottom: 10,
-                      }}
-                    >
-                      {text}
-                    </Heading>
-                  )}
-                  <UiText style={{ color: corporate }}>{href}</UiText>
-                </Pressable>
-              </Card>
-            </Swipeable>
-          );
-        })}
+      {slugGroups.map((group) => {
+        const hrefs = group.entries.map((e) => e.href);
+        const title = group.entries.find((e) => e.text)?.text;
+        return (
+          <Swipeable
+            key={group.slug}
+            onSwipeableOpen={async (direction) => {
+              if (direction === SwipeDirection.LEFT) {
+                await handleDeleteGroup(hrefs);
+              }
+            }}
+            renderRightActions={(p, d, s) => (
+              <RightAction
+                progress={p}
+                drag={d}
+                swipeable={s}
+                icon={<DeleteIcon size={24} color="white" />}
+                label="Löschen"
+                hint="Lösche diese Quelle"
+                onAction={async () => {
+                  await handleDeleteGroup(hrefs);
+                }}
+              />
+            )}
+          >
+            <Card style={{ padding: 0 }}>
+              <View style={{ padding: 30, gap: 10 }}>
+                {title && (
+                  <Heading style={{ color: Colors[colorScheme].text }}>
+                    {title}
+                  </Heading>
+                )}
+                {group.entries.map((entry) => (
+                  <Pressable
+                    key={entry.href}
+                    accessibilityRole="button"
+                    onPress={() =>
+                      outBoundLinkPress(entry.href, wpUrl + "/" + group.slug)
+                    }
+                  >
+                    <UiText style={{ color: corporate }}>{entry.href}</UiText>
+                  </Pressable>
+                ))}
+              </View>
+            </Card>
+          </Swipeable>
+        );
+      })}
       <Space size={50} />
       <View style={{ ...styles.centered }}>
         <LinkIcon color={corporate} />
