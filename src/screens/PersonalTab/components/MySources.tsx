@@ -34,6 +34,14 @@ const MySources = () => {
     }, []),
   );
 
+  const handleDeleteSingle = useCallback(async (href: HttpsUrl) => {
+    await SourcesStore.removeSource(href);
+    setSources((prev) => {
+      const { [href]: _removed, ...rest } = prev;
+      return rest as StoredSources;
+    });
+  }, []);
+
   const handleDeleteGroup = useCallback(async (hrefs: HttpsUrl[]) => {
     for (const href of hrefs) {
       await SourcesStore.removeSource(href);
@@ -100,15 +108,36 @@ const MySources = () => {
                   </Heading>
                 )}
                 {group.entries.map((entry) => (
-                  <Pressable
+                  <Swipeable
                     key={entry.href}
-                    accessibilityRole="button"
-                    onPress={() =>
-                      outBoundLinkPress(entry.href, wpUrl + "/" + group.slug)
-                    }
+                    onSwipeableOpen={async (direction) => {
+                      if (direction === SwipeDirection.LEFT) {
+                        await handleDeleteSingle(entry.href);
+                      }
+                    }}
+                    renderRightActions={(p, d, s) => (
+                      <RightAction
+                        progress={p}
+                        drag={d}
+                        swipeable={s}
+                        icon={<DeleteIcon size={24} color="white" />}
+                        label="Löschen"
+                        hint="Lösche diese Quelle"
+                        onAction={async () => {
+                          await handleDeleteSingle(entry.href);
+                        }}
+                      />
+                    )}
                   >
-                    <UiText style={{ color: corporate }}>{entry.href}</UiText>
-                  </Pressable>
+                    <Pressable
+                      accessibilityRole="button"
+                      onPress={() =>
+                        outBoundLinkPress(entry.href, wpUrl + "/" + group.slug)
+                      }
+                    >
+                      <UiText style={{ color: corporate }}>{entry.href}</UiText>
+                    </Pressable>
+                  </Swipeable>
                 ))}
               </View>
             </Card>
