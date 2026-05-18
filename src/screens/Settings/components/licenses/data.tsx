@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.19.17": {
+  "@atproto/api@0.19.18": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -21,7 +21,7 @@ export default {
     repository: "https://github.com/expo/google-fonts",
     licenseUrl: "https://github.com/expo/google-fonts/raw/HEAD/LICENSE",
   },
-  "@expo/config@55.0.16": {
+  "@expo/config@55.0.17": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -104,7 +104,7 @@ export default {
     licenseUrl:
       "https://github.com/prettier/eslint-plugin-prettier/raw/HEAD/LICENSE.md",
   },
-  "expo-application@55.0.14": {
+  "expo-application@55.0.15": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -130,11 +130,11 @@ export default {
     licenseUrl:
       "https://github.com/malaa-tech/expo-custom-assets/raw/HEAD/LICENSE",
   },
-  "expo-dev-client@55.0.32": {
+  "expo-dev-client@55.0.34": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-device@55.0.16": {
+  "expo-device@55.0.17": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -142,7 +142,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-file-system@55.0.19": {
+  "expo-file-system@55.0.20": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -162,7 +162,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-linear-gradient@55.0.13": {
+  "expo-linear-gradient@55.0.14": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -170,11 +170,11 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-mail-composer@55.0.13": {
+  "expo-mail-composer@55.0.14": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-notifications@55.0.22": {
+  "expo-notifications@55.0.23": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -182,11 +182,11 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-sharing@55.0.18": {
+  "expo-sharing@55.0.19": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-splash-screen@55.0.20": {
+  "expo-splash-screen@55.0.21": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -194,19 +194,19 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-system-ui@55.0.17": {
+  "expo-system-ui@55.0.18": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-updates@55.0.21": {
+  "expo-updates@55.0.22": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-web-browser@55.0.15": {
+  "expo-web-browser@55.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo@55.0.23": {
+  "expo@55.0.24": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
