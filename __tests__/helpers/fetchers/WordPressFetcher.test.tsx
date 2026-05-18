@@ -65,6 +65,29 @@ describe("WordPressFetcher", () => {
       expect(result).toEqual([]);
       expect(spy).toHaveBeenCalledWith("WP Error:", error);
     });
+
+    it("returns empty array and suppresses logging when signal is aborted", async () => {
+      const controller = new AbortController();
+      const error = new Error("canceled");
+      const api = jest.fn().mockRejectedValue(error);
+      const spy = jest.spyOn(console, "error").mockImplementation();
+
+      controller.abort();
+      const result = await base(api, controller.signal);
+
+      expect(result).toEqual([]);
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it("passes signal to the api function", async () => {
+      const controller = new AbortController();
+      const articles = [makeArticle()];
+      const api = jest.fn().mockResolvedValue(articles);
+
+      await base(api, controller.signal);
+
+      expect(api).toHaveBeenCalledWith(controller.signal);
+    });
   });
 
   describe("mapArticleToPost", () => {
@@ -117,6 +140,26 @@ describe("WordPressFetcher", () => {
       expect(result[0]).toBeInstanceOf(Post);
     });
 
+    it("feedFetcher defaults to page 1 when called with no args", async () => {
+      const spy = jest
+        .spyOn(WordPressAPI, "getPosts" as any)
+        .mockResolvedValue([]);
+
+      await WordPressFetcher.feedFetcher();
+
+      expect(spy).toHaveBeenCalledWith(1, undefined);
+    });
+
+    it("searchFetcher defaults to empty param when called with no args", async () => {
+      const spy = jest
+        .spyOn(WordPressAPI, "searchPosts" as any)
+        .mockResolvedValue([]);
+
+      await WordPressFetcher.searchFetcher();
+
+      expect(spy).toHaveBeenCalledWith("", 10, undefined);
+    });
+
     it("forwards AbortSignal to getPosts in feedFetcher", async () => {
       const page = 2;
       const articles = [makeArticle()];
@@ -141,6 +184,20 @@ describe("WordPressFetcher", () => {
 
       expect(spy).toHaveBeenCalledWith(parameter, 10, undefined);
       expect(result[0]).toBeInstanceOf(Post);
+    });
+
+    it("forwards AbortSignal to searchPosts in searchFetcher", async () => {
+      const controller = new AbortController();
+      const spy = jest
+        .spyOn(WordPressAPI, "searchPosts" as any)
+        .mockResolvedValue([]);
+
+      await WordPressFetcher.searchFetcher({
+        param: "test",
+        signal: controller.signal,
+      });
+
+      expect(spy).toHaveBeenCalledWith("test", 10, controller.signal);
     });
   });
 });

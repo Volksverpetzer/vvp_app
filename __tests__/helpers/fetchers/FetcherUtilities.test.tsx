@@ -7,6 +7,47 @@ describe("FetcherUtils", () => {
     jest.restoreAllMocks();
   });
 
+  describe("isAbortError", () => {
+    it("returns true for AbortError", () => {
+      expect(
+        FetcherUtilities.isAbortError(
+          Object.assign(new Error(), { name: "AbortError" }),
+        ),
+      ).toBe(true);
+    });
+
+    it("returns true for CanceledError", () => {
+      expect(
+        FetcherUtilities.isAbortError(
+          Object.assign(new Error(), { name: "CanceledError" }),
+        ),
+      ).toBe(true);
+    });
+
+    it("returns true for ERR_CANCELED code", () => {
+      expect(
+        FetcherUtilities.isAbortError(
+          Object.assign(new Error(), { code: "ERR_CANCELED" }),
+        ),
+      ).toBe(true);
+    });
+
+    it("returns false for regular errors", () => {
+      expect(FetcherUtilities.isAbortError(new Error("network failure"))).toBe(
+        false,
+      );
+    });
+
+    it("returns false for null", () => {
+      expect(FetcherUtilities.isAbortError(null)).toBe(false);
+    });
+
+    it("returns false for primitives", () => {
+      expect(FetcherUtilities.isAbortError("AbortError")).toBe(false);
+      expect(FetcherUtilities.isAbortError(42)).toBe(false);
+    });
+  });
+
   describe("safeFetch", () => {
     it("returns fetched data when fetchFn resolves", async () => {
       const fetchFunction: SafeFetchFunction<string> = jest.fn(() =>

@@ -1,4 +1,4 @@
-import { describe, expect, it, jest } from "@jest/globals";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { act, render, waitFor } from "@testing-library/react-native";
 
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
@@ -46,6 +46,45 @@ const deferred = <T,>(): Deferred<T> => {
   });
   return { promise, resolve, reject };
 };
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
+describe("Recommended", () => {
+  it("renders matched articles for urls within the configured wpUrl", async () => {
+    const recommendations = (IntelligenceAPI as any)
+      .recommendations as jest.Mock<any>;
+    recommendations.mockResolvedValue({
+      results: [
+        { url: "https://example.com/article/one", title: "One" },
+        { url: "https://other.com/article/two", title: "Two" }, // filtered out
+      ],
+    });
+
+    render(<Recommended article_link="https://example.com/article" />);
+
+    await waitFor(() => expect(recommendations).toHaveBeenCalledTimes(1));
+  });
+
+  it("logs errors that are not caused by abort", async () => {
+    const recommendations = (IntelligenceAPI as any)
+      .recommendations as jest.Mock<any>;
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    recommendations.mockRejectedValue(new Error("network failure"));
+
+    render(<Recommended article_link="https://example.com/article" />);
+
+    await waitFor(() =>
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Failed to load recommendations:",
+        expect.any(Error),
+      ),
+    );
+  });
+});
 
 describe("Recommended AbortController behavior", () => {
   it("aborts on unmount and suppresses logging for canceled requests", async () => {
