@@ -11,25 +11,27 @@ import MySources from "#/screens/PersonalTab/components/MySources";
 
 jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
   const { View } = require("react-native");
+  const MockSwipeable = ({ children, renderRightActions, testID }: any) => (
+    <View testID={testID}>
+      {children}
+      {renderRightActions?.({}, {}, { close: jest.fn() })}
+    </View>
+  );
   return {
     __esModule: true,
-    default: ({ children, renderRightActions, testID }: any) => (
-      <View testID={testID}>
-        {children}
-        {renderRightActions?.({}, {}, { close: jest.fn() })}
-      </View>
-    ),
+    default: MockSwipeable,
     SwipeDirection: { LEFT: "left", RIGHT: "right" },
   };
 });
 
 jest.mock("#/components/actions/RightAction", () => {
   const { Pressable, Text } = require("react-native");
-  return ({ onAction }: any) => (
+  const MockRightAction = ({ onAction }: any) => (
     <Pressable onPress={onAction} accessibilityLabel="Löschen">
       <Text>Löschen</Text>
     </Pressable>
   );
+  return MockRightAction;
 });
 
 jest.mock("#/helpers/Stores/SourcesStore", () => ({
