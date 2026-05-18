@@ -57,8 +57,8 @@ const SearchHeader = ({
         style={{
           ...styles.row,
           height: 100,
-          justifyContent: "flex-end",
-          paddingRight: 20,
+          justifyContent: "center",
+          paddingHorizontal: 20,
           backgroundColor,
         }}
       >
@@ -68,9 +68,11 @@ const SearchHeader = ({
             fontFamily: "SourceSansProBold",
             fontSize: 22,
             color: corporate,
+            flex: 1,
+            textAlign: "center",
           }}
         >
-          Fact Check
+          {showFaktenBot ? "Fact Check" : "Artikel Suche"}
         </UiText>
         {showFaktenBot && (
           <FaktenBot reaction={faktenBotReaction} search={isLoading} />
