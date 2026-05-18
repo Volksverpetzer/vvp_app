@@ -43,7 +43,7 @@ describe("FetcherUtils", () => {
       const canceled = Object.assign(new Error("canceled"), {
         code: "ERR_CANCELED",
       });
-      const fetchFunction: SafeFetchFunction<string> = jest.fn(async () => {
+      const fetchFunction: SafeFetchFunction<string> = jest.fn(() => {
         throw canceled;
       });
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
@@ -228,7 +228,7 @@ describe("FetcherUtils", () => {
       const canceled = Object.assign(new Error("canceled"), {
         code: "ERR_CANCELED",
       });
-      const fetcher1 = jest.fn(async () => {
+      const fetcher1 = jest.fn(() => {
         throw canceled;
       });
       const oldPosts = [p1];

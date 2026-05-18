@@ -190,8 +190,10 @@ export async function fetchWithTimeout<T>(
       signal: controller.signal,
     });
   } catch (error) {
-    console.error(error);
-    console.error(path);
+    if (!controller.signal.aborted) {
+      console.error(error);
+      console.error(path);
+    }
     throw error;
   } finally {
     clearTimeout(id);

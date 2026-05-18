@@ -60,10 +60,10 @@ describe("useAISearch AbortController behavior", () => {
     const vectorSearch = (IntelligenceAPI as any).vectorSearch as jest.Mock;
 
     vectorSearch
-      .mockImplementationOnce((_query: string, signal?: AbortSignal) => {
+      .mockImplementationOnce((_query: string, _signal?: AbortSignal) => {
         return d1.promise;
       })
-      .mockImplementationOnce((_query: string, signal?: AbortSignal) => {
+      .mockImplementationOnce((_query: string, _signal?: AbortSignal) => {
         return d2.promise;
       });
 

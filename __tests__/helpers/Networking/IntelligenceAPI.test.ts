@@ -244,6 +244,7 @@ describe("IntelligenceAPI", () => {
       expect(Networking.get).toHaveBeenCalledWith(
         expect.anything(),
         `/api/recommend/?url=${encodeURIComponent(url)}`,
+        undefined,
       );
     });
 
@@ -259,6 +260,7 @@ describe("IntelligenceAPI", () => {
       expect(Networking.get).toHaveBeenCalledWith(
         expect.anything(),
         `/api/recommend/?url=${encodeURIComponent(url)}`,
+        undefined,
       );
       expect(result).toEqual(mockResponse);
     });

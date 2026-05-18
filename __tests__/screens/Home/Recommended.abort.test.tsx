@@ -20,11 +20,11 @@ jest.mock("#/constants/Config", () => ({
 
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
-  return ({ children }: any) => <Text>{children}</Text>;
+  return jest.fn(({ children }: any) => <Text>{children}</Text>);
 });
 jest.mock("#/components/design/View", () => {
   const { View } = require("react-native");
-  return ({ children }: any) => <View>{children}</View>;
+  return jest.fn(({ children }: any) => <View>{children}</View>);
 });
 jest.mock("#/components/loader/LoadArticlePost", () => () => null);
 jest.mock("#/constants/Styles", () => ({

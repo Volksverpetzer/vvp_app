@@ -19,7 +19,7 @@ jest.mock("#/components/design/EmptyComponent", () => () => null);
 jest.mock("#/components/posts/GenericPost", () => () => null);
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
-  return ({ children }: any) => <Text>{children}</Text>;
+  return jest.fn(({ children }: any) => <Text>{children}</Text>);
 });
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => "light",
@@ -73,7 +73,7 @@ describe("Feed AbortController behavior", () => {
       .mockImplementationOnce(() => d1.promise)
       .mockImplementationOnce(() => d2.promise);
 
-    const fetcher = jest.fn(async () => []);
+    const fetcher = jest.fn(() => Promise.resolve([]));
     const { rerender, unmount } = render(
       <Feed fetchers={[{ fetcher, props: {} }]} />,
     );

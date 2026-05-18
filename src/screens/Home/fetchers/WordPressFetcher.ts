@@ -46,7 +46,9 @@ export const WordPressFetcher = {
         ),
       );
     } catch (error) {
-      console.error("WP Error:", error);
+      if (!signal?.aborted) {
+        console.error("WP Error:", error);
+      }
       return [];
     }
   },
