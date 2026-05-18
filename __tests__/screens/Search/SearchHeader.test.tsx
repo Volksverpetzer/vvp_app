@@ -59,7 +59,7 @@ describe("SearchHeader", () => {
       const { getByText } = render(
         <SearchHeader {...baseProps} showFaktenBot={false} />,
       );
-      expect(getByText("Artikel Suche")).toBeTruthy();
+      expect(getByText("Artikel-Suche")).toBeTruthy();
     });
 
     it("shows 'Fact Check' when showFaktenBot is true", () => {
