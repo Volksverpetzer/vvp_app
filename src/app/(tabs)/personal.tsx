@@ -98,14 +98,17 @@ const PersonalTab = () => {
                   activeTab === "favs" ? corporateColor : tabIconColor,
               }}
             >
-              <StarIcon color={activeTab === "favs" ? "white" : textColor} />
+              <StarIcon
+                size={24}
+                color={activeTab === "favs" ? "white" : textColor}
+              />
               <Animated.View
                 style={{ height: labelHeight, overflow: "hidden" }}
               >
                 <Animated.Text
                   style={{
                     alignSelf: "center",
-                    marginTop: 0,
+                    marginTop: 2,
                     color: activeTab === "favs" ? "white" : textColor,
                     fontFamily: "SourceSansProBold",
                     fontSize: 12,
@@ -128,14 +131,17 @@ const PersonalTab = () => {
                   activeTab === "sources" ? corporateColor : tabIconColor,
               }}
             >
-              <LinkIcon color={activeTab === "sources" ? "white" : textColor} />
+              <LinkIcon
+                size={24}
+                color={activeTab === "sources" ? "white" : textColor}
+              />
               <Animated.View
                 style={{ height: labelHeight, overflow: "hidden" }}
               >
                 <Animated.Text
                   style={{
                     alignSelf: "center",
-                    marginTop: 0,
+                    marginTop: 2,
                     color: activeTab === "sources" ? "white" : textColor,
                     fontFamily: "SourceSansProBold",
                     opacity: labelOpacity,

@@ -1,5 +1,6 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 import { Pressable, View } from "react-native";
 import type { TextInput } from "react-native";
 
@@ -26,7 +27,7 @@ interface SearchContentProperties {
   setSearchParams: (value: string) => void;
   setResultsLength: (length: number) => void;
   setIsLoading: (loading: boolean) => void;
-  searchRef: React.RefObject<TextInput>;
+  searchRef: RefObject<TextInput>;
 }
 
 const SearchContent = ({
@@ -115,14 +116,15 @@ const SearchContent = ({
               }}
             >
               <SearchIcon
+                size={24}
                 color={activeTab === "artikel" ? "white" : textColor}
               />
               <UiText
                 style={{
+                  alignSelf: "center",
+                  marginTop: 2,
                   color: activeTab === "artikel" ? "white" : textColor,
                   fontFamily: "SourceSansProBold",
-                  fontSize: 12,
-                  marginTop: 2,
                 }}
               >
                 Artikel
@@ -140,13 +142,16 @@ const SearchContent = ({
                   activeTab === "ai" ? corporateColor : tabIconColor,
               }}
             >
-              <SafetyIcon color={activeTab === "ai" ? "white" : textColor} />
+              <SafetyIcon
+                size={24}
+                color={activeTab === "ai" ? "white" : textColor}
+              />
               <UiText
                 style={{
+                  alignSelf: "center",
+                  marginTop: 2,
                   color: activeTab === "ai" ? "white" : textColor,
                   fontFamily: "SourceSansProBold",
-                  fontSize: 12,
-                  marginTop: 2,
                 }}
               >
                 KI-Faktenbot
