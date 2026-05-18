@@ -36,7 +36,7 @@
     "ios:local": "pnpx eas-cli build -p ios --profile local-ios --local",
     "preview:build": "pnpx eas-cli build -p android --profile preview",
     "preview:update": "pnpx eas-cli update --channel preview --auto",
-    "web": "expo start --web",
+    "web": "expo start --web --clear",
     "--- check test and lint ---": "-------------",
     "check": "pnpm check:spelling && pnpm check:ts",
     "check:spelling": "cspell lint",
