@@ -14,16 +14,12 @@ jest.mock("#/components/Icons", () => ({
   SettingsIcon: () => null,
 }));
 
-jest.mock("#/components/animations/UiSpinner", () => () => null);
+jest.mock("#/components/ui/UiSpinner", () => () => null);
 jest.mock("#/components/design/EmptyComponent", () => () => null);
 jest.mock("#/components/posts/GenericPost", () => () => null);
-jest.mock("#/components/design/Text", () => {
+jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return ({ children }: any) => <Text>{children}</Text>;
-});
-jest.mock("#/components/design/View", () => {
-  const { View } = require("react-native");
-  return ({ children }: any) => <View>{children}</View>;
 });
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => "light",
@@ -83,8 +79,9 @@ describe("Feed AbortController behavior", () => {
     );
 
     await waitFor(() => expect(fetchAndProcessPosts).toHaveBeenCalledTimes(1));
-    const firstSignal = fetchAndProcessPosts.mock.calls[0][1]
-      .signal as AbortSignal;
+    const firstSignal = (
+      fetchAndProcessPosts.mock.calls[0][1] as { signal: AbortSignal }
+    ).signal;
 
     rerender(
       <Feed
@@ -96,8 +93,9 @@ describe("Feed AbortController behavior", () => {
     );
 
     await waitFor(() => expect(fetchAndProcessPosts).toHaveBeenCalledTimes(2));
-    const secondSignal = fetchAndProcessPosts.mock.calls[1][1]
-      .signal as AbortSignal;
+    const secondSignal = (
+      fetchAndProcessPosts.mock.calls[1][1] as { signal: AbortSignal }
+    ).signal;
 
     expect(firstSignal).not.toBe(secondSignal);
     expect(firstSignal.aborted).toBe(true);

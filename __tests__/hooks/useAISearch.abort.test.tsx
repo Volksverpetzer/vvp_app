@@ -39,11 +39,14 @@ const deferred = <T,>(): Deferred<T> => {
   return { promise, resolve, reject };
 };
 
+const mockSetResultsLength = jest.fn();
+const mockSetIsLoading = jest.fn();
+
 const HookHarness = ({ search }: { search: string }) => {
   const { results } = useAISearch({
     search,
-    setResultsLength: jest.fn(),
-    setIsLoading: jest.fn(),
+    setResultsLength: mockSetResultsLength,
+    setIsLoading: mockSetIsLoading,
   });
   return (
     <Text testID="titles">{results.map((item) => item.title).join(",")}</Text>

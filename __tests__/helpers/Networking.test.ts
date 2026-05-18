@@ -136,9 +136,11 @@ describe("Networking utilities", () => {
 
     try {
       (global as any).AbortController = TestAbortController;
-      const client = Networking.createClient("http://x");
+      const client = Networking.createClient("https://x" as any);
       const fakeResponse = { data: { ok: true } };
-      const mockRequest = jest.fn().mockResolvedValue(fakeResponse) as any;
+      const mockRequest = (jest.fn() as jest.Mock<any>).mockResolvedValue(
+        fakeResponse,
+      );
       client.request = mockRequest;
 
       const promise = Networking.fetchWithTimeout(

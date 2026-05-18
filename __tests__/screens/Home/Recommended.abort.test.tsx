@@ -18,7 +18,7 @@ jest.mock("#/constants/Config", () => ({
   },
 }));
 
-jest.mock("#/components/design/Text", () => {
+jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return ({ children }: any) => <Text>{children}</Text>;
 });
@@ -26,7 +26,7 @@ jest.mock("#/components/design/View", () => {
   const { View } = require("react-native");
   return ({ children }: any) => <View>{children}</View>;
 });
-jest.mock("#/components/posts/LoadArticlePost", () => () => null);
+jest.mock("#/components/loader/LoadArticlePost", () => () => null);
 jest.mock("#/constants/Styles", () => ({
   styles: { roundEdges: {} },
 }));
@@ -52,7 +52,9 @@ describe("Recommended AbortController behavior", () => {
     const d = deferred<{ results: { url: string; title: string }[] }>();
     const recommendations = (IntelligenceAPI as any)
       .recommendations as jest.Mock;
-    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     recommendations.mockReturnValue(d.promise);
 
