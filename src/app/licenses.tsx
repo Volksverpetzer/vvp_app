@@ -2,7 +2,7 @@ import { View } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import Licenses from "#/screens/Settings/components/licenses/Licenses";
 
@@ -12,7 +12,7 @@ const LicensesScreen = () => {
   return (
     <View
       style={{
-        ...styles.container,
+        ...globalStyles.container,
         backgroundColor,
       }}
     >

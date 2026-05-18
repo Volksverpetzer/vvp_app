@@ -6,7 +6,7 @@ import Space from "#/components/design/Space";
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -32,7 +32,7 @@ const Footer = (properties: FooterProperties) => {
         style={{
           paddingBottom: 30,
           alignItems: "center",
-          ...styles.noBackground,
+          ...globalStyles.noBackground,
         }}
       >
         <UiText
@@ -49,7 +49,7 @@ const Footer = (properties: FooterProperties) => {
         <Pressable
           accessibilityRole="button"
           style={{
-            ...styles.centered,
+            ...globalStyles.centered,
             flex: 0,
             width: 80,
             height: 80,

@@ -11,7 +11,7 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -184,7 +184,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     [greyText],
   );
   const categoryTextStyle = useMemo(
-    () => ({ ...styles.whiteText, textAlign: "right" as const, fontSize: 14 }),
+    () => ({
+      ...globalStyles.whiteText,
+      textAlign: "right" as const,
+      fontSize: 14,
+    }),
     [],
   );
 

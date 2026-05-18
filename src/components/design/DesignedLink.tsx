@@ -7,7 +7,7 @@ import { Pressable, View } from "react-native";
 import { ExternalLinkIcon } from "#/components/Icons";
 import Heading from "#/components/typography/Heading";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 type DesignedLinksProperties = {
@@ -39,7 +39,7 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
       onPress={() => openLink()}
       style={({ pressed }) => [
         {
-          ...styles.row,
+          ...globalStyles.row,
           backgroundColor: pressed ? Colors[colorScheme].muted : undefined,
           paddingVertical: 10,
           justifyContent: "flex-start",

@@ -18,7 +18,7 @@ import TextInput from "#/components/design/TextInput";
 import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import API from "#/helpers/network/ServerAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";

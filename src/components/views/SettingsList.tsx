@@ -4,7 +4,7 @@ import { Switch, View } from "react-native";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { isDarkMode } from "#/helpers/utils/color";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
@@ -92,7 +92,7 @@ const SettingsList = (properties: SettingsListProperties) => {
             <View
               key={key}
               style={{
-                ...styles.row,
+                ...globalStyles.row,
                 paddingTop: 20,
                 maxHeight: 45,
               }}

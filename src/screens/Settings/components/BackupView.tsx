@@ -8,7 +8,7 @@ import Toast from "react-native-toast-message";
 import { DownloadIcon, UploadIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import {
@@ -103,7 +103,7 @@ const BackupView = () => {
     }
   };
 
-  const rowStyle = { ...styles.row, paddingBottom: 20, maxHeight: 45 };
+  const rowStyle = { ...globalStyles.row, paddingBottom: 20, maxHeight: 45 };
 
   return (
     <View style={{ padding: 20 }}>

@@ -6,7 +6,7 @@ import { CheckboxIcon, CircleIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import type { LevelType, TaskType } from "#/helpers/Achievements";
 import { AchievementConfig, Achievements } from "#/helpers/Achievements";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
@@ -51,7 +51,7 @@ const AchievementComponent = () => {
         padding: 20,
       }}
     >
-      <View style={{ ...styles.row, justifyContent: "flex-start" }}>
+      <View style={{ ...globalStyles.row, justifyContent: "flex-start" }}>
         <View
           style={{
             marginTop: -60,
@@ -113,7 +113,7 @@ const AchievementComponent = () => {
                   fontSize: 16,
                   padding: 5,
                   paddingLeft: 20,
-                  ...styles.whiteText,
+                  ...globalStyles.whiteText,
                 }}
               >
                 {task.verbose}

@@ -9,7 +9,7 @@ export const SOURCE_SANS_FONTS = [
   "SourceSansProBoldItalic",
 ];
 
-export const styles = StyleSheet.create({
+export const globalStyles = StyleSheet.create({
   badge: {
     backgroundColor: Colors.light.accent,
     borderRadius: 4,

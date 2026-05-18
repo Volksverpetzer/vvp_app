@@ -31,7 +31,7 @@ jest.mock("#/constants/Colors", () => ({
     dark: { corporate: "#000", secondaryBackground: "#fff" },
   },
 }));
-jest.mock("#/constants/Styles", () => ({
+jest.mock("#/constants/GlobalStyles", () => ({
   styles: {
     feed: {},
     centered: {},

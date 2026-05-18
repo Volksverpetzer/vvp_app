@@ -17,7 +17,7 @@ import Heading from "#/components/typography/Heading";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 import type { Post } from "#/types";
@@ -173,7 +173,7 @@ const Feed = (properties: FeedProperties) => {
   const contentContainerStyle = useMemo(
     () => ({
       ...properties?.style,
-      ...styles.content,
+      ...globalStyles.content,
     }),
     [properties?.style],
   );
@@ -235,12 +235,12 @@ const Feed = (properties: FeedProperties) => {
               style={{
                 paddingBottom: 30,
                 alignItems: "center",
-                ...styles.noBackground,
+                ...globalStyles.noBackground,
               }}
             >
               <Pressable
                 accessibilityRole="button"
-                style={styles.centered}
+                style={globalStyles.centered}
                 onPress={() => router.push("/search")}
               >
                 <UiText

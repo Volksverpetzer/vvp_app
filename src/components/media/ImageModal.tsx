@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import {
   useAppColorScheme,
   useCorporateColor,
@@ -27,7 +27,7 @@ const ImageModal = ({ uri, visible, onClose }: ImageModalProperties) => {
     <Modal visible={visible} onRequestClose={onClose}>
       <GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
         <Zoomable
-          style={{ width, height: "90%", ...styles.centered }}
+          style={{ width, height: "90%", ...globalStyles.centered }}
           isDoubleTapEnabled
           doubleTapScale={3}
           maxScale={5}

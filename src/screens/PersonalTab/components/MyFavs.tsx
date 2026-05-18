@@ -10,7 +10,7 @@ import GenericPost from "#/components/posts/GenericPost";
 import InstaPostCard from "#/components/posts/insta/InstaPostCard";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import Post from "#/helpers/Post";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
@@ -150,7 +150,7 @@ const MyFavs = () => {
         ))
       )}
       <Space size={50} />
-      <View style={{ ...styles.centered }}>
+      <View style={{ ...globalStyles.centered }}>
         <StarIcon color={corporate} />
         <UiText style={{ textAlign: "center", fontSize: 18 }}>
           Klick den Stern, um zu den Favoriten hinzuzufügen

@@ -5,7 +5,7 @@ import { View } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import AISearch from "#/screens/Search/components/AISearch";
 import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";
@@ -46,13 +46,13 @@ const SearchScreen = () => {
         return (
           <View
             style={{
-              ...styles.container,
+              ...globalStyles.container,
               backgroundColor,
             }}
           >
             <View
               style={{
-                ...styles.content,
+                ...globalStyles.content,
                 flex: 1,
               }}
             >

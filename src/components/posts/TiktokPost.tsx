@@ -10,7 +10,7 @@ import WebView from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
 import UiSpinner from "#/components/ui/UiSpinner";
-import { styles as globalStyles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import type { TiktokPostProperties } from "#/types";
 
 const TIKTOK_BRAND_COLOR = "#FF0050";

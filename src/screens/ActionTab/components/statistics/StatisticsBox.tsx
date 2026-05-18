@@ -3,7 +3,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
 interface StatsBoxProperties {
@@ -45,13 +45,13 @@ const boxStyles = StyleSheet.create({
     borderRadius: 10,
   },
   valueText: {
-    ...styles.whiteText,
+    ...globalStyles.whiteText,
     width: "100%",
     fontSize: 20,
     textAlign: "center",
   },
   labelText: {
-    ...styles.whiteText,
+    ...globalStyles.whiteText,
     width: "100%",
     fontSize: 12,
     textAlign: "center",

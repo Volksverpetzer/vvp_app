@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 import type { OnBoardingData } from "./Flatboard";
@@ -70,7 +70,7 @@ const StandardStepper = (properties: StandardStepperProperties) => {
             { backgroundColor: accentColor || corporate },
           ]}
         >
-          <UiText style={styles.whiteText}>
+          <UiText style={globalStyles.whiteText}>
             {buttonTitle || "Get Started"}
           </UiText>
         </TouchableOpacity>

@@ -7,7 +7,7 @@ import { LinkIcon, StarIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MyFavs from "#/screens/PersonalTab/components/MyFavs";
@@ -71,7 +71,7 @@ const PersonalTab = () => {
         <View
           style={{
             width: "100%",
-            ...styles.noBackground,
+            ...globalStyles.noBackground,
           }}
         >
           <Animated.View
@@ -105,7 +105,7 @@ const PersonalTab = () => {
                   style={{
                     alignSelf: "center",
                     marginTop: 0,
-                    ...styles.whiteText,
+                    ...globalStyles.whiteText,
                     fontFamily: "SourceSansProBold",
                     opacity: labelOpacity,
                   }}
@@ -134,7 +134,7 @@ const PersonalTab = () => {
                   style={{
                     alignSelf: "center",
                     marginTop: 0,
-                    ...styles.whiteText,
+                    ...globalStyles.whiteText,
                     fontFamily: "SourceSansProBold",
                     opacity: labelOpacity,
                   }}
@@ -156,7 +156,7 @@ const PersonalTab = () => {
           { useNativeDriver: false },
         )}
         contentContainerStyle={{
-          ...styles.content,
+          ...globalStyles.content,
           paddingTop: HEADER_HEIGHT,
         }}
       >

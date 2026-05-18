@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { FlatList } from "react-native";
 
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 
 import LicensesListItem from "./LicenseListItem";
 import Data from "./data";
@@ -71,7 +71,7 @@ const Licenses = () => {
       data={licenses}
       renderItem={renderItem}
       contentContainerStyle={{
-        ...styles.content,
+        ...globalStyles.content,
         gap: 10,
       }}
     />

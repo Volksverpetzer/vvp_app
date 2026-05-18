@@ -13,7 +13,7 @@ import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -115,7 +115,7 @@ const MySources = () => {
         );
       })}
       <Space size={50} />
-      <View style={{ ...styles.centered }}>
+      <View style={{ ...globalStyles.centered }}>
         <LinkIcon color={corporate} />
         <UiText style={{ textAlign: "center", fontSize: 18 }}>
           Klicke auf Links in Artikeln, dann tauchen sie hier auf

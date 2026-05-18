@@ -3,7 +3,7 @@ import { useState } from "react";
 import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
 import View from "#/components/design/View";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { multishare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { FaveableType, ShareableType } from "#/types";
@@ -32,7 +32,7 @@ const ShareBar = (properties: ShareBarProperties) => {
       style={{
         paddingHorizontal: 26,
         paddingVertical: 10,
-        ...styles.row,
+        ...globalStyles.row,
         justifyContent: "flex-start",
         gap: 30,
       }}

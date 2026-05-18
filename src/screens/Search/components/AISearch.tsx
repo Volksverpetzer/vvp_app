@@ -8,7 +8,7 @@ import FaktenBot from "#/components/animations/FaktenBot";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";

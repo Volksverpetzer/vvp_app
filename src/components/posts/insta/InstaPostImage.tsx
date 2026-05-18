@@ -6,7 +6,7 @@ import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { Animated, ScrollView, TouchableOpacity } from "react-native";
 
 import View from "#/components/design/View";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 
 interface InstaPostImageProps {
   photos: string[];
@@ -144,7 +144,9 @@ const InstaPostImage = ({
         </ScrollView>
       </View>
 
-      <View style={{ flexDirection: "row", ...styles.centered }}>{dots}</View>
+      <View style={{ flexDirection: "row", ...globalStyles.centered }}>
+        {dots}
+      </View>
     </View>
   );
 };

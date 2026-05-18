@@ -7,7 +7,7 @@ import FaktenBot from "#/components/animations/FaktenBot";
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface SearchHeaderProperties {
@@ -55,7 +55,7 @@ const SearchHeader = ({
     <>
       <View
         style={{
-          ...styles.row,
+          ...globalStyles.row,
           height: 100,
           justifyContent: "flex-end",
           paddingRight: 20,
@@ -78,8 +78,8 @@ const SearchHeader = ({
       </View>
       <View
         style={{
-          ...styles.row,
-          ...styles.input,
+          ...globalStyles.row,
+          ...globalStyles.input,
           height: 50,
           paddingRight: 40,
           backgroundColor: corporate,
@@ -95,7 +95,7 @@ const SearchHeader = ({
           placeholder="Suche ..."
           placeholderTextColor="white"
           onSubmitEditing={handleSubmit}
-          style={{ ...styles.whiteText, width: "100%" }}
+          style={{ ...globalStyles.whiteText, width: "100%" }}
           onChangeText={setSearch}
           returnKeyType="search"
         />

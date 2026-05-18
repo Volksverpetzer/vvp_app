@@ -5,7 +5,7 @@ import EmptyComponent from "#/components/design/EmptyComponent";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 const NotFoundScreen = () => {
@@ -15,7 +15,7 @@ const NotFoundScreen = () => {
     <View
       style={{
         flexDirection: "column",
-        ...styles.centered,
+        ...globalStyles.centered,
       }}
     >
       <Heading style={{ textAlign: "center" }}>

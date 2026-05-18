@@ -9,7 +9,7 @@ import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
@@ -73,15 +73,15 @@ const HomeScreen = () => {
           accessibilityRole="button"
           onPress={() => router.push("/search")}
           style={{
-            ...styles.row,
-            ...styles.input,
+            ...globalStyles.row,
+            ...globalStyles.input,
             height: 50,
             backgroundColor: corporate,
           }}
         >
           <UiText
             style={{
-              ...styles.whiteText,
+              ...globalStyles.whiteText,
               fontFamily: "SourceSansPro",
               fontSize: 16,
             }}
@@ -93,7 +93,7 @@ const HomeScreen = () => {
       </AnimatedHeader>
       <View
         style={{
-          ...styles.container,
+          ...globalStyles.container,
           backgroundColor,
         }}
       >

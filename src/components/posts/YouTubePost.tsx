@@ -5,7 +5,7 @@ import WebView from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { YouTubePostProperties } from "#/types";
 
@@ -42,7 +42,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             style={{ flex: 1, width: width - 24, backgroundColor: corporate }}
             source={{ uri: preview }}
           />
-          <View style={styles.centeredAbsolute} pointerEvents="none">
+          <View style={globalStyles.centeredAbsolute} pointerEvents="none">
             <PlayIcon size={56} color={YOUTUBE_BRAND_COLOR} />
           </View>
         </TouchableOpacity>

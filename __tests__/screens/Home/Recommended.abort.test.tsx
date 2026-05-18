@@ -27,7 +27,7 @@ jest.mock("#/components/design/View", () => {
   return jest.fn(({ children }: any) => <View>{children}</View>);
 });
 jest.mock("#/components/loader/LoadArticlePost", () => () => null);
-jest.mock("#/constants/Styles", () => ({
+jest.mock("#/constants/GlobalStyles", () => ({
   styles: { roundEdges: {} },
 }));
 

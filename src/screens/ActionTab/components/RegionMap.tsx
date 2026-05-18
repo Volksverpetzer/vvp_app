@@ -11,7 +11,7 @@ import Space from "#/components/design/Space";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { getRegions } from "#/helpers/network/Action";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -90,7 +90,9 @@ const RegionMap = () => {
         <Legend text="Schlusslicht" color={corporate} />
         <Space size={8} />
         <View>
-          <UiText style={{ fontSize: 12, marginTop: 20, ...styles.whiteText }}>
+          <UiText
+            style={{ fontSize: 12, marginTop: 20, ...globalStyles.whiteText }}
+          >
             Shares aus der Volksverpetzer-App pro Kopf im Bundesland
           </UiText>
         </View>
@@ -104,7 +106,7 @@ const RegionMap = () => {
         <UiText
           style={{
             fontSize: 20,
-            ...styles.whiteText,
+            ...globalStyles.whiteText,
             fontFamily: "SourceSansProBold",
           }}
         >
@@ -146,7 +148,7 @@ const RegionMap = () => {
             style={{
               fontSize: 13,
               paddingVertical: 2,
-              ...styles.whiteText,
+              ...globalStyles.whiteText,
             }}
           >
             {`${idx + 4}. ${region.name}`}

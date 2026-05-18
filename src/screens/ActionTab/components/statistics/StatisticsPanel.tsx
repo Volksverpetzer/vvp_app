@@ -5,7 +5,7 @@ import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
@@ -49,14 +49,18 @@ const StatisticsPanel = ({
   const muted = Colors[colorScheme].muted;
 
   return (
-    <View style={{ ...styles.centered, width }}>
+    <View style={{ ...globalStyles.centered, width }}>
       <View
-        style={{ ...styles.row, justifyContent: "flex-start", paddingLeft: 30 }}
+        style={{
+          ...globalStyles.row,
+          justifyContent: "flex-start",
+          paddingLeft: 30,
+        }}
       >
         <StatisticsIcon name={icon} size={32} color="white" />
         <UiText
           style={{
-            ...styles.whiteText,
+            ...globalStyles.whiteText,
             fontSize: 20,
             fontFamily: "SourceSansProBold",
             marginLeft: 10,
