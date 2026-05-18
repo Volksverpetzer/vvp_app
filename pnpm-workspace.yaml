@@ -1,3 +1,6 @@
+overrides:
+  "@react-navigation/native": "7.2.4"
+
 allowBuilds:
   dtrace-provider: true # required by eas-cli; pnpm v11 blocks its build scripts otherwise
   esbuild: true
