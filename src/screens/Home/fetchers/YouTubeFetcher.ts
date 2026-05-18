@@ -5,9 +5,9 @@ import API from "#/helpers/network/ServerAPI";
 import FetcherUtilities from "./FetcherUtilities";
 
 export const YouTubeFetcher = {
-  feedFetcher: async () => {
+  feedFetcher: async ({ signal }: { signal?: AbortSignal } = {}) => {
     const data = await FetcherUtilities.safeFetch(
-      () => API.getYouTubeFeed(),
+      () => API.getYouTubeFeed(signal),
       "yt",
     );
     return data.map(

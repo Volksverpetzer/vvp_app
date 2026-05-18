@@ -1,13 +1,14 @@
 {
   "name": "vvp_app",
-  "version": "2.1.11",
-  "versionCode": 2605081,
+  "version": "2.1.12",
+  "versionCode": 2605181,
   "main": "expo-router/entry",
   "expo": {
     "install": {
       "exclude": [
         "@stripe/stripe-react-native",
         "@react-navigation/bottom-tabs",
+        "@react-navigation/native",
         "react",
         "react-dom",
         "react-native-svg",
@@ -66,7 +67,7 @@
     "@native-html/iframe-plugin": "2.6.1",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/bottom-tabs": "7.15.12",
-    "@react-navigation/native": "7.2.3",
+    "@react-navigation/native": "7.2.4",
     "@rive-app/react-native": "0.4.6",
     "@stripe/stripe-react-native": "0.65.1",
     "@vseslav/react-native-horizontal-picker": "0.1.1",
@@ -156,7 +157,7 @@
     "prettier": "3.8.3",
     "react-test-renderer": "19.2.6",
     "ts-node": "10.9.2",
-    "tsx": "4.21.0",
+    "tsx": "4.22.1",
     "typedoc": "0.28.19",
     "typescript": "5.9.3"
   }
