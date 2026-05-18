@@ -34,7 +34,7 @@ const MySources = () => {
     }, []),
   );
 
-  const handleDeleteSingle = useCallback(async (href: HttpsUrl) => {
+  const handleDelete = useCallback(async (href: HttpsUrl) => {
     await SourcesStore.removeSource(href);
     setSources((prev) => {
       const { [href]: _removed, ...rest } = prev;
@@ -83,7 +83,7 @@ const MySources = () => {
                   testID={`source-row-${entry.href}`}
                   onSwipeableOpen={async (direction) => {
                     if (direction === SwipeDirection.LEFT) {
-                      await handleDeleteSingle(entry.href);
+                      await handleDelete(entry.href);
                     }
                   }}
                   renderRightActions={(p, d, s) => (
@@ -95,7 +95,7 @@ const MySources = () => {
                       label="Löschen"
                       hint="Lösche diese Quelle"
                       onAction={async () => {
-                        await handleDeleteSingle(entry.href);
+                        await handleDelete(entry.href);
                       }}
                     />
                   )}
