@@ -72,7 +72,7 @@ const SearchHeader = ({
             textAlign: "center",
           }}
         >
-          {showFaktenBot ? "Fact Check" : "Artikel Suche"}
+          {showFaktenBot ? "Fact Check" : "Artikel-Suche"}
         </UiText>
         {showFaktenBot && (
           <FaktenBot reaction={faktenBotReaction} search={isLoading} />
