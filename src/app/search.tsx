@@ -49,6 +49,7 @@ const SearchContent = ({
   const backgroundColor = Colors[colorScheme].surface;
   const corporateColor = Colors[colorScheme].primary;
   const tabIconColor = Colors[colorScheme].muted;
+  const textColor = Colors[colorScheme].text;
 
   // Debounce AI search while typing (800ms — AI calls are expensive)
   useEffect(() => {
@@ -113,10 +114,12 @@ const SearchContent = ({
                   activeTab === "artikel" ? corporateColor : tabIconColor,
               }}
             >
-              <SearchIcon color="white" />
+              <SearchIcon
+                color={activeTab === "artikel" ? "white" : textColor}
+              />
               <UiText
                 style={{
-                  color: "white",
+                  color: activeTab === "artikel" ? "white" : textColor,
                   fontFamily: "SourceSansProBold",
                   fontSize: 12,
                   marginTop: 2,
@@ -137,10 +140,10 @@ const SearchContent = ({
                   activeTab === "ai" ? corporateColor : tabIconColor,
               }}
             >
-              <SafetyIcon color="white" />
+              <SafetyIcon color={activeTab === "ai" ? "white" : textColor} />
               <UiText
                 style={{
-                  color: "white",
+                  color: activeTab === "ai" ? "white" : textColor,
                   fontFamily: "SourceSansProBold",
                   fontSize: 12,
                   marginTop: 2,

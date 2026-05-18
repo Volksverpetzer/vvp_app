@@ -26,6 +26,7 @@ const PersonalTab = () => {
   const corporateColor = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].surface;
   const tabIconColor = Colors[colorScheme].iconMuted;
+  const textColor = Colors[colorScheme].text;
 
   const HEADER_HEIGHT = 200;
   const MIN_HEIGHT = 110;
@@ -97,7 +98,7 @@ const PersonalTab = () => {
                   activeTab === "favs" ? corporateColor : tabIconColor,
               }}
             >
-              <StarIcon color="white" />
+              <StarIcon color={activeTab === "favs" ? "white" : textColor} />
               <Animated.View
                 style={{ height: labelHeight, overflow: "hidden" }}
               >
@@ -105,8 +106,9 @@ const PersonalTab = () => {
                   style={{
                     alignSelf: "center",
                     marginTop: 0,
-                    ...styles.whiteText,
+                    color: activeTab === "favs" ? "white" : textColor,
                     fontFamily: "SourceSansProBold",
+                    fontSize: 12,
                     opacity: labelOpacity,
                   }}
                 >
@@ -126,7 +128,7 @@ const PersonalTab = () => {
                   activeTab === "sources" ? corporateColor : tabIconColor,
               }}
             >
-              <LinkIcon color="white" />
+              <LinkIcon color={activeTab === "sources" ? "white" : textColor} />
               <Animated.View
                 style={{ height: labelHeight, overflow: "hidden" }}
               >
@@ -134,7 +136,7 @@ const PersonalTab = () => {
                   style={{
                     alignSelf: "center",
                     marginTop: 0,
-                    ...styles.whiteText,
+                    color: activeTab === "sources" ? "white" : textColor,
                     fontFamily: "SourceSansProBold",
                     opacity: labelOpacity,
                   }}
