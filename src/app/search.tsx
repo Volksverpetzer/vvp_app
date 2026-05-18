@@ -157,7 +157,7 @@ const SearchContent = ({
           (isAlgoliaActive ? (
             <AlgoliaSearchResults searchString={search} />
           ) : (
-            <SearchTutorial />
+            <SearchTutorial tab="artikel" />
           ))}
 
         {/* KI-Faktenbot tab — AI search while typing (debounced) */}
@@ -170,7 +170,7 @@ const SearchContent = ({
               showFaktenBot={true}
             />
           ) : (
-            <SearchTutorial />
+            <SearchTutorial tab="ai" />
           ))}
       </View>
 
