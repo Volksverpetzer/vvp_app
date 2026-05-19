@@ -1,9 +1,12 @@
 import { useWindowDimensions } from "react-native";
 
-import { styles } from "#/constants/Styles";
+import {
+  CONTENT_HORIZONTAL_PADDING,
+  CONTENT_MAX_WIDTH,
+} from "#/constants/GlobalStyles";
 
-const FEED_MAX_WIDTH = styles.content.maxWidth;
-const FEED_HORIZONTAL_PADDING = styles.content.paddingHorizontal * 2;
+const FEED_MAX_WIDTH = CONTENT_MAX_WIDTH;
+const FEED_HORIZONTAL_PADDING = CONTENT_HORIZONTAL_PADDING * 2;
 
 export const useFeedDimensions = () => {
   const { width } = useWindowDimensions();

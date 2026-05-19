@@ -9,7 +9,7 @@ import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
@@ -72,31 +72,24 @@ const HomeScreen = () => {
         <Pressable
           accessibilityRole="button"
           onPress={() => router.push("/search")}
-          style={{
-            ...styles.row,
-            ...styles.input,
-            height: 50,
-            backgroundColor: corporate,
-          }}
+          style={[
+            globalStyles.row,
+            globalStyles.input,
+            { height: 50, backgroundColor: corporate },
+          ]}
         >
           <UiText
-            style={{
-              ...styles.whiteText,
-              fontFamily: "SourceSansPro",
-              fontSize: 16,
-            }}
+            style={[
+              globalStyles.whiteText,
+              { fontFamily: "SourceSansPro", fontSize: 16 },
+            ]}
           >
             Suche ...
           </UiText>
           <SearchIcon color="white" size={24} />
         </Pressable>
       </AnimatedHeader>
-      <View
-        style={{
-          ...styles.container,
-          backgroundColor,
-        }}
-      >
+      <View style={[globalStyles.container, { backgroundColor }]}>
         <Feed
           {...feedprops}
           key={0}

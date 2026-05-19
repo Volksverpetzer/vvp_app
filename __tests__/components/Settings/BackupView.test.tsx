@@ -65,8 +65,8 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 jest.mock("#/constants/Colors", () => ({
   light: { primary: "#e63312", iconMuted: "#999" },
 }));
-jest.mock("#/constants/Styles", () => ({
-  styles: {
+jest.mock("#/constants/GlobalStyles", () => ({
+  globalStyles: {
     row: {
       alignItems: "center",
       flexDirection: "row",

@@ -20,6 +20,8 @@ const config: Config.InitialOptions = {
     "!**/jest-setup.ts",
   ],
   moduleNameMapper: {
+    "^#/constants/GlobalStyles$":
+      "<rootDir>/__tests__/mocks/GlobalStylesMock.ts",
     "^#/(.*)$": "<rootDir>/src/$1",
   },
 };

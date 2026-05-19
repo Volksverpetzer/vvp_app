@@ -5,7 +5,7 @@ import LoadingFallback from "#/components/animations/LoadingFallback";
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
 import BlueskyPostDetail from "#/components/posts/bsky/BlueskyPostDetail";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { type BlueskyPostProperties, type HttpsUrl } from "#/types";
 
@@ -43,7 +43,7 @@ const BskyScreen = () => {
     `https://bsky.app/profile/${handle}/post/${postId}` satisfies HttpsUrl;
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <BlueskyPostDetail {...post} />
       <NavBar link={url} />
     </View>
