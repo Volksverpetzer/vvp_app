@@ -2,6 +2,7 @@ import type { ColorValue } from "react-native";
 import { StyleSheet, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
+import { globalStyles } from "#/constants/GlobalStyles";
 
 interface LegendProperties {
   text: string;
@@ -18,7 +19,7 @@ const Legend = ({ text, color }: LegendProperties) => {
   return (
     <View style={styles.legend}>
       <View style={{ backgroundColor: color, ...styles.dot }} />
-      <UiText style={styles.text}>{text}</UiText>
+      <UiText style={[styles.text, globalStyles.whiteText]}>{text}</UiText>
     </View>
   );
 };
@@ -39,7 +40,6 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     flexWrap: "wrap",
-    color: "white",
   },
 });
 
