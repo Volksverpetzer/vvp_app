@@ -8,16 +8,14 @@ import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import GenericPost from "#/components/posts/GenericPost";
 import InstaPostCard from "#/components/posts/insta/InstaPostCard";
-import UiText from "#/components/ui/UiText";
+import UiEmptyState from "#/components/ui/UiEmptyState";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
 import Post from "#/helpers/Post";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { ArticleProperties, InstaPostProperties } from "#/types";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
@@ -128,8 +126,6 @@ const MyFavs = () => {
     };
   }, [focused]);
 
-  const corporate = useCorporateColor();
-
   return (
     <View style={{ flex: 1, gap: 20 }}>
       {isLoading ? (
@@ -150,12 +146,9 @@ const MyFavs = () => {
         ))
       )}
       <Space size={50} />
-      <View style={globalStyles.centered}>
-        <StarIcon color={corporate} />
-        <UiText style={{ textAlign: "center", fontSize: 18 }}>
-          Klick den Stern, um zu den Favoriten hinzuzufügen
-        </UiText>
-      </View>
+      <UiEmptyState icon={(color) => <StarIcon color={color} />}>
+        Klick den Stern, um zu den Favoriten hinzuzufügen
+      </UiEmptyState>
       <Space size={100} />
     </View>
   );
