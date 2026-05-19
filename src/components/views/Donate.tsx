@@ -11,7 +11,6 @@ import Space from "#/components/design/Space";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
 import NotificationManager from "#/helpers/Notifications";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
@@ -77,18 +76,13 @@ const Donate = (properties: DonateProperties) => {
   const pickerColorText = Colors[colorScheme].text;
   return (
     <>
-      <View
-        style={{
-          alignItems: "center",
-          ...globalStyles.noBackground,
-        }}
-      >
+      <View style={{ alignItems: "center", backgroundColor: "transparent" }}>
         {(properties?.showPicker ?? true) && (
           <View
             style={{
               height: 50,
               marginBottom: 20,
-              ...globalStyles.noBackground,
+              backgroundColor: "transparent",
             }}
           >
             <HorizontalPicker
@@ -102,7 +96,7 @@ const Donate = (properties: DonateProperties) => {
                       width: 80,
                       flex: 1,
                       justifyContent: "center",
-                      ...globalStyles.noBackground,
+                      backgroundColor: "transparent",
                     }}
                   >
                     <UiText

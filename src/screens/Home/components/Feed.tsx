@@ -229,11 +229,10 @@ const Feed = (properties: FeedProperties) => {
             <UiSpinner size="large" />
           ) : (
             <View
-              style={{
-                paddingBottom: 30,
-                alignItems: "center",
-                ...globalStyles.noBackground,
-              }}
+              style={[
+                globalStyles.noBackground,
+                { paddingBottom: 30, alignItems: "center" },
+              ]}
             >
               <Pressable
                 accessibilityRole="button"

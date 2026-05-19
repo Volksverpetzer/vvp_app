@@ -38,8 +38,8 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
       accessibilityRole="button"
       onPress={() => openLink()}
       style={({ pressed }) => [
+        globalStyles.row,
         {
-          ...globalStyles.row,
           backgroundColor: pressed ? Colors[colorScheme].muted : undefined,
           paddingVertical: 10,
           justifyContent: "flex-start",

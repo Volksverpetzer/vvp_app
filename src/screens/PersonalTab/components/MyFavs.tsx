@@ -150,7 +150,7 @@ const MyFavs = () => {
         ))
       )}
       <Space size={50} />
-      <View style={{ ...globalStyles.centered }}>
+      <View style={globalStyles.centered}>
         <StarIcon color={corporate} />
         <UiText style={{ textAlign: "center", fontSize: 18 }}>
           Klick den Stern, um zu den Favoriten hinzuzufügen

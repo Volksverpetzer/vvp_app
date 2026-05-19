@@ -10,12 +10,7 @@ const LicensesScreen = () => {
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
   return (
-    <View
-      style={{
-        ...globalStyles.container,
-        backgroundColor,
-      }}
-    >
+    <View style={[globalStyles.container, { backgroundColor }]}>
       <Licenses />
       <NavBar />
     </View>

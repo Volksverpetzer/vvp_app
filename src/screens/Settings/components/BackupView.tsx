@@ -103,7 +103,7 @@ const BackupView = () => {
     }
   };
 
-  const rowStyle = { ...globalStyles.row, paddingBottom: 20, maxHeight: 45 };
+  const rowStyle = [globalStyles.row, { paddingBottom: 20, maxHeight: 45 }];
 
   return (
     <View style={{ padding: 20 }}>

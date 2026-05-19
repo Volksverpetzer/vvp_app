@@ -49,22 +49,19 @@ const StatisticsPanel = ({
   const muted = Colors[colorScheme].muted;
 
   return (
-    <View style={{ ...globalStyles.centered, width }}>
+    <View style={[globalStyles.centered, { width }]}>
       <View
-        style={{
-          ...globalStyles.row,
-          justifyContent: "flex-start",
-          paddingLeft: 30,
-        }}
+        style={[
+          globalStyles.row,
+          { justifyContent: "flex-start", paddingLeft: 30 },
+        ]}
       >
         <StatisticsIcon name={icon} size={32} color="white" />
         <UiText
-          style={{
-            ...globalStyles.whiteText,
-            fontSize: 20,
-            fontFamily: "SourceSansProBold",
-            marginLeft: 10,
-          }}
+          style={[
+            globalStyles.whiteText,
+            { fontSize: 20, fontFamily: "SourceSansProBold", marginLeft: 10 },
+          ]}
         >
           {title}
         </UiText>

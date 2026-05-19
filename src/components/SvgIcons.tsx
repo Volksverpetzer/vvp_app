@@ -19,7 +19,7 @@ export const Logo = ({ width, color, ...rest }: SvgIconProperties) => (
 
 export const LogoBig = ({ color, ...rest }: SvgIconProperties) => (
   <View
-    style={{ width: 233, height: 116, ...globalStyles.centered, minHeight: 50 }}
+    style={[globalStyles.centered, { width: 233, height: 116, minHeight: 50 }]}
   >
     <Svg viewBox="0 0 233 116" width="100%" height="100%" {...rest}>
       <Path

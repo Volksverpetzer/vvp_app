@@ -63,7 +63,7 @@ const AISearch = ({
 
   if (results.length === 0 && !error) {
     return (
-      <View style={[styles.centeredContainer, { paddingTop: 100 }]}>
+      <View style={[globalStyles.centered, { paddingTop: 100 }]}>
         <UiText>
           {loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}
         </UiText>
@@ -79,7 +79,7 @@ const AISearch = ({
 
   if (error) {
     return (
-      <View style={[styles.centeredContainer, { paddingTop: 100 }]}>
+      <View style={[globalStyles.centered, { paddingTop: 100 }]}>
         <UiText>{error}</UiText>
         <UiText>Melde uns den Fake hier:</UiText>
         <Pressable
@@ -144,9 +144,6 @@ const AISearch = ({
 };
 
 const styles = StyleSheet.create({
-  centeredContainer: {
-    ...globalStyles.centered,
-  },
   counterText: {
     textAlign: "center",
   },

@@ -83,7 +83,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
         >
           {isVolksverpetzer && <Logo color={corporate} />}
         </View>
-        <View style={{ ...globalStyles.centered, width, marginBottom: 100 }}>
+        <View style={[globalStyles.centered, { width, marginBottom: 100 }]}>
           <UiText
             style={{
               ...headingStyle,
@@ -102,12 +102,10 @@ const FlatBoard = (properties: FlatBoardProperties) => {
           )}
           {TopComponent && height > 600 && (
             <View
-              style={{
-                height: "auto",
-                paddingVertical: 20,
-                width: 200,
-                ...globalStyles.centered,
-              }}
+              style={[
+                globalStyles.centered,
+                { height: "auto", paddingVertical: 20, width: 200 },
+              ]}
             >
               <TopComponent />
             </View>

@@ -16,12 +16,10 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
   const corporate = useCorporateColor();
   return (
     <Card
-      style={{
-        marginBottom: 80,
-        gap: 20,
-        ...globalStyles.centered,
-        overflow: "hidden",
-      }}
+      style={[
+        globalStyles.centered,
+        { marginBottom: 80, gap: 20, overflow: "hidden" },
+      ]}
     >
       <WorldIcon color={corporate} size={60} />
       {reload && (

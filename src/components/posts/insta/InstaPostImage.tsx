@@ -144,7 +144,7 @@ const InstaPostImage = ({
         </ScrollView>
       </View>
 
-      <View style={{ flexDirection: "row", ...globalStyles.centered }}>
+      <View style={[globalStyles.centered, { flexDirection: "row" }]}>
         {dots}
       </View>
     </View>

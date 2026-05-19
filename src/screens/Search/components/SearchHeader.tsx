@@ -54,13 +54,15 @@ const SearchHeader = ({
   return (
     <>
       <View
-        style={{
-          ...globalStyles.row,
-          height: 100,
-          justifyContent: "flex-end",
-          paddingRight: 20,
-          backgroundColor,
-        }}
+        style={[
+          globalStyles.row,
+          {
+            height: 100,
+            justifyContent: "flex-end",
+            paddingRight: 20,
+            backgroundColor,
+          },
+        ]}
       >
         <UiText
           style={{
@@ -77,14 +79,16 @@ const SearchHeader = ({
         )}
       </View>
       <View
-        style={{
-          ...globalStyles.row,
-          ...globalStyles.input,
-          height: 50,
-          paddingRight: 40,
-          backgroundColor: corporate,
-          marginBottom: 40,
-        }}
+        style={[
+          globalStyles.row,
+          globalStyles.input,
+          {
+            height: 50,
+            paddingRight: 40,
+            backgroundColor: corporate,
+            marginBottom: 40,
+          },
+        ]}
       >
         <TextInput
           accessibilityLabel="Text input field"
@@ -95,7 +99,7 @@ const SearchHeader = ({
           placeholder="Suche ..."
           placeholderTextColor="white"
           onSubmitEditing={handleSubmit}
-          style={{ ...globalStyles.whiteText, width: "100%" }}
+          style={[globalStyles.whiteText, { width: "100%" }]}
           onChangeText={setSearch}
           returnKeyType="search"
         />

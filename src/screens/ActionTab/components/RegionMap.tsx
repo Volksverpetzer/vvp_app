@@ -91,7 +91,7 @@ const RegionMap = () => {
         <Space size={8} />
         <View>
           <UiText
-            style={{ fontSize: 12, marginTop: 20, ...globalStyles.whiteText }}
+            style={[globalStyles.whiteText, { fontSize: 12, marginTop: 20 }]}
           >
             Shares aus der Volksverpetzer-App pro Kopf im Bundesland
           </UiText>
@@ -104,11 +104,10 @@ const RegionMap = () => {
         }}
       >
         <UiText
-          style={{
-            fontSize: 20,
-            ...globalStyles.whiteText,
-            fontFamily: "SourceSansProBold",
-          }}
+          style={[
+            globalStyles.whiteText,
+            { fontSize: 20, fontFamily: "SourceSansProBold" },
+          ]}
         >
           Bundesländer Ranking
         </UiText>
@@ -145,11 +144,10 @@ const RegionMap = () => {
         {regionData?.slice(3).map((region, idx) => (
           <UiText
             key={region.region}
-            style={{
-              fontSize: 13,
-              paddingVertical: 2,
-              ...globalStyles.whiteText,
-            }}
+            style={[
+              globalStyles.whiteText,
+              { fontSize: 13, paddingVertical: 2 },
+            ]}
           >
             {`${idx + 4}. ${region.name}`}
           </UiText>

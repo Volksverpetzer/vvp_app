@@ -68,12 +68,7 @@ const PersonalTab = () => {
         minHeight={110}
         maxHeight={200}
       >
-        <View
-          style={{
-            width: "100%",
-            ...globalStyles.noBackground,
-          }}
-        >
+        <View style={[globalStyles.noBackground, { width: "100%" }]}>
           <UiTabView
             width={200}
             animatedHeight={toggleHeight}
@@ -109,10 +104,10 @@ const PersonalTab = () => {
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
         )}
-        contentContainerStyle={{
-          ...globalStyles.content,
-          paddingTop: HEADER_HEIGHT,
-        }}
+        contentContainerStyle={[
+          globalStyles.content,
+          { paddingTop: HEADER_HEIGHT },
+        ]}
       >
         {activeTab === "favs" ? <MyFavs /> : <MySources />}
       </ScrollView>

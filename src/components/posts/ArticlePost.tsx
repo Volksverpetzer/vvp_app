@@ -184,11 +184,10 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     [greyText],
   );
   const categoryTextStyle = useMemo(
-    () => ({
-      ...globalStyles.whiteText,
-      textAlign: "right" as const,
-      fontSize: 14,
-    }),
+    () => [
+      globalStyles.whiteText,
+      { textAlign: "right" as const, fontSize: 14 },
+    ],
     [],
   );
 

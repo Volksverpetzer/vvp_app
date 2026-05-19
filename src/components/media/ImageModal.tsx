@@ -27,7 +27,7 @@ const ImageModal = ({ uri, visible, onClose }: ImageModalProperties) => {
     <Modal visible={visible} onRequestClose={onClose}>
       <GestureHandlerRootView style={{ flex: 1, backgroundColor }}>
         <Zoomable
-          style={{ width, height: "90%", ...globalStyles.centered }}
+          style={[globalStyles.centered, { width, height: "90%" }]}
           isDoubleTapEnabled
           doubleTapScale={3}
           maxScale={5}

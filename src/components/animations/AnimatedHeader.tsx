@@ -7,7 +7,6 @@ import { Animated, Pressable, View } from "react-native";
 import { HeartIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import Colors from "#/constants/Colors";
-import { globalStyles } from "#/constants/GlobalStyles";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -94,7 +93,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
       left: 0,
       right: 0,
       overflow: "hidden" as const,
-      ...globalStyles.noBackground,
+      backgroundColor: "transparent" as const,
       height: headerScrollHeight,
       width: "100%" as const,
       zIndex: 999,

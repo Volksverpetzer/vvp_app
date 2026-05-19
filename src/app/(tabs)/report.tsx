@@ -67,7 +67,8 @@ const ReportScreen = () => {
           textAlign: "center",
         },
         input: {
-          ...globalStyles.input,
+          minHeight: 40,
+          paddingHorizontal: 25,
           backgroundColor: inputBackground,
           borderRadius: 5,
           padding: 10,
@@ -162,10 +163,10 @@ const ReportScreen = () => {
             { useNativeDriver: false },
           )}
           scrollEventThrottle={16}
-          contentContainerStyle={{
-            ...globalStyles.content,
-            paddingTop: HEADER_HEIGHT,
-          }}
+          contentContainerStyle={[
+            globalStyles.content,
+            { paddingTop: HEADER_HEIGHT },
+          ]}
         >
           <Heading style={{ marginBottom: 10 }}>Zusammenfassung</Heading>
           <TextInput
@@ -228,11 +229,10 @@ const ReportScreen = () => {
             ]}
           >
             <UiText
-              style={{
-                ...globalStyles.whiteText,
-                textAlign: "center",
-                fontSize: 18,
-              }}
+              style={[
+                globalStyles.whiteText,
+                { textAlign: "center", fontSize: 18 },
+              ]}
             >
               Report
             </UiText>

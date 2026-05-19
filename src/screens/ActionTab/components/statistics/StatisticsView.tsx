@@ -41,14 +41,16 @@ const StatisticsView = () => {
 
   return (
     <View
-      style={{
-        ...globalStyles.centered,
-        zIndex: 99,
-        backgroundColor: corporate,
-        borderRadius: 30,
-        paddingVertical: 20,
-        marginHorizontal: 10,
-      }}
+      style={[
+        globalStyles.centered,
+        {
+          zIndex: 99,
+          backgroundColor: corporate,
+          borderRadius: 30,
+          paddingVertical: 20,
+          marginHorizontal: 10,
+        },
+      ]}
       onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
     >
       <ScrollView

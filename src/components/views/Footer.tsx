@@ -29,11 +29,10 @@ const Footer = (properties: FooterProperties) => {
   return (
     <>
       <View
-        style={{
-          paddingBottom: 30,
-          alignItems: "center",
-          ...globalStyles.noBackground,
-        }}
+        style={[
+          globalStyles.noBackground,
+          { paddingBottom: 30, alignItems: "center" },
+        ]}
       >
         <UiText
           style={{
@@ -48,15 +47,17 @@ const Footer = (properties: FooterProperties) => {
         </UiText>
         <Pressable
           accessibilityRole="button"
-          style={{
-            ...globalStyles.centered,
-            flex: 0,
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            backgroundColor: corporate,
-            alignSelf: "center",
-          }}
+          style={[
+            globalStyles.centered,
+            {
+              flex: 0,
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              backgroundColor: corporate,
+              alignSelf: "center",
+            },
+          ]}
           onPress={() =>
             properties.onShare(properties.article_link, {
               location: "ArticleBottom",

@@ -29,13 +29,15 @@ const ShareBar = (properties: ShareBarProperties) => {
   const fontSize = 16;
   return (
     <View
-      style={{
-        paddingHorizontal: 26,
-        paddingVertical: 10,
-        ...globalStyles.row,
-        justifyContent: "flex-start",
-        gap: 30,
-      }}
+      style={[
+        globalStyles.row,
+        {
+          paddingHorizontal: 26,
+          paddingVertical: 10,
+          justifyContent: "flex-start",
+          gap: 30,
+        },
+      ]}
     >
       <ShareCounter
         shares={shares}

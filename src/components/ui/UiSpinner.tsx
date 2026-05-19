@@ -20,7 +20,7 @@ const UiSpinner = (
   const { containerStyle, ...indicatorProps } = props;
   const corporate = useCorporateColor();
   return (
-    <View style={[{ width: "100%", ...globalStyles.centered }, containerStyle]}>
+    <View style={[globalStyles.centered, { width: "100%" }, containerStyle]}>
       {AppImages.loadingAnimation ? (
         <Image
           source={AppImages.loadingAnimation}

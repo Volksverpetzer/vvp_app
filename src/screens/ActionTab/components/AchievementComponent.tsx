@@ -51,7 +51,7 @@ const AchievementComponent = () => {
         padding: 20,
       }}
     >
-      <View style={{ ...globalStyles.row, justifyContent: "flex-start" }}>
+      <View style={[globalStyles.row, { justifyContent: "flex-start" }]}>
         <View
           style={{
             marginTop: -60,
@@ -109,12 +109,10 @@ const AchievementComponent = () => {
                 <CircleIcon size={16} color="white" />
               )}
               <UiText
-                style={{
-                  fontSize: 16,
-                  padding: 5,
-                  paddingLeft: 20,
-                  ...globalStyles.whiteText,
-                }}
+                style={[
+                  globalStyles.whiteText,
+                  { fontSize: 16, padding: 5, paddingLeft: 20 },
+                ]}
               >
                 {task.verbose}
               </UiText>

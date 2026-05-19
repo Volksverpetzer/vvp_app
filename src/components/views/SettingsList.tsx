@@ -91,11 +91,7 @@ const SettingsList = (properties: SettingsListProperties) => {
           return (
             <View
               key={key}
-              style={{
-                ...globalStyles.row,
-                paddingTop: 20,
-                maxHeight: 45,
-              }}
+              style={[globalStyles.row, { paddingTop: 20, maxHeight: 45 }]}
             >
               <UiText style={{ fontSize: 16 }}>{setting.name}</UiText>
               {/* cast to native Switch props to satisfy TypeScript while keeping runtime props */}

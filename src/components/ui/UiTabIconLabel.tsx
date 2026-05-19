@@ -50,7 +50,6 @@ const UiTabIconLabel = ({
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: backgroundColor,
-          paddingVertical: 10,
         },
         style,
       ]}

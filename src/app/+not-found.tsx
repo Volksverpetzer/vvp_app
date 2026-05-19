@@ -12,12 +12,7 @@ const NotFoundScreen = () => {
   const corporate = useCorporateColor();
   const router = useRouter();
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        ...globalStyles.centered,
-      }}
-    >
+    <View style={[globalStyles.centered, { flexDirection: "column" }]}>
       <Heading style={{ textAlign: "center" }}>
         Hier könnte ein Artikel stehen. Tut er aber irgendwie nicht. Das ist
         wohl ein Fehler.

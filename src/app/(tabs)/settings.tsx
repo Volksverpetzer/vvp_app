@@ -117,13 +117,15 @@ const SettingsScreen = () => {
           backgroundColor,
           flex: 1,
         }}
-        contentContainerStyle={{
-          ...globalStyles.content,
-          backgroundColor,
-          paddingTop: HEADER_HEIGHT,
-          gap: 20,
-          paddingHorizontal: 0,
-        }}
+        contentContainerStyle={[
+          globalStyles.content,
+          {
+            backgroundColor,
+            paddingTop: HEADER_HEIGHT,
+            gap: 20,
+            paddingHorizontal: 0,
+          },
+        ]}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
