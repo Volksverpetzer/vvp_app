@@ -72,11 +72,11 @@ jest.mock("#/screens/Search/components/SearchHeader", () =>
   }),
 );
 
-// SearchTutorial: surface the `tab` prop so tests can assert which tutorial is shown.
-jest.mock("#/screens/Search/components/SearchTutorial", () =>
-  jest.fn(({ tab }: any) => {
+// UiEmptyState: forward testID so tests can assert which tutorial is shown.
+jest.mock("#/components/ui/UiEmptyState", () =>
+  jest.fn(({ children, testID }: any) => {
     const { Text } = require("react-native");
-    return <Text testID={`tutorial-${tab ?? "artikel"}`}>{tab}</Text>;
+    return <Text testID={testID}>{children}</Text>;
   }),
 );
 

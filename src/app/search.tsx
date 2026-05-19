@@ -6,6 +6,7 @@ import type { TextInput } from "react-native";
 
 import { SafetyIcon, SearchIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
+import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 import UiTabView from "#/components/ui/UiTabView";
 import Colors from "#/constants/Colors";
@@ -15,7 +16,6 @@ import AISearch from "#/screens/Search/components/AISearch";
 import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";
 import SearchHeader from "#/screens/Search/components/SearchHeader";
 import SearchManager from "#/screens/Search/components/SearchManager";
-import SearchTutorial from "#/screens/Search/components/SearchTutorial";
 
 type SearchTab = "artikel" | "ai";
 
@@ -46,6 +46,7 @@ const SearchContent = ({
 
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
+  const corporate = Colors[colorScheme].primary;
 
   const hasResults = searchParams.length >= 2;
 
@@ -92,7 +93,12 @@ const SearchContent = ({
           (hasResults ? (
             <AlgoliaSearchResults searchString={searchParams} />
           ) : (
-            <SearchTutorial tab="artikel" />
+            <UiEmptyState
+              testID="tutorial-artikel"
+              icon={<SearchIcon color={corporate} />}
+            >
+              Gib einen Suchbegriff ein und drücke „Suchen"
+            </UiEmptyState>
           ))}
 
         {activeTab === "ai" &&
@@ -104,7 +110,13 @@ const SearchContent = ({
               showFaktenBot={true}
             />
           ) : (
-            <SearchTutorial tab="ai" />
+            <UiEmptyState
+              testID="tutorial-ai"
+              icon={<SafetyIcon color={corporate} />}
+            >
+              Gib eine Frage, einen Begriff oder eine URL ein und drücke
+              „Suchen"
+            </UiEmptyState>
           ))}
       </View>
 
