@@ -5,7 +5,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-interface TabIconLabelProps {
+interface UiTabIconLabelProps {
   icon: (color: string) => ReactElement;
   label: string;
   isActive: boolean;
@@ -21,7 +21,7 @@ const labelBaseStyle = {
   fontSize: 12,
 };
 
-const TabIconLabel = ({
+const UiTabIconLabel = ({
   icon,
   label,
   isActive,
@@ -29,11 +29,14 @@ const TabIconLabel = ({
   style,
   animatedLabelHeight,
   animatedLabelOpacity,
-}: TabIconLabelProps) => {
+}: UiTabIconLabelProps) => {
   const colorScheme = useAppColorScheme();
-  const primaryColor = Colors[colorScheme].primary;
-  const mutedColor = Colors[colorScheme].iconMuted;
-  const textColor = Colors[colorScheme].text;
+  const contentColor = isActive
+    ? Colors[colorScheme].iconOnPrimary
+    : Colors[colorScheme].muted;
+  const backgroundColor = isActive
+    ? Colors[colorScheme].primary
+    : Colors[colorScheme].iconMuted;
 
   return (
     <Pressable
@@ -44,13 +47,13 @@ const TabIconLabel = ({
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: isActive ? primaryColor : mutedColor,
+          backgroundColor: backgroundColor,
           paddingVertical: 10,
         },
         style,
       ]}
     >
-      {icon(textColor)}
+      {icon(contentColor)}
       {animatedLabelHeight != null ? (
         <Animated.View
           style={{ height: animatedLabelHeight, overflow: "hidden" }}
@@ -58,14 +61,14 @@ const TabIconLabel = ({
           <Animated.Text
             style={[
               labelBaseStyle,
-              { color: textColor, opacity: animatedLabelOpacity },
+              { color: contentColor, opacity: animatedLabelOpacity },
             ]}
           >
             {label}
           </Animated.Text>
         </Animated.View>
       ) : (
-        <Animated.Text style={[labelBaseStyle, { color: textColor }]}>
+        <Animated.Text style={[labelBaseStyle, { color: contentColor }]}>
           {label}
         </Animated.Text>
       )}
@@ -73,4 +76,4 @@ const TabIconLabel = ({
   );
 };
 
-export default TabIconLabel;
+export default UiTabIconLabel;
