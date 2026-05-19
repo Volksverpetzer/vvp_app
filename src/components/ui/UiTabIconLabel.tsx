@@ -40,7 +40,9 @@ const UiTabIconLabel = ({
 
   return (
     <Pressable
-      accessibilityRole="button"
+      accessibilityRole="tab"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: isActive }}
       onPress={onPress}
       style={[
         {

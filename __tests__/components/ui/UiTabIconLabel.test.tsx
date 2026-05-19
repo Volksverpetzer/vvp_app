@@ -22,7 +22,7 @@ describe("UiTabIconLabel", () => {
     expect(getByText("Favoriten")).toBeTruthy();
   });
 
-  it("calls onPress when the button is pressed", () => {
+  it("calls onPress when the tab is pressed", () => {
     const onPress = jest.fn();
     const { getByRole } = render(
       <UiTabIconLabel
@@ -32,8 +32,46 @@ describe("UiTabIconLabel", () => {
         onPress={onPress}
       />,
     );
-    fireEvent.press(getByRole("button"));
+    fireEvent.press(getByRole("tab"));
     expect(onPress).toHaveBeenCalledTimes(1);
+  });
+
+  describe("accessibility", () => {
+    it("exposes the label as accessibilityLabel", () => {
+      const { getByLabelText } = render(
+        <UiTabIconLabel
+          icon={makeIcon()}
+          label="Favoriten"
+          isActive={false}
+          onPress={jest.fn()}
+        />,
+      );
+      expect(getByLabelText("Favoriten")).toBeTruthy();
+    });
+
+    it("marks the tab as selected when active", () => {
+      const { getByRole } = render(
+        <UiTabIconLabel
+          icon={makeIcon()}
+          label="Favoriten"
+          isActive={true}
+          onPress={jest.fn()}
+        />,
+      );
+      expect(getByRole("tab", { selected: true })).toBeTruthy();
+    });
+
+    it("marks the tab as not selected when inactive", () => {
+      const { getByRole } = render(
+        <UiTabIconLabel
+          icon={makeIcon()}
+          label="Favoriten"
+          isActive={false}
+          onPress={jest.fn()}
+        />,
+      );
+      expect(getByRole("tab", { selected: false })).toBeTruthy();
+    });
   });
 
   describe("icon color", () => {
