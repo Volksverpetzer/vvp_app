@@ -67,8 +67,7 @@ const ReportScreen = () => {
           textAlign: "center",
         },
         input: {
-          minHeight: 40,
-          paddingHorizontal: 25,
+          ...globalStyles.input,
           backgroundColor: inputBackground,
           borderRadius: 5,
           padding: 10,
