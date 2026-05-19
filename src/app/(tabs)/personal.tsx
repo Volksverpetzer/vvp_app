@@ -1,11 +1,13 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Animated, Pressable } from "react-native";
+import { Animated } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { LinkIcon, StarIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import View from "#/components/design/View";
+import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
+import UiTabView from "#/components/ui/UiTabView";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
@@ -23,9 +25,7 @@ const PersonalTab = () => {
 
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
-  const corporateColor = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].surface;
-  const tabIconColor = Colors[colorScheme].iconMuted;
 
   const HEADER_HEIGHT = 200;
   const MIN_HEIGHT = 110;
@@ -74,76 +74,30 @@ const PersonalTab = () => {
             ...globalStyles.noBackground,
           }}
         >
-          <Animated.View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              height: toggleHeight,
-              width: 200,
-              alignSelf: "center",
-              borderRadius: 20,
-              overflow: "hidden",
-            }}
+          <UiTabView
+            width={200}
+            animatedHeight={toggleHeight}
+            style={{ alignSelf: "center" }}
           >
-            <Pressable
-              accessibilityRole="button"
+            <UiTabIconLabel
+              icon={(color) => <StarIcon size={24} color={color} />}
+              label="Favoriten"
+              isActive={activeTab === "favs"}
               onPress={() => setActiveTab("favs")}
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                width: 100,
-                backgroundColor:
-                  activeTab === "favs" ? corporateColor : tabIconColor,
-              }}
-            >
-              <StarIcon color="white" />
-              <Animated.View
-                style={{ height: labelHeight, overflow: "hidden" }}
-              >
-                <Animated.Text
-                  style={{
-                    alignSelf: "center",
-                    marginTop: 0,
-                    ...globalStyles.whiteText,
-                    fontFamily: "SourceSansProBold",
-                    opacity: labelOpacity,
-                  }}
-                >
-                  Favoriten
-                </Animated.Text>
-              </Animated.View>
-            </Pressable>
-            <Pressable
-              accessibilityRole="button"
+              style={{ height: "100%" }}
+              animatedLabelHeight={labelHeight}
+              animatedLabelOpacity={labelOpacity}
+            />
+            <UiTabIconLabel
+              icon={(color) => <LinkIcon size={24} color={color} />}
+              label="Quellen"
+              isActive={activeTab === "sources"}
               onPress={() => setActiveTab("sources")}
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                width: 100,
-                backgroundColor:
-                  activeTab === "sources" ? corporateColor : tabIconColor,
-              }}
-            >
-              <LinkIcon color="white" />
-              <Animated.View
-                style={{ height: labelHeight, overflow: "hidden" }}
-              >
-                <Animated.Text
-                  style={{
-                    alignSelf: "center",
-                    marginTop: 0,
-                    ...globalStyles.whiteText,
-                    fontFamily: "SourceSansProBold",
-                    opacity: labelOpacity,
-                  }}
-                >
-                  Quellen
-                </Animated.Text>
-              </Animated.View>
-            </Pressable>
-          </Animated.View>
+              style={{ height: "100%" }}
+              animatedLabelHeight={labelHeight}
+              animatedLabelOpacity={labelOpacity}
+            />
+          </UiTabView>
         </View>
       </AnimatedHeader>
       <ScrollView
