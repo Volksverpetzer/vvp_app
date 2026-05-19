@@ -31,7 +31,6 @@ describe("UiTabView", () => {
   });
 
   it("applies animatedHeight as the height style when provided", () => {
-    // Value starts at 0; interpolation maps 0→60, so height evaluates to 60.
     const animatedHeight = new Animated.Value(0).interpolate({
       inputRange: [0, 1],
       outputRange: [60, 40],
@@ -45,6 +44,8 @@ describe("UiTabView", () => {
     const style = Array.isArray(root.props.style)
       ? Object.assign({}, ...root.props.style)
       : root.props.style;
+    // toJSON() resolves AnimatedInterpolation to its current numeric value.
+    // Value(0) with outputRange [60, 40] deterministically yields 60.
     expect(style.height).toBe(60);
     expect(style.width).toBe(200);
   });

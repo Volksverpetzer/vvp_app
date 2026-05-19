@@ -33,10 +33,10 @@ const UiTabIconLabel = ({
   const colorScheme = useAppColorScheme();
   const contentColor = isActive
     ? Colors[colorScheme].iconOnPrimary
-    : Colors[colorScheme].muted;
+    : Colors[colorScheme].iconMuted;
   const backgroundColor = isActive
     ? Colors[colorScheme].primary
-    : Colors[colorScheme].iconMuted;
+    : Colors[colorScheme].muted;
 
   return (
     <Pressable
