@@ -16,7 +16,7 @@ describe("UiTabView", () => {
     expect(getByText("Tab B")).toBeTruthy();
   });
 
-  it("renders a plain View when animatedHeight is not provided", () => {
+  it("renders a plain View without a height style when animatedHeight is not provided", () => {
     const { toJSON } = render(
       <UiTabView width={200}>
         <Animated.Text>content</Animated.Text>
@@ -24,10 +24,15 @@ describe("UiTabView", () => {
     );
     const root = toJSON() as any;
     expect(root.type).toBe("View");
+    const style = Array.isArray(root.props.style)
+      ? Object.assign({}, ...root.props.style)
+      : root.props.style;
+    expect(style.height).toBeUndefined();
   });
 
-  it("renders an Animated.View when animatedHeight is provided", () => {
-    const animatedHeight = new Animated.Value(60).interpolate({
+  it("applies animatedHeight as the height style when provided", () => {
+    // Value starts at 0; interpolation maps 0→60, so height evaluates to 60.
+    const animatedHeight = new Animated.Value(0).interpolate({
       inputRange: [0, 1],
       outputRange: [60, 40],
     });
@@ -37,13 +42,11 @@ describe("UiTabView", () => {
       </UiTabView>,
     );
     const root = toJSON() as any;
-    expect(root.type).toBe("View");
-    // style is flattened by the test renderer into a single object
     const style = Array.isArray(root.props.style)
       ? Object.assign({}, ...root.props.style)
       : root.props.style;
+    expect(style.height).toBe(60);
     expect(style.width).toBe(200);
-    expect(style.borderRadius).toBe(20);
   });
 
   it("applies pill shape styles", () => {

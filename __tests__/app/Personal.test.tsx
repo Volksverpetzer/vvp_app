@@ -51,9 +51,9 @@ jest.mock("@expo/vector-icons/Octicons", () => jest.fn(() => null));
 
 describe("PersonalTab", () => {
   it("renders Favoriten and Quellen tab buttons", () => {
-    const { getByText } = render(<PersonalTab />);
-    expect(getByText("Favoriten")).toBeTruthy();
-    expect(getByText("Quellen")).toBeTruthy();
+    const { getByRole } = render(<PersonalTab />);
+    expect(getByRole("tab", { name: "Favoriten" })).toBeTruthy();
+    expect(getByRole("tab", { name: "Quellen" })).toBeTruthy();
   });
 
   it("shows MyFavs by default", () => {
@@ -62,16 +62,16 @@ describe("PersonalTab", () => {
   });
 
   it("switches to MySources when Quellen tab is pressed", () => {
-    const { getByText, queryByText } = render(<PersonalTab />);
-    fireEvent.press(getByText("Quellen"));
+    const { getByRole, getByText, queryByText } = render(<PersonalTab />);
+    fireEvent.press(getByRole("tab", { name: "Quellen" }));
     expect(getByText("MySources")).toBeTruthy();
     expect(queryByText("MyFavs")).toBeNull();
   });
 
   it("switches back to MyFavs when Favoriten tab is pressed", () => {
-    const { getByText, queryByText } = render(<PersonalTab />);
-    fireEvent.press(getByText("Quellen"));
-    fireEvent.press(getByText("Favoriten"));
+    const { getByRole, getByText, queryByText } = render(<PersonalTab />);
+    fireEvent.press(getByRole("tab", { name: "Quellen" }));
+    fireEvent.press(getByRole("tab", { name: "Favoriten" }));
     expect(getByText("MyFavs")).toBeTruthy();
     expect(queryByText("MySources")).toBeNull();
   });

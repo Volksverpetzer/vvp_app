@@ -72,31 +72,24 @@ const HomeScreen = () => {
         <Pressable
           accessibilityRole="button"
           onPress={() => router.push("/search")}
-          style={{
-            ...globalStyles.row,
-            ...globalStyles.input,
-            height: 50,
-            backgroundColor: corporate,
-          }}
+          style={[
+            globalStyles.row,
+            globalStyles.input,
+            { height: 50, backgroundColor: corporate },
+          ]}
         >
           <UiText
-            style={{
-              ...globalStyles.whiteText,
-              fontFamily: "SourceSansPro",
-              fontSize: 16,
-            }}
+            style={[
+              globalStyles.whiteText,
+              { fontFamily: "SourceSansPro", fontSize: 16 },
+            ]}
           >
             Suche ...
           </UiText>
           <SearchIcon color="white" size={24} />
         </Pressable>
       </AnimatedHeader>
-      <View
-        style={{
-          ...globalStyles.container,
-          backgroundColor,
-        }}
-      >
+      <View style={[globalStyles.container, { backgroundColor }]}>
         <Feed
           {...feedprops}
           key={0}

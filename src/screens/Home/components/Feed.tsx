@@ -171,10 +171,7 @@ const Feed = (properties: FeedProperties) => {
   }, []);
 
   const contentContainerStyle = useMemo(
-    () => ({
-      ...properties?.style,
-      ...globalStyles.content,
-    }),
+    () => [properties?.style, globalStyles.content],
     [properties?.style],
   );
 

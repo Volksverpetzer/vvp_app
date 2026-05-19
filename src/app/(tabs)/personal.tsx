@@ -54,7 +54,7 @@ const PersonalTab = () => {
     () =>
       scrollOffsetY.interpolate({
         inputRange: [0, (HEADER_HEIGHT - MIN_HEIGHT) * 0.5],
-        outputRange: [60, 40],
+        outputRange: [60, 44],
         extrapolate: "clamp",
       }),
     [scrollOffsetY],
