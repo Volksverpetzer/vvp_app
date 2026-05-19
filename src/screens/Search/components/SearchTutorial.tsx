@@ -14,7 +14,7 @@ const SearchTutorial = ({ tab = "artikel" }: SearchTutorialProperties) => (
     {tab === "artikel" ? (
       <UiText style={styles.text}>
         {
-          "Artikel-Suche:\n• Echtzeit-Vorschläge beim Tippen\n• Drücke „Suchen“ für eine vollständige Ergebnisliste"
+          "Artikel-Suche:\n• Gib einen Suchbegriff ein\n• Drücke „Suchen“ für eine vollständige Ergebnisliste"
         }
       </UiText>
     ) : (

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { act, fireEvent, render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 
 import SearchScreen from "#/app/search";
@@ -50,19 +50,13 @@ jest.mock("#/components/Icons", () => ({
   SearchIcon: jest.fn(() => null),
   SafetyIcon: jest.fn(() => null),
 }));
-jest.mock("#/components/ui/UiText", () => {
-  const { Text } = require("react-native");
-  return jest.fn(({ children, style }: any) => (
-    <Text style={style}>{children}</Text>
-  ));
-});
 
 // ── Search sub-components — expose testIDs for assertions ────────────────────
 
 // SearchHeader: expose a real TextInput so tests can type/submit, and surface
 // the showFaktenBot state so tests can assert which mode is active.
 jest.mock("#/screens/Search/components/SearchHeader", () =>
-  jest.fn(({ search, setSearch, onSubmit, showFaktenBot }: any) => {
+  jest.fn(({ search, setSearch, setSearchParams, showFaktenBot }: any) => {
     const { Text, TextInput, View } = require("react-native");
     return (
       <View>
@@ -70,7 +64,7 @@ jest.mock("#/screens/Search/components/SearchHeader", () =>
           testID="search-input"
           value={search}
           onChangeText={setSearch}
-          onSubmitEditing={onSubmit}
+          onSubmitEditing={() => setSearchParams(search)}
         />
         {showFaktenBot && <Text testID="faktenbot-active">faktenbot</Text>}
       </View>
@@ -119,24 +113,25 @@ describe("SearchScreen", () => {
       expect(queryByTestId("faktenbot-active")).toBeNull();
     });
 
-    it("shows Algolia results once search has 2+ characters", () => {
+    it("typing alone does not show results", () => {
       const { getByTestId, queryByTestId } = render(<SearchScreen />);
-      fireEvent.changeText(getByTestId("search-input"), "co");
-      expect(queryByTestId("algolia-results")).not.toBeNull();
-      expect(queryByTestId("tutorial-artikel")).toBeNull();
-    });
-
-    it("hides Algolia results and shows tutorial when search drops below 2 chars", () => {
-      const { getByTestId, queryByTestId } = render(<SearchScreen />);
-      fireEvent.changeText(getByTestId("search-input"), "co");
-      fireEvent.changeText(getByTestId("search-input"), "c");
+      fireEvent.changeText(getByTestId("search-input"), "corona");
       expect(queryByTestId("algolia-results")).toBeNull();
       expect(queryByTestId("tutorial-artikel")).not.toBeNull();
     });
 
-    it("passes the current search string to AlgoliaSearchResults", () => {
+    it("shows Algolia results after submitting a 2+ character search", () => {
+      const { getByTestId, queryByTestId } = render(<SearchScreen />);
+      fireEvent.changeText(getByTestId("search-input"), "co");
+      fireEvent(getByTestId("search-input"), "submitEditing");
+      expect(queryByTestId("algolia-results")).not.toBeNull();
+      expect(queryByTestId("tutorial-artikel")).toBeNull();
+    });
+
+    it("passes the submitted search string to AlgoliaSearchResults", () => {
       const { getByTestId } = render(<SearchScreen />);
       fireEvent.changeText(getByTestId("search-input"), "corona");
+      fireEvent(getByTestId("search-input"), "submitEditing");
       expect(getByTestId("algolia-results").props.children).toBe("corona");
     });
   });
@@ -164,11 +159,8 @@ describe("SearchScreen", () => {
     });
   });
 
-  describe("AI tab debounce", () => {
-    beforeEach(() => jest.useFakeTimers());
-    afterEach(() => jest.useRealTimers());
-
-    it("does not show AISearch immediately after typing", () => {
+  describe("AI tab", () => {
+    it("typing alone does not trigger AI search", () => {
       const { getByTestId, getByText, queryByTestId } = render(
         <SearchScreen />,
       );
@@ -178,63 +170,21 @@ describe("SearchScreen", () => {
       expect(queryByTestId("tutorial-ai")).not.toBeNull();
     });
 
-    it("shows AISearch after 800ms debounce", () => {
+    it("shows AI results after submitting", () => {
       const { getByTestId, getByText, queryByTestId } = render(
         <SearchScreen />,
       );
       fireEvent.press(getByText("KI-Faktenbot"));
       fireEvent.changeText(getByTestId("search-input"), "corona");
-      act(() => {
-        jest.advanceTimersByTime(800);
-      });
-      expect(queryByTestId("ai-results")).not.toBeNull();
-    });
-
-    it("resets debounce timer when search changes mid-flight", () => {
-      const { getByTestId, getByText, queryByTestId } = render(
-        <SearchScreen />,
-      );
-      fireEvent.press(getByText("KI-Faktenbot"));
-      fireEvent.changeText(getByTestId("search-input"), "coro");
-      act(() => jest.advanceTimersByTime(400));
-      // Change search again — should reset the 800ms timer
-      fireEvent.changeText(getByTestId("search-input"), "corona");
-      act(() => jest.advanceTimersByTime(400));
-      // Only 400ms since last change — still debouncing
-      expect(queryByTestId("ai-results")).toBeNull();
-      act(() => jest.advanceTimersByTime(400));
-      // Now 800ms since last change — fires
-      expect(queryByTestId("ai-results")).not.toBeNull();
-    });
-
-    it("clears AI results when search is cleared", () => {
-      const { getByTestId, getByText, queryByTestId } = render(
-        <SearchScreen />,
-      );
-      fireEvent.press(getByText("KI-Faktenbot"));
-      fireEvent.changeText(getByTestId("search-input"), "corona");
-      act(() => jest.advanceTimersByTime(800));
-      expect(queryByTestId("ai-results")).not.toBeNull();
-      fireEvent.changeText(getByTestId("search-input"), "");
-      expect(queryByTestId("ai-results")).toBeNull();
-    });
-
-    it("submit bypasses debounce and triggers AI search immediately", () => {
-      const { getByTestId, getByText, queryByTestId } = render(
-        <SearchScreen />,
-      );
-      fireEvent.press(getByText("KI-Faktenbot"));
-      fireEvent.changeText(getByTestId("search-input"), "corona");
-      // No timer advance — use submit to bypass debounce
       fireEvent(getByTestId("search-input"), "submitEditing");
       expect(queryByTestId("ai-results")).not.toBeNull();
     });
 
-    it("passes the debounced string to AISearch", () => {
+    it("passes the submitted string to AISearch", () => {
       const { getByTestId, getByText } = render(<SearchScreen />);
       fireEvent.press(getByText("KI-Faktenbot"));
       fireEvent.changeText(getByTestId("search-input"), "corona");
-      act(() => jest.advanceTimersByTime(800));
+      fireEvent(getByTestId("search-input"), "submitEditing");
       expect(getByTestId("ai-results").props.children).toBe("corona");
     });
   });

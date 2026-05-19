@@ -1,5 +1,5 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { View } from "react-native";
 import type { TextInput } from "react-native";
@@ -43,32 +43,11 @@ const SearchContent = ({
   searchRef,
 }: SearchContentProperties) => {
   const [activeTab, setActiveTab] = useState<SearchTab>("artikel");
-  const [debouncedAISearch, setDebouncedAISearch] = useState(
-    searchParams || "",
-  );
 
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
 
-  // Debounce AI search while typing (800ms — AI calls are expensive)
-  useEffect(() => {
-    if (!search || search.length < 2) {
-      setDebouncedAISearch("");
-      return;
-    }
-    const timer = setTimeout(() => setDebouncedAISearch(search), 800);
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  // On submit: bypass debounce and trigger AI search immediately
-  const handleSubmit = useCallback(() => {
-    if (search.length >= 2) {
-      setDebouncedAISearch(search);
-    }
-  }, [search]);
-
-  const isAlgoliaActive = search.length >= 2;
-  const isAIActive = debouncedAISearch.length >= 2;
+  const hasResults = searchParams.length >= 2;
 
   return (
     <View style={[globalStyles.container, { backgroundColor }]}>
@@ -81,7 +60,6 @@ const SearchContent = ({
           resultsLength={resultsLength}
           isLoading={isLoading}
           showFaktenBot={activeTab === "ai"}
-          onSubmit={handleSubmit}
         />
 
         {/* Tab toggle */}
@@ -110,20 +88,18 @@ const SearchContent = ({
           </UiTabView>
         </View>
 
-        {/* Artikel tab — Algolia search while typing */}
         {activeTab === "artikel" &&
-          (isAlgoliaActive ? (
-            <AlgoliaSearchResults searchString={search} />
+          (hasResults ? (
+            <AlgoliaSearchResults searchString={searchParams} />
           ) : (
             <SearchTutorial tab="artikel" />
           ))}
 
-        {/* KI-Faktenbot tab — AI search while typing (debounced) */}
         {activeTab === "ai" &&
-          (isAIActive ? (
+          (hasResults ? (
             <AISearch
               setIsLoading={setIsLoading}
-              search={debouncedAISearch}
+              search={searchParams}
               setResultsLength={setResultsLength}
               showFaktenBot={true}
             />

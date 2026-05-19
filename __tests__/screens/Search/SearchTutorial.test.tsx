@@ -31,7 +31,7 @@ describe("SearchTutorial", () => {
   it("shows artikel tutorial by default", () => {
     const { getByText } = render(<SearchTutorial />);
     expect(getByText(/Artikel-Suche/)).toBeTruthy();
-    expect(getByText(/Echtzeit-Vorschläge/)).toBeTruthy();
+    expect(getByText(/Suchbegriff/)).toBeTruthy();
   });
 
   it("shows artikel tutorial when tab='artikel'", () => {
