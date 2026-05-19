@@ -32,10 +32,12 @@ jest.mock("#/constants/Colors", () => ({
   },
 }));
 jest.mock("#/constants/GlobalStyles", () => ({
-  styles: {
+  globalStyles: {
     feed: {},
     centered: {},
     heading: {},
+    content: {},
+    noBackground: {},
   },
 }));
 

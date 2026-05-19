@@ -82,7 +82,9 @@ jest.mock("#/constants/Colors", () => ({
   },
 }));
 
-jest.mock("#/constants/GlobalStyles", () => ({ styles: { heading: {} } }));
+jest.mock("#/constants/GlobalStyles", () => ({
+  globalStyles: { heading: {} },
+}));
 
 // Mock all heavy UI components
 jest.mock("#/components/animations/AnimatedHeader", () => jest.fn(() => null));
