@@ -10,10 +10,10 @@ import RightAction from "#/components/actions/RightAction";
 import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import Heading from "#/components/typography/Heading";
+import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -115,12 +115,9 @@ const MySources = () => {
         );
       })}
       <Space size={50} />
-      <View style={globalStyles.centered}>
-        <LinkIcon color={corporate} />
-        <UiText style={{ textAlign: "center", fontSize: 18 }}>
-          Klicke auf Links in Artikeln, dann tauchen sie hier auf
-        </UiText>
-      </View>
+      <UiEmptyState icon={<LinkIcon color={corporate} />}>
+        Klicke auf Links in Artikeln, dann tauchen sie hier auf
+      </UiEmptyState>
       <Space size={100} />
     </View>
   );
