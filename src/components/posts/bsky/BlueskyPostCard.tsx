@@ -10,7 +10,7 @@ import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
@@ -96,7 +96,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
           </UiText>
         </Hyperlink>
 
-        <View style={styles.row}>
+        <View style={globalStyles.row}>
           {createdAt && (
             <UiText
               style={{

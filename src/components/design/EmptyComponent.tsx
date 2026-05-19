@@ -5,7 +5,7 @@ import SteadyButton from "#/components/buttons/SteadyButton";
 import Card from "#/components/design/Card";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 interface EmptyComponentProperties {
@@ -16,12 +16,10 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
   const corporate = useCorporateColor();
   return (
     <Card
-      style={{
-        marginBottom: 80,
-        gap: 20,
-        ...styles.centered,
-        overflow: "hidden",
-      }}
+      style={[
+        globalStyles.centered,
+        { marginBottom: 80, gap: 20, overflow: "hidden" },
+      ]}
     >
       <WorldIcon color={corporate} size={60} />
       {reload && (

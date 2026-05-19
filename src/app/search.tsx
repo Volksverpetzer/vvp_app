@@ -8,7 +8,7 @@ import { SafetyIcon, SearchIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import AISearch from "#/screens/Search/components/AISearch";
 import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";
@@ -73,8 +73,8 @@ const SearchContent = ({
   const isAIActive = debouncedAISearch.length >= 2;
 
   return (
-    <View style={{ ...styles.container, backgroundColor }}>
-      <View style={{ ...styles.content, flex: 1 }}>
+    <View style={[globalStyles.container, { backgroundColor }]}>
+      <View style={[globalStyles.content, { flex: 1 }]}>
         <SearchHeader
           search={search}
           setSearch={setSearch}

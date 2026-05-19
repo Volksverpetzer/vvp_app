@@ -7,7 +7,7 @@ import { useInternalRenderer } from "react-native-render-html";
 
 import ImageModal from "#/components/media/ImageModal";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
@@ -31,7 +31,7 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
   return (
     <Pressable
       accessibilityRole="button"
-      style={styles.centered}
+      style={globalStyles.centered}
       onPress={() => setIsModalOpen(true)}
     >
       <Image

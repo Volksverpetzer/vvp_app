@@ -8,7 +8,7 @@ import View from "#/components/design/View";
 import InstaPostDetail from "#/components/posts/insta/InstaPostDetail";
 import Footer from "#/components/views/Footer";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerViews } from "#/helpers/network/Engagement";
@@ -88,7 +88,7 @@ const InstaScreen = () => {
   // Render the post content: the Instagram post,
   // a footer for sharing, and a navigation bar.
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <ScrollView>
         {/* Render the Instagram post; pass all fetched post data */}
         <InstaPostDetail {...data} />

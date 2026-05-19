@@ -27,7 +27,7 @@ import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles as globalStyles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -117,13 +117,15 @@ const SettingsScreen = () => {
           backgroundColor,
           flex: 1,
         }}
-        contentContainerStyle={{
-          ...globalStyles.content,
-          backgroundColor,
-          paddingTop: HEADER_HEIGHT,
-          gap: 20,
-          paddingHorizontal: 0,
-        }}
+        contentContainerStyle={[
+          globalStyles.content,
+          {
+            backgroundColor,
+            paddingTop: HEADER_HEIGHT,
+            gap: 20,
+            paddingHorizontal: 0,
+          },
+        ]}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },

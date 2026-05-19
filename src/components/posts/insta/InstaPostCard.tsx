@@ -6,7 +6,7 @@ import View from "#/components/design/View";
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { Achievements } from "#/helpers/Achievements";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -77,7 +77,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         style={{ paddingHorizontal: 30, paddingVertical: 10 }}
       >
         <UiText style={{ fontSize: 16 }}>{excerpt}…</UiText>
-        <View style={[styles.row, { justifyContent: "flex-end" }]}>
+        <View style={[globalStyles.row, { justifyContent: "flex-end" }]}>
           <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
         </View>
       </TouchableOpacity>

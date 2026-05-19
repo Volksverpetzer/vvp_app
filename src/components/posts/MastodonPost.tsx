@@ -9,7 +9,7 @@ import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import {
@@ -103,7 +103,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               </UiText>
             )}
           {displayText !== DISPLAY_TEXT_FULL && (
-            <View style={styles.row}>
+            <View style={globalStyles.row}>
               <UiText style={{ lineHeight: 24, fontSize: 18, color: grey }}>
                 {new Date(created_at).toLocaleTimeString("de-DE", {
                   year: "numeric",

@@ -5,19 +5,14 @@ import EmptyComponent from "#/components/design/EmptyComponent";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import UiText from "#/components/ui/UiText";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 const NotFoundScreen = () => {
   const corporate = useCorporateColor();
   const router = useRouter();
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        ...styles.centered,
-      }}
-    >
+    <View style={[globalStyles.centered, { flexDirection: "column" }]}>
       <Heading style={{ textAlign: "center" }}>
         Hier könnte ein Artikel stehen. Tut er aber irgendwie nicht. Das ist
         wohl ein Fehler.

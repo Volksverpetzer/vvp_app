@@ -27,8 +27,14 @@ jest.mock("#/components/design/View", () => {
   return jest.fn(({ children }: any) => <View>{children}</View>);
 });
 jest.mock("#/components/loader/LoadArticlePost", () => () => null);
-jest.mock("#/constants/Styles", () => ({
-  styles: { roundEdges: {} },
+jest.mock("#/constants/GlobalStyles", () => ({
+  globalStyles: {
+    content: {},
+    noBackground: {},
+    centered: {},
+    row: {},
+    container: {},
+  },
 }));
 
 type Deferred<T> = {

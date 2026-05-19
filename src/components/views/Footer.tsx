@@ -6,7 +6,7 @@ import Space from "#/components/design/Space";
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -29,11 +29,10 @@ const Footer = (properties: FooterProperties) => {
   return (
     <>
       <View
-        style={{
-          paddingBottom: 30,
-          alignItems: "center",
-          ...styles.noBackground,
-        }}
+        style={[
+          globalStyles.noBackground,
+          { paddingBottom: 30, alignItems: "center" },
+        ]}
       >
         <UiText
           style={{
@@ -48,15 +47,17 @@ const Footer = (properties: FooterProperties) => {
         </UiText>
         <Pressable
           accessibilityRole="button"
-          style={{
-            ...styles.centered,
-            flex: 0,
-            width: 80,
-            height: 80,
-            borderRadius: 40,
-            backgroundColor: corporate,
-            alignSelf: "center",
-          }}
+          style={[
+            globalStyles.centered,
+            {
+              flex: 0,
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              backgroundColor: corporate,
+              alignSelf: "center",
+            },
+          ]}
           onPress={() =>
             properties.onShare(properties.article_link, {
               location: "ArticleBottom",

@@ -11,7 +11,7 @@ import { FlatList, useWindowDimensions } from "react-native";
 import { Logo } from "#/components/SvgIcons";
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
@@ -83,7 +83,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
         >
           {isVolksverpetzer && <Logo color={corporate} />}
         </View>
-        <View style={{ ...styles.centered, width, marginBottom: 100 }}>
+        <View style={[globalStyles.centered, { width, marginBottom: 100 }]}>
           <UiText
             style={{
               ...headingStyle,
@@ -102,12 +102,10 @@ const FlatBoard = (properties: FlatBoardProperties) => {
           )}
           {TopComponent && height > 600 && (
             <View
-              style={{
-                height: "auto",
-                paddingVertical: 20,
-                width: 200,
-                ...styles.centered,
-              }}
+              style={[
+                globalStyles.centered,
+                { height: "auto", paddingVertical: 20, width: 200 },
+              ]}
             >
               <TopComponent />
             </View>
