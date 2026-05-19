@@ -14,7 +14,6 @@ import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
