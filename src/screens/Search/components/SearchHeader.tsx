@@ -77,7 +77,9 @@ const SearchHeader = ({
           {showFaktenBot ? "Fact Check" : "Artikel-Suche"}
         </UiText>
         {showFaktenBot && (
-          <FaktenBot reaction={faktenBotReaction} search={isLoading} />
+          <View style={{ position: "absolute", right: 0 }}>
+            <FaktenBot reaction={faktenBotReaction} search={isLoading} />
+          </View>
         )}
       </View>
       <View

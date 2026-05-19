@@ -42,7 +42,9 @@ const SearchContent = ({
   setIsLoading,
   searchRef,
 }: SearchContentProperties) => {
-  const [activeTab, setActiveTab] = useState<SearchTab>("artikel");
+  const [activeTab, setActiveTab] = useState<SearchTab>(
+    searchParams.includes("://") ? "ai" : "artikel",
+  );
 
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
@@ -97,7 +99,7 @@ const SearchContent = ({
               testID="tutorial-artikel"
               icon={<SearchIcon color={corporate} />}
             >
-              Gib einen Suchbegriff ein und drücke „Suchen"
+              Gib einen Suchbegriff ein und drücke „Suchen“
             </UiEmptyState>
           ))}
 
@@ -115,7 +117,7 @@ const SearchContent = ({
               icon={<SafetyIcon color={corporate} />}
             >
               Gib eine Frage, einen Begriff oder eine URL ein und drücke
-              „Suchen"
+              „Suchen“
             </UiEmptyState>
           ))}
       </View>
