@@ -12,10 +12,6 @@ jest.mock("#/components/ui/UiText", () => {
   ));
 });
 
-jest.mock("#/hooks/useAppColorScheme", () => ({
-  useCorporateColor: jest.fn(() => "#1B7194"),
-}));
-
 jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: { centered: {} },
 }));
@@ -23,16 +19,15 @@ jest.mock("#/constants/GlobalStyles", () => ({
 describe("UiEmptyState", () => {
   it("renders children as text", () => {
     const { getByText } = render(
-      <UiEmptyState icon={() => <Text>icon</Text>}>
-        Keine Einträge
-      </UiEmptyState>,
+      <UiEmptyState icon={<Text>icon</Text>}>Keine Einträge</UiEmptyState>,
     );
     expect(getByText("Keine Einträge")).toBeTruthy();
   });
 
-  it("calls the icon factory with the corporate color", () => {
-    const icon = jest.fn(() => <Text>icon</Text>);
-    render(<UiEmptyState icon={icon}>text</UiEmptyState>);
-    expect(icon).toHaveBeenCalledWith("#1B7194");
+  it("renders the icon", () => {
+    const { getByText } = render(
+      <UiEmptyState icon={<Text>my-icon</Text>}>text</UiEmptyState>,
+    );
+    expect(getByText("my-icon")).toBeTruthy();
   });
 });

@@ -116,7 +116,7 @@ const MySources = () => {
         );
       })}
       <Space size={50} />
-      <UiEmptyState icon={(color) => <LinkIcon color={color} />}>
+      <UiEmptyState icon={<LinkIcon color={corporate} />}>
         Klicke auf Links in Artikeln, dann tauchen sie hier auf
       </UiEmptyState>
       <Space size={100} />
