@@ -12,10 +12,6 @@ jest.mock("#/components/ui/UiText", () => {
   ));
 });
 
-jest.mock("#/constants/GlobalStyles", () => ({
-  globalStyles: { centered: {} },
-}));
-
 describe("UiEmptyState", () => {
   it("renders children as text", () => {
     const { getByText } = render(
