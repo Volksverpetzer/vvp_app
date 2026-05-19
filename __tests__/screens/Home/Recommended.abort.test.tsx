@@ -28,7 +28,13 @@ jest.mock("#/components/design/View", () => {
 });
 jest.mock("#/components/loader/LoadArticlePost", () => () => null);
 jest.mock("#/constants/GlobalStyles", () => ({
-  styles: { roundEdges: {} },
+  globalStyles: {
+    content: {},
+    noBackground: {},
+    centered: {},
+    row: {},
+    container: {},
+  },
 }));
 
 type Deferred<T> = {

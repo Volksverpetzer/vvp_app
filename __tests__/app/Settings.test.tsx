@@ -83,7 +83,7 @@ jest.mock("#/constants/Colors", () => ({
 }));
 
 jest.mock("#/constants/GlobalStyles", () => ({
-  globalStyles: { heading: {} },
+  globalStyles: { heading: {}, content: {} },
 }));
 
 // Mock all heavy UI components
