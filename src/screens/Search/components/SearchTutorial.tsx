@@ -1,37 +1,33 @@
-import { StyleSheet } from "react-native";
+import { View } from "react-native";
 
-import FaktenBot from "#/components/animations/FaktenBot";
-import Card from "#/components/design/Card";
-import View from "#/components/design/View";
+import { SafetyIcon, SearchIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
+import Colors from "#/constants/Colors";
+import { globalStyles } from "#/constants/GlobalStyles";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface SearchTutorialProperties {
   tab?: "artikel" | "ai";
 }
 
-const SearchTutorial = ({ tab = "artikel" }: SearchTutorialProperties) => (
-  <Card style={{ alignItems: "center" }}>
-    {tab === "artikel" ? (
-      <UiText style={styles.text}>
-        {
-          "Artikel-Suche:\n• Gib einen Suchbegriff ein\n• Drücke „Suchen“ für eine vollständige Ergebnisliste"
-        }
-      </UiText>
-    ) : (
-      <UiText style={styles.text}>
-        {
-          "KI-Faktenbot:\n• Gib einen Begriff oder eine Behauptung ein\n• Füge eine URL ein, um den Inhalt direkt zu prüfen\n• Drücke „Suchen“ für eine KI-gestützte Analyse"
-        }
-      </UiText>
-    )}
-    <View style={{ position: "absolute", top: 20, right: 20 }}>
-      <FaktenBot search={false} reaction={undefined} />
-    </View>
-  </Card>
-);
+const SearchTutorial = ({ tab = "artikel" }: SearchTutorialProperties) => {
+  const colorScheme = useAppColorScheme();
+  const corporate = Colors[colorScheme].primary;
 
-const styles = StyleSheet.create({
-  text: { fontSize: 17, textAlign: "left" },
-});
+  return (
+    <View style={[globalStyles.centered, { gap: 12 }]}>
+      {tab === "artikel" ? (
+        <SearchIcon size={48} color={corporate} />
+      ) : (
+        <SafetyIcon size={48} color={corporate} />
+      )}
+      <UiText style={{ textAlign: "center", fontSize: 18 }}>
+        {tab === "artikel"
+          ? "Gib einen Suchbegriff ein und drücke „Suchen“"
+          : "Gib eine Frage, einen Begriff oder eine URL ein und drücke „Suchen“"}
+      </UiText>
+    </View>
+  );
+};
 
 export default SearchTutorial;

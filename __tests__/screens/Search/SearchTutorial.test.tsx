@@ -4,21 +4,10 @@ import React from "react";
 
 import SearchTutorial from "#/screens/Search/components/SearchTutorial";
 
-jest.mock("#/components/animations/FaktenBot", () => jest.fn(() => null));
-
-jest.mock("#/components/design/Card", () => {
-  const { View } = require("react-native");
-  return jest.fn(({ children, style }: any) => (
-    <View style={style}>{children}</View>
-  ));
-});
-
-jest.mock("#/components/design/View", () => {
-  const { View } = require("react-native");
-  return jest.fn(({ children, style }: any) => (
-    <View style={style}>{children}</View>
-  ));
-});
+jest.mock("#/components/Icons", () => ({
+  SearchIcon: jest.fn(() => null),
+  SafetyIcon: jest.fn(() => null),
+}));
 
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
@@ -27,24 +16,36 @@ jest.mock("#/components/ui/UiText", () => {
   ));
 });
 
+jest.mock("#/hooks/useAppColorScheme", () => ({
+  useAppColorScheme: jest.fn(() => "light"),
+}));
+
+jest.mock("#/constants/Colors", () => ({
+  light: { primary: "#1B7194" },
+  dark: { primary: "#3893C0" },
+}));
+
+jest.mock("#/constants/GlobalStyles", () => ({
+  globalStyles: { centered: {} },
+}));
+
 describe("SearchTutorial", () => {
   it("shows artikel tutorial by default", () => {
     const { getByText } = render(<SearchTutorial />);
-    expect(getByText(/Artikel-Suche/)).toBeTruthy();
     expect(getByText(/Suchbegriff/)).toBeTruthy();
   });
 
   it("shows artikel tutorial when tab='artikel'", () => {
     const { getByText, queryByText } = render(<SearchTutorial tab="artikel" />);
-    expect(getByText(/Artikel-Suche/)).toBeTruthy();
-    expect(queryByText(/KI-Faktenbot/)).toBeNull();
+    expect(getByText(/Suchbegriff/)).toBeTruthy();
+    expect(queryByText(/Frage/)).toBeNull();
   });
 
   it("shows AI tutorial when tab='ai'", () => {
     const { getByText, queryByText } = render(<SearchTutorial tab="ai" />);
-    expect(getByText(/KI-Faktenbot/)).toBeTruthy();
+    expect(getByText(/Frage/)).toBeTruthy();
     expect(getByText(/URL/)).toBeTruthy();
-    expect(queryByText(/Artikel-Suche/)).toBeNull();
+    expect(queryByText(/Suchbegriff/)).toBeNull();
   });
 
   it("artikel tutorial mentions the Suchen button", () => {
@@ -54,6 +55,6 @@ describe("SearchTutorial", () => {
 
   it("AI tutorial mentions URL checking", () => {
     const { getByText } = render(<SearchTutorial tab="ai" />);
-    expect(getByText(/URL ein/)).toBeTruthy();
+    expect(getByText(/URL/)).toBeTruthy();
   });
 });
