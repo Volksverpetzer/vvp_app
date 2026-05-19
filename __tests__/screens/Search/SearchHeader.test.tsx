@@ -39,8 +39,8 @@ jest.mock("#/constants/Colors", () => ({
   dark: { surface: "#142228", primary: "#3893C0" },
 }));
 
-jest.mock("#/constants/Styles", () => ({
-  styles: { row: {}, input: {}, whiteText: {} },
+jest.mock("#/constants/GlobalStyles", () => ({
+  globalStyles: { row: {}, input: {}, whiteText: {} },
 }));
 
 const baseProps = {

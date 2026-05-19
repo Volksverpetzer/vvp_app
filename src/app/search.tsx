@@ -1,12 +1,13 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import type { TextInput } from "react-native";
 
 import { SafetyIcon, SearchIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
-import UiText from "#/components/ui/UiText";
+import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
+import UiTabView from "#/components/ui/UiTabView";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -48,9 +49,6 @@ const SearchContent = ({
 
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
-  const corporateColor = Colors[colorScheme].primary;
-  const tabIconColor = Colors[colorScheme].muted;
-  const textColor = Colors[colorScheme].text;
 
   // Debounce AI search while typing (800ms — AI calls are expensive)
   useEffect(() => {
@@ -92,72 +90,24 @@ const SearchContent = ({
             alignItems: "center",
             marginTop: -30,
             marginBottom: 16,
-            backgroundColor: "transparent",
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              width: 240,
-              borderRadius: 20,
-              overflow: "hidden",
-            }}
-          >
-            <Pressable
-              accessibilityRole="button"
+          <UiTabView width={240}>
+            <UiTabIconLabel
+              icon={(color) => <SearchIcon size={24} color={color} />}
+              label="Artikel"
+              isActive={activeTab === "artikel"}
               onPress={() => setActiveTab("artikel")}
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                paddingVertical: 10,
-                backgroundColor:
-                  activeTab === "artikel" ? corporateColor : tabIconColor,
-              }}
-            >
-              <SearchIcon
-                size={24}
-                color={activeTab === "artikel" ? "white" : textColor}
-              />
-              <UiText
-                style={{
-                  alignSelf: "center",
-                  marginTop: 2,
-                  color: activeTab === "artikel" ? "white" : textColor,
-                  fontFamily: "SourceSansProBold",
-                }}
-              >
-                Artikel
-              </UiText>
-            </Pressable>
-            <Pressable
-              accessibilityRole="button"
+              style={{ paddingVertical: 10 }}
+            />
+            <UiTabIconLabel
+              icon={(color) => <SafetyIcon size={24} color={color} />}
+              label="KI-Faktenbot"
+              isActive={activeTab === "ai"}
               onPress={() => setActiveTab("ai")}
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                paddingVertical: 10,
-                backgroundColor:
-                  activeTab === "ai" ? corporateColor : tabIconColor,
-              }}
-            >
-              <SafetyIcon
-                size={24}
-                color={activeTab === "ai" ? "white" : textColor}
-              />
-              <UiText
-                style={{
-                  alignSelf: "center",
-                  marginTop: 2,
-                  color: activeTab === "ai" ? "white" : textColor,
-                  fontFamily: "SourceSansProBold",
-                }}
-              >
-                KI-Faktenbot
-              </UiText>
-            </Pressable>
-          </View>
+              style={{ paddingVertical: 10 }}
+            />
+          </UiTabView>
         </View>
 
         {/* Artikel tab — Algolia search while typing */}

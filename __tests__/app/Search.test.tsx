@@ -40,8 +40,8 @@ jest.mock("#/constants/Colors", () => ({
     text: "#F7F7F7",
   },
 }));
-jest.mock("#/constants/Styles", () => ({
-  styles: { container: {}, content: {}, noBackground: {}, row: {} },
+jest.mock("#/constants/GlobalStyles", () => ({
+  globalStyles: { container: {}, content: {}, noBackground: {}, row: {} },
 }));
 
 // ── Heavy UI components ───────────────────────────────────────────────────────
