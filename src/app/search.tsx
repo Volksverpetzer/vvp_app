@@ -1,5 +1,5 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { View } from "react-native";
 import type { TextInput } from "react-native";
@@ -45,6 +45,10 @@ const SearchContent = ({
   const [activeTab, setActiveTab] = useState<SearchTab>(
     searchParams.includes("://") ? "ai" : "artikel",
   );
+
+  useEffect(() => {
+    if (searchParams.includes("://")) setActiveTab("ai");
+  }, [searchParams]);
 
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;

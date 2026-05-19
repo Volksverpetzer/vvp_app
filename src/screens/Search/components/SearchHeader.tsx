@@ -35,15 +35,16 @@ const SearchHeader = ({
   const backgroundColor = Colors[colorScheme].surface;
   const corporate = Colors[colorScheme].primary;
 
-  // Extract the nested ternary operation into an independent variable
-  let faktenBotReaction;
-  if (resultsLength === undefined) {
-    faktenBotReaction = undefined;
-  } else {
-    faktenBotReaction = resultsLength > 0 ? 10 : 0;
-  }
+  // Show no reaction while loading so we don't display a stale previous result
+  const faktenBotReaction =
+    !isLoading && resultsLength !== undefined
+      ? resultsLength > 0
+        ? 10
+        : 0
+      : undefined;
 
   const handleSubmit = useCallback(() => {
+    if (search.length < 2) return;
     setSearchParams(search);
     Keyboard.dismiss();
     if (onSubmit) {
