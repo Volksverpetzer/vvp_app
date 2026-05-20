@@ -1,4 +1,4 @@
-import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import type { AppBskyFeedDefs } from "@atproto/api";
 
 import Config from "#/constants/Config";
 import {
@@ -133,8 +133,10 @@ class API {
   /**
    * Fetches the Bluesky feed.
    */
-  static async getBskyFeed(signal?: AbortSignal): Promise<FeedViewPost[]> {
-    const response = await API.get<{ feed: FeedViewPost[] }>(
+  static async getBskyFeed(
+    signal?: AbortSignal,
+  ): Promise<AppBskyFeedDefs.FeedViewPost[]> {
+    const response = await API.get<{ feed: AppBskyFeedDefs.FeedViewPost[] }>(
       "/proxy/blueskyFeed",
       undefined,
       signal,
@@ -145,8 +147,10 @@ class API {
   /**
    * Fetches the bot feed.
    */
-  static async getBotFeed(signal?: AbortSignal): Promise<FeedViewPost[]> {
-    const response = await API.get<{ feed: FeedViewPost[] }>(
+  static async getBotFeed(
+    signal?: AbortSignal,
+  ): Promise<AppBskyFeedDefs.FeedViewPost[]> {
+    const response = await API.get<{ feed: AppBskyFeedDefs.FeedViewPost[] }>(
       "/botFeed",
       undefined,
       signal,
