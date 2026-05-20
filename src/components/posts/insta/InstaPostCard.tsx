@@ -1,9 +1,9 @@
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Pressable } from "react-native";
 
 import View from "#/components/design/View";
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -69,7 +69,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         onLongPress={handleLongPress}
         onFirstLoad={handleFirstLoad}
       />
-      <Pressable
+      <UiPressable
         accessibilityRole="button"
         onPress={handlePress}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -79,7 +79,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         <View style={[globalStyles.row, { justifyContent: "flex-end" }]}>
           <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
         </View>
-      </Pressable>
+      </UiPressable>
     </View>
   );
 };

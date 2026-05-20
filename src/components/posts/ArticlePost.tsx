@@ -2,11 +2,11 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { DimensionValue } from "react-native";
-import { Pressable } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -192,7 +192,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   );
 
   const content = (
-    <Pressable
+    <UiPressable
       accessibilityRole="button"
       style={{ padding: 0, flex: 1 }}
       onPress={handlePress}
@@ -242,7 +242,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           <Space size={10} />
         )}
       </View>
-    </Pressable>
+    </UiPressable>
   );
 
   if (elevated) {

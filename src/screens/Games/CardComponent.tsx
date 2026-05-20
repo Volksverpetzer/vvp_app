@@ -1,7 +1,8 @@
 import type { ViewStyle } from "react-native";
-import { Dimensions, Pressable, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import type { MemoryCard } from "#/types";
 
@@ -22,7 +23,7 @@ const CardComponent = ({ card, onPress }: CardComponentProperties) => {
   };
 
   return (
-    <Pressable
+    <UiPressable
       accessibilityRole="button"
       style={getCardStyle()}
       onPress={() => onPress(card)}
@@ -32,7 +33,7 @@ const CardComponent = ({ card, onPress }: CardComponentProperties) => {
           {card.isFlipped || card.isMatched ? card.content : "?"}
         </UiText>
       </View>
-    </Pressable>
+    </UiPressable>
   );
 };
 

@@ -1,10 +1,11 @@
 import { Image } from "expo-image";
 import type { JSX, ReactNode } from "react";
 import type { StyleProp, TextStyle } from "react-native";
-import { Linking, Pressable, StyleSheet, View } from "react-native";
+import { Linking, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
 import Card from "#/components/design/Card";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -60,7 +61,7 @@ const LicensesListItem = (
   return (
     <Card style={styles.card}>
       {image && (
-        <Pressable
+        <UiPressable
           accessibilityRole="button"
           onPress={() => userUrl && Linking.openURL(userUrl)}
         >
@@ -69,9 +70,9 @@ const LicensesListItem = (
             style={styles.image}
             placeholder={LoadingImage}
           />
-        </Pressable>
+        </UiPressable>
       )}
-      <Pressable
+      <UiPressable
         accessibilityRole="button"
         onPress={() => repository && Linking.openURL(repository)}
         style={styles.item}
@@ -94,7 +95,7 @@ const LicensesListItem = (
         <View style={styles.icon}>
           <ChevronIcon direction="right" color={iconColor} size={32} />
         </View>
-      </Pressable>
+      </UiPressable>
     </Card>
   );
 };

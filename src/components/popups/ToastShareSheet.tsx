@@ -1,5 +1,6 @@
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -21,16 +22,16 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
       <UiText style={styles.title}>Teilen</UiText>
       <ScrollView style={styles.list}>
         {items.map((item, index) => (
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
             key={item.title + index}
             style={styles.button}
             onPress={item.onPress}
           >
             <UiText style={styles.buttonText}>{item.title}</UiText>
-          </Pressable>
+          </UiPressable>
         ))}
-        <Pressable
+        <UiPressable
           accessibilityRole="button"
           style={[styles.button, styles.cancelButton]}
           onPress={onCancel}
@@ -38,7 +39,7 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
           <UiText style={[styles.buttonText, styles.cancelText]}>
             Abbrechen
           </UiText>
-        </Pressable>
+        </UiPressable>
       </ScrollView>
     </View>
   );

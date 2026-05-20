@@ -1,6 +1,7 @@
 import { Link } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -19,11 +20,11 @@ const HomeScreen = () => {
         Desinformationstechniken und zugehörige Falschinformationen kennenlernen
         können. Wählen Sie ein Spiel aus, um zu beginnen.
       </Text>
-      <Pressable accessibilityRole="button" style={styles.button}>
+      <UiPressable accessibilityRole="button" style={styles.button}>
         <Link href="/game/DesinformationMemory" style={styles.link}>
           Desinformation Memory
         </Link>
-      </Pressable>
+      </UiPressable>
       {/* Weitere Spiele können hier hinzugefügt werden */}
     </View>
   );
