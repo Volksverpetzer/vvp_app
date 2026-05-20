@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import type { JSX, ReactNode } from "react";
 import type { StyleProp, TextStyle } from "react-native";
-import { Linking, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Linking, Pressable, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
 import Card from "#/components/design/Card";
@@ -60,7 +60,7 @@ const LicensesListItem = (
   return (
     <Card style={styles.card}>
       {image && (
-        <TouchableOpacity
+        <Pressable
           accessibilityRole="button"
           onPress={() => userUrl && Linking.openURL(userUrl)}
         >
@@ -69,9 +69,9 @@ const LicensesListItem = (
             style={styles.image}
             placeholder={LoadingImage}
           />
-        </TouchableOpacity>
+        </Pressable>
       )}
-      <TouchableOpacity
+      <Pressable
         accessibilityRole="button"
         onPress={() => repository && Linking.openURL(repository)}
         style={styles.item}
@@ -94,7 +94,7 @@ const LicensesListItem = (
         <View style={styles.icon}>
           <ChevronIcon direction="right" color={iconColor} size={32} />
         </View>
-      </TouchableOpacity>
+      </Pressable>
     </Card>
   );
 };

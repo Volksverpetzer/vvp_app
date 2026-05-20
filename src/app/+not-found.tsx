@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native";
+import { Pressable } from "react-native";
 
 import EmptyComponent from "#/components/design/EmptyComponent";
 import View from "#/components/design/View";
@@ -17,14 +17,11 @@ const NotFoundScreen = () => {
         Hier könnte ein Artikel stehen. Tut er aber irgendwie nicht. Das ist
         wohl ein Fehler.
       </Heading>
-      <TouchableOpacity
-        accessibilityRole="button"
-        onPress={() => router.back()}
-      >
+      <Pressable accessibilityRole="button" onPress={() => router.back()}>
         <UiText style={{ padding: 20, fontSize: 18, color: corporate }}>
           Zurück!
         </UiText>
-      </TouchableOpacity>
+      </Pressable>
       <EmptyComponent />
     </View>
   );

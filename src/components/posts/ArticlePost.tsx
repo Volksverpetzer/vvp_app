@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { DimensionValue } from "react-native";
-import { TouchableOpacity } from "react-native";
+import { Pressable } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
@@ -192,10 +192,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   );
 
   const content = (
-    <TouchableOpacity
+    <Pressable
       accessibilityRole="button"
-      style={{ padding: 0, flex: 1 }}
-      activeOpacity={0.8}
+      style={({ pressed }) => [
+        { padding: 0, flex: 1 },
+        { opacity: pressed ? 0.8 : 1 },
+      ]}
       onPress={handlePress}
       onLongPress={handleLongPress}
     >
@@ -243,7 +245,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           <Space size={10} />
         )}
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 
   if (elevated) {

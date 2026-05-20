@@ -1,11 +1,6 @@
 import { Image } from "expo-image";
 import { useState } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
@@ -42,7 +37,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
   if (!isVideoLoaded) {
     return (
       <View style={[styles.container, { height }]}>
-        <TouchableOpacity
+        <Pressable
           onPress={() => setIsVideoLoaded(true)}
           style={styles.thumbnailContainer}
           accessibilityRole="button"
@@ -66,7 +61,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
               accessibilityElementsHidden
             />
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     );
   }

@@ -3,7 +3,7 @@ import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
-import { Animated, ScrollView, TouchableOpacity } from "react-native";
+import { Animated, Pressable, ScrollView } from "react-native";
 
 import View from "#/components/design/View";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -116,11 +116,11 @@ const InstaPostImage = ({
           scrollEventThrottle={16}
         >
           {photos.map((source, index) => (
-            <TouchableOpacity
+            <Pressable
               accessibilityRole="button"
               accessibilityHint="Gedrückt halten zum Teilen"
               key={index * 163 + id}
-              activeOpacity={0.95}
+              style={({ pressed }) => ({ opacity: pressed ? 0.95 : 1 })}
               onPress={onPress}
               onLongPress={() => onLongPress(source)}
             >
@@ -139,7 +139,7 @@ const InstaPostImage = ({
                   style={imageStyle}
                 />
               </Zoomable>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </ScrollView>
       </View>

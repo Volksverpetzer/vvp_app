@@ -1,5 +1,5 @@
 import type { ViewStyle } from "react-native";
-import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import { Dimensions, Pressable, StyleSheet } from "react-native";
 
 import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
@@ -22,7 +22,7 @@ const CardComponent = ({ card, onPress }: CardComponentProperties) => {
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       accessibilityRole="button"
       style={getCardStyle()}
       onPress={() => onPress(card)}
@@ -32,7 +32,7 @@ const CardComponent = ({ card, onPress }: CardComponentProperties) => {
           {card.isFlipped || card.isMatched ? card.content : "?"}
         </UiText>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { Pressable } from "react-native";
 
 import View from "#/components/design/View";
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
@@ -69,18 +69,17 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         onLongPress={handleLongPress}
         onFirstLoad={handleFirstLoad}
       />
-      <TouchableOpacity
+      <Pressable
         accessibilityRole="button"
         onPress={handlePress}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        activeOpacity={1}
         style={{ paddingHorizontal: 30, paddingVertical: 10 }}
       >
         <UiText style={{ fontSize: 16 }}>{excerpt}…</UiText>
         <View style={[globalStyles.row, { justifyContent: "flex-end" }]}>
           <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 };

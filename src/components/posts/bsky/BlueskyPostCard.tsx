@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
 import { useEffect } from "react";
-import { TouchableOpacity } from "react-native";
+import { Pressable } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
@@ -62,7 +62,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   const url: HttpsUrl = `https://bsky.app/profile/${handle}/post/${postId}`;
 
   return (
-    <TouchableOpacity
+    <Pressable
       accessibilityRole="button"
       onPress={navigateToPost}
       style={{ flex: 1 }}
@@ -76,14 +76,14 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
           paddingVertical: 20,
         }}
       >
-        <TouchableOpacity
+        <Pressable
           accessibilityRole="button"
           style={{ position: "absolute", top: 20, right: 20, zIndex: 100 }}
           onPress={() => onLinkPress(url, router, wpUrl)}
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >
           <ExternalLinkIcon color={Colors[colorScheme].iconMuted} />
-        </TouchableOpacity>
+        </Pressable>
 
         <BlueskyPostHeader author={author} />
 
@@ -125,7 +125,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
           )}
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
