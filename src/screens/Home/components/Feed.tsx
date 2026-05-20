@@ -13,7 +13,7 @@ import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import GenericPost from "#/components/posts/GenericPost";
-import Heading from "#/components/typography/Heading";
+import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -186,23 +186,23 @@ const Feed = (properties: FeedProperties) => {
   }
 
   if (properties.fetchers.length === 0) {
-    // show centered link to settings and remind user to choose content:
     return (
       <View
         style={{
           justifyContent: "center",
           alignItems: "center",
           height: "100%",
+          paddingHorizontal: 20,
           ...properties?.style,
         }}
       >
-        <Heading>Bitte wähle mindestens ein Feed aus:</Heading>
-        <Pressable
-          accessibilityRole="button"
+        <UiEmptyState
+          icon={<SettingsIcon color={corporate} />}
           onPress={() => router.push("/settings")}
         >
-          <SettingsIcon color={corporate} />
-        </Pressable>
+          Bitte wähle mindestens ein Feed in den Einstellungen aus, um Inhalte
+          zu sehen.
+        </UiEmptyState>
       </View>
     );
   }

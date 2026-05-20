@@ -1,5 +1,5 @@
 import { describe, expect, it, jest } from "@jest/globals";
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 import { Text } from "react-native";
 
@@ -25,5 +25,23 @@ describe("UiEmptyState", () => {
       <UiEmptyState icon={<Text>my-icon</Text>}>text</UiEmptyState>,
     );
     expect(getByText("my-icon")).toBeTruthy();
+  });
+
+  it("calls onPress when pressed", () => {
+    const onPress = jest.fn();
+    const { getByRole } = render(
+      <UiEmptyState icon={<Text>icon</Text>} onPress={onPress}>
+        text
+      </UiEmptyState>,
+    );
+    fireEvent.press(getByRole("button"));
+    expect(onPress).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not have button role without onPress", () => {
+    const { queryByRole } = render(
+      <UiEmptyState icon={<Text>icon</Text>}>text</UiEmptyState>,
+    );
+    expect(queryByRole("button")).toBeNull();
   });
 });
