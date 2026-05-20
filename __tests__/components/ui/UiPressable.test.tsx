@@ -50,19 +50,34 @@ describe("UiPressable", () => {
     );
   });
 
-  it("applies opacity on iOS when pressed", () => {
-    Object.defineProperty(Platform, "OS", { value: "ios", configurable: true });
-    const styleFn = jest.fn(({ pressed }: { pressed: boolean }) => [
-      {},
-      pressed && { opacity: 0.7 },
-    ]);
-    render(
-      <UiPressable style={styleFn}>
+  it.each(["ios", "web"] as const)(
+    "applies opacity feedback on %s (non-Android)",
+    (os) => {
+      Object.defineProperty(Platform, "OS", { value: os, configurable: true });
+      const styleFn = jest.fn(() => ({}));
+      render(
+        <UiPressable style={styleFn}>
+          <Text>child</Text>
+        </UiPressable>,
+      );
+      expect(styleFn).toHaveBeenCalledWith(
+        expect.objectContaining({ pressed: expect.any(Boolean) }),
+      );
+    },
+  );
+
+  it("does not apply opacity on Android (ripple handles feedback)", () => {
+    Object.defineProperty(Platform, "OS", {
+      value: "android",
+      configurable: true,
+    });
+    const { toJSON } = render(
+      <UiPressable style={{ padding: 8 }}>
         <Text>child</Text>
       </UiPressable>,
     );
-    expect(styleFn).toHaveBeenCalledWith(
-      expect.objectContaining({ pressed: false }),
-    );
+    const root = toJSON() as any;
+    const combined = StyleSheet.flatten(root.props.style);
+    expect(combined).not.toHaveProperty("opacity");
   });
 });

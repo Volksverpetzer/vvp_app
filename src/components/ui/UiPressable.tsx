@@ -6,7 +6,7 @@ const UiPressable = ({ style, ...props }: PressableProps) => (
     android_ripple={{ color: "rgba(0,0,0,0.1)" }}
     style={(state) => [
       typeof style === "function" ? style(state) : style,
-      Platform.OS === "ios" && state.pressed && { opacity: 0.7 },
+      Platform.OS !== "android" && state.pressed && { opacity: 0.7 },
     ]}
     {...props}
   />
