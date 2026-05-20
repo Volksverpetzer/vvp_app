@@ -1,7 +1,8 @@
-import type { ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 interface UiEmptyStateProps {
   icon: ReactNode;
@@ -12,9 +13,16 @@ interface UiEmptyStateProps {
 const style = { alignItems: "center" as const, gap: 12 };
 
 const UiEmptyState = ({ icon, children, onPress }: UiEmptyStateProps) => {
+  const corporate = useCorporateColor();
+  const coloredIcon = React.isValidElement(icon)
+    ? React.cloneElement(icon as React.ReactElement<{ color?: string }>, {
+        color: corporate,
+      })
+    : icon;
+
   const content = (
     <>
-      {icon}
+      {coloredIcon}
       <UiText style={{ textAlign: "center", fontSize: 18 }}>{children}</UiText>
     </>
   );

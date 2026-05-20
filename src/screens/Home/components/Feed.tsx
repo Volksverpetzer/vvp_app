@@ -197,7 +197,7 @@ const Feed = (properties: FeedProperties) => {
         }}
       >
         <UiEmptyState
-          icon={<SettingsIcon color={corporate} />}
+          icon={<SettingsIcon />}
           onPress={() => router.push("/settings")}
         >
           Bitte wähle mindestens ein Feed in den Einstellungen aus, um Inhalte

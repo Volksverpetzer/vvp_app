@@ -16,7 +16,6 @@ import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { ArticleProperties, InstaPostProperties } from "#/types";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
@@ -127,8 +126,6 @@ const MyFavs = () => {
     };
   }, [focused]);
 
-  const corporate = useCorporateColor();
-
   return (
     <View style={{ flex: 1, gap: 20 }}>
       {isLoading ? (
@@ -149,7 +146,7 @@ const MyFavs = () => {
         ))
       )}
       <Space size={50} />
-      <UiEmptyState icon={<StarIcon color={corporate} />}>
+      <UiEmptyState icon={<StarIcon />}>
         Klick den Stern, um zu den Favoriten hinzuzufügen
       </UiEmptyState>
       <Space size={100} />
