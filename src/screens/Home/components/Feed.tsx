@@ -192,6 +192,7 @@ const Feed = (properties: FeedProperties) => {
           justifyContent: "center",
           alignItems: "center",
           height: "100%",
+          paddingHorizontal: 20,
           ...properties?.style,
         }}
       >
@@ -199,7 +200,8 @@ const Feed = (properties: FeedProperties) => {
           icon={<SettingsIcon color={corporate} />}
           onPress={() => router.push("/settings")}
         >
-          Bitte wähle mindestens ein Feed aus:
+          Bitte wähle mindestens ein Feed in den Einstellungen aus, um Inhalte
+          zu sehen.
         </UiEmptyState>
       </View>
     );
