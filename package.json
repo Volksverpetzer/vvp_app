@@ -133,7 +133,7 @@
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "@types/jest": "29.5.14",
     "@types/lodash": "4.17.24",
-    "@types/node": "24.12.2",
+    "@types/node": "24.12.4",
     "@types/react": "19.2.14",
     "@typescript-eslint/eslint-plugin": "8.59.4",
     "@typescript-eslint/parser": "8.59.4",
@@ -157,7 +157,7 @@
     "prettier": "3.8.3",
     "react-test-renderer": "19.2.6",
     "ts-node": "10.9.2",
-    "tsx": "4.22.2",
+    "tsx": "4.22.3",
     "typedoc": "0.28.19",
     "typescript": "5.9.3"
   }
