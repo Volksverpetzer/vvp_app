@@ -142,7 +142,7 @@ const Header = (properties: HeaderProperties) => {
         }}
       >
         von&nbsp;
-        {article?.authors.map((author, index, array) => (
+        {article?.authors?.map((author, index, array) => (
           <UiText
             key={author.slug}
             onPress={() =>
