@@ -1,11 +1,12 @@
 import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
 import { useState } from "react";
-import { Pressable, useWindowDimensions } from "react-native";
+import { useWindowDimensions } from "react-native";
 import type { InternalRendererProps, TBlock } from "react-native-render-html";
 import { useInternalRenderer } from "react-native-render-html";
 
 import ImageModal from "#/components/media/ImageModal";
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -29,7 +30,7 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
   };
 
   return (
-    <Pressable
+    <UiPressable
       accessibilityRole="button"
       style={globalStyles.centered}
       onPress={() => setIsModalOpen(true)}
@@ -44,7 +45,7 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
         visible={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
-    </Pressable>
+    </UiPressable>
   );
 };
 

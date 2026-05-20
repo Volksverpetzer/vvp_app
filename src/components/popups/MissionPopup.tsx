@@ -1,9 +1,10 @@
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 import { SuccessIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -19,7 +20,7 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
   const corporate = Colors[colorScheme].primary;
   const router = useRouter();
   return (
-    <Pressable
+    <UiPressable
       accessibilityRole="button"
       testID="mission-popup"
       onPress={() => {
@@ -45,7 +46,7 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
       </View>
       <Space size={10} />
       <UiText>{text2}</UiText>
-    </Pressable>
+    </UiPressable>
   );
 };
 

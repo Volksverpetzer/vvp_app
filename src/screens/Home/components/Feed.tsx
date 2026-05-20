@@ -7,13 +7,14 @@ import type {
   ViewStyle,
   ViewToken,
 } from "react-native";
-import { FlatList, Pressable, RefreshControl, View } from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 
 import { SearchIcon, SettingsIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import GenericPost from "#/components/posts/GenericPost";
 import UiEmptyState from "#/components/ui/UiEmptyState";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -234,7 +235,7 @@ const Feed = (properties: FeedProperties) => {
                 { paddingBottom: 30, alignItems: "center" },
               ]}
             >
-              <Pressable
+              <UiPressable
                 accessibilityRole="button"
                 style={globalStyles.centered}
                 onPress={() => router.push("/search")}
@@ -251,7 +252,7 @@ const Feed = (properties: FeedProperties) => {
                   aus!
                 </UiText>
                 <SearchIcon color={corporate} size={24} />
-              </Pressable>
+              </UiPressable>
             </View>
           ))
         }

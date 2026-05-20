@@ -1,6 +1,7 @@
 import React, { type ReactNode } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
@@ -29,9 +30,9 @@ const UiEmptyState = ({ icon, children, onPress }: UiEmptyStateProps) => {
 
   if (onPress) {
     return (
-      <Pressable accessibilityRole="button" onPress={onPress} style={style}>
+      <UiPressable accessibilityRole="button" onPress={onPress} style={style}>
         {content}
-      </Pressable>
+      </UiPressable>
     );
   }
 

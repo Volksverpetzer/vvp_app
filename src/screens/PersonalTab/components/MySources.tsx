@@ -1,6 +1,6 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import Swipeable, {
   SwipeDirection,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
@@ -11,6 +11,7 @@ import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import Heading from "#/components/typography/Heading";
 import UiEmptyState from "#/components/ui/UiEmptyState";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -100,14 +101,14 @@ const MySources = () => {
                     />
                   )}
                 >
-                  <Pressable
+                  <UiPressable
                     accessibilityRole="button"
                     onPress={() =>
                       outBoundLinkPress(entry.href, wpUrl + "/" + group.slug)
                     }
                   >
                     <UiText style={{ color: corporate }}>{entry.href}</UiText>
-                  </Pressable>
+                  </UiPressable>
                 </Swipeable>
               ))}
             </View>

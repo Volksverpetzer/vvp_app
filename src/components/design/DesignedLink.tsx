@@ -2,10 +2,11 @@ import * as Linking from "expo-linking";
 import * as MailComposer from "expo-mail-composer";
 import * as WebBrowser from "expo-web-browser";
 import type { ReactElement } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 import { ExternalLinkIcon } from "#/components/Icons";
 import Heading from "#/components/typography/Heading";
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -34,7 +35,7 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
   };
 
   return (
-    <Pressable
+    <UiPressable
       accessibilityRole="button"
       onPress={() => openLink()}
       style={({ pressed }) => [
@@ -56,7 +57,7 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
         color={Colors[colorScheme].iconMuted}
         style={{ marginLeft: "auto" }}
       />
-    </Pressable>
+    </UiPressable>
   );
 };
 

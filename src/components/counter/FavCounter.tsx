@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import type { TextStyle } from "react-native";
-import { Pressable } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { Achievements } from "#/helpers/Achievements";
@@ -65,7 +65,7 @@ const FavCounter = (properties: FavCounterProperties) => {
   };
 
   return (
-    <Pressable
+    <UiPressable
       accessibilityRole="button"
       onPress={handleFav}
       hitSlop={20}
@@ -81,7 +81,7 @@ const FavCounter = (properties: FavCounterProperties) => {
     >
       <StarIcon filled={isFav} color={color} size={size} />
       <UiText style={properties.style}>{(isFav ? 1 : 0) + favs}</UiText>
-    </Pressable>
+    </UiPressable>
   );
 };
 

@@ -1,11 +1,12 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ChevronIcon } from "#/components/Icons";
 import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
@@ -72,13 +73,13 @@ const NavBar = (properties: NavBarProperties) => {
       />
 
       <View style={{ flex: 1, alignItems: "flex-start" }}>
-        <Pressable
+        <UiPressable
           accessibilityRole="button"
           onPress={() => router.back()}
           hitSlop={20}
         >
           <ChevronIcon direction="left" size={32} color={corporate} />
-        </Pressable>
+        </UiPressable>
       </View>
 
       <View style={{ flex: 1, alignItems: "center" }}>

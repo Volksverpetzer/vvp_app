@@ -1,7 +1,8 @@
 import type { ReactElement } from "react";
-import { Animated, Pressable } from "react-native";
+import { Animated } from "react-native";
 import type { StyleProp, ViewStyle } from "react-native";
 
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -39,7 +40,7 @@ const UiTabIconLabel = ({
     : Colors[colorScheme].muted;
 
   return (
-    <Pressable
+    <UiPressable
       accessibilityRole="tab"
       accessibilityLabel={label}
       accessibilityState={{ selected: isActive }}
@@ -73,7 +74,7 @@ const UiTabIconLabel = ({
           {label}
         </Animated.Text>
       )}
-    </Pressable>
+    </UiPressable>
   );
 };
 

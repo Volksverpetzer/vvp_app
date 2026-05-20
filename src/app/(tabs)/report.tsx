@@ -5,7 +5,6 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   StyleSheet,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -16,6 +15,7 @@ import Checkbox from "#/components/design/Checkbox";
 import Space from "#/components/design/Space";
 import TextInput from "#/components/design/TextInput";
 import Heading from "#/components/typography/Heading";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -216,7 +216,7 @@ const ReportScreen = () => {
             </UiText>
           </Checkbox>
           <Space size={20} />
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
             disabled={!buttonEnabled}
             onPress={onSubmit}
@@ -235,7 +235,7 @@ const ReportScreen = () => {
             >
               Report
             </UiText>
-          </Pressable>
+          </UiPressable>
           <ReportStatusList reports={reports} />
           <Space size={100} />
         </ScrollView>
