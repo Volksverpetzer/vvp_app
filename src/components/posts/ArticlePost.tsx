@@ -194,10 +194,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const content = (
     <Pressable
       accessibilityRole="button"
-      style={({ pressed }) => [
-        { padding: 0, flex: 1 },
-        { opacity: pressed ? 0.8 : 1 },
-      ]}
+      style={{ padding: 0, flex: 1 }}
       onPress={handlePress}
       onLongPress={handleLongPress}
     >

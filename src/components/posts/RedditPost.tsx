@@ -83,7 +83,6 @@ const RedditPost = (properties: RedditProperties) => {
         onPress={() => setIsModalOpen(true)}
         onLongPress={onShare}
         onLayout={onLayout}
-        style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}
       >
         <View>
           <Image

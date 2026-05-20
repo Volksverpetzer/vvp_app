@@ -120,7 +120,6 @@ const InstaPostImage = ({
               accessibilityRole="button"
               accessibilityHint="Gedrückt halten zum Teilen"
               key={index * 163 + id}
-              style={({ pressed }) => ({ opacity: pressed ? 0.95 : 1 })}
               onPress={onPress}
               onLongPress={() => onLongPress(source)}
             >
