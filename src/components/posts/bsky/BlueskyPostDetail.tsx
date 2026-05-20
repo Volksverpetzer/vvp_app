@@ -1,12 +1,13 @@
 import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
 import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
 import { PostText } from "#/components/posts/bsky/PostText";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -49,7 +50,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
           paddingVertical: 20,
         }}
       >
-        <TouchableOpacity
+        <UiPressable
           accessibilityRole="button"
           accessibilityLabel="In Bluesky öffnen"
           accessibilityHint="Öffnet diesen Beitrag in der Bluesky-App oder im Browser"
@@ -58,7 +59,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >
           <ExternalLinkIcon color={Colors[colorScheme].iconMuted} />
-        </TouchableOpacity>
+        </UiPressable>
 
         <BlueskyPostHeader author={author} />
 

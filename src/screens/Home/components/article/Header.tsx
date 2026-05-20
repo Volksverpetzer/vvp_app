@@ -4,17 +4,12 @@ import type { Href } from "expo-router";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { LayoutChangeEvent } from "react-native";
-import {
-  AppState,
-  Modal,
-  Platform,
-  Pressable,
-  useWindowDimensions,
-} from "react-native";
+import { AppState, Modal, Platform, useWindowDimensions } from "react-native";
 import ViewShot from "react-native-view-shot";
 
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -116,7 +111,7 @@ const Header = (properties: HeaderProperties) => {
 
   return (
     <>
-      <Pressable
+      <UiPressable
         accessibilityRole="button"
         onLongPress={() => setVisible(true)}
         onLayout={onLayout}
@@ -126,7 +121,7 @@ const Header = (properties: HeaderProperties) => {
           source={{ uri: article_image }}
           placeholder={LoadingImage}
         />
-      </Pressable>
+      </UiPressable>
       <Space size={30} />
       <UiText
         style={{

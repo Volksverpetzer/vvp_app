@@ -1,5 +1,5 @@
 import type { FC, ReactElement } from "react";
-import { Pressable, Text as RNText, View as RNView } from "react-native";
+import { Text as RNText, View as RNView } from "react-native";
 import type { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, {
@@ -8,6 +8,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -55,7 +56,7 @@ const RightAction: FC<RightActionProps> = ({
 
   return (
     <RNView style={{ justifyContent: "center" }}>
-      <Pressable
+      <UiPressable
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityHint={hint}
@@ -84,7 +85,7 @@ const RightAction: FC<RightActionProps> = ({
             </RNText>
           )}
         </Animated.View>
-      </Pressable>
+      </UiPressable>
     </RNView>
   );
 };

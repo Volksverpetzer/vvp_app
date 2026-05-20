@@ -12,25 +12,47 @@ jest.mock("#/components/ui/UiText", () => {
   ));
 });
 
+const Icon = ({ color }: { color?: string }) => (
+  <Text testID="icon" style={{ color }}>
+    icon
+  </Text>
+);
+
 describe("UiEmptyState", () => {
   it("renders children as text", () => {
     const { getByText } = render(
-      <UiEmptyState icon={<Text>icon</Text>}>Keine Einträge</UiEmptyState>,
+      <UiEmptyState icon={<Icon />}>Keine Einträge</UiEmptyState>,
     );
     expect(getByText("Keine Einträge")).toBeTruthy();
   });
 
   it("renders the icon", () => {
-    const { getByText } = render(
-      <UiEmptyState icon={<Text>my-icon</Text>}>text</UiEmptyState>,
+    const { getByTestId } = render(
+      <UiEmptyState icon={<Icon />}>text</UiEmptyState>,
     );
-    expect(getByText("my-icon")).toBeTruthy();
+    expect(getByTestId("icon")).toBeTruthy();
+  });
+
+  it("injects the corporate color into the icon when no color is set", () => {
+    const { getByTestId } = render(
+      <UiEmptyState icon={<Icon />}>text</UiEmptyState>,
+    );
+    const icon = getByTestId("icon");
+    expect(icon.props.style).toMatchObject({ color: "#1b7194" });
+  });
+
+  it("preserves an explicit color passed by the caller", () => {
+    const { getByTestId } = render(
+      <UiEmptyState icon={<Icon color="red" />}>text</UiEmptyState>,
+    );
+    const icon = getByTestId("icon");
+    expect(icon.props.style).toMatchObject({ color: "red" });
   });
 
   it("calls onPress when pressed", () => {
     const onPress = jest.fn();
     const { getByRole } = render(
-      <UiEmptyState icon={<Text>icon</Text>} onPress={onPress}>
+      <UiEmptyState icon={<Icon />} onPress={onPress}>
         text
       </UiEmptyState>,
     );
@@ -40,7 +62,7 @@ describe("UiEmptyState", () => {
 
   it("does not have button role without onPress", () => {
     const { queryByRole } = render(
-      <UiEmptyState icon={<Text>icon</Text>}>text</UiEmptyState>,
+      <UiEmptyState icon={<Icon />}>text</UiEmptyState>,
     );
     expect(queryByRole("button")).toBeNull();
   });

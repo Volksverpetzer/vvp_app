@@ -1,6 +1,6 @@
 import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
-import { Animated } from "react-native";
+import { Animated, StyleSheet } from "react-native";
 
 import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 
@@ -113,8 +113,7 @@ describe("UiTabIconLabel", () => {
         />,
       );
       const root = toJSON() as any;
-      const styles = [root.props.style].flat();
-      const combined = Object.assign({}, ...styles);
+      const combined = StyleSheet.flatten(root.props.style);
       expect(combined.backgroundColor).toBe("#1b7194");
     });
 
@@ -128,8 +127,7 @@ describe("UiTabIconLabel", () => {
         />,
       );
       const root = toJSON() as any;
-      const styles = [root.props.style].flat();
-      const combined = Object.assign({}, ...styles);
+      const combined = StyleSheet.flatten(root.props.style);
       expect(combined.backgroundColor).toBe("#bbb");
     });
   });

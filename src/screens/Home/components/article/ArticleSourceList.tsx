@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 import Collapsable from "#/components/design/Collapsable";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -71,7 +72,7 @@ export const ArticleSourceList = ({
                   paddingVertical: 8,
                 }}
               >
-                <Pressable
+                <UiPressable
                   accessibilityRole="button"
                   style={{ width: "80%" }}
                   onPress={() => onPress(link.url)}
@@ -79,7 +80,7 @@ export const ArticleSourceList = ({
                   <UiText style={{ color: corporate }}>
                     {link.url.split("?")[0].split("#")[0]}
                   </UiText>
-                </Pressable>
+                </UiPressable>
                 <UiText style={{ width: "20%" }}>{link.visitors} Clicks</UiText>
               </View>
             ))

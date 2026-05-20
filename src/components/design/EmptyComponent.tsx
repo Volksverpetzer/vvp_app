@@ -1,8 +1,7 @@
-import { Pressable } from "react-native";
-
 import { WorldIcon } from "#/components/Icons";
 import SteadyButton from "#/components/buttons/SteadyButton";
 import Card from "#/components/design/Card";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -27,11 +26,11 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
           <UiText style={{ fontSize: 18, textAlign: "center" }}>
             Keine Ergebnisse. Versuche:
           </UiText>
-          <Pressable accessibilityRole="button" onPress={() => reload()}>
+          <UiPressable accessibilityRole="button" onPress={() => reload()}>
             <UiText style={{ fontSize: 18, color: corporate }}>
               Neu laden
             </UiText>
-          </Pressable>
+          </UiPressable>
         </>
       )}
       <UiText style={{ fontSize: 18 }}>

@@ -1,6 +1,5 @@
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
-import { Pressable } from "react-native";
 import Modal from "react-native-modal";
 
 import { CloseIcon, HeartIcon } from "#/components/Icons";
@@ -9,6 +8,7 @@ import SteadyButton from "#/components/buttons/SteadyButton";
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -58,13 +58,13 @@ const Support = ({ article_link, location }: SupportProperties) => {
         Du willst die Extrameile gehen?{"\n"}
         Damit jeder Cent bei uns ankommt,{"\n"}kannst du einen
       </UiText>
-      <Pressable
+      <UiPressable
         accessibilityRole="button"
         onPress={banktransfer}
         style={{ padding: 10 }}
       >
         <Heading style={{ color: corporate }}>Dauerauftrag</Heading>
-      </Pressable>
+      </UiPressable>
       <UiText style={{ textAlign: "center", fontSize: 16 }}>
         direkt bei der Bank einrichten.
       </UiText>
@@ -82,12 +82,12 @@ const Support = ({ article_link, location }: SupportProperties) => {
               padding: 5,
             }}
           >
-            <Pressable
+            <UiPressable
               accessibilityRole="button"
               onPress={() => setShowBank(false)}
             >
               <CloseIcon size={48} color={corporate} />
-            </Pressable>
+            </UiPressable>
           </View>
           <UiText style={{ fontSize: 25 }}>Banküberweisung</UiText>
           <Space size={20} />

@@ -1,7 +1,7 @@
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, Pressable, StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
@@ -22,6 +22,7 @@ import Collapsable from "#/components/design/Collapsable";
 import DesignedLink from "#/components/design/DesignedLink";
 import Divider from "#/components/design/Divider";
 import Space from "#/components/design/Space";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
@@ -55,8 +56,6 @@ const SettingsScreen = () => {
   const colorScheme = useAppColorScheme();
   const primary = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].surface;
-  const pressedBackground = Colors[colorScheme].background;
-
   const HEADER_HEIGHT = 150;
 
   // Update content settings
@@ -91,10 +90,6 @@ const SettingsScreen = () => {
       await Notifications.registerForPushNotifications({ [key]: newSetting });
     setNotificationSettings(updatedNotificationSettings);
   };
-
-  const pressableStyle = ({ pressed }: { pressed: boolean }) => [
-    pressed && { backgroundColor: pressedBackground },
-  ];
 
   useEffect(() => {
     const getToken = async () => {
@@ -205,32 +200,28 @@ const SettingsScreen = () => {
           <ShopButton article_link={Config.wpUrl} />
         </View>
         <View style={styles.infoContainer}>
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
             onPress={() => router.push("/licenses")}
-            style={pressableStyle}
           >
             <UiText>Lizenzen</UiText>
-          </Pressable>
-          <Pressable
+          </UiPressable>
+          <UiPressable
             accessibilityRole="button"
-            style={pressableStyle}
             onPress={() => PersonalStore.setOnboardingDone(false)}
           >
             <UiText>Intro zurücksetzen</UiText>
-          </Pressable>
+          </UiPressable>
           {!Config.isFoss && (
-            <Pressable
+            <UiPressable
               accessibilityRole="button"
-              style={pressableStyle}
               onPress={() => Notifications.registerForPushNotifications()}
             >
               <UiText>Benachrichtigungen zurücksetzen</UiText>
-            </Pressable>
+            </UiPressable>
           )}
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
-            style={pressableStyle}
             onPress={() => {
               Toast.show({
                 type: "info",
@@ -254,7 +245,7 @@ const SettingsScreen = () => {
             }}
           >
             <UiText>Alle Erfolge zurücksetzen</UiText>
-          </Pressable>
+          </UiPressable>
           <UiText selectable>
             Versionskennung: {Application.nativeApplicationVersion}
             &nbsp;-&nbsp;

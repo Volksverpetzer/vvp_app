@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, type TextStyle, View } from "react-native";
+import { type TextStyle, View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { getShares } from "#/helpers/network/Engagement";
@@ -60,20 +61,16 @@ const ShareCounter = (properties: ShareCounterProperties) => {
   if (!onPress) return content;
 
   return (
-    <Pressable
+    <UiPressable
       accessibilityRole="button"
       accessibilityLabel="Teilen"
       onPress={onPress}
       onLongPress={onPress}
       hitSlop={20}
-      style={({ pressed }) => ({
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
-      })}
+      style={{ flexDirection: "row", justifyContent: "flex-start" }}
     >
       {content}
-    </Pressable>
+    </UiPressable>
   );
 };
 
