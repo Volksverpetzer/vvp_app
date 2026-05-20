@@ -52,6 +52,7 @@
     "prepare": "husky",
     "prepare:fdroid": "node scripts/prepare-fdroid.mjs",
     "prepare:licenses": "node scripts/generateLicenses.js",
+    "update:deps": "pnpx npm-check-updates -c 1d -i --format group",
     "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\""
   },
   "dependencies": {
