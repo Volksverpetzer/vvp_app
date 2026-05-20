@@ -1,4 +1,4 @@
-import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import type { AppBskyFeedDefs } from "@atproto/api";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
 import { ScrollView } from "react-native";
@@ -67,7 +67,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
 
         {replies &&
           replies.length > 0 &&
-          replies.map((reply: FeedViewPost, index: number) => (
+          replies.map((reply: AppBskyFeedDefs.FeedViewPost, index: number) => (
             <PostText
               key={reply.post.uri ?? index}
               feedViewPost={reply}

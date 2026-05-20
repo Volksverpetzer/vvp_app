@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.19.18": {
+  "@atproto/api@0.20.0": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -55,7 +55,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-async-storage/async-storage/raw/HEAD/LICENSE",
   },
-  "@react-navigation/bottom-tabs@7.15.12": {
+  "@react-navigation/bottom-tabs@7.16.1": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
@@ -67,7 +67,7 @@ export default {
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/HEAD/LICENSE",
   },
-  "@rive-app/react-native@0.4.6": {
+  "@rive-app/react-native@0.4.7": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-nitro-react-native",
     licenseUrl:
@@ -130,7 +130,7 @@ export default {
     licenseUrl:
       "https://github.com/malaa-tech/expo-custom-assets/raw/HEAD/LICENSE",
   },
-  "expo-dev-client@55.0.34": {
+  "expo-dev-client@55.0.35": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -142,11 +142,11 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-file-system@55.0.20": {
+  "expo-file-system@55.0.21": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-font@55.0.7": {
+  "expo-font@55.0.8": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -178,7 +178,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-router@55.0.14": {
+  "expo-router@55.0.15": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -198,7 +198,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-updates@55.0.22": {
+  "expo-updates@55.0.23": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -206,7 +206,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo@55.0.24": {
+  "expo@55.0.25": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
