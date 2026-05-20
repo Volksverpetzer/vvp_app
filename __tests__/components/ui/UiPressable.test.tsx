@@ -66,6 +66,19 @@ describe("UiPressable", () => {
     },
   );
 
+  it("caller style overrides the default pressed opacity", () => {
+    Object.defineProperty(Platform, "OS", { value: "ios", configurable: true });
+    const { toJSON } = render(
+      <UiPressable style={{ opacity: 1 }}>
+        <Text>child</Text>
+      </UiPressable>,
+    );
+    const root = toJSON() as any;
+    const combined = StyleSheet.flatten(root.props.style);
+    // User-provided opacity: 1 must win over default opacity: 0.7
+    expect(combined.opacity).toBe(1);
+  });
+
   it("does not apply opacity on Android (ripple handles feedback)", () => {
     Object.defineProperty(Platform, "OS", {
       value: "android",

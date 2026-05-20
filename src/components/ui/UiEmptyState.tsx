@@ -15,7 +15,9 @@ const style = { alignItems: "center" as const, gap: 12 };
 
 const UiEmptyState = ({ icon, children, onPress }: UiEmptyStateProps) => {
   const corporate = useCorporateColor();
-  const coloredIcon = React.cloneElement(icon, { color: corporate });
+  const coloredIcon = React.cloneElement(icon, {
+    color: icon.props.color ?? corporate,
+  });
 
   const content = (
     <>

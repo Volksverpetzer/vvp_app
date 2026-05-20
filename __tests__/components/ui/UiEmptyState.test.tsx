@@ -33,12 +33,20 @@ describe("UiEmptyState", () => {
     expect(getByTestId("icon")).toBeTruthy();
   });
 
-  it("injects the corporate color into the icon", () => {
+  it("injects the corporate color into the icon when no color is set", () => {
     const { getByTestId } = render(
       <UiEmptyState icon={<Icon />}>text</UiEmptyState>,
     );
     const icon = getByTestId("icon");
     expect(icon.props.style).toMatchObject({ color: "#1b7194" });
+  });
+
+  it("preserves an explicit color passed by the caller", () => {
+    const { getByTestId } = render(
+      <UiEmptyState icon={<Icon color="red" />}>text</UiEmptyState>,
+    );
+    const icon = getByTestId("icon");
+    expect(icon.props.style).toMatchObject({ color: "red" });
   });
 
   it("calls onPress when pressed", () => {
