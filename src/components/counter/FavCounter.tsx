@@ -69,14 +69,11 @@ const FavCounter = (properties: FavCounterProperties) => {
       accessibilityRole="button"
       onPress={handleFav}
       hitSlop={20}
-      style={({ pressed }) => {
-        return {
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
-          gap: 5,
-        };
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        gap: 5,
       }}
     >
       <StarIcon filled={isFav} color={color} size={size} />

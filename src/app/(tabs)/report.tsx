@@ -52,8 +52,6 @@ const ReportScreen = () => {
     surface: backgroundColor,
     text: textColor,
   } = Colors[colorScheme];
-  const pressedButtonColor = inputBackground;
-
   // Memoized local styles to avoid re-creating on every render
   const styles = useMemo(
     () =>
@@ -220,11 +218,9 @@ const ReportScreen = () => {
             accessibilityRole="button"
             disabled={!buttonEnabled}
             onPress={onSubmit}
-            style={({ pressed }) => [
+            style={[
               styles.submitButton,
               !buttonEnabled && styles.submitButtonDisabled,
-              pressed &&
-                buttonEnabled && { backgroundColor: pressedButtonColor },
             ]}
           >
             <UiText

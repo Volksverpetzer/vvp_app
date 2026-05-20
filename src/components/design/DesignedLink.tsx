@@ -38,10 +38,9 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
     <UiPressable
       accessibilityRole="button"
       onPress={() => openLink()}
-      style={({ pressed }) => [
+      style={[
         globalStyles.row,
         {
-          backgroundColor: pressed ? Colors[colorScheme].muted : undefined,
           paddingVertical: 10,
           justifyContent: "flex-start",
           alignItems: "flex-start",

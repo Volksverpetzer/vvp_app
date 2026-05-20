@@ -56,8 +56,6 @@ const SettingsScreen = () => {
   const colorScheme = useAppColorScheme();
   const primary = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].surface;
-  const pressedBackground = Colors[colorScheme].background;
-
   const HEADER_HEIGHT = 150;
 
   // Update content settings
@@ -92,10 +90,6 @@ const SettingsScreen = () => {
       await Notifications.registerForPushNotifications({ [key]: newSetting });
     setNotificationSettings(updatedNotificationSettings);
   };
-
-  const pressableStyle = ({ pressed }: { pressed: boolean }) => [
-    pressed && { backgroundColor: pressedBackground },
-  ];
 
   useEffect(() => {
     const getToken = async () => {
@@ -209,13 +203,11 @@ const SettingsScreen = () => {
           <UiPressable
             accessibilityRole="button"
             onPress={() => router.push("/licenses")}
-            style={pressableStyle}
           >
             <UiText>Lizenzen</UiText>
           </UiPressable>
           <UiPressable
             accessibilityRole="button"
-            style={pressableStyle}
             onPress={() => PersonalStore.setOnboardingDone(false)}
           >
             <UiText>Intro zurücksetzen</UiText>
@@ -223,7 +215,6 @@ const SettingsScreen = () => {
           {!Config.isFoss && (
             <UiPressable
               accessibilityRole="button"
-              style={pressableStyle}
               onPress={() => Notifications.registerForPushNotifications()}
             >
               <UiText>Benachrichtigungen zurücksetzen</UiText>
@@ -231,7 +222,6 @@ const SettingsScreen = () => {
           )}
           <UiPressable
             accessibilityRole="button"
-            style={pressableStyle}
             onPress={() => {
               Toast.show({
                 type: "info",

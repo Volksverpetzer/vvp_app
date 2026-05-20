@@ -67,11 +67,7 @@ const ShareCounter = (properties: ShareCounterProperties) => {
       onPress={onPress}
       onLongPress={onPress}
       hitSlop={20}
-      style={({ pressed }) => ({
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
-      })}
+      style={{ flexDirection: "row", justifyContent: "flex-start" }}
     >
       {content}
     </UiPressable>
