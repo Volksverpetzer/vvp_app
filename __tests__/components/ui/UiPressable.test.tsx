@@ -1,10 +1,30 @@
-import { describe, expect, it, jest } from "@jest/globals";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
 import { Platform, StyleSheet, Text } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 
 describe("UiPressable", () => {
+  let originalOS: typeof Platform.OS;
+
+  beforeEach(() => {
+    originalOS = Platform.OS;
+  });
+
+  afterEach(() => {
+    Object.defineProperty(Platform, "OS", {
+      value: originalOS,
+      configurable: true,
+    });
+  });
+
   it("renders children", () => {
     const { getByText } = render(
       <UiPressable>

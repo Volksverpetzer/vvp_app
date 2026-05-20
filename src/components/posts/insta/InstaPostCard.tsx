@@ -73,7 +73,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         accessibilityRole="button"
         onPress={handlePress}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        style={{ paddingHorizontal: 30, paddingVertical: 10 }}
+        style={{ paddingHorizontal: 30, paddingVertical: 10, opacity: 1 }}
       >
         <UiText style={{ fontSize: 16 }}>{excerpt}…</UiText>
         <View style={[globalStyles.row, { justifyContent: "flex-end" }]}>
