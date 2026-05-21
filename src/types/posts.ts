@@ -44,7 +44,7 @@ export interface ArticleProperties {
   date_gmt: string;
   title: string;
   content?: { rendered: string };
-  authors: { display_name: string; slug: string }[];
+  authors?: { display_name: string; slug: string }[];
   imageUrl?: string;
 }
 

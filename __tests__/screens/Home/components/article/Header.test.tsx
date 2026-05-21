@@ -1,0 +1,120 @@
+import { render } from "@testing-library/react-native";
+
+import Header from "#/screens/Home/components/article/Header";
+import type { ArticleProperties, HttpsUrl } from "#/types";
+
+jest.mock("expo-router", () => ({
+  useRouter: jest.fn(() => ({ push: jest.fn(), back: jest.fn() })),
+}));
+
+jest.mock("expo-image", () => ({
+  Image: () => null,
+}));
+
+jest.mock("react-native-view-shot", () => {
+  const React = require("react");
+  return {
+    __esModule: true,
+    default: React.forwardRef(function ViewShot({ children }: any, ref: any) {
+      React.useImperativeHandle(ref, () => ({ capture: jest.fn() }));
+      return <>{children}</>;
+    }),
+  };
+});
+
+jest.mock("expo-clipboard", () => ({
+  setStringAsync: jest.fn(),
+  setUrlAsync: jest.fn(),
+}));
+
+jest.mock("#/constants/Config", () => ({
+  __esModule: true,
+  default: {
+    wpUrl: "https://www.volksverpetzer.de",
+    importantCats: { 123: "Faktencheck" },
+  },
+}));
+
+jest.mock("#/helpers/Linking", () => ({
+  outBoundLinkPress: jest.fn(),
+}));
+
+jest.mock("#/helpers/Sharing", () => ({
+  onShare: jest.fn(),
+}));
+
+jest.mock("#/screens/Home/components/article/ArticleSourceList", () => ({
+  ArticleSourceList: () => null,
+}));
+
+jest.mock("#/screens/Home/components/article/ArticleStats", () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+const baseArticle: ArticleProperties = {
+  _links: { "wp:featuredmedia": [{ href: "https://example.com/img.jpg" }] },
+  date: "2024-01-01T12:00:00Z",
+  link: "https://www.volksverpetzer.de/article/test" as HttpsUrl,
+  description: "Test description",
+  categories: [123],
+  id: 42,
+  slug: "test-article",
+  date_gmt: "2024-01-01T12:00:00Z",
+  title: "Test Title",
+};
+
+const defaultProps = {
+  article: baseArticle,
+  article_image: "https://example.com/img.jpg",
+  article_title: "Test Article",
+  article_link: "https://www.volksverpetzer.de/article/test" as HttpsUrl,
+  date: "1. Januar 2024",
+  slug: "test-article",
+};
+
+const testAuthor = { display_name: "Jane Doe", slug: "jane-doe" };
+
+describe("Header — author byline", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("renders the author display name when authors are provided", () => {
+    const { getAllByText } = render(
+      <Header
+        {...defaultProps}
+        article={{ ...baseArticle, authors: [testAuthor] }}
+      />,
+    );
+    // The name appears in both the article header and the share-preview modal
+    expect(getAllByText("Jane Doe").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("hides the author byline when authors is undefined", () => {
+    const { queryByText } = render(
+      <Header
+        {...defaultProps}
+        article={{ ...baseArticle, authors: undefined }}
+      />,
+    );
+    expect(queryByText(/\bvon\b/)).toBeNull();
+  });
+
+  it("hides the author byline when authors is an empty array", () => {
+    const { queryByText } = render(
+      <Header {...defaultProps} article={{ ...baseArticle, authors: [] }} />,
+    );
+    expect(queryByText(/\bvon\b/)).toBeNull();
+  });
+
+  it("always renders the article date regardless of authors", () => {
+    const { getAllByText } = render(
+      <Header
+        {...defaultProps}
+        article={{ ...baseArticle, authors: undefined }}
+      />,
+    );
+    expect(getAllByText(/1\. Januar 2024/).length).toBeGreaterThanOrEqual(1);
+  });
+});

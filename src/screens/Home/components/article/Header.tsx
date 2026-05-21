@@ -141,23 +141,28 @@ const Header = (properties: HeaderProperties) => {
           paddingHorizontal: 20,
         }}
       >
-        von&nbsp;
-        {article?.authors.map((author, index, array) => (
-          <UiText
-            key={author.slug}
-            onPress={() =>
-              outBoundLinkPress(
-                `${Config.wpUrl}/author/${author.slug}/`,
-                article_link,
-              )
-            }
-            style={{ color: corporate }}
-          >
-            {author.display_name}
-            {index < array.length - 1 ? ", " : ""}
-          </UiText>
-        ))}
-        &nbsp;| {date} |
+        {article.authors?.length ? (
+          <>
+            von&nbsp;
+            {article.authors.map((author, index, array) => (
+              <UiText
+                key={author.slug}
+                onPress={() =>
+                  outBoundLinkPress(
+                    `${Config.wpUrl}/author/${author.slug}/`,
+                    article_link,
+                  )
+                }
+                style={{ color: corporate }}
+              >
+                {author.display_name}
+                {index < array.length - 1 ? ", " : ""}
+              </UiText>
+            ))}
+            &nbsp;|{" "}
+          </>
+        ) : null}
+        {date} |
         {
           article.categories.map((cat) => {
             return Config.importantCats[cat]
@@ -225,18 +230,25 @@ const Header = (properties: HeaderProperties) => {
                 textAlign: "left",
               }}
             >
-              von&nbsp;
-              {article?.authors?.map((author, index, array) => (
-                <UiText
-                  key={author.slug}
-                  onPress={() => router.push(`/author/${author.slug}` as Href)}
-                  style={{ color: corporate }}
-                >
-                  {author.display_name}
-                  {index < array.length - 1 ? ", " : ""}
-                </UiText>
-              ))}
-              &nbsp;| {date} |
+              {article.authors?.length ? (
+                <>
+                  von&nbsp;
+                  {article.authors.map((author, index, array) => (
+                    <UiText
+                      key={author.slug}
+                      onPress={() =>
+                        router.push(`/author/${author.slug}` as Href)
+                      }
+                      style={{ color: corporate }}
+                    >
+                      {author.display_name}
+                      {index < array.length - 1 ? ", " : ""}
+                    </UiText>
+                  ))}
+                  &nbsp;|{" "}
+                </>
+              ) : null}
+              {date} |
               {
                 article.categories.map((cat) => {
                   return Config.importantCats[cat]
