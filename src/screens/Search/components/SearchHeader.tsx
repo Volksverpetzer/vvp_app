@@ -1,13 +1,14 @@
 import type { RefObject } from "react";
 import { useCallback } from "react";
-import { Keyboard, Pressable, TextInput } from "react-native";
+import { Keyboard, TextInput } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface SearchHeaderProperties {
@@ -54,13 +55,15 @@ const SearchHeader = ({
   return (
     <>
       <View
-        style={{
-          ...styles.row,
-          height: 100,
-          justifyContent: "flex-end",
-          paddingRight: 20,
-          backgroundColor,
-        }}
+        style={[
+          globalStyles.row,
+          {
+            height: 100,
+            justifyContent: "flex-end",
+            paddingRight: 20,
+            backgroundColor,
+          },
+        ]}
       >
         <UiText
           style={{
@@ -77,14 +80,16 @@ const SearchHeader = ({
         )}
       </View>
       <View
-        style={{
-          ...styles.row,
-          ...styles.input,
-          height: 50,
-          paddingRight: 40,
-          backgroundColor: corporate,
-          marginBottom: 40,
-        }}
+        style={[
+          globalStyles.row,
+          globalStyles.input,
+          {
+            height: 50,
+            paddingRight: 40,
+            backgroundColor: corporate,
+            marginBottom: 40,
+          },
+        ]}
       >
         <TextInput
           accessibilityLabel="Text input field"
@@ -95,13 +100,13 @@ const SearchHeader = ({
           placeholder="Suche ..."
           placeholderTextColor="white"
           onSubmitEditing={handleSubmit}
-          style={{ ...styles.whiteText, width: "100%" }}
+          style={[globalStyles.whiteText, { width: "100%" }]}
           onChangeText={setSearch}
           returnKeyType="search"
         />
-        <Pressable accessibilityRole="button" onPress={handleSubmit}>
+        <UiPressable accessibilityRole="button" onPress={handleSubmit}>
           <SearchIcon color="white" size={24} />
-        </Pressable>
+        </UiPressable>
       </View>
     </>
   );

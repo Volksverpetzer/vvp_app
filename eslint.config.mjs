@@ -1,5 +1,4 @@
 import cspellESLintPluginRecommended from "@cspell/eslint-plugin/recommended";
-import tsESLintPlugin from "@typescript-eslint/eslint-plugin";
 import expoConfig from "eslint-config-expo/flat.js";
 import importAlias from "eslint-plugin-import-alias";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
@@ -31,7 +30,6 @@ export default defineConfig([
       },
     },
     plugins: {
-      "@typescript-eslint": tsESLintPlugin,
       "import-alias": importAlias,
       "unused-imports": unusedImports,
     },

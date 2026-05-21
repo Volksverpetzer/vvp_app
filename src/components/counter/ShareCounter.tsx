@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { Pressable, type TextStyle, View } from "react-native";
+import { type TextStyle, View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { getShares } from "#/helpers/network/Engagement";
@@ -35,7 +36,7 @@ const ShareCounter = (properties: ShareCounterProperties) => {
     getAllShares();
   }, [getAllShares, hideCount]);
 
-  if (!Config.enableEngagement) return <View />;
+  const hideCountResolved = hideCount || !Config.enableEngagement;
 
   const content = (
     <View
@@ -48,9 +49,9 @@ const ShareCounter = (properties: ShareCounterProperties) => {
     >
       <ShareIcon size={size} color={color} />
       <UiText
-        style={[properties.style, { opacity: hideCount ? 0 : 1 }]}
-        accessibilityElementsHidden={hideCount}
-        importantForAccessibility={hideCount ? "no" : "auto"}
+        style={[properties.style, { opacity: hideCountResolved ? 0 : 1 }]}
+        accessibilityElementsHidden={hideCountResolved}
+        importantForAccessibility={hideCountResolved ? "no" : "auto"}
       >
         {shares + (properties.shares ?? 0)}
       </UiText>
@@ -60,19 +61,16 @@ const ShareCounter = (properties: ShareCounterProperties) => {
   if (!onPress) return content;
 
   return (
-    <Pressable
+    <UiPressable
       accessibilityRole="button"
+      accessibilityLabel="Teilen"
       onPress={onPress}
       onLongPress={onPress}
       hitSlop={20}
-      style={({ pressed }) => ({
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        backgroundColor: pressed ? "rgba(120,120,120,0.6)" : undefined,
-      })}
+      style={{ flexDirection: "row", justifyContent: "flex-start" }}
     >
       {content}
-    </Pressable>
+    </UiPressable>
   );
 };
 

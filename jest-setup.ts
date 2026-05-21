@@ -94,6 +94,7 @@ jest.mock("expo-device", () => ({
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
+  useCorporateColor: jest.fn(() => "#1b7194"),
   ColorScheme: { light: "light", dark: "dark" },
 }));
 

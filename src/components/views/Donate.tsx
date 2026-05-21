@@ -6,28 +6,31 @@ import { Platform, StyleSheet, View } from "react-native";
 
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import PaypalButton from "#/components/buttons/PaypalButton";
+import ShopButton from "#/components/buttons/ShopButton";
+import SteadyButton from "#/components/buttons/SteadyButton";
 import StripeButton from "#/components/buttons/StripeButton";
-import Space from "#/components/design/Space";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import NotificationManager from "#/helpers/Notifications";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 interface DonateProperties {
   paypalAlways?: boolean; // Whether to always show the paypal button (if false, the button is only shown if platform pay is not supported)
   showPicker?: boolean; // Whether to show the amount picker
   background?: string; // The background color of the component
+  article_link?: HttpsUrl; // Forwarded to SteadyButton and ShopButton for analytics tracking
 }
 
 /**
+ * @param article_link
  * @param properties - The properties for the Donate component
  * @returns The Donate component
  */
-const Donate = (properties: DonateProperties) => {
+const Donate = ({ article_link, ...properties }: DonateProperties) => {
   const [amount, setAmount] = useState(10);
   const [successAnimated, setSuccessAnimated] = useState(false);
   const [isPlatformPaySupported, setIsPlatformPaySupported] = useState(true); // Assume supported until checked
@@ -80,15 +83,16 @@ const Donate = (properties: DonateProperties) => {
       <View
         style={{
           alignItems: "center",
-          ...styles.noBackground,
+          backgroundColor: "transparent",
+          gap: 20,
         }}
       >
         {(properties?.showPicker ?? true) && (
           <View
             style={{
               height: 50,
-              marginBottom: 20,
-              ...styles.noBackground,
+              marginBottom: 10,
+              backgroundColor: "transparent",
             }}
           >
             <HorizontalPicker
@@ -102,7 +106,7 @@ const Donate = (properties: DonateProperties) => {
                       width: 80,
                       flex: 1,
                       justifyContent: "center",
-                      ...styles.noBackground,
+                      backgroundColor: "transparent",
                     }}
                   >
                     <UiText
@@ -150,13 +154,14 @@ const Donate = (properties: DonateProperties) => {
             onSupportChecked={handleSupportChecked}
           />
         )}
-        {paypalAlways && <Space size={20} />}
         {(!showPlatformPay || paypalAlways || !isPlatformPaySupported) && (
           <PaypalButton
             amount={amount}
             onSuccess={() => logSuccess("Paypal")}
           />
         )}
+        <SteadyButton article_link={article_link} />
+        <ShopButton article_link={article_link} />
       </View>
       <AnimatedSuccess animated={successAnimated} />
     </>

@@ -43,12 +43,13 @@ const LoadArticle = () => {
           return;
         }
 
-        const _article = await WordPressAPI.getPost(slug);
+        const _article = await WordPressAPI.getPost(slug, signal);
         const loadedArticle: ArticleProperties =
           WordPressAPI.convertLoadProps(_article);
 
         const { image } = await WordPressAPI.getFeatureImage(
           loadedArticle._links["wp:featuredmedia"][0].href,
+          signal,
         );
 
         if (signal.aborted) return;

@@ -1,6 +1,6 @@
 import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
-import { Pressable, View } from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { View } from "react-native";
 import Swipeable, {
   SwipeDirection,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
@@ -10,14 +10,18 @@ import RightAction from "#/components/actions/RightAction";
 import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import Heading from "#/components/typography/Heading";
+import UiEmptyState from "#/components/ui/UiEmptyState";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl, StoredSources } from "#/types";
+
+type SourceEntry = { href: HttpsUrl; text?: string; date?: string };
+type SlugGroup = { slug: string; latestDate: string; entries: SourceEntry[] };
 
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});
@@ -34,73 +38,87 @@ const MySources = () => {
   const handleDelete = useCallback(async (href: HttpsUrl) => {
     await SourcesStore.removeSource(href);
     setSources((prev) => {
-      const updated = { ...prev };
-      delete (updated as any)[href];
-      return updated;
+      const { [href]: _removed, ...rest } = prev;
+      return rest as StoredSources;
     });
   }, []);
 
+  const slugGroups = useMemo<SlugGroup[]>(() => {
+    const groupMap: Record<string, SlugGroup> = {};
+    for (const [href, source] of Object.entries(sources)) {
+      const { slug, text, date } = source;
+      if (!groupMap[slug]) {
+        groupMap[slug] = { slug, latestDate: date ?? "", entries: [] };
+      }
+      const group = groupMap[slug];
+      group.entries.push({ href: href as HttpsUrl, text, date });
+      if ((date ?? "") > group.latestDate) {
+        group.latestDate = date ?? "";
+      }
+    }
+    return Object.values(groupMap)
+      .sort((a, b) => b.latestDate.localeCompare(a.latestDate))
+      .map((group) => ({
+        ...group,
+        entries: group.entries.sort((a, b) =>
+          (b.date ?? "").localeCompare(a.date ?? ""),
+        ),
+      }));
+  }, [sources]);
+
   return (
     <View style={{ flex: 1, gap: 20 }}>
-      {Object.keys(sources)
-        .sort((keyA, keyB) => {
-          return (sources[keyB].date ?? "").localeCompare(
-            sources[keyA].date ?? "",
-          );
-        })
-        .map((href: HttpsUrl) => {
-          const { slug, text } = sources[href];
-          return (
-            <Swipeable
-              key={href}
-              onSwipeableOpen={async (direction) => {
-                if (direction === SwipeDirection.LEFT) {
-                  await handleDelete(href);
-                }
-              }}
-              renderRightActions={(p, d, s) => (
-                <RightAction
-                  progress={p}
-                  drag={d}
-                  swipeable={s}
-                  icon={<DeleteIcon size={24} color="white" />}
-                  label="Löschen"
-                  hint="Lösche diese Quelle"
-                  onAction={async () => {
-                    await handleDelete(href);
-                  }}
-                />
+      {slugGroups.map((group) => {
+        const title = group.entries.find((e) => e.text)?.text;
+        return (
+          <Card key={group.slug} style={{ padding: 0 }}>
+            <View style={{ padding: 30, gap: 10 }}>
+              {title && (
+                <Heading style={{ color: Colors[colorScheme].text }}>
+                  {title}
+                </Heading>
               )}
-            >
-              <Card style={{ padding: 0 }}>
-                <Pressable
-                  accessibilityRole="button"
-                  style={{ padding: 30 }}
-                  onPress={() => outBoundLinkPress(href, wpUrl + "/" + slug)}
-                >
-                  {text && (
-                    <Heading
-                      style={{
-                        color: Colors[colorScheme].text,
-                        marginBottom: 10,
+              {group.entries.map((entry) => (
+                <Swipeable
+                  key={entry.href}
+                  testID={`source-row-${entry.href}`}
+                  onSwipeableOpen={async (direction) => {
+                    if (direction === SwipeDirection.LEFT) {
+                      await handleDelete(entry.href);
+                    }
+                  }}
+                  renderRightActions={(p, d, s) => (
+                    <RightAction
+                      progress={p}
+                      drag={d}
+                      swipeable={s}
+                      icon={<DeleteIcon size={24} color="white" />}
+                      label="Löschen"
+                      hint="Lösche diese Quelle"
+                      onAction={async () => {
+                        await handleDelete(entry.href);
                       }}
-                    >
-                      {text}
-                    </Heading>
+                    />
                   )}
-                  <UiText style={{ color: corporate }}>{href}</UiText>
-                </Pressable>
-              </Card>
-            </Swipeable>
-          );
-        })}
+                >
+                  <UiPressable
+                    accessibilityRole="button"
+                    onPress={() =>
+                      outBoundLinkPress(entry.href, wpUrl + "/" + group.slug)
+                    }
+                  >
+                    <UiText style={{ color: corporate }}>{entry.href}</UiText>
+                  </UiPressable>
+                </Swipeable>
+              ))}
+            </View>
+          </Card>
+        );
+      })}
       <Space size={50} />
-      <View style={{ ...styles.centered }}>
-        <LinkIcon color={corporate} />
-        <UiText style={{ textAlign: "center", fontSize: 18 }}>
-          Klicke auf Links in Artikeln, dann tauchen sie hier auf
-        </UiText>
-      </View>
+      <UiEmptyState icon={<LinkIcon />}>
+        Klicke auf Links in Artikeln, dann tauchen sie hier auf
+      </UiEmptyState>
       <Space size={100} />
     </View>
   );

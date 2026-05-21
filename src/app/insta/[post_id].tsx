@@ -8,7 +8,7 @@ import View from "#/components/design/View";
 import InstaPostDetail from "#/components/posts/insta/InstaPostDetail";
 import Footer from "#/components/views/Footer";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerViews } from "#/helpers/network/Engagement";
@@ -39,29 +39,45 @@ const InstaScreen = () => {
   // Fetch the Instagram post data using a side effect.
   // This effect runs when the post_id (from params) or the wpUrl changes.
   useEffect(() => {
-    const fetchPost = async () => {
-      let post = await ContentStore.getStoredInstaPost(parameters.post_id);
-      if (!post) {
-        post = await API.getInstaPost(parameters.post_id);
-        await ContentStore.setStoredInstaPost(parameters.post_id, post);
-      }
-      if (!post) {
-        router.back();
-        return;
-      }
-      setData(post);
-      setIsLoading(false);
+    const controller = new AbortController();
 
-      // Register the view for analytics using the transformed permalink
-      registerViews(
-        post.permalink.replace(
-          "https://www.instagram.com/p/",
-          `${wpUrl}/insta/`,
-        ),
-      );
+    const fetchPost = async () => {
+      try {
+        let post = await ContentStore.getStoredInstaPost(parameters.post_id);
+        if (controller.signal.aborted) return;
+
+        if (!post) {
+          post = await API.getInstaPost(parameters.post_id, controller.signal);
+          if (controller.signal.aborted) return;
+          await ContentStore.setStoredInstaPost(parameters.post_id, post);
+          if (controller.signal.aborted) return;
+        }
+        if (!post) {
+          router.back();
+          return;
+        }
+        setData(post);
+        setIsLoading(false);
+
+        // Register the view for analytics using the transformed permalink
+        registerViews(
+          post.permalink.replace(
+            "https://www.instagram.com/p/",
+            `${wpUrl}/insta/`,
+          ),
+        );
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        console.error("Error loading Instagram post:", error);
+        router.back();
+      }
     };
 
-    fetchPost();
+    void fetchPost();
+
+    return () => {
+      controller.abort();
+    };
   }, [parameters.post_id, router, wpUrl]);
 
   // If still loading or data is not available, render a loading state.
@@ -72,7 +88,7 @@ const InstaScreen = () => {
   // Render the post content: the Instagram post,
   // a footer for sharing, and a navigation bar.
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <ScrollView>
         {/* Render the Instagram post; pass all fetched post data */}
         <InstaPostDetail {...data} />

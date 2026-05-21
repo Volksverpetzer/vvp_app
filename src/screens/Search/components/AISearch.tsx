@@ -2,13 +2,14 @@ import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
 import { useCallback } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 
 import FaktenBot from "#/components/animations/FaktenBot";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -63,7 +64,7 @@ const AISearch = ({
 
   if (results.length === 0 && !error) {
     return (
-      <View style={[styles.centeredContainer, { paddingTop: 100 }]}>
+      <View style={[globalStyles.centered, { paddingTop: 100 }]}>
         <UiText>
           {loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}
         </UiText>
@@ -79,10 +80,10 @@ const AISearch = ({
 
   if (error) {
     return (
-      <View style={[styles.centeredContainer, { paddingTop: 100 }]}>
+      <View style={[globalStyles.centered, { paddingTop: 100 }]}>
         <UiText>{error}</UiText>
         <UiText>Melde uns den Fake hier:</UiText>
-        <Pressable
+        <UiPressable
           accessibilityRole="button"
           onPress={() => {
             router.navigate({ pathname: "/report", params: { url: search } });
@@ -94,8 +95,8 @@ const AISearch = ({
           ]}
         >
           <UiText style={globalStyles.whiteText}>Jetzt melden</UiText>
-        </Pressable>
-        <Pressable
+        </UiPressable>
+        <UiPressable
           accessibilityRole="button"
           onPress={() => {
             reload();
@@ -107,7 +108,7 @@ const AISearch = ({
           ]}
         >
           <UiText style={globalStyles.whiteText}>Neu Laden</UiText>
-        </Pressable>
+        </UiPressable>
         {showFaktenBot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
             <FaktenBot search={false} reaction={reactionValue} />
@@ -144,9 +145,6 @@ const AISearch = ({
 };
 
 const styles = StyleSheet.create({
-  centeredContainer: {
-    ...globalStyles.centered,
-  },
   counterText: {
     textAlign: "center",
   },

@@ -9,7 +9,10 @@ export const SOURCE_SANS_FONTS = [
   "SourceSansProBoldItalic",
 ];
 
-export const styles = StyleSheet.create({
+export const CONTENT_MAX_WIDTH = 700;
+export const CONTENT_HORIZONTAL_PADDING = 10;
+
+export const globalStyles = StyleSheet.create({
   badge: {
     backgroundColor: Colors.light.accent,
     borderRadius: 4,
@@ -30,8 +33,8 @@ export const styles = StyleSheet.create({
   },
   content: {
     margin: "auto",
-    maxWidth: 700,
-    paddingHorizontal: 10,
+    maxWidth: CONTENT_MAX_WIDTH,
+    paddingHorizontal: CONTENT_HORIZONTAL_PADDING,
     width: "100%",
   },
   header: {

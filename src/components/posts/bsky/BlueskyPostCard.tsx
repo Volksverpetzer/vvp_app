@@ -1,16 +1,16 @@
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
 import { useEffect } from "react";
-import { TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
 import View from "#/components/design/View";
 import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
@@ -62,7 +62,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   const url: HttpsUrl = `https://bsky.app/profile/${handle}/post/${postId}`;
 
   return (
-    <TouchableOpacity
+    <UiPressable
       accessibilityRole="button"
       onPress={navigateToPost}
       style={{ flex: 1 }}
@@ -76,14 +76,14 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
           paddingVertical: 20,
         }}
       >
-        <TouchableOpacity
+        <UiPressable
           accessibilityRole="button"
           style={{ position: "absolute", top: 20, right: 20, zIndex: 100 }}
           onPress={() => onLinkPress(url, router, wpUrl)}
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >
           <ExternalLinkIcon color={Colors[colorScheme].iconMuted} />
-        </TouchableOpacity>
+        </UiPressable>
 
         <BlueskyPostHeader author={author} />
 
@@ -96,7 +96,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
           </UiText>
         </Hyperlink>
 
-        <View style={styles.row}>
+        <View style={globalStyles.row}>
           {createdAt && (
             <UiText
               style={{
@@ -125,7 +125,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
           )}
         </View>
       </View>
-    </TouchableOpacity>
+    </UiPressable>
   );
 };
 

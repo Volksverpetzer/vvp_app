@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import type { ViewStyle } from "react-native";
 
 import ShareBar from "#/components/bars/ShareBar";
@@ -29,15 +29,6 @@ const GenericPost = (properties: ComponentProperty<object>) => {
     shareable,
     style,
   } = properties;
-  // Flag to mark if the component has been in view at least once.
-  const [hasBeenInView, setHasBeenInView] = useState(false);
-
-  useEffect(() => {
-    if (inView && !hasBeenInView) {
-      setHasBeenInView(true);
-    }
-  }, [inView, hasBeenInView]);
-
   // Memoize the combined style to avoid re-creating the style object on every render.
   const combinedStyle: ViewStyle = useMemo(
     () => ({
@@ -51,7 +42,7 @@ const GenericPost = (properties: ComponentProperty<object>) => {
 
   return (
     <View style={combinedStyle}>
-      <Component inView={hasBeenInView} {...data} />
+      <Component inView={inView} {...data} />
       {shareable ? (
         <ShareBar
           shareable={shareable}

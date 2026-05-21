@@ -3,7 +3,7 @@ import type { ActivityIndicatorProps, ViewStyle } from "react-native";
 import { ActivityIndicator } from "react-native";
 
 import View from "#/components/design/View";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { AppImages } from "#/helpers/AppImages";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
@@ -20,7 +20,7 @@ const UiSpinner = (
   const { containerStyle, ...indicatorProps } = props;
   const corporate = useCorporateColor();
   return (
-    <View style={[{ width: "100%", ...styles.centered }, containerStyle]}>
+    <View style={[globalStyles.centered, { width: "100%" }, containerStyle]}>
       {AppImages.loadingAnimation ? (
         <Image
           source={AppImages.loadingAnimation}

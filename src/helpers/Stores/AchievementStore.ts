@@ -1,40 +1,40 @@
 import BaseStore from "#/helpers/Storage";
 
 const AchievementStore = {
-  /**
-   * Gets the value of an achievement.
-   * @param key The key of the achievement.
-   * @returns The value of the achievement.
-   */
-  async getAchievementValue(key: string) {
-    const value = await BaseStore.getItem(key);
-    return value === "true";
+  async getAchievementValue(key: string): Promise<boolean> {
+    try {
+      const value = await BaseStore.getItem(key);
+      return value === "true";
+    } catch (error) {
+      console.error("Error retrieving achievement:", error);
+      return false;
+    }
   },
 
-  /**
-   * Sets the value of an achievement.
-   * @param key The key of the achievement.
-   * @param value The value to set.
-   */
-  async setAchievementValue(key: string, value: boolean) {
-    await BaseStore.setItem(key, String(value));
+  async setAchievementValue(key: string, value: boolean): Promise<void> {
+    try {
+      await BaseStore.setItem(key, String(value));
+    } catch (error) {
+      console.error("Error saving achievement:", error);
+    }
   },
 
-  /**
-   * Sets the level of the user.
-   * @param level The level to set.
-   */
-  async setLevel(level: number) {
-    await BaseStore.setItem("level", String(level));
+  async setLevel(level: number): Promise<void> {
+    try {
+      await BaseStore.setItem("level", String(level));
+    } catch (error) {
+      console.error("Error saving level:", error);
+    }
   },
 
-  /**
-   * Gets the level of the user.
-   * @returns The level of the user.
-   */
-  async getLevel() {
-    const value = await BaseStore.getItem("level");
-    return Number.parseInt(value) || 0;
+  async getLevel(): Promise<number> {
+    try {
+      const value = await BaseStore.getItem("level");
+      return Number.parseInt(value) || 0;
+    } catch (error) {
+      console.error("Error retrieving level:", error);
+      return 0;
+    }
   },
 };
 

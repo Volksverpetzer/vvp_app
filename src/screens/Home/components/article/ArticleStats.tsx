@@ -4,7 +4,7 @@ import { View } from "react-native";
 import ShareCounter from "#/components/counter/ShareCounter";
 import ViewCounter from "#/components/counter/ViewCounter";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -22,12 +22,10 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
 
   return (
     <View
-      style={{
-        paddingHorizontal: 20,
-        ...styles.row,
-        justifyContent: "flex-start",
-        gap: 20,
-      }}
+      style={[
+        globalStyles.row,
+        { paddingHorizontal: 20, justifyContent: "flex-start", gap: 20 },
+      ]}
     >
       <ViewCounter
         {...{ url: article_link }}

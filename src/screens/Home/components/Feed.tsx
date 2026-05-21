@@ -7,17 +7,18 @@ import type {
   ViewStyle,
   ViewToken,
 } from "react-native";
-import { FlatList, Pressable, RefreshControl, View } from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 
-import { SearchIcon, SettingsIcon } from "#/components/Icons";
+import { SearchIcon, SettingsIcon, WorldIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import GenericPost from "#/components/posts/GenericPost";
-import Heading from "#/components/typography/Heading";
+import UiEmptyState from "#/components/ui/UiEmptyState";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 import type { Post } from "#/types";
@@ -25,6 +26,7 @@ import type { Post } from "#/types";
 export type FeedFetcherProperties = {
   page?: number;
   param?: string;
+  signal?: AbortSignal;
 };
 
 export interface FeedProperties {
@@ -43,7 +45,7 @@ export interface FeedProperties {
  */
 const Feed = (properties: FeedProperties) => {
   const [posts, setPosts] = useState<Post<unknown>[]>([]);
-  const [inView, setInView] = useState(new Set<string>());
+  const inViewRef = useRef(new Set<string>());
   const [rerender, setRerender] = useState(0);
   const [initialLoad, setInitialLoad] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(true);
@@ -53,6 +55,7 @@ const Feed = (properties: FeedProperties) => {
   const corporate = Colors[colorScheme].primary;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
+  const fetchControllerRef = useRef<AbortController | null>(null);
 
   const updateLoadingStates = useCallback(() => {
     setRefresh(false);
@@ -65,19 +68,29 @@ const Feed = (properties: FeedProperties) => {
       fetcherProperties?: { page?: number; param?: string },
       oldPosts: Post<unknown>[] = [],
     ) => {
+      const controller = new AbortController();
+      fetchControllerRef.current?.abort();
+      fetchControllerRef.current = controller;
+
       try {
         const newPosts = await FetcherUtilities.fetchAndProcessPosts(
           properties.fetchers,
-          fetcherProperties,
+          { ...fetcherProperties, signal: controller.signal },
           oldPosts,
           { prioSort: properties.prioSort, cutoffDate: properties.cutoffDate },
         );
+        if (controller.signal.aborted) return false;
         setPosts(newPosts);
         updateLoadingStates();
         return oldPosts.length < newPosts.length;
       } catch (error) {
+        if (controller.signal.aborted) return false;
         console.error("Error fetching posts:", error);
         updateLoadingStates();
+      } finally {
+        if (fetchControllerRef.current === controller) {
+          fetchControllerRef.current = null;
+        }
       }
     },
     [
@@ -96,6 +109,11 @@ const Feed = (properties: FeedProperties) => {
     getPosts(undefined, []);
     setInitialLoad(false);
     setRefresh(true);
+
+    return () => {
+      fetchControllerRef.current?.abort();
+      fetchControllerRef.current = null;
+    };
   }, [properties.fetchers.length, getPosts, updateLoadingStates]);
 
   const onRefresh = useCallback(() => {
@@ -117,19 +135,16 @@ const Feed = (properties: FeedProperties) => {
     else setIsLoadingMore(false);
   }, [loadmore, page, getPosts, posts]);
 
-  // Update inView set immutably – do not mutate state directly.
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      setInView((previous) => {
-        const newSet = new Set(previous);
-        for (const item of viewableItems) {
-          if (item.isViewable) {
-            newSet.add(item.item.id);
-          }
+      let changed = false;
+      for (const item of viewableItems) {
+        if (item.isViewable && !inViewRef.current.has(item.item.id)) {
+          inViewRef.current.add(item.item.id);
+          changed = true;
         }
-        setRerender(newSet.size);
-        return newSet;
-      });
+      }
+      if (changed) setRerender((n) => n + 1);
     },
     [],
   );
@@ -141,30 +156,23 @@ const Feed = (properties: FeedProperties) => {
     },
   ]);
 
-  const renderItem: ListRenderItem<Post<unknown>> = useCallback(
-    ({ item }) => {
-      // Skip rendering if item.data is not an object.
-      if (typeof item.data !== "object") return undefined;
-      return (
-        <GenericPost
-          key={item.id}
-          component={item.component}
-          data={item.data}
-          contentFavIdentifier={item.contentFavIdentifier}
-          contentType={item.contentType}
-          shareable={item.shareable}
-          inView={inView.has(item.id)}
-        />
-      );
-    },
-    [inView],
-  );
+  const renderItem: ListRenderItem<Post<unknown>> = useCallback(({ item }) => {
+    if (typeof item.data !== "object") return undefined;
+    return (
+      <GenericPost
+        key={item.id}
+        component={item.component}
+        data={item.data}
+        contentFavIdentifier={item.contentFavIdentifier}
+        contentType={item.contentType}
+        shareable={item.shareable}
+        inView={inViewRef.current.has(item.id)}
+      />
+    );
+  }, []);
 
   const contentContainerStyle = useMemo(
-    () => ({
-      ...properties?.style,
-      ...styles.content,
-    }),
+    () => [properties?.style, globalStyles.content],
     [properties?.style],
   );
 
@@ -179,23 +187,23 @@ const Feed = (properties: FeedProperties) => {
   }
 
   if (properties.fetchers.length === 0) {
-    // show centered link to settings and remind user to choose content:
     return (
       <View
         style={{
           justifyContent: "center",
           alignItems: "center",
           height: "100%",
+          paddingHorizontal: 20,
           ...properties?.style,
         }}
       >
-        <Heading>Bitte wähle mindestens ein Feed aus:</Heading>
-        <Pressable
-          accessibilityRole="button"
+        <UiEmptyState
+          icon={<SettingsIcon />}
           onPress={() => router.push("/settings")}
         >
-          <SettingsIcon color={corporate} />
-        </Pressable>
+          Bitte wähle mindestens ein Feed in den Einstellungen aus, um Inhalte
+          zu sehen.
+        </UiEmptyState>
       </View>
     );
   }
@@ -222,15 +230,14 @@ const Feed = (properties: FeedProperties) => {
             <UiSpinner size="large" />
           ) : (
             <View
-              style={{
-                paddingBottom: 30,
-                alignItems: "center",
-                ...styles.noBackground,
-              }}
+              style={[
+                globalStyles.noBackground,
+                { paddingBottom: 30, alignItems: "center" },
+              ]}
             >
-              <Pressable
+              <UiPressable
                 accessibilityRole="button"
-                style={styles.centered}
+                style={globalStyles.centered}
                 onPress={() => router.push("/search")}
               >
                 <UiText
@@ -245,12 +252,18 @@ const Feed = (properties: FeedProperties) => {
                   aus!
                 </UiText>
                 <SearchIcon color={corporate} size={24} />
-              </Pressable>
+              </UiPressable>
             </View>
           ))
         }
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<EmptyComponent reload={onRefresh} />}
+        ListEmptyComponent={
+          <EmptyComponent
+            text="Keine Ergebnisse. Versuche es später erneut oder erweitere deine Feeds in den Einstellungen."
+            icon={<WorldIcon size={60} />}
+            onPress={onRefresh}
+          />
+        }
         contentContainerStyle={contentContainerStyle}
       />
     </View>

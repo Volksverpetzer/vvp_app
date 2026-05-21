@@ -1,6 +1,7 @@
 import * as Haptics from "expo-haptics";
 import Toast from "react-native-toast-message";
 
+import Config from "#/constants/Config";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 
 import AchievementStore from "./Stores/AchievementStore";
@@ -134,6 +135,8 @@ export class Achievements {
     key: keyof typeof allTasks,
     value = true,
   ) => {
+    if (!Config.enableActions) return;
+
     // only if it’s in the current level
     const level = await AchievementStore.getLevel();
     if (!AchievementConfig[level].tasks[key]) return;

@@ -9,7 +9,7 @@ const colorScheme: colorSchemeType = {
     primaryTint: "#3893C0",
     errorBackground: "#C62828",
     errorText: "#FFF",
-    muted: "#BBB",
+    muted: "#DDD",
     textMuted: "#AAA",
     textHeading: "#1B7194",
     accent: "#DB2685",
@@ -52,6 +52,7 @@ const extraConfig: ExtraConfigType = {
   aboutUrl: "https://www.volksverpetzer.de/ueber-uns/",
   sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
   dataProtectionUrl: "https://www.volksverpetzer.de/datenschutzerklaerung/",
+  imprintUrl: "https://www.volksverpetzer.de/impressum-volksverpetzer/",
   eas: {
     projectId: "fd591077-fcb9-48ce-88d9-8bdff41c5564",
   },

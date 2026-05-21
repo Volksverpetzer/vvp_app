@@ -5,7 +5,6 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   StyleSheet,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -16,9 +15,10 @@ import Checkbox from "#/components/design/Checkbox";
 import Space from "#/components/design/Space";
 import TextInput from "#/components/design/TextInput";
 import Heading from "#/components/typography/Heading";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles as globalStyles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import API from "#/helpers/network/ServerAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -52,8 +52,6 @@ const ReportScreen = () => {
     surface: backgroundColor,
     text: textColor,
   } = Colors[colorScheme];
-  const pressedButtonColor = inputBackground;
-
   // Memoized local styles to avoid re-creating on every render
   const styles = useMemo(
     () =>
@@ -162,10 +160,10 @@ const ReportScreen = () => {
             { useNativeDriver: false },
           )}
           scrollEventThrottle={16}
-          contentContainerStyle={{
-            ...globalStyles.content,
-            paddingTop: HEADER_HEIGHT,
-          }}
+          contentContainerStyle={[
+            globalStyles.content,
+            { paddingTop: HEADER_HEIGHT },
+          ]}
         >
           <Heading style={{ marginBottom: 10 }}>Zusammenfassung</Heading>
           <TextInput
@@ -216,27 +214,24 @@ const ReportScreen = () => {
             </UiText>
           </Checkbox>
           <Space size={20} />
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
             disabled={!buttonEnabled}
             onPress={onSubmit}
-            style={({ pressed }) => [
+            style={[
               styles.submitButton,
               !buttonEnabled && styles.submitButtonDisabled,
-              pressed &&
-                buttonEnabled && { backgroundColor: pressedButtonColor },
             ]}
           >
             <UiText
-              style={{
-                ...globalStyles.whiteText,
-                textAlign: "center",
-                fontSize: 18,
-              }}
+              style={[
+                globalStyles.whiteText,
+                { textAlign: "center", fontSize: 18 },
+              ]}
             >
               Report
             </UiText>
-          </Pressable>
+          </UiPressable>
           <ReportStatusList reports={reports} />
           <Space size={100} />
         </ScrollView>

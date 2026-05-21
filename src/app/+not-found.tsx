@@ -1,36 +1,44 @@
-import { useRouter } from "expo-router";
-import { TouchableOpacity } from "react-native";
+import { Image } from "expo-image";
+import { ScrollView, View } from "react-native";
 
+import { ErrorIcon } from "#/components/Icons";
+import NavBar from "#/components/bars/NavBar";
 import EmptyComponent from "#/components/design/EmptyComponent";
-import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
-import UiText from "#/components/ui/UiText";
-import { styles } from "#/constants/Styles";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import Colors from "#/constants/Colors";
+import { globalStyles } from "#/constants/GlobalStyles";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+
+import NotFoundImage from "#assets/images/404.webp";
 
 const NotFoundScreen = () => {
-  const corporate = useCorporateColor();
-  const router = useRouter();
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].surface;
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        ...styles.centered,
-      }}
-    >
-      <Heading style={{ textAlign: "center" }}>
-        Hier könnte ein Artikel stehen. Tut er aber irgendwie nicht. Das ist
-        wohl ein Fehler.
-      </Heading>
-      <TouchableOpacity
-        accessibilityRole="button"
-        onPress={() => router.back()}
+    <View style={[globalStyles.container, { backgroundColor }]}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={[
+          globalStyles.content,
+          {
+            alignItems: "center",
+            paddingVertical: 40,
+          },
+        ]}
       >
-        <UiText style={{ padding: 20, fontSize: 18, color: corporate }}>
-          Zurück!
-        </UiText>
-      </TouchableOpacity>
-      <EmptyComponent />
+        <Heading>404 Whoops!</Heading>
+        <EmptyComponent
+          text="Die angeforderte Seite konnte nicht gefunden werden."
+          icon={<ErrorIcon size={60} />}
+        >
+          <Image
+            source={NotFoundImage}
+            style={{ width: "100%", height: 200 }}
+            contentFit="contain"
+          />
+        </EmptyComponent>
+      </ScrollView>
+      <NavBar />
     </View>
   );
 };

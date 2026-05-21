@@ -2,12 +2,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import type { PropsWithChildren, ReactNode } from "react";
 import React, { useMemo } from "react";
-import { Animated, Pressable, View } from "react-native";
+import { Animated, View } from "react-native";
 
 import { HeartIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -94,7 +94,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
       left: 0,
       right: 0,
       overflow: "hidden" as const,
-      ...styles.noBackground,
+      backgroundColor: "transparent" as const,
       height: headerScrollHeight,
       width: "100%" as const,
       zIndex: 999,
@@ -134,7 +134,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
         style={gradientContainerStyle}
       >
         {!hideSupportHeart && (
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
             onPress={() => {
               router.push("/support");
@@ -142,7 +142,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
             style={{ position: "absolute", top: 20, right: "10%" }}
           >
             <HeartIcon color={corporate} size={32} />
-          </Pressable>
+          </UiPressable>
         )}
         {title &&
           (typeof title === "string" ? (

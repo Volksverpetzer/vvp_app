@@ -24,6 +24,7 @@ jest.mock("#/constants/Config", () => ({
   aboutUrl: "https://example.com/about",
   donations: { support: "https://example.com/donate" },
   dataProtectionUrl: "https://example.com/datenschutz",
+  imprintUrl: "https://example.com/imprint",
   sourceUrl: "https://example.com/source",
   wpUrl: "https://example.com",
 }));
@@ -81,7 +82,9 @@ jest.mock("#/constants/Colors", () => ({
   },
 }));
 
-jest.mock("#/constants/Styles", () => ({ styles: { heading: {} } }));
+jest.mock("#/constants/GlobalStyles", () => ({
+  globalStyles: { heading: {}, content: {} },
+}));
 
 // Mock all heavy UI components
 jest.mock("#/components/animations/AnimatedHeader", () => jest.fn(() => null));
@@ -112,6 +115,7 @@ jest.mock("#/components/Icons", () => ({
   FeedIcon: jest.fn(() => null),
   FeedbackIcon: jest.fn(() => null),
   GiveIcon: jest.fn(() => null),
+  ImprintIcon: jest.fn(() => null),
   LockIcon: jest.fn(() => null),
   NotificationIcon: jest.fn(() => null),
   SearchIcon: jest.fn(() => null),

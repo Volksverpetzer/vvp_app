@@ -1,7 +1,8 @@
 import { Link, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -83,7 +84,7 @@ const GameScreen = () => {
       <UiText style={styles.title}>Memory-Spiel: {gameId}</UiText>
       <View style={styles.levelContainer}>
         <UiText style={styles.levelText}>Wählen Sie Ihr Level:</UiText>
-        <TouchableOpacity
+        <UiPressable
           accessibilityRole="button"
           style={[
             styles.levelButton,
@@ -92,8 +93,8 @@ const GameScreen = () => {
           onPress={() => setLevel(1)}
         >
           <UiText style={styles.levelButtonText}>Level 1 (einfach)</UiText>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </UiPressable>
+        <UiPressable
           accessibilityRole="button"
           style={[
             styles.levelButton,
@@ -102,14 +103,14 @@ const GameScreen = () => {
           onPress={() => setLevel(2)}
         >
           <UiText style={styles.levelButtonText}>Level 2 (schwer)</UiText>
-        </TouchableOpacity>
+        </UiPressable>
       </View>
       <MemoryGame pairs={memoryPairs} />
-      <TouchableOpacity accessibilityRole="button" style={styles.backButton}>
+      <UiPressable accessibilityRole="button" style={styles.backButton}>
         <Link href="/" style={styles.backLink}>
           Zurück zur Übersicht
         </Link>
-      </TouchableOpacity>
+      </UiPressable>
     </View>
   );
 };

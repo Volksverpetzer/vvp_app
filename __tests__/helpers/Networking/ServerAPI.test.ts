@@ -77,6 +77,7 @@ describe("ServerAPI", () => {
         path,
         data,
         abortTime,
+        undefined,
       );
       expect(result).toEqual(responseData);
     });
@@ -325,6 +326,7 @@ describe("ServerAPI", () => {
         "/register",
         body,
         undefined,
+        undefined,
       );
       expect(result).toEqual(responseData);
     });
@@ -372,6 +374,7 @@ describe("ServerAPI", () => {
         "/reportFake",
         report,
         undefined,
+        undefined,
       );
       expect(result).toEqual(responseData);
     });
@@ -416,6 +419,7 @@ describe("ServerAPI", () => {
         expect.anything(),
         "/ai_search",
         expectedPostData,
+        undefined,
         undefined,
       );
       expect(result).toEqual(responseData.results);

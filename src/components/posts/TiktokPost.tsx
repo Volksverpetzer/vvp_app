@@ -1,16 +1,12 @@
 import { Image } from "expo-image";
 import { useState } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
-import { styles as globalStyles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import type { TiktokPostProperties } from "#/types";
 
 const TIKTOK_BRAND_COLOR = "#FF0050";
@@ -42,7 +38,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
   if (!isVideoLoaded) {
     return (
       <View style={[styles.container, { height }]}>
-        <TouchableOpacity
+        <UiPressable
           onPress={() => setIsVideoLoaded(true)}
           style={styles.thumbnailContainer}
           accessibilityRole="button"
@@ -66,7 +62,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
               accessibilityElementsHidden
             />
           </View>
-        </TouchableOpacity>
+        </UiPressable>
       </View>
     );
   }

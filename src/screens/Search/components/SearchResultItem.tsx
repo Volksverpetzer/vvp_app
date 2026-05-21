@@ -1,13 +1,14 @@
 import { decode } from "html-entities";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
-import { Pressable, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
 import Card from "#/components/design/Card";
 import Heading from "#/components/typography/Heading";
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
-import { SOURCE_SANS_FONTS } from "#/constants/Styles";
+import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
 import { getTagStyles } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -69,9 +70,9 @@ const SearchResultItem = ({
 
   if (onPress) {
     return (
-      <Pressable accessibilityRole="button" onPress={onPress}>
+      <UiPressable accessibilityRole="button" onPress={onPress}>
         {content}
-      </Pressable>
+      </UiPressable>
     );
   }
 

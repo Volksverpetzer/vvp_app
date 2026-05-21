@@ -31,45 +31,36 @@ const Index = () => {
     // If the app was launched via a deep/universal link, let Expo Router handle it.
     // Avoid overriding the initial URL by redirecting to onboarding/home here.
     (async () => {
-      const initialUrl = await Linking.getInitialURL();
-      if (initialUrl) {
-        const { hostname, path } = Linking.parse(initialUrl);
-        const { hostname: baseHost } = Linking.parse(Config.wpUrl);
+      try {
+        const initialUrl = await Linking.getInitialURL();
+        if (initialUrl) {
+          const { hostname, path } = Linking.parse(initialUrl);
+          const { hostname: baseHost } = Linking.parse(Config.wpUrl);
 
-        // Check if the URL should be excluded from deep linking (e.g., /wp-content/uploads/)
-        if (hostname === baseHost && shouldExcludeFromDeepLink(path)) {
-          // Open excluded URLs with OS default handler instead of in-app
-          Linking.openURL(initialUrl);
-          // Continue with normal app initialization
-          appOpenRoutine();
-          PersonalStore.isOnboardingDone().then((onboarded) => {
-            if (onboarded) {
-              router.dismissTo("/home");
-            } else {
-              router.replace("/onboarding");
-            }
-          });
-          return;
+          if (hostname === baseHost && shouldExcludeFromDeepLink(path)) {
+            await Linking.openURL(initialUrl);
+            appOpenRoutine();
+            const onboarded = await PersonalStore.isOnboardingDone();
+            router.dismissTo(onboarded ? "/home" : "/onboarding");
+            return;
+          }
+
+          const hasPath =
+            typeof path === "string" && path.replace(/\//g, "").length > 0;
+          if (hostname === baseHost && hasPath) {
+            appOpenRoutine();
+            return;
+          }
         }
 
-        const hasPath =
-          typeof path === "string" && path.replace(/\//g, "").length > 0;
-        if (hostname === baseHost && hasPath) {
-          // Launched via a Volksverpetzer article URL. Let router handle it.
-          appOpenRoutine();
-          return;
-        }
+        appOpenRoutine();
+        const onboarded = await PersonalStore.isOnboardingDone();
+        router.dismissTo(onboarded ? "/home" : "/onboarding");
+      } catch (error) {
+        console.error("App open error:", error);
+        appOpenRoutine();
+        router.replace("/onboarding");
       }
-
-      // No initial URL: proceed with normal first-screen decision
-      appOpenRoutine();
-      PersonalStore.isOnboardingDone().then((onboarded) => {
-        if (onboarded) {
-          router.dismissTo("/home");
-        } else {
-          router.replace("/onboarding");
-        }
-      });
     })();
   }, [router]);
   return <UiSpinner size="large" />;

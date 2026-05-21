@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import type { ImageSource } from "expo-image";
-import { Pressable } from "react-native";
+
+import UiPressable from "#/components/ui/UiPressable";
 
 interface UiButtonProps {
   source: ImageSource;
@@ -15,7 +16,7 @@ const UiButton = ({
   accessibilityLabel,
   accessibilityHint,
 }: UiButtonProps) => (
-  <Pressable
+  <UiPressable
     accessibilityRole="button"
     accessibilityLabel={accessibilityLabel}
     accessibilityHint={accessibilityHint}
@@ -25,7 +26,7 @@ const UiButton = ({
       source={source}
       style={{ width: 220, height: 40, borderRadius: 4 }}
     />
-  </Pressable>
+  </UiPressable>
 );
 
 export default UiButton;

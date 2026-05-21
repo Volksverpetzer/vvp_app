@@ -1,7 +1,7 @@
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, Pressable, StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 
@@ -10,23 +10,24 @@ import {
   FeedIcon,
   FeedbackIcon,
   GiveIcon,
+  ImprintIcon,
   LockIcon,
   NotificationIcon,
   SearchIcon,
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import ShopButton from "#/components/buttons/ShopButton";
 import Collapsable from "#/components/design/Collapsable";
 import DesignedLink from "#/components/design/DesignedLink";
 import Divider from "#/components/design/Divider";
 import Space from "#/components/design/Space";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles as globalStyles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -54,8 +55,6 @@ const SettingsScreen = () => {
   const colorScheme = useAppColorScheme();
   const primary = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].surface;
-  const pressedBackground = Colors[colorScheme].background;
-
   const HEADER_HEIGHT = 150;
 
   // Update content settings
@@ -91,10 +90,6 @@ const SettingsScreen = () => {
     setNotificationSettings(updatedNotificationSettings);
   };
 
-  const pressableStyle = ({ pressed }: { pressed: boolean }) => [
-    pressed && { backgroundColor: pressedBackground },
-  ];
-
   useEffect(() => {
     const getToken = async () => {
       const token = await Notifications.getToken();
@@ -116,13 +111,15 @@ const SettingsScreen = () => {
           backgroundColor,
           flex: 1,
         }}
-        contentContainerStyle={{
-          ...globalStyles.content,
-          backgroundColor,
-          paddingTop: HEADER_HEIGHT,
-          gap: 20,
-          paddingHorizontal: 0,
-        }}
+        contentContainerStyle={[
+          globalStyles.content,
+          {
+            backgroundColor,
+            paddingTop: HEADER_HEIGHT,
+            gap: 20,
+            paddingHorizontal: 0,
+          },
+        ]}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
@@ -186,43 +183,40 @@ const SettingsScreen = () => {
             text="Datenschutz"
           />
           <DesignedLink
+            url={Config.imprintUrl}
+            icon={<ImprintIcon color={primary} size={24} />}
+            text="Impressum"
+          />
+          <DesignedLink
             url={Config.sourceUrl}
             icon={<CodeIcon color={primary} size={24} />}
             text="Quellcode"
           />
         </View>
-        <View style={styles.donateContainer}>
-          <Donate showPicker={false} />
-          <Space size={20} />
-          <ShopButton article_link={Config.wpUrl} />
-        </View>
+        <Donate showPicker={false} />
         <View style={styles.infoContainer}>
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
             onPress={() => router.push("/licenses")}
-            style={pressableStyle}
           >
             <UiText>Lizenzen</UiText>
-          </Pressable>
-          <Pressable
+          </UiPressable>
+          <UiPressable
             accessibilityRole="button"
-            style={pressableStyle}
             onPress={() => PersonalStore.setOnboardingDone(false)}
           >
             <UiText>Intro zurücksetzen</UiText>
-          </Pressable>
+          </UiPressable>
           {!Config.isFoss && (
-            <Pressable
+            <UiPressable
               accessibilityRole="button"
-              style={pressableStyle}
               onPress={() => Notifications.registerForPushNotifications()}
             >
               <UiText>Benachrichtigungen zurücksetzen</UiText>
-            </Pressable>
+            </UiPressable>
           )}
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
-            style={pressableStyle}
             onPress={() => {
               Toast.show({
                 type: "info",
@@ -246,7 +240,7 @@ const SettingsScreen = () => {
             }}
           >
             <UiText>Alle Erfolge zurücksetzen</UiText>
-          </Pressable>
+          </UiPressable>
           <UiText selectable>
             Versionskennung: {Application.nativeApplicationVersion}
             &nbsp;-&nbsp;
@@ -262,9 +256,6 @@ const SettingsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  donateContainer: {
-    alignItems: "center",
-  },
   linksContainer: {
     paddingHorizontal: 20,
     gap: 20,

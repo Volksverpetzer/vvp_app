@@ -5,7 +5,7 @@ import { View } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import AISearch from "#/screens/Search/components/AISearch";
 import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";
@@ -44,18 +44,8 @@ const SearchScreen = () => {
         setIsLoading,
       }) => {
         return (
-          <View
-            style={{
-              ...styles.container,
-              backgroundColor,
-            }}
-          >
-            <View
-              style={{
-                ...styles.content,
-                flex: 1,
-              }}
-            >
+          <View style={[globalStyles.container, { backgroundColor }]}>
+            <View style={[globalStyles.content, { flex: 1 }]}>
               <SearchHeader
                 search={search}
                 setSearch={setSearch}

@@ -2,16 +2,16 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { DimensionValue } from "react-native";
-import { TouchableOpacity } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -184,15 +184,17 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     [greyText],
   );
   const categoryTextStyle = useMemo(
-    () => ({ ...styles.whiteText, textAlign: "right" as const, fontSize: 14 }),
+    () => [
+      globalStyles.whiteText,
+      { textAlign: "right" as const, fontSize: 14 },
+    ],
     [],
   );
 
   const content = (
-    <TouchableOpacity
+    <UiPressable
       accessibilityRole="button"
       style={{ padding: 0, flex: 1 }}
-      activeOpacity={0.8}
       onPress={handlePress}
       onLongPress={handleLongPress}
     >
@@ -229,12 +231,18 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
             <ViewCounter url={article.link} size={16} />
           </Badge>
         )}
-        <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
-          {excerpt}
-        </UiText>
-        <Space size={20} />
+        {excerpt ? (
+          <>
+            <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
+              {excerpt}
+            </UiText>
+            <Space size={20} />
+          </>
+        ) : (
+          <Space size={10} />
+        )}
       </View>
-    </TouchableOpacity>
+    </UiPressable>
   );
 
   if (elevated) {

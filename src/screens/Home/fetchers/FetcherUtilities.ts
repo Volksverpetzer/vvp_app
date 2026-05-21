@@ -1,6 +1,16 @@
 import type { Post, SafeFetchFunction } from "#/types";
 
 const FetcherUtilities = {
+  isAbortError(error: unknown): boolean {
+    if (!error || typeof error !== "object") return false;
+    const maybeError = error as { name?: string; code?: string };
+    return (
+      maybeError.name === "AbortError" ||
+      maybeError.name === "CanceledError" ||
+      maybeError.code === "ERR_CANCELED"
+    );
+  },
+
   /**
    * Safely fetches data from a fetch function.
    * @param fetchFunction The fetch function to use.
@@ -14,6 +24,9 @@ const FetcherUtilities = {
     try {
       return await fetchFunction();
     } catch (error) {
+      if (FetcherUtilities.isAbortError(error)) {
+        return [];
+      }
       console.error("Fetch error in " + fetcher + " :", error);
       return [];
     }
@@ -61,7 +74,11 @@ const FetcherUtilities = {
       fetcher: (properties: object) => Promise<Post<unknown>[]>;
       props?: object;
     }[],
-    fetcherProperties: { page?: number; param?: string } = {},
+    fetcherProperties: {
+      page?: number;
+      param?: string;
+      signal?: AbortSignal;
+    } = {},
     oldPosts: Post<unknown>[] = [],
     options: { prioSort?: boolean; cutoffDate?: boolean } = {},
   ): Promise<Post<unknown>[]> {
@@ -98,6 +115,9 @@ const FetcherUtilities = {
           : FetcherUtilities.sortByDatetime,
       );
     } catch (error) {
+      if (FetcherUtilities.isAbortError(error)) {
+        return oldPosts;
+      }
       console.error("Error processing posts:", error);
       return [];
     }
