@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@algolia/client-search": "5.52.1",
-    "@atproto/api": "0.19.19",
+    "@atproto/api": "0.20.2",
     "@babel/runtime": "7.29.2",
     "@expo-google-fonts/source-sans-3": "0.4.1",
     "@expo/config": "55.0.17",
