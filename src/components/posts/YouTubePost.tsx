@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { useState } from "react";
 import { View, useWindowDimensions } from "react-native";
-import WebView from "react-native-webview";
+import { WebView } from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
