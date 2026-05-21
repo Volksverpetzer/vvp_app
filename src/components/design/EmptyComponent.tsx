@@ -38,7 +38,6 @@ const EmptyComponent = ({ reload }: EmptyComponentProperties) => {
         Narrative
       </UiText>
       <Donate paypalAlways={true} />
-      <SteadyButton />
     </Card>
   );
 };

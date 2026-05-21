@@ -6,8 +6,8 @@ import { Platform, StyleSheet, View } from "react-native";
 
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import PaypalButton from "#/components/buttons/PaypalButton";
+import SteadyButton from "#/components/buttons/SteadyButton";
 import StripeButton from "#/components/buttons/StripeButton";
-import Space from "#/components/design/Space";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -76,12 +76,18 @@ const Donate = (properties: DonateProperties) => {
   const pickerColorText = Colors[colorScheme].text;
   return (
     <>
-      <View style={{ alignItems: "center", backgroundColor: "transparent" }}>
+      <View
+        style={{
+          alignItems: "center",
+          backgroundColor: "transparent",
+          gap: 20,
+        }}
+      >
         {(properties?.showPicker ?? true) && (
           <View
             style={{
               height: 50,
-              marginBottom: 20,
+              marginBottom: 10,
               backgroundColor: "transparent",
             }}
           >
@@ -144,13 +150,13 @@ const Donate = (properties: DonateProperties) => {
             onSupportChecked={handleSupportChecked}
           />
         )}
-        {paypalAlways && <Space size={20} />}
         {(!showPlatformPay || paypalAlways || !isPlatformPaySupported) && (
           <PaypalButton
             amount={amount}
             onSuccess={() => logSuccess("Paypal")}
           />
         )}
+        <SteadyButton />
       </View>
       <AnimatedSuccess animated={successAnimated} />
     </>
