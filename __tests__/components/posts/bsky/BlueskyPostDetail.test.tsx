@@ -1,5 +1,6 @@
 import type { AppBskyFeedDefs } from "@atproto/api";
 import { fireEvent, render } from "@testing-library/react-native";
+import type { ReactNode } from "react";
 
 import BlueskyPostDetail from "#/components/posts/bsky/BlueskyPostDetail";
 import { onLinkPress } from "#/helpers/Linking";
@@ -11,7 +12,7 @@ jest.mock("expo-router", () => ({
 }));
 
 jest.mock("react-native-hyperlink", () => ({
-  Hyperlink: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  Hyperlink: ({ children }: { children: ReactNode }) => <>{children}</>,
 }));
 
 jest.mock("#/components/posts/bsky/BlueskyPostHeader", () => ({
