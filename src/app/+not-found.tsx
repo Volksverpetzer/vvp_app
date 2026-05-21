@@ -1,28 +1,20 @@
-import { useRouter } from "expo-router";
+import { View } from "react-native";
 
+import NavBar from "#/components/bars/NavBar";
 import EmptyComponent from "#/components/design/EmptyComponent";
-import View from "#/components/design/View";
-import Heading from "#/components/typography/Heading";
-import UiPressable from "#/components/ui/UiPressable";
-import UiText from "#/components/ui/UiText";
+import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const NotFoundScreen = () => {
-  const corporate = useCorporateColor();
-  const router = useRouter();
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].surface;
   return (
-    <View style={[globalStyles.centered, { flexDirection: "column" }]}>
-      <Heading style={{ textAlign: "center" }}>
-        Hier könnte ein Artikel stehen. Tut er aber irgendwie nicht. Das ist
-        wohl ein Fehler.
-      </Heading>
-      <UiPressable accessibilityRole="button" onPress={() => router.back()}>
-        <UiText style={{ padding: 20, fontSize: 18, color: corporate }}>
-          Zurück!
-        </UiText>
-      </UiPressable>
-      <EmptyComponent />
+    <View style={[globalStyles.container, { backgroundColor }]}>
+      <View style={[globalStyles.content, { flex: 1 }]}>
+        <EmptyComponent text="Hier könnte ein Artikel stehen. Tut er aber irgendwie nicht. Das ist wohl ein Fehler." />
+      </View>
+      <NavBar />
     </View>
   );
 };

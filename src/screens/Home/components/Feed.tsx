@@ -257,7 +257,12 @@ const Feed = (properties: FeedProperties) => {
           ))
         }
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<EmptyComponent reload={onRefresh} />}
+        ListEmptyComponent={
+          <EmptyComponent
+            text="Keine Ergebnisse. Versuche es später erneut oder erweitere deine Feeds in den Einstellungen."
+            onPress={onRefresh}
+          />
+        }
         contentContainerStyle={contentContainerStyle}
       />
     </View>
