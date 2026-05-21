@@ -194,11 +194,7 @@ const SettingsScreen = () => {
             text="Quellcode"
           />
         </View>
-        <View style={styles.donateContainer}>
-          <Donate showPicker={false} />
-          <Space size={20} />
-          <ShopButton article_link={Config.wpUrl} />
-        </View>
+        <Donate showPicker={false} />
         <View style={styles.infoContainer}>
           <UiPressable
             accessibilityRole="button"
@@ -261,9 +257,6 @@ const SettingsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  donateContainer: {
-    alignItems: "center",
-  },
   linksContainer: {
     paddingHorizontal: 20,
     gap: 20,

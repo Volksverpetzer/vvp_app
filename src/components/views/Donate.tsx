@@ -6,6 +6,7 @@ import { Platform, StyleSheet, View } from "react-native";
 
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import PaypalButton from "#/components/buttons/PaypalButton";
+import ShopButton from "#/components/buttons/ShopButton";
 import SteadyButton from "#/components/buttons/SteadyButton";
 import StripeButton from "#/components/buttons/StripeButton";
 import UiText from "#/components/ui/UiText";
@@ -25,6 +26,7 @@ interface DonateProperties {
 }
 
 /**
+ * @param article_link
  * @param properties - The properties for the Donate component
  * @returns The Donate component
  */
@@ -159,6 +161,7 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
           />
         )}
         <SteadyButton article_link={article_link} />
+        <ShopButton article_link={article_link} />
       </View>
       <AnimatedSuccess animated={successAnimated} />
     </>

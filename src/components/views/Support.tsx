@@ -3,7 +3,6 @@ import { useState } from "react";
 import Modal from "react-native-modal";
 
 import { CloseIcon, HeartIcon } from "#/components/Icons";
-import ShopButton from "#/components/buttons/ShopButton";
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
@@ -54,7 +53,6 @@ const Support = ({ article_link }: SupportProperties) => {
         background={backgroundColor}
         article_link={article_link}
       />
-      <ShopButton article_link={article_link} />
       <UiText style={{ textAlign: "center", fontSize: 16 }}>
         Du willst die Extrameile gehen?{"\n"}
         Damit jeder Cent bei uns ankommt,{"\n"}kannst du einen
