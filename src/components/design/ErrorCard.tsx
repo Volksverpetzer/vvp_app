@@ -2,14 +2,16 @@ import { ErrorIcon } from "#/components/Icons";
 import type { CardProperties } from "#/components/design/Card";
 import Card from "#/components/design/Card";
 import UiText from "#/components/ui/UiText";
-import { useThemeColor } from "#/hooks/useThemeColor";
+import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 type ErrorCardProperties = CardProperties & { text?: string };
 
 const ErrorCard = (properties: ErrorCardProperties) => {
   const { text, style, ...otherProperties } = properties;
-  const backgroundColor = useThemeColor("errorBackground");
-  const errorText = useThemeColor("errorText");
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].errorBackground;
+  const errorText = Colors[colorScheme].errorText;
 
   return (
     <Card
