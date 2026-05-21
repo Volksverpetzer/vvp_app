@@ -15,18 +15,20 @@ import NotificationManager from "#/helpers/Notifications";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 interface DonateProperties {
   paypalAlways?: boolean; // Whether to always show the paypal button (if false, the button is only shown if platform pay is not supported)
   showPicker?: boolean; // Whether to show the amount picker
   background?: string; // The background color of the component
+  article_link?: HttpsUrl; // Forwarded to SteadyButton for analytics tracking
 }
 
 /**
  * @param properties - The properties for the Donate component
  * @returns The Donate component
  */
-const Donate = (properties: DonateProperties) => {
+const Donate = ({ article_link, ...properties }: DonateProperties) => {
   const [amount, setAmount] = useState(10);
   const [successAnimated, setSuccessAnimated] = useState(false);
   const [isPlatformPaySupported, setIsPlatformPaySupported] = useState(true); // Assume supported until checked
@@ -156,7 +158,7 @@ const Donate = (properties: DonateProperties) => {
             onSuccess={() => logSuccess("Paypal")}
           />
         )}
-        <SteadyButton />
+        <SteadyButton article_link={article_link} />
       </View>
       <AnimatedSuccess animated={successAnimated} />
     </>

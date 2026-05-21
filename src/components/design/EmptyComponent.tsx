@@ -11,7 +11,7 @@ import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 interface EmptyComponentProperties {
   text: string;
-  icon: React.ReactElement;
+  icon: React.ReactElement<{ color?: string }>;
   onPress?: () => void;
   children?: ReactNode;
 }

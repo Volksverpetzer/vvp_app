@@ -49,7 +49,11 @@ const Support = ({ article_link }: SupportProperties) => {
       >
         So kannst du uns unterstützen:
       </UiText>
-      <Donate paypalAlways={true} background={backgroundColor} />
+      <Donate
+        paypalAlways={true}
+        background={backgroundColor}
+        article_link={article_link}
+      />
       <ShopButton article_link={article_link} />
       <UiText style={{ textAlign: "center", fontSize: 16 }}>
         Du willst die Extrameile gehen?{"\n"}
