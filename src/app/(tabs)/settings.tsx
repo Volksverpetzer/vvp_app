@@ -17,7 +17,6 @@ import {
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import ShopButton from "#/components/buttons/ShopButton";
 import Collapsable from "#/components/design/Collapsable";
 import DesignedLink from "#/components/design/DesignedLink";
 import Divider from "#/components/design/Divider";
