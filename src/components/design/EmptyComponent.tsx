@@ -1,6 +1,7 @@
+import React, { type ReactNode } from "react";
 import { View } from "react-native";
 
-import { HeartIcon, WorldIcon } from "#/components/Icons";
+import { HeartIcon } from "#/components/Icons";
 import Card from "#/components/design/Card";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiText from "#/components/ui/UiText";
@@ -10,19 +11,27 @@ import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 interface EmptyComponentProperties {
   text: string;
+  icon: React.ReactElement;
   onPress?: () => void;
+  children?: ReactNode;
 }
 
-const EmptyComponent = ({ text, onPress }: EmptyComponentProperties) => {
+const EmptyComponent = ({
+  text,
+  icon,
+  onPress,
+  children,
+}: EmptyComponentProperties) => {
   const corporate = useCorporateColor();
 
   return (
     <>
       <View style={{ marginVertical: 40 }}>
-        <UiEmptyState icon={<WorldIcon size={60} />} onPress={onPress}>
+        <UiEmptyState icon={icon} onPress={onPress}>
           {text}
         </UiEmptyState>
       </View>
+      {children}
       <Card
         style={[
           globalStyles.centered,

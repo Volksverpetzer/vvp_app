@@ -9,7 +9,7 @@ import type {
 } from "react-native";
 import { FlatList, RefreshControl, View } from "react-native";
 
-import { SearchIcon, SettingsIcon } from "#/components/Icons";
+import { SearchIcon, SettingsIcon, WorldIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import GenericPost from "#/components/posts/GenericPost";
@@ -260,6 +260,7 @@ const Feed = (properties: FeedProperties) => {
         ListEmptyComponent={
           <EmptyComponent
             text="Keine Ergebnisse. Versuche es später erneut oder erweitere deine Feeds in den Einstellungen."
+            icon={<WorldIcon size={60} />}
             onPress={onRefresh}
           />
         }
