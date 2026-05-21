@@ -15,7 +15,7 @@ jest.mock("react-native-view-shot", () => {
   const React = require("react");
   return {
     __esModule: true,
-    default: React.forwardRef(({ children }: any, ref: any) => {
+    default: React.forwardRef(function ViewShot({ children }: any, ref: any) {
       React.useImperativeHandle(ref, () => ({ capture: jest.fn() }));
       return <>{children}</>;
     }),
