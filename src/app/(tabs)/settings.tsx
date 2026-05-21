@@ -17,7 +17,6 @@ import {
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import ShopButton from "#/components/buttons/ShopButton";
 import Collapsable from "#/components/design/Collapsable";
 import DesignedLink from "#/components/design/DesignedLink";
 import Divider from "#/components/design/Divider";
@@ -194,11 +193,7 @@ const SettingsScreen = () => {
             text="Quellcode"
           />
         </View>
-        <View style={styles.donateContainer}>
-          <Donate showPicker={false} />
-          <Space size={20} />
-          <ShopButton article_link={Config.wpUrl} />
-        </View>
+        <Donate showPicker={false} />
         <View style={styles.infoContainer}>
           <UiPressable
             accessibilityRole="button"
@@ -261,9 +256,6 @@ const SettingsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  donateContainer: {
-    alignItems: "center",
-  },
   linksContainer: {
     paddingHorizontal: 20,
     gap: 20,
