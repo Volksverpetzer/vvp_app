@@ -1,4 +1,5 @@
-import { Image, ScrollView, View } from "react-native";
+import { Image } from "expo-image";
+import { ScrollView, View } from "react-native";
 
 import { ErrorIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
@@ -8,13 +9,15 @@ import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
+import NotFoundImage from "#assets/images/404.webp";
+
 const NotFoundScreen = () => {
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
   return (
     <View style={[globalStyles.container, { backgroundColor }]}>
       <ScrollView
-        style={globalStyles.content}
+        style={{ flex: 1 }}
         contentContainerStyle={[
           globalStyles.content,
           {
@@ -29,9 +32,9 @@ const NotFoundScreen = () => {
           icon={<ErrorIcon size={60} />}
         >
           <Image
-            source={require("#assets/images/404.webp")}
+            source={NotFoundImage}
             style={{ width: "100%", height: 200 }}
-            resizeMode="contain"
+            contentFit="contain"
           />
         </EmptyComponent>
       </ScrollView>
