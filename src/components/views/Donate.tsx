@@ -22,7 +22,7 @@ interface DonateProperties {
   paypalAlways?: boolean; // Whether to always show the paypal button (if false, the button is only shown if platform pay is not supported)
   showPicker?: boolean; // Whether to show the amount picker
   background?: string; // The background color of the component
-  article_link?: HttpsUrl; // Forwarded to SteadyButton for analytics tracking
+  article_link?: HttpsUrl; // Forwarded to SteadyButton and ShopButton for analytics tracking
 }
 
 /**
