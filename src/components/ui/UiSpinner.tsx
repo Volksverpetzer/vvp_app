@@ -1,5 +1,9 @@
 import { Image } from "expo-image";
-import type { ActivityIndicatorProps, ViewStyle } from "react-native";
+import type {
+  ActivityIndicatorProps,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import { ActivityIndicator } from "react-native";
 
 import View from "#/components/design/View";
@@ -8,14 +12,22 @@ import { globalStyles } from "#/constants/GlobalStyles";
 import { AppImages } from "#/helpers/AppImages";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
-const UiSpinner = (
-  props: ActivityIndicatorProps & { containerStyle?: ViewStyle; text?: string },
-) => {
+type UiSpinnerProperties = ActivityIndicatorProps & {
+  containerStyle?: StyleProp<ViewStyle>;
+  text?: string;
+};
+
+const UiSpinner = (props: UiSpinnerProperties) => {
   const { containerStyle, text, ...indicatorProps } = props;
   const corporate = useCorporateColor();
   return (
-    <View style={[globalStyles.centered, { width: "100%" }, containerStyle]}>
-      {text && <UiText>{text}</UiText>}
+    <View
+      style={[
+        globalStyles.centered,
+        { width: "100%", gap: 12 },
+        containerStyle,
+      ]}
+    >
       {AppImages.loadingAnimation ? (
         <Image
           source={AppImages.loadingAnimation}
@@ -24,6 +36,7 @@ const UiSpinner = (
       ) : (
         <ActivityIndicator color={corporate} {...indicatorProps} />
       )}
+      {text && <UiText style={{ textAlign: "center" }}>{text}</UiText>}
     </View>
   );
 };
