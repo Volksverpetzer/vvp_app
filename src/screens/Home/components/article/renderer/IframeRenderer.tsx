@@ -3,7 +3,7 @@ import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
 import { View } from "react-native";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
-import WebView from "react-native-webview";
+import { WebView } from "react-native-webview";
 import type {
   WebViewErrorEvent,
   WebViewMessageEvent,

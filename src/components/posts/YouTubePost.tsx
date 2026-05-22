@@ -1,9 +1,10 @@
 import { Image } from "expo-image";
 import { useState } from "react";
-import { TouchableOpacity, View, useWindowDimensions } from "react-native";
-import WebView from "react-native-webview";
+import { View, useWindowDimensions } from "react-native";
+import { WebView } from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
+import UiPressable from "#/components/ui/UiPressable";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -33,7 +34,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
   if (!loaded)
     return (
       <View style={{ flex: 1, overflow: "hidden", width: "100%", height }}>
-        <TouchableOpacity
+        <UiPressable
           accessibilityRole="button"
           onPress={() => setLoaded(true)}
           style={{ width: "100%", height, backgroundColor: corporate }}
@@ -45,7 +46,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
           <View style={globalStyles.centeredAbsolute} pointerEvents="none">
             <PlayIcon size={56} color={YOUTUBE_BRAND_COLOR} />
           </View>
-        </TouchableOpacity>
+        </UiPressable>
       </View>
     );
 

@@ -1,9 +1,8 @@
-import { Pressable } from "react-native";
-
 import { ShareIcon } from "#/components/Icons";
 import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -45,7 +44,7 @@ const Footer = (properties: FooterProperties) => {
           Überlass es nicht dem Algorithmus,{"\n"}ob deine Freunde{"\n"}von
           diesem Post erfahren:
         </UiText>
-        <Pressable
+        <UiPressable
           accessibilityRole="button"
           style={[
             globalStyles.centered,
@@ -65,7 +64,7 @@ const Footer = (properties: FooterProperties) => {
           }
         >
           <ShareIcon color="white" size={32} />
-        </Pressable>
+        </UiPressable>
       </View>
       <Card
         style={{

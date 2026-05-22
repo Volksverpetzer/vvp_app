@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import type { GestureResponderEvent } from "react-native";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -36,9 +37,9 @@ const StandardStepper = (properties: StandardStepperProperties) => {
       {step === 0 ? (
         <View style={{ width: 89 }} />
       ) : (
-        <TouchableOpacity accessibilityRole="button" onPress={previousStep}>
+        <UiPressable accessibilityRole="button" onPress={previousStep}>
           <UiText style={stepperStyles.nextButton}>Zurück</UiText>
-        </TouchableOpacity>
+        </UiPressable>
       )}
       {[...Array.from({ length: data.length }).keys()].map((_, index) => {
         const opacity = step === index ? 1 : 0.3;
@@ -58,11 +59,11 @@ const StandardStepper = (properties: StandardStepperProperties) => {
         );
       })}
       {step < data.length - 1 ? (
-        <TouchableOpacity accessibilityRole="button" onPress={nextStep}>
+        <UiPressable accessibilityRole="button" onPress={nextStep}>
           <UiText style={stepperStyles.nextButton}>Weiter</UiText>
-        </TouchableOpacity>
+        </UiPressable>
       ) : (
-        <TouchableOpacity
+        <UiPressable
           accessibilityRole="button"
           onPress={onFinish}
           style={[
@@ -73,7 +74,7 @@ const StandardStepper = (properties: StandardStepperProperties) => {
           <UiText style={globalStyles.whiteText}>
             {buttonTitle || "Get Started"}
           </UiText>
-        </TouchableOpacity>
+        </UiPressable>
       )}
     </View>
   );

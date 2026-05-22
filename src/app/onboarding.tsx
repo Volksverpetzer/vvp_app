@@ -3,12 +3,12 @@ import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import { useContext, useState } from "react";
-import { Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
 import Config from "#/constants/Config";
@@ -143,7 +143,7 @@ const Onboarding = () => {
       description: `Unser Versprechen: Wir geben uns alle Mühe, den Datenkraken so wenig zu überliefern wie möglich. Du braucht keine Accounts, wir tracken dich nicht. Mit der Nutzung stimmst du unserer Datenschutzerklärung zu.`,
       TopComponent: () => <SafetyIcon color={corporate} size={80} />,
       Component: () => (
-        <Pressable
+        <UiPressable
           accessibilityRole="button"
           onPress={() => {
             openBrowserAsync(Constants.expoConfig.extra.dataProtectionUrl);
@@ -159,7 +159,7 @@ const Onboarding = () => {
           >
             Datenschutzerklärung
           </UiText>
-        </Pressable>
+        </UiPressable>
       ),
     },
   ];

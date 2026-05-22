@@ -94,7 +94,7 @@ describe("Loader", () => {
     await waitFor(() => {
       expect(
         getByText(
-          "error:Beitrag konnte nicht geladen werden. Bitte erneut versuchen.",
+          "error:Beitrag konnte nicht geladen werden. Bitte später erneut versuchen.",
         ),
       ).toBeTruthy();
     });
@@ -122,7 +122,7 @@ describe("Loader", () => {
 
     expect(
       queryByText(
-        "error:Beitrag konnte nicht geladen werden. Bitte erneut versuchen.",
+        "error:Beitrag konnte nicht geladen werden. Bitte später erneut versuchen.",
       ),
     ).toBeNull();
   });

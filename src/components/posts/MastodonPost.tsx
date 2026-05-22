@@ -1,12 +1,12 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
-import { TouchableOpacity } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -49,7 +49,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
     }
   }
   return (
-    <TouchableOpacity
+    <UiPressable
       accessibilityRole="button"
       onPress={() => router.push(`/bsky/${post.id}`)}
       style={{ flex: 1 }}
@@ -145,7 +145,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
             })}
         </View>
       </Hyperlink>
-    </TouchableOpacity>
+    </UiPressable>
   );
 };
 

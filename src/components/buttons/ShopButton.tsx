@@ -7,15 +7,12 @@ import { registerEvent } from "#/helpers/network/Analytics";
 import type { HttpsUrl } from "#/types";
 
 interface ShopButtonProperties {
-  article_link: HttpsUrl;
-  location?: string;
+  article_link?: HttpsUrl;
 }
 
-const ShopButton = ({
-  article_link,
-  location = "ArticleBottom",
-}: ShopButtonProperties) => {
+const ShopButton = ({ article_link }: ShopButtonProperties) => {
   const shopUrl = Config.donations.shop;
+  const link = article_link ?? Config.wpUrl;
   if (!shopUrl) return null;
 
   return (
@@ -24,7 +21,7 @@ const ShopButton = ({
       accessibilityLabel="Unseren Shop besuchen"
       accessibilityHint="Öffnet den Shop im Browser"
       onPress={() => {
-        registerEvent(article_link, "Shop", { location });
+        registerEvent(link, "Shop");
         Linking.openURL(shopUrl);
       }}
     />

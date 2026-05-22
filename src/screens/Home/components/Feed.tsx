@@ -7,13 +7,14 @@ import type {
   ViewStyle,
   ViewToken,
 } from "react-native";
-import { FlatList, Pressable, RefreshControl, View } from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 
-import { SearchIcon, SettingsIcon } from "#/components/Icons";
+import { SearchIcon, SettingsIcon, WorldIcon } from "#/components/Icons";
 import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import GenericPost from "#/components/posts/GenericPost";
-import Heading from "#/components/typography/Heading";
+import UiEmptyState from "#/components/ui/UiEmptyState";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -171,38 +172,38 @@ const Feed = (properties: FeedProperties) => {
   }, []);
 
   const contentContainerStyle = useMemo(
-    () => [properties?.style, globalStyles.content],
-    [properties?.style],
+    () => [properties.style, globalStyles.content],
+    [properties.style],
   );
 
   if (!initialLoad) {
     return (
       <LoadingFallback
         text="Lade Feed..."
-        containerStyle={properties?.style}
+        containerStyle={properties.style}
         spinnerProps={{ size: "large" }}
       />
     );
   }
 
   if (properties.fetchers.length === 0) {
-    // show centered link to settings and remind user to choose content:
     return (
       <View
         style={{
           justifyContent: "center",
           alignItems: "center",
           height: "100%",
-          ...properties?.style,
+          paddingHorizontal: 20,
+          ...properties.style,
         }}
       >
-        <Heading>Bitte wähle mindestens ein Feed aus:</Heading>
-        <Pressable
-          accessibilityRole="button"
+        <UiEmptyState
+          icon={<SettingsIcon />}
           onPress={() => router.push("/settings")}
         >
-          <SettingsIcon color={corporate} />
-        </Pressable>
+          Bitte wähle mindestens ein Feed in den Einstellungen aus, um Inhalte
+          zu sehen.
+        </UiEmptyState>
       </View>
     );
   }
@@ -234,7 +235,7 @@ const Feed = (properties: FeedProperties) => {
                 { paddingBottom: 30, alignItems: "center" },
               ]}
             >
-              <Pressable
+              <UiPressable
                 accessibilityRole="button"
                 style={globalStyles.centered}
                 onPress={() => router.push("/search")}
@@ -251,12 +252,18 @@ const Feed = (properties: FeedProperties) => {
                   aus!
                 </UiText>
                 <SearchIcon color={corporate} size={24} />
-              </Pressable>
+              </UiPressable>
             </View>
           ))
         }
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<EmptyComponent reload={onRefresh} />}
+        ListEmptyComponent={
+          <EmptyComponent
+            text="Keine Ergebnisse. Versuche es später erneut oder erweitere deine Feeds in den Einstellungen."
+            icon={<WorldIcon size={60} />}
+            onPress={onRefresh}
+          />
+        }
         contentContainerStyle={contentContainerStyle}
       />
     </View>

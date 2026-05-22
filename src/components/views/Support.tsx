@@ -1,14 +1,12 @@
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
-import { Pressable } from "react-native";
 import Modal from "react-native-modal";
 
 import { CloseIcon, HeartIcon } from "#/components/Icons";
-import ShopButton from "#/components/buttons/ShopButton";
-import SteadyButton from "#/components/buttons/SteadyButton";
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -19,10 +17,9 @@ import Donate from "./Donate";
 
 interface SupportProperties {
   article_link: HttpsUrl;
-  location?: string;
 }
 
-const Support = ({ article_link, location }: SupportProperties) => {
+const Support = ({ article_link }: SupportProperties) => {
   const [showBank, setShowBank] = useState(false);
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
@@ -51,20 +48,22 @@ const Support = ({ article_link, location }: SupportProperties) => {
       >
         So kannst du uns unterstützen:
       </UiText>
-      <Donate paypalAlways={true} background={backgroundColor} />
-      <SteadyButton article_link={article_link} location={location} />
-      <ShopButton article_link={article_link} location={location} />
+      <Donate
+        paypalAlways={true}
+        background={backgroundColor}
+        article_link={article_link}
+      />
       <UiText style={{ textAlign: "center", fontSize: 16 }}>
         Du willst die Extrameile gehen?{"\n"}
         Damit jeder Cent bei uns ankommt,{"\n"}kannst du einen
       </UiText>
-      <Pressable
+      <UiPressable
         accessibilityRole="button"
         onPress={banktransfer}
         style={{ padding: 10 }}
       >
         <Heading style={{ color: corporate }}>Dauerauftrag</Heading>
-      </Pressable>
+      </UiPressable>
       <UiText style={{ textAlign: "center", fontSize: 16 }}>
         direkt bei der Bank einrichten.
       </UiText>
@@ -82,12 +81,12 @@ const Support = ({ article_link, location }: SupportProperties) => {
               padding: 5,
             }}
           >
-            <Pressable
+            <UiPressable
               accessibilityRole="button"
               onPress={() => setShowBank(false)}
             >
               <CloseIcon size={48} color={corporate} />
-            </Pressable>
+            </UiPressable>
           </View>
           <UiText style={{ fontSize: 25 }}>Banküberweisung</UiText>
           <Space size={20} />

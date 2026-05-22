@@ -72,7 +72,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   );
 
   if (!settingsLoaded) {
-    return;
+    return null;
   }
 
   return (

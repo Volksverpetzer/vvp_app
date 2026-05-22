@@ -1,11 +1,12 @@
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, Pressable, View } from "react-native";
+import { Animated, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import { LogoBig } from "#/components/SvgIcons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -69,7 +70,7 @@ const HomeScreen = () => {
         minHeight={95}
         maxHeight={HEADER_HEIGHT}
       >
-        <Pressable
+        <UiPressable
           accessibilityRole="button"
           onPress={() => router.push("/search")}
           style={[
@@ -87,7 +88,7 @@ const HomeScreen = () => {
             Suche ...
           </UiText>
           <SearchIcon color="white" size={24} />
-        </Pressable>
+        </UiPressable>
       </AnimatedHeader>
       <View style={[globalStyles.container, { backgroundColor }]}>
         <Feed

@@ -1,4 +1,4 @@
-import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import type { AppBskyFeedDefs } from "@atproto/api";
 
 import BlueskyPostCard from "#/components/posts/bsky/BlueskyPostCard";
 import Config from "#/constants/Config";
@@ -21,9 +21,9 @@ export const BlueskyFetcher = {
     );
     const postsByUri: {
       [uri: string]: {
-        post: FeedViewPost;
+        post: AppBskyFeedDefs.FeedViewPost;
         uri: string;
-        replies: FeedViewPost[];
+        replies: AppBskyFeedDefs.FeedViewPost[];
       };
     } = {};
     const allReplies = new Set<string>();

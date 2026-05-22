@@ -1,9 +1,10 @@
 import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
 import Heading from "#/components/typography/Heading";
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -40,7 +41,7 @@ const Collapsable = ({
         paddingHorizontal: 20,
       }}
     >
-      <Pressable
+      <UiPressable
         accessibilityRole="button"
         onPress={toggle}
         style={styles.header}
@@ -54,7 +55,7 @@ const Collapsable = ({
           size={24}
           color={textColor}
         />
-      </Pressable>
+      </UiPressable>
       {open && <View style={styles.content}>{children}</View>}
     </View>
   );
