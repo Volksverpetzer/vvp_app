@@ -68,6 +68,11 @@ const SearchContent = ({
   const corporate = Colors[colorScheme].primary;
 
   const hasResults = searchParams.length >= 2;
+  // Derive the rendered tab synchronously so URL submissions never flash the
+  // Artikel branch before the useEffect fires and updates activeTab.
+  const effectiveTab: SearchTab = searchParams.includes("://")
+    ? "ai"
+    : activeTab;
 
   return (
     <View style={[globalStyles.container, { backgroundColor }]}>
@@ -79,7 +84,7 @@ const SearchContent = ({
           searchRef={searchRef}
           resultsLength={resultsLength}
           isLoading={isLoading}
-          showFaktenBot={activeTab === "ai"}
+          showFaktenBot={effectiveTab === "ai"}
         />
 
         {/* Tab toggle */}
@@ -94,21 +99,21 @@ const SearchContent = ({
             <UiTabIconLabel
               icon={(color) => <SearchIcon color={color} size={24} />}
               label="Artikel"
-              isActive={activeTab === "artikel"}
+              isActive={effectiveTab === "artikel"}
               onPress={() => handleTabChange("artikel")}
               style={{ paddingVertical: 10 }}
             />
             <UiTabIconLabel
               icon={(color) => <SafetyIcon color={color} size={24} />}
               label="KI-Faktenbot"
-              isActive={activeTab === "ai"}
+              isActive={effectiveTab === "ai"}
               onPress={() => handleTabChange("ai")}
               style={{ paddingVertical: 10 }}
             />
           </UiTabView>
         </View>
 
-        {activeTab === "artikel" &&
+        {effectiveTab === "artikel" &&
           (hasResults ? (
             <AlgoliaSearchResults searchString={searchParams} />
           ) : (
@@ -122,7 +127,7 @@ const SearchContent = ({
             </View>
           ))}
 
-        {activeTab === "ai" &&
+        {effectiveTab === "ai" &&
           (hasResults ? (
             <AISearch
               setIsLoading={setIsLoading}
