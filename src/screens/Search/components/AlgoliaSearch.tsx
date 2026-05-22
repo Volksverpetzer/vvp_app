@@ -7,7 +7,6 @@ import { FlatList, StyleSheet } from "react-native";
 import View from "#/components/design/View";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
-import { globalStyles } from "#/constants/GlobalStyles";
 import {
   ALGOLIA_APP_ID,
   ALGOLIA_INDEX_NAME,
@@ -102,12 +101,7 @@ const AlgoliaSearchResults = ({
   );
 
   if (isLoading) {
-    return (
-      <View style={globalStyles.centered}>
-        <UiText>Artikel werden gesucht …</UiText>
-        <UiSpinner />
-      </View>
-    );
+    return <UiSpinner text="Artikel werden gesucht …" />;
   }
 
   if (results.length === 0 && searchString.length >= 2) {
