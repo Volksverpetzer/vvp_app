@@ -37,18 +37,21 @@ const mockUseAppColorScheme = useAppColorScheme as jest.Mock;
 
 // We'll capture the last props passed to the WebView to inspect style.height updates
 let mockLastWebViewProps: any = null;
-jest.mock("react-native-webview", () => ({
-  __esModule: true,
-  default: (props: any) => {
+jest.mock("react-native-webview", () => {
+  const MockWebViewComponent = (props: any) => {
     mockLastWebViewProps = props;
     const ReactRuntime = jest.requireActual("react");
-    // Render a View that propagates the style prop so tests can inspect it
     return ReactRuntime.createElement("View", {
       testID: "mock-webview",
       style: props.style,
     });
-  },
-}));
+  };
+  return {
+    __esModule: true,
+    default: MockWebViewComponent,
+    WebView: MockWebViewComponent,
+  };
+});
 
 describe("IframeRenderer dynamic height", () => {
   beforeEach(() => {
