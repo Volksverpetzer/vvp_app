@@ -3,9 +3,9 @@ import { Text } from "react-native";
 
 import Loader from "#/components/loader/Loader";
 
-jest.mock("#/components/animations/LoadingFallback", () => {
+jest.mock("#/components/ui/UiSpinner", () => {
   const { Text: MockText } = jest.requireActual("react-native");
-  return function MockLoadingFallback({ text }: { text?: string }) {
+  return function MockUiSpinner({ text }: { text?: string }) {
     return <MockText>{`loading:${text}`}</MockText>;
   };
 });

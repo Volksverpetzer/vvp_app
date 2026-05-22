@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
-import LoadingFallback from "#/components/animations/LoadingFallback";
 import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import GenericPost from "#/components/posts/GenericPost";
 import InstaPostCard from "#/components/posts/insta/InstaPostCard";
 import UiEmptyState from "#/components/ui/UiEmptyState";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
@@ -130,7 +130,7 @@ const MyFavs = () => {
     <View style={{ flex: 1, gap: 20 }}>
       {isLoading ? (
         <Card>
-          <LoadingFallback text="Lade Favoriten..." />
+          <UiSpinner text="Lade Favoriten..." />
         </Card>
       ) : (
         posts.map((post) => (
