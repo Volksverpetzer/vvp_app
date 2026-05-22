@@ -126,12 +126,12 @@ export const ReportStatusIcon = ({
   />
 );
 
-export const SafetyIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="shield-check" />
+export const SafetyIcon = ({ size, ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="shield-check" size={size ?? 32} />
 );
 
-export const SearchIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="search" />
+export const SearchIcon = ({ size, ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="search" size={size ?? 32} />
 );
 
 export const SettingsIcon = ({ size, ...rest }: OcticonsProps) => (

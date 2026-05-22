@@ -79,14 +79,14 @@ const SearchContent = ({
         >
           <UiTabView width={240}>
             <UiTabIconLabel
-              icon={(color) => <SearchIcon size={24} color={color} />}
+              icon={(color) => <SearchIcon color={color} size={24} />}
               label="Artikel"
               isActive={activeTab === "artikel"}
               onPress={() => setActiveTab("artikel")}
               style={{ paddingVertical: 10 }}
             />
             <UiTabIconLabel
-              icon={(color) => <SafetyIcon size={24} color={color} />}
+              icon={(color) => <SafetyIcon color={color} size={24} />}
               label="KI-Faktenbot"
               isActive={activeTab === "ai"}
               onPress={() => setActiveTab("ai")}
