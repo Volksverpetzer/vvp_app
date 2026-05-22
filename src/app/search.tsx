@@ -52,8 +52,13 @@ const SearchContent = ({
     (tab: SearchTab) => {
       setActiveTab(tab);
       setSearchType(tab);
+      // Clear URL-based searchParams when switching to Artikel so effectiveTab
+      // resolves to the new activeTab instead of being locked to "ai".
+      if (tab === "artikel" && searchParams.includes("://")) {
+        setSearchParams("");
+      }
     },
-    [setSearchType],
+    [searchParams, setSearchType, setSearchParams],
   );
 
   useEffect(() => {
