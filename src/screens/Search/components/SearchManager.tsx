@@ -43,7 +43,9 @@ const SearchManager = ({
     useState<string>(initialSearch);
   const [resultsLength, setResultsLength] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
-  const [searchType, setSearchType] = useState<"ai" | "artikel">("artikel");
+  const [searchType, setSearchType] = useState<"ai" | "artikel">(
+    initialSearch?.includes("://") ? "ai" : "artikel",
+  );
   const isAISearch = searchType === "ai";
 
   // Reset resultsLength whenever a new search is submitted so stale counts
@@ -80,9 +82,9 @@ const SearchManager = ({
     if (initialSearch) {
       setSearch(initialSearch);
       setSearchParameters(initialSearch);
+      setSearchType(initialSearch.includes("://") ? "ai" : "artikel");
 
-      // If it's a URL, set the rechercheur achievement
-      if (initialSearch && initialSearch.includes("://")) {
+      if (initialSearch.includes("://")) {
         Achievements.setAchievementValue("rechercheur");
       }
     }
