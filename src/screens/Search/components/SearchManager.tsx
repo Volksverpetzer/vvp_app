@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Config from "#/constants/Config";
 import { Achievements } from "#/helpers/Achievements";
@@ -48,11 +48,12 @@ const SearchManager = ({
   );
   const isAISearch = searchType === "ai";
 
-  // Reset resultsLength whenever a new search is submitted so stale counts
-  // from a previous tab's results are never carried over into analytics.
-  useEffect(() => {
+  // Reset resultsLength synchronously so the analytics effect never sees a
+  // stale count paired with a new query (useEffect-based reset fires too late).
+  const handleSetSearchParams = useCallback((value: string) => {
     setResultsLength(undefined);
-  }, [searchParameters]);
+    setSearchParameters(value);
+  }, []);
 
   // Set search achievement when search is performed
   useEffect(() => {
@@ -81,6 +82,7 @@ const SearchManager = ({
   useEffect(() => {
     if (initialSearch) {
       setSearch(initialSearch);
+      setResultsLength(undefined);
       setSearchParameters(initialSearch);
       setSearchType(initialSearch.includes("://") ? "ai" : "artikel");
 
@@ -99,7 +101,7 @@ const SearchManager = ({
         isLoading,
         isAISearch,
         setSearch,
-        setSearchParams: setSearchParameters,
+        setSearchParams: handleSetSearchParams,
         setResultsLength,
         setIsLoading,
         setSearchType,
