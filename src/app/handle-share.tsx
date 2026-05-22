@@ -91,7 +91,13 @@ const HandleShare = () => {
   }, [firstPayload, hasShareIntent, router]);
 
   if (isResolving) {
-    return <UiSpinner text="Share wird verarbeitet..." />;
+    return (
+      <UiSpinner
+        size="large"
+        text="Share wird verarbeitet..."
+        containerStyle={{ padding: 24 }}
+      />
+    );
   }
 
   return (
