@@ -56,10 +56,15 @@ const SearchManager = ({
   }, []);
 
   // Clear resultsLength on tab switch so the analytics effect doesn't re-fire
-  // with a stale count under the new searchType.
+  // with a stale count under the new searchType. Also reset isLoading when
+  // switching away from AI: useAISearch skips setIsLoading(false) on abort,
+  // which would leave the spinner stuck if the tab is switched mid-request.
   const handleSetSearchType = useCallback((type: "ai" | "artikel") => {
     setResultsLength(undefined);
     setSearchType(type);
+    if (type === "artikel") {
+      setIsLoading(false);
+    }
   }, []);
 
   // Set search achievement when search is performed

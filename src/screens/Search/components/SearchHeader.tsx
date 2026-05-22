@@ -47,12 +47,13 @@ const SearchHeader = ({
   const handleSubmit = useCallback(() => {
     const trimmed = search.trim();
     if (trimmed.length < 2) return;
+    if (trimmed !== search) setSearch(trimmed);
     setSearchParams(trimmed);
     Keyboard.dismiss();
     if (onSubmit) {
       onSubmit();
     }
-  }, [search, setSearchParams, onSubmit]);
+  }, [search, setSearch, setSearchParams, onSubmit]);
 
   return (
     <>
