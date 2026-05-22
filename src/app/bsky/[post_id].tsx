@@ -1,10 +1,10 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
-import LoadingFallback from "#/components/animations/LoadingFallback";
 import NavBar from "#/components/bars/NavBar";
 import View from "#/components/design/View";
 import BlueskyPostDetail from "#/components/posts/bsky/BlueskyPostDetail";
+import UiSpinner from "#/components/ui/UiSpinner";
 import { globalStyles } from "#/constants/GlobalStyles";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { type BlueskyPostProperties, type HttpsUrl } from "#/types";
@@ -29,12 +29,7 @@ const BskyScreen = () => {
   }, [parameters.post_id, router]);
 
   if (!post) {
-    return (
-      <LoadingFallback
-        text="Lade Bluesky Beitrag..."
-        spinnerProps={{ size: "large" }}
-      />
-    );
+    return <UiSpinner text="Lade Bluesky Beitrag..." size="large" />;
   }
 
   const postId = post.post.post.uri.split("/app.bsky.feed.post/")[1];

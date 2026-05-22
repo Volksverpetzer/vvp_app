@@ -10,7 +10,6 @@ import type {
 import { FlatList, RefreshControl, View } from "react-native";
 
 import { SearchIcon, SettingsIcon, WorldIcon } from "#/components/Icons";
-import LoadingFallback from "#/components/animations/LoadingFallback";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import GenericPost from "#/components/posts/GenericPost";
 import UiEmptyState from "#/components/ui/UiEmptyState";
@@ -178,10 +177,10 @@ const Feed = (properties: FeedProperties) => {
 
   if (!initialLoad) {
     return (
-      <LoadingFallback
+      <UiSpinner
         text="Lade Feed..."
+        size="large"
         containerStyle={properties.style}
-        spinnerProps={{ size: "large" }}
       />
     );
   }

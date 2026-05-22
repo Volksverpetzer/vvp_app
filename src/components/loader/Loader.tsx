@@ -2,8 +2,8 @@ import type { ReactElement } from "react";
 import React, { useEffect, useState } from "react";
 import type { ActivityIndicatorProps } from "react-native";
 
-import LoadingFallback from "#/components/animations/LoadingFallback";
 import ErrorCard from "#/components/design/ErrorCard";
+import UiSpinner from "#/components/ui/UiSpinner";
 
 type LoaderProps<TData> = {
   keyValue: string;
@@ -67,14 +67,10 @@ const Loader = <TData,>({
 
   if (isLoading) {
     return (
-      <LoadingFallback
+      <UiSpinner
+        {...spinnerProps}
         text={loadingText}
-        spinnerProps={spinnerProps}
-        containerStyle={{
-          height: undefined,
-          minHeight: 280,
-          paddingVertical: 24,
-        }}
+        containerStyle={{ minHeight: 280, paddingVertical: 24 }}
       />
     );
   }
