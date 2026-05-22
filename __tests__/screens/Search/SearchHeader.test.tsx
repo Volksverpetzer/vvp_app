@@ -55,7 +55,7 @@ describe("SearchHeader", () => {
   beforeEach(() => jest.clearAllMocks());
 
   describe("headline text", () => {
-    it("shows 'Artikel Suche' when showFaktenBot is false", () => {
+    it("shows 'Artikel-Suche' when showFaktenBot is false", () => {
       const { getByText } = render(
         <SearchHeader {...baseProps} showFaktenBot={false} />,
       );
