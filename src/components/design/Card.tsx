@@ -1,6 +1,7 @@
 import { View as DefaultView } from "react-native";
 
-import { useThemeColor } from "#/hooks/useThemeColor";
+import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 export type CardProperties = DefaultView["props"] & {
   key?: string;
@@ -8,7 +9,8 @@ export type CardProperties = DefaultView["props"] & {
 
 const Card = (properties: CardProperties) => {
   const { style, ...otherProperties } = properties;
-  const backgroundColor = useThemeColor("background");
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].background;
 
   return (
     <DefaultView
