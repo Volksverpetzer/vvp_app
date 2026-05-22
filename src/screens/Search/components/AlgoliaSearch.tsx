@@ -1,7 +1,6 @@
 import { searchClient } from "@algolia/client-search";
 import { useRouter } from "expo-router";
-import debounce from "lodash/debounce";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 
 import View from "#/components/design/View";
@@ -31,49 +30,41 @@ const AlgoliaSearchResults = ({
   const router = useRouter();
 
   const client = searchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
-  // Create a debounced search function to avoid too many API calls
-  const debouncedSearch = useRef(
-    debounce(async (query: string) => {
-      if (!query || query.length < 2) {
-        setResults([]);
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        // Search across multiple indices
-        const { hits } = await client.searchSingleIndex({
-          indexName: ALGOLIA_INDEX_NAME,
-          searchParams: {
-            query,
-            hitsPerPage: maxResults,
-          },
-        });
-        setResults(hits);
-        onResultsLength?.(hits.length);
-      } catch (error) {
-        console.error("Algolia search error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300),
-  ).current;
 
   useEffect(() => {
-    // If there's no search string, clear the results
-    if (!searchString) {
+    if (!searchString || searchString.length < 2) {
       setResults([]);
+      setIsLoading(false);
       return;
     }
 
     setIsLoading(true);
-    debouncedSearch(searchString);
+    let cancelled = false;
 
-    // Cleanup function to cancel debounced search on unmount
+    const timer = setTimeout(async () => {
+      try {
+        const { hits } = await client.searchSingleIndex({
+          indexName: ALGOLIA_INDEX_NAME,
+          searchParams: { query: searchString, hitsPerPage: maxResults },
+        });
+        if (!cancelled) {
+          setResults(hits);
+          onResultsLength?.(hits.length);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Algolia search error:", error);
+          setIsLoading(false);
+        }
+      }
+    }, 300);
+
     return () => {
-      debouncedSearch.cancel();
+      cancelled = true;
+      clearTimeout(timer);
     };
-  }, [searchString, debouncedSearch]);
+  }, [searchString, maxResults, onResultsLength]);
 
   const handleResultPress = useCallback(
     (item) => {

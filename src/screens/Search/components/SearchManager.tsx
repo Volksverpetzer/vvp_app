@@ -55,6 +55,13 @@ const SearchManager = ({
     setSearchParameters(value);
   }, []);
 
+  // Clear resultsLength on tab switch so the analytics effect doesn't re-fire
+  // with a stale count under the new searchType.
+  const handleSetSearchType = useCallback((type: "ai" | "artikel") => {
+    setResultsLength(undefined);
+    setSearchType(type);
+  }, []);
+
   // Set search achievement when search is performed
   useEffect(() => {
     if (!searchParameters || searchParameters === "") return;
@@ -104,7 +111,7 @@ const SearchManager = ({
         setSearchParams: handleSetSearchParams,
         setResultsLength,
         setIsLoading,
-        setSearchType,
+        setSearchType: handleSetSearchType,
       })}
     </>
   );
