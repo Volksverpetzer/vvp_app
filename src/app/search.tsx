@@ -99,12 +99,14 @@ const SearchContent = ({
           (hasResults ? (
             <AlgoliaSearchResults searchString={searchParams} />
           ) : (
-            <UiEmptyState
-              testID="tutorial-artikel"
-              icon={<SearchIcon color={corporate} />}
-            >
-              Gib einen Suchbegriff ein und drücke „Suchen“
-            </UiEmptyState>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <UiEmptyState
+                testID="tutorial-artikel"
+                icon={<SearchIcon color={corporate} />}
+              >
+                Suchbegriff eingeben, um Artikel zu finden
+              </UiEmptyState>
+            </View>
           ))}
 
         {activeTab === "ai" &&
@@ -116,13 +118,14 @@ const SearchContent = ({
               showFaktenBot={true}
             />
           ) : (
-            <UiEmptyState
-              testID="tutorial-ai"
-              icon={<SafetyIcon color={corporate} />}
-            >
-              Gib eine Frage, einen Begriff oder eine URL ein und drücke
-              „Suchen“
-            </UiEmptyState>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              <UiEmptyState
+                testID="tutorial-ai"
+                icon={<SafetyIcon color={corporate} />}
+              >
+                Frage, Begriff oder URL eingeben
+              </UiEmptyState>
+            </View>
           ))}
       </View>
 
