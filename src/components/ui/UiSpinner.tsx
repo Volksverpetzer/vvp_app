@@ -24,7 +24,7 @@ const UiSpinner = (props: UiSpinnerProperties) => {
     <View
       style={[
         globalStyles.centered,
-        { width: "100%", gap: text ? 12 : 0 },
+        { width: "100%", gap: 12 },
         containerStyle,
       ]}
     >
