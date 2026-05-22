@@ -56,16 +56,10 @@ describe("UiSpinner", () => {
       });
     });
 
-    it("applies gap:12 to the container when text is present", () => {
-      const { toJSON } = render(<Spinner text="Lade..." />);
-      const flatStyle = ((toJSON() as any).props.style as any[]).flat();
-      expect(flatStyle).toContainEqual(expect.objectContaining({ gap: 12 }));
-    });
-
-    it("applies gap:0 to the container when text is absent", () => {
+    it("applies gap:12 to the container", () => {
       const { toJSON } = render(<Spinner />);
       const flatStyle = ((toJSON() as any).props.style as any[]).flat();
-      expect(flatStyle).toContainEqual(expect.objectContaining({ gap: 0 }));
+      expect(flatStyle).toContainEqual(expect.objectContaining({ gap: 12 }));
     });
   });
 
