@@ -34,7 +34,12 @@ const UiEmptyState = ({
 
   if (onPress) {
     return (
-      <UiPressable accessibilityRole="button" onPress={onPress} style={style}>
+      <UiPressable
+        testID={testID}
+        accessibilityRole="button"
+        onPress={onPress}
+        style={style}
+      >
         {content}
       </UiPressable>
     );

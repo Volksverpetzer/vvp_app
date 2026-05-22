@@ -25,6 +25,7 @@ interface SearchManagerActions {
   setSearchParams: (value: string) => void;
   setResultsLength: (length: number) => void;
   setIsLoading: (loading: boolean) => void;
+  setSearchType: (type: "ai" | "artikel") => void;
 }
 
 /**
@@ -42,7 +43,14 @@ const SearchManager = ({
     useState<string>(initialSearch);
   const [resultsLength, setResultsLength] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
-  const isAISearch = searchParameters !== "" && searchParameters !== null;
+  const [searchType, setSearchType] = useState<"ai" | "artikel">("artikel");
+  const isAISearch = searchType === "ai";
+
+  // Reset resultsLength whenever a new search is submitted so stale counts
+  // from a previous tab's results are never carried over into analytics.
+  useEffect(() => {
+    setResultsLength(undefined);
+  }, [searchParameters]);
 
   // Set search achievement when search is performed
   useEffect(() => {
@@ -92,6 +100,7 @@ const SearchManager = ({
         setSearchParams: setSearchParameters,
         setResultsLength,
         setIsLoading,
+        setSearchType,
       })}
     </>
   );

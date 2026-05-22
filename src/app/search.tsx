@@ -28,6 +28,7 @@ interface SearchContentProperties {
   setSearchParams: (value: string) => void;
   setResultsLength: (length: number) => void;
   setIsLoading: (loading: boolean) => void;
+  setSearchType: (type: "ai" | "artikel") => void;
   searchRef: RefObject<TextInput>;
 }
 
@@ -40,15 +41,27 @@ const SearchContent = ({
   setSearchParams,
   setResultsLength,
   setIsLoading,
+  setSearchType,
   searchRef,
 }: SearchContentProperties) => {
   const [activeTab, setActiveTab] = useState<SearchTab>(
     searchParams.includes("://") ? "ai" : "artikel",
   );
 
+  const handleTabChange = useCallback(
+    (tab: SearchTab) => {
+      setActiveTab(tab);
+      setSearchType(tab);
+    },
+    [setSearchType],
+  );
+
   useEffect(() => {
-    if (searchParams.includes("://")) setActiveTab("ai");
-  }, [searchParams]);
+    if (searchParams.includes("://")) {
+      setActiveTab("ai");
+      setSearchType("ai");
+    }
+  }, [searchParams, setSearchType]);
 
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
@@ -82,14 +95,14 @@ const SearchContent = ({
               icon={(color) => <SearchIcon color={color} size={24} />}
               label="Artikel"
               isActive={activeTab === "artikel"}
-              onPress={() => setActiveTab("artikel")}
+              onPress={() => handleTabChange("artikel")}
               style={{ paddingVertical: 10 }}
             />
             <UiTabIconLabel
               icon={(color) => <SafetyIcon color={color} size={24} />}
               label="KI-Faktenbot"
               isActive={activeTab === "ai"}
-              onPress={() => setActiveTab("ai")}
+              onPress={() => handleTabChange("ai")}
               style={{ paddingVertical: 10 }}
             />
           </UiTabView>
@@ -161,6 +174,7 @@ const SearchScreen = () => {
         setSearchParams,
         setResultsLength,
         setIsLoading,
+        setSearchType,
       }) => (
         <SearchContent
           search={search}
@@ -171,6 +185,7 @@ const SearchScreen = () => {
           setSearchParams={setSearchParams}
           setResultsLength={setResultsLength}
           setIsLoading={setIsLoading}
+          setSearchType={setSearchType}
           searchRef={searchReference}
         />
       )}

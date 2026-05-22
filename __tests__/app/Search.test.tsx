@@ -32,12 +32,16 @@ jest.mock("#/constants/Colors", () => ({
     primary: "#1B7194",
     muted: "#BBB",
     text: "#111",
+    iconOnPrimary: "#FFF",
+    iconMuted: "#888",
   },
   dark: {
     surface: "#142228",
     primary: "#3893C0",
     muted: "#333",
     text: "#F7F7F7",
+    iconOnPrimary: "#FFF",
+    iconMuted: "#666",
   },
 }));
 jest.mock("#/constants/GlobalStyles", () => ({
@@ -138,22 +142,22 @@ describe("SearchScreen", () => {
 
   describe("tab switching", () => {
     it("switches to AI tab when pressing KI-Faktenbot button", () => {
-      const { getByText, queryByTestId } = render(<SearchScreen />);
-      fireEvent.press(getByText("KI-Faktenbot"));
+      const { getByRole, queryByTestId } = render(<SearchScreen />);
+      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
       expect(queryByTestId("tutorial-ai")).not.toBeNull();
       expect(queryByTestId("tutorial-artikel")).toBeNull();
     });
 
     it("activates FaktenBot header when on AI tab", () => {
-      const { getByText, queryByTestId } = render(<SearchScreen />);
-      fireEvent.press(getByText("KI-Faktenbot"));
+      const { getByRole, queryByTestId } = render(<SearchScreen />);
+      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
       expect(queryByTestId("faktenbot-active")).not.toBeNull();
     });
 
     it("switches back to Artikel tab", () => {
-      const { getByText, queryByTestId } = render(<SearchScreen />);
-      fireEvent.press(getByText("KI-Faktenbot"));
-      fireEvent.press(getByText("Artikel"));
+      const { getByRole, queryByTestId } = render(<SearchScreen />);
+      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
+      fireEvent.press(getByRole("tab", { name: "Artikel" }));
       expect(queryByTestId("tutorial-artikel")).not.toBeNull();
       expect(queryByTestId("tutorial-ai")).toBeNull();
     });
@@ -161,28 +165,28 @@ describe("SearchScreen", () => {
 
   describe("AI tab", () => {
     it("typing alone does not trigger AI search", () => {
-      const { getByTestId, getByText, queryByTestId } = render(
+      const { getByTestId, getByRole, queryByTestId } = render(
         <SearchScreen />,
       );
-      fireEvent.press(getByText("KI-Faktenbot"));
+      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
       fireEvent.changeText(getByTestId("search-input"), "corona");
       expect(queryByTestId("ai-results")).toBeNull();
       expect(queryByTestId("tutorial-ai")).not.toBeNull();
     });
 
     it("shows AI results after submitting", () => {
-      const { getByTestId, getByText, queryByTestId } = render(
+      const { getByTestId, getByRole, queryByTestId } = render(
         <SearchScreen />,
       );
-      fireEvent.press(getByText("KI-Faktenbot"));
+      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
       fireEvent.changeText(getByTestId("search-input"), "corona");
       fireEvent(getByTestId("search-input"), "submitEditing");
       expect(queryByTestId("ai-results")).not.toBeNull();
     });
 
     it("passes the submitted string to AISearch", () => {
-      const { getByTestId, getByText } = render(<SearchScreen />);
-      fireEvent.press(getByText("KI-Faktenbot"));
+      const { getByTestId, getByRole } = render(<SearchScreen />);
+      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
       fireEvent.changeText(getByTestId("search-input"), "corona");
       fireEvent(getByTestId("search-input"), "submitEditing");
       expect(getByTestId("ai-results").props.children).toBe("corona");

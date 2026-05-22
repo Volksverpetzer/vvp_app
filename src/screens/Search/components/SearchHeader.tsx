@@ -45,8 +45,9 @@ const SearchHeader = ({
       : undefined;
 
   const handleSubmit = useCallback(() => {
-    if (search.length < 2) return;
-    setSearchParams(search);
+    const trimmed = search.trim();
+    if (trimmed.length < 2) return;
+    setSearchParams(trimmed);
     Keyboard.dismiss();
     if (onSubmit) {
       onSubmit();
@@ -79,7 +80,15 @@ const SearchHeader = ({
           {showFaktenBot ? "Fact Check" : "Artikel-Suche"}
         </UiText>
         {showFaktenBot && (
-          <View style={{ position: "absolute", right: 0 }}>
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: 0,
+              justifyContent: "center",
+            }}
+          >
             <FaktenBot reaction={faktenBotReaction} search={isLoading} />
           </View>
         )}
