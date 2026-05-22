@@ -27,7 +27,7 @@ jest.mock("#/components/Icons", () => ({
   StarIcon: jest.fn(() => null),
 }));
 
-jest.mock("#/components/animations/LoadingFallback", () => ({
+jest.mock("#/components/ui/UiSpinner", () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));
