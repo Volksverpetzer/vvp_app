@@ -64,11 +64,11 @@ const AISearch = ({
 
   if (results.length === 0 && !error) {
     return (
-      <View style={[globalStyles.centered, { paddingTop: 100 }]}>
+      <View style={globalStyles.centered}>
         <UiText>
           {loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}
         </UiText>
-        <UiSpinner size="large" />
+        <UiSpinner />
         {showFaktenBot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
             <FaktenBot search={true} reaction={reactionValue} />
@@ -80,7 +80,7 @@ const AISearch = ({
 
   if (error) {
     return (
-      <View style={[globalStyles.centered, { paddingTop: 100 }]}>
+      <View style={globalStyles.centered}>
         <UiText>{error}</UiText>
         <UiText>Melde uns den Fake hier:</UiText>
         <UiPressable

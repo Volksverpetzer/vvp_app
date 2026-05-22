@@ -7,14 +7,13 @@ import { FlatList, StyleSheet } from "react-native";
 import View from "#/components/design/View";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
-import Colors from "#/constants/Colors";
+import { globalStyles } from "#/constants/GlobalStyles";
 import {
   ALGOLIA_APP_ID,
   ALGOLIA_INDEX_NAME,
   ALGOLIA_SEARCH_KEY,
 } from "#/constants/Search";
 import { onLinkPress } from "#/helpers/Linking";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 
 interface AlgoliaSearchProperties {
@@ -31,9 +30,6 @@ const AlgoliaSearchResults = ({
   const router = useRouter();
 
   const client = searchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
-  const colorScheme = useAppColorScheme();
-  const highlightColor = Colors[colorScheme].primary;
-
   // Create a debounced search function to avoid too many API calls
   const debouncedSearch = useRef(
     debounce(async (query: string) => {
@@ -107,8 +103,9 @@ const AlgoliaSearchResults = ({
 
   if (isLoading) {
     return (
-      <View style={itemStyles.loadingContainer}>
-        <UiSpinner color={highlightColor} />
+      <View style={globalStyles.centered}>
+        <UiText>Artikel werden gesucht …</UiText>
+        <UiSpinner />
       </View>
     );
   }
@@ -142,11 +139,6 @@ const AlgoliaSearchResults = ({
 const itemStyles = StyleSheet.create({
   emptyContainer: {
     alignItems: "center",
-    padding: 20,
-  },
-  loadingContainer: {
-    alignItems: "center",
-    justifyContent: "center",
     padding: 20,
   },
 });
