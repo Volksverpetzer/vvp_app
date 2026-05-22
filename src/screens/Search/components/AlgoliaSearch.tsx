@@ -18,11 +18,13 @@ import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 interface AlgoliaSearchProperties {
   searchString: string;
   maxResults?: number;
+  onResultsLength?: (count: number) => void;
 }
 
 const AlgoliaSearchResults = ({
   searchString,
   maxResults = 10,
+  onResultsLength,
 }: AlgoliaSearchProperties) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +50,7 @@ const AlgoliaSearchResults = ({
           },
         });
         setResults(hits);
+        onResultsLength?.(hits.length);
       } catch (error) {
         console.error("Algolia search error:", error);
       } finally {

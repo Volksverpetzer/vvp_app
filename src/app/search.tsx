@@ -120,7 +120,10 @@ const SearchContent = ({
 
         {effectiveTab === "artikel" &&
           (hasResults ? (
-            <AlgoliaSearchResults searchString={searchParams} />
+            <AlgoliaSearchResults
+              searchString={searchParams}
+              onResultsLength={setResultsLength}
+            />
           ) : (
             <View style={{ flex: 1, justifyContent: "center" }}>
               <UiEmptyState
