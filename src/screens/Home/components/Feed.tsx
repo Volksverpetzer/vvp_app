@@ -172,15 +172,15 @@ const Feed = (properties: FeedProperties) => {
   }, []);
 
   const contentContainerStyle = useMemo(
-    () => [properties?.style, globalStyles.content],
-    [properties?.style],
+    () => [properties.style, globalStyles.content],
+    [properties.style],
   );
 
   if (!initialLoad) {
     return (
       <LoadingFallback
         text="Lade Feed..."
-        containerStyle={properties?.style}
+        containerStyle={properties.style}
         spinnerProps={{ size: "large" }}
       />
     );
@@ -194,7 +194,7 @@ const Feed = (properties: FeedProperties) => {
           alignItems: "center",
           height: "100%",
           paddingHorizontal: 20,
-          ...properties?.style,
+          ...properties.style,
         }}
       >
         <UiEmptyState
