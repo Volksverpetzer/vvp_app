@@ -55,6 +55,7 @@ const AlgoliaSearchResults = ({
       } catch (error) {
         if (!cancelled) {
           console.error("Algolia search error:", error);
+          setResults([]);
           setIsLoading(false);
         }
       }

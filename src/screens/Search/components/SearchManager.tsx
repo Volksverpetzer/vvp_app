@@ -97,10 +97,6 @@ const SearchManager = ({
       setResultsLength(undefined);
       setSearchParameters(initialSearch);
       setSearchType(initialSearch.includes("://") ? "ai" : "artikel");
-
-      if (initialSearch.includes("://")) {
-        Achievements.setAchievementValue("rechercheur");
-      }
     }
   }, [initialSearch]);
 
