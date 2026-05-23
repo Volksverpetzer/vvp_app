@@ -91,36 +91,25 @@ const RootLayout = () => {
 
   const [showChangelog, setShowChangelog] = useState(false);
 
-  // On first mount check notification permissions and request if appropriate.
-  // The NotificationManager itself will skip simulators and respects canAskAgain.
+  // On first mount: read onboarding state once, then gate both notification
+  // permission request and changelog display on it.
   useEffect(() => {
-    (async () => {
-      try {
-        const onboardingDone = await PersonalStore.isOnboardingDone();
-        if (onboardingDone) {
-          await NotificationManager.checkAndRequestOnLaunch();
-        }
-      } catch (error) {
-        console.error(
-          "Error checking onboarding status for notifications:",
-          error,
-        );
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (!Changelog.notes) return;
     (async () => {
       try {
         const onboardingDone = await PersonalStore.isOnboardingDone();
         if (!onboardingDone) return;
-        const lastSeen = await PersonalStore.getLastSeenChangelogVersionCode();
-        if (lastSeen < Changelog.versionCode) {
-          setShowChangelog(true);
+
+        await NotificationManager.checkAndRequestOnLaunch();
+
+        if (Changelog.notes) {
+          const lastSeen =
+            await PersonalStore.getLastSeenChangelogVersionCode();
+          if (lastSeen < Changelog.versionCode) {
+            setShowChangelog(true);
+          }
         }
       } catch (error) {
-        console.error("Error checking changelog version:", error);
+        console.error("Error during post-onboarding startup checks:", error);
       }
     })();
   }, []);
