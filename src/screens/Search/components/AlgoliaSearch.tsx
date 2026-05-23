@@ -14,6 +14,8 @@ import {
 import { onLinkPress } from "#/helpers/Linking";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 
+const algoliaClient = searchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
+
 interface AlgoliaSearchProperties {
   searchString: string;
   maxResults?: number;
@@ -29,8 +31,6 @@ const AlgoliaSearchResults = ({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const client = searchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
-
   useEffect(() => {
     if (!searchString || searchString.length < 2) {
       setResults([]);
@@ -43,7 +43,7 @@ const AlgoliaSearchResults = ({
 
     const timer = setTimeout(async () => {
       try {
-        const { hits } = await client.searchSingleIndex({
+        const { hits } = await algoliaClient.searchSingleIndex({
           indexName: ALGOLIA_INDEX_NAME,
           searchParams: { query: searchString, hitsPerPage: maxResults },
         });
