@@ -20,6 +20,7 @@ const labelBaseStyle = {
   alignSelf: "center" as const,
   fontFamily: "SourceSansProBold",
   fontSize: 12,
+  lineHeight: 17,
 };
 
 const UiTabIconLabel = ({

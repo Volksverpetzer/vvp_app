@@ -147,7 +147,8 @@ const MyFavs = () => {
       )}
       <Space size={50} />
       <UiEmptyState icon={<StarIcon />}>
-        Klick den Stern, um zu den Favoriten hinzuzufügen
+        Klicke auf den Stern bei Artikeln und Posts, um sie zu den Favoriten
+        hinzuzufügen
       </UiEmptyState>
       <Space size={100} />
     </View>

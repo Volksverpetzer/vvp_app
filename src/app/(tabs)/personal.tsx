@@ -50,16 +50,6 @@ const PersonalTab = () => {
     [scrollOffsetY],
   );
 
-  const toggleHeight = useMemo(
-    () =>
-      scrollOffsetY.interpolate({
-        inputRange: [0, (HEADER_HEIGHT - MIN_HEIGHT) * 0.5],
-        outputRange: [60, 44],
-        extrapolate: "clamp",
-      }),
-    [scrollOffsetY],
-  );
-
   return (
     <>
       <AnimatedHeader
@@ -69,17 +59,13 @@ const PersonalTab = () => {
         maxHeight={200}
       >
         <View style={[globalStyles.noBackground, { width: "100%" }]}>
-          <UiTabView
-            width={200}
-            animatedHeight={toggleHeight}
-            style={{ alignSelf: "center" }}
-          >
+          <UiTabView width={200} style={{ alignSelf: "center" }}>
             <UiTabIconLabel
               icon={(color) => <StarIcon size={24} color={color} />}
               label="Favoriten"
               isActive={activeTab === "favs"}
               onPress={() => setActiveTab("favs")}
-              style={{ height: "100%" }}
+              style={{ paddingVertical: 10 }}
               animatedLabelHeight={labelHeight}
               animatedLabelOpacity={labelOpacity}
             />
@@ -88,7 +74,7 @@ const PersonalTab = () => {
               label="Quellen"
               isActive={activeTab === "sources"}
               onPress={() => setActiveTab("sources")}
-              style={{ height: "100%" }}
+              style={{ paddingVertical: 10 }}
               animatedLabelHeight={labelHeight}
               animatedLabelOpacity={labelOpacity}
             />

@@ -9,11 +9,17 @@ interface UiEmptyStateProps {
   icon: React.ReactElement<{ color?: string }>;
   children: ReactNode;
   onPress?: () => void;
+  testID?: string;
 }
 
 const style = { alignItems: "center" as const, gap: 12 };
 
-const UiEmptyState = ({ icon, children, onPress }: UiEmptyStateProps) => {
+const UiEmptyState = ({
+  icon,
+  children,
+  onPress,
+  testID,
+}: UiEmptyStateProps) => {
   const corporate = useCorporateColor();
   const coloredIcon = React.cloneElement(icon, {
     color: icon.props.color ?? corporate,
@@ -28,13 +34,22 @@ const UiEmptyState = ({ icon, children, onPress }: UiEmptyStateProps) => {
 
   if (onPress) {
     return (
-      <UiPressable accessibilityRole="button" onPress={onPress} style={style}>
+      <UiPressable
+        testID={testID}
+        accessibilityRole="button"
+        onPress={onPress}
+        style={style}
+      >
         {content}
       </UiPressable>
     );
   }
 
-  return <View style={style}>{content}</View>;
+  return (
+    <View testID={testID} style={style}>
+      {content}
+    </View>
+  );
 };
 
 export default UiEmptyState;
