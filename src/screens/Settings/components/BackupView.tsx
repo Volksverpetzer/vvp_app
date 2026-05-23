@@ -2,13 +2,14 @@ import * as DocumentPicker from "expo-document-picker";
 import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { useState } from "react";
-import { ActivityIndicator, Pressable, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 import { DownloadIcon, UploadIcon } from "#/components/Icons";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import {
@@ -103,11 +104,11 @@ const BackupView = () => {
     }
   };
 
-  const rowStyle = { ...styles.row, paddingBottom: 20, maxHeight: 45 };
+  const rowStyle = [globalStyles.row, { paddingBottom: 20, maxHeight: 45 }];
 
   return (
     <View style={{ padding: 20 }}>
-      <Pressable
+      <UiPressable
         accessibilityRole="button"
         onPress={handleExport}
         disabled={!!busy}
@@ -121,8 +122,8 @@ const BackupView = () => {
         ) : (
           <UploadIcon size={18} color={busy ? iconMuted : primary} />
         )}
-      </Pressable>
-      <Pressable
+      </UiPressable>
+      <UiPressable
         accessibilityRole="button"
         onPress={handleImport}
         disabled={!!busy}
@@ -136,7 +137,7 @@ const BackupView = () => {
         ) : (
           <DownloadIcon size={18} color={busy ? iconMuted : primary} />
         )}
-      </Pressable>
+      </UiPressable>
     </View>
   );
 };

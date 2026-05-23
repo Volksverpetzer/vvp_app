@@ -9,7 +9,7 @@ const colorScheme: colorSchemeType = {
     primaryTint: "#3893C0",
     errorBackground: "#C62828",
     errorText: "#FFF",
-    muted: "#BBB",
+    muted: "#DDD",
     textMuted: "#AAA",
     textHeading: "#1B7194",
     accent: "#DB2685",

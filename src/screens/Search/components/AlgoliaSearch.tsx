@@ -1,81 +1,76 @@
 import { searchClient } from "@algolia/client-search";
 import { useRouter } from "expo-router";
-import debounce from "lodash/debounce";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 
+import ErrorCard from "#/components/design/ErrorCard";
 import View from "#/components/design/View";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
-import Colors from "#/constants/Colors";
 import {
   ALGOLIA_APP_ID,
   ALGOLIA_INDEX_NAME,
   ALGOLIA_SEARCH_KEY,
 } from "#/constants/Search";
 import { onLinkPress } from "#/helpers/Linking";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
+
+const algoliaClient = searchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
 
 interface AlgoliaSearchProperties {
   searchString: string;
   maxResults?: number;
+  onResultsLength?: (count: number) => void;
 }
 
 const AlgoliaSearchResults = ({
   searchString,
   maxResults = 10,
+  onResultsLength,
 }: AlgoliaSearchProperties) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const router = useRouter();
 
-  const client = searchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
-  const colorScheme = useAppColorScheme();
-  const highlightColor = Colors[colorScheme].primary;
-
-  // Create a debounced search function to avoid too many API calls
-  const debouncedSearch = useRef(
-    debounce(async (query: string) => {
-      if (!query || query.length < 2) {
-        setResults([]);
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        // Search across multiple indices
-        const { hits } = await client.searchSingleIndex({
-          indexName: ALGOLIA_INDEX_NAME,
-          searchParams: {
-            query,
-            hitsPerPage: maxResults,
-          },
-        });
-        setResults(hits);
-      } catch (error) {
-        console.error("Algolia search error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300),
-  ).current;
-
   useEffect(() => {
-    // If there's no search string, clear the results
-    if (!searchString) {
+    if (!searchString || searchString.length < 2) {
       setResults([]);
+      setHasError(false);
+      setIsLoading(false);
       return;
     }
 
     setIsLoading(true);
-    debouncedSearch(searchString);
+    setHasError(false);
+    let cancelled = false;
 
-    // Cleanup function to cancel debounced search on unmount
+    const timer = setTimeout(async () => {
+      try {
+        const { hits } = await algoliaClient.searchSingleIndex({
+          indexName: ALGOLIA_INDEX_NAME,
+          searchParams: { query: searchString, hitsPerPage: maxResults },
+        });
+        if (!cancelled) {
+          setResults(hits);
+          onResultsLength?.(hits.length);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Algolia search error:", error);
+          setResults([]);
+          setHasError(true);
+          setIsLoading(false);
+        }
+      }
+    }, 300);
+
     return () => {
-      debouncedSearch.cancel();
+      cancelled = true;
+      clearTimeout(timer);
     };
-  }, [searchString, debouncedSearch]);
+  }, [searchString, maxResults, onResultsLength]);
 
   const handleResultPress = useCallback(
     (item) => {
@@ -106,9 +101,13 @@ const AlgoliaSearchResults = ({
   );
 
   if (isLoading) {
+    return <UiSpinner text="Artikel werden gesucht …" />;
+  }
+
+  if (hasError) {
     return (
-      <View style={itemStyles.loadingContainer}>
-        <UiSpinner color={highlightColor} />
+      <View style={itemStyles.emptyContainer}>
+        <ErrorCard text="Suche fehlgeschlagen. Bitte versuche es erneut." />
       </View>
     );
   }
@@ -142,11 +141,6 @@ const AlgoliaSearchResults = ({
 const itemStyles = StyleSheet.create({
   emptyContainer: {
     alignItems: "center",
-    padding: 20,
-  },
-  loadingContainer: {
-    alignItems: "center",
-    justifyContent: "center",
     padding: 20,
   },
 });

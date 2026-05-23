@@ -10,7 +10,7 @@ import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
 import NavBar from "#/components/bars/NavBar";
 import Footer from "#/components/views/Footer";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -130,7 +130,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <Animated.View
         style={{
           position: "absolute",

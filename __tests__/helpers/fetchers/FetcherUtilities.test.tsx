@@ -7,6 +7,47 @@ describe("FetcherUtils", () => {
     jest.restoreAllMocks();
   });
 
+  describe("isAbortError", () => {
+    it("returns true for AbortError", () => {
+      expect(
+        FetcherUtilities.isAbortError(
+          Object.assign(new Error(), { name: "AbortError" }),
+        ),
+      ).toBe(true);
+    });
+
+    it("returns true for CanceledError", () => {
+      expect(
+        FetcherUtilities.isAbortError(
+          Object.assign(new Error(), { name: "CanceledError" }),
+        ),
+      ).toBe(true);
+    });
+
+    it("returns true for ERR_CANCELED code", () => {
+      expect(
+        FetcherUtilities.isAbortError(
+          Object.assign(new Error(), { code: "ERR_CANCELED" }),
+        ),
+      ).toBe(true);
+    });
+
+    it("returns false for regular errors", () => {
+      expect(FetcherUtilities.isAbortError(new Error("network failure"))).toBe(
+        false,
+      );
+    });
+
+    it("returns false for null", () => {
+      expect(FetcherUtilities.isAbortError(null)).toBe(false);
+    });
+
+    it("returns false for primitives", () => {
+      expect(FetcherUtilities.isAbortError("AbortError")).toBe(false);
+      expect(FetcherUtilities.isAbortError(42)).toBe(false);
+    });
+  });
+
   describe("safeFetch", () => {
     it("returns fetched data when fetchFn resolves", async () => {
       const fetchFunction: SafeFetchFunction<string> = jest.fn(() =>
@@ -37,6 +78,24 @@ describe("FetcherUtils", () => {
         expect.stringContaining("Fetch error in fetcherName"),
         error,
       );
+    });
+
+    it("returns empty array and does not log for canceled fetch errors", async () => {
+      const canceled = Object.assign(new Error("canceled"), {
+        code: "ERR_CANCELED",
+      });
+      const fetchFunction: SafeFetchFunction<string> = jest.fn(() => {
+        throw canceled;
+      });
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      const result = await FetcherUtilities.safeFetch(
+        fetchFunction,
+        "fetcherName",
+      );
+
+      expect(result).toEqual([]);
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -204,6 +263,26 @@ describe("FetcherUtils", () => {
         expect.stringContaining("Error processing posts:"),
         expect.any(Error),
       );
+    });
+
+    it("returns old posts and does not log when processing is canceled", async () => {
+      const canceled = Object.assign(new Error("canceled"), {
+        code: "ERR_CANCELED",
+      });
+      const fetcher1 = jest.fn(() => {
+        throw canceled;
+      });
+      const oldPosts = [p1];
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      const result = await FetcherUtilities.fetchAndProcessPosts(
+        [{ fetcher: fetcher1, props: {} }],
+        {},
+        oldPosts,
+      );
+
+      expect(result).toBe(oldPosts);
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
     it("includes old posts newer than cutoffDate threshold", async () => {

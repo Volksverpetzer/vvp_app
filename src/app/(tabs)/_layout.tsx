@@ -19,6 +19,7 @@ const TabLayout = () => {
   const colorScheme = useAppColorScheme();
   const {
     primary: corporate,
+    accent,
     background,
     iconMuted,
     iconOnPrimary,
@@ -31,7 +32,7 @@ const TabLayout = () => {
     <NativeTabs
       backBehavior="history"
       backgroundColor={background}
-      badgeBackgroundColor={corporate}
+      badgeBackgroundColor={accent}
       disableTransparentOnScrollEdge
       iconColor={{
         default: iconMuted,

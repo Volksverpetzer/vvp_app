@@ -1,9 +1,9 @@
 import { Image } from "expo-image";
 import { useState } from "react";
-import { TouchableOpacity } from "react-native";
 
 import View from "#/components/design/View";
 import ImageModal from "#/components/media/ImageModal";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { onShare as _onShare } from "#/helpers/Sharing";
 
@@ -78,12 +78,11 @@ const RedditPost = (properties: RedditProperties) => {
 
   return (
     <>
-      <TouchableOpacity
+      <UiPressable
         accessibilityRole="button"
         onPress={() => setIsModalOpen(true)}
         onLongPress={onShare}
         onLayout={onLayout}
-        activeOpacity={0.8}
       >
         <View>
           <Image
@@ -117,7 +116,7 @@ const RedditPost = (properties: RedditProperties) => {
             von {author} | {date}
           </UiText>
         </View>
-      </TouchableOpacity>
+      </UiPressable>
       <ImageModal
         uri={properties.url_overridden_by_dest}
         visible={isModalOpen}

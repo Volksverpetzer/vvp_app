@@ -92,18 +92,11 @@ const HandleShare = () => {
 
   if (isResolving) {
     return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 24,
-          gap: 12,
-        }}
-      >
-        <UiSpinner size="large" />
-        <UiText>Share wird verarbeitet...</UiText>
-      </View>
+      <UiSpinner
+        size="large"
+        text="Share wird verarbeitet..."
+        containerStyle={{ padding: 24 }}
+      />
     );
   }
 

@@ -3,7 +3,7 @@ name: Check Test and Lint
 on:
   push:
     branches:
-      - "*"
+      - "**"
 
 jobs:
   check-test-and-lint:

@@ -4,7 +4,7 @@ import { Animated, ScrollView, View } from "react-native";
 
 import AnimatedPageDots from "#/components/animations/AnimatedPageDots";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import Statistics from "#/helpers/Statistics";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { StatisticsType } from "#/types";
@@ -41,14 +41,16 @@ const StatisticsView = () => {
 
   return (
     <View
-      style={{
-        ...styles.centered,
-        zIndex: 99,
-        backgroundColor: corporate,
-        borderRadius: 30,
-        paddingVertical: 20,
-        marginHorizontal: 10,
-      }}
+      style={[
+        globalStyles.centered,
+        {
+          zIndex: 99,
+          backgroundColor: corporate,
+          borderRadius: 30,
+          paddingVertical: 20,
+          marginHorizontal: 10,
+        },
+      ]}
       onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
     >
       <ScrollView

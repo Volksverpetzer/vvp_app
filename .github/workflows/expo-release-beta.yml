@@ -70,7 +70,7 @@ jobs:
         run: eas build --profile fdroid --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss.apk
 
       - name: 🎂 Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.ref_name }}
           name: v${{ github.ref_name }}

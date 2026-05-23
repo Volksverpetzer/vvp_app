@@ -108,7 +108,9 @@ jest.mock("#/components/design/View", () =>
 );
 jest.mock("#/components/views/SettingsList", () => jest.fn(() => null));
 jest.mock("#/constants/Colors", () => ({ light: { textHeading: "#333" } }));
-jest.mock("#/constants/Styles", () => ({ styles: { heading: {} } }));
+jest.mock("#/constants/GlobalStyles", () => ({
+  globalStyles: { heading: {}, centered: {}, whiteText: {}, content: {} },
+}));
 jest.mock("react-native-safe-area-context", () => ({
   useSafeAreaInsets: jest.fn(() => ({ bottom: 0 })),
 }));

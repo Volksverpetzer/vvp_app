@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { CheckboxIcon } from "#/components/Icons";
+import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -29,7 +30,7 @@ const Checkbox = (properties: CheckboxProperties) => {
   );
 
   return (
-    <Pressable
+    <UiPressable
       accessibilityRole="checkbox"
       accessibilityState={{ checked }}
       style={[styles.row]}
@@ -39,7 +40,7 @@ const Checkbox = (properties: CheckboxProperties) => {
         {checked && <CheckboxIcon size={24} color="white" />}
       </View>
       {properties.children}
-    </Pressable>
+    </UiPressable>
   );
 };
 

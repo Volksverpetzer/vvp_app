@@ -1,11 +1,12 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import type { OcticonsIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
@@ -49,18 +50,19 @@ const StatisticsPanel = ({
   const muted = Colors[colorScheme].muted;
 
   return (
-    <View style={{ ...styles.centered, width }}>
+    <View style={[globalStyles.centered, { width }]}>
       <View
-        style={{ ...styles.row, justifyContent: "flex-start", paddingLeft: 30 }}
+        style={[
+          globalStyles.row,
+          { justifyContent: "flex-start", paddingLeft: 30 },
+        ]}
       >
         <StatisticsIcon name={icon} size={32} color="white" />
         <UiText
-          style={{
-            ...styles.whiteText,
-            fontSize: 20,
-            fontFamily: "SourceSansProBold",
-            marginLeft: 10,
-          }}
+          style={[
+            globalStyles.whiteText,
+            { fontSize: 20, fontFamily: "SourceSansProBold", marginLeft: 10 },
+          ]}
         >
           {title}
         </UiText>
@@ -83,14 +85,14 @@ const StatisticsPanel = ({
 
       <View style={panelStyles.contentRow}>
         {showLeftChevron && onLeftPress ? (
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
             accessibilityLabel="Vorherige Seite"
             onPress={onLeftPress}
             style={panelStyles.chevronButton}
           >
             <ChevronIcon direction="left" size={24} color="white" />
-          </Pressable>
+          </UiPressable>
         ) : (
           <View style={panelStyles.chevronSlot} />
         )}
@@ -111,14 +113,14 @@ const StatisticsPanel = ({
         </View>
 
         {showRightChevron && onRightPress ? (
-          <Pressable
+          <UiPressable
             accessibilityRole="button"
             accessibilityLabel="Nächste Seite"
             onPress={onRightPress}
             style={panelStyles.chevronButton}
           >
             <ChevronIcon direction="right" size={24} color="white" />
-          </Pressable>
+          </UiPressable>
         ) : (
           <View style={panelStyles.chevronSlot} />
         )}

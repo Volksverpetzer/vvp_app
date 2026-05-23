@@ -4,20 +4,18 @@ import WordPressAPI from "#/helpers/network/WordPressAPI";
 import type { ArticleProperties, LoadArticlePostProperties } from "#/types";
 
 type WpApi = {
-  getPosts(page?: number): Promise<LoadArticlePostProperties[]>;
+  getPosts(
+    page?: number,
+    signal?: AbortSignal,
+  ): Promise<LoadArticlePostProperties[]>;
   searchPosts(
     search: string,
     page?: number,
+    signal?: AbortSignal,
   ): Promise<LoadArticlePostProperties[]>;
 };
 
 export const WordPressFetcher = {
-  /**
-   * Maps a WordPress article to a Post object.
-   * @param article The article to map.
-   * @param index The index of the article.
-   * @returns The mapped Post object.
-   */
   mapArticleToPost(
     article: LoadArticlePostProperties,
     index: number,
@@ -36,16 +34,12 @@ export const WordPressFetcher = {
     );
   },
 
-  /**
-   * Fetches posts from WordPress
-   * @param api The API function to use.
-   * @returns An array of posts.
-   */
   async wpBaseFetcher(
-    api: () => Promise<LoadArticlePostProperties[]>,
+    api: (signal?: AbortSignal) => Promise<LoadArticlePostProperties[]>,
+    signal?: AbortSignal,
   ): Promise<Post<{ article: ArticleProperties }>[]> {
     try {
-      const data = await api();
+      const data = await api(signal);
       return data.map((article, index) =>
         WordPressFetcher.mapArticleToPost(
           article as LoadArticlePostProperties,
@@ -53,7 +47,9 @@ export const WordPressFetcher = {
         ),
       );
     } catch (error) {
-      console.error("WP Error:", error);
+      if (!signal?.aborted) {
+        console.error("WP Error:", error);
+      }
       return [];
     }
   },
@@ -73,12 +69,25 @@ export const WordPressFetcher = {
     };
 
     return {
-      feedFetcher: async ({ page = 1 }) =>
-        stamp(await WordPressFetcher.wpBaseFetcher(() => api.getPosts(page))),
-      searchFetcher: async ({ param: parameter = "", page = 1 }) =>
+      feedFetcher: async ({
+        page = 1,
+        signal,
+      }: { page?: number; signal?: AbortSignal } = {}) =>
         stamp(
-          await WordPressFetcher.wpBaseFetcher(() =>
-            api.searchPosts(parameter, page),
+          await WordPressFetcher.wpBaseFetcher(
+            (sig) => api.getPosts(page, sig),
+            signal,
+          ),
+        ),
+      searchFetcher: async ({
+        param: parameter = "",
+        page = 1,
+        signal,
+      }: { param?: string; page?: number; signal?: AbortSignal } = {}) =>
+        stamp(
+          await WordPressFetcher.wpBaseFetcher(
+            (sig) => api.searchPosts(parameter, page, sig),
+            signal,
           ),
         ),
     };

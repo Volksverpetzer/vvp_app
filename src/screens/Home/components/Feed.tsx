@@ -7,17 +7,17 @@ import type {
   ViewStyle,
   ViewToken,
 } from "react-native";
-import { FlatList, Pressable, RefreshControl, View } from "react-native";
+import { FlatList, RefreshControl, View } from "react-native";
 
-import { SearchIcon, SettingsIcon } from "#/components/Icons";
-import LoadingFallback from "#/components/animations/LoadingFallback";
+import { SearchIcon, SettingsIcon, WorldIcon } from "#/components/Icons";
 import EmptyComponent from "#/components/design/EmptyComponent";
 import GenericPost from "#/components/posts/GenericPost";
-import Heading from "#/components/typography/Heading";
+import UiEmptyState from "#/components/ui/UiEmptyState";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 import type { Post } from "#/types";
@@ -25,6 +25,7 @@ import type { Post } from "#/types";
 export type FeedFetcherProperties = {
   page?: number;
   param?: string;
+  signal?: AbortSignal;
 };
 
 export interface FeedProperties {
@@ -53,6 +54,7 @@ const Feed = (properties: FeedProperties) => {
   const corporate = Colors[colorScheme].primary;
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
+  const fetchControllerRef = useRef<AbortController | null>(null);
 
   const updateLoadingStates = useCallback(() => {
     setRefresh(false);
@@ -65,19 +67,29 @@ const Feed = (properties: FeedProperties) => {
       fetcherProperties?: { page?: number; param?: string },
       oldPosts: Post<unknown>[] = [],
     ) => {
+      const controller = new AbortController();
+      fetchControllerRef.current?.abort();
+      fetchControllerRef.current = controller;
+
       try {
         const newPosts = await FetcherUtilities.fetchAndProcessPosts(
           properties.fetchers,
-          fetcherProperties,
+          { ...fetcherProperties, signal: controller.signal },
           oldPosts,
           { prioSort: properties.prioSort, cutoffDate: properties.cutoffDate },
         );
+        if (controller.signal.aborted) return false;
         setPosts(newPosts);
         updateLoadingStates();
         return oldPosts.length < newPosts.length;
       } catch (error) {
+        if (controller.signal.aborted) return false;
         console.error("Error fetching posts:", error);
         updateLoadingStates();
+      } finally {
+        if (fetchControllerRef.current === controller) {
+          fetchControllerRef.current = null;
+        }
       }
     },
     [
@@ -96,6 +108,11 @@ const Feed = (properties: FeedProperties) => {
     getPosts(undefined, []);
     setInitialLoad(false);
     setRefresh(true);
+
+    return () => {
+      fetchControllerRef.current?.abort();
+      fetchControllerRef.current = null;
+    };
   }, [properties.fetchers.length, getPosts, updateLoadingStates]);
 
   const onRefresh = useCallback(() => {
@@ -154,41 +171,32 @@ const Feed = (properties: FeedProperties) => {
   }, []);
 
   const contentContainerStyle = useMemo(
-    () => ({
-      ...properties?.style,
-      ...styles.content,
-    }),
-    [properties?.style],
+    () => [properties.style, globalStyles.content],
+    [properties.style],
   );
 
   if (!initialLoad) {
-    return (
-      <LoadingFallback
-        text="Lade Feed..."
-        containerStyle={properties?.style}
-        spinnerProps={{ size: "large" }}
-      />
-    );
+    return <UiSpinner text="Lade Feed..." size="large" />;
   }
 
   if (properties.fetchers.length === 0) {
-    // show centered link to settings and remind user to choose content:
     return (
       <View
         style={{
           justifyContent: "center",
           alignItems: "center",
           height: "100%",
-          ...properties?.style,
+          paddingHorizontal: 20,
+          ...properties.style,
         }}
       >
-        <Heading>Bitte wähle mindestens ein Feed aus:</Heading>
-        <Pressable
-          accessibilityRole="button"
+        <UiEmptyState
+          icon={<SettingsIcon />}
           onPress={() => router.push("/settings")}
         >
-          <SettingsIcon color={corporate} />
-        </Pressable>
+          Bitte wähle mindestens ein Feed in den Einstellungen aus, um Inhalte
+          zu sehen.
+        </UiEmptyState>
       </View>
     );
   }
@@ -215,15 +223,14 @@ const Feed = (properties: FeedProperties) => {
             <UiSpinner size="large" />
           ) : (
             <View
-              style={{
-                paddingBottom: 30,
-                alignItems: "center",
-                ...styles.noBackground,
-              }}
+              style={[
+                globalStyles.noBackground,
+                { paddingBottom: 30, alignItems: "center" },
+              ]}
             >
-              <Pressable
+              <UiPressable
                 accessibilityRole="button"
-                style={styles.centered}
+                style={globalStyles.centered}
                 onPress={() => router.push("/search")}
               >
                 <UiText
@@ -238,12 +245,18 @@ const Feed = (properties: FeedProperties) => {
                   aus!
                 </UiText>
                 <SearchIcon color={corporate} size={24} />
-              </Pressable>
+              </UiPressable>
             </View>
           ))
         }
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<EmptyComponent reload={onRefresh} />}
+        ListEmptyComponent={
+          <EmptyComponent
+            text="Keine Ergebnisse. Versuche es später erneut oder erweitere deine Feeds in den Einstellungen."
+            icon={<WorldIcon size={60} />}
+            onPress={onRefresh}
+          />
+        }
         contentContainerStyle={contentContainerStyle}
       />
     </View>

@@ -1,13 +1,14 @@
 import type { RefObject } from "react";
 import { useCallback } from "react";
-import { Keyboard, Pressable, TextInput } from "react-native";
+import { Keyboard, TextInput } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { styles } from "#/constants/Styles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface SearchHeaderProperties {
@@ -35,32 +36,37 @@ const SearchHeader = ({
   const backgroundColor = Colors[colorScheme].surface;
   const corporate = Colors[colorScheme].primary;
 
-  // Extract the nested ternary operation into an independent variable
-  let faktenBotReaction;
-  if (resultsLength === undefined) {
-    faktenBotReaction = undefined;
-  } else {
-    faktenBotReaction = resultsLength > 0 ? 10 : 0;
-  }
+  // Show no reaction while loading so we don't display a stale previous result
+  const faktenBotReaction =
+    !isLoading && resultsLength !== undefined
+      ? resultsLength > 0
+        ? 10
+        : 0
+      : undefined;
 
   const handleSubmit = useCallback(() => {
-    setSearchParams(search);
+    const trimmed = search.trim();
+    if (trimmed.length < 2) return;
+    if (trimmed !== search) setSearch(trimmed);
+    setSearchParams(trimmed);
     Keyboard.dismiss();
     if (onSubmit) {
       onSubmit();
     }
-  }, [search, setSearchParams, onSubmit]);
+  }, [search, setSearch, setSearchParams, onSubmit]);
 
   return (
     <>
       <View
-        style={{
-          ...styles.row,
-          height: 100,
-          justifyContent: "flex-end",
-          paddingRight: 20,
-          backgroundColor,
-        }}
+        style={[
+          globalStyles.row,
+          {
+            height: 100,
+            justifyContent: "flex-end",
+            paddingRight: 20,
+            backgroundColor,
+          },
+        ]}
       >
         <UiText
           style={{
@@ -68,23 +74,37 @@ const SearchHeader = ({
             fontFamily: "SourceSansProBold",
             fontSize: 22,
             color: corporate,
+            flex: 1,
+            textAlign: "center",
           }}
         >
-          Fact Check
+          {showFaktenBot ? "Fact Check" : "Artikel-Suche"}
         </UiText>
         {showFaktenBot && (
-          <FaktenBot reaction={faktenBotReaction} search={isLoading} />
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: 0,
+              justifyContent: "center",
+            }}
+          >
+            <FaktenBot reaction={faktenBotReaction} search={isLoading} />
+          </View>
         )}
       </View>
       <View
-        style={{
-          ...styles.row,
-          ...styles.input,
-          height: 50,
-          paddingRight: 40,
-          backgroundColor: corporate,
-          marginBottom: 40,
-        }}
+        style={[
+          globalStyles.row,
+          globalStyles.input,
+          {
+            height: 50,
+            paddingRight: 40,
+            backgroundColor: corporate,
+            marginBottom: 40,
+          },
+        ]}
       >
         <TextInput
           accessibilityLabel="Text input field"
@@ -95,13 +115,13 @@ const SearchHeader = ({
           placeholder="Suche ..."
           placeholderTextColor="white"
           onSubmitEditing={handleSubmit}
-          style={{ ...styles.whiteText, width: "100%" }}
+          style={[globalStyles.whiteText, { width: "100%" }]}
           onChangeText={setSearch}
           returnKeyType="search"
         />
-        <Pressable accessibilityRole="button" onPress={handleSubmit}>
+        <UiPressable accessibilityRole="button" onPress={handleSubmit}>
           <SearchIcon color="white" size={24} />
-        </Pressable>
+        </UiPressable>
       </View>
     </>
   );

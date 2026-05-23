@@ -1,7 +1,7 @@
 import * as WebBrowser from "expo-web-browser";
-import { TouchableOpacity } from "react-native";
 
 import View from "#/components/design/View";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -19,7 +19,7 @@ const ClaimPost = (properties: ClaimProperties) => {
 
   const review = properties.claimReview[0];
   return (
-    <TouchableOpacity accessibilityRole="button" onPress={handleSelectClaim}>
+    <UiPressable accessibilityRole="button" onPress={handleSelectClaim}>
       <View style={{ paddingBottom: 0, flex: 1 }}>
         <UiText
           style={{
@@ -40,7 +40,7 @@ const ClaimPost = (properties: ClaimProperties) => {
           {review.textualRating}
         </UiText>
       </View>
-    </TouchableOpacity>
+    </UiPressable>
   );
 };
 

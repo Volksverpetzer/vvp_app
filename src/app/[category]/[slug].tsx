@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 
-import LoadingFallback from "#/components/animations/LoadingFallback";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
@@ -43,12 +43,13 @@ const LoadArticle = () => {
           return;
         }
 
-        const _article = await WordPressAPI.getPost(slug);
+        const _article = await WordPressAPI.getPost(slug, signal);
         const loadedArticle: ArticleProperties =
           WordPressAPI.convertLoadProps(_article);
 
         const { image } = await WordPressAPI.getFeatureImage(
           loadedArticle._links["wp:featuredmedia"][0].href,
+          signal,
         );
 
         if (signal.aborted) return;
@@ -84,12 +85,7 @@ const LoadArticle = () => {
 
   // While we're fetching the article show a themed spinner instead of a webview
   if (isLoading) {
-    return (
-      <LoadingFallback
-        text="Lade Artikel..."
-        spinnerProps={{ size: "large" }}
-      />
-    );
+    return <UiSpinner text="Lade Artikel..." size="large" />;
   }
 
   // If we have an article, render it with the ArticleScreen
@@ -119,9 +115,7 @@ const LoadArticle = () => {
   }
 
   // Fallback: Show loading state (shouldn't normally be reached)
-  return (
-    <LoadingFallback text="Lade Artikel..." spinnerProps={{ size: "large" }} />
-  );
+  return <UiSpinner text="Lade Artikel..." size="large" />;
 };
 
 export default LoadArticle;

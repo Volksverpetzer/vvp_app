@@ -3,21 +3,19 @@ import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
-import LoadingFallback from "#/components/animations/LoadingFallback";
 import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import GenericPost from "#/components/posts/GenericPost";
 import InstaPostCard from "#/components/posts/insta/InstaPostCard";
-import UiText from "#/components/ui/UiText";
+import UiEmptyState from "#/components/ui/UiEmptyState";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
-import { styles } from "#/constants/Styles";
 import Post from "#/helpers/Post";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { ArticleProperties, InstaPostProperties } from "#/types";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
@@ -128,13 +126,11 @@ const MyFavs = () => {
     };
   }, [focused]);
 
-  const corporate = useCorporateColor();
-
   return (
     <View style={{ flex: 1, gap: 20 }}>
       {isLoading ? (
         <Card>
-          <LoadingFallback text="Lade Favoriten..." />
+          <UiSpinner text="Lade Favoriten..." />
         </Card>
       ) : (
         posts.map((post) => (
@@ -150,12 +146,10 @@ const MyFavs = () => {
         ))
       )}
       <Space size={50} />
-      <View style={{ ...styles.centered }}>
-        <StarIcon color={corporate} />
-        <UiText style={{ textAlign: "center", fontSize: 18 }}>
-          Klick den Stern, um zu den Favoriten hinzuzufügen
-        </UiText>
-      </View>
+      <UiEmptyState icon={<StarIcon />}>
+        Klicke auf den Stern bei Artikeln und Posts, um sie zu den Favoriten
+        hinzuzufügen
+      </UiEmptyState>
       <Space size={100} />
     </View>
   );

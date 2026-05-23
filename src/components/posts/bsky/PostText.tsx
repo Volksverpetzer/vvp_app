@@ -1,5 +1,4 @@
-import { RichText } from "@atproto/api";
-import type { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import { type AppBskyFeedDefs, RichText } from "@atproto/api";
 import { useRouter } from "expo-router";
 import { Hyperlink } from "react-native-hyperlink";
 
@@ -12,7 +11,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
 type Props = {
-  feedViewPost: FeedViewPost;
+  feedViewPost: AppBskyFeedDefs.FeedViewPost;
   uri?: string;
 };
 
