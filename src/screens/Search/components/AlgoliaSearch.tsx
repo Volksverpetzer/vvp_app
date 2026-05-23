@@ -29,16 +29,19 @@ const AlgoliaSearchResults = ({
 }: AlgoliaSearchProperties) => {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     if (!searchString || searchString.length < 2) {
       setResults([]);
+      setHasError(false);
       setIsLoading(false);
       return;
     }
 
     setIsLoading(true);
+    setHasError(false);
     let cancelled = false;
 
     const timer = setTimeout(async () => {
@@ -56,6 +59,7 @@ const AlgoliaSearchResults = ({
         if (!cancelled) {
           console.error("Algolia search error:", error);
           setResults([]);
+          setHasError(true);
           setIsLoading(false);
         }
       }
@@ -97,6 +101,14 @@ const AlgoliaSearchResults = ({
 
   if (isLoading) {
     return <UiSpinner text="Artikel werden gesucht …" />;
+  }
+
+  if (hasError) {
+    return (
+      <View style={itemStyles.emptyContainer}>
+        <UiText>Suche fehlgeschlagen. Bitte versuche es erneut.</UiText>
+      </View>
+    );
   }
 
   if (results.length === 0 && searchString.length >= 2) {
