@@ -340,14 +340,14 @@ describe("PersonalStore", () => {
 
     it("should return 0 when nothing is stored", async () => {
       // Setup
-      getItemSpy.mockResolvedValue(null);
+      getItemSpy.mockResolvedValue(undefined);
       jest.spyOn(BaseStore, "parseJSON").mockReturnValue(0);
 
       // Execute
       const result = await PersonalStore.getLastSeenChangelogVersionCode();
 
       // Assert
-      expect(BaseStore.parseJSON).toHaveBeenCalledWith(null, 0);
+      expect(BaseStore.parseJSON).toHaveBeenCalledWith(undefined, 0);
       expect(result).toBe(0);
     });
 
