@@ -115,7 +115,7 @@ const RootLayout = () => {
       try {
         const onboardingDone = await PersonalStore.isOnboardingDone();
         if (!onboardingDone) return;
-        const lastSeen = await PersonalStore.getLastSeenChangelogVersion();
+        const lastSeen = await PersonalStore.getLastSeenChangelogVersionCode();
         if (lastSeen < Changelog.versionCode) {
           setShowChangelog(true);
         }
@@ -127,7 +127,7 @@ const RootLayout = () => {
 
   const dismissChangelog = async () => {
     setShowChangelog(false);
-    await PersonalStore.setLastSeenChangelogVersion(Changelog.versionCode);
+    await PersonalStore.setLastSeenChangelogVersionCode(Changelog.versionCode);
   };
 
   useEffect(() => {
