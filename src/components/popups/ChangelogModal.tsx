@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
+    backgroundColor: "transparent",
     flexDirection: "row",
     justifyContent: "space-between",
   },
