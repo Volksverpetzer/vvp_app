@@ -9,7 +9,7 @@
 **Version**
 
 - [ ] `version` bumped in `package.json` (e.g. `2.1.13`)
-- [ ] `versionCode` bumped in `package.json` — date-based `YYYYMMDDNN`, strictly greater than previous (e.g. `2026052301`)
+- [ ] `versionCode` bumped in `package.json` — any integer strictly greater than the previous one (date-based is recommended, e.g. `2026052301`)
 
 **Changelog**
 
