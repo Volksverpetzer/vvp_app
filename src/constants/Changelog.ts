@@ -2,7 +2,8 @@
 const Changelog = {
   version: "2.1.12",
   versionCode: 2605211,
-  notes: "",
+  notes:
+    "- Gespeicherte Quellen werden jetzt nach Artikel gruppiert\n- Impressum in den Einstellungen ergänzt\n- Hinweis bei leerem Feed\n- Performance-Verbesserungen und Fehlerbehebungen",
 };
 
 export default Changelog;
