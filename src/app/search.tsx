@@ -26,7 +26,7 @@ interface SearchContentProperties {
   isLoading: boolean;
   setSearch: (value: string) => void;
   setSearchParams: (value: string) => void;
-  setResultsLength: (length: number) => void;
+  setResultsLength: (length: number | undefined) => void;
   setIsLoading: (loading: boolean) => void;
   setSearchType: (type: "ai" | "artikel") => void;
   searchRef: RefObject<TextInput>;
