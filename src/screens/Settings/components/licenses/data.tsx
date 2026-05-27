@@ -187,6 +187,7 @@ export default {
   "expo-router@56.2.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
+    licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
   "expo-sharing@56.0.14": {
     licenses: "MIT",
@@ -211,6 +212,7 @@ export default {
   "expo-updates@56.0.17": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
+    licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
   "expo-web-browser@56.0.5": {
     licenses: "MIT",
