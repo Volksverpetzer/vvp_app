@@ -65,6 +65,9 @@ export default {
   },
   "@stripe/stripe-react-native@0.64.0": {
     licenses: "MIT",
+    repository: "https://github.com/stripe/stripe-react-native",
+    licenseUrl:
+      "https://github.com/stripe/stripe-react-native/raw/HEAD/LICENSE",
   },
   "@vseslav/react-native-horizontal-picker@0.1.1": {
     licenses: "MIT",
@@ -87,6 +90,9 @@ export default {
   },
   "eslint-plugin-prettier@5.5.5": {
     licenses: "MIT",
+    repository: "https://github.com/prettier/eslint-plugin-prettier",
+    licenseUrl:
+      "https://github.com/prettier/eslint-plugin-prettier/raw/HEAD/LICENSE.md",
   },
   "expo-application@56.0.3": {
     licenses: "MIT",
@@ -223,6 +229,8 @@ export default {
   },
   "lodash@4.18.1": {
     licenses: "MIT",
+    repository: "https://github.com/lodash/lodash",
+    licenseUrl: "https://github.com/lodash/lodash/raw/HEAD/LICENSE",
   },
   "react-dom@19.2.3": {
     licenses: "MIT",

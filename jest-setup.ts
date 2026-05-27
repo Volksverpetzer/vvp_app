@@ -102,6 +102,10 @@ jest.mock("expo-application", () => ({
   nativeBuildVersion: "1.0.0",
 }));
 
+jest.mock("expo/fetch", () => ({
+  fetch: (...args: unknown[]) => (global as any).fetch(...args),
+}));
+
 const originalPlatform = Platform.OS;
 
 afterEach(() => {
