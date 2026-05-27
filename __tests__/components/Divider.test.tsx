@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react-native";
+import type { ReactTestRendererJSON } from "react-test-renderer";
 
 import Divider from "#/components/design/Divider";
 
@@ -18,7 +19,7 @@ describe("Divider", () => {
       />,
     );
 
-    const tree = toJSON();
+    const tree = toJSON() as ReactTestRendererJSON;
     expect(tree).toBeTruthy();
 
     const containerStyle = flattenStyle(tree.props.style);
@@ -26,7 +27,8 @@ describe("Divider", () => {
     expect(containerStyle.paddingHorizontal).toBe(12);
     expect(containerStyle.marginVertical).toBe(8);
 
-    const lineNode = tree.children && tree.children[0];
+    const lineNode =
+      tree.children && (tree.children[0] as ReactTestRendererJSON);
     expect(lineNode).toBeTruthy();
     const lineStyle = flattenStyle(lineNode.props.style);
     expect(lineStyle.height).toBe(4);
