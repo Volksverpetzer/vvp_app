@@ -32,6 +32,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
 
+      - name: 🍎 Prebuild iOS (catches native config / autolinking errors)
+        run: pnpx expo prebuild --platform ios --no-install
+        env:
+          APP: volksverpetzer
+
+      - name: 🤖 Prebuild Android (catches native config / autolinking errors)
+        run: pnpx expo prebuild --platform android --no-install
+        env:
+          APP: volksverpetzer
+
       - name: 🏃‍♀️ Run tests and linter
         uses: ./.github/actions/test-and-lint
         with:
