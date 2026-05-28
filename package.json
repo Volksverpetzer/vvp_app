@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@algolia/client-search": "5.52.1",
-    "@atproto/api": "0.19.19",
+    "@atproto/api": "0.20.6",
     "@babel/runtime": "7.29.7",
     "@expo-google-fonts/source-sans-3": "0.4.1",
     "@expo/config": "56.0.9",
@@ -60,7 +60,7 @@
     "@native-html/iframe-plugin": "2.6.1",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@rive-app/react-native": "0.4.9",
-    "@stripe/stripe-react-native": "0.64.0",
+    "@stripe/stripe-react-native": "0.65.1",
     "@vseslav/react-native-horizontal-picker": "0.1.1",
     "buffer": "6.0.3",
     "domhandler": "6.0.1",
