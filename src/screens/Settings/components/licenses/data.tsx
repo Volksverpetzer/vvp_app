@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.19.19": {
+  "@atproto/api@0.20.6": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -142,7 +142,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-file-system@55.0.21": {
+  "expo-file-system@55.0.22": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -154,7 +154,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-image@55.0.10": {
+  "expo-image@55.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -178,11 +178,11 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-router@55.0.15": {
+  "expo-router@55.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-sharing@55.0.19": {
+  "expo-sharing@55.0.20": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -198,7 +198,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-updates@55.0.23": {
+  "expo-updates@55.0.24": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -206,7 +206,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo@55.0.25": {
+  "expo@55.0.26": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
