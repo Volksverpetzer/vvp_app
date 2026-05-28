@@ -203,7 +203,10 @@ const SettingsScreen = () => {
           </UiPressable>
           <UiPressable
             accessibilityRole="button"
-            onPress={() => PersonalStore.setOnboardingDone(false)}
+            onPress={() => {
+              PersonalStore.setOnboardingDone(false);
+              PersonalStore.setLastSeenChangelogVersionCode(0);
+            }}
           >
             <UiText>Intro zurücksetzen</UiText>
           </UiPressable>

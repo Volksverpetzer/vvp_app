@@ -6,7 +6,7 @@ import {
   it,
   jest,
 } from "@jest/globals";
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 
 import SettingsScreen from "#/app/(tabs)/settings";
@@ -51,7 +51,10 @@ jest.mock("#/helpers/Notifications", () => ({
 
 jest.mock("#/helpers/Stores/PersonalStore", () => ({
   __esModule: true,
-  default: { setOnboardingDone: jest.fn() },
+  default: {
+    setOnboardingDone: jest.fn(),
+    setLastSeenChangelogVersionCode: jest.fn(),
+  },
 }));
 
 jest.mock("#/helpers/Stores/SettingsStore", () => ({
@@ -173,6 +176,23 @@ describe("SettingsScreen", () => {
       mockIsFoss = true;
       const { queryByText } = render(<SettingsScreen />);
       expect(queryByText("Benachrichtigungen zurücksetzen")).toBeNull();
+    });
+  });
+
+  describe("intro reset button", () => {
+    it("resets onboarding and changelog seen state when pressed", () => {
+      const mock = jest.requireMock("#/helpers/Stores/PersonalStore") as {
+        default: {
+          setOnboardingDone: jest.Mock;
+          setLastSeenChangelogVersionCode: jest.Mock;
+        };
+      };
+      const { getByText } = render(<SettingsScreen />);
+      fireEvent.press(getByText("Intro zurücksetzen"));
+      expect(mock.default.setOnboardingDone).toHaveBeenCalledWith(false);
+      expect(mock.default.setLastSeenChangelogVersionCode).toHaveBeenCalledWith(
+        0,
+      );
     });
   });
 
