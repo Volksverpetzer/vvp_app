@@ -5,13 +5,13 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.19.19": {
+  "@atproto/api@0.20.6": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
       "https://github.com/bluesky-social/atproto/raw/HEAD/LICENSE.txt",
   },
-  "@babel/runtime@7.29.2": {
+  "@babel/runtime@7.29.7": {
     licenses: "MIT",
     repository: "https://github.com/babel/babel",
     licenseUrl: "https://github.com/babel/babel/raw/HEAD/LICENSE",
@@ -55,19 +55,13 @@ export default {
     licenseUrl:
       "https://github.com/react-native-async-storage/async-storage/raw/HEAD/LICENSE",
   },
-  "@react-navigation/bottom-tabs@7.16.1": {
+  "@react-navigation/bottom-tabs@7.16.2": {
     licenses: "MIT",
     repository: "https://github.com/react-navigation/react-navigation",
     licenseUrl:
       "https://github.com/react-navigation/react-navigation/raw/HEAD/LICENSE",
   },
-  "@react-navigation/native@7.2.4": {
-    licenses: "MIT",
-    repository: "https://github.com/react-navigation/react-navigation",
-    licenseUrl:
-      "https://github.com/react-navigation/react-navigation/raw/HEAD/LICENSE",
-  },
-  "@rive-app/react-native@0.4.7": {
+  "@rive-app/react-native@0.4.9": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-nitro-react-native",
     licenseUrl:
@@ -142,7 +136,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-file-system@55.0.21": {
+  "expo-file-system@55.0.22": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -154,7 +148,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-image@55.0.10": {
+  "expo-image@55.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -178,11 +172,11 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-router@55.0.15": {
+  "expo-router@55.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-sharing@55.0.19": {
+  "expo-sharing@55.0.20": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -198,7 +192,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-updates@55.0.23": {
+  "expo-updates@55.0.24": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -206,7 +200,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo@55.0.25": {
+  "expo@55.0.26": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -244,7 +238,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-modal/react-native-modal/raw/HEAD/LICENSE.md",
   },
-  "react-native-nitro-modules@0.35.6": {
+  "react-native-nitro-modules@0.35.7": {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
   },
