@@ -43,6 +43,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
             accessibilityRole="button"
             accessibilityLabel="Schließen"
             onPress={onClose}
+            hitSlop={8}
           >
             <CloseIcon size={28} color={corporate} />
           </UiPressable>
