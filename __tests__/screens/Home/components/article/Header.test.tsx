@@ -49,7 +49,7 @@ jest.mock("#/screens/Home/components/article/ArticleSourceList", () => ({
 
 jest.mock("#/screens/Home/components/article/ArticleStats", () => ({
   __esModule: true,
-  default: () => null,
+  default: jest.fn(() => null),
 }));
 
 const baseArticle: ArticleProperties = {
@@ -75,29 +75,38 @@ const defaultProps = {
 
 const testAuthor = { display_name: "Jane Doe", slug: "jane-doe" };
 
-describe("Header — reading time", () => {
+describe("Header — reading time forwarded to ArticleStats", () => {
+  let MockArticleStats: jest.Mock;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    MockArticleStats = jest.requireMock(
+      "#/screens/Home/components/article/ArticleStats",
+    ).default;
   });
 
-  it("shows reading time when reading_time is set", () => {
-    const { getByText } = render(
+  it("passes reading_time to ArticleStats when set", () => {
+    render(
       <Header
         {...defaultProps}
         article={{ ...baseArticle, reading_time: 8 }}
       />,
     );
-    expect(getByText(/8 Min\. Lesezeit/)).toBeTruthy();
+    expect(MockArticleStats.mock.calls[0][0]).toMatchObject({
+      reading_time: 8,
+    });
   });
 
-  it("does not show reading time when reading_time is undefined", () => {
-    const { queryByText } = render(
+  it("passes undefined reading_time to ArticleStats when absent", () => {
+    render(
       <Header
         {...defaultProps}
         article={{ ...baseArticle, reading_time: undefined }}
       />,
     );
-    expect(queryByText(/Min\. Lesezeit/)).toBeNull();
+    expect(MockArticleStats.mock.calls[0][0]).toMatchObject({
+      reading_time: undefined,
+    });
   });
 });
 

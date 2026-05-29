@@ -18,6 +18,10 @@ export const CheckboxIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="check" />
 );
 
+export const ClockIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="clock" />
+);
+
 export const CodeIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="mark-github" />
 );
