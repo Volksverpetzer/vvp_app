@@ -177,7 +177,9 @@ const Header = (properties: HeaderProperties) => {
         reading_time={article.reading_time}
       />
       {Config.audioCdnUrl && (
-        <AudioPlayer audioUrl={`${Config.audioCdnUrl}/${slug}.mp3`} />
+        <AudioPlayer
+          audioUrl={`${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`}
+        />
       )}
       <Space size={10} />
       <ArticleSourceList

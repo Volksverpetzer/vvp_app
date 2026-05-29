@@ -45,8 +45,10 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
   if (!status.isLoaded || status.error) return null;
 
   const progress =
-    status.duration > 0 ? status.currentTime / status.duration : 0;
-  const remaining = status.duration - status.currentTime;
+    status.duration > 0
+      ? Math.min(1, Math.max(0, status.currentTime / status.duration))
+      : 0;
+  const remaining = Math.max(0, status.duration - status.currentTime);
 
   const handleSeek = (x: number) => {
     if (barWidth.current === 0 || status.duration === 0) return;
@@ -66,6 +68,8 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
     >
       <UnmuteIcon size={16} color={Colors[colorScheme].textMuted} />
       <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={status.playing ? "Pause" : "Abspielen"}
         onPress={() => (status.playing ? player.pause() : player.play())}
         hitSlop={8}
       >

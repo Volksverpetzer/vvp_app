@@ -157,6 +157,23 @@ describe("AudioPlayer — accessibility labels", () => {
   });
 });
 
+describe("AudioPlayer — clamping", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as any);
+  });
+
+  it("clamps remaining time to 0 when currentTime overshoots duration", () => {
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      duration: 60,
+      currentTime: 61,
+    } as AudioStatus);
+    const { getByText } = render(<AudioPlayer audioUrl={TEST_URL} />);
+    expect(getByText("0:00")).toBeTruthy();
+  });
+});
+
 describe("AudioPlayer — remaining time display", () => {
   beforeEach(() => {
     jest.clearAllMocks();
