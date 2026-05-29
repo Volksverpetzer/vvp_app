@@ -1,10 +1,12 @@
 overrides:
-  "@react-navigation/native": "7.2.4"
+  react-test-renderer: 19.2.3 # must match react version; @testing-library/react-native enforces exact match at runtime
 
 allowBuilds:
   dtrace-provider: true # required by eas-cli; pnpm v11 blocks its build scripts otherwise
   esbuild: true
+  msgpackr-extract: true
   unrs-resolver: true
+minimumReleaseAge: 0
 nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 packages:
   - .

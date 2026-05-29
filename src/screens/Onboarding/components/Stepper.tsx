@@ -32,62 +32,64 @@ const StandardStepper = (properties: StandardStepperProperties) => {
     buttonTitle,
   } = properties;
   const corporate = useCorporateColor();
-  const Component = () => (
-    <View style={stepperStyles.stepper}>
-      {step === 0 ? (
-        <View style={{ width: 89 }} />
-      ) : (
-        <UiPressable accessibilityRole="button" onPress={previousStep}>
-          <UiText style={stepperStyles.nextButton}>Zurück</UiText>
-        </UiPressable>
-      )}
-      {[...Array.from({ length: data.length }).keys()].map((_, index) => {
-        const opacity = step === index ? 1 : 0.3;
-        return (
-          <View
-            key={String(index)} // we will use i for the key because no two (or more) elements in an array will have the same index
-            style={{
-              opacity,
-              height: 5,
-              width: 5,
-              backgroundColor: accentColor,
-              marginHorizontal: 3,
-              marginVertical: 10,
-              borderRadius: 5,
-            }}
-          />
-        );
-      })}
-      {step < data.length - 1 ? (
-        <UiPressable accessibilityRole="button" onPress={nextStep}>
-          <UiText style={stepperStyles.nextButton}>Weiter</UiText>
-        </UiPressable>
-      ) : (
-        <UiPressable
-          accessibilityRole="button"
-          onPress={onFinish}
-          style={[
-            stepperStyles.skipButton,
-            { backgroundColor: accentColor || corporate },
-          ]}
-        >
-          <UiText style={globalStyles.whiteText}>
-            {buttonTitle || "Get Started"}
-          </UiText>
-        </UiPressable>
-      )}
-    </View>
+  return useMemo(
+    () => (
+      <View style={stepperStyles.stepper}>
+        {step === 0 ? (
+          <View style={{ width: 89 }} />
+        ) : (
+          <UiPressable accessibilityRole="button" onPress={previousStep}>
+            <UiText style={stepperStyles.nextButton}>Zurück</UiText>
+          </UiPressable>
+        )}
+        {[...Array.from({ length: data.length }).keys()].map((_, index) => {
+          const opacity = step === index ? 1 : 0.3;
+          return (
+            <View
+              key={String(index)} // we will use i for the key because no two (or more) elements in an array will have the same index
+              style={{
+                opacity,
+                height: 5,
+                width: 5,
+                backgroundColor: accentColor,
+                marginHorizontal: 3,
+                marginVertical: 10,
+                borderRadius: 5,
+              }}
+            />
+          );
+        })}
+        {step < data.length - 1 ? (
+          <UiPressable accessibilityRole="button" onPress={nextStep}>
+            <UiText style={stepperStyles.nextButton}>Weiter</UiText>
+          </UiPressable>
+        ) : (
+          <UiPressable
+            accessibilityRole="button"
+            onPress={onFinish}
+            style={[
+              stepperStyles.skipButton,
+              { backgroundColor: accentColor || corporate },
+            ]}
+          >
+            <UiText style={globalStyles.whiteText}>
+              {buttonTitle || "Get Started"}
+            </UiText>
+          </UiPressable>
+        )}
+      </View>
+    ),
+    [
+      accentColor,
+      buttonTitle,
+      corporate,
+      data.length,
+      nextStep,
+      onFinish,
+      previousStep,
+      step,
+    ],
   );
-  return useMemo(Component, [
-    accentColor,
-    buttonTitle,
-    corporate,
-    data.length,
-    nextStep,
-    onFinish,
-    previousStep,
-    step,
-  ]);
 };
 
 const stepperStyles = StyleSheet.create({

@@ -22,6 +22,16 @@ export default defineConfig([
     ],
   },
   {
+    // react-hooks v7 added React Compiler rules to "recommended" that weren't
+    // in v5. Disable the ones that produce false positives in React Native
+    // (refs for Animated.Value patterns) or flag intentional patterns at scale.
+    rules: {
+      "react-hooks/refs": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/immutability": "off",
+    },
+  },
+  {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       parserOptions: {

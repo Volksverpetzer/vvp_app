@@ -16,8 +16,9 @@ jest.mock("react-native/Libraries/Interaction/InteractionManager", () => ({
   clearInteractionHandle: jest.fn(),
 }));
 
-jest.mock("@expo/vector-icons", () => ({
-  Octicons: jest.fn(),
+jest.mock("@react-native-vector-icons/octicons/static", () => ({
+  default: jest.fn(),
+  __esModule: true,
 }));
 
 jest.mock("expo-constants", () => ({
@@ -100,6 +101,10 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 
 jest.mock("expo-application", () => ({
   nativeBuildVersion: "1.0.0",
+}));
+
+jest.mock("expo/fetch", () => ({
+  fetch: (...args: unknown[]) => (global as any).fetch(...args),
 }));
 
 const originalPlatform = Platform.OS;

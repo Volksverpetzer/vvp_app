@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { LayoutChangeEvent } from "react-native";
 import { AppState, Modal, Platform, useWindowDimensions } from "react-native";
-import ViewShot from "react-native-view-shot";
+import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
@@ -48,7 +48,7 @@ const Header = (properties: HeaderProperties) => {
   const { width } = useWindowDimensions();
   const [height, setHeight] = useState(Math.round(0.5125 * width));
   // Reference to the ViewShot component for image capture
-  const reference = useRef<ViewShot>(null);
+  const reference = useRef<ViewShotRef>(null);
   const router = useRouter();
   const corporate = useCorporateColor();
 
