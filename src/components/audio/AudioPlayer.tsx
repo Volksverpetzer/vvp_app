@@ -5,9 +5,10 @@ import {
   useAudioPlayerStatus,
 } from "expo-audio";
 import { useEffect, useRef } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 import { PauseIcon, UnmuteIcon } from "#/components/Icons";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import {
@@ -67,7 +68,7 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
       }}
     >
       <UnmuteIcon size={16} color={Colors[colorScheme].textMuted} />
-      <Pressable
+      <UiPressable
         accessibilityRole="button"
         accessibilityLabel={status.playing ? "Pause" : "Abspielen"}
         onPress={() => void (status.playing ? player.pause() : player.play())}
@@ -78,7 +79,7 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         ) : (
           <Octicons name="play" size={26} color={corporate} />
         )}
-      </Pressable>
+      </UiPressable>
       <View
         accessibilityRole="adjustable"
         accessibilityLabel="Fortschrittsbalken"
