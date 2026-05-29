@@ -105,6 +105,11 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
+  "expo-audio@56.0.11": {
+    licenses: "MIT",
+    repository: "https://github.com/expo/expo",
+    licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
+  },
   "expo-clipboard@56.0.3": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",

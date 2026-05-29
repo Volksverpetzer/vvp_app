@@ -181,14 +181,14 @@ describe("AudioPlayer — remaining time display", () => {
   });
 
   it.each([
-    [120, 30, "1:30"],
-    [65, 0, "1:05"],
-    [60, 60, "0:00"],
-    [3661, 61, "60:00"],
-    [90, 85, "0:05"],
+    ["1:30", 120, 30],
+    ["1:05", 65, 0],
+    ["0:00", 60, 60],
+    ["60:00", 3661, 61],
+    ["0:05", 90, 85],
   ])(
-    "shows %ss remaining when duration=%s and currentTime=%s",
-    (duration, currentTime, expected) => {
+    "shows %s remaining when duration=%s and currentTime=%s",
+    (expected, duration, currentTime) => {
       jest.mocked(useAudioPlayerStatus).mockReturnValue({
         ...loadedStatus,
         duration,
