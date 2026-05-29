@@ -1,7 +1,6 @@
 import * as Application from "expo-application";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
-import { fetch } from "expo/fetch";
 import { Platform } from "react-native";
 
 import type { HttpsUrl } from "#/types";
