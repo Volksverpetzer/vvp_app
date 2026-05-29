@@ -31,7 +31,7 @@ jest.mock("expo-clipboard", () => ({
 const mockConfig = {
   wpUrl: "https://www.volksverpetzer.de",
   importantCats: { 123: "Faktencheck" } as Record<number, string>,
-  audioCdnUrl: undefined as string | undefined,
+  audioCdnUrl: undefined as HttpsUrl | undefined,
 };
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
