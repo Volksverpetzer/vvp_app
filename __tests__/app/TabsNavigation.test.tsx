@@ -5,7 +5,10 @@ import Config from "#/constants/Config";
 import { useBadge } from "#/helpers/provider/BadgeProvider";
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-jest.mock("@expo/vector-icons/Octicons", () => jest.fn(() => null));
+jest.mock("@react-native-vector-icons/octicons/static", () => ({
+  default: jest.fn(() => null),
+  __esModule: true,
+}));
 
 jest.mock("expo-router/unstable-native-tabs", () => ({
   NativeTabs: Object.assign(
