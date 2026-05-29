@@ -169,5 +169,20 @@ describe("WordPressAPI", () => {
       } as any);
       expect(article.authors).toEqual([]);
     });
+
+    it("preserves reading_time when present in raw data", () => {
+      const article = WordPressAPI.convertLoadProps({
+        ...baseData,
+        reading_time: 12,
+      } as any);
+      expect(article.reading_time).toBe(12);
+    });
+
+    it("leaves reading_time undefined when absent from raw data", () => {
+      const article = WordPressAPI.convertLoadProps({
+        ...baseData,
+      } as any);
+      expect(article.reading_time).toBeUndefined();
+    });
   });
 });

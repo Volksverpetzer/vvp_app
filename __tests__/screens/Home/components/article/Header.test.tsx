@@ -75,6 +75,32 @@ const defaultProps = {
 
 const testAuthor = { display_name: "Jane Doe", slug: "jane-doe" };
 
+describe("Header — reading time", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("shows reading time when reading_time is set", () => {
+    const { getByText } = render(
+      <Header
+        {...defaultProps}
+        article={{ ...baseArticle, reading_time: 8 }}
+      />,
+    );
+    expect(getByText(/8 Min\. Lesezeit/)).toBeTruthy();
+  });
+
+  it("does not show reading time when reading_time is undefined", () => {
+    const { queryByText } = render(
+      <Header
+        {...defaultProps}
+        article={{ ...baseArticle, reading_time: undefined }}
+      />,
+    );
+    expect(queryByText(/Min\. Lesezeit/)).toBeNull();
+  });
+});
+
 describe("Header — author byline", () => {
   beforeEach(() => {
     jest.clearAllMocks();
