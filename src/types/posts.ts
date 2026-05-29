@@ -46,6 +46,7 @@ export interface ArticleProperties {
   content?: { rendered: string };
   authors?: { display_name: string; slug: string }[];
   imageUrl?: string;
+  reading_time?: number;
 }
 
 export type LoadArticlePostProperties = Omit<

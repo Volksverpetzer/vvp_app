@@ -99,8 +99,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const authorDateText = useMemo(() => {
     const authors =
       article?.authors?.map((author) => author.display_name).join(", ") || "";
-    return `${authors} | ${date}`;
-  }, [article.authors, date]);
+    const readingTime = article.reading_time
+      ? ` | ${article.reading_time} Min.`
+      : "";
+    return `${authors} | ${date}${readingTime}`;
+  }, [article.authors, article.reading_time, date]);
 
   const excerpt = useMemo(
     () => article.description || "",

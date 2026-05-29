@@ -7,6 +7,7 @@ const PersonalStore = {
     reports: "reports",
     scrollPosition: "scrollPosition",
     longPressTip: "longPressTip",
+    lastSeenChangelog: "lastSeenChangelog",
   },
 
   /**
@@ -41,6 +42,30 @@ const PersonalStore = {
       await BaseStore.setItem(this.keys.onboardingDone, JSON.stringify(value));
     } catch (error) {
       console.error("Error setting onboarding status:", error);
+    }
+  },
+
+  async getLastSeenChangelogVersionCode(): Promise<number> {
+    try {
+      const value = await BaseStore.getItem(this.keys.lastSeenChangelog);
+      return BaseStore.parseJSON<number>(value, 0);
+    } catch (error) {
+      console.error(
+        "Error retrieving last seen changelog version code:",
+        error,
+      );
+      return 0;
+    }
+  },
+
+  async setLastSeenChangelogVersionCode(versionCode: number): Promise<void> {
+    try {
+      await BaseStore.setItem(
+        this.keys.lastSeenChangelog,
+        JSON.stringify(versionCode),
+      );
+    } catch (error) {
+      console.error("Error saving last seen changelog version code:", error);
     }
   },
 
