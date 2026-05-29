@@ -36,11 +36,6 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "@expo/vector-icons@15.1.1": {
-    licenses: "MIT",
-    repository: "https://github.com/expo/vector-icons",
-    licenseUrl: "https://github.com/expo/vector-icons/raw/HEAD/LICENSE",
-  },
   "@likashefqet/react-native-image-zoom@4.3.0": {
     licenses: "MIT",
     repository: "https://github.com/likashefqet/react-native-image-zoom",
@@ -57,14 +52,23 @@ export default {
     licenseUrl:
       "https://github.com/react-native-async-storage/async-storage/raw/HEAD/LICENSE",
   },
+  "@react-native-vector-icons/octicons@21.1.2": {
+    licenses: "MIT",
+    repository: "https://github.com/oblador/react-native-vector-icons",
+    licenseUrl:
+      "https://github.com/oblador/react-native-vector-icons/raw/HEAD/LICENSE",
+  },
   "@rive-app/react-native@0.4.9": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-nitro-react-native",
     licenseUrl:
       "https://github.com/rive-app/rive-nitro-react-native/raw/HEAD/LICENSE",
   },
-  "@stripe/stripe-react-native@0.65.1": {
+  "@stripe/stripe-react-native@0.64.0": {
     licenses: "MIT",
+    repository: "https://github.com/stripe/stripe-react-native",
+    licenseUrl:
+      "https://github.com/stripe/stripe-react-native/raw/HEAD/LICENSE",
   },
   "@vseslav/react-native-horizontal-picker@0.1.1": {
     licenses: "MIT",
@@ -87,6 +91,9 @@ export default {
   },
   "eslint-plugin-prettier@5.5.5": {
     licenses: "MIT",
+    repository: "https://github.com/prettier/eslint-plugin-prettier",
+    licenseUrl:
+      "https://github.com/prettier/eslint-plugin-prettier/raw/HEAD/LICENSE.md",
   },
   "expo-application@56.0.3": {
     licenses: "MIT",
@@ -211,7 +218,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@56.0.5": {
+  "expo@56.0.6": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -223,6 +230,8 @@ export default {
   },
   "lodash@4.18.1": {
     licenses: "MIT",
+    repository: "https://github.com/lodash/lodash",
+    licenseUrl: "https://github.com/lodash/lodash/raw/HEAD/LICENSE",
   },
   "react-dom@19.2.3": {
     licenses: "MIT",
@@ -286,7 +295,7 @@ export default {
     licenseUrl:
       "https://github.com/calintamas/react-native-toast-message/raw/HEAD/LICENSE",
   },
-  "react-native-view-shot@4.0.3": {
+  "react-native-view-shot@5.1.0": {
     licenses: "MIT",
     repository: "https://github.com/gre/react-native-view-shot",
     licenseUrl:

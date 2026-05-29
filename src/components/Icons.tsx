@@ -1,12 +1,13 @@
-// Icon browser: https://oblador.github.io/react-native-vector-icons/#Octicons
-import { Octicons } from "@expo/vector-icons";
+import Octicons, {
+  type OcticonsIconName,
+} from "@react-native-vector-icons/octicons/static";
 import type { ComponentProps } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Platform, View } from "react-native";
 
 type OcticonsProps = Omit<ComponentProps<typeof Octicons>, "name">;
 
-export type OcticonsIconName = keyof typeof Octicons.glyphMap;
+export type { OcticonsIconName };
 
 export type ChevronDirection = "left" | "right" | "up" | "down";
 
