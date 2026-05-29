@@ -118,6 +118,7 @@ const extraConfig: ExtraConfigType = {
     6463: "Faktencheck",
     2934: "Satire",
   },
+  audioCdnUrl: "https://vvpaudio.b-cdn.net/audio",
 };
 
 const appName = "Volksverpetzer";

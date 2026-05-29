@@ -52,6 +52,11 @@ jest.mock("#/screens/Home/components/article/ArticleStats", () => ({
   default: jest.fn(() => null),
 }));
 
+jest.mock("#/components/audio/AudioPlayer", () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
 const baseArticle: ArticleProperties = {
   _links: { "wp:featuredmedia": [{ href: "https://example.com/img.jpg" }] },
   date: "2024-01-01T12:00:00Z",

@@ -7,6 +7,7 @@ import type { LayoutChangeEvent } from "react-native";
 import { AppState, Modal, Platform, useWindowDimensions } from "react-native";
 import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
+import AudioPlayer from "#/components/audio/AudioPlayer";
 import Space from "#/components/design/Space";
 import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
@@ -175,6 +176,9 @@ const Header = (properties: HeaderProperties) => {
         article_link={article_link}
         reading_time={article.reading_time}
       />
+      {Config.audioCdnUrl && (
+        <AudioPlayer audioUrl={`${Config.audioCdnUrl}/${slug}.mp3`} />
+      )}
       <Space size={10} />
       <ArticleSourceList
         article_link={article_link}
