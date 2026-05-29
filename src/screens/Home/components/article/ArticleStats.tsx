@@ -31,6 +31,12 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
         { paddingHorizontal: 20, justifyContent: "flex-start", gap: 20 },
       ]}
     >
+      {!!reading_time && (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+          <ClockIcon size={16} color={color} />
+          <UiText style={{ color, fontSize: 16 }}>{reading_time} Min.</UiText>
+        </View>
+      )}
       {showEngagement && (
         <>
           <ViewCounter
@@ -46,12 +52,6 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
             size={16}
           />
         </>
-      )}
-      {!!reading_time && (
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-          <ClockIcon size={16} color={color} />
-          <UiText style={{ color, fontSize: 16 }}>{reading_time} Min.</UiText>
-        </View>
       )}
     </View>
   );
