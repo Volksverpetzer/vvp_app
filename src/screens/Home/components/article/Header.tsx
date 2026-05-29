@@ -170,6 +170,7 @@ const Header = (properties: HeaderProperties) => {
               : "";
           })[0]
         }
+        {article.reading_time ? ` | ${article.reading_time} Min. Lesezeit` : ""}
       </UiText>
       <ArticleStats article_link={article_link} />
       <Space size={10} />
