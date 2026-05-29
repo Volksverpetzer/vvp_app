@@ -70,7 +70,7 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={status.playing ? "Pause" : "Abspielen"}
-        onPress={() => (status.playing ? player.pause() : player.play())}
+        onPress={() => void (status.playing ? player.pause() : player.play())}
         hitSlop={8}
       >
         {status.playing ? (
@@ -80,6 +80,28 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         )}
       </Pressable>
       <View
+        accessibilityRole="adjustable"
+        accessibilityLabel="Fortschrittsbalken"
+        accessibilityValue={{
+          min: 0,
+          max: Math.floor(status.duration),
+          now: Math.floor(status.currentTime),
+          text: `${formatTime(Math.floor(status.currentTime))} von ${formatTime(Math.floor(status.duration))}`,
+        }}
+        accessibilityActions={[
+          { name: "increment", label: "15 Sekunden vorspulen" },
+          { name: "decrement", label: "15 Sekunden zurückspulen" },
+        ]}
+        onAccessibilityAction={(e) => {
+          const step = 15;
+          if (e.nativeEvent.actionName === "increment") {
+            void player.seekTo(
+              Math.min(status.duration, status.currentTime + step),
+            );
+          } else if (e.nativeEvent.actionName === "decrement") {
+            void player.seekTo(Math.max(0, status.currentTime - step));
+          }
+        }}
         style={{
           flex: 1,
           height: 4,
