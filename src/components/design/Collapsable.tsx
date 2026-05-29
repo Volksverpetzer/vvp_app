@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     gap: 10,
   },
   content: {
