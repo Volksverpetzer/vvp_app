@@ -171,7 +171,10 @@ const Header = (properties: HeaderProperties) => {
           })[0]
         }
       </UiText>
-      <ArticleStats article_link={article_link} />
+      <ArticleStats
+        article_link={article_link}
+        reading_time={article.reading_time}
+      />
       <Space size={10} />
       <ArticleSourceList
         article_link={article_link}
