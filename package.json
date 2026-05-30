@@ -66,7 +66,7 @@
     "buffer": "6.0.3",
     "domhandler": "6.0.1",
     "domutils": "4.0.2",
-    "eslint-plugin-prettier": "5.5.5",
+    "eslint-plugin-prettier": "5.5.6",
     "expo": "56.0.6",
     "expo-application": "56.0.3",
     "expo-asset": "56.0.15",
