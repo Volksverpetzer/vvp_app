@@ -6,11 +6,12 @@ import type { ShareableType } from "#/types";
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: { enableEngagement: true },
+  default: { enableEngagement: true, enableAnalytics: true },
 }));
 
 const mockConfig = jest.requireMock("#/constants/Config").default as {
   enableEngagement: boolean;
+  enableAnalytics: boolean;
 };
 
 jest.mock("#/components/Icons", () => ({
@@ -35,6 +36,7 @@ describe("ShareCounter", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockConfig.enableEngagement = true;
+    mockConfig.enableAnalytics = true;
     jest.mocked(getShares).mockResolvedValue(0);
   });
 
@@ -95,11 +97,11 @@ describe("ShareCounter", () => {
     );
 
     expect(queryByRole("button")).toBeNull();
-    expect(getByText("share-icon:none:20")).toBeTruthy();
+    expect(getByText("share-icon:none:30")).toBeTruthy();
   });
 
   it("renders an empty placeholder and skips engagement when disabled", () => {
-    mockConfig.enableEngagement = false;
+    mockConfig.enableAnalytics = false;
 
     const { queryByRole, queryByText } = render(
       <ShareCounter shareable={shareable} shares={3} style={{}} />,

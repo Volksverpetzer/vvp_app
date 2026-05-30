@@ -5,8 +5,8 @@ import { ClockIcon } from "#/components/Icons";
 import ShareCounter from "#/components/counter/ShareCounter";
 import ViewCounter from "#/components/counter/ViewCounter";
 import UiText from "#/components/ui/UiText";
-import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import useAnalyticsEnabled from "#/hooks/useAnalyticsEnabled";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -20,9 +20,9 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
 
   const { article_link, reading_time } = properties;
   const color = useCorporateColor();
-  const showEngagement = Config.enableEngagement;
+  const analyticsEnabled = useAnalyticsEnabled();
 
-  if (!showEngagement && !reading_time) return undefined;
+  if (!analyticsEnabled && !reading_time) return undefined;
 
   return (
     <View
@@ -37,7 +37,7 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
           <UiText style={{ color, fontSize: 16 }}>{reading_time} Min.</UiText>
         </View>
       )}
-      {showEngagement && (
+      {analyticsEnabled && (
         <>
           <ViewCounter
             {...{ url: article_link }}

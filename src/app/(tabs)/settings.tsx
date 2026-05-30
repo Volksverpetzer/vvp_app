@@ -1,6 +1,6 @@
 import * as Application from "expo-application";
 import { useRouter } from "expo-router";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
@@ -55,6 +55,15 @@ const SettingsScreen = () => {
   const colorScheme = useAppColorScheme();
   const primary = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].surface;
+  const visibleAdvancedSettings = useMemo(() => {
+    if (Config.enableAnalytics) return advancedSettings;
+    return Object.fromEntries(
+      Object.entries(advancedSettings).filter(
+        ([key]) => key !== "plausibleAnalytics",
+      ),
+    ) as typeof advancedSettings;
+  }, [advancedSettings]);
+
   const HEADER_HEIGHT = 150;
 
   // Update content settings
@@ -155,7 +164,7 @@ const SettingsScreen = () => {
           >
             <SettingsList
               saveSettings={saveAdvancedSetting}
-              settings={advancedSettings}
+              settings={visibleAdvancedSettings}
             />
             {Config.enableEngagement && <BackupView />}
           </Collapsable>

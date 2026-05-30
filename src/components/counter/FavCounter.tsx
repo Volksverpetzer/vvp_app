@@ -5,11 +5,11 @@ import { StarIcon } from "#/components/Icons";
 import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
-import Config from "#/constants/Config";
 import { Achievements } from "#/helpers/Achievements";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { getFavs, registerFav } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+import useAnalyticsEnabled from "#/hooks/useAnalyticsEnabled";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { FaveableType, ShareableType } from "#/types";
 
@@ -25,6 +25,7 @@ const FavCounter = (properties: FavCounterProperties) => {
   const [favs, setFavs] = useState(0);
   const [isFav, setIsFav] = useState(false);
   const color = useCorporateColor();
+  const analyticsEnabled = useAnalyticsEnabled();
   const {
     contentFavIdentifier,
     contentType,
@@ -41,13 +42,13 @@ const FavCounter = (properties: FavCounterProperties) => {
   }, [shareable]);
 
   useEffect(() => {
-    if (Config.enableEngagement) getAllFavs();
+    if (analyticsEnabled) getAllFavs();
     if (contentFavIdentifier) {
       FavoritesStore.isFavorite(contentFavIdentifier).then(setIsFav);
     }
-  }, [contentFavIdentifier, getAllFavs]);
+  }, [analyticsEnabled, contentFavIdentifier, getAllFavs]);
 
-  if (!Config.enableEngagement) return <View />;
+  if (!analyticsEnabled) return <View />;
 
   const handleFav = async () => {
     if (contentFavIdentifier) {

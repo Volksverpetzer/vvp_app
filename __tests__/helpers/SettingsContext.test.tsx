@@ -20,6 +20,7 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
     defaultAdvancedSettings: {
       advancedReporting: { value: false, name: "Erweitertes Reporting" },
       alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
+      plausibleAnalytics: { value: true, name: "Plausible Analytics senden" },
     },
     getContentSettings: jest.fn(),
     getAdvancedSettings: jest.fn(),
@@ -87,6 +88,10 @@ describe("SettingsContext Logic", () => {
       const newSettings: AdvancedSettingType = {
         advancedReporting: { value: true, name: "Erweitertes Reporting" },
         alwaysDarkMode: { value: true, name: "Always Dark Mode" },
+        plausibleAnalytics: {
+          value: false,
+          name: "Plausible Analytics senden",
+        },
       };
 
       await SettingsStore.setAdvancedSettings(newSettings);
@@ -118,6 +123,9 @@ describe("SettingsContext Logic", () => {
       */
       expect(SettingsStore.defaultAdvancedSettings).toHaveProperty(
         "alwaysDarkMode",
+      );
+      expect(SettingsStore.defaultAdvancedSettings).toHaveProperty(
+        "plausibleAnalytics",
       );
     });
   });

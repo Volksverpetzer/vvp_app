@@ -3,6 +3,7 @@ import * as Linking from "expo-linking";
 import { Dimensions, Platform } from "react-native";
 
 import Config from "#/constants/Config";
+import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { createClient, post } from "#/helpers/utils/networking";
 
 const { wpUrl } = Config;
@@ -25,6 +26,8 @@ const registerEvent = async (
   utm_source = "app",
 ): Promise<unknown> => {
   if (!Config.enableAnalytics) return;
+  const advancedSettings = await SettingsStore.getAdvancedSettings();
+  if (!advancedSettings?.plausibleAnalytics?.value) return;
   const { hostname } = Linking.parse(wpUrl);
   const payload = {
     name: event,

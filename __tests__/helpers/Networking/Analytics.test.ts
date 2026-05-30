@@ -4,10 +4,8 @@ import * as Linking from "expo-linking";
 import { Platform } from "react-native";
 
 import Config from "#/constants/Config";
-import { registerEvent } from "#/helpers/network/Analytics";
-import { registerFav, registerViews } from "#/helpers/network/Engagement";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
-import * as AnalyticsModule from "#/helpers/network/Analytics";
+import { registerEvent } from "#/helpers/network/Analytics";
 import * as Networking from "#/helpers/utils/networking";
 
 jest.mock("react-native", () => ({
@@ -33,6 +31,7 @@ jest.mock("expo-linking", () => ({
 jest.mock("#/helpers/utils/networking", () => ({
   __esModule: true,
   createClient: jest.fn().mockReturnValue({}),
+  get: jest.fn(),
   post: jest.fn(),
 }));
 
@@ -53,6 +52,7 @@ jest.mock("#/constants/Config", () => ({
 }));
 
 describe("Analytics (Plausible)", () => {
+  let getSpy: ReturnType<typeof jest.spyOn>;
   let postSpy: ReturnType<typeof jest.spyOn>;
   let parseSpy: ReturnType<typeof jest.spyOn>;
   let consoleErrorSpy: ReturnType<typeof jest.spyOn>;

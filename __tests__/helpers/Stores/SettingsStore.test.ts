@@ -149,20 +149,23 @@ describe("SettingsStore", () => {
 
   describe("getAdvancedSettings", () => {
     it("returns parsed advanced settings", async () => {
-      const settings: AdvancedSettingType = {
+      const stored: AdvancedSettingType = {
         advancedReporting: { value: true, name: "Erweitertes Reporting" },
         alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
         plausibleAnalytics: { value: true, name: "Plausible Analytics" },
       };
       jest
         .spyOn(BaseStore, "getItem")
-        .mockResolvedValue(JSON.stringify(settings));
-      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(settings);
+        .mockResolvedValue(JSON.stringify(stored));
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(stored);
 
       const result = await SettingsStore.getAdvancedSettings();
 
       expect(BaseStore.getItem).toHaveBeenCalledWith("advancedSettings");
-      expect(result).toEqual(settings);
+      expect(result.advancedReporting.value).toBe(true);
+      expect(result.alwaysDarkMode.value).toBe(false);
+      expect(result.plausibleAnalytics.value).toBe(true);
+      expect(result.plausibleAnalytics.name).toBe("Anonyme Nutzerdaten teilen");
     });
 
     it("should backfill plausibleAnalytics when older settings are loaded", async () => {

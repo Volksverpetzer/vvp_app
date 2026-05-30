@@ -6,6 +6,7 @@ import { ArticleViewIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { getViews } from "#/helpers/network/Engagement";
+import useAnalyticsEnabled from "#/hooks/useAnalyticsEnabled";
 import type { HttpsUrl } from "#/types";
 
 interface ViewCounterProperties {
@@ -24,9 +25,10 @@ const ViewCounter = (properties: ViewCounterProperties) => {
   const [isLoading, setLoading] = useState(true);
   const [views, setViews] = useState(0);
   const color = colorProp;
+  const analyticsEnabled = useAnalyticsEnabled();
 
   useEffect(() => {
-    if (!Config.enableEngagement) return;
+    if (!analyticsEnabled) return;
     let isCancelled = false;
     setLoading(true);
     getViews(url).then((views) => {
@@ -38,7 +40,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
     return () => {
       isCancelled = true;
     };
-  }, [url]);
+  }, [analyticsEnabled, url]);
 
   if (!Config.enableEngagement) return null;
 

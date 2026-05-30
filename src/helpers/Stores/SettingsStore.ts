@@ -25,7 +25,10 @@ const SettingsStore = {
   defaultAdvancedSettings: {
     advancedReporting: { value: false, name: "Erweitertes Reporting" },
     alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
-    plausibleAnalytics: { value: true, name: "Plausible Analytics" },
+    plausibleAnalytics: {
+      value: true,
+      name: "Anonyme Nutzerdaten teilen",
+    },
   } as AdvancedSettingType,
 
   defaultNotificationSettings: {
@@ -63,9 +66,21 @@ const SettingsStore = {
   async getAdvancedSettings(): Promise<AdvancedSettingType> {
     try {
       const jsonValue = await BaseStore.getItem(this.keys.advancedSettings);
-      const parsed =
-        BaseStore.parseJSON<Partial<AdvancedSettingType>>(jsonValue, {}) ?? {};
-      return { ...this.defaultAdvancedSettings, ...parsed };
+      const parsed = BaseStore.parseJSON<Record<string, any>>(jsonValue, {});
+      const result: AdvancedSettingType = {} as AdvancedSettingType;
+      for (const key in this.defaultAdvancedSettings) {
+        const defaultSetting = this.defaultAdvancedSettings[key];
+        result[key] = {
+          value:
+            typeof parsed[key]?.value === "boolean"
+              ? parsed[key].value
+              : defaultSetting.value,
+          name: defaultSetting.name,
+        };
+      }
+      // Migrate storage to include newly introduced advanced settings.
+      await this.setAdvancedSettings(result);
+      return result;
     } catch (error) {
       console.error("Error retrieving advanced settings:", error);
       return this.defaultAdvancedSettings;

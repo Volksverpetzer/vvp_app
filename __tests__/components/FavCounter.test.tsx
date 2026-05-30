@@ -9,11 +9,12 @@ import type { FaveableType, ShareableType } from "#/types";
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: { enableEngagement: true },
+  default: { enableEngagement: true, enableAnalytics: true },
 }));
 
 const mockConfig = jest.requireMock("#/constants/Config").default as {
   enableEngagement: boolean;
+  enableAnalytics: boolean;
 };
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
@@ -63,6 +64,7 @@ describe("FavCounter", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockConfig.enableEngagement = true;
+    mockConfig.enableAnalytics = true;
     jest.mocked(FavoritesStore.isFavorite).mockResolvedValue(false);
     jest.mocked(FavoritesStore.addFavorite).mockResolvedValue(undefined);
     jest.mocked(FavoritesStore.removeFavorite).mockResolvedValue(undefined);
@@ -157,7 +159,7 @@ describe("FavCounter", () => {
   });
 
   it("renders an empty placeholder and skips engagement when disabled", () => {
-    mockConfig.enableEngagement = false;
+    mockConfig.enableAnalytics = false;
 
     const { queryByRole, queryByText } = render(
       <FavCounter
