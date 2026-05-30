@@ -6,6 +6,7 @@ import { Platform } from "react-native";
 import Config from "#/constants/Config";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { registerEvent } from "#/helpers/network/Analytics";
+import { registerFav, registerViews } from "#/helpers/network/Engagement";
 import * as Networking from "#/helpers/utils/networking";
 
 jest.mock("react-native", () => ({
@@ -52,7 +53,6 @@ jest.mock("#/constants/Config", () => ({
 }));
 
 describe("Analytics (Plausible)", () => {
-  let getSpy: ReturnType<typeof jest.spyOn>;
   let postSpy: ReturnType<typeof jest.spyOn>;
   let parseSpy: ReturnType<typeof jest.spyOn>;
   let consoleErrorSpy: ReturnType<typeof jest.spyOn>;
@@ -63,7 +63,6 @@ describe("Analytics (Plausible)", () => {
       plausibleAnalytics: { value: true, name: "Plausible Analytics" },
     } as never);
 
-    getSpy = jest.spyOn(Networking, "get");
     postSpy = jest.spyOn(Networking, "post");
     parseSpy = jest.spyOn(Linking, "parse");
     consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});

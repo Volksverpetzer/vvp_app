@@ -36,7 +36,7 @@ const ShareCounter = (properties: ShareCounterProperties) => {
     if (!analyticsEnabled) return;
     if (hideCount) return;
     getAllShares();
-  }, [analyticsEnabled, getAllShares]);
+  }, [analyticsEnabled, getAllShares, hideCount]);
 
   if (!analyticsEnabled) return <View />;
 
