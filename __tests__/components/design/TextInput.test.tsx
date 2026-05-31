@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { render } from "@testing-library/react-native";
 
 import TextInput from "#/components/design/TextInput";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
@@ -15,45 +16,38 @@ jest.mock("#/constants/Colors", () => ({
   },
 }));
 
+const flatStyle = (style: unknown) =>
+  ([] as unknown[])
+    .concat(style)
+    .reduce<Record<string, unknown>>((acc, s: any) => ({ ...acc, ...s }), {});
+
 describe("TextInput", () => {
   beforeEach(() => {
-    const { useAppColorScheme } = require("#/hooks/useAppColorScheme");
-    (useAppColorScheme as jest.Mock).mockReturnValue("light");
+    jest.mocked(useAppColorScheme).mockReturnValue("light");
   });
 
   it("renders with light theme colors", () => {
     const { getByTestId } = render(<TextInput testID="input" />);
-    const input = getByTestId("input");
-    const flatStyle = []
-      .concat(input.props.style)
-      .reduce((acc: any, s: any) => ({ ...acc, ...s }), {});
-    expect(flatStyle.backgroundColor).toBe("#BADDE8");
-    expect(flatStyle.color).toBe("#111");
+    const style = flatStyle(getByTestId("input").props.style);
+    expect(style.backgroundColor).toBe("#BADDE8");
+    expect(style.color).toBe("#111");
   });
 
   it("renders with dark theme colors", () => {
-    const { useAppColorScheme } = require("#/hooks/useAppColorScheme");
-    (useAppColorScheme as jest.Mock).mockReturnValue("dark");
-
+    jest.mocked(useAppColorScheme).mockReturnValue("dark");
     const { getByTestId } = render(<TextInput testID="input" />);
-    const input = getByTestId("input");
-    const flatStyle = []
-      .concat(input.props.style)
-      .reduce((acc: any, s: any) => ({ ...acc, ...s }), {});
-    expect(flatStyle.backgroundColor).toBe("#777");
-    expect(flatStyle.color).toBe("#F7F7F7");
+    const style = flatStyle(getByTestId("input").props.style);
+    expect(style.backgroundColor).toBe("#777");
+    expect(style.color).toBe("#F7F7F7");
   });
 
   it("merges additional style props", () => {
     const { getByTestId } = render(
       <TextInput testID="input" style={{ borderWidth: 1 }} />,
     );
-    const input = getByTestId("input");
-    const flatStyle = []
-      .concat(input.props.style)
-      .reduce((acc: any, s: any) => ({ ...acc, ...s }), {});
-    expect(flatStyle.borderWidth).toBe(1);
-    expect(flatStyle.backgroundColor).toBe("#BADDE8");
+    const style = flatStyle(getByTestId("input").props.style);
+    expect(style.borderWidth).toBe(1);
+    expect(style.backgroundColor).toBe("#BADDE8");
   });
 
   it("passes through other props", () => {
