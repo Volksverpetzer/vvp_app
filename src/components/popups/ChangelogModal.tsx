@@ -8,10 +8,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
-import {
-  useAppColorScheme,
-  useCorporateColor,
-} from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface ChangelogModalProperties {
   isVisible: boolean;
@@ -20,7 +17,7 @@ interface ChangelogModalProperties {
 
 const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
   const colorScheme = useAppColorScheme();
-  const corporate = useCorporateColor();
+  const corporate = Colors[colorScheme].primary;
   const surface = Colors[colorScheme].surface;
   const textMuted = Colors[colorScheme].textMuted;
   const iconOnPrimary = Colors[colorScheme].iconOnPrimary;

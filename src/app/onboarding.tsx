@@ -19,10 +19,7 @@ import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
-import {
-  useAppColorScheme,
-  useCorporateColor,
-} from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
 import type { NotificationSettingType, SettingType } from "#/types";
 
@@ -37,7 +34,7 @@ const Onboarding = () => {
   const { contentSettings, setContentSettings } = useContext(SettingsContext);
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
-  const corporate = useCorporateColor();
+  const corporate = Colors[colorScheme].primary;
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
 

@@ -5,10 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
-import {
-  useAppColorScheme,
-  useCorporateColor,
-} from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface ImageModalProperties {
   uri: string;
@@ -19,7 +16,7 @@ interface ImageModalProperties {
 const ImageModal = ({ uri, visible, onClose }: ImageModalProperties) => {
   const { width } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
-  const corporate = useCorporateColor();
+  const corporate = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].background;
 
   return (

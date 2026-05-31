@@ -86,6 +86,7 @@ jest.mock("#/helpers/provider/BadgeProvider", () => ({
 }));
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
+  useAppColorScheme: jest.fn(() => "light"),
   useCorporateColor: jest.fn(() => "#1b7194"),
 }));
 
