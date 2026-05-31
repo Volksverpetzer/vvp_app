@@ -91,7 +91,7 @@ jest.mock("#/constants/GlobalStyles", () => ({
 
 // Mock all heavy UI components
 jest.mock("#/components/animations/AnimatedHeader", () => jest.fn(() => null));
-jest.mock("#/components/design/Collapsable", () => {
+jest.mock("#/components/ui/UiCollapsable", () => {
   const { Text } = require("react-native");
   return jest.fn(({ title, children }: any) => (
     <>

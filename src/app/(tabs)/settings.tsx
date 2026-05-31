@@ -17,9 +17,9 @@ import {
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import Collapsable from "#/components/design/Collapsable";
 import DesignedLink from "#/components/design/DesignedLink";
 import Space from "#/components/design/Space";
+import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiDivider from "#/components/ui/UiDivider";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
@@ -126,7 +126,7 @@ const SettingsScreen = () => {
         scrollEventThrottle={16}
       >
         <View>
-          <Collapsable
+          <UiCollapsable
             icon={<FeedIcon color={primary} size={24} />}
             title="Feed"
           >
@@ -137,9 +137,9 @@ const SettingsScreen = () => {
               saveSettings={saveContentSetting}
               settings={contentSettings}
             />
-          </Collapsable>
+          </UiCollapsable>
           {!Config.isFoss && (
-            <Collapsable
+            <UiCollapsable
               icon={<NotificationIcon color={primary} size={24} />}
               title="Benachrichtigungen"
             >
@@ -147,9 +147,9 @@ const SettingsScreen = () => {
                 saveSettings={saveNotificationSetting}
                 settings={notificationSettings}
               />
-            </Collapsable>
+            </UiCollapsable>
           )}
-          <Collapsable
+          <UiCollapsable
             icon={<SettingsIcon color={primary} size={24} />}
             title="Erweitert"
           >
@@ -158,7 +158,7 @@ const SettingsScreen = () => {
               settings={advancedSettings}
             />
             {Config.enableEngagement && <BackupView />}
-          </Collapsable>
+          </UiCollapsable>
         </View>
         <UiDivider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
