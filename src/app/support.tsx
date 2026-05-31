@@ -27,13 +27,10 @@ const SupportScreen = () => {
           flex: 1,
           backgroundColor,
         }}
-        contentContainerStyle={{
-          alignItems: "center",
-          flexGrow: 1,
-          paddingTop: HEADER_HEIGHT,
-          gap: 20,
-          marginHorizontal: 12,
-        }}
+        contentContainerStyle={[
+          globalStyles.content,
+          { paddingTop: HEADER_HEIGHT, alignItems: "center" },
+        ]}
       >
         <HeartIcon color={corporate} size={56} />
         <Support article_link={supportUrl} />
