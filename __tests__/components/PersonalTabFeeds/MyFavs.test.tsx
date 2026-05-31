@@ -31,7 +31,7 @@ jest.mock("#/components/ui/UiSpinner", () => ({
   default: jest.fn(() => null),
 }));
 
-jest.mock("#/components/design/Card", () => ({
+jest.mock("#/components/ui/UiCard", () => ({
   __esModule: true,
   default: jest.fn(({ children }) => children),
 }));

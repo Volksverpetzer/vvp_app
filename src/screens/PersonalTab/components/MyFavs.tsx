@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
-import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
 import GenericPost from "#/components/posts/GenericPost";
 import InstaPostCard from "#/components/posts/insta/InstaPostCard";
+import UiCard from "#/components/ui/UiCard";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
@@ -129,9 +129,9 @@ const MyFavs = () => {
   return (
     <View style={{ flex: 1, gap: 20 }}>
       {isLoading ? (
-        <Card>
+        <UiCard>
           <UiSpinner text="Lade Favoriten..." />
-        </Card>
+        </UiCard>
       ) : (
         posts.map((post) => (
           <GenericPost

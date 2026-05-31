@@ -21,7 +21,7 @@ jest.mock("#/components/ui/UiEmptyState", () => {
   });
 });
 
-jest.mock("#/components/design/Card", () => {
+jest.mock("#/components/ui/UiCard", () => {
   const { View } = require("react-native");
   return jest.fn(({ children }: any) => <View testID="card">{children}</View>);
 });

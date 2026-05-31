@@ -1,8 +1,8 @@
 import { View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
-import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
+import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -67,14 +67,14 @@ const Footer = (properties: FooterProperties) => {
           <ShareIcon color="white" size={32} />
         </UiPressable>
       </View>
-      <Card
+      <UiCard
         style={{
           marginHorizontal: 12,
           backgroundColor: Colors[colorScheme].surface,
         }}
       >
         <Support article_link={properties.article_link} />
-      </Card>
+      </UiCard>
       <Space size={100} />
     </>
   );

@@ -4,8 +4,7 @@ import type { ViewStyle } from "react-native";
 import { View } from "react-native";
 
 import ShareBar from "#/components/bars/ShareBar";
-import Colors from "#/constants/Colors";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import UiCard from "#/components/ui/UiCard";
 import type { FaveableType, ShareableType } from "#/types";
 
 interface ComponentProperty<T> {
@@ -31,22 +30,13 @@ const GenericPost = (properties: ComponentProperty<object>) => {
     shareable,
     style,
   } = properties;
-  const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].background;
-  // Memoize the combined style to avoid re-creating the style object on every render.
   const combinedStyle: ViewStyle = useMemo(
-    () => ({
-      backgroundColor,
-      borderRadius: 15,
-      minHeight: 200,
-      overflow: "hidden",
-      ...style,
-    }),
-    [backgroundColor, style],
+    () => ({ minHeight: 200, overflow: "hidden", padding: 0, ...style }),
+    [style],
   );
 
   return (
-    <View style={combinedStyle}>
+    <UiCard style={combinedStyle}>
       <Component inView={inView} {...data} />
       {shareable ? (
         <ShareBar
@@ -58,7 +48,7 @@ const GenericPost = (properties: ComponentProperty<object>) => {
       ) : (
         <View style={{ paddingHorizontal: 30, height: 40, margin: 0 }} />
       )}
-    </View>
+    </UiCard>
   );
 };
 
