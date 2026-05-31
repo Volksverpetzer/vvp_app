@@ -13,11 +13,6 @@ jest.mock("#/components/animations/AnimatedHeader", () => {
   return jest.fn(({ children }: any) => <View>{children}</View>);
 });
 
-jest.mock("#/components/design/View", () => {
-  const { View } = require("react-native");
-  return jest.fn(({ children }: any) => <View>{children}</View>);
-});
-
 jest.mock("#/constants/Colors", () => ({
   light: {
     primary: "#1b7194",

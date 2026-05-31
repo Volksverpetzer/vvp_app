@@ -1,7 +1,8 @@
+import { View } from "react-native";
+
 import { ShareIcon } from "#/components/Icons";
 import Card from "#/components/design/Card";
 import Space from "#/components/design/Space";
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";

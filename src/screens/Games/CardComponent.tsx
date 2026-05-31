@@ -1,7 +1,6 @@
 import type { ViewStyle } from "react-native";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import type { MemoryCard } from "#/types";

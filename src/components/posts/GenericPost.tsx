@@ -1,9 +1,11 @@
 import type { FC } from "react";
 import React, { useMemo } from "react";
 import type { ViewStyle } from "react-native";
+import { View } from "react-native";
 
 import ShareBar from "#/components/bars/ShareBar";
-import View from "#/components/design/View";
+import Colors from "#/constants/Colors";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { FaveableType, ShareableType } from "#/types";
 
 interface ComponentProperty<T> {
@@ -29,15 +31,18 @@ const GenericPost = (properties: ComponentProperty<object>) => {
     shareable,
     style,
   } = properties;
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].background;
   // Memoize the combined style to avoid re-creating the style object on every render.
   const combinedStyle: ViewStyle = useMemo(
     () => ({
+      backgroundColor,
       borderRadius: 15,
       minHeight: 200,
       overflow: "hidden",
       ...style,
     }),
-    [style],
+    [backgroundColor, style],
   );
 
   return (

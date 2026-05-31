@@ -1,10 +1,10 @@
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
+import { View } from "react-native";
 import Modal from "react-native-modal";
 
 import { CloseIcon, HeartIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
-import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";

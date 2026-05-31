@@ -12,13 +12,6 @@ jest.mock("#/components/animations/FaktenBot", () =>
   }),
 );
 
-jest.mock("#/components/design/View", () => {
-  const { View } = require("react-native");
-  return jest.fn(({ children, style }: any) => (
-    <View style={style}>{children}</View>
-  ));
-});
-
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children, style }: any) => (

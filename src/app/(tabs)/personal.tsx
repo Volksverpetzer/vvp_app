@@ -1,11 +1,10 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Animated } from "react-native";
+import { Animated, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { LinkIcon, StarIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import View from "#/components/design/View";
 import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 import UiTabView from "#/components/ui/UiTabView";
 import Colors from "#/constants/Colors";

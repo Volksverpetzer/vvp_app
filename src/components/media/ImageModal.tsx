@@ -1,9 +1,8 @@
 import { Zoomable } from "@likashefqet/react-native-image-zoom";
 import { Image } from "expo-image";
-import { Button, Modal, useWindowDimensions } from "react-native";
+import { Button, Modal, View, useWindowDimensions } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import View from "#/components/design/View";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import {
@@ -41,7 +40,7 @@ const ImageModal = ({ uri, visible, onClose }: ImageModalProperties) => {
           />
         </Zoomable>
       </GestureHandlerRootView>
-      <View style={{ padding: 50 }}>
+      <View style={{ padding: 50, backgroundColor }}>
         <Button color={corporate} title="Schließen" onPress={onClose} />
       </View>
     </Modal>

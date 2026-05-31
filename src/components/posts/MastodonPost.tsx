@@ -1,10 +1,10 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
+import { View } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import Space from "#/components/design/Space";
-import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";

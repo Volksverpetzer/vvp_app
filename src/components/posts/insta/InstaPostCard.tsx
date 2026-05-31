@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { View } from "react-native";
 
-import View from "#/components/design/View";
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";

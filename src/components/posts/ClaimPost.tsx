@@ -1,6 +1,6 @@
 import * as WebBrowser from "expo-web-browser";
+import { View } from "react-native";
 
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";

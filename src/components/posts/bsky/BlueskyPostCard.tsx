@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
 import { useEffect } from "react";
+import { View } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
-import View from "#/components/design/View";
 import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";

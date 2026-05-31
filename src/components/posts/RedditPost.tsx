@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { useState } from "react";
+import { View } from "react-native";
 
-import View from "#/components/design/View";
 import ImageModal from "#/components/media/ImageModal";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
