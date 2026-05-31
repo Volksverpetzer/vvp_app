@@ -25,11 +25,11 @@ import type { ArticleProperties } from "#/types";
 import Badge from "./Badge";
 
 // Define the component props type.
-type ArticlePostScreenProperties = {
+interface ArticlePostScreenProperties {
   article: ArticleProperties;
   inView?: boolean;
   elevated?: boolean;
-};
+}
 
 /**
  * ArticlePost renders a short preview of an article fetched from a WordPress API.

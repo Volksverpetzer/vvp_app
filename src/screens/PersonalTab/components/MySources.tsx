@@ -20,8 +20,16 @@ import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl, StoredSources } from "#/types";
 
-type SourceEntry = { href: HttpsUrl; text?: string; date?: string };
-type SlugGroup = { slug: string; latestDate: string; entries: SourceEntry[] };
+interface SourceEntry {
+  href: HttpsUrl;
+  text?: string;
+  date?: string;
+}
+interface SlugGroup {
+  slug: string;
+  latestDate: string;
+  entries: SourceEntry[];
+}
 
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});
