@@ -4,11 +4,16 @@ import type { Href } from "expo-router";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { LayoutChangeEvent } from "react-native";
-import { AppState, Modal, Platform, useWindowDimensions } from "react-native";
+import {
+  AppState,
+  Modal,
+  Platform,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
 import Space from "#/components/design/Space";
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
