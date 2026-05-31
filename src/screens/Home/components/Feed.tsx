@@ -205,6 +205,7 @@ const Feed = (properties: FeedProperties) => {
     <View style={{ flex: 1 }}>
       <FlatList
         onScroll={properties.onScroll}
+        scrollEventThrottle={16}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         initialNumToRender={3}
         maxToRenderPerBatch={3}

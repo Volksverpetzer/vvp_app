@@ -86,14 +86,15 @@ const PersonalTab = () => {
           flex: 1,
           backgroundColor,
         }}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-          { useNativeDriver: false },
-        )}
         contentContainerStyle={[
           globalStyles.content,
           { paddingTop: HEADER_HEIGHT },
         ]}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+          { useNativeDriver: false },
+        )}
+        scrollEventThrottle={16}
       >
         {activeTab === "favs" ? <MyFavs /> : <MySources />}
       </ScrollView>

@@ -155,15 +155,15 @@ const ReportScreen = () => {
             flex: 1,
             backgroundColor,
           }}
+          contentContainerStyle={[
+            globalStyles.content,
+            { paddingTop: HEADER_HEIGHT },
+          ]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
             { useNativeDriver: false },
           )}
           scrollEventThrottle={16}
-          contentContainerStyle={[
-            globalStyles.content,
-            { paddingTop: HEADER_HEIGHT },
-          ]}
         >
           <Heading style={{ marginBottom: 10 }}>Zusammenfassung</Heading>
           <TextInput

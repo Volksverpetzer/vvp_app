@@ -114,7 +114,6 @@ const SettingsScreen = () => {
         contentContainerStyle={[
           globalStyles.content,
           {
-            backgroundColor,
             paddingTop: HEADER_HEIGHT,
             gap: 20,
             paddingHorizontal: 0,
@@ -124,6 +123,7 @@ const SettingsScreen = () => {
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
         )}
+        scrollEventThrottle={16}
       >
         <View>
           <Collapsable
