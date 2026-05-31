@@ -76,11 +76,11 @@ const extractSlug = (source: string): string => {
   }
 };
 
-type WebViewRequest = {
+interface WebViewRequest {
   url?: string;
   isTopFrame?: boolean;
   navigationType?: string;
-};
+}
 
 /**
  * Prepare the source configuration for a WebView, with special handling for YouTube and Datawrapper embeds.

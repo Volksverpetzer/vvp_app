@@ -73,7 +73,7 @@ const handleAndroidImageShare = async (
   uri: string,
   fileType: string,
   url: string,
-  properties: object,
+  properties: Record<string, unknown>,
 ): Promise<boolean> => {
   await Sharing.shareAsync(uri, {
     mimeType: "image/" + fileType,
@@ -102,7 +102,7 @@ const handleAndroidImageShare = async (
 const handleSuccessfulShare = async (
   url: string,
   activityType: string | null | undefined,
-  properties: object,
+  properties: Record<string, unknown>,
 ): Promise<boolean> => {
   await registerEvent(url, "Share", {
     activityType: activityType ?? "unknown",
@@ -126,7 +126,7 @@ const handleSuccessfulShare = async (
  */
 const onShare = async (
   url: string,
-  properties: object = {},
+  properties: Record<string, unknown> = {},
 ): Promise<boolean> => {
   try {
     await Haptics.selectionAsync();
@@ -176,7 +176,7 @@ const onShare = async (
  */
 const multishare = async (
   shareable: ShareableType[],
-  properties: object = {},
+  properties: Record<string, unknown> = {},
 ): Promise<boolean> => {
   Haptics.selectionAsync();
   if (shareable.length === 1) {
