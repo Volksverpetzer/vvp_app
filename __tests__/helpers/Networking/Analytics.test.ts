@@ -88,7 +88,7 @@ describe("Analytics (Plausible)", () => {
           }),
         }),
       );
-      expect(result).toEqual({ success: true });
+      expect(result).toBeUndefined();
     });
 
     it("should include custom UTM parameters", async () => {
@@ -133,7 +133,7 @@ describe("Analytics (Plausible)", () => {
       const result = await registerEvent("https://example.com", "event");
 
       expect(postSpy).toHaveBeenCalled();
-      expect(result).toEqual({ success: true });
+      expect(result).toBeUndefined();
 
       Config.enableEngagement = originalEnableEngagement;
     });
@@ -149,7 +149,7 @@ describe("Analytics (Plausible)", () => {
       );
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(error);
-      expect(result).toBe(error);
+      expect(result).toBeUndefined();
     });
   });
 
