@@ -19,8 +19,8 @@ import {
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import Collapsable from "#/components/design/Collapsable";
 import DesignedLink from "#/components/design/DesignedLink";
-import Divider from "#/components/design/Divider";
 import Space from "#/components/design/Space";
+import UiDivider from "#/components/ui/UiDivider";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
@@ -160,7 +160,7 @@ const SettingsScreen = () => {
             {Config.enableEngagement && <BackupView />}
           </Collapsable>
         </View>
-        <Divider paddingHorizontal={35} paddingVertical={5} />
+        <UiDivider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
           <DesignedLink
             url={Config.aboutUrl}

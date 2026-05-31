@@ -101,7 +101,7 @@ jest.mock("#/components/design/Collapsable", () => {
   ));
 });
 jest.mock("#/components/design/DesignedLink", () => jest.fn(() => null));
-jest.mock("#/components/design/Divider", () => jest.fn(() => null));
+jest.mock("#/components/ui/UiDivider", () => jest.fn(() => null));
 jest.mock("#/components/design/Space", () => jest.fn(() => null));
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");

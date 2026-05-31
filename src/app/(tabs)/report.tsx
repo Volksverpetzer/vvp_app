@@ -11,10 +11,10 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
-import Checkbox from "#/components/design/Checkbox";
 import Space from "#/components/design/Space";
 import TextInput from "#/components/design/TextInput";
 import Heading from "#/components/typography/Heading";
+import UiCheckbox from "#/components/ui/UiCheckbox";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -203,7 +203,7 @@ const ReportScreen = () => {
           {error ? (
             <UiText style={styles.errorText}>{error}</UiText>
           ) : undefined}
-          <Checkbox
+          <UiCheckbox
             checked={allowedPublic}
             onChange={(checked: boolean) => setAllowedPublic(checked)}
           >
@@ -212,7 +212,7 @@ const ReportScreen = () => {
               Der Report darf veröffentlicht werden, sodass andere ihn
               kommentieren können.
             </UiText>
-          </Checkbox>
+          </UiCheckbox>
           <Space size={20} />
           <UiPressable
             accessibilityRole="button"

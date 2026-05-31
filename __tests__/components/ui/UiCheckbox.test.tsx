@@ -3,32 +3,32 @@ import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 import { Text } from "react-native";
 
-import Checkbox from "#/components/design/Checkbox";
+import UiCheckbox from "#/components/ui/UiCheckbox";
 
 jest.mock("#/components/Icons", () => ({
   CheckboxIcon: jest.fn(() => null),
 }));
 
-describe("Checkbox", () => {
+describe("UiCheckbox", () => {
   it("renders children", () => {
     const { getByText } = render(
-      <Checkbox checked={false} onChange={jest.fn()}>
+      <UiCheckbox checked={false} onChange={jest.fn()}>
         <Text>Accept terms</Text>
-      </Checkbox>,
+      </UiCheckbox>,
     );
     expect(getByText("Accept terms")).toBeTruthy();
   });
 
   it("has checkbox accessibility role", () => {
     const { getByRole } = render(
-      <Checkbox checked={false} onChange={jest.fn()} />,
+      <UiCheckbox checked={false} onChange={jest.fn()} />,
     );
     expect(getByRole("checkbox")).toBeTruthy();
   });
 
   it("reflects initial checked state in accessibility", () => {
     const { getByRole } = render(
-      <Checkbox checked={true} onChange={jest.fn()} />,
+      <UiCheckbox checked={true} onChange={jest.fn()} />,
     );
     expect(getByRole("checkbox", { checked: true })).toBeTruthy();
   });
@@ -36,7 +36,7 @@ describe("Checkbox", () => {
   it("calls onChange with the toggled value when pressed", () => {
     const onChange = jest.fn();
     const { getByRole } = render(
-      <Checkbox checked={false} onChange={onChange} />,
+      <UiCheckbox checked={false} onChange={onChange} />,
     );
     fireEvent.press(getByRole("checkbox"));
     expect(onChange).toHaveBeenCalledWith(true);
@@ -45,7 +45,7 @@ describe("Checkbox", () => {
   it("toggles from checked to unchecked", () => {
     const onChange = jest.fn();
     const { getByRole } = render(
-      <Checkbox checked={true} onChange={onChange} />,
+      <UiCheckbox checked={true} onChange={onChange} />,
     );
     fireEvent.press(getByRole("checkbox"));
     expect(onChange).toHaveBeenCalledWith(false);
@@ -53,7 +53,7 @@ describe("Checkbox", () => {
 
   it("updates accessibility state after toggle", () => {
     const { getByRole } = render(
-      <Checkbox checked={false} onChange={jest.fn()} />,
+      <UiCheckbox checked={false} onChange={jest.fn()} />,
     );
     fireEvent.press(getByRole("checkbox"));
     expect(getByRole("checkbox", { checked: true })).toBeTruthy();

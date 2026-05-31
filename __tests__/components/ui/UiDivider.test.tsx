@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react-native";
 
-import Divider from "#/components/design/Divider";
+import UiDivider from "#/components/ui/UiDivider";
 
 type RenderedNode = {
   props: Record<string, unknown>;
@@ -13,10 +13,10 @@ function flattenStyle(style: unknown): Record<string, unknown> {
   return style as Record<string, unknown>;
 }
 
-describe("Divider", () => {
+describe("UiDivider", () => {
   it("renders correctly and applies padding/width/style props", () => {
     const { toJSON } = render(
-      <Divider
+      <UiDivider
         paddingHorizontal={12}
         thickness={4}
         style={{ marginVertical: 8 }}
@@ -39,7 +39,7 @@ describe("Divider", () => {
 
   it("matches snapshot", () => {
     const { toJSON } = render(
-      <Divider
+      <UiDivider
         paddingHorizontal={12}
         thickness={4}
         style={{ marginVertical: 8 }}

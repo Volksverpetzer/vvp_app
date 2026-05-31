@@ -7,13 +7,13 @@ import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-interface CheckboxProperties {
+interface UiCheckboxProperties {
   checked: boolean;
   onChange: (checked: boolean) => void;
   children?: ReactNode;
 }
 
-const Checkbox = (properties: CheckboxProperties) => {
+const UiCheckbox = (properties: UiCheckboxProperties) => {
   const [checked, setChecked] = useState(properties.checked);
   const onPress = () => {
     setChecked(!checked);
@@ -59,4 +59,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Checkbox;
+export default UiCheckbox;
