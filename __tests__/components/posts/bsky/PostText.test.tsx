@@ -56,7 +56,6 @@ const makePost = (record: Record<string, unknown>) => ({
 describe("PostText", () => {
   it("returns null when record has no text property", () => {
     const { toJSON } = render(
-      // @ts-expect-error — intentionally passing minimal stub, not full FeedViewPost
       <PostText feedViewPost={makePost({ $type: "app.bsky.feed.post" })} />,
     );
     expect(toJSON()).toBeNull();
@@ -64,7 +63,6 @@ describe("PostText", () => {
 
   it("renders plain text content", () => {
     const { getByText } = render(
-      // @ts-expect-error — intentionally passing minimal stub, not full FeedViewPost
       <PostText
         feedViewPost={makePost({
           $type: "app.bsky.feed.post",
