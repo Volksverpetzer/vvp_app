@@ -162,7 +162,7 @@ const onShare = async (
 
     return false;
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     return false;
   }
 };
