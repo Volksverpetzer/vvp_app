@@ -10,7 +10,7 @@ import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 import type { OnBoardingData } from "./Flatboard";
 
-type StandardStepperProperties = {
+interface StandardStepperProperties {
   step: number;
   data: OnBoardingData[];
   onFinish: (event: GestureResponderEvent) => void;
@@ -19,7 +19,7 @@ type StandardStepperProperties = {
   accentColor?: string;
   buttonTitle?: string;
   hideIndicator?: boolean;
-};
+}
 
 const StandardStepper = (properties: StandardStepperProperties) => {
   const {

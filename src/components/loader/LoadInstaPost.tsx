@@ -6,10 +6,10 @@ import ContentStore from "#/helpers/Stores/ContentStore";
 import API from "#/helpers/network/ServerAPI";
 import type { InstaPostProperties } from "#/types";
 
-type LoadProperties = {
+interface LoadProperties {
   id: string;
   inView?: boolean;
-};
+}
 
 /**
  * This component takes an Instagram post ID as a property, fetches the post data from the API,

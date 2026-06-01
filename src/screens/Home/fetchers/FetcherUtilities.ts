@@ -71,8 +71,10 @@ const FetcherUtilities = {
 
   async fetchAndProcessPosts(
     fetchers: {
-      fetcher: (properties: object) => Promise<Post<unknown>[]>;
-      props?: object;
+      fetcher: (
+        properties: Record<string, unknown>,
+      ) => Promise<Post<unknown>[]>;
+      props?: Record<string, unknown>;
     }[],
     fetcherProperties: {
       page?: number;
