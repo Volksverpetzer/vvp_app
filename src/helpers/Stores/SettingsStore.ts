@@ -14,7 +14,7 @@ const SettingsStore = {
     tiktok: { value: true, name: "TikTok Videos" },
     bsky: { value: false, name: "Bluesky Posts" },
     bot: { value: true, name: "Bot Feed" },
-  },
+  } satisfies ContentSettingType,
 
   keys: {
     contentSettings: "contentSettings",
@@ -25,12 +25,12 @@ const SettingsStore = {
   defaultAdvancedSettings: {
     advancedReporting: { value: false, name: "Erweitertes Reporting" },
     alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
-  } as AdvancedSettingType,
+  } satisfies AdvancedSettingType,
 
   defaultNotificationSettings: {
     new_post: { value: true, name: "Neuer Artikel" },
     new_fact_check: { value: true, name: "Neuer Faktencheck" },
-  } as NotificationSettingType,
+  } satisfies NotificationSettingType,
 
   async getContentSettings(): Promise<ContentSettingType> {
     try {
