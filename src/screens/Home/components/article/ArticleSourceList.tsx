@@ -55,7 +55,12 @@ export const ArticleSourceList = ({
   };
 
   return (
-    <UiCollapsable title="Quellen" defaultOpen={false} onToggle={setOpen}>
+    <UiCollapsable
+      title="Quellen"
+      defaultOpen={false}
+      onToggle={setOpen}
+      cardBackground={Colors[colorScheme].surface}
+    >
       <View>
         {Array.isArray(links) && links.length > 0 ? (
           links
