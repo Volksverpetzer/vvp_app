@@ -32,6 +32,8 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
   const corporate = useCorporateColor();
   const colorScheme = useAppColorScheme();
   const barWidth = useRef(0);
+  const wasLoaded = useRef(false);
+  const stableTime = useRef({ currentTime: 0, duration: 0 });
 
   useEffect(() => {
     void setAudioModeAsync({ playsInSilentMode: true });
@@ -43,18 +45,31 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
     }
   }, [status.didJustFinish, player]);
 
-  if (!status.isLoaded || status.error) return null;
+  // Latch loaded state and keep a snapshot of the last good position so a
+  // transient isLoaded=false during seek doesn't unmount the player or reset
+  // the progress bar.
+  if (status.isLoaded && !status.error) {
+    wasLoaded.current = true;
+    stableTime.current = {
+      currentTime: status.currentTime,
+      duration: status.duration,
+    };
+  }
+
+  if (!wasLoaded.current || status.error) return null;
+
+  const { currentTime, duration } = status.isLoaded
+    ? status
+    : stableTime.current;
 
   const progress =
-    status.duration > 0
-      ? Math.min(1, Math.max(0, status.currentTime / status.duration))
-      : 0;
-  const remaining = Math.max(0, status.duration - status.currentTime);
+    duration > 0 ? Math.min(1, Math.max(0, currentTime / duration)) : 0;
+  const remaining = Math.max(0, duration - currentTime);
 
   const handleSeek = (x: number) => {
-    if (barWidth.current === 0 || status.duration === 0) return;
+    if (barWidth.current === 0 || duration === 0) return;
     const ratio = Math.max(0, Math.min(1, x / barWidth.current));
-    void player.seekTo(ratio * status.duration);
+    void player.seekTo(ratio * duration);
   };
 
   return (
@@ -101,9 +116,9 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         accessibilityLabel="Fortschrittsbalken"
         accessibilityValue={{
           min: 0,
-          max: Math.floor(status.duration),
-          now: Math.floor(status.currentTime),
-          text: `${formatTime(Math.floor(status.currentTime))} von ${formatTime(Math.floor(status.duration))}`,
+          max: Math.floor(duration),
+          now: Math.floor(currentTime),
+          text: `${formatTime(Math.floor(currentTime))} von ${formatTime(Math.floor(duration))}`,
         }}
         accessibilityActions={[
           { name: "increment", label: "15 Sekunden vorspulen" },
@@ -112,11 +127,9 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         onAccessibilityAction={(e) => {
           const step = 15;
           if (e.nativeEvent.actionName === "increment") {
-            void player.seekTo(
-              Math.min(status.duration, status.currentTime + step),
-            );
+            void player.seekTo(Math.min(duration, currentTime + step));
           } else if (e.nativeEvent.actionName === "decrement") {
-            void player.seekTo(Math.max(0, status.currentTime - step));
+            void player.seekTo(Math.max(0, currentTime - step));
           }
         }}
         style={{
