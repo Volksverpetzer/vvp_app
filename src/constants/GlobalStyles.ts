@@ -13,16 +13,6 @@ export const CONTENT_MAX_WIDTH = 700;
 export const CONTENT_HORIZONTAL_PADDING = 10;
 
 export const globalStyles = StyleSheet.create({
-  badge: {
-    backgroundColor: Colors.light.accent,
-    borderRadius: 4,
-    height: 8,
-    position: "absolute",
-    right: 0,
-    alignSelf: "center",
-    bottom: "80%",
-    width: 8,
-  },
   centered: {
     alignItems: "center",
     flex: 1,
@@ -36,10 +26,6 @@ export const globalStyles = StyleSheet.create({
     maxWidth: CONTENT_MAX_WIDTH,
     paddingHorizontal: CONTENT_HORIZONTAL_PADDING,
     width: "100%",
-  },
-  header: {
-    flex: 1,
-    flexDirection: "row",
   },
   input: {
     borderRadius: 20,
