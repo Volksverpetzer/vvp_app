@@ -44,7 +44,7 @@ jest.mock("#/helpers/Linking", () => ({ onLinkPress: jest.fn() }));
 const makePost = (record: Record<string, unknown>) => ({
   post: {
     uri: "at://did:plc:test/app.bsky.feed.post/abc",
-    cid: "bafy",
+    cid: "cid-stub",
     author: { did: "did:plc:test", handle: "tester.bsky.social", labels: [] },
     record,
     indexedAt: "2024-01-01T00:00:00.000Z",
