@@ -28,12 +28,7 @@ const Footer = (properties: FooterProperties) => {
 
   return (
     <>
-      <View
-        style={[
-          globalStyles.noBackground,
-          { paddingBottom: 30, alignItems: "center" },
-        ]}
-      >
+      <View style={{ paddingBottom: 30, alignItems: "center" }}>
         <UiText
           style={{
             textAlign: "center",

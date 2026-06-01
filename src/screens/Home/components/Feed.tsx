@@ -223,12 +223,7 @@ const Feed = (properties: FeedProperties) => {
           (isLoadingMore ? (
             <UiSpinner size="large" />
           ) : (
-            <View
-              style={[
-                globalStyles.noBackground,
-                { paddingBottom: 30, alignItems: "center" },
-              ]}
-            >
+            <View style={{ paddingBottom: 30, alignItems: "center" }}>
               <UiPressable
                 accessibilityRole="button"
                 style={globalStyles.centered}

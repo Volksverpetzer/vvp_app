@@ -57,7 +57,7 @@ const PersonalTab = () => {
         minHeight={110}
         maxHeight={200}
       >
-        <View style={[globalStyles.noBackground, { width: "100%" }]}>
+        <View style={{ width: "100%" }}>
           <UiTabView width={200} style={{ alignSelf: "center" }}>
             <UiTabIconLabel
               icon={(color) => <StarIcon size={24} color={color} />}

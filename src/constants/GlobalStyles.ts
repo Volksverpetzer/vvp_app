@@ -31,9 +31,6 @@ export const globalStyles = StyleSheet.create({
     minHeight: 40,
     paddingHorizontal: 25,
   },
-  noBackground: {
-    backgroundColor: "transparent",
-  },
   row: {
     alignItems: "center",
     flexDirection: "row",
