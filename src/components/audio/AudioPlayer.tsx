@@ -80,9 +80,20 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         hitSlop={10}
       >
         {status.playing ? (
-          <PauseIcon size={26} color={corporate} />
+          <PauseIcon
+            size={26}
+            color={corporate}
+            accessible={false}
+            importantForAccessibility="no"
+          />
         ) : (
-          <Octicons name="play" size={26} color={corporate} />
+          <Octicons
+            name="play"
+            size={26}
+            color={corporate}
+            accessible={false}
+            importantForAccessibility="no"
+          />
         )}
       </UiPressable>
       <View
