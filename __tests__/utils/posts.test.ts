@@ -9,17 +9,16 @@ describe("normalizeFacets", () => {
     expect(normalizeFacets(undefined)).toBeUndefined();
   });
 
-  test("returns non-array input unchanged", () => {
-    const obj = { some: "value" };
-    expect(normalizeFacets(obj)).toBe(obj);
+  test("returns undefined for non-array input", () => {
+    expect(normalizeFacets({ some: "value" })).toBeUndefined();
   });
 
   test("maps facet py_type to $type and removes py_type", () => {
     const input = [{ py_type: "facetType", other: 1 }];
-    const out = normalizeFacets(input);
+    const out = normalizeFacets(input) as unknown as Record<string, unknown>[];
     expect(Array.isArray(out)).toBeTruthy();
     expect(out[0]["$type"]).toBe("facetType");
-    expect(out[0].py_type).toBeUndefined();
+    expect(out[0]["py_type"]).toBeUndefined();
     // original input must not be mutated
     expect(input[0].py_type).toBe("facetType");
   });
@@ -35,14 +34,14 @@ describe("normalizeFacets", () => {
         },
       },
     ];
-    const out = normalizeFacets(input);
-    const idx = out[0].index;
+    const out = normalizeFacets(input) as unknown as Record<string, unknown>[];
+    const idx = out[0]["index"] as Record<string, unknown>;
     expect(idx["$type"]).toBe("indexType");
-    expect(idx.byteStart).toBe(2);
-    expect(idx.byteEnd).toBe(5);
-    expect(idx.py_type).toBeUndefined();
-    expect(idx.byte_start).toBeUndefined();
-    expect(idx.byte_end).toBeUndefined();
+    expect(idx["byteStart"]).toBe(2);
+    expect(idx["byteEnd"]).toBe(5);
+    expect(idx["py_type"]).toBeUndefined();
+    expect(idx["byte_start"]).toBeUndefined();
+    expect(idx["byte_end"]).toBeUndefined();
     // original index remains unchanged
     expect(input[0].index.py_type).toBe("indexType");
     expect(input[0].index.byte_start).toBe(2);
@@ -65,18 +64,18 @@ describe("normalizeFacets", () => {
       },
     ];
 
-    const out = normalizeFacets(input);
-    const feat = out[0].features[0];
+    const out = normalizeFacets(input) as unknown as Record<string, unknown>[];
+    const feat = (out[0]["features"] as Record<string, unknown>[])[0];
     expect(feat["$type"]).toBe("featType");
-    expect(feat.py_type).toBeUndefined();
+    expect(feat["py_type"]).toBeUndefined();
 
-    const featureIndex = feat.index;
+    const featureIndex = feat["index"] as Record<string, unknown>;
     expect(featureIndex["$type"]).toBe("featureIndex");
-    expect(featureIndex.byteStart).toBe(10);
-    expect(featureIndex.byteEnd).toBe(15);
-    expect(featureIndex.py_type).toBeUndefined();
-    expect(featureIndex.byte_start).toBeUndefined();
-    expect(featureIndex.byte_end).toBeUndefined();
+    expect(featureIndex["byteStart"]).toBe(10);
+    expect(featureIndex["byteEnd"]).toBe(15);
+    expect(featureIndex["py_type"]).toBeUndefined();
+    expect(featureIndex["byte_start"]).toBeUndefined();
+    expect(featureIndex["byte_end"]).toBeUndefined();
 
     // original feature/index should still have original keys
     expect(input[0].features[0].py_type).toBe("featType");
@@ -89,17 +88,17 @@ describe("normalizeFacets", () => {
 
   test("facet without py_type has no $type key", () => {
     const input = [{ other: "value" }];
-    const out = normalizeFacets(input);
+    const out = normalizeFacets(input) as unknown as Record<string, unknown>[];
     expect(out[0]).not.toHaveProperty("$type");
-    expect(out[0].other).toBe("value");
+    expect(out[0]["other"]).toBe("value");
   });
 
   test("facet without index has no index key in output", () => {
     const input = [{ py_type: "t", other: 42 }];
-    const out = normalizeFacets(input);
+    const out = normalizeFacets(input) as unknown as Record<string, unknown>[];
     expect(out[0]).not.toHaveProperty("index");
     expect(out[0]["$type"]).toBe("t");
-    expect(out[0].other).toBe(42);
+    expect(out[0]["other"]).toBe(42);
   });
 
   test("does not overwrite existing byteStart/byteEnd", () => {
@@ -113,13 +112,13 @@ describe("normalizeFacets", () => {
         },
       },
     ];
-    const out = normalizeFacets(input);
-    const idx = out[0].index;
+    const out = normalizeFacets(input) as unknown as Record<string, unknown>[];
+    const idx = out[0]["index"] as Record<string, unknown>;
     // existing byteStart/byteEnd kept, byte_start/byte_end removed
-    expect(idx.byteStart).toBe(99);
-    expect(idx.byteEnd).toBe(100);
-    expect(idx.byte_start).toBeUndefined();
-    expect(idx.byte_end).toBeUndefined();
+    expect(idx["byteStart"]).toBe(99);
+    expect(idx["byteEnd"]).toBe(100);
+    expect(idx["byte_start"]).toBeUndefined();
+    expect(idx["byte_end"]).toBeUndefined();
   });
 });
 

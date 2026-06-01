@@ -51,8 +51,8 @@ const cardStyles = StyleSheet.create({
   },
   cardInner: { alignItems: "center", justifyContent: "center" },
   cardText: { fontSize: 16, textAlign: "center" },
-  matchedCard: { borderColor: "#28a745" as const },
-  selectedCard: { borderColor: "#ffa500" as const },
+  matchedCard: { borderColor: "#28a745" },
+  selectedCard: { borderColor: "#ffa500" },
 });
 
 export default CardComponent;

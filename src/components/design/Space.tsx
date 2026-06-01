@@ -1,8 +1,8 @@
 import { View } from "react-native";
 
-type SpaceProps = {
+interface SpaceProps {
   size: number;
-};
+}
 
 const Space = ({ size }: SpaceProps) => {
   return <View style={{ height: size }} />;

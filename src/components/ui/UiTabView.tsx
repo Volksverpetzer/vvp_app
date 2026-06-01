@@ -9,10 +9,10 @@ interface UiTabViewProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const pillStyle = {
+const pillStyle: ViewStyle = {
   borderRadius: 20,
-  overflow: "hidden" as const,
-  flexDirection: "row" as const,
+  overflow: "hidden",
+  flexDirection: "row",
 };
 
 const UiTabView = ({

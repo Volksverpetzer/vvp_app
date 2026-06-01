@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import type { DimensionValue } from "react-native";
+import type { DimensionValue, TextStyle } from "react-native";
 import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
@@ -24,12 +24,20 @@ import type { ArticleProperties } from "#/types";
 
 import Badge from "./Badge";
 
+const titleStyle: TextStyle = {
+  fontFamily: "SourceSansProBold",
+  paddingHorizontal: 30,
+  fontSize: 20,
+  lineHeight: 26,
+  textAlign: "left",
+};
+
 // Define the component props type.
-type ArticlePostScreenProperties = {
+interface ArticlePostScreenProperties {
   article: ArticleProperties;
   inView?: boolean;
   elevated?: boolean;
-};
+}
 
 /**
  * ArticlePost renders a short preview of an article fetched from a WordPress API.
@@ -167,16 +175,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }),
     [scrollProgress, corporate],
   );
-  const titleStyle = useMemo(
-    () => ({
-      fontFamily: "SourceSansProBold",
-      paddingHorizontal: 30,
-      fontSize: 20,
-      lineHeight: 26,
-      textAlign: "left" as const,
-    }),
-    [],
-  );
   const authorDateStyle = useMemo(
     () => ({
       paddingHorizontal: 30,
@@ -186,13 +184,10 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }),
     [greyText],
   );
-  const categoryTextStyle = useMemo(
-    () => [
-      globalStyles.whiteText,
-      { textAlign: "right" as const, fontSize: 14 },
-    ],
-    [],
-  );
+  const categoryTextStyle: TextStyle[] = [
+    globalStyles.whiteText,
+    { textAlign: "right", fontSize: 14 },
+  ];
 
   const content = (
     <UiPressable

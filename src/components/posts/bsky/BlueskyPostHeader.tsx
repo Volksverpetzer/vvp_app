@@ -4,9 +4,9 @@ import { View } from "react-native";
 import Heading from "#/components/typography/Heading";
 import type { PostAuthor } from "#/types";
 
-type BlueskyPostHeaderProps = {
+interface BlueskyPostHeaderProps {
   author: PostAuthor;
-};
+}
 
 export const BlueskyPostHeader = ({ author }: BlueskyPostHeaderProps) => {
   const displayName = author.display_name ?? author.handle;

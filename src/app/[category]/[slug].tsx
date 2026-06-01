@@ -104,8 +104,8 @@ const LoadArticle = () => {
     const buildUrl = (base: string, ...segments: (string | undefined)[]) => {
       const trimmedBase = base.replace(/\/+$/, "");
       const path = segments
-        .filter(Boolean)
-        .map((s) => (s as string).replace(/^\/+|\/+$/g, ""))
+        .filter((s): s is string => Boolean(s))
+        .map((s) => s.replace(/^\/+|\/+$/g, ""))
         .join("/");
       return path ? `${trimmedBase}/${path}` : trimmedBase;
     };

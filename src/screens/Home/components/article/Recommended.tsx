@@ -7,9 +7,9 @@ import Config from "#/constants/Config";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import type { HttpsUrl } from "#/types";
 
-type RecommendedProperties = {
+interface RecommendedProperties {
   article_link: HttpsUrl;
-};
+}
 
 /**
  * Recommended component displays a list of recommended articles based on the current article's slug.

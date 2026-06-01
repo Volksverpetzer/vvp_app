@@ -11,10 +11,11 @@ import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-type DesignedLinksProperties = {
+interface DesignedLinksProperties {
   url: string;
   text: string;
-} & { icon: ReactElement };
+  icon: ReactElement;
+}
 
 const DesignedLink = (properties: DesignedLinksProperties) => {
   const colorScheme = useAppColorScheme();

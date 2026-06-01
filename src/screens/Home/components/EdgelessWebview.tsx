@@ -171,7 +171,6 @@ const EdgelessWebview = ({
           if (nativeEvent.url === uri) {
             for (const cookie of cookies) {
               const cookieString = getCookieString(cookie);
-              // @ts-ignore - setCookie is not in the type definition but exists
               webViewReference.current?.injectJavaScript(
                 `document.cookie = '${cookieString}'; true;`,
               );

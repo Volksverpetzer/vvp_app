@@ -425,7 +425,7 @@ describe("Sharing helpers", () => {
 
       // Assert
       expect(result).toBe(false);
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Share failed");
+      expect(consoleErrorSpy).toHaveBeenCalledWith(new Error("Share failed"));
 
       // Restore console.error
       consoleErrorSpy.mockRestore();

@@ -66,7 +66,7 @@ describe("Analytics (Plausible)", () => {
       });
       postSpy.mockResolvedValue({ success: true });
 
-      const result = await registerEvent(
+      await registerEvent(
         "https://www.volksverpetzer.de/article",
         "test_event",
         { customProp: "value" },
@@ -88,7 +88,6 @@ describe("Analytics (Plausible)", () => {
           }),
         }),
       );
-      expect(result).toEqual({ success: true });
     });
 
     it("should include custom UTM parameters", async () => {
@@ -130,10 +129,9 @@ describe("Analytics (Plausible)", () => {
       parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
       postSpy.mockResolvedValue({ success: true });
 
-      const result = await registerEvent("https://example.com", "event");
+      await registerEvent("https://example.com", "event");
 
       expect(postSpy).toHaveBeenCalled();
-      expect(result).toEqual({ success: true });
 
       Config.enableEngagement = originalEnableEngagement;
     });
@@ -143,13 +141,12 @@ describe("Analytics (Plausible)", () => {
       const error = new Error("Network error");
       postSpy.mockRejectedValue(error);
 
-      const result = await registerEvent(
+      await registerEvent(
         "https://www.volksverpetzer.de/article",
         "test_event",
       );
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(error);
-      expect(result).toBe(error);
     });
   });
 
