@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import type { PropsWithChildren, ReactNode } from "react";
 import React, { useMemo } from "react";
 import { Animated, View } from "react-native";
+import type { ViewStyle } from "react-native";
 
 import { HeartIcon } from "#/components/Icons";
 import Space from "#/components/design/Space";
@@ -26,6 +27,15 @@ interface AnimatedHeaderProperties extends PropsWithChildren {
   maxHeight: number;
   minHeight: number;
 }
+
+const gradientContainerStyle: ViewStyle = {
+  width: "100%",
+  flex: 1,
+  alignItems: "center",
+  justifyContent: "flex-end",
+};
+
+const GRADIENT_LOCATIONS: [number, number] = [0.7, 1];
 
 /**
  * AnimatedHeader renders a collapsible header bar that shrinks and fades
@@ -102,16 +112,6 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
     [headerScrollHeight],
   );
 
-  const gradientContainerStyle = useMemo(
-    () => ({
-      width: "100%" as const,
-      flex: 1,
-      alignItems: "center" as const,
-      justifyContent: "flex-end" as const,
-    }),
-    [],
-  );
-
   const titleTextStyle = useMemo(
     () => ({
       paddingBottom: 10,
@@ -123,14 +123,11 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
     [headerFontSize, corporate],
   );
 
-  // Define gradient locations as a constant
-  const locations: [number, number] = useMemo(() => [0.7, 1], []);
-
   return (
     <Animated.View style={animatedViewStyle}>
       <LinearGradient
         colors={[`rgba(${r},${g},${b},1)`, `rgba(${r},${g},${b},0.1)`]}
-        locations={locations}
+        locations={GRADIENT_LOCATIONS}
         style={gradientContainerStyle}
       >
         {!hideSupportHeart && (
