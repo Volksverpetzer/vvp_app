@@ -83,12 +83,12 @@ const SearchManager = ({
     }
   }, [resultsLength, searchParameters, isAISearch]);
 
-  // Set rechercheur achievement if search contains a URL
+  // Set rechercheur achievement if a non-AI search query contains a URL
   useEffect(() => {
-    if (searchParameters && searchParameters.includes("://")) {
+    if (!isAISearch && searchParameters && searchParameters.includes("://")) {
       Achievements.setAchievementValue("rechercheur");
     }
-  }, [searchParameters]);
+  }, [isAISearch, searchParameters]);
 
   // Update search when initialSearch changes (for shareIntent)
   useEffect(() => {
