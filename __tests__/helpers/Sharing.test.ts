@@ -344,6 +344,21 @@ describe("Sharing helpers", () => {
       expect(Statistics.countArticleShared).not.toHaveBeenCalled();
     });
 
+    it("should not award bskyshare for URLs that spoof bsky.app as a subdomain", async () => {
+      const url = "https://bsky.app.evil.com/phish";
+      parseSpy.mockReturnValue({ path: "/phish" });
+      shareSpy.mockResolvedValue({
+        action: Share.sharedAction,
+        activityType: "facebook",
+      });
+
+      await onShare(url);
+
+      expect(Achievements.setAchievementValue).not.toHaveBeenCalledWith(
+        "bskyshare",
+      );
+    });
+
     it("should not update achievements for non-volksverpetzer URLs", async () => {
       // Setup
       const url = "https://example.com/article";
