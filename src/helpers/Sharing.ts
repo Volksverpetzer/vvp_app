@@ -113,6 +113,9 @@ const handleSuccessfulShare = async (
     // Update statistic for sharing an article
     Statistics.countArticleShared();
   }
+  if (url.includes("bsky.app")) {
+    Achievements.setAchievementValue("bskyshare");
+  }
   await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   return true;
 };
