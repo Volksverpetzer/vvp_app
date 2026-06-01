@@ -31,12 +31,12 @@ jest.mock("#/components/ui/UiSpinner", () => ({
   default: jest.fn(() => null),
 }));
 
-jest.mock("#/components/design/Card", () => ({
+jest.mock("#/components/ui/UiCard", () => ({
   __esModule: true,
   default: jest.fn(({ children }) => children),
 }));
 
-jest.mock("#/components/design/Space", () => ({
+jest.mock("#/components/ui/UiSpace", () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));
@@ -86,6 +86,7 @@ jest.mock("#/helpers/provider/BadgeProvider", () => ({
 }));
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
+  useAppColorScheme: jest.fn(() => "light"),
   useCorporateColor: jest.fn(() => "#1b7194"),
 }));
 

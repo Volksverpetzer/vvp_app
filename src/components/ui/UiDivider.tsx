@@ -1,23 +1,22 @@
-import type { ViewStyle } from "react-native";
+import type { StyleProp, ViewStyle } from "react-native";
 import { StyleSheet, View } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-type DividerProps = {
+interface UiDividerProps {
   paddingHorizontal?: number;
   paddingVertical?: number;
   thickness?: number;
-  color?: string;
-  style?: ViewStyle;
-};
+  style?: StyleProp<ViewStyle>;
+}
 
-const Divider = ({
+const UiDivider = ({
   paddingHorizontal = 0,
   paddingVertical = 0,
   thickness = StyleSheet.hairlineWidth,
   style,
-}: DividerProps) => {
+}: UiDividerProps) => {
   const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].primary;
   return (
@@ -47,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Divider;
+export default UiDivider;

@@ -1,12 +1,14 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { View } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
-import View from "#/components/design/View";
 import BlueskyPostDetail from "#/components/posts/bsky/BlueskyPostDetail";
 import UiSpinner from "#/components/ui/UiSpinner";
+import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import ContentStore from "#/helpers/Stores/ContentStore";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { type BlueskyPostProperties, type HttpsUrl } from "#/types";
 
 /**
@@ -18,6 +20,8 @@ const BskyScreen = () => {
   const [post, setPost] = useState<BlueskyPostProperties | undefined>();
   const parameters = useLocalSearchParams<{ post_id: string }>();
   const router = useRouter();
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].background;
   useEffect(() => {
     ContentStore.getStoredBskyPostById(parameters.post_id).then((post) => {
       if (post) {
@@ -38,7 +42,7 @@ const BskyScreen = () => {
     `https://bsky.app/profile/${handle}/post/${postId}` satisfies HttpsUrl;
 
   return (
-    <View style={globalStyles.container}>
+    <View style={[globalStyles.container, { backgroundColor }]}>
       <BlueskyPostDetail {...post} />
       <NavBar link={url} />
     </View>

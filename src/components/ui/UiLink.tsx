@@ -11,12 +11,13 @@ import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-type DesignedLinksProperties = {
+interface UiLinkProperties {
   url: string;
   text: string;
-} & { icon: ReactElement };
+  icon: ReactElement;
+}
 
-const DesignedLink = (properties: DesignedLinksProperties) => {
+const UiLink = (properties: UiLinkProperties) => {
   const colorScheme = useAppColorScheme();
   const openLink = () => {
     if ("mailto:" === properties.url.slice(0, 7)) {
@@ -60,4 +61,4 @@ const DesignedLink = (properties: DesignedLinksProperties) => {
   );
 };
 
-export default DesignedLink;
+export default UiLink;

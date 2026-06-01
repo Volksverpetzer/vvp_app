@@ -139,6 +139,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     extra: {
       ...variableConfig.extraConfig,
       isFoss: buildFossOnly,
+      ...(buildFossOnly && { enableAnalytics: false }),
     },
     ...(buildFossOnly && {
       autolinking: {

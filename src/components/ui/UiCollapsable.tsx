@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -8,7 +8,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-interface CollapsableProps {
+interface UiCollapsableProps {
   title: string;
   defaultOpen?: boolean;
   onToggle?: (open: boolean) => void;
@@ -16,13 +16,13 @@ interface CollapsableProps {
   icon?: ReactNode;
 }
 
-const Collapsable = ({
+const UiCollapsable = ({
   title,
   defaultOpen = false,
   onToggle,
   children,
   icon,
-}: CollapsableProps): ReactElement => {
+}: UiCollapsableProps) => {
   const [open, setOpen] = useState(defaultOpen);
 
   const colorScheme = useAppColorScheme();
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     gap: 10,
   },
   content: {
@@ -79,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Collapsable;
+export default UiCollapsable;

@@ -1,11 +1,11 @@
 import { View } from "react-native";
 
-type SpaceProps = {
+interface UiSpaceProps {
   size: number;
-};
+}
 
-const Space = ({ size }: SpaceProps) => {
+const UiSpace = ({ size }: UiSpaceProps) => {
   return <View style={{ height: size }} />;
 };
 
-export default Space;
+export default UiSpace;

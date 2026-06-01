@@ -1,57 +1,63 @@
-export function normalizeFacets(facets: any): any {
-  if (facets === null || facets === undefined) return facets;
-  if (!Array.isArray(facets)) return facets;
+import type { AppBskyRichtextFacet } from "@atproto/api";
 
-  const normalizeFacet = (f: any): any => {
-    if (f === null || typeof f !== "object") return f;
-    const out: any = { ...f };
+type RawIndex = {
+  py_type?: string;
+  byteStart?: number;
+  byteEnd?: number;
+  byte_start?: number;
+  byte_end?: number;
+};
 
-    // map py_type -> $type and remove py_type
-    if (typeof f.py_type !== "undefined") {
-      out["$type"] = f.py_type;
+type RawFacet = {
+  py_type?: string;
+  index?: RawIndex;
+  features?: RawFacet[];
+  [key: string]: unknown;
+};
+
+const normalizeFacet = (f: RawFacet): AppBskyRichtextFacet.Main => {
+  const out: Record<string, unknown> = { ...f };
+
+  if (f.py_type !== undefined) {
+    out["$type"] = f.py_type;
+  }
+  delete out["py_type"];
+
+  if (f.index != null) {
+    const idxSrc = f.index;
+    const idx: Record<string, unknown> = { ...idxSrc };
+
+    if (idxSrc.py_type !== undefined) {
+      idx["$type"] = idxSrc.py_type;
     }
-    delete out.py_type;
+    delete idx["py_type"];
 
-    // normalize index object if present
-    if (f.index && typeof f.index === "object") {
-      const idxSrc = f.index;
-      const idx: any = { ...idxSrc };
-
-      // map py_type -> $type on index
-      if (typeof idxSrc.py_type !== "undefined") {
-        idx["$type"] = idxSrc.py_type;
-      }
-      delete idx.py_type;
-
-      // ensure byteStart/byteEnd exist if no camelCase present, then remove snake_case keys
-      if (
-        typeof idxSrc.byteStart === "undefined" &&
-        typeof idxSrc.byte_start !== "undefined"
-      ) {
-        idx.byteStart = idxSrc.byte_start;
-      }
-      if (
-        typeof idxSrc.byteEnd === "undefined" &&
-        typeof idxSrc.byte_end !== "undefined"
-      ) {
-        idx.byteEnd = idxSrc.byte_end;
-      }
-      // always remove snake_case keys from output
-      delete idx.byte_start;
-      delete idx.byte_end;
-
-      out.index = idx;
+    if (idxSrc.byteStart === undefined && idxSrc.byte_start !== undefined) {
+      idx["byteStart"] = idxSrc.byte_start;
     }
-
-    // normalize nested features array
-    if (Array.isArray(f.features)) {
-      out.features = f.features.map((feat: any) => normalizeFacet(feat));
+    if (idxSrc.byteEnd === undefined && idxSrc.byte_end !== undefined) {
+      idx["byteEnd"] = idxSrc.byte_end;
     }
+    delete idx["byte_start"];
+    delete idx["byte_end"];
 
-    return out;
-  };
+    out["index"] = idx;
+  }
 
-  return facets.map((f) => normalizeFacet(f));
+  if (Array.isArray(f.features)) {
+    out["features"] = f.features.map(normalizeFacet);
+  }
+
+  return out as unknown as AppBskyRichtextFacet.Main;
+};
+
+export function normalizeFacets(
+  facets: unknown,
+): AppBskyRichtextFacet.Main[] | null | undefined {
+  if (facets === null) return null;
+  if (facets === undefined) return undefined;
+  if (!Array.isArray(facets)) return undefined;
+  return (facets as RawFacet[]).map(normalizeFacet);
 }
 
 const visualComposerShortcodePattern = /\[\/?vc_[\s\S]*?]/gi;

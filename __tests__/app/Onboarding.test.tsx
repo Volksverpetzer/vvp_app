@@ -84,6 +84,7 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
 }));
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
+  useAppColorScheme: jest.fn(() => "light"),
   useCorporateColor: jest.fn(() => "#e63312"),
 }));
 
@@ -103,11 +104,10 @@ jest.mock("#/components/ui/UiText", () => {
     <Text style={style}>{children}</Text>
   ));
 });
-jest.mock("#/components/design/View", () =>
-  jest.fn(({ children }: any) => children),
-);
 jest.mock("#/components/views/SettingsList", () => jest.fn(() => null));
-jest.mock("#/constants/Colors", () => ({ light: { textHeading: "#333" } }));
+jest.mock("#/constants/Colors", () => ({
+  light: { textHeading: "#333", background: "#fff" },
+}));
 jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: { heading: {}, centered: {}, whiteText: {}, content: {} },
 }));

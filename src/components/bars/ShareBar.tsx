@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { View } from "react-native";
 
 import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
-import View from "#/components/design/View";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { multishare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";

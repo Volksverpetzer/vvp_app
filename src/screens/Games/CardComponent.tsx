@@ -1,7 +1,6 @@
 import type { ViewStyle } from "react-native";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import type { MemoryCard } from "#/types";
@@ -52,8 +51,8 @@ const cardStyles = StyleSheet.create({
   },
   cardInner: { alignItems: "center", justifyContent: "center" },
   cardText: { fontSize: 16, textAlign: "center" },
-  matchedCard: { borderColor: "#28a745" as const },
-  selectedCard: { borderColor: "#ffa500" as const },
+  matchedCard: { borderColor: "#28a745" },
+  selectedCard: { borderColor: "#ffa500" },
 });
 
 export default CardComponent;

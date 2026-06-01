@@ -4,9 +4,8 @@ import type {
   StyleProp,
   ViewStyle,
 } from "react-native";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
-import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { AppImages } from "#/helpers/AppImages";

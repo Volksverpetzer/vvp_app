@@ -4,13 +4,18 @@ import type { Href } from "expo-router";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { LayoutChangeEvent } from "react-native";
-import { AppState, Modal, Platform, useWindowDimensions } from "react-native";
+import {
+  AppState,
+  Modal,
+  Platform,
+  View,
+  useWindowDimensions,
+} from "react-native";
 import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
-import Space from "#/components/design/Space";
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -123,7 +128,7 @@ const Header = (properties: HeaderProperties) => {
           placeholder={LoadingImage}
         />
       </UiPressable>
-      <Space size={30} />
+      <UiSpace size={30} />
       <UiText
         style={{
           paddingHorizontal: 20,
@@ -181,13 +186,13 @@ const Header = (properties: HeaderProperties) => {
           audioUrl={`${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`}
         />
       )}
-      <Space size={10} />
+      <UiSpace size={10} />
       <ArticleSourceList
         article_link={article_link}
         article_title={article_title}
         slug={slug}
       />
-      <Space size={20} />
+      <UiSpace size={20} />
       <Modal visible={visible}>
         <ViewShot ref={reference} options={{ fileName: article_title }}>
           <View
@@ -218,7 +223,7 @@ const Header = (properties: HeaderProperties) => {
               source={{ uri: article_image }}
               onLoad={() => setImageLoaded(true)}
             />
-            <Space size={20} />
+            <UiSpace size={20} />
             <UiText
               style={{
                 color: Colors.dark.text,
@@ -230,7 +235,7 @@ const Header = (properties: HeaderProperties) => {
             >
               {article_title}
             </UiText>
-            <Space size={20} />
+            <UiSpace size={20} />
             <UiText
               style={{
                 color: Colors.dark.text,

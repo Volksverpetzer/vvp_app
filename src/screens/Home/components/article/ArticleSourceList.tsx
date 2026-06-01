@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import Collapsable from "#/components/design/Collapsable";
+import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -55,7 +55,7 @@ export const ArticleSourceList = ({
   };
 
   return (
-    <Collapsable title="Quellen" defaultOpen={false} onToggle={setOpen}>
+    <UiCollapsable title="Quellen" defaultOpen={false} onToggle={setOpen}>
       <View>
         {Array.isArray(links) && links.length > 0 ? (
           links
@@ -88,6 +88,6 @@ export const ArticleSourceList = ({
           <UiText>Keine Daten</UiText>
         )}
       </View>
-    </Collapsable>
+    </UiCollapsable>
   );
 };

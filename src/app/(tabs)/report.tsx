@@ -11,12 +11,12 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
-import Checkbox from "#/components/design/Checkbox";
-import Space from "#/components/design/Space";
-import TextInput from "#/components/design/TextInput";
 import Heading from "#/components/typography/Heading";
+import UiCheckbox from "#/components/ui/UiCheckbox";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
+import UiTextInput from "#/components/ui/UiTextInput";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -155,18 +155,18 @@ const ReportScreen = () => {
             flex: 1,
             backgroundColor,
           }}
+          contentContainerStyle={[
+            globalStyles.content,
+            { paddingTop: HEADER_HEIGHT },
+          ]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
             { useNativeDriver: false },
           )}
           scrollEventThrottle={16}
-          contentContainerStyle={[
-            globalStyles.content,
-            { paddingTop: HEADER_HEIGHT },
-          ]}
         >
           <Heading style={{ marginBottom: 10 }}>Zusammenfassung</Heading>
-          <TextInput
+          <UiTextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib eine kurze Zusammenfassung ein"
             placeholder="..."
@@ -176,9 +176,9 @@ const ReportScreen = () => {
             multiline
             style={[styles.input, { height: 80 }]}
           />
-          <Space size={20} />
+          <UiSpace size={20} />
           <Heading style={{ marginBottom: 10 }}>Link zum Fake</Heading>
-          <TextInput
+          <UiTextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib einen Link ein"
             placeholder="..."
@@ -187,9 +187,9 @@ const ReportScreen = () => {
             onChangeText={setUrl}
             style={styles.input}
           />
-          <Space size={20} />
+          <UiSpace size={20} />
           <Heading style={{ marginBottom: 10 }}>Links zum Thema</Heading>
-          <TextInput
+          <UiTextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib Links zum Thema ein"
             placeholder="..."
@@ -199,11 +199,11 @@ const ReportScreen = () => {
             multiline
             style={[styles.input, { height: 80 }]}
           />
-          <Space size={20} />
+          <UiSpace size={20} />
           {error ? (
             <UiText style={styles.errorText}>{error}</UiText>
           ) : undefined}
-          <Checkbox
+          <UiCheckbox
             checked={allowedPublic}
             onChange={(checked: boolean) => setAllowedPublic(checked)}
           >
@@ -212,8 +212,8 @@ const ReportScreen = () => {
               Der Report darf veröffentlicht werden, sodass andere ihn
               kommentieren können.
             </UiText>
-          </Checkbox>
-          <Space size={20} />
+          </UiCheckbox>
+          <UiSpace size={20} />
           <UiPressable
             accessibilityRole="button"
             disabled={!buttonEnabled}
@@ -233,7 +233,7 @@ const ReportScreen = () => {
             </UiText>
           </UiPressable>
           <ReportStatusList reports={reports} />
-          <Space size={100} />
+          <UiSpace size={100} />
         </ScrollView>
       </KeyboardAvoidingView>
     </>

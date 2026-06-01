@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import type { GestureResponderEvent } from "react-native";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -10,7 +9,7 @@ import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 import type { OnBoardingData } from "./Flatboard";
 
-type StandardStepperProperties = {
+interface StandardStepperProperties {
   step: number;
   data: OnBoardingData[];
   onFinish: (event: GestureResponderEvent) => void;
@@ -19,7 +18,7 @@ type StandardStepperProperties = {
   accentColor?: string;
   buttonTitle?: string;
   hideIndicator?: boolean;
-};
+}
 
 const StandardStepper = (properties: StandardStepperProperties) => {
   const {

@@ -63,6 +63,7 @@ const StatisticsView = () => {
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
           { useNativeDriver: false },
         )}
+        scrollEventThrottle={16}
       >
         <StatisticsPanel
           icon="zap"

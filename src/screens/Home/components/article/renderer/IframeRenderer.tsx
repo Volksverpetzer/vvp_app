@@ -9,8 +9,8 @@ import type {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-import ErrorCard from "#/components/design/ErrorCard";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
+import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
@@ -76,11 +76,11 @@ const extractSlug = (source: string): string => {
   }
 };
 
-type WebViewRequest = {
+interface WebViewRequest {
   url?: string;
   isTopFrame?: boolean;
   navigationType?: string;
-};
+}
 
 /**
  * Prepare the source configuration for a WebView, with special handling for YouTube and Datawrapper embeds.
@@ -195,7 +195,7 @@ const IframeRenderer = ({
 
   if (!webViewSource)
     return (
-      <ErrorCard
+      <UiErrorCard
         style={{ marginHorizontal: 10 }}
         text="Error rendering iframe"
       />

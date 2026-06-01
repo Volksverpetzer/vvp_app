@@ -1,7 +1,5 @@
 import { StyleSheet } from "react-native";
 
-import Colors from "./Colors";
-
 export const SOURCE_SANS_FONTS = [
   "SourceSansPro",
   "SourceSansProItalic",
@@ -11,18 +9,9 @@ export const SOURCE_SANS_FONTS = [
 
 export const CONTENT_MAX_WIDTH = 700;
 export const CONTENT_HORIZONTAL_PADDING = 10;
+export const POST_PADDING_HORIZONTAL = 30;
 
 export const globalStyles = StyleSheet.create({
-  badge: {
-    backgroundColor: Colors.light.accent,
-    borderRadius: 4,
-    height: 8,
-    position: "absolute",
-    right: 0,
-    alignSelf: "center",
-    bottom: "80%",
-    width: 8,
-  },
   centered: {
     alignItems: "center",
     flex: 1,
@@ -37,17 +26,10 @@ export const globalStyles = StyleSheet.create({
     paddingHorizontal: CONTENT_HORIZONTAL_PADDING,
     width: "100%",
   },
-  header: {
-    flex: 1,
-    flexDirection: "row",
-  },
   input: {
     borderRadius: 20,
     minHeight: 40,
     paddingHorizontal: 25,
-  },
-  noBackground: {
-    backgroundColor: "transparent",
   },
   row: {
     alignItems: "center",
