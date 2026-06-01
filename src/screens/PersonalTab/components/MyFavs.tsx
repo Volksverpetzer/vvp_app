@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
-import Space from "#/components/design/Space";
 import GenericPost from "#/components/posts/GenericPost";
 import InstaPostCard from "#/components/posts/insta/InstaPostCard";
 import UiCard from "#/components/ui/UiCard";
 import UiEmptyState from "#/components/ui/UiEmptyState";
+import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
@@ -145,12 +145,12 @@ const MyFavs = () => {
           />
         ))
       )}
-      <Space size={50} />
+      <UiSpace size={50} />
       <UiEmptyState icon={<StarIcon />}>
         Klicke auf den Stern bei Artikeln und Posts, um sie zu den Favoriten
         hinzuzufügen
       </UiEmptyState>
-      <Space size={100} />
+      <UiSpace size={100} />
     </View>
   );
 };

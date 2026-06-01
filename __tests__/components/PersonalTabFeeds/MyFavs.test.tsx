@@ -36,7 +36,7 @@ jest.mock("#/components/ui/UiCard", () => ({
   default: jest.fn(({ children }) => children),
 }));
 
-jest.mock("#/components/design/Space", () => ({
+jest.mock("#/components/ui/UiSpace", () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));

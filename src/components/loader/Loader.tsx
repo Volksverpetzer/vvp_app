@@ -2,7 +2,7 @@ import type { ReactElement } from "react";
 import React, { useEffect, useState } from "react";
 import type { ActivityIndicatorProps } from "react-native";
 
-import ErrorCard from "#/components/design/ErrorCard";
+import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
 
 type LoaderProps<TData> = {
@@ -81,7 +81,7 @@ const Loader = <TData,>({
         return renderError(error);
       }
       return (
-        <ErrorCard text="Beitrag konnte nicht geladen werden. Bitte später erneut versuchen." />
+        <UiErrorCard text="Beitrag konnte nicht geladen werden. Bitte später erneut versuchen." />
       );
     }
     return null;

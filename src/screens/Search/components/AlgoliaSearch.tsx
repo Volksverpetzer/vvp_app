@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
-import ErrorCard from "#/components/design/ErrorCard";
+import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import {
@@ -106,7 +106,7 @@ const AlgoliaSearchResults = ({
   if (hasError) {
     return (
       <View style={itemStyles.emptyContainer}>
-        <ErrorCard text="Suche fehlgeschlagen. Bitte versuche es erneut." />
+        <UiErrorCard text="Suche fehlgeschlagen. Bitte versuche es erneut." />
       </View>
     );
   }

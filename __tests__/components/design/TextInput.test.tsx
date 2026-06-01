@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { render } from "@testing-library/react-native";
 
-import TextInput from "#/components/design/TextInput";
+import UiTextInput from "#/components/ui/UiTextInput";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
@@ -27,7 +27,7 @@ describe("TextInput", () => {
   });
 
   it("renders with light theme colors", () => {
-    const { getByTestId } = render(<TextInput testID="input" />);
+    const { getByTestId } = render(<UiTextInput testID="input" />);
     const style = flatStyle(getByTestId("input").props.style);
     expect(style.backgroundColor).toBe("#BADDE8");
     expect(style.color).toBe("#111");
@@ -35,7 +35,7 @@ describe("TextInput", () => {
 
   it("renders with dark theme colors", () => {
     jest.mocked(useAppColorScheme).mockReturnValue("dark");
-    const { getByTestId } = render(<TextInput testID="input" />);
+    const { getByTestId } = render(<UiTextInput testID="input" />);
     const style = flatStyle(getByTestId("input").props.style);
     expect(style.backgroundColor).toBe("#777");
     expect(style.color).toBe("#F7F7F7");
@@ -43,7 +43,7 @@ describe("TextInput", () => {
 
   it("merges additional style props", () => {
     const { getByTestId } = render(
-      <TextInput testID="input" style={{ borderWidth: 1 }} />,
+      <UiTextInput testID="input" style={{ borderWidth: 1 }} />,
     );
     const style = flatStyle(getByTestId("input").props.style);
     expect(style.borderWidth).toBe(1);
@@ -52,7 +52,7 @@ describe("TextInput", () => {
 
   it("passes through other props", () => {
     const { getByTestId } = render(
-      <TextInput testID="input" placeholder="Search..." editable={false} />,
+      <UiTextInput testID="input" placeholder="Search..." editable={false} />,
     );
     const input = getByTestId("input");
     expect(input.props.placeholder).toBe("Search...");

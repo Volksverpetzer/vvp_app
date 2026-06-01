@@ -6,8 +6,8 @@ import { Animated, View } from "react-native";
 import type { ViewStyle } from "react-native";
 
 import { HeartIcon } from "#/components/Icons";
-import Space from "#/components/design/Space";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import Colors from "#/constants/Colors";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -163,7 +163,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
         >
           {children}
         </View>
-        <Space size={45} />
+        <UiSpace size={45} />
       </LinearGradient>
     </Animated.View>
   );

@@ -1,9 +1,9 @@
 import { View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
-import Space from "#/components/design/Space";
 import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -70,7 +70,7 @@ const Footer = (properties: FooterProperties) => {
       >
         <Support article_link={properties.article_link} />
       </UiCard>
-      <Space size={100} />
+      <UiSpace size={100} />
     </>
   );
 };

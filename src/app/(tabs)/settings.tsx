@@ -17,11 +17,11 @@ import {
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import DesignedLink from "#/components/design/DesignedLink";
-import Space from "#/components/design/Space";
 import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiDivider from "#/components/ui/UiDivider";
+import UiLink from "#/components/ui/UiLink";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
@@ -162,32 +162,32 @@ const SettingsScreen = () => {
         </View>
         <UiDivider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
-          <DesignedLink
+          <UiLink
             url={Config.aboutUrl}
             icon={<SearchIcon color={primary} size={24} />}
             text="Über uns"
           />
-          <DesignedLink
+          <UiLink
             url={Config.donations.support}
             icon={<GiveIcon color={primary} size={24} />}
             text="Unterstützen"
           />
-          <DesignedLink
+          <UiLink
             url={encodeURI("mailto:app@volksverpetzer.de")}
             icon={<FeedbackIcon color={primary} size={24} />}
             text="App-Feedback"
           />
-          <DesignedLink
+          <UiLink
             url={Config.dataProtectionUrl}
             icon={<LockIcon color={primary} size={24} />}
             text="Datenschutz"
           />
-          <DesignedLink
+          <UiLink
             url={Config.imprintUrl}
             icon={<ImprintIcon color={primary} size={24} />}
             text="Impressum"
           />
-          <DesignedLink
+          <UiLink
             url={Config.sourceUrl}
             icon={<CodeIcon color={primary} size={24} />}
             text="Quellcode"
@@ -252,7 +252,7 @@ const SettingsScreen = () => {
             {!Config.isFoss && `\nToken: ${token}`}
           </UiText>
         </View>
-        <Space size={100} />
+        <UiSpace size={100} />
       </ScrollView>
     </>
   );

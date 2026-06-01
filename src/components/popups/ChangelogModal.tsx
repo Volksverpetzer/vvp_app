@@ -2,9 +2,9 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import Modal from "react-native-modal";
 
 import { CloseIcon } from "#/components/Icons";
-import Space from "#/components/design/Space";
 import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
@@ -32,7 +32,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
     >
       <View style={[styles.container, { backgroundColor: surface }]}>
         <View style={[styles.handle, { backgroundColor: textMuted }]} />
-        <Space size={16} />
+        <UiSpace size={16} />
         <View style={styles.header}>
           <Heading style={styles.title}>Was ist neu?</Heading>
           <UiPressable
@@ -47,11 +47,11 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
         <UiText style={[styles.version, { color: textMuted }]}>
           Version {Changelog.version}
         </UiText>
-        <Space size={12} />
+        <UiSpace size={12} />
         <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
           <UiText style={styles.notes}>{Changelog.notes}</UiText>
         </ScrollView>
-        <Space size={20} />
+        <UiSpace size={20} />
         <UiPressable
           accessibilityRole="button"
           onPress={onClose}
@@ -61,7 +61,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
             Alles klar
           </UiText>
         </UiPressable>
-        <Space size={8} />
+        <UiSpace size={8} />
       </View>
     </Modal>
   );

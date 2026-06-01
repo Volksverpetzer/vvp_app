@@ -100,9 +100,9 @@ jest.mock("#/components/ui/UiCollapsable", () => {
     </>
   ));
 });
-jest.mock("#/components/design/DesignedLink", () => jest.fn(() => null));
+jest.mock("#/components/ui/UiLink", () => jest.fn(() => null));
 jest.mock("#/components/ui/UiDivider", () => jest.fn(() => null));
-jest.mock("#/components/design/Space", () => jest.fn(() => null));
+jest.mock("#/components/ui/UiSpace", () => jest.fn(() => null));
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children, style }: any) => (

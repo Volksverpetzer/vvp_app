@@ -5,9 +5,9 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-type ErrorCardProperties = UiCardProperties & { text?: string };
+type UiErrorCardProperties = UiCardProperties & { text?: string };
 
-const ErrorCard = (properties: ErrorCardProperties) => {
+const UiErrorCard = (properties: UiErrorCardProperties) => {
   const { text, style, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].errorBackground;
@@ -26,4 +26,4 @@ const ErrorCard = (properties: ErrorCardProperties) => {
   );
 };
 
-export default ErrorCard;
+export default UiErrorCard;

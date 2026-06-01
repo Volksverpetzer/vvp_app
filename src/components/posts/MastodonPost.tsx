@@ -4,9 +4,9 @@ import { decode } from "html-entities";
 import { View } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
-import Space from "#/components/design/Space";
 import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import {
@@ -66,7 +66,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
         }}
       >
         <View style={{ flex: 1, paddingHorizontal: POST_PADDING_HORIZONTAL }}>
-          <Space size={20} />
+          <UiSpace size={20} />
           <View
             style={{
               flexDirection: "row",
@@ -86,7 +86,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               </UiText>
             </View>
           </View>
-          <Space size={20} />
+          <UiSpace size={20} />
           {displayText !== DISPLAY_TEXT_NONE && (
             <UiText style={{ lineHeight: 24, fontSize: 18 }}>
               {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
@@ -127,7 +127,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
           )}
           {displayText === DISPLAY_TEXT_FULL &&
             answers &&
-            answers.length > 0 && <Space size={10} />}
+            answers.length > 0 && <UiSpace size={10} />}
           {displayText === DISPLAY_TEXT_FULL &&
             answers &&
             answers.length > 0 &&

@@ -3,9 +3,9 @@ import { TextInput as DefaultTextInput } from "react-native";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-type TextInputProperties = DefaultTextInput["props"];
+type UiTextInputProperties = DefaultTextInput["props"];
 
-const TextInput = (properties: TextInputProperties) => {
+const UiTextInput = (properties: UiTextInputProperties) => {
   const { style, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].inputBackground;
@@ -19,4 +19,4 @@ const TextInput = (properties: TextInputProperties) => {
   );
 };
 
-export default TextInput;
+export default UiTextInput;

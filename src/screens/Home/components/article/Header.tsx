@@ -13,8 +13,8 @@ import {
 } from "react-native";
 import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
-import Space from "#/components/design/Space";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -127,7 +127,7 @@ const Header = (properties: HeaderProperties) => {
           placeholder={LoadingImage}
         />
       </UiPressable>
-      <Space size={30} />
+      <UiSpace size={30} />
       <UiText
         style={{
           paddingHorizontal: 20,
@@ -180,13 +180,13 @@ const Header = (properties: HeaderProperties) => {
         article_link={article_link}
         reading_time={article.reading_time}
       />
-      <Space size={10} />
+      <UiSpace size={10} />
       <ArticleSourceList
         article_link={article_link}
         article_title={article_title}
         slug={slug}
       />
-      <Space size={20} />
+      <UiSpace size={20} />
       <Modal visible={visible}>
         <ViewShot ref={reference} options={{ fileName: article_title }}>
           <View
@@ -217,7 +217,7 @@ const Header = (properties: HeaderProperties) => {
               source={{ uri: article_image }}
               onLoad={() => setImageLoaded(true)}
             />
-            <Space size={20} />
+            <UiSpace size={20} />
             <UiText
               style={{
                 color: Colors.dark.text,
@@ -229,7 +229,7 @@ const Header = (properties: HeaderProperties) => {
             >
               {article_title}
             </UiText>
-            <Space size={20} />
+            <UiSpace size={20} />
             <UiText
               style={{
                 color: Colors.dark.text,

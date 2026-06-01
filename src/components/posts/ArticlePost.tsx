@@ -5,8 +5,8 @@ import type { DimensionValue, TextStyle } from "react-native";
 import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
-import Space from "#/components/design/Space";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -217,11 +217,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           />
         )}
         <View style={progressBarStyle} />
-        <Space size={10} />
+        <UiSpace size={10} />
         <UiText style={titleStyle}>{article.title}</UiText>
-        <Space size={10} />
+        <UiSpace size={10} />
         <UiText style={authorDateStyle}>{authorDateText}</UiText>
-        <Space size={10} />
+        <UiSpace size={10} />
         {categoryText && (
           <Badge position="topLeft" color={corporate}>
             <UiText style={categoryTextStyle}>{categoryText}</UiText>
@@ -242,10 +242,10 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
             >
               {excerpt}
             </UiText>
-            <Space size={20} />
+            <UiSpace size={20} />
           </>
         ) : (
-          <Space size={10} />
+          <UiSpace size={10} />
         )}
       </View>
     </UiPressable>

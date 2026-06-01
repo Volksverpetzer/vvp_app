@@ -9,8 +9,8 @@ import type {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-import ErrorCard from "#/components/design/ErrorCard";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
+import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
@@ -195,7 +195,7 @@ const IframeRenderer = ({
 
   if (!webViewSource)
     return (
-      <ErrorCard
+      <UiErrorCard
         style={{ marginHorizontal: 10 }}
         text="Error rendering iframe"
       />
