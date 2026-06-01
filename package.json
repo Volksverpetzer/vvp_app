@@ -150,7 +150,7 @@
     "lint-staged": "17.0.7",
     "prettier": "3.8.3",
     "ts-node": "10.9.2",
-    "tsx": "4.22.3",
+    "tsx": "4.22.4",
     "typedoc": "0.28.19",
     "typescript": "6.0.3"
   }
