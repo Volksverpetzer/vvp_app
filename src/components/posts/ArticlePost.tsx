@@ -11,7 +11,10 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
+import {
+  POST_PADDING_HORIZONTAL,
+  globalStyles,
+} from "#/constants/GlobalStyles";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -26,7 +29,7 @@ import Badge from "./Badge";
 
 const titleStyle: TextStyle = {
   fontFamily: "SourceSansProBold",
-  paddingHorizontal: 30,
+  paddingHorizontal: POST_PADDING_HORIZONTAL,
   fontSize: 20,
   lineHeight: 26,
   textAlign: "left",
@@ -177,7 +180,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   );
   const authorDateStyle = useMemo(
     () => ({
-      paddingHorizontal: 30,
+      paddingHorizontal: POST_PADDING_HORIZONTAL,
       textAlign: "left" as const,
       color: greyText,
       fontSize: 16,
@@ -231,7 +234,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         )}
         {excerpt ? (
           <>
-            <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
+            <UiText
+              style={{
+                paddingHorizontal: POST_PADDING_HORIZONTAL,
+                fontSize: 16,
+              }}
+            >
               {excerpt}
             </UiText>
             <Space size={20} />

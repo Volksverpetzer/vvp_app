@@ -9,7 +9,10 @@ import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { globalStyles } from "#/constants/GlobalStyles";
+import {
+  POST_PADDING_HORIZONTAL,
+  globalStyles,
+} from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import {
@@ -62,7 +65,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
           onLinkPress(url, router, uri);
         }}
       >
-        <View style={{ flex: 1, paddingHorizontal: 30 }}>
+        <View style={{ flex: 1, paddingHorizontal: POST_PADDING_HORIZONTAL }}>
           <Space size={20} />
           <View
             style={{

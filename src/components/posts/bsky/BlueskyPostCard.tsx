@@ -10,7 +10,10 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
+import {
+  POST_PADDING_HORIZONTAL,
+  globalStyles,
+} from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
@@ -72,7 +75,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
         style={{
           position: "relative",
           gap: 20,
-          paddingHorizontal: 30,
+          paddingHorizontal: POST_PADDING_HORIZONTAL,
           paddingVertical: 20,
         }}
       >

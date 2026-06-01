@@ -5,6 +5,7 @@ import { View } from "react-native";
 import ImageModal from "#/components/media/ImageModal";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
 import { onShare as _onShare } from "#/helpers/Sharing";
 
 interface RedditImageSource {
@@ -95,7 +96,7 @@ const RedditPost = (properties: RedditProperties) => {
           />
           <UiText
             style={{
-              paddingHorizontal: 30,
+              paddingHorizontal: POST_PADDING_HORIZONTAL,
               fontSize: size,
               lineHeight: size === 16 ? 22 : 24,
               fontFamily: "SourceSansProBold",
@@ -107,7 +108,7 @@ const RedditPost = (properties: RedditProperties) => {
           </UiText>
           <UiText
             style={{
-              paddingHorizontal: 30,
+              paddingHorizontal: POST_PADDING_HORIZONTAL,
               fontSize: 16,
               paddingBottom: 10,
               color: "#999",

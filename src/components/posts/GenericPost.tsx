@@ -5,6 +5,7 @@ import { View } from "react-native";
 
 import ShareBar from "#/components/bars/ShareBar";
 import UiCard from "#/components/ui/UiCard";
+import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
 import type { FaveableType, ShareableType } from "#/types";
 
 interface ComponentProperty<T> {
@@ -46,7 +47,13 @@ const GenericPost = (properties: ComponentProperty<object>) => {
           contentType={contentType}
         />
       ) : (
-        <View style={{ paddingHorizontal: 30, height: 40, margin: 0 }} />
+        <View
+          style={{
+            paddingHorizontal: POST_PADDING_HORIZONTAL,
+            height: 40,
+            margin: 0,
+          }}
+        />
       )}
     </UiCard>
   );

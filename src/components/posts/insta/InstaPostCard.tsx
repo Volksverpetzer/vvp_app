@@ -6,7 +6,10 @@ import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
+import {
+  POST_PADDING_HORIZONTAL,
+  globalStyles,
+} from "#/constants/GlobalStyles";
 import { Achievements } from "#/helpers/Achievements";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -73,7 +76,11 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         accessibilityRole="button"
         onPress={handlePress}
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        style={{ paddingHorizontal: 30, paddingVertical: 10, opacity: 1 }}
+        style={{
+          paddingHorizontal: POST_PADDING_HORIZONTAL,
+          paddingVertical: 10,
+          opacity: 1,
+        }}
       >
         <UiText style={{ fontSize: 16 }}>{excerpt}…</UiText>
         <View style={[globalStyles.row, { justifyContent: "flex-end" }]}>
