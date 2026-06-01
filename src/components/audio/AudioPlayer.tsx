@@ -67,12 +67,17 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         gap: 12,
       }}
     >
-      <UnmuteIcon size={16} color={Colors[colorScheme].textMuted} />
+      <UnmuteIcon
+        size={16}
+        color={Colors[colorScheme].textMuted}
+        accessible={false}
+        importantForAccessibility="no"
+      />
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel={status.playing ? "Pause" : "Abspielen"}
         onPress={() => void (status.playing ? player.pause() : player.play())}
-        hitSlop={8}
+        hitSlop={10}
       >
         {status.playing ? (
           <PauseIcon size={26} color={corporate} />
@@ -105,9 +110,9 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         }}
         style={{
           flex: 1,
-          height: 4,
-          backgroundColor: Colors[colorScheme].muted,
-          borderRadius: 2,
+          height: 44,
+          justifyContent: "center",
+          backgroundColor: "transparent",
         }}
         onLayout={(e) => {
           barWidth.current = e.nativeEvent.layout.width;
@@ -118,14 +123,25 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
       >
         <View
           style={{
-            width: `${progress * 100}%`,
-            height: "100%",
-            backgroundColor: corporate,
+            height: 4,
+            backgroundColor: Colors[colorScheme].muted,
             borderRadius: 2,
+            overflow: "hidden",
           }}
-        />
+        >
+          <View
+            style={{
+              width: `${progress * 100}%`,
+              height: "100%",
+              backgroundColor: corporate,
+              borderRadius: 2,
+            }}
+          />
+        </View>
       </View>
       <UiText
+        accessible={false}
+        importantForAccessibility="no"
         style={{
           fontSize: 13,
           color: Colors[colorScheme].textMuted,
