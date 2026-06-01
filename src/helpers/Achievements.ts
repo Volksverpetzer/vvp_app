@@ -61,7 +61,7 @@ const Level2: Record<string, TaskType> = {
     name: "Rechercheur",
   },
   bskyshare: {
-    verbose: "Teile einen Bluesky Post",
+    verbose: "Teile einen Bluesky-Post",
     name: "Faktenhimmel",
   },
 };

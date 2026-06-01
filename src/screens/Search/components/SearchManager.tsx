@@ -83,7 +83,7 @@ const SearchManager = ({
     }
   }, [resultsLength, searchParameters, isAISearch]);
 
-  // Set rechercheur achievement if Algolia search contains a URL (not AI search)
+  // Set rechercheur achievement if a non-AI search query contains a URL
   useEffect(() => {
     if (!isAISearch && searchParameters && searchParameters.includes("://")) {
       Achievements.setAchievementValue("rechercheur");
