@@ -1,7 +1,5 @@
 import { StyleSheet } from "react-native";
 
-import Colors from "./Colors";
-
 export const SOURCE_SANS_FONTS = [
   "SourceSansPro",
   "SourceSansProItalic",
