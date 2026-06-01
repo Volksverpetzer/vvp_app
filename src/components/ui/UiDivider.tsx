@@ -1,4 +1,4 @@
-import type { ViewStyle } from "react-native";
+import type { StyleProp, ViewStyle } from "react-native";
 import { StyleSheet, View } from "react-native";
 
 import Colors from "#/constants/Colors";
@@ -8,7 +8,7 @@ interface UiDividerProps {
   paddingHorizontal?: number;
   paddingVertical?: number;
   thickness?: number;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 const UiDivider = ({

@@ -51,11 +51,14 @@ describe("UiCheckbox", () => {
     expect(onChange).toHaveBeenCalledWith(false);
   });
 
-  it("updates accessibility state after toggle", () => {
-    const { getByRole } = render(
-      <UiCheckbox checked={false} onChange={jest.fn()} />,
+  it("updates accessibility state after parent re-renders with new checked value", () => {
+    const onChange = jest.fn();
+    const { getByRole, rerender } = render(
+      <UiCheckbox checked={false} onChange={onChange} />,
     );
     fireEvent.press(getByRole("checkbox"));
+    expect(onChange).toHaveBeenCalledWith(true);
+    rerender(<UiCheckbox checked={true} onChange={onChange} />);
     expect(getByRole("checkbox", { checked: true })).toBeTruthy();
   });
 });
