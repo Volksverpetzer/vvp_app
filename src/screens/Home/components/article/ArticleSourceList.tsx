@@ -65,12 +65,12 @@ export const ArticleSourceList = ({
         {Array.isArray(links) && links.length > 0 ? (
           links
             .filter((l) => (l.visitors ?? 0) > 0)
-            .map((link, idx) => (
+            .map((link, idx, filtered) => (
               <View
                 key={idx}
                 style={{
                   borderBottomColor: textColor,
-                  borderBottomWidth: 1,
+                  borderBottomWidth: idx < filtered.length - 1 ? 1 : 0,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
