@@ -328,6 +328,22 @@ describe("Sharing helpers", () => {
       expect(Statistics.countArticleShared).toHaveBeenCalled();
     });
 
+    it("should update bskyshare achievement for bsky.app URLs", async () => {
+      const url = "https://bsky.app/profile/handle/post/postId";
+      parseSpy.mockReturnValue({ path: "/profile/handle/post/postId" });
+      shareSpy.mockResolvedValue({
+        action: Share.sharedAction,
+        activityType: "facebook",
+      });
+
+      await onShare(url);
+
+      expect(Achievements.setAchievementValue).toHaveBeenCalledWith(
+        "bskyshare",
+      );
+      expect(Statistics.countArticleShared).not.toHaveBeenCalled();
+    });
+
     it("should not update achievements for non-volksverpetzer URLs", async () => {
       // Setup
       const url = "https://example.com/article";

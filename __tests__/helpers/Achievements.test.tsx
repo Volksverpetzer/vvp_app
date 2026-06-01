@@ -6,6 +6,16 @@ import { AchievementConfig, Achievements } from "#/helpers/Achievements";
 import AchievementStore from "#/helpers/Stores/AchievementStore";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 
+let mockEnableActions = true;
+jest.mock("#/constants/Config", () => ({
+  __esModule: true,
+  default: {
+    get enableActions() {
+      return mockEnableActions;
+    },
+  },
+}));
+
 jest.mock("#/helpers/Stores/AchievementStore", () => ({
   __esModule: true,
   default: {
@@ -36,6 +46,7 @@ jest.mock("#/helpers/provider/BadgeProvider", () => ({
 describe("Achievements", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockEnableActions = true;
   });
 
   describe("getCurrentAchievements", () => {
@@ -72,6 +83,19 @@ describe("Achievements", () => {
       expect(result.level).toBe(nextLevel);
       jest.useRealTimers();
     });
+
+    it("does not level up beyond max level", async () => {
+      const maxLevel = AchievementConfig.length - 1;
+      jest.spyOn(AchievementStore, "getLevel").mockResolvedValue(maxLevel);
+      jest
+        .spyOn(AchievementStore, "getAchievementValue")
+        .mockResolvedValue(true);
+
+      const result = await Achievements.getCurrentAchievements();
+
+      expect(AchievementStore.setLevel).not.toHaveBeenCalled();
+      expect(result.level).toBe(maxLevel);
+    });
   });
 
   describe("setAchievementValue", () => {
@@ -106,6 +130,26 @@ describe("Achievements", () => {
         .mockResolvedValue(true);
 
       await Achievements.setAchievementValue(key);
+
+      expect(AchievementStore.setAchievementValue).not.toHaveBeenCalled();
+      expect(Toast.show).not.toHaveBeenCalled();
+    });
+
+    it("does nothing when enableActions is false", async () => {
+      mockEnableActions = false;
+      const key = Object.keys(AchievementConfig[0].tasks)[0];
+
+      await Achievements.setAchievementValue(key);
+
+      expect(AchievementStore.getLevel).not.toHaveBeenCalled();
+      expect(AchievementStore.setAchievementValue).not.toHaveBeenCalled();
+    });
+
+    it("does nothing when key belongs to a different level", async () => {
+      const level1Key = Object.keys(AchievementConfig[1].tasks)[0];
+      jest.spyOn(AchievementStore, "getLevel").mockResolvedValue(0);
+
+      await Achievements.setAchievementValue(level1Key);
 
       expect(AchievementStore.setAchievementValue).not.toHaveBeenCalled();
       expect(Toast.show).not.toHaveBeenCalled();
