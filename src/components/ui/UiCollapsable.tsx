@@ -44,7 +44,9 @@ const UiCollapsable = ({
   };
 
   return (
-    <View style={{ paddingHorizontal: 20 }}>
+    <View
+      style={{ paddingHorizontal: 20, borderRadius: 20, overflow: "hidden" }}
+    >
       <Animated.View
         pointerEvents="none"
         style={[
