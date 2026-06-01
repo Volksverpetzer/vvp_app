@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import { View } from "react-native";
 
-import View from "#/components/design/View";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";

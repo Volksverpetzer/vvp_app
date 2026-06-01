@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { CheckboxIcon } from "#/components/Icons";
@@ -7,19 +7,14 @@ import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-interface CheckboxProperties {
+interface UiCheckboxProperties {
   checked: boolean;
   onChange: (checked: boolean) => void;
   children?: ReactNode;
 }
 
-const Checkbox = (properties: CheckboxProperties) => {
-  const [checked, setChecked] = useState(properties.checked);
-  const onPress = () => {
-    setChecked(!checked);
-    properties.onChange(!checked);
-  };
-
+const UiCheckbox = (properties: UiCheckboxProperties) => {
+  const { checked, onChange, children } = properties;
   const colorScheme = useAppColorScheme();
   const highlight = Colors[colorScheme].accent;
 
@@ -34,12 +29,12 @@ const Checkbox = (properties: CheckboxProperties) => {
       accessibilityRole="checkbox"
       accessibilityState={{ checked }}
       style={[styles.row]}
-      onPress={onPress}
+      onPress={() => onChange(!checked)}
     >
       <View style={[styles.checkboxBase, style, checkedStyle]}>
         {checked && <CheckboxIcon size={24} color="white" />}
       </View>
-      {properties.children}
+      {children}
     </UiPressable>
   );
 };
@@ -59,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Checkbox;
+export default UiCheckbox;

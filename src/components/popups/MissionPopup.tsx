@@ -1,9 +1,7 @@
 import { useRouter } from "expo-router";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { SuccessIcon } from "#/components/Icons";
-import Space from "#/components/design/Space";
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -44,7 +42,6 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
           {text1}
         </UiText>
       </View>
-      <Space size={10} />
       <UiText>{text2}</UiText>
     </UiPressable>
   );
@@ -54,6 +51,7 @@ const missionStyles = StyleSheet.create({
   rectanglePressable: {
     borderRadius: 20,
     flex: 1,
+    gap: 10,
     margin: 20,
     padding: 20,
     width: "90%",

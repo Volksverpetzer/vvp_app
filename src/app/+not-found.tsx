@@ -3,8 +3,8 @@ import { ScrollView, View } from "react-native";
 
 import { ErrorIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
-import EmptyComponent from "#/components/design/EmptyComponent";
 import Heading from "#/components/typography/Heading";
+import EmptyComponent from "#/components/views/EmptyComponent";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";

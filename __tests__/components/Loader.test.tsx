@@ -10,7 +10,7 @@ jest.mock("#/components/ui/UiSpinner", () => {
   };
 });
 
-jest.mock("#/components/design/ErrorCard", () => {
+jest.mock("#/components/ui/UiErrorCard", () => {
   const { Text: MockText } = jest.requireActual("react-native");
   return function MockErrorCard({ text }: { text?: string }) {
     return <MockText>{`error:${text}`}</MockText>;

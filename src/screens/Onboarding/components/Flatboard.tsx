@@ -6,10 +6,9 @@ import type {
   ImageRequireSource,
   TextStyle,
 } from "react-native";
-import { FlatList, useWindowDimensions } from "react-native";
+import { FlatList, View, useWindowDimensions } from "react-native";
 
 import { Logo } from "#/components/SvgIcons";
-import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { isVolksverpetzer } from "#/helpers/utils/variant";

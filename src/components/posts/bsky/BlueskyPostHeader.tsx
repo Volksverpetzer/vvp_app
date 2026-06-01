@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
+import { View } from "react-native";
 
-import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import type { PostAuthor } from "#/types";
 

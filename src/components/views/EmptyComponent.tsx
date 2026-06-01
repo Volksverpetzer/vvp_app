@@ -2,7 +2,7 @@ import React, { type ReactNode } from "react";
 import { View } from "react-native";
 
 import { HeartIcon } from "#/components/Icons";
-import Card from "#/components/design/Card";
+import UiCard from "#/components/ui/UiCard";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
@@ -32,7 +32,7 @@ const EmptyComponent = ({
         </UiEmptyState>
       </View>
       {children}
-      <Card
+      <UiCard
         style={[
           globalStyles.centered,
           {
@@ -50,7 +50,7 @@ const EmptyComponent = ({
           Narrative
         </UiText>
         <Donate paypalAlways={true} />
-      </Card>
+      </UiCard>
     </>
   );
 };

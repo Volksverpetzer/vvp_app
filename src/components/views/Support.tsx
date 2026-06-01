@@ -1,12 +1,12 @@
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
+import { View } from "react-native";
 import Modal from "react-native-modal";
 
 import { CloseIcon, HeartIcon } from "#/components/Icons";
-import Space from "#/components/design/Space";
-import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -89,16 +89,16 @@ const Support = ({ article_link }: SupportProperties) => {
             </UiPressable>
           </View>
           <UiText style={{ fontSize: 25 }}>Banküberweisung</UiText>
-          <Space size={20} />
+          <UiSpace size={20} />
           <UiText style={{ fontSize: 16, textAlign: "center" }}>
             Wow! Du bist der Hammer! Danke für deine Mühe, wir wissen das echt
             zu schätzen
           </UiText>
-          <Space size={20} />
+          <UiSpace size={20} />
           <UiText style={{ fontSize: 16, textAlign: "center" }}>
             IBAN ist in die Zwischenablage kopiert, hier nochmal zur Sicherheit:
           </UiText>
-          <Space size={20} />
+          <UiSpace size={20} />
           <UiText selectable style={{ fontSize: 16, textAlign: "center" }}>
             Name: {Config.donations.account.holder} {`\n`}
             Bank: {Config.donations.account.bank} {`\n`}

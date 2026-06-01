@@ -9,13 +9,6 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
   ColorScheme: { light: "light", dark: "dark" },
 }));
 
-jest.mock("#/components/design/View", () => {
-  const { View } = jest.requireActual("react-native");
-  return jest.fn(({ children, ...props }: any) => (
-    <View {...props}>{children}</View>
-  ));
-});
-
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = jest.requireActual("react-native");
   return jest.fn(({ children, style }: any) => (

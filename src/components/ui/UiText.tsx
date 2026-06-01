@@ -13,7 +13,14 @@ const UiText = (properties: TextProperties) => {
 
   return (
     <Text
-      style={[{ color }, { fontFamily: "SourceSansPro" }, style]}
+      style={[
+        { color },
+        {
+          fontFamily: "SourceSansPro",
+          includeFontPadding: false,
+        },
+        style,
+      ]}
       {...otherProperties}
     />
   );

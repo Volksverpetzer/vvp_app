@@ -22,10 +22,6 @@ jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children }: any) => <Text>{children}</Text>);
 });
-jest.mock("#/components/design/View", () => {
-  const { View } = require("react-native");
-  return jest.fn(({ children }: any) => <View>{children}</View>);
-});
 jest.mock("#/components/loader/LoadArticlePost", () => () => null);
 jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: {

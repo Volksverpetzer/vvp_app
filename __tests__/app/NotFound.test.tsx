@@ -15,7 +15,7 @@ jest.mock("#/components/Icons", () => ({
 
 jest.mock("#/components/bars/NavBar", () => jest.fn(() => null));
 
-jest.mock("#/components/design/EmptyComponent", () => {
+jest.mock("#/components/views/EmptyComponent", () => {
   const { Text } = require("react-native");
   return jest.fn(({ text }: any) => <Text testID="empty-text">{text}</Text>);
 });

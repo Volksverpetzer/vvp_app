@@ -4,8 +4,8 @@ import { useMemo } from "react";
 import { View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
-import Card from "#/components/design/Card";
 import Heading from "#/components/typography/Heading";
+import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
@@ -48,7 +48,7 @@ const SearchResultItem = ({
   );
 
   const content = (
-    <Card>
+    <UiCard>
       {title ? (
         <Heading style={{ color: textColor, marginBottom: 10 }}>
           {decode(title)}
@@ -65,7 +65,7 @@ const SearchResultItem = ({
       />
 
       {subtitle}
-    </Card>
+    </UiCard>
   );
 
   if (onPress) {

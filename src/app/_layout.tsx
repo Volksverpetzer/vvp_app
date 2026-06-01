@@ -10,7 +10,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
 import { type PropsWithChildren, useEffect, useState } from "react";
-import { LogBox, Platform } from "react-native";
+import { LogBox, Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   SafeAreaProvider,
@@ -19,7 +19,6 @@ import {
 import type { ToastConfig } from "react-native-toast-message";
 import Toast from "react-native-toast-message";
 
-import View from "#/components/design/View";
 import ChangelogModal from "#/components/popups/ChangelogModal";
 import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
