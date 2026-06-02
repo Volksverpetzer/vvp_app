@@ -28,8 +28,8 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 }));
 
 jest.mock("#/constants/Colors", () => ({
-  light: { surface: "#E2F0F5", primary: "#1B7194" },
-  dark: { surface: "#142228", primary: "#3893C0" },
+  light: { background: "#FFF", surface: "#E2F0F5", primary: "#1B7194" },
+  dark: { background: "#050D0f", surface: "#142228", primary: "#3893C0" },
 }));
 
 jest.mock("#/constants/GlobalStyles", () => ({
@@ -65,6 +65,23 @@ describe("SearchHeader", () => {
     it("defaults to 'Fact Check' when showFaktenBot is omitted", () => {
       const { getByText } = render(<SearchHeader {...baseProps} />);
       expect(getByText("Fact Check")).toBeTruthy();
+    });
+  });
+
+  describe("header background color", () => {
+    it("uses Colors[colorScheme].background (not surface) for the header", () => {
+      const { toJSON } = render(
+        <SearchHeader {...baseProps} showFaktenBot={false} />,
+      );
+      const views = toJSON() as any[];
+      const headerView = views[0];
+      const flatStyle = (headerView.props.style as any[]).flat();
+      expect(flatStyle).toContainEqual(
+        expect.objectContaining({ backgroundColor: "#FFF" }),
+      );
+      expect(flatStyle).not.toContainEqual(
+        expect.objectContaining({ backgroundColor: "#E2F0F5" }),
+      );
     });
   });
 
