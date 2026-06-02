@@ -129,6 +129,7 @@ const SettingsScreen = () => {
           <UiCollapsable
             icon={<FeedIcon color={primary} size={24} />}
             title="Feed"
+            borderRadius={0}
           >
             <UiText style={styles.sectionText}>
               Was möchtest du in deinem Feed sehen?
@@ -142,6 +143,7 @@ const SettingsScreen = () => {
             <UiCollapsable
               icon={<NotificationIcon color={primary} size={24} />}
               title="Benachrichtigungen"
+              borderRadius={0}
             >
               <SettingsList
                 saveSettings={saveNotificationSetting}
@@ -152,6 +154,7 @@ const SettingsScreen = () => {
           <UiCollapsable
             icon={<SettingsIcon color={primary} size={24} />}
             title="Erweitert"
+            borderRadius={0}
           >
             <SettingsList
               saveSettings={saveAdvancedSetting}

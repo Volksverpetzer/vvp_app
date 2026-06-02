@@ -1,11 +1,11 @@
 import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useWindowDimensions } from "react-native";
 import type { InternalRendererProps, TBlock } from "react-native-render-html";
 import { useInternalRenderer } from "react-native-render-html";
 
-import ImageModal from "#/components/media/ImageModal";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -13,13 +13,13 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
   const [ratio, setRatio] = useState(1.5);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const { rendererProps } = useInternalRenderer("img", properties);
   const { width } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
   const uri = rendererProps.source.uri;
   const backgroundColor = Colors[colorScheme].background;
+  const router = useRouter();
 
   const onLoad = (event: ImageLoadEventData) => {
     if (isLoaded) return;
@@ -33,17 +33,12 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
     <UiPressable
       accessibilityRole="button"
       style={globalStyles.centered}
-      onPress={() => setIsModalOpen(true)}
+      onPress={() => router.push({ pathname: "/image", params: { uri } })}
     >
       <Image
         onLoad={onLoad}
         source={{ uri }}
         style={{ width, height: width * ratio, backgroundColor }}
-      />
-      <ImageModal
-        uri={uri}
-        visible={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
       />
     </UiPressable>
   );

@@ -79,7 +79,9 @@ describe("UiCollapsable", () => {
     it("applies a background color", () => {
       const { toJSON } = render(<UiCollapsable title="FAQ" defaultOpen />);
       const root = toJSON() as any;
-      const styles = [root.props.style].flat();
+      // backgroundColor lives on the Animated.View overlay (first child), not the root View
+      const overlay = root.children[0];
+      const styles = [overlay.props.style].flat();
       expect(styles.some((s: any) => s?.backgroundColor)).toBe(true);
     });
   });
