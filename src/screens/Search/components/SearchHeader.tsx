@@ -32,7 +32,7 @@ const SearchHeader = ({
   onSubmit,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].surface;
+  const backgroundColor = Colors[colorScheme].background;
   const corporate = Colors[colorScheme].primary;
 
   // Show no reaction while loading so we don't display a stale previous result

@@ -16,6 +16,7 @@ interface UseAISearchProperties {
 interface UseAISearchResultProperties {
   results: AISearchResponse[];
   error: string;
+  noResults: boolean;
   loadingMessage: string;
   reactionValue: FaktenBotReaction;
   reload: () => void;
@@ -36,12 +37,14 @@ export const useAISearch = ({
 }: UseAISearchProperties): UseAISearchResultProperties => {
   const [results, setResults] = useState<AISearchResponse[]>([]);
   const [error, setError] = useState<string>("");
+  const [noResults, setNoResults] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const activeControllerRef = useRef<AbortController | null>(null);
 
   const fetchResults = useCallback(
     async (signal?: AbortSignal) => {
       setError("");
+      setNoResults(false);
       setResults([]);
       setIsLoading(true);
       setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
@@ -102,7 +105,7 @@ export const useAISearch = ({
         if (count > 0) {
           setResults(decoded);
         } else {
-          setError("Keine passenden Ergebnisse gefunden");
+          setNoResults(true);
         }
       } catch {
         if (signal?.aborted) return;
@@ -142,10 +145,11 @@ export const useAISearch = ({
     activeControllerRef.current?.abort();
     activeControllerRef.current = controller;
     setResults([]);
+    setNoResults(false);
     setResultsLength(0);
     setIsLoading(true);
     void fetchResults(controller.signal);
   }, [fetchResults, setIsLoading, setResultsLength]);
 
-  return { results, error, loadingMessage, reactionValue, reload };
+  return { results, error, noResults, loadingMessage, reactionValue, reload };
 };
