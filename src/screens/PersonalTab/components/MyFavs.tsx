@@ -5,7 +5,6 @@ import { View } from "react-native";
 import { StarIcon } from "#/components/Icons";
 import GenericPost from "#/components/posts/GenericPost";
 import InstaPostCard from "#/components/posts/insta/InstaPostCard";
-import UiCard from "#/components/ui/UiCard";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -129,9 +128,7 @@ const MyFavs = () => {
   return (
     <View style={{ flex: 1, gap: 20 }}>
       {isLoading ? (
-        <UiCard>
-          <UiSpinner text="Lade Favoriten..." />
-        </UiCard>
+        <UiSpinner text="Lade Favoriten..." />
       ) : (
         posts.map((post) => (
           <GenericPost

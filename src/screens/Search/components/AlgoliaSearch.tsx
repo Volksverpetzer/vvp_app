@@ -3,6 +3,8 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
+import { SearchIcon } from "#/components/Icons";
+import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
@@ -114,7 +116,9 @@ const AlgoliaSearchResults = ({
   if (results.length === 0 && searchString.length >= 2) {
     return (
       <View style={itemStyles.emptyContainer}>
-        <UiText>Keine Ergebnisse gefunden</UiText>
+        <UiEmptyState icon={<SearchIcon />}>
+          Keine Ergebnisse gefunden
+        </UiEmptyState>
       </View>
     );
   }
@@ -124,7 +128,6 @@ const AlgoliaSearchResults = ({
       data={results}
       contentContainerStyle={{
         paddingBottom: 100,
-        paddingHorizontal: 20,
         gap: 20,
       }}
       keyExtractor={(item) => item.objectID}
@@ -139,7 +142,9 @@ const AlgoliaSearchResults = ({
 
 const itemStyles = StyleSheet.create({
   emptyContainer: {
+    flex: 1,
     alignItems: "center",
+    justifyContent: "center",
     padding: 20,
   },
 });
