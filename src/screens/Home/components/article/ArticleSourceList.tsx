@@ -67,7 +67,7 @@ export const ArticleSourceList = ({
             .filter((l) => (l.visitors ?? 0) > 0)
             .map((link, idx, filtered) => (
               <View
-                key={idx}
+                key={link.url}
                 style={{
                   borderBottomColor: textColor,
                   borderBottomWidth: idx < filtered.length - 1 ? 1 : 0,

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useRef, useState } from "react";
+import type { ColorValue } from "react-native";
 import { Animated, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
@@ -14,7 +15,7 @@ interface UiCollapsableProps {
   onToggle?: (open: boolean) => void;
   children?: ReactNode;
   icon?: ReactNode;
-  cardBackground?: string;
+  cardBackground?: ColorValue;
 }
 
 const UiCollapsable = ({
