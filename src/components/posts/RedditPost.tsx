@@ -1,8 +1,8 @@
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
-import ImageModal from "#/components/media/ImageModal";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
@@ -37,7 +37,7 @@ interface RedditProperties {
  */
 const RedditPost = (properties: RedditProperties) => {
   const [dims, setDims] = useState({ width: 0, height: 0 });
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
   const img_dim = properties.preview?.images[0].source ?? {
     width: 100,
     height: 100,
@@ -81,7 +81,12 @@ const RedditPost = (properties: RedditProperties) => {
     <>
       <UiPressable
         accessibilityRole="button"
-        onPress={() => setIsModalOpen(true)}
+        onPress={() =>
+          router.push({
+            pathname: "/image",
+            params: { uri: properties.url_overridden_by_dest },
+          })
+        }
         onLongPress={onShare}
         onLayout={onLayout}
       >
@@ -118,11 +123,6 @@ const RedditPost = (properties: RedditProperties) => {
           </UiText>
         </View>
       </UiPressable>
-      <ImageModal
-        uri={properties.url_overridden_by_dest}
-        visible={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </>
   );
 };
