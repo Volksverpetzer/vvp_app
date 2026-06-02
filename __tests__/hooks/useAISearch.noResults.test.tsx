@@ -71,7 +71,7 @@ describe("useAISearch — noResults", () => {
     const { queryByTestId, rerender } = render(<Harness search="leer" />);
     await waitFor(() => expect(queryByTestId("no-results")).not.toBeNull());
 
-    await act(async () => {
+    act(() => {
       rerender(<Harness search="neu" />);
     });
 
