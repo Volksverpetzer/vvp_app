@@ -4,6 +4,7 @@ import { Text } from "react-native";
 
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import { useAISearch } from "#/hooks/useAISearch";
+import type { AISearchResponse } from "#/types";
 
 jest.mock("#/helpers/network/Analytics", () => ({
   registerEvent: jest.fn(),
@@ -22,7 +23,7 @@ jest.mock("#/helpers/network/IntelligenceAPI", () => ({
 const mockSetResultsLength = jest.fn();
 const mockSetIsLoading = jest.fn();
 
-const vectorSearch = () => (IntelligenceAPI as any).vectorSearch as jest.Mock;
+const vectorSearch = jest.mocked(IntelligenceAPI.vectorSearch);
 
 const Harness = ({ search }: { search: string }) => {
   const { results, noResults } = useAISearch({
@@ -42,19 +43,19 @@ describe("useAISearch — noResults", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("noResults is false while loading", () => {
-    vectorSearch().mockReturnValue(new Promise(() => {}));
+    vectorSearch.mockReturnValue(new Promise(() => {}));
     const { queryByTestId } = render(<Harness search="test" />);
     expect(queryByTestId("no-results")).toBeNull();
   });
 
   it("noResults becomes true when vectorSearch returns an empty array", async () => {
-    vectorSearch().mockResolvedValue([]);
+    vectorSearch.mockResolvedValue([] as AISearchResponse[]);
     const { queryByTestId } = render(<Harness search="leer" />);
     await waitFor(() => expect(queryByTestId("no-results")).not.toBeNull());
   });
 
   it("noResults is false when vectorSearch returns results", async () => {
-    vectorSearch().mockResolvedValue([
+    vectorSearch.mockResolvedValue([
       { title: "Hit", text: "body", url: "https://example.com/1" },
     ]);
     const { queryByTestId } = render(<Harness search="treffer" />);
@@ -63,8 +64,8 @@ describe("useAISearch — noResults", () => {
   });
 
   it("noResults resets to false when a new search starts", async () => {
-    vectorSearch()
-      .mockResolvedValueOnce([])
+    vectorSearch
+      .mockResolvedValueOnce([] as AISearchResponse[])
       .mockReturnValueOnce(new Promise(() => {}));
 
     const { queryByTestId, rerender } = render(<Harness search="leer" />);
