@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import type { FC } from "react";
 import React, { useMemo, useRef, useState } from "react";
 import type {
+  ColorValue,
   GestureResponderEvent,
   ImageRequireSource,
   TextStyle,
@@ -28,7 +29,7 @@ export type OnBoardingData = {
 interface FlatBoardProperties {
   data: OnBoardingData[];
   onFinish: (event: GestureResponderEvent) => void;
-  accentColor?: string;
+  accentColor?: ColorValue;
   buttonTitle?: string;
   variant?: "standard" | "modern";
   hideIndicator?: boolean;

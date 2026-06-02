@@ -1,4 +1,5 @@
 import { type ComponentProps, useEffect, useState } from "react";
+import type { ColorValue } from "react-native";
 import { Switch, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
@@ -27,8 +28,8 @@ interface SettingsListProperties {
 // is accepted at runtime but may be missing from the RN typings used in this project.
 // See https://stackoverflow.com/a/73313139
 type ExtendedSwitchProps = ComponentProps<typeof Switch> & {
-  activeThumbColor?: string;
-  activeTrackColor?: string;
+  activeThumbColor?: ColorValue;
+  activeTrackColor?: ColorValue;
 };
 
 const SettingsList = (properties: SettingsListProperties) => {
