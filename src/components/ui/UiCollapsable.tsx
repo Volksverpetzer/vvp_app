@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { useRef, useState } from "react";
+import type { ColorValue } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
 import Heading from "#/components/typography/Heading";
@@ -14,6 +15,8 @@ interface UiCollapsableProps {
   onToggle?: (open: boolean) => void;
   children?: ReactNode;
   icon?: ReactNode;
+  cardBackground?: ColorValue;
+  borderRadius?: number;
 }
 
 const UiCollapsable = ({
@@ -22,25 +25,36 @@ const UiCollapsable = ({
   onToggle,
   children,
   icon,
+  cardBackground,
+  borderRadius = 20,
 }: UiCollapsableProps) => {
   const [open, setOpen] = useState(defaultOpen);
+  const fadeAnim = useRef(new Animated.Value(defaultOpen ? 1 : 0)).current;
 
   const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
+  const resolvedCardBg = cardBackground ?? Colors[colorScheme].background;
 
   const toggle = () => {
     const next = !open;
     setOpen(next);
     onToggle?.(next);
+    Animated.timing(fadeAnim, {
+      toValue: next ? 1 : 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: open ? Colors[colorScheme].background : undefined,
-        paddingHorizontal: 20,
-      }}
-    >
+    <View style={{ paddingHorizontal: 20, borderRadius, overflow: "hidden" }}>
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFill,
+          { backgroundColor: resolvedCardBg, opacity: fadeAnim },
+        ]}
+      />
       <UiPressable
         accessibilityRole="button"
         onPress={toggle}

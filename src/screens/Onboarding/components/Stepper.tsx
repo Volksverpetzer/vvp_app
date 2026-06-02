@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { GestureResponderEvent } from "react-native";
+import type { ColorValue, GestureResponderEvent } from "react-native";
 import { StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
@@ -15,7 +15,7 @@ interface StandardStepperProperties {
   onFinish: (event: GestureResponderEvent) => void;
   previousStep: (event: GestureResponderEvent) => void;
   nextStep: (event: GestureResponderEvent) => void;
-  accentColor?: string;
+  accentColor?: ColorValue;
   buttonTitle?: string;
   hideIndicator?: boolean;
 }
@@ -68,7 +68,7 @@ const StandardStepper = (properties: StandardStepperProperties) => {
             onPress={onFinish}
             style={[
               stepperStyles.skipButton,
-              { backgroundColor: accentColor || corporate },
+              { backgroundColor: accentColor ?? corporate },
             ]}
           >
             <UiText style={globalStyles.whiteText}>
