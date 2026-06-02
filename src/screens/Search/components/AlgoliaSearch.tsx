@@ -102,7 +102,7 @@ const AlgoliaSearchResults = ({
   );
 
   if (isLoading) {
-    return <UiSpinner text="Artikel werden gesucht …" />;
+    return <UiSpinner text="Artikel werden gesucht …" card />;
   }
 
   if (hasError) {

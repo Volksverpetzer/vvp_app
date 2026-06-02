@@ -18,24 +18,17 @@ import {
 type UiSpinnerProperties = ActivityIndicatorProps & {
   containerStyle?: StyleProp<ViewStyle>;
   text?: string;
+  card?: boolean;
 };
 
 const UiSpinner = (props: UiSpinnerProperties) => {
-  const { containerStyle, text, ...indicatorProps } = props;
+  const { containerStyle, text, card, ...indicatorProps } = props;
   const corporate = useCorporateColor();
   const colorScheme = useAppColorScheme();
-  return (
-    <View
-      style={[
-        globalStyles.centered,
-        {
-          width: "100%",
-          gap: 12,
-          backgroundColor: Colors[colorScheme].background,
-        },
-        containerStyle,
-      ]}
-    >
+  const backgroundColor = Colors[colorScheme].background;
+
+  const content = (
+    <>
       {AppImages.loadingAnimation ? (
         <Image
           source={AppImages.loadingAnimation}
@@ -45,6 +38,48 @@ const UiSpinner = (props: UiSpinnerProperties) => {
         <ActivityIndicator color={corporate} {...indicatorProps} />
       )}
       {text && <UiText style={{ textAlign: "center" }}>{text}</UiText>}
+    </>
+  );
+
+  if (card) {
+    return (
+      <View
+        style={[
+          globalStyles.centered,
+          { alignSelf: "stretch" },
+          containerStyle,
+        ]}
+      >
+        <View
+          style={{
+            backgroundColor,
+            borderRadius: 20,
+            padding: 20,
+            gap: 12,
+            alignItems: "center",
+            marginHorizontal: 20,
+            alignSelf: "stretch",
+          }}
+        >
+          {content}
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View
+      style={[
+        globalStyles.centered,
+        {
+          width: "100%",
+          gap: 12,
+          backgroundColor,
+        },
+        containerStyle,
+      ]}
+    >
+      {content}
     </View>
   );
 };

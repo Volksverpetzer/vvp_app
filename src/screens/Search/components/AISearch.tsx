@@ -67,6 +67,7 @@ const AISearch = ({
     return (
       <View style={globalStyles.centered}>
         <UiSpinner
+          card
           text={loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}
         />
         {showFaktenBot && (

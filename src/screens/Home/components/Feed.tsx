@@ -176,7 +176,7 @@ const Feed = (properties: FeedProperties) => {
   );
 
   if (!initialLoad) {
-    return <UiSpinner text="Lade Feed..." size="large" />;
+    return <UiSpinner text="Lade Feed..." size="large" card />;
   }
 
   if (properties.fetchers.length === 0) {
