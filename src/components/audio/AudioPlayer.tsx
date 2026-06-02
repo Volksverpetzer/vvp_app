@@ -40,6 +40,12 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
   }, []);
 
   useEffect(() => {
+    wasLoaded.current = false;
+    stableTime.current = { currentTime: 0, duration: 0 };
+    barWidth.current = 0;
+  }, [audioUrl]);
+
+  useEffect(() => {
     if (status.didJustFinish) {
       void player.seekTo(0);
     }
