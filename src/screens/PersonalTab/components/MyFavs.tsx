@@ -130,10 +130,7 @@ const MyFavs = () => {
     <View style={{ flex: 1, gap: 20 }}>
       {isLoading ? (
         <UiCard>
-          <UiSpinner
-            text="Lade Favoriten..."
-            containerStyle={{ backgroundColor: "transparent" }}
-          />
+          <UiSpinner text="Lade Favoriten..." />
         </UiCard>
       ) : (
         posts.map((post) => (
