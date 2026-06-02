@@ -68,7 +68,7 @@ const StandardStepper = (properties: StandardStepperProperties) => {
             onPress={onFinish}
             style={[
               stepperStyles.skipButton,
-              { backgroundColor: accentColor || corporate },
+              { backgroundColor: accentColor ?? corporate },
             ]}
           >
             <UiText style={globalStyles.whiteText}>
