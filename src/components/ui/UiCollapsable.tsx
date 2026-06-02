@@ -16,6 +16,7 @@ interface UiCollapsableProps {
   children?: ReactNode;
   icon?: ReactNode;
   cardBackground?: ColorValue;
+  borderRadius?: number;
 }
 
 const UiCollapsable = ({
@@ -25,6 +26,7 @@ const UiCollapsable = ({
   children,
   icon,
   cardBackground,
+  borderRadius = 20,
 }: UiCollapsableProps) => {
   const [open, setOpen] = useState(defaultOpen);
   const fadeAnim = useRef(new Animated.Value(defaultOpen ? 1 : 0)).current;
@@ -45,9 +47,7 @@ const UiCollapsable = ({
   };
 
   return (
-    <View
-      style={{ paddingHorizontal: 20, borderRadius: 20, overflow: "hidden" }}
-    >
+    <View style={{ paddingHorizontal: 20, borderRadius, overflow: "hidden" }}>
       <Animated.View
         pointerEvents="none"
         style={[
