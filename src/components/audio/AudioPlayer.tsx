@@ -34,7 +34,6 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
   const barWidth = useRef(0);
   const wasLoaded = useRef(false);
   const stableTime = useRef({ currentTime: 0, duration: 0 });
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     void setAudioModeAsync({ playsInSilentMode: true });
@@ -142,27 +141,9 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         onLayout={(e) => {
           barWidth.current = e.nativeEvent.layout.width;
         }}
-        onStartShouldSetResponder={(e) => {
-          touchStart.current = {
-            x: e.nativeEvent.pageX,
-            y: e.nativeEvent.pageY,
-          };
-          return false;
-        }}
-        onMoveShouldSetResponder={(e) => {
-          if (!touchStart.current) return false;
-          const dx = Math.abs(e.nativeEvent.pageX - touchStart.current.x);
-          const dy = Math.abs(e.nativeEvent.pageY - touchStart.current.y);
-          return dx > dy && dx > 4;
-        }}
+        onStartShouldSetResponder={() => true}
         onResponderGrant={(e) => handleSeek(e.nativeEvent.locationX)}
         onResponderMove={(e) => handleSeek(e.nativeEvent.locationX)}
-        onResponderRelease={() => {
-          touchStart.current = null;
-        }}
-        onResponderTerminate={() => {
-          touchStart.current = null;
-        }}
       >
         <View
           style={{
