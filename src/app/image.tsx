@@ -5,7 +5,6 @@ import { View } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
-import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const ImageScreen = () => {
@@ -14,9 +13,9 @@ const ImageScreen = () => {
   const backgroundColor = Colors[colorScheme].background;
 
   return (
-    <View style={[globalStyles.container, { backgroundColor }]}>
+    <View style={{ flex: 1, backgroundColor }}>
       <Zoomable
-        style={globalStyles.centered}
+        style={{ flex: 1, width: "100%" }}
         isDoubleTapEnabled
         doubleTapScale={3}
         maxScale={5}
@@ -25,7 +24,7 @@ const ImageScreen = () => {
       >
         <Image
           source={{ uri }}
-          style={{ width: "100%", height: "100%" }}
+          style={{ flex: 1, width: "100%" }}
           contentFit="contain"
         />
       </Zoomable>
