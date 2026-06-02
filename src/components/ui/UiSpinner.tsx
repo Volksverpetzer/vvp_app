@@ -7,9 +7,13 @@ import type {
 import { ActivityIndicator, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
+import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { AppImages } from "#/helpers/AppImages";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import {
+  useAppColorScheme,
+  useCorporateColor,
+} from "#/hooks/useAppColorScheme";
 
 type UiSpinnerProperties = ActivityIndicatorProps & {
   containerStyle?: StyleProp<ViewStyle>;
@@ -19,11 +23,16 @@ type UiSpinnerProperties = ActivityIndicatorProps & {
 const UiSpinner = (props: UiSpinnerProperties) => {
   const { containerStyle, text, ...indicatorProps } = props;
   const corporate = useCorporateColor();
+  const colorScheme = useAppColorScheme();
   return (
     <View
       style={[
         globalStyles.centered,
-        { width: "100%", gap: 12 },
+        {
+          width: "100%",
+          gap: 12,
+          backgroundColor: Colors[colorScheme].background,
+        },
         containerStyle,
       ]}
     >
