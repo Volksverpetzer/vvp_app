@@ -63,48 +63,6 @@ describe("UiSpinner", () => {
     });
   });
 
-  describe("card variant", () => {
-    let Spinner: React.ComponentType<any>;
-    beforeEach(() => {
-      Spinner = loadSpinner(null);
-    });
-
-    it("renders a nested inner View with borderRadius:20", () => {
-      const { toJSON } = render(<Spinner card />);
-      const root = toJSON() as any;
-      const inner = root.children[0];
-      expect(inner.props.style).toMatchObject({ borderRadius: 20 });
-    });
-
-    it("outer view has alignSelf:stretch", () => {
-      const { toJSON } = render(<Spinner card />);
-      const root = toJSON() as any;
-      const flatStyle = (root.props.style as any[]).flat();
-      expect(flatStyle).toContainEqual(
-        expect.objectContaining({ alignSelf: "stretch" }),
-      );
-    });
-
-    it("inner view has padding:20 and marginHorizontal:20", () => {
-      const { toJSON } = render(<Spinner card />);
-      const inner = (toJSON() as any).children[0];
-      expect(inner.props.style).toMatchObject({
-        padding: 20,
-        marginHorizontal: 20,
-      });
-    });
-
-    it("renders text inside the card", () => {
-      const { getByText } = render(<Spinner card text="Lade Feed..." />);
-      expect(getByText("Lade Feed...")).toBeTruthy();
-    });
-
-    it("renders ActivityIndicator inside the card", () => {
-      const { UNSAFE_getByType } = render(<Spinner card />);
-      expect(UNSAFE_getByType(ActivityIndicator)).toBeTruthy();
-    });
-  });
-
   describe("with loadingAnimation → renders Image", () => {
     let Spinner: React.ComponentType<any>;
     beforeEach(() => {
