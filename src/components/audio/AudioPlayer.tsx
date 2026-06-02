@@ -4,7 +4,7 @@ import {
   useAudioPlayer,
   useAudioPlayerStatus,
 } from "expo-audio";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
 import { PauseIcon, UnmuteIcon } from "#/components/Icons";
@@ -32,7 +32,7 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
   const corporate = useCorporateColor();
   const colorScheme = useAppColorScheme();
   const barWidth = useRef(0);
-  const wasLoaded = useRef(false);
+  const [wasLoaded, setWasLoaded] = useState(false);
   const stableTime = useRef({ currentTime: 0, duration: 0 });
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
   }, []);
 
   useEffect(() => {
-    wasLoaded.current = false;
+    setWasLoaded(false);
     stableTime.current = { currentTime: 0, duration: 0 };
     barWidth.current = 0;
   }, [audioUrl]);
@@ -54,19 +54,20 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
   // Latch loaded state and keep a snapshot of the last good position so a
   // transient isLoaded=false during seek doesn't unmount the player or reset
   // the progress bar.
-  if (status.isLoaded && !status.error) {
-    wasLoaded.current = true;
-    stableTime.current = {
-      currentTime: status.currentTime,
-      duration: status.duration,
-    };
-  }
+  useEffect(() => {
+    if (status.isLoaded && !status.error) {
+      setWasLoaded(true);
+      stableTime.current = {
+        currentTime: status.currentTime,
+        duration: status.duration,
+      };
+    }
+  }, [status.isLoaded, status.error, status.currentTime, status.duration]);
 
-  if (!wasLoaded.current || status.error) return null;
+  if (status.error || (!wasLoaded && !status.isLoaded)) return null;
 
-  const { currentTime, duration } = status.isLoaded
-    ? status
-    : stableTime.current;
+  const { currentTime, duration } =
+    status.isLoaded && !status.error ? status : stableTime.current;
 
   const progress =
     duration > 0 ? Math.min(1, Math.max(0, currentTime / duration)) : 0;
