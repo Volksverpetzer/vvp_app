@@ -140,7 +140,7 @@ const AISearch = ({
         data={results}
         keyExtractor={(_, index) => index.toString()}
         contentContainerStyle={{
-          paddingBottom: 200,
+          paddingBottom: 100,
           gap: 20,
         }}
         renderItem={renderItem}

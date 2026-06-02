@@ -1,7 +1,7 @@
 import { decode } from "html-entities";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import RenderHtml from "react-native-render-html";
 
 import Heading from "#/components/typography/Heading";
@@ -31,12 +31,6 @@ const SearchResultItem = ({
   const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
-  const { width } = useWindowDimensions();
-
-  // Card has padding: 20 on each side (40 total horizontal padding)
-  // FlatList has paddingHorizontal: 20 (40 total horizontal padding)
-  // Subtract both from window width to get actual available content width
-  const contentWidth = width - 80;
 
   const baseStyle = useMemo(
     () => ({
@@ -60,7 +54,6 @@ const SearchResultItem = ({
         tagsStyles={styles}
         ignoredDomTags={IGNORED_DOM_TAGS}
         systemFonts={SOURCE_SANS_FONTS}
-        contentWidth={contentWidth}
         baseStyle={baseStyle}
       />
 
