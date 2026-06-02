@@ -160,6 +160,9 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         onResponderRelease={() => {
           touchStart.current = null;
         }}
+        onResponderTerminate={() => {
+          touchStart.current = null;
+        }}
       >
         <View
           style={{
