@@ -81,19 +81,19 @@ describe("ArticleSourceList", () => {
   });
 
   describe("engagement disabled", () => {
-    it("shows Keine Daten after opening when engagement is off", async () => {
+    it("shows Keine Daten after opening when engagement is off", () => {
       mockConfig.enableEngagement = false;
       const { getAllByRole, getByText } = render(
         <ArticleSourceList {...defaultProps} />,
       );
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       expect(getByText("Keine Daten")).toBeTruthy();
     });
 
-    it("does not call getLinks when engagement is disabled", async () => {
+    it("does not call getLinks when engagement is disabled", () => {
       mockConfig.enableEngagement = false;
       const { getAllByRole } = render(<ArticleSourceList {...defaultProps} />);
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       expect(mockGetLinks).not.toHaveBeenCalled();
     });
   });
@@ -101,7 +101,7 @@ describe("ArticleSourceList", () => {
   describe("fetching links", () => {
     it("calls getLinks with article_link when opened", async () => {
       const { getAllByRole } = render(<ArticleSourceList {...defaultProps} />);
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       await waitFor(() =>
         expect(mockGetLinks).toHaveBeenCalledWith(ARTICLE_LINK),
       );
@@ -112,7 +112,7 @@ describe("ArticleSourceList", () => {
       const { getAllByRole, getByText } = render(
         <ArticleSourceList {...defaultProps} />,
       );
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       await waitFor(() => expect(getByText("Keine Daten")).toBeTruthy());
     });
 
@@ -121,7 +121,7 @@ describe("ArticleSourceList", () => {
       const { getAllByRole, getByText } = render(
         <ArticleSourceList {...defaultProps} />,
       );
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       await waitFor(() => expect(getByText("42 Clicks")).toBeTruthy());
     });
 
@@ -133,7 +133,7 @@ describe("ArticleSourceList", () => {
       const { getAllByRole, queryByText, getByText } = render(
         <ArticleSourceList {...defaultProps} />,
       );
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       await waitFor(() => expect(getByText("5 Clicks")).toBeTruthy());
       expect(queryByText("0 Clicks")).toBeNull();
     });
@@ -143,7 +143,7 @@ describe("ArticleSourceList", () => {
       const { getAllByRole, getByText } = render(
         <ArticleSourceList {...defaultProps} />,
       );
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       await waitFor(() => expect(getByText("Keine Daten")).toBeTruthy());
     });
   });
@@ -156,7 +156,7 @@ describe("ArticleSourceList", () => {
       const { getAllByRole, getByText } = render(
         <ArticleSourceList {...defaultProps} />,
       );
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       await waitFor(() =>
         expect(getByText("https://example.com/page")).toBeTruthy(),
       );
@@ -168,7 +168,7 @@ describe("ArticleSourceList", () => {
       const { getAllByRole, getByText } = render(
         <ArticleSourceList {...defaultProps} />,
       );
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       await waitFor(() =>
         expect(getByText("https://example.com/page")).toBeTruthy(),
       );
@@ -181,7 +181,7 @@ describe("ArticleSourceList", () => {
     it("calls outBoundLinkPress with the source url and article_link", async () => {
       mockGetLinks.mockResolvedValue(links);
       const { getAllByRole } = render(<ArticleSourceList {...defaultProps} />);
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       await waitFor(() =>
         expect(getAllByRole("button").length).toBeGreaterThan(1),
       );
@@ -197,7 +197,7 @@ describe("ArticleSourceList", () => {
     it("calls SourcesStore.onAddSource when engagement is enabled", async () => {
       mockGetLinks.mockResolvedValue(links);
       const { getAllByRole } = render(<ArticleSourceList {...defaultProps} />);
-      await act(async () => openCollapsable(getAllByRole));
+      act(() => openCollapsable(getAllByRole));
       await waitFor(() =>
         expect(getAllByRole("button").length).toBeGreaterThan(1),
       );
