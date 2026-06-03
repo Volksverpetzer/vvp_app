@@ -114,7 +114,9 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     const readingTime = article.reading_time
       ? ` | ${article.reading_time} Min.`
       : "";
-    return authors ? `${authors} | ${date}` : date;
+    return authors
+      ? `${authors} | ${date}${readingTime}`
+      : `${date}${readingTime}`;
   }, [article.authors, article.reading_time, date]);
 
   const excerpt = useMemo(
