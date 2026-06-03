@@ -17,5 +17,8 @@
       "Bash(git push * --tags*)",
       "Bash(rm -rf:*)"
     ]
+  },
+  "enabledPlugins": {
+    "expo@claude-plugins-official": true
   }
 }
