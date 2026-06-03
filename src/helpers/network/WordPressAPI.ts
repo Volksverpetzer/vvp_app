@@ -145,6 +145,16 @@ export default class WordPressAPI {
           },
         );
       },
+      getPost(
+        slug: string,
+        signal?: AbortSignal,
+      ): Promise<LoadArticlePostProperties | undefined> {
+        return netGet<LoadArticlePostProperties[]>(
+          client,
+          `/wp-json/wp/v2/posts`,
+          { params: { slug, _embed: "author" }, signal },
+        ).then((posts) => posts[0] ?? undefined);
+      },
     };
   }
 

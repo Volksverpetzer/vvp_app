@@ -16,6 +16,10 @@ import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
  * @param router - Expo Router instance for navigation.
  * @param article_link - Optional article URL for analytics context.
  */
+// Strip www. prefix so that pruefpunkt.org and www.pruefpunkt.org both match.
+const normalizeHost = (host: string | null): string =>
+  (host ?? "").replace(/^www\./, "");
+
 const onLinkPress = (
   href: HttpsUrl,
   router: ImperativeRouter,
@@ -24,17 +28,24 @@ const onLinkPress = (
   const { hostname, path } = Linking.parse(href);
   const internalHostnames = [Config.wpUrl, Config.wp2Url]
     .filter(Boolean)
-    .map((url) => Linking.parse(url!).hostname);
+    .map((url) => normalizeHost(Linking.parse(url!).hostname));
+  const normalizedHostname = normalizeHost(hostname);
 
-  if (internalHostnames.includes(hostname) && shouldExcludeFromDeepLink(path)) {
+  if (
+    internalHostnames.includes(normalizedHostname) &&
+    shouldExcludeFromDeepLink(path)
+  ) {
     outBoundLinkPress(href, article_link);
     return;
   }
 
-  if (internalHostnames.includes(hostname)) {
+  if (internalHostnames.includes(normalizedHostname)) {
     if (path) {
       const cleanPath = path.replace(/^\//, "").replace(/\/$/, "");
-      router.push(`/${cleanPath}` as Href);
+      router.push({
+        pathname: `/${cleanPath}`,
+        params: { originalUrl: href },
+      } as unknown as Href);
       return;
     }
     router.push(hostname as Href);

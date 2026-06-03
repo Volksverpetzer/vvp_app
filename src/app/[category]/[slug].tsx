@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
@@ -7,12 +7,13 @@ import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
 import ArticleScreen from "#/screens/Home/components/article/Article";
-import type { ArticleProperties } from "#/types";
+import type { ArticleProperties, HttpsUrl } from "#/types";
 
 type LoadArticleParameters = {
   imageUrl?: string;
   slug: string;
   category?: string;
+  originalUrl?: string;
 };
 
 /**
@@ -21,7 +22,25 @@ type LoadArticleParameters = {
 const LoadArticle = () => {
   const parameters = useLocalSearchParams<LoadArticleParameters>();
   const wpUrl = Config.wpUrl;
-  const { slug, category } = parameters;
+  const { slug, category, originalUrl } = parameters;
+
+  const wp2Api = useMemo(
+    () => (Config.wp2Url ? WordPressAPI.create(Config.wp2Url) : null),
+    [],
+  );
+
+  const isWp2 = useMemo(() => {
+    if (!wp2Api || !originalUrl || !Config.wp2Url) return false;
+    const normalizeHost = (url: string) => {
+      try {
+        return new URL(url).hostname.replace(/^www\./, "");
+      } catch {
+        return "";
+      }
+    };
+    return normalizeHost(originalUrl) === normalizeHost(Config.wp2Url);
+  }, [wp2Api, originalUrl]);
+
   const [article, setArticle] = useState<ArticleProperties | undefined>();
   const [imageUrl, setImageUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -43,7 +62,9 @@ const LoadArticle = () => {
           return;
         }
 
-        const _article = await WordPressAPI.getPost(slug, signal);
+        const _article = isWp2
+          ? await wp2Api!.getPost(slug, signal)
+          : await WordPressAPI.getPost(slug, signal);
         const loadedArticle: ArticleProperties =
           WordPressAPI.convertLoadProps(_article);
 
@@ -63,7 +84,7 @@ const LoadArticle = () => {
         setIsLoading(false);
       }
     },
-    [slug],
+    [slug, isWp2, wp2Api],
   );
 
   useEffect(() => {
@@ -78,9 +99,9 @@ const LoadArticle = () => {
   }, [slug, fetchArticle]);
 
   if (!slug) {
-    // If no slug is provided, render the EdgelessWebview
-    const url = `${wpUrl}/${category || ""}`;
-    return <EdgelessWebview uri={url} />;
+    const baseUrl = isWp2 ? Config.wp2Url! : wpUrl;
+    const url = originalUrl ?? `${baseUrl}/${category || ""}`;
+    return <EdgelessWebview uri={url as HttpsUrl} />;
   }
 
   // While we're fetching the article show a themed spinner instead of a webview
@@ -100,8 +121,15 @@ const LoadArticle = () => {
 
   // If fetching failed, fall back to the webview for compatibility
   if (hasError) {
+    if (originalUrl) {
+      return <EdgelessWebview uri={originalUrl as HttpsUrl} />;
+    }
+
     // Safely build the URL without collapsing the protocol slashes
-    const buildUrl = (base: string, ...segments: (string | undefined)[]) => {
+    const buildFallbackUrl = (
+      base: string,
+      ...segments: (string | undefined)[]
+    ) => {
       const trimmedBase = base.replace(/\/+$/, "");
       const path = segments
         .filter((s): s is string => Boolean(s))
@@ -110,7 +138,7 @@ const LoadArticle = () => {
       return path ? `${trimmedBase}/${path}` : trimmedBase;
     };
 
-    const cleanPath = buildUrl(wpUrl, category, slug);
+    const cleanPath = buildFallbackUrl(wpUrl, category, slug);
     return <EdgelessWebview uri={cleanPath} />;
   }
 
