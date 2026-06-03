@@ -1,5 +1,6 @@
 import { render } from "@testing-library/react-native";
 
+import AudioPlayer from "#/components/audio/AudioPlayer";
 import Header from "#/screens/Home/components/article/Header";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
@@ -27,11 +28,15 @@ jest.mock("expo-clipboard", () => ({
   setUrlAsync: jest.fn(),
 }));
 
+const mockConfig = {
+  wpUrl: "https://www.volksverpetzer.de",
+  importantCats: { 123: "Faktencheck" } as Record<number, string>,
+  audioCdnUrl: undefined as HttpsUrl | undefined,
+};
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: {
-    wpUrl: "https://www.volksverpetzer.de",
-    importantCats: { 123: "Faktencheck" },
+  get default() {
+    return mockConfig;
   },
 }));
 
@@ -48,6 +53,11 @@ jest.mock("#/screens/Home/components/article/ArticleSourceList", () => ({
 }));
 
 jest.mock("#/screens/Home/components/article/ArticleStats", () => ({
+  __esModule: true,
+  default: jest.fn(() => null),
+}));
+
+jest.mock("#/components/audio/AudioPlayer", () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));
@@ -151,5 +161,35 @@ describe("Header — author byline", () => {
       />,
     );
     expect(getAllByText(/1\. Januar 2024/).length).toBeGreaterThanOrEqual(1);
+  });
+});
+
+describe("Header — AudioPlayer integration", () => {
+  const MockAudioPlayer = jest.mocked(AudioPlayer);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockConfig.audioCdnUrl = undefined;
+  });
+
+  it("does not render AudioPlayer when audioCdnUrl is not configured", () => {
+    render(<Header {...defaultProps} />);
+    expect(MockAudioPlayer).not.toHaveBeenCalled();
+  });
+
+  it("renders AudioPlayer with the correct URL when audioCdnUrl is set", () => {
+    mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
+    render(<Header {...defaultProps} />);
+    expect(MockAudioPlayer.mock.calls[0][0]).toMatchObject({
+      audioUrl: "https://vvpaudio.b-cdn.net/audio/test-article.mp3",
+    });
+  });
+
+  it("strips a trailing slash from audioCdnUrl before building the URL", () => {
+    mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio/";
+    render(<Header {...defaultProps} />);
+    expect(MockAudioPlayer.mock.calls[0][0]).toMatchObject({
+      audioUrl: "https://vvpaudio.b-cdn.net/audio/test-article.mp3",
+    });
   });
 });

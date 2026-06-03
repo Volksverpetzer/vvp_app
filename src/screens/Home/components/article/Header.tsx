@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
+import AudioPlayer from "#/components/audio/AudioPlayer";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -180,6 +181,11 @@ const Header = (properties: HeaderProperties) => {
         article_link={article_link}
         reading_time={article.reading_time}
       />
+      {Config.audioCdnUrl && (
+        <AudioPlayer
+          audioUrl={`${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`}
+        />
+      )}
       <UiSpace size={10} />
       <ArticleSourceList
         article_link={article_link}

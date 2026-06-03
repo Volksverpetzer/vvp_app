@@ -178,3 +178,11 @@ export const WorldIcon = ({ ...rest }: OcticonsProps) => (
 export const UploadIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="upload" />
 );
+
+export const PauseIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="pause" />
+);
+
+export const UnmuteIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="unmute" />
+);

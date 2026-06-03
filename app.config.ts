@@ -31,6 +31,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       "@react-native-vector-icons/octicons",
       ["expo-router"],
       ["expo-asset"],
+      ["expo-audio", { microphonePermission: false }],
       [
         "expo-sharing",
         {
