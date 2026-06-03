@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useRouter, useScrollToTop } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   ListRenderItem,
@@ -44,6 +44,8 @@ export interface FeedProperties {
  */
 const Feed = (properties: FeedProperties) => {
   const [posts, setPosts] = useState<Post<unknown>[]>([]);
+  const flatListRef = useRef<FlatList>(null);
+  useScrollToTop(flatListRef);
   const inViewRef = useRef(new Set<string>());
   const [rerender, setRerender] = useState(0);
   const [initialLoad, setInitialLoad] = useState(false);
@@ -204,6 +206,7 @@ const Feed = (properties: FeedProperties) => {
   return (
     <View style={{ flex: 1 }}>
       <FlatList
+        ref={flatListRef}
         onScroll={properties.onScroll}
         scrollEventThrottle={16}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
