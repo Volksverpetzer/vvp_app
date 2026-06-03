@@ -1,0 +1,6 @@
+- Artikel können jetzt vorgelesen werden (Audio-Player)
+- Lesezeit wird bei Artikeln angezeigt
+- Neues Design für die Bildvorschau
+- Verbesserungen an der Suchseite
+- Aktualisiertes Design für Quellen und Erfolge
+- Performance-Verbesserungen und Fehlerbehebungen

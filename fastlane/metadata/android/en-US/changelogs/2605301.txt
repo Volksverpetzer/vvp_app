@@ -1,0 +1,6 @@
+- Articles can now be read aloud (audio player)
+- Reading time is now shown on articles
+- New design for the image preview
+- Improvements to the search page
+- Updated design for sources and achievements
+- Performance improvements and bug fixes
