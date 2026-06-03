@@ -8,7 +8,7 @@
       "exclude": []
     }
   },
-  "packageManager": "pnpm@11.5.0",
+  "packageManager": "pnpm@11.5.1",
   "engines": {
     "node": "24.x"
   },
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@algolia/client-search": "5.53.0",
-    "@atproto/api": "0.20.7",
+    "@atproto/api": "0.20.8",
     "@babel/runtime": "7.29.7",
     "@expo-google-fonts/source-sans-3": "0.4.1",
     "@expo/config": "56.0.9",
