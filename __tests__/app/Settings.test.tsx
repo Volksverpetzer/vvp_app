@@ -6,7 +6,7 @@ import {
   it,
   jest,
 } from "@jest/globals";
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 
 import SettingsScreen from "#/app/(tabs)/settings";
@@ -51,7 +51,10 @@ jest.mock("#/helpers/Notifications", () => ({
 
 jest.mock("#/helpers/Stores/PersonalStore", () => ({
   __esModule: true,
-  default: { setOnboardingDone: jest.fn() },
+  default: {
+    setOnboardingDone: jest.fn(),
+    setLastSeenChangelogVersionCode: jest.fn(),
+  },
 }));
 
 jest.mock("#/helpers/Stores/SettingsStore", () => ({
@@ -88,7 +91,7 @@ jest.mock("#/constants/GlobalStyles", () => ({
 
 // Mock all heavy UI components
 jest.mock("#/components/animations/AnimatedHeader", () => jest.fn(() => null));
-jest.mock("#/components/design/Collapsable", () => {
+jest.mock("#/components/ui/UiCollapsable", () => {
   const { Text } = require("react-native");
   return jest.fn(({ title, children }: any) => (
     <>
@@ -97,9 +100,9 @@ jest.mock("#/components/design/Collapsable", () => {
     </>
   ));
 });
-jest.mock("#/components/design/DesignedLink", () => jest.fn(() => null));
-jest.mock("#/components/design/Divider", () => jest.fn(() => null));
-jest.mock("#/components/design/Space", () => jest.fn(() => null));
+jest.mock("#/components/ui/UiLink", () => jest.fn(() => null));
+jest.mock("#/components/ui/UiDivider", () => jest.fn(() => null));
+jest.mock("#/components/ui/UiSpace", () => jest.fn(() => null));
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children, style }: any) => (
@@ -173,6 +176,23 @@ describe("SettingsScreen", () => {
       mockIsFoss = true;
       const { queryByText } = render(<SettingsScreen />);
       expect(queryByText("Benachrichtigungen zurücksetzen")).toBeNull();
+    });
+  });
+
+  describe("intro reset button", () => {
+    it("resets onboarding and changelog seen state when pressed", () => {
+      const mock = jest.requireMock("#/helpers/Stores/PersonalStore") as {
+        default: {
+          setOnboardingDone: jest.Mock;
+          setLastSeenChangelogVersionCode: jest.Mock;
+        };
+      };
+      const { getByText } = render(<SettingsScreen />);
+      fireEvent.press(getByText("Intro zurücksetzen"));
+      expect(mock.default.setOnboardingDone).toHaveBeenCalledWith(false);
+      expect(mock.default.setLastSeenChangelogVersionCode).toHaveBeenCalledWith(
+        0,
+      );
     });
   });
 

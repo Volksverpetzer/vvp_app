@@ -1,23 +1,20 @@
-import { View as DefaultView } from "react-native";
+import { View } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-export type CardProperties = DefaultView["props"] & {
-  key?: string;
-};
+export type UiCardProperties = View["props"];
 
-const Card = (properties: CardProperties) => {
-  const { style, ...otherProperties } = properties;
+const UiCard = ({ style, ...otherProperties }: UiCardProperties) => {
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
 
   return (
-    <DefaultView
+    <View
       style={[{ backgroundColor, borderRadius: 20, padding: 20 }, style]}
       {...otherProperties}
     />
   );
 };
 
-export default Card;
+export default UiCard;

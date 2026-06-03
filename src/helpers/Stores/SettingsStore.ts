@@ -15,7 +15,7 @@ const SettingsStore = {
     bsky: { value: false, name: "Bluesky Posts" },
     bot: { value: true, name: "Bot Feed" },
     wp2: { value: true, name: "Prüfpunkt Artikel" },
-  },
+  } satisfies ContentSettingType,
 
   keys: {
     contentSettings: "contentSettings",
@@ -26,25 +26,30 @@ const SettingsStore = {
   defaultAdvancedSettings: {
     advancedReporting: { value: false, name: "Erweitertes Reporting" },
     alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
-  } as AdvancedSettingType,
+  } satisfies AdvancedSettingType,
 
   defaultNotificationSettings: {
     new_post: { value: true, name: "Neuer Artikel" },
     new_fact_check: { value: true, name: "Neuer Faktencheck" },
-  } as NotificationSettingType,
+  } satisfies NotificationSettingType,
 
   async getContentSettings(): Promise<ContentSettingType> {
     try {
       const jsonValue = await BaseStore.getItem(this.keys.contentSettings);
-      const parsed = BaseStore.parseJSON<Record<string, any>>(jsonValue, {});
+      const parsed = BaseStore.parseJSON<Record<string, unknown>>(
+        jsonValue,
+        {},
+      );
       const result = {} as ContentSettingType;
       const newStore: Record<string, boolean> = {};
       for (const key in this.defaultContentSettings) {
         const defaultSetting = this.defaultContentSettings[key];
+        const raw = parsed[key];
         const value =
-          typeof parsed[key] === "boolean"
-            ? parsed[key]
-            : (parsed[key]?.value ?? defaultSetting.value);
+          typeof raw === "boolean"
+            ? raw
+            : ((raw as { value?: boolean } | undefined)?.value ??
+              defaultSetting.value);
         result[key] = { value: value, name: defaultSetting.name };
         newStore[key] = value;
       }

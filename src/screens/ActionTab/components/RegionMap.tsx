@@ -7,7 +7,7 @@ import {
   SecondPlaceIcon,
   ThirdPlaceIcon,
 } from "#/components/SvgIcons";
-import Space from "#/components/design/Space";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -82,13 +82,13 @@ const RegionMap = () => {
             backgroundColor: primaryTint,
           }}
         />
-        <Space size={20} />
+        <UiSpace size={20} />
         <Legend text="Vorreiter" color={highlight} />
-        <Space size={8} />
+        <UiSpace size={8} />
         <Legend text="Durchschnitt" color={corporateColor} />
-        <Space size={8} />
+        <UiSpace size={8} />
         <Legend text="Schlusslicht" color={corporate} />
-        <Space size={8} />
+        <UiSpace size={8} />
         <View>
           <UiText
             style={[globalStyles.whiteText, { fontSize: 12, marginTop: 20 }]}
@@ -111,7 +111,7 @@ const RegionMap = () => {
         >
           Bundesländer Ranking
         </UiText>
-        <Space size={10} />
+        <UiSpace size={10} />
         {regionData?.slice(0, 3).map((region, index) => {
           const Icon =
             index === 0
@@ -140,7 +140,7 @@ const RegionMap = () => {
             </View>
           );
         })}
-        <Space size={10} />
+        <UiSpace size={10} />
         {regionData?.slice(3).map((region, idx) => (
           <UiText
             key={region.region}
@@ -152,7 +152,7 @@ const RegionMap = () => {
             {`${idx + 4}. ${region.name}`}
           </UiText>
         ))}
-        <Space size={100} />
+        <UiSpace size={100} />
       </View>
     </View>
   );

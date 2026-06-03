@@ -75,9 +75,8 @@ describe("UiSpinner", () => {
     });
 
     it("renders an expo-image Image", () => {
-      const { Image } = require("expo-image");
       const { UNSAFE_getByType } = render(<Spinner />);
-      expect(UNSAFE_getByType(Image)).toBeTruthy();
+      expect(UNSAFE_getByType(MockImage)).toBeTruthy();
     });
 
     it("still renders text when text prop is provided", () => {

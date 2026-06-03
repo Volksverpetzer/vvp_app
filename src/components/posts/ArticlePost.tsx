@@ -1,17 +1,20 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import type { DimensionValue } from "react-native";
+import type { DimensionValue, TextStyle } from "react-native";
+import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
-import Space from "#/components/design/Space";
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
+import {
+  POST_PADDING_HORIZONTAL,
+  globalStyles,
+} from "#/constants/GlobalStyles";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -24,12 +27,20 @@ import type { ArticleProperties } from "#/types";
 
 import Badge from "./Badge";
 
+const titleStyle: TextStyle = {
+  fontFamily: "SourceSansProBold",
+  paddingHorizontal: POST_PADDING_HORIZONTAL,
+  fontSize: 20,
+  lineHeight: 26,
+  textAlign: "left",
+};
+
 // Define the component props type.
-type ArticlePostScreenProperties = {
+interface ArticlePostScreenProperties {
   article: ArticleProperties;
   inView?: boolean;
   elevated?: boolean;
-};
+}
 
 /**
  * ArticlePost renders a short preview of an article fetched from a WordPress API.
@@ -100,8 +111,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const authorDateText = useMemo(() => {
     const authors =
       article?.authors?.map((author) => author.display_name).join(", ") || "";
+    const readingTime = article.reading_time
+      ? ` | ${article.reading_time} Min.`
+      : "";
     return authors ? `${authors} | ${date}` : date;
-  }, [article.authors, date]);
+  }, [article.authors, article.reading_time, date]);
 
   const excerpt = useMemo(
     () => article.description || "",
@@ -165,32 +179,19 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }),
     [scrollProgress, corporate],
   );
-  const titleStyle = useMemo(
-    () => ({
-      fontFamily: "SourceSansProBold",
-      paddingHorizontal: 30,
-      fontSize: 20,
-      lineHeight: 26,
-      textAlign: "left" as const,
-    }),
-    [],
-  );
   const authorDateStyle = useMemo(
     () => ({
-      paddingHorizontal: 30,
+      paddingHorizontal: POST_PADDING_HORIZONTAL,
       textAlign: "left" as const,
       color: greyText,
       fontSize: 16,
     }),
     [greyText],
   );
-  const categoryTextStyle = useMemo(
-    () => [
-      globalStyles.whiteText,
-      { textAlign: "right" as const, fontSize: 14 },
-    ],
-    [],
-  );
+  const categoryTextStyle: TextStyle[] = [
+    globalStyles.whiteText,
+    { textAlign: "right", fontSize: 14 },
+  ];
 
   const content = (
     <UiPressable
@@ -217,11 +218,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           />
         )}
         <View style={progressBarStyle} />
-        <Space size={10} />
+        <UiSpace size={10} />
         <UiText style={titleStyle}>{article.title}</UiText>
-        <Space size={10} />
+        <UiSpace size={10} />
         <UiText style={authorDateStyle}>{authorDateText}</UiText>
-        <Space size={10} />
+        <UiSpace size={10} />
         {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>
             <UiText style={categoryTextStyle}>
@@ -236,13 +237,18 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         )}
         {excerpt ? (
           <>
-            <UiText style={{ paddingHorizontal: 30, fontSize: 16 }}>
+            <UiText
+              style={{
+                paddingHorizontal: POST_PADDING_HORIZONTAL,
+                fontSize: 16,
+              }}
+            >
               {excerpt}
             </UiText>
-            <Space size={20} />
+            <UiSpace size={20} />
           </>
         ) : (
-          <Space size={10} />
+          <UiSpace size={10} />
         )}
       </View>
     </UiPressable>

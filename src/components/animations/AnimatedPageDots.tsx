@@ -1,3 +1,4 @@
+import type { ColorValue } from "react-native";
 import { Animated, View } from "react-native";
 
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -6,13 +7,13 @@ interface AnimatedPageDotsProperties {
   scrollX: Animated.Value;
   width: number;
   length: number;
-  color?: string;
+  color?: ColorValue;
 }
 
 const AnimatedPageDots = (properties: AnimatedPageDotsProperties) => {
   const { scrollX, width, length, color } = properties;
   const corporate = useCorporateColor();
-  const backgroundColor = color || corporate;
+  const backgroundColor = color ?? corporate;
   return (
     <View style={{ flexDirection: "row" }}>
       {[...Array.from({ length }).keys()].map((index) => {

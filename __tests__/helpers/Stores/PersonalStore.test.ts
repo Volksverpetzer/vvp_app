@@ -324,4 +324,94 @@ describe("PersonalStore", () => {
       consoleErrorSpy.mockRestore();
     });
   });
+
+  describe("getLastSeenChangelogVersionCode", () => {
+    it("should use the correct storage key", async () => {
+      // Setup
+      getItemSpy.mockResolvedValue("2605211");
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(2605211);
+
+      // Execute
+      await PersonalStore.getLastSeenChangelogVersionCode();
+
+      // Assert
+      expect(getItemSpy).toHaveBeenCalledWith("lastSeenChangelog");
+    });
+
+    it("should return 0 when nothing is stored", async () => {
+      // Setup
+      getItemSpy.mockResolvedValue(undefined);
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(0);
+
+      // Execute
+      const result = await PersonalStore.getLastSeenChangelogVersionCode();
+
+      // Assert
+      expect(BaseStore.parseJSON).toHaveBeenCalledWith(undefined, 0);
+      expect(result).toBe(0);
+    });
+
+    it("should return the parsed version code when data exists", async () => {
+      // Setup
+      getItemSpy.mockResolvedValue("2605211");
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(2605211);
+
+      // Execute
+      const result = await PersonalStore.getLastSeenChangelogVersionCode();
+
+      // Assert
+      expect(BaseStore.parseJSON).toHaveBeenCalledWith("2605211", 0);
+      expect(result).toBe(2605211);
+    });
+
+    it("should handle errors and return 0", async () => {
+      // Setup
+      getItemSpy.mockRejectedValue(new Error("Storage error"));
+
+      // Execute
+      const result = await PersonalStore.getLastSeenChangelogVersionCode();
+
+      // Assert
+      expect(result).toBe(0);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error retrieving last seen changelog version code:",
+        expect.any(Error),
+      );
+
+      // Cleanup
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe("setLastSeenChangelogVersionCode", () => {
+    it("should store the version code as JSON under the correct key", async () => {
+      // Execute
+      await PersonalStore.setLastSeenChangelogVersionCode(2605211);
+
+      // Assert
+      expect(BaseStore.setItem).toHaveBeenCalledWith(
+        "lastSeenChangelog",
+        "2605211",
+      );
+    });
+
+    it("should handle errors gracefully", async () => {
+      // Setup
+      jest
+        .spyOn(BaseStore, "setItem")
+        .mockRejectedValue(new Error("Storage error"));
+
+      // Execute
+      await PersonalStore.setLastSeenChangelogVersionCode(2605211);
+
+      // Assert
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error saving last seen changelog version code:",
+        expect.any(Error),
+      );
+
+      // Cleanup
+      consoleErrorSpy.mockRestore();
+    });
+  });
 });

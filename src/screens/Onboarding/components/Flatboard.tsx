@@ -2,14 +2,14 @@ import { Image } from "expo-image";
 import type { FC } from "react";
 import React, { useMemo, useRef, useState } from "react";
 import type {
+  ColorValue,
   GestureResponderEvent,
   ImageRequireSource,
   TextStyle,
 } from "react-native";
-import { FlatList, useWindowDimensions } from "react-native";
+import { FlatList, View, useWindowDimensions } from "react-native";
 
 import { Logo } from "#/components/SvgIcons";
-import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
@@ -29,7 +29,7 @@ export type OnBoardingData = {
 interface FlatBoardProperties {
   data: OnBoardingData[];
   onFinish: (event: GestureResponderEvent) => void;
-  accentColor?: string;
+  accentColor?: ColorValue;
   buttonTitle?: string;
   variant?: "standard" | "modern";
   hideIndicator?: boolean;

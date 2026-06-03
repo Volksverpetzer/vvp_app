@@ -1,18 +1,20 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import NavBar from "#/components/bars/NavBar";
-import View from "#/components/design/View";
 import InstaPostDetail from "#/components/posts/insta/InstaPostDetail";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Footer from "#/components/views/Footer";
+import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { InstaPostProperties } from "#/types";
 
 /**
@@ -35,6 +37,8 @@ const InstaScreen = () => {
   // Get the WordPress URL from configuration and navigation router
   const wpUrl = Config.wpUrl;
   const router = useRouter();
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].background;
 
   // Fetch the Instagram post data using a side effect.
   // This effect runs when the post_id (from params) or the wpUrl changes.
@@ -88,7 +92,7 @@ const InstaScreen = () => {
   // Render the post content: the Instagram post,
   // a footer for sharing, and a navigation bar.
   return (
-    <View style={globalStyles.container}>
+    <View style={[globalStyles.container, { backgroundColor }]}>
       <ScrollView>
         {/* Render the Instagram post; pass all fetched post data */}
         <InstaPostDetail {...data} />

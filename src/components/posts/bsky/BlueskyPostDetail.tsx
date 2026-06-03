@@ -11,6 +11,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import { hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -41,7 +42,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
       contentContainerStyle={{
         position: "relative",
         gap: 20,
-        paddingHorizontal: 30,
+        paddingHorizontal: POST_PADDING_HORIZONTAL,
         paddingVertical: 20,
       }}
     >

@@ -10,12 +10,12 @@ import { hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
-type Props = {
+interface PostTextProps {
   feedViewPost: AppBskyFeedDefs.FeedViewPost;
   uri?: string;
-};
+}
 
-export const PostText = ({ feedViewPost, uri }: Props) => {
+export const PostText = ({ feedViewPost, uri }: PostTextProps) => {
   const router = useRouter();
   const record = feedViewPost?.post?.record;
 

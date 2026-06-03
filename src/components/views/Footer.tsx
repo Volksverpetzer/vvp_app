@@ -1,8 +1,9 @@
+import { View } from "react-native";
+
 import { ShareIcon } from "#/components/Icons";
-import Card from "#/components/design/Card";
-import Space from "#/components/design/Space";
-import View from "#/components/design/View";
+import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -13,7 +14,7 @@ import Support from "./Support";
 
 interface FooterProperties {
   article_link: HttpsUrl;
-  onShare: (article_link: string, properties: object) => void;
+  onShare: (article_link: string, properties: Record<string, unknown>) => void;
 }
 
 /**
@@ -27,12 +28,7 @@ const Footer = (properties: FooterProperties) => {
 
   return (
     <>
-      <View
-        style={[
-          globalStyles.noBackground,
-          { paddingBottom: 30, alignItems: "center" },
-        ]}
-      >
+      <View style={{ paddingBottom: 30, alignItems: "center" }}>
         <UiText
           style={{
             textAlign: "center",
@@ -66,15 +62,15 @@ const Footer = (properties: FooterProperties) => {
           <ShareIcon color="white" size={32} />
         </UiPressable>
       </View>
-      <Card
+      <UiCard
         style={{
           marginHorizontal: 12,
           backgroundColor: Colors[colorScheme].surface,
         }}
       >
         <Support article_link={properties.article_link} />
-      </Card>
-      <Space size={100} />
+      </UiCard>
+      <UiSpace size={100} />
     </>
   );
 };

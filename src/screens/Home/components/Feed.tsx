@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useRouter, useScrollToTop } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   ListRenderItem,
@@ -10,12 +10,12 @@ import type {
 import { FlatList, RefreshControl, View } from "react-native";
 
 import { SearchIcon, SettingsIcon, WorldIcon } from "#/components/Icons";
-import EmptyComponent from "#/components/design/EmptyComponent";
 import GenericPost from "#/components/posts/GenericPost";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
+import EmptyComponent from "#/components/views/EmptyComponent";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -44,6 +44,8 @@ export interface FeedProperties {
  */
 const Feed = (properties: FeedProperties) => {
   const [posts, setPosts] = useState<Post<unknown>[]>([]);
+  const flatListRef = useRef<FlatList>(null);
+  useScrollToTop(flatListRef);
   const inViewRef = useRef(new Set<string>());
   const [rerender, setRerender] = useState(0);
   const [initialLoad, setInitialLoad] = useState(false);
@@ -204,7 +206,9 @@ const Feed = (properties: FeedProperties) => {
   return (
     <View style={{ flex: 1 }}>
       <FlatList
+        ref={flatListRef}
         onScroll={properties.onScroll}
+        scrollEventThrottle={16}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
         initialNumToRender={3}
         maxToRenderPerBatch={3}
@@ -222,12 +226,7 @@ const Feed = (properties: FeedProperties) => {
           (isLoadingMore ? (
             <UiSpinner size="large" />
           ) : (
-            <View
-              style={[
-                globalStyles.noBackground,
-                { paddingBottom: 30, alignItems: "center" },
-              ]}
-            >
+            <View style={{ paddingBottom: 30, alignItems: "center" }}>
               <UiPressable
                 accessibilityRole="button"
                 style={globalStyles.centered}

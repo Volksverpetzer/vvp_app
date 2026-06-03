@@ -1,20 +1,20 @@
 import { ErrorIcon } from "#/components/Icons";
-import type { CardProperties } from "#/components/design/Card";
-import Card from "#/components/design/Card";
+import type { UiCardProperties } from "#/components/ui/UiCard";
+import UiCard from "#/components/ui/UiCard";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-type ErrorCardProperties = CardProperties & { text?: string };
+type UiErrorCardProperties = UiCardProperties & { text?: string };
 
-const ErrorCard = (properties: ErrorCardProperties) => {
+const UiErrorCard = (properties: UiErrorCardProperties) => {
   const { text, style, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].errorBackground;
   const errorText = Colors[colorScheme].errorText;
 
   return (
-    <Card
+    <UiCard
       style={[{ backgroundColor, alignItems: "center", gap: 5 }, style]}
       {...otherProperties}
     >
@@ -22,8 +22,8 @@ const ErrorCard = (properties: ErrorCardProperties) => {
       <UiText style={{ color: errorText }}>
         {text || "An error occurred. Please try again later."}
       </UiText>
-    </Card>
+    </UiCard>
   );
 };
 
-export default ErrorCard;
+export default UiErrorCard;

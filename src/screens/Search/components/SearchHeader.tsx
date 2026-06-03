@@ -1,10 +1,9 @@
 import type { RefObject } from "react";
 import { useCallback } from "react";
-import { Keyboard, TextInput } from "react-native";
+import { Keyboard, TextInput, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -33,7 +32,7 @@ const SearchHeader = ({
   onSubmit,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].surface;
+  const backgroundColor = Colors[colorScheme].background;
   const corporate = Colors[colorScheme].primary;
 
   // Show no reaction while loading so we don't display a stale previous result

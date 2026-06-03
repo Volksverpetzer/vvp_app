@@ -1,4 +1,5 @@
 import type { FC, ReactElement } from "react";
+import type { ColorValue } from "react-native";
 import { Text as RNText, View as RNView } from "react-native";
 import type { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 import type { SharedValue } from "react-native-reanimated";
@@ -20,8 +21,8 @@ interface RightActionProps {
   label?: string;
   hint?: string;
   icon?: ReactElement;
-  color?: string;
-  backgroundColor?: string;
+  color?: ColorValue;
+  backgroundColor?: ColorValue;
 }
 
 const RightAction: FC<RightActionProps> = ({

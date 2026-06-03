@@ -50,5 +50,6 @@ export interface ExtraConfigType {
     stripePublishableKey?: string; // Stripe publishable key for payment processing
   };
   importantCats: Record<number, string>;
+  audioCdnUrl?: HttpsUrl; // Base URL for AI-generated article audio (e.g. https://audio.example.com/audio)
   isFoss?: boolean; // true when built as a FOSS variant (Stripe and other proprietary modules are excluded)
 }

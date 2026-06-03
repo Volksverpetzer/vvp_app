@@ -1,4 +1,4 @@
-import Octicons from "@expo/vector-icons/Octicons";
+import Octicons from "@react-native-vector-icons/octicons/static";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 import Colors from "#/constants/Colors";

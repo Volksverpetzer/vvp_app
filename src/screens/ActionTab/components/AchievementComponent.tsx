@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { CheckboxIcon, CircleIcon } from "#/components/Icons";
-import Space from "#/components/design/Space";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -91,7 +91,7 @@ const AchievementComponent = () => {
           </Parallelogram>
         </View>
       </View>
-      <Space size={10} />
+      <UiSpace size={10} />
       {tasks &&
         tasks.map((task, key) => {
           return (

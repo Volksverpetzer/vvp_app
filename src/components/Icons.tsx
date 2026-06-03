@@ -1,12 +1,13 @@
-// Icon browser: https://oblador.github.io/react-native-vector-icons/#Octicons
-import { Octicons } from "@expo/vector-icons";
+import Octicons, {
+  type OcticonsIconName,
+} from "@react-native-vector-icons/octicons/static";
 import type { ComponentProps } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Platform, View } from "react-native";
 
 type OcticonsProps = Omit<ComponentProps<typeof Octicons>, "name">;
 
-export type OcticonsIconName = keyof typeof Octicons.glyphMap;
+export type { OcticonsIconName };
 
 export type ChevronDirection = "left" | "right" | "up" | "down";
 
@@ -16,6 +17,10 @@ export const ArticleViewIcon = ({ ...rest }: OcticonsProps) => (
 
 export const CheckboxIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="check" />
+);
+
+export const ClockIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="clock" />
 );
 
 export const CodeIcon = ({ ...rest }: OcticonsProps) => (
@@ -172,4 +177,12 @@ export const WorldIcon = ({ ...rest }: OcticonsProps) => (
 
 export const UploadIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="upload" />
+);
+
+export const PauseIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="pause" />
+);
+
+export const UnmuteIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="unmute" />
 );

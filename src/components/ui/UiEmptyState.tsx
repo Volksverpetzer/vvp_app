@@ -1,5 +1,6 @@
 import React, { type ReactNode } from "react";
 import { View } from "react-native";
+import type { ViewStyle } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
@@ -12,7 +13,7 @@ interface UiEmptyStateProps {
   testID?: string;
 }
 
-const style = { alignItems: "center" as const, gap: 12 };
+const style: ViewStyle = { alignItems: "center", gap: 12 };
 
 const UiEmptyState = ({
   icon,

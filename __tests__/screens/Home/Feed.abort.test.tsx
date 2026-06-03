@@ -7,6 +7,7 @@ import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 jest.mock("expo-router", () => ({
   __esModule: true,
   useRouter: () => ({ push: jest.fn() }),
+  useScrollToTop: () => undefined,
 }));
 
 jest.mock("#/components/Icons", () => ({
@@ -15,7 +16,7 @@ jest.mock("#/components/Icons", () => ({
 }));
 
 jest.mock("#/components/ui/UiSpinner", () => () => null);
-jest.mock("#/components/design/EmptyComponent", () => () => null);
+jest.mock("#/components/views/EmptyComponent", () => () => null);
 jest.mock("#/components/posts/GenericPost", () => () => null);
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");

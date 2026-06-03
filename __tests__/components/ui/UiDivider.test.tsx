@@ -1,24 +1,29 @@
 import { render } from "@testing-library/react-native";
 
-import Divider from "#/components/design/Divider";
+import UiDivider from "#/components/ui/UiDivider";
 
-function flattenStyle(style: any) {
+type RenderedNode = {
+  props: Record<string, unknown>;
+  children?: RenderedNode[] | null;
+};
+
+function flattenStyle(style: unknown): Record<string, unknown> {
   if (!style) return {};
   if (Array.isArray(style)) return Object.assign({}, ...style);
-  return style;
+  return style as Record<string, unknown>;
 }
 
-describe("Divider", () => {
+describe("UiDivider", () => {
   it("renders correctly and applies padding/width/style props", () => {
     const { toJSON } = render(
-      <Divider
+      <UiDivider
         paddingHorizontal={12}
         thickness={4}
         style={{ marginVertical: 8 }}
       />,
     );
 
-    const tree = toJSON();
+    const tree = toJSON() as RenderedNode;
     expect(tree).toBeTruthy();
 
     const containerStyle = flattenStyle(tree.props.style);
@@ -26,15 +31,15 @@ describe("Divider", () => {
     expect(containerStyle.paddingHorizontal).toBe(12);
     expect(containerStyle.marginVertical).toBe(8);
 
-    const lineNode = tree.children && tree.children[0];
+    const lineNode = tree.children?.[0];
     expect(lineNode).toBeTruthy();
-    const lineStyle = flattenStyle(lineNode.props.style);
+    const lineStyle = flattenStyle(lineNode!.props.style);
     expect(lineStyle.height).toBe(4);
   });
 
   it("matches snapshot", () => {
     const { toJSON } = render(
-      <Divider
+      <UiDivider
         paddingHorizontal={12}
         thickness={4}
         style={{ marginVertical: 8 }}

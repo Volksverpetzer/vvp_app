@@ -3,7 +3,7 @@ import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 import { Text } from "react-native";
 
-import EmptyComponent from "#/components/design/EmptyComponent";
+import EmptyComponent from "#/components/views/EmptyComponent";
 
 jest.mock("#/components/ui/UiEmptyState", () => {
   const { Pressable, View, Text } = require("react-native");
@@ -21,7 +21,7 @@ jest.mock("#/components/ui/UiEmptyState", () => {
   });
 });
 
-jest.mock("#/components/design/Card", () => {
+jest.mock("#/components/ui/UiCard", () => {
   const { View } = require("react-native");
   return jest.fn(({ children }: any) => <View testID="card">{children}</View>);
 });
