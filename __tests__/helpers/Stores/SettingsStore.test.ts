@@ -104,6 +104,7 @@ describe("SettingsStore", () => {
         tiktok: { value: true, name: "TikTok Videos" },
         bsky: { value: false, name: "Bluesky Posts" },
         bot: { value: true, name: "Bot Feed" },
+        wp2: { value: true, name: "Prüfpunkt Artikel" },
       };
 
       await SettingsStore.setContentSettings(settings);
