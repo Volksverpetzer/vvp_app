@@ -232,7 +232,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
             </UiText>
           </Badge>
         )}
-        {inView && viewCount !== 0 && (
+        {inView && Config.enableEngagement && viewCount !== 0 && (
           <Badge position="topRight" color={Colors[colorScheme].accent}>
             <ViewCounter url={article.link} size={16} onLoad={setViewCount} />
           </Badge>
