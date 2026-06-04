@@ -23,7 +23,7 @@ jobs:
       # --environment preview injects EAS env vars — separate from --channel, which targets installed builds.
       # To push to all installed preview builds instead, use: pnpm preview:update
       - name: 🚀 Publish preview
-        uses: expo/expo-github-action/preview@v8
+        uses: expo/expo-github-action/preview@v9
         with:
           command: eas update --non-interactive --auto --environment preview
           github-token: ${{ secrets.GITHUB_TOKEN }}
