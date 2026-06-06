@@ -1,9 +1,16 @@
 import { Zoomable } from "@likashefqet/react-native-image-zoom";
 import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
-import { Animated, ScrollView, View } from "react-native";
+import React, { useCallback, useMemo, useState } from "react";
+import { View } from "react-native";
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
+import type { SharedValue } from "react-native-reanimated";
 
 import UiPressable from "#/components/ui/UiPressable";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -20,6 +27,40 @@ interface InstaPostImageProps {
   onPageChange?: () => void;
 }
 
+const Dot = ({
+  index,
+  progress,
+  color,
+}: {
+  index: number;
+  progress: SharedValue<number>;
+  color: string;
+}) => {
+  const style = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      progress.value,
+      [index - 1, index, index + 1],
+      [0.3, 1, 0.3],
+      Extrapolation.CLAMP,
+    ),
+  }));
+  return (
+    <Animated.View
+      style={[
+        {
+          height: 5,
+          width: 5,
+          backgroundColor: color,
+          marginHorizontal: 3,
+          marginVertical: 10,
+          borderRadius: 5,
+        },
+        style,
+      ]}
+    />
+  );
+};
+
 const InstaPostImage = ({
   photos,
   width,
@@ -34,7 +75,7 @@ const InstaPostImage = ({
   const [ratio, setRatio] = useState(1.33333);
   const [page, setPage] = useState(0);
   const [loaded, setLoaded] = useState(false);
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const progressValue = useSharedValue(0);
 
   const handleLoad = useCallback(
     (event: ImageLoadEventData) => {
@@ -47,10 +88,18 @@ const InstaPostImage = ({
     [loaded, onFirstLoad],
   );
 
-  const handleScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const contentOffsetX = event.nativeEvent.contentOffset.x;
-      const newPage = Math.round(contentOffsetX / Math.max(width, 1));
+  // Drives dot opacity on the UI thread during scroll
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      progressValue.value = event.contentOffset.x / Math.max(width, 1);
+    },
+  });
+
+  const handleMomentumScrollEnd = useCallback(
+    (event: { nativeEvent: { contentOffset: { x: number } } }) => {
+      const newPage = Math.round(
+        event.nativeEvent.contentOffset.x / Math.max(width, 1),
+      );
       if (page !== newPage) {
         onPageChange?.();
         setPage(newPage);
@@ -59,61 +108,22 @@ const InstaPostImage = ({
     [page, width, onPageChange],
   );
 
-  const onScrollEvent = useMemo(
-    () =>
-      Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-        listener: handleScroll,
-        useNativeDriver: false,
-      }),
-    [handleScroll, scrollX],
-  );
-
   const imageStyle = useMemo(
     () => ({ width, height: width * ratio }),
     [width, ratio],
   );
 
-  const dots = useMemo(
-    () =>
-      photos.map((_, index) => {
-        const inputRange = [
-          (index - 1) * width,
-          index * width,
-          (index + 1) * width,
-        ];
-        const opacity = scrollX.interpolate({
-          inputRange,
-          outputRange: [0.3, 1, 0.3],
-          extrapolate: "clamp",
-        });
-        return (
-          <Animated.View
-            key={index}
-            style={{
-              opacity,
-              height: 5,
-              width: 5,
-              backgroundColor: corporate,
-              marginHorizontal: 3,
-              marginVertical: 10,
-              borderRadius: 5,
-            }}
-          />
-        );
-      }),
-    [photos, scrollX, width, corporate],
-  );
-
   return (
     <View>
       <View style={{ backgroundColor: corporate }}>
-        <ScrollView
+        <Animated.ScrollView
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           bounces={false}
-          onScroll={onScrollEvent}
+          onScroll={scrollHandler}
           scrollEventThrottle={16}
+          onMomentumScrollEnd={handleMomentumScrollEnd}
         >
           {photos.map((source, index) => (
             <UiPressable
@@ -140,12 +150,21 @@ const InstaPostImage = ({
               </Zoomable>
             </UiPressable>
           ))}
-        </ScrollView>
+        </Animated.ScrollView>
       </View>
 
-      <View style={[globalStyles.centered, { flexDirection: "row" }]}>
-        {dots}
-      </View>
+      {photos.length > 1 && (
+        <View style={[globalStyles.centered, { flexDirection: "row" }]}>
+          {photos.map((_, index) => (
+            <Dot
+              key={index}
+              index={index}
+              progress={progressValue}
+              color={corporate}
+            />
+          ))}
+        </View>
+      )}
     </View>
   );
 };
