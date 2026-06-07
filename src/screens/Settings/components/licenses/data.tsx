@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.20.8": {
+  "@atproto/api@0.20.9": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -31,7 +31,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "@expo/metro-runtime@56.0.13": {
+  "@expo/metro-runtime@56.0.14": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -100,7 +100,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-asset@56.0.15": {
+  "expo-asset@56.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -110,7 +110,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-clipboard@56.0.3": {
+  "expo-clipboard@56.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -119,7 +119,7 @@ export default {
     licenses: "ISC",
     repository: "https://gitlab.com/breadboxio/expo-config",
   },
-  "expo-constants@56.0.16": {
+  "expo-constants@56.0.17": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -130,7 +130,7 @@ export default {
     licenseUrl:
       "https://github.com/malaa-tech/expo-custom-assets/raw/HEAD/LICENSE",
   },
-  "expo-dev-client@56.0.18": {
+  "expo-dev-client@56.0.19": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -160,7 +160,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-image@56.0.9": {
+  "expo-image@56.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -185,16 +185,16 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-notifications@56.0.15": {
+  "expo-notifications@56.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-router@56.2.8": {
+  "expo-router@56.2.9": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-sharing@56.0.15": {
+  "expo-sharing@56.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -214,7 +214,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-updates@56.0.17": {
+  "expo-updates@56.0.18": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -223,7 +223,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@56.0.8": {
+  "expo@56.0.9": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
