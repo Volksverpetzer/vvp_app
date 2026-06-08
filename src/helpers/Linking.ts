@@ -9,6 +9,7 @@ import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 
 const parsePath = (url: string): string => {
   const path = (Linking.parse(url).path ?? "").replace(/^\/+/, "");
+  if (!path) return "";
   return path.endsWith("/") ? path : `${path}/`;
 };
 
