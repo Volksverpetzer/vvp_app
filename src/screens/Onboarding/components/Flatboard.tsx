@@ -134,11 +134,15 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   const carouselRef = useRef<ICarouselInstance>(null);
 
   const nextStep = () => {
-    carouselRef.current?.scrollTo({ index: step + 1, animated: true });
+    const next = Math.min(step + 1, data.length - 1);
+    setStep(next);
+    carouselRef.current?.scrollTo({ index: next, animated: true });
   };
 
   const previousStep = () => {
-    carouselRef.current?.scrollTo({ index: step - 1, animated: true });
+    const prev = Math.max(step - 1, 0);
+    setStep(prev);
+    carouselRef.current?.scrollTo({ index: prev, animated: true });
   };
 
   return (

@@ -70,10 +70,6 @@ export default {
     licenseUrl:
       "https://github.com/stripe/stripe-react-native/raw/HEAD/LICENSE",
   },
-  "@vseslav/react-native-horizontal-picker@0.1.1": {
-    licenses: "MIT",
-    repository: "https://github.com/vdor/react-native-horizontal-picker",
-  },
   "buffer@6.0.3": {
     licenses: "MIT",
     repository: "https://github.com/feross/buffer",
@@ -265,6 +261,12 @@ export default {
   "react-native-nitro-modules@0.35.9": {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
+  },
+  "react-native-reanimated-carousel@4.0.3": {
+    licenses: "MIT",
+    repository: "https://github.com/dohooo/react-native-reanimated-carousel",
+    licenseUrl:
+      "https://github.com/dohooo/react-native-reanimated-carousel/raw/HEAD/LICENSE",
   },
   "react-native-reanimated@4.3.1": {
     licenses: "MIT",
