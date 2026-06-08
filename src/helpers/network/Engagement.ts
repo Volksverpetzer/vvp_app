@@ -15,7 +15,7 @@ const client = createClient(apiUrl);
  */
 const getViews = async (permalink?: HttpsUrl): Promise<number> => {
   const { path } = Linking.parse(permalink ?? wpUrl);
-  const endpoint = "/proxy/stats/" + path;
+  const endpoint = "/proxy/stats" + path;
   try {
     const data = await get<{ pageviews: number }>(client, endpoint);
     return data.pageviews;
@@ -33,7 +33,7 @@ const getViews = async (permalink?: HttpsUrl): Promise<number> => {
 const getShares = async (permalink?: HttpsUrl): Promise<number> => {
   const { path } = Linking.parse(permalink ?? wpUrl);
   try {
-    const data = await get<{ events: number }>(client, `/proxy/shares/${path}`);
+    const data = await get<{ events: number }>(client, `/proxy/shares${path}`);
     return data.events;
   } catch (error) {
     console.error("getShares error:", error);
@@ -49,7 +49,7 @@ const getShares = async (permalink?: HttpsUrl): Promise<number> => {
 const getFavs = async (permalink?: HttpsUrl): Promise<number> => {
   const { path } = Linking.parse(permalink ?? wpUrl);
   try {
-    const data = await get<{ events: number }>(client, `/proxy/favs/${path}`);
+    const data = await get<{ events: number }>(client, `/proxy/favs${path}`);
     return data.events;
   } catch (error) {
     console.error("getFavs error:", error);
@@ -69,7 +69,7 @@ const getLinks = async (
   try {
     const data = await get<{ links: { url: HttpsUrl; visitors: number }[] }>(
       client,
-      `/proxy/links/${path}`,
+      `/proxy/links${path}`,
     );
     return data.links;
   } catch (error) {
