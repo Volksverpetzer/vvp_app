@@ -54,7 +54,7 @@ describe("Engagement", () => {
       );
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/proxy/stats/article",
+        "/proxy/stats/article/",
       );
       expect(result).toBe(1234);
     });
@@ -93,7 +93,7 @@ describe("Engagement", () => {
       );
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/proxy/shares/article",
+        "/proxy/shares/article/",
       );
       expect(result).toBe(42);
     });
@@ -132,7 +132,7 @@ describe("Engagement", () => {
       );
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/proxy/favs/article",
+        "/proxy/favs/article/",
       );
       expect(result).toBe(15);
     });
@@ -175,7 +175,7 @@ describe("Engagement", () => {
       );
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/proxy/links/article",
+        "/proxy/links/article/",
       );
       expect(result).toEqual(expectedLinks);
     });

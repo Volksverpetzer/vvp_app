@@ -7,8 +7,10 @@ import type { HttpsUrl } from "#/types";
 
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 
-const parsePath = (url: string): string =>
-  (Linking.parse(url).path ?? "").replace(/^\//, "");
+const parsePath = (url: string): string => {
+  const path = (Linking.parse(url).path ?? "").replace(/^\/+/, "");
+  return path.endsWith("/") ? path : `${path}/`;
+};
 
 /**
  * Handles in-app navigation for links. Internal links (same hostname)
