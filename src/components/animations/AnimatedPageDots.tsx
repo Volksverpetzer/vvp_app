@@ -30,7 +30,7 @@ const DotItem = ({ index, progress, color }: DotItemProps) => {
         {
           height: 5,
           width: 5,
-          backgroundColor: color as string,
+          backgroundColor: color,
           marginHorizontal: 3,
           marginVertical: 10,
           borderRadius: 5,

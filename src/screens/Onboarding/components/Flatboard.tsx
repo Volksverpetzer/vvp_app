@@ -122,6 +122,7 @@ const MemoSlide = React.memo(Slide);
 
 const FlatBoard = (properties: FlatBoardProperties) => {
   const [step, setStep] = useState(0);
+  const targetStepRef = useRef(0);
   const { height, width } = useWindowDimensions();
   const {
     data,
@@ -134,15 +135,22 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   const carouselRef = useRef<ICarouselInstance>(null);
 
   const nextStep = () => {
-    const next = Math.min(step + 1, data.length - 1);
+    const next = Math.min(targetStepRef.current + 1, data.length - 1);
+    targetStepRef.current = next;
     setStep(next);
     carouselRef.current?.scrollTo({ index: next, animated: true });
   };
 
   const previousStep = () => {
-    const prev = Math.max(step - 1, 0);
+    const prev = Math.max(targetStepRef.current - 1, 0);
+    targetStepRef.current = prev;
     setStep(prev);
     carouselRef.current?.scrollTo({ index: prev, animated: true });
+  };
+
+  const onSnapToItem = (index: number) => {
+    targetStepRef.current = index;
+    setStep(index);
   };
 
   return (
@@ -153,7 +161,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
         height={height}
         data={data}
         loop={false}
-        onSnapToItem={setStep}
+        onSnapToItem={onSnapToItem}
         renderItem={({ item }) => (
           <MemoSlide
             {...item}

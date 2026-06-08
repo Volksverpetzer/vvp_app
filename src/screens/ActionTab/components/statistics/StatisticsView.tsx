@@ -46,11 +46,14 @@ const StatisticsView = () => {
     }, []),
   );
 
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      progressValue.value = event.contentOffset.x / Math.max(panelWidth, 1);
+  const scrollHandler = useAnimatedScrollHandler(
+    {
+      onScroll: (event) => {
+        progressValue.value = event.contentOffset.x / Math.max(panelWidth, 1);
+      },
     },
-  });
+    [panelWidth],
+  );
 
   const scrollToPanel = useCallback(
     (x: number) => {

@@ -89,11 +89,14 @@ const InstaPostImage = ({
   );
 
   // Drives dot opacity on the UI thread during scroll
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      progressValue.value = event.contentOffset.x / Math.max(width, 1);
+  const scrollHandler = useAnimatedScrollHandler(
+    {
+      onScroll: (event) => {
+        progressValue.value = event.contentOffset.x / Math.max(width, 1);
+      },
     },
-  });
+    [width],
+  );
 
   const handleMomentumScrollEnd = useCallback(
     (event: { nativeEvent: { contentOffset: { x: number } } }) => {
