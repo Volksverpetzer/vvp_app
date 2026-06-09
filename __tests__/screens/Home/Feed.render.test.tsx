@@ -8,6 +8,7 @@ import type { Post } from "#/types";
 jest.mock("expo-router", () => ({
   __esModule: true,
   useRouter: () => ({ push: jest.fn() }),
+  useScrollToTop: () => undefined,
 }));
 jest.mock("#/components/Icons", () => ({
   SearchIcon: () => null,

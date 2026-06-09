@@ -1,42 +1,69 @@
 import type { ColorValue } from "react-native";
-import { Animated, View } from "react-native";
+import { View } from "react-native";
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+import type { SharedValue } from "react-native-reanimated";
 
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
+interface DotItemProps {
+  index: number;
+  progress: SharedValue<number>;
+  color: ColorValue;
+}
+
+const DotItem = ({ index, progress, color }: DotItemProps) => {
+  const style = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      progress.value,
+      [index - 1, index, index + 1],
+      [0.3, 1, 0.3],
+      Extrapolation.CLAMP,
+    ),
+  }));
+  return (
+    <Animated.View
+      style={[
+        {
+          height: 5,
+          width: 5,
+          backgroundColor: color,
+          marginHorizontal: 3,
+          marginVertical: 10,
+          borderRadius: 5,
+        },
+        style,
+      ]}
+    />
+  );
+};
+
 interface AnimatedPageDotsProperties {
-  scrollX: Animated.Value;
-  width: number;
+  progress: SharedValue<number>;
   length: number;
   color?: ColorValue;
 }
 
-const AnimatedPageDots = (properties: AnimatedPageDotsProperties) => {
-  const { scrollX, width, length, color } = properties;
+const AnimatedPageDots = ({
+  progress,
+  length,
+  color,
+}: AnimatedPageDotsProperties) => {
   const corporate = useCorporateColor();
   const backgroundColor = color ?? corporate;
   return (
     <View style={{ flexDirection: "row" }}>
-      {[...Array.from({ length }).keys()].map((index) => {
-        const opacity = Animated.divide(scrollX, width).interpolate({
-          inputRange: [index - 1, index, index + 1],
-          outputRange: [0.3, 1, 0.3],
-          extrapolate: "clamp",
-        });
-        return (
-          <Animated.View
-            key={index}
-            style={{
-              opacity,
-              height: 5,
-              width: 5,
-              backgroundColor,
-              marginHorizontal: 3,
-              marginVertical: 10,
-              borderRadius: 5,
-            }}
-          />
-        );
-      })}
+      {[...Array.from({ length }).keys()].map((index) => (
+        <DotItem
+          key={index}
+          index={index}
+          progress={progress}
+          color={backgroundColor}
+        />
+      ))}
     </View>
   );
 };

@@ -7,6 +7,7 @@ import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 jest.mock("expo-router", () => ({
   __esModule: true,
   useRouter: () => ({ push: jest.fn() }),
+  useScrollToTop: () => undefined,
 }));
 
 jest.mock("#/components/Icons", () => ({

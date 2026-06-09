@@ -1,6 +1,13 @@
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Animated, ScrollView, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { View } from "react-native";
+import Animated, {
+  runOnUI,
+  scrollTo,
+  useAnimatedRef,
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from "react-native-reanimated";
 
 import AnimatedPageDots from "#/components/animations/AnimatedPageDots";
 import Colors from "#/constants/Colors";
@@ -22,9 +29,9 @@ const StatisticsView = () => {
   const [statistics, setStatistics] = useState<Record<string, StatisticsType>>(
     {},
   );
-  const [scrollX] = useState(new Animated.Value(0));
   const [containerWidth, setContainerWidth] = useState(0);
-  const scrollViewRef = useRef<ScrollView | null>(null);
+  const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
+  const progressValue = useSharedValue(0);
   const { width } = useFeedDimensions();
   const panelWidth = containerWidth || width;
   const corporate = Colors.dark.primary;
@@ -37,6 +44,22 @@ const StatisticsView = () => {
     useCallback(() => {
       Statistics.getAllStatistics().then(setStatistics);
     }, []),
+  );
+
+  const scrollHandler = useAnimatedScrollHandler(
+    {
+      onScroll: (event) => {
+        progressValue.value = event.contentOffset.x / Math.max(panelWidth, 1);
+      },
+    },
+    [panelWidth],
+  );
+
+  const scrollToPanel = useCallback(
+    (x: number) => {
+      runOnUI(scrollTo)(scrollViewRef, x, 0, true);
+    },
+    [scrollViewRef],
   );
 
   return (
@@ -53,16 +76,13 @@ const StatisticsView = () => {
       ]}
       onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
     >
-      <ScrollView
+      <Animated.ScrollView
         ref={scrollViewRef}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         style={{ width: panelWidth }}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false },
-        )}
+        onScroll={scrollHandler}
         scrollEventThrottle={16}
       >
         <StatisticsPanel
@@ -73,38 +93,27 @@ const StatisticsView = () => {
           valueKey="streak"
           showLeftChevron={false}
           showRightChevron={true}
-          onRightPress={() =>
-            scrollViewRef.current?.scrollTo({ x: panelWidth, animated: true })
-          }
+          onRightPress={() => scrollToPanel(panelWidth)}
           width={panelWidth}
           statistics={statistics}
           descriptionMap={descriptionMap}
         />
-
         <StatisticsPanel
           icon="person"
           title="Meine Stats"
-          subtitle={undefined}
           streakKeyToExclude="appOpened"
           valueKey="count"
           showLeftChevron={true}
           showRightChevron={false}
-          onLeftPress={() =>
-            scrollViewRef.current?.scrollTo({ x: 0, animated: true })
-          }
+          onLeftPress={() => scrollToPanel(0)}
           width={panelWidth}
           statistics={statistics}
           descriptionMap={descriptionMap}
         />
-      </ScrollView>
+      </Animated.ScrollView>
 
       <View style={{ height: 20, zIndex: 99 }}>
-        <AnimatedPageDots
-          scrollX={scrollX}
-          width={200}
-          length={2}
-          color="white"
-        />
+        <AnimatedPageDots progress={progressValue} length={2} color="white" />
       </View>
     </View>
   );
