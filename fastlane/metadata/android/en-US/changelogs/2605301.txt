@@ -3,4 +3,5 @@
 - New design for the image preview
 - Improvements to the search page
 - Updated design for sources and achievements
+- Fixed "scroll to top" on the home screen
 - Performance improvements and bug fixes

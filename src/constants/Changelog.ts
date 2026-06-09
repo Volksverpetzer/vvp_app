@@ -3,7 +3,7 @@ const Changelog = {
   version: "2.2.0",
   versionCode: 2605301,
   notes:
-    "- Artikel können jetzt vorgelesen werden (Audio-Player)\n- Lesezeit wird bei Artikeln angezeigt\n- Neues Design für die Bildvorschau\n- Verbesserungen an der Suchseite\n- Aktualisiertes Design für Quellen und Erfolge\n- Performance-Verbesserungen und Fehlerbehebungen",
+    '- Artikel können jetzt vorgelesen werden (Audio-Player)\n- Lesezeit wird bei Artikeln angezeigt\n- Neues Design für die Bildvorschau\n- Verbesserungen an der Suchseite\n- Aktualisiertes Design für Quellen und Erfolge\n- "Nach oben scrollen" auf der Startseite repariert\n- Performance-Verbesserungen und Fehlerbehebungen',
 };
 
 export default Changelog;
