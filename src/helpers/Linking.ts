@@ -7,6 +7,12 @@ import type { HttpsUrl } from "#/types";
 
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 
+const parsePath = (url: string): string => {
+  const path = (Linking.parse(url).path ?? "").replace(/^\/+/, "");
+  if (!path) return "";
+  return path.endsWith("/") ? path : `${path}/`;
+};
+
 /**
  * Handles in-app navigation for links. Internal links (same hostname)
  * are pushed to the router; external links open in the browser.
@@ -64,4 +70,4 @@ const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
   Linking.openURL(href);
 };
 
-export { onLinkPress, outBoundLinkPress };
+export { onLinkPress, outBoundLinkPress, parsePath };

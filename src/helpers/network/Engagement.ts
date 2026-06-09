@@ -1,6 +1,5 @@
-import * as Linking from "expo-linking";
-
 import Config from "#/constants/Config";
+import { parsePath } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { createClient, get } from "#/helpers/utils/networking";
 import type { HttpsUrl } from "#/types";
@@ -14,8 +13,7 @@ const client = createClient(apiUrl);
  * @returns Promise<number> - Number of views
  */
 const getViews = async (permalink?: HttpsUrl): Promise<number> => {
-  const { path } = Linking.parse(permalink ?? wpUrl);
-  const endpoint = "/proxy/stats/" + path;
+  const endpoint = "/proxy/stats/" + parsePath(permalink ?? wpUrl);
   try {
     const data = await get<{ pageviews: number }>(client, endpoint);
     return data.pageviews;
@@ -31,9 +29,11 @@ const getViews = async (permalink?: HttpsUrl): Promise<number> => {
  * @returns Promise<number> - Number of shares
  */
 const getShares = async (permalink?: HttpsUrl): Promise<number> => {
-  const { path } = Linking.parse(permalink ?? wpUrl);
   try {
-    const data = await get<{ events: number }>(client, `/proxy/shares/${path}`);
+    const data = await get<{ events: number }>(
+      client,
+      `/proxy/shares/${parsePath(permalink ?? wpUrl)}`,
+    );
     return data.events;
   } catch (error) {
     console.error("getShares error:", error);
@@ -47,9 +47,11 @@ const getShares = async (permalink?: HttpsUrl): Promise<number> => {
  * @returns Promise<number> - Number of favorites
  */
 const getFavs = async (permalink?: HttpsUrl): Promise<number> => {
-  const { path } = Linking.parse(permalink ?? wpUrl);
   try {
-    const data = await get<{ events: number }>(client, `/proxy/favs/${path}`);
+    const data = await get<{ events: number }>(
+      client,
+      `/proxy/favs/${parsePath(permalink ?? wpUrl)}`,
+    );
     return data.events;
   } catch (error) {
     console.error("getFavs error:", error);
@@ -65,11 +67,10 @@ const getFavs = async (permalink?: HttpsUrl): Promise<number> => {
 const getLinks = async (
   permalink?: HttpsUrl,
 ): Promise<{ url: HttpsUrl; visitors: number }[]> => {
-  const { path } = Linking.parse(permalink ?? wpUrl);
   try {
     const data = await get<{ links: { url: HttpsUrl; visitors: number }[] }>(
       client,
-      `/proxy/links/${path}`,
+      `/proxy/links/${parsePath(permalink ?? wpUrl)}`,
     );
     return data.links;
   } catch (error) {
