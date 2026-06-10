@@ -219,8 +219,35 @@ describe("FetcherUtils", () => {
         { prioSort: false },
       );
 
-      // cutoffDate default is true; threshold is max of oldest dates: max(p1, p3) => '2021-01-03' so only p3,p4
-      expect(result).toEqual([p4, p3]);
+      // cutoffDate default is true; threshold is max of oldest dates: max(p1, p3) => '2021-01-03'
+      // p1 is cut off, but p2 survives as fetcher1's newest post.
+      expect(result).toEqual([p4, p3, p2]);
+    });
+
+    it("keeps each feed's newest post even when older than the cutoff", async () => {
+      const sparseOld = {
+        id: "sparse-old",
+        datetime: "2020-11-01T00:00:00Z",
+        priority: 1,
+      } as unknown as Post<unknown>;
+      const sparseNew = {
+        id: "sparse-new",
+        datetime: "2020-12-01T00:00:00Z",
+        priority: 1,
+      } as unknown as Post<unknown>;
+      const busyFetcher = jest.fn(() => Promise.resolve([p3, p4]));
+      const sparseFetcher = jest.fn(() =>
+        Promise.resolve([sparseNew, sparseOld]),
+      );
+
+      const result = await FetcherUtilities.fetchAndProcessPosts([
+        { fetcher: busyFetcher, props: {} },
+        { fetcher: sparseFetcher, props: {} },
+      ]);
+
+      // Cutoff is p3 ('2021-01-03'); the sparse feed's newest post is kept
+      // anyway, only its older posts are dropped.
+      expect(result.map((p) => p.id)).toEqual(["4", "3", "sparse-new"]);
     });
 
     it("applies prioSort and disables cutoffDate when specified", async () => {
@@ -301,7 +328,8 @@ describe("FetcherUtils", () => {
         {},
         [p5],
       );
-      expect(result.map((p) => p.id)).toEqual(["5", "4", "3"]);
+      // p2 survives the cutoff as fetcher1's newest post.
+      expect(result.map((p) => p.id)).toEqual(["5", "4", "3", "2"]);
     });
   });
 });

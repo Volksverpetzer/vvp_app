@@ -95,19 +95,24 @@ const FetcherUtilities = {
       let allPosts = data.flat();
 
       if (options.cutoffDate !== false) {
+        const sortedFeeds = data
+          .filter((_posts) => _posts.sort !== undefined && _posts.length > 0)
+          .map((_posts) => _posts.sort(FetcherUtilities.sortByDatetime));
+
         const minDate =
-          data
-            .map((_posts: Post<unknown>[]): Post<unknown> | undefined => {
-              if (_posts.sort === undefined) return undefined;
-              return _posts.sort(FetcherUtilities.sortByDatetime)[
-                _posts.length - 1
-              ];
-            })
+          sortedFeeds
+            .map((_posts) => _posts[_posts.length - 1])
             .sort(FetcherUtilities.sortByDatetime)[0]?.datetime ??
           "1970-01-01T00:00:00+0000";
 
+        // Always keep each feed's newest post so that low-frequency feeds
+        // (e.g. Prüfpunkt) are not entirely hidden by the cutoff of busier feeds.
+        const newestPerFeed = new Set(sortedFeeds.map((_posts) => _posts[0]));
+
         allPosts = allPosts.filter(
-          (post) => post.datetime?.localeCompare(minDate) >= 0,
+          (post) =>
+            newestPerFeed.has(post) ||
+            post.datetime?.localeCompare(minDate) >= 0,
         );
       }
 
