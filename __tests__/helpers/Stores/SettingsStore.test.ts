@@ -28,7 +28,7 @@ describe("SettingsStore", () => {
 
   describe("getContentSettings", () => {
     it("returns merged settings with stored boolean values", async () => {
-      const stored = { reddit: false, wp: true };
+      const stored = { reddit: false, "wp:volksverpetzer.de": true };
       jest
         .spyOn(BaseStore, "getItem")
         .mockResolvedValue(JSON.stringify(stored));
@@ -37,8 +37,53 @@ describe("SettingsStore", () => {
       const result = await SettingsStore.getContentSettings();
 
       expect(result.reddit.value).toBe(false);
-      expect(result.wp.value).toBe(true);
+      expect(result["wp:volksverpetzer.de"].value).toBe(true);
       expect(result.bsky.value).toBe(false); // default
+    });
+
+    it("migrates legacy wp/wp2 keys onto the configured wp feeds", async () => {
+      const stored = { wp: false, wp2: false };
+      jest
+        .spyOn(BaseStore, "getItem")
+        .mockResolvedValue(JSON.stringify(stored));
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(stored);
+
+      const result = await SettingsStore.getContentSettings();
+
+      expect(result["wp:volksverpetzer.de"].value).toBe(false);
+      expect(result["wp:pruefpunkt.org"].value).toBe(false);
+
+      const storedArg = (BaseStore.setItem as jest.Mock).mock
+        .calls[0][1] as string;
+      const rewritten = JSON.parse(storedArg);
+      expect(rewritten["wp:volksverpetzer.de"]).toBe(false);
+      expect(rewritten).not.toHaveProperty("wp");
+      expect(rewritten).not.toHaveProperty("wp2");
+    });
+
+    it("migrates the legacy insta key onto the first configured insta feed", async () => {
+      const stored = { insta: false };
+      jest
+        .spyOn(BaseStore, "getItem")
+        .mockResolvedValue(JSON.stringify(stored));
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(stored);
+
+      const result = await SettingsStore.getContentSettings();
+
+      expect(result["insta:volksverpetzer"].value).toBe(false);
+      expect(result["insta:pruefpunkt"].value).toBe(true); // default
+    });
+
+    it("prefers new wp keys over legacy ones", async () => {
+      const stored = { "wp:pruefpunkt.org": false, wp2: true };
+      jest
+        .spyOn(BaseStore, "getItem")
+        .mockResolvedValue(JSON.stringify(stored));
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(stored);
+
+      const result = await SettingsStore.getContentSettings();
+
+      expect(result["wp:pruefpunkt.org"].value).toBe(false);
     });
 
     it("falls back to object-shaped stored values (migration)", async () => {
@@ -98,13 +143,14 @@ describe("SettingsStore", () => {
     it("stores only boolean values per key", async () => {
       const settings: ContentSettingType = {
         reddit: { value: true, name: "Memes" },
-        wp: { value: false, name: "Artikel" },
-        insta: { value: true, name: "Instagram Slides" },
+        "wp:volksverpetzer.de": { value: false, name: "Artikel" },
+        "insta:volksverpetzer": { value: true, name: "Instagram Slides" },
+        "insta:pruefpunkt": { value: true, name: "Prüfpunkt Instagram" },
         yt: { value: true, name: "YouTube Videos" },
         tiktok: { value: true, name: "TikTok Videos" },
         bsky: { value: false, name: "Bluesky Posts" },
         bot: { value: true, name: "Bot Feed" },
-        wp2: { value: true, name: "Prüfpunkt Artikel" },
+        "wp:pruefpunkt.org": { value: true, name: "Prüfpunkt Artikel" },
       };
 
       await SettingsStore.setContentSettings(settings);
@@ -113,7 +159,7 @@ describe("SettingsStore", () => {
         .calls[0][1] as string;
       const stored = JSON.parse(storedArg);
       expect(stored.reddit).toBe(true);
-      expect(stored.wp).toBe(false);
+      expect(stored["wp:volksverpetzer.de"]).toBe(false);
       expect(stored).not.toHaveProperty("reddit.name");
     });
 

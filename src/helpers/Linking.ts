@@ -32,7 +32,10 @@ const onLinkPress = (
   article_link?: string,
 ) => {
   const { hostname, path } = Linking.parse(href);
-  const internalHostnames = [Config.wpUrl, Config.wp2Url]
+  const internalHostnames = [
+    Config.wpUrl,
+    ...(Config.feeds?.wp ?? []).map((entry) => entry.handle),
+  ]
     .filter(Boolean)
     .map((url) => normalizeHost(Linking.parse(url!).hostname));
   const normalizedHostname = normalizeHost(hostname);

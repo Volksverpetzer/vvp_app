@@ -21,7 +21,20 @@ jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
-    wp2Url: "https://www.pruefpunkt.org",
+    feeds: {
+      wp: [
+        {
+          handle: "https://www.volksverpetzer.de",
+          label: "Artikel",
+          enabled: true,
+        },
+        {
+          handle: "https://www.pruefpunkt.org",
+          label: "Prüfpunkt Artikel",
+          enabled: true,
+        },
+      ],
+    },
   },
 }));
 
@@ -66,7 +79,10 @@ describe("Linking helpers", () => {
 
       // Assert
       expect(Linking.parse).toHaveBeenCalledWith(internalUrl);
-      expect(pushSpy).toHaveBeenCalledWith("/politik/some-article");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/politik/some-article",
+        params: { originalUrl: internalUrl },
+      });
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
@@ -138,7 +154,10 @@ describe("Linking helpers", () => {
 
       onLinkPress(wp2Url, router);
 
-      expect(pushSpy).toHaveBeenCalledWith("/faktencheck/some-article");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/faktencheck/some-article",
+        params: { originalUrl: wp2Url },
+      });
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
@@ -184,7 +203,10 @@ describe("Linking helpers", () => {
       onLinkPress(internalUrl, router);
 
       // Assert
-      expect(pushSpy).toHaveBeenCalledWith("/politik");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/politik",
+        params: { originalUrl: internalUrl },
+      });
     });
 
     it("should handle paths with leading slashes", () => {
@@ -202,7 +224,10 @@ describe("Linking helpers", () => {
       onLinkPress(internalUrl, router);
 
       // Assert
-      expect(pushSpy).toHaveBeenCalledWith("/politik");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/politik",
+        params: { originalUrl: internalUrl },
+      });
     });
   });
 

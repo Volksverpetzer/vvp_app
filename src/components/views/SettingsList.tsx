@@ -10,7 +10,7 @@ import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { isDarkMode } from "#/helpers/utils/color";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import type { ContentSettingType, SettingType } from "#/types";
+import type { FeedKey, SettingType } from "#/types";
 
 interface SettingsListProperties {
   saveSettings: (
@@ -62,7 +62,7 @@ const SettingsList = (properties: SettingsListProperties) => {
           const setting = properties.settings[key];
           if (
             Object.keys(SettingsStore.defaultContentSettings).includes(key) &&
-            !activeSettings.includes(key as keyof ContentSettingType)
+            !activeSettings.includes(key as FeedKey)
           )
             return;
 

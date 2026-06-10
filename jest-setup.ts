@@ -30,7 +30,35 @@ jest.mock("expo-constants", () => ({
         enableAnalytics: true,
         enableEngagement: true,
         wpUrl: "https://www.volksverpetzer.de",
-        wp2Url: "https://www.pruefpunkt.org",
+        feeds: {
+          wp: [
+            {
+              handle: "https://www.volksverpetzer.de",
+              label: "Artikel",
+              enabled: true,
+            },
+            {
+              handle: "https://www.pruefpunkt.org",
+              label: "Prüfpunkt Artikel",
+              sourceName: "Prüfpunkt",
+              enabled: true,
+            },
+          ],
+          insta: [
+            {
+              handle: "volksverpetzer",
+              label: "Instagram Slides",
+              enabled: true,
+            },
+            {
+              handle: "pruefpunkt",
+              label: "Prüfpunkt Instagram",
+              enabled: true,
+            },
+          ],
+          yt: { enabled: true },
+          bsky: { handle: "volksverpetzer.de", enabled: true },
+        },
         colorScheme: {
           light: {
             text: "#111",

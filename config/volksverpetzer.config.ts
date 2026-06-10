@@ -49,7 +49,6 @@ const extraConfig: ExtraConfigType = {
   apiUrl: "https://volksverpetzer-app.de",
   aiUrl: "https://ai.volksverpetzer-app.de",
   wpUrl: "https://www.volksverpetzer.de",
-  wp2Url: "https://www.pruefpunkt.org",
   aboutUrl: "https://www.volksverpetzer.de/ueber-uns/",
   sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
   dataProtectionUrl: "https://www.volksverpetzer.de/datenschutzerklaerung/",
@@ -100,11 +99,33 @@ const extraConfig: ExtraConfigType = {
   enableAnalytics: true,
   enableEngagement: true,
   feeds: {
-    wp: { enabled: true },
-    insta: { enabled: true },
+    wp: [
+      {
+        handle: "https://www.volksverpetzer.de",
+        label: "Artikel",
+        enabled: true,
+      },
+      {
+        handle: "https://www.pruefpunkt.org",
+        label: "Prüfpunkt Artikel",
+        sourceName: "Prüfpunkt",
+        enabled: true,
+      },
+    ],
+    insta: [
+      {
+        handle: "volksverpetzer",
+        label: "Instagram Slides",
+        enabled: true,
+      },
+      {
+        handle: "pruefpunkt",
+        label: "Prüfpunkt Instagram",
+        enabled: true,
+      },
+    ],
     yt: { enabled: true },
     bsky: { handle: "volksverpetzer.de", enabled: true },
-    wp2: { enabled: true },
   },
   colorScheme: colorScheme,
   themeColor: "#1b7194",

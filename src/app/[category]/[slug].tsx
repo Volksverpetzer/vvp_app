@@ -24,13 +24,10 @@ const LoadArticle = () => {
   const wpUrl = Config.wpUrl;
   const { slug, category, originalUrl } = parameters;
 
-  const wp2Api = useMemo(
-    () => (Config.wp2Url ? WordPressAPI.create(Config.wp2Url) : null),
-    [],
-  );
-
-  const isWp2 = useMemo(() => {
-    if (!wp2Api || !originalUrl || !Config.wp2Url) return false;
+  // A WordPress feed entry from a different site than the primary one whose
+  // host matches the original URL; articles from there need their own API.
+  const secondaryWp = useMemo(() => {
+    if (!originalUrl) return undefined;
     const normalizeHost = (url: string) => {
       try {
         return new URL(url).hostname.replace(/^www\./, "");
@@ -38,8 +35,17 @@ const LoadArticle = () => {
         return "";
       }
     };
-    return normalizeHost(originalUrl) === normalizeHost(Config.wp2Url);
-  }, [wp2Api, originalUrl]);
+    const host = normalizeHost(originalUrl);
+    if (!host || host === normalizeHost(wpUrl)) return undefined;
+    return (Config.feeds?.wp ?? []).find(
+      (entry) => normalizeHost(entry.handle) === host,
+    );
+  }, [originalUrl, wpUrl]);
+
+  const secondaryApi = useMemo(
+    () => (secondaryWp ? WordPressAPI.create(secondaryWp.handle) : null),
+    [secondaryWp],
+  );
 
   const [article, setArticle] = useState<ArticleProperties | undefined>();
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -62,8 +68,8 @@ const LoadArticle = () => {
           return;
         }
 
-        const _article = isWp2
-          ? await wp2Api!.getPost(slug, signal)
+        const _article = secondaryApi
+          ? await secondaryApi.getPost(slug, signal)
           : await WordPressAPI.getPost(slug, signal);
         const loadedArticle: ArticleProperties =
           WordPressAPI.convertLoadProps(_article);
@@ -84,7 +90,7 @@ const LoadArticle = () => {
         setIsLoading(false);
       }
     },
-    [slug, isWp2, wp2Api],
+    [slug, secondaryApi],
   );
 
   useEffect(() => {
@@ -99,7 +105,7 @@ const LoadArticle = () => {
   }, [slug, fetchArticle]);
 
   if (!slug) {
-    const baseUrl = isWp2 ? Config.wp2Url! : wpUrl;
+    const baseUrl = secondaryWp?.handle ?? wpUrl;
     const url = originalUrl ?? `${baseUrl}/${category || ""}`;
     return <EdgelessWebview uri={url as HttpsUrl} />;
   }

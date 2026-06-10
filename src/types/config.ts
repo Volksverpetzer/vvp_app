@@ -15,8 +15,7 @@ export interface ExtraConfigType {
   eas: {
     projectId: string;
   };
-  wpUrl: HttpsUrl; // URL to the WordPress site
-  wp2Url?: HttpsUrl; // URL to a second WordPress site
+  wpUrl: HttpsUrl; // URL to the primary WordPress site
   analyticsUrl?: HttpsUrl; // URL to the analytics site
   aboutUrl: HttpsUrl; // URL to the about page
   sourceUrl: HttpsUrl; // URL to the source code repository

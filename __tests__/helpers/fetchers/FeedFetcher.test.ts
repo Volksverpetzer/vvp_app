@@ -35,7 +35,10 @@ jest.mock("#/helpers/network/WordPressAPI", () => ({
 }));
 
 jest.mock("#/screens/Home/fetchers/InstagramFetcher", () => ({
-  InstagramFetcher: { feedFetcher: jest.fn(), memeFetcher: jest.fn() },
+  InstagramFetcher: {
+    createFeedFetcher: jest.fn(() => jest.fn()),
+    memeFetcher: jest.fn(),
+  },
 }));
 
 jest.mock("#/screens/Home/fetchers/BlueskyFetcher", () => ({
@@ -54,7 +57,8 @@ jest.mock("#/screens/Home/fetchers/BotFetcher", () => ({
   BotFetcher: { feedFetcher: jest.fn() },
 }));
 
-// createFetchers is called twice at module load time — capture both results.
+// createFetchers is called once per configured wp feed at module load time —
+// capture both results (primary site first, Prüfpunkt second).
 const createFetchersMock = WordPressFetcher.createFetchers as jest.Mock;
 const wpCreated = createFetchersMock.mock.results[0]?.value as {
   feedFetcher: jest.Mock;
@@ -67,42 +71,76 @@ const wp2Created = createFetchersMock.mock.results[1]?.value as {
 
 describe("FeedFetcher", () => {
   it("should have all required fetchers defined", () => {
-    expect(FeedFetcher.fetchers.wp).toBeDefined();
-    expect(FeedFetcher.fetchers.wpSearch).toBeDefined();
-    expect(FeedFetcher.fetchers.insta).toBeDefined();
+    expect(FeedFetcher.fetchers["wp:volksverpetzer.de"]).toBeDefined();
+    expect(FeedFetcher.fetchers["wp:volksverpetzer.de:search"]).toBeDefined();
+    expect(FeedFetcher.fetchers["insta:volksverpetzer"]).toBeDefined();
+    expect(FeedFetcher.fetchers["insta:pruefpunkt"]).toBeDefined();
     expect(FeedFetcher.fetchers.reddit).toBeDefined();
     expect(FeedFetcher.fetchers.yt).toBeDefined();
     expect(FeedFetcher.fetchers.tiktok).toBeDefined();
     expect(FeedFetcher.fetchers.bsky).toBeDefined();
     expect(FeedFetcher.fetchers.bot).toBeDefined();
-    expect(FeedFetcher.fetchers.wp2).toBeDefined();
-    expect(FeedFetcher.fetchers.wp2Search).toBeDefined();
+    expect(FeedFetcher.fetchers["wp:pruefpunkt.org"]).toBeDefined();
+    expect(FeedFetcher.fetchers["wp:pruefpunkt.org:search"]).toBeDefined();
   });
 
   it("should map fetchers to the correct implementations", () => {
-    expect(FeedFetcher.fetchers.wp).toBe(wpCreated.feedFetcher);
-    expect(FeedFetcher.fetchers.wpSearch).toBe(wpCreated.searchFetcher);
-    expect(FeedFetcher.fetchers.insta).toBe(InstagramFetcher.feedFetcher);
+    expect(FeedFetcher.fetchers["wp:volksverpetzer.de"]).toBe(
+      wpCreated.feedFetcher,
+    );
+    expect(FeedFetcher.fetchers["wp:volksverpetzer.de:search"]).toBe(
+      wpCreated.searchFetcher,
+    );
+    const createFeedFetcherMock =
+      InstagramFetcher.createFeedFetcher as jest.Mock;
+    expect(FeedFetcher.fetchers["insta:volksverpetzer"]).toBe(
+      createFeedFetcherMock.mock.results[0]?.value,
+    );
+    expect(FeedFetcher.fetchers["insta:pruefpunkt"]).toBe(
+      createFeedFetcherMock.mock.results[1]?.value,
+    );
     expect(FeedFetcher.fetchers.reddit).toBe(InstagramFetcher.memeFetcher);
     expect(FeedFetcher.fetchers.yt).toBe(YouTubeFetcher.feedFetcher);
     expect(FeedFetcher.fetchers.tiktok).toBe(TikTokFetcher.feedFetcher);
     expect(FeedFetcher.fetchers.bsky).toBe(BlueskyFetcher.feedFetcher);
     expect(FeedFetcher.fetchers.bot).toBe(BotFetcher.feedFetcher);
-    expect(FeedFetcher.fetchers.wp2).toBe(wp2Created.feedFetcher);
-    expect(FeedFetcher.fetchers.wp2Search).toBe(wp2Created.searchFetcher);
+    expect(FeedFetcher.fetchers["wp:pruefpunkt.org"]).toBe(
+      wp2Created.feedFetcher,
+    );
+    expect(FeedFetcher.fetchers["wp:pruefpunkt.org:search"]).toBe(
+      wp2Created.searchFetcher,
+    );
   });
 
-  it("should create wp fetchers via WordPressFetcher.createFetchers with WordPressAPI", () => {
-    expect(WordPressFetcher.createFetchers).toHaveBeenCalledWith(WordPressAPI);
-  });
-
-  it("should create wp2 fetchers via WordPressFetcher.createFetchers with a wp2 API and source name", () => {
+  it("should create an API per configured wp feed", () => {
+    expect(WordPressAPI.create).toHaveBeenCalledWith(
+      "https://www.volksverpetzer.de",
+    );
     expect(WordPressAPI.create).toHaveBeenCalledWith(
       "https://www.pruefpunkt.org",
     );
+  });
+
+  it("should create the primary wp fetchers without a source name", () => {
     expect(WordPressFetcher.createFetchers).toHaveBeenCalledWith(
       (WordPressAPI.create as jest.Mock).mock.results[0].value,
+      undefined,
+    );
+  });
+
+  it("should create the Prüfpunkt fetchers with its source name", () => {
+    expect(WordPressFetcher.createFetchers).toHaveBeenCalledWith(
+      (WordPressAPI.create as jest.Mock).mock.results[1].value,
       "Prüfpunkt",
+    );
+  });
+
+  it("should create an Instagram fetcher per configured account", () => {
+    expect(InstagramFetcher.createFeedFetcher).toHaveBeenCalledWith(
+      "volksverpetzer",
+    );
+    expect(InstagramFetcher.createFeedFetcher).toHaveBeenCalledWith(
+      "pruefpunkt",
     );
   });
 

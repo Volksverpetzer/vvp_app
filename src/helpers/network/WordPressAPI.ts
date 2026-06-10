@@ -112,7 +112,10 @@ export default class WordPressAPI {
   static create(baseUrl: HttpsUrl) {
     const client = createClient(baseUrl);
     return {
-      getPosts(page = 1): Promise<LoadArticlePostProperties[]> {
+      getPosts(
+        page = 1,
+        signal?: AbortSignal,
+      ): Promise<LoadArticlePostProperties[]> {
         return netGet<LoadArticlePostProperties[]>(
           client,
           `/wp-json/wp/v2/posts`,
@@ -130,18 +133,21 @@ export default class WordPressAPI {
               Pragma: "no-cache",
               Expires: "0",
             },
+            signal,
           },
         );
       },
       searchPosts(
         search: string,
         page = 10,
+        signal?: AbortSignal,
       ): Promise<LoadArticlePostProperties[]> {
         return netGet<LoadArticlePostProperties[]>(
           client,
           `/wp-json/wp/v2/posts`,
           {
             params: { orderby: "relevance", search, page, _embed: "author" },
+            signal,
           },
         );
       },

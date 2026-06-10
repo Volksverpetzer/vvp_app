@@ -1,20 +1,45 @@
+import Config from "#/constants/Config";
 import BaseStore from "#/helpers/Storage";
+import { getInstaFeedKey, getWpFeedKey } from "#/helpers/utils/feeds";
 import type {
   AdvancedSettingType,
   ContentSettingType,
   NotificationSettingType,
 } from "#/types";
 
+const wpFeeds = Config.feeds?.wp ?? [];
+const instaFeeds = Config.feeds?.insta ?? [];
+
+// Every configured WordPress/Instagram feed gets its own settings entry,
+// defaulting to "on" so onboarding presents them enabled.
+const perFeedContentDefaults = Object.fromEntries([
+  ...wpFeeds.map((entry) => [
+    getWpFeedKey(entry),
+    { value: true, name: entry.label },
+  ]),
+  ...instaFeeds.map((entry) => [
+    getInstaFeedKey(entry),
+    { value: true, name: entry.label },
+  ]),
+]);
+
+// Settings were previously stored under the static keys "wp", "wp2" and
+// "insta"; map them onto the corresponding configured feed entries.
+const legacyFeedKeys: Record<string, string> = Object.fromEntries([
+  ...wpFeeds
+    .slice(0, 2)
+    .map((entry, index) => [getWpFeedKey(entry), index === 0 ? "wp" : "wp2"]),
+  ...instaFeeds.slice(0, 1).map((entry) => [getInstaFeedKey(entry), "insta"]),
+]);
+
 const SettingsStore = {
   defaultContentSettings: {
     reddit: { value: true, name: "Memes" },
-    wp: { value: true, name: "Artikel" },
-    insta: { value: true, name: "Instagram Slides" },
     yt: { value: true, name: "YouTube Videos" },
     tiktok: { value: true, name: "TikTok Videos" },
     bsky: { value: false, name: "Bluesky Posts" },
     bot: { value: true, name: "Bot Feed" },
-    wp2: { value: true, name: "Prüfpunkt Artikel" },
+    ...perFeedContentDefaults,
   } satisfies ContentSettingType,
 
   keys: {
@@ -44,7 +69,8 @@ const SettingsStore = {
       const newStore: Record<string, boolean> = {};
       for (const key in this.defaultContentSettings) {
         const defaultSetting = this.defaultContentSettings[key];
-        const raw = parsed[key];
+        const legacyKey = legacyFeedKeys[key];
+        const raw = parsed[key] ?? (legacyKey ? parsed[legacyKey] : undefined);
         const value =
           typeof raw === "boolean"
             ? raw

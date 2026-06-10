@@ -10,12 +10,14 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
   default: {
     defaultContentSettings: {
       reddit: { value: true, name: "Memes" },
-      wp: { value: true, name: "Artikel" },
-      insta: { value: true, name: "Instagram Slides" },
+      "wp:volksverpetzer.de": { value: true, name: "Artikel" },
+      "insta:volksverpetzer": { value: true, name: "Instagram Slides" },
+      "insta:pruefpunkt": { value: true, name: "Prüfpunkt Instagram" },
       yt: { value: true, name: "YouTube Videos" },
       tiktok: { value: true, name: "TikTok Videos" },
       bsky: { value: false, name: "Bluesky Posts" },
       bot: { value: true, name: "Bot Feed" },
+      "wp:pruefpunkt.org": { value: true, name: "Prüfpunkt Artikel" },
     },
     defaultAdvancedSettings: {
       advancedReporting: { value: false, name: "Erweitertes Reporting" },
@@ -69,12 +71,12 @@ describe("SettingsContext Logic", () => {
       const newSettings: ContentSettingType = {
         reddit: { value: false, name: "Memes" },
         tiktok: { value: true, name: "Vids" },
-        wp: { value: false, name: "WP" },
-        insta: { value: true, name: "Insta" },
+        "wp:volksverpetzer.de": { value: false, name: "WP" },
+        "insta:volksverpetzer": { value: true, name: "Insta" },
         yt: { value: false, name: "Videos" },
         bsky: { value: true, name: "Tweets" },
         bot: { value: false, name: "Fact" },
-        wp2: { value: true, name: "Prüfpunkt Artikel" },
+        "wp:pruefpunkt.org": { value: true, name: "Prüfpunkt Artikel" },
       };
 
       await SettingsStore.setContentSettings(newSettings);
@@ -102,8 +104,20 @@ describe("SettingsContext Logic", () => {
     it("should have correct default content settings structure", () => {
       expect(SettingsStore.defaultContentSettings).toBeDefined();
       expect(SettingsStore.defaultContentSettings).toHaveProperty("reddit");
-      expect(SettingsStore.defaultContentSettings).toHaveProperty("wp");
-      expect(SettingsStore.defaultContentSettings).toHaveProperty("insta");
+      // Array form because the keys contain dots, which toHaveProperty
+      // would otherwise treat as path separators.
+      expect(SettingsStore.defaultContentSettings).toHaveProperty([
+        "wp:volksverpetzer.de",
+      ]);
+      expect(SettingsStore.defaultContentSettings).toHaveProperty([
+        "wp:pruefpunkt.org",
+      ]);
+      expect(SettingsStore.defaultContentSettings).toHaveProperty([
+        "insta:volksverpetzer",
+      ]);
+      expect(SettingsStore.defaultContentSettings).toHaveProperty([
+        "insta:pruefpunkt",
+      ]);
       expect(SettingsStore.defaultContentSettings).toHaveProperty("yt");
       expect(SettingsStore.defaultContentSettings).toHaveProperty("tiktok");
       expect(SettingsStore.defaultContentSettings).toHaveProperty("bsky");
