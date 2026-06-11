@@ -1,4 +1,4 @@
-- Gespeicherte Quellen werden jetzt nach Artikel gruppiert
-- Impressum in den Einstellungen ergänzt
-- Hinweis bei leerem Feed
-- Performance-Verbesserungen und Fehlerbehebungen
+- Saved sources are now grouped by article
+- Added imprint to the settings
+- Added a notice for an empty feed
+- Performance improvements and bug fixes
