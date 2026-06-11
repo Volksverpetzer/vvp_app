@@ -112,7 +112,7 @@ A good convention is a date-based code like `YYYYMMDDNN` (e.g. `2026041701` for 
 After updating `package.json`, write the release notes and regenerate the in-app changelog:
 
 1. Create `fastlane/metadata/android/de-DE/changelogs/{versionCode}.txt` with the German release notes
-2. Run `pnpm changelog:sync` — copies to `en-US` and regenerates `src/constants/Changelog.ts`
+2. Run `pnpm changelog:sync` — copies to `en-US` (kept as-is if an English translation already exists) and regenerates `src/constants/Changelog.ts`
 3. Commit all three files before triggering the EAS build
 
 > Note: EAS uses `appVersionSource: "remote"` with `autoIncrement`, so the actual APK versionCode is managed by EAS independently of `package.json`. The `Changelog.versionCode` in `Changelog.ts` uses the `package.json` value as a monotonic release marker for the in-app "what's new" check — this is intentional and correct.
