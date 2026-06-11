@@ -42,9 +42,9 @@
     "expo:eject": "expo eject",
     "------- npm scripts -------": "-------------",
     "prepare": "husky",
-    "changelog:sync": "node scripts/sync-changelog.mjs",
+    "prepare:changelog": "node scripts/prepare-changelog.mjs",
     "prepare:fdroid": "node scripts/prepare-fdroid.mjs",
-    "prepare:licenses": "node scripts/generateLicenses.js",
+    "prepare:licenses": "node scripts/prepare-licenses.js",
     "update:deps": "pnpx npm-check-updates -c 1d -i --format group",
     "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\""
   },
