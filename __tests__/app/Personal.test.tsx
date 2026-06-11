@@ -13,11 +13,6 @@ jest.mock("#/components/animations/AnimatedHeader", () => {
   return jest.fn(({ children }: any) => <View>{children}</View>);
 });
 
-jest.mock("#/components/design/View", () => {
-  const { View } = require("react-native");
-  return jest.fn(({ children }: any) => <View>{children}</View>);
-});
-
 jest.mock("#/constants/Colors", () => ({
   light: {
     primary: "#1b7194",
@@ -47,7 +42,10 @@ jest.mock("react-native-gesture-handler", () => ({
   ScrollView: jest.fn(({ children }: any) => children),
 }));
 
-jest.mock("@expo/vector-icons/Octicons", () => jest.fn(() => null));
+jest.mock("@react-native-vector-icons/octicons/static", () => ({
+  default: jest.fn(() => null),
+  __esModule: true,
+}));
 
 describe("PersonalTab", () => {
   it("renders Favoriten and Quellen tab buttons", () => {

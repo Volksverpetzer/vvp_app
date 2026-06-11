@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
-import type { Router } from "expo-router";
+import type { ImperativeRouter } from "expo-router";
 
-import { onLinkPress, outBoundLinkPress } from "#/helpers/Linking";
+import { onLinkPress, outBoundLinkPress, parsePath } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
 
 // Mock dependencies
@@ -29,7 +29,7 @@ describe("Linking helpers", () => {
     push(_path?: any) {
       /* noop */
     },
-  } as unknown as Router;
+  } as unknown as ImperativeRouter;
 
   let pushSpy: ReturnType<typeof jest.spyOn>;
   let parseSpy: ReturnType<typeof jest.spyOn>;
@@ -181,6 +181,44 @@ describe("Linking helpers", () => {
 
       // Assert
       expect(pushSpy).toHaveBeenCalledWith("/politik");
+    });
+  });
+
+  describe("parsePath", () => {
+    it("returns path with trailing slash for a normal URL", () => {
+      parseSpy.mockReturnValue({ path: "/artikel/slug" });
+      expect(parsePath("https://www.volksverpetzer.de/artikel/slug")).toBe(
+        "artikel/slug/",
+      );
+    });
+
+    it("preserves existing trailing slash", () => {
+      parseSpy.mockReturnValue({ path: "/artikel/slug/" });
+      expect(parsePath("https://www.volksverpetzer.de/artikel/slug/")).toBe(
+        "artikel/slug/",
+      );
+    });
+
+    it("strips multiple leading slashes", () => {
+      parseSpy.mockReturnValue({ path: "//artikel/slug/" });
+      expect(parsePath("https://www.volksverpetzer.de/artikel/slug/")).toBe(
+        "artikel/slug/",
+      );
+    });
+
+    it("returns empty string for root path", () => {
+      parseSpy.mockReturnValue({ path: "/" });
+      expect(parsePath("https://www.volksverpetzer.de/")).toBe("");
+    });
+
+    it("returns empty string for empty path", () => {
+      parseSpy.mockReturnValue({ path: "" });
+      expect(parsePath("https://www.volksverpetzer.de")).toBe("");
+    });
+
+    it("returns empty string for null path", () => {
+      parseSpy.mockReturnValue({ path: null });
+      expect(parsePath("https://www.volksverpetzer.de")).toBe("");
     });
   });
 

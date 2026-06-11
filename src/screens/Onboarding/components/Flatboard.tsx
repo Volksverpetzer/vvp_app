@@ -1,15 +1,17 @@
 import { Image } from "expo-image";
 import type { FC } from "react";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import type {
+  ColorValue,
   GestureResponderEvent,
   ImageRequireSource,
   TextStyle,
 } from "react-native";
-import { FlatList, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
+import Carousel from "react-native-reanimated-carousel";
+import type { ICarouselInstance } from "react-native-reanimated-carousel";
 
 import { Logo } from "#/components/SvgIcons";
-import View from "#/components/design/View";
 import UiText from "#/components/ui/UiText";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
@@ -29,7 +31,7 @@ export type OnBoardingData = {
 interface FlatBoardProperties {
   data: OnBoardingData[];
   onFinish: (event: GestureResponderEvent) => void;
-  accentColor?: string;
+  accentColor?: ColorValue;
   buttonTitle?: string;
   variant?: "standard" | "modern";
   hideIndicator?: boolean;
@@ -37,8 +39,90 @@ interface FlatBoardProperties {
   descriptionStyle?: TextStyle;
 }
 
+interface SlideProps extends OnBoardingData {
+  width: number;
+  height: number;
+  headingStyle?: TextStyle;
+  descriptionStyle?: TextStyle;
+}
+
+const Slide = ({
+  title,
+  description,
+  icon,
+  Component,
+  TopComponent,
+  width,
+  height,
+  headingStyle,
+  descriptionStyle,
+}: SlideProps) => {
+  const corporate = useCorporateColor();
+  return (
+    <View>
+      <View
+        style={{
+          height: 100,
+          marginTop: height / 20,
+          alignItems: "center",
+          width,
+        }}
+      >
+        {isVolksverpetzer && <Logo color={corporate} />}
+      </View>
+      <View style={[globalStyles.centered, { width, marginBottom: 100 }]}>
+        <UiText
+          style={{
+            ...headingStyle,
+            fontSize: height < 600 ? 22 : 24,
+            paddingVertical: 10,
+            color: corporate,
+          }}
+        >
+          {title}
+        </UiText>
+        {icon && (
+          <Image
+            style={{ height: height / 3, width: height / 3 }}
+            source={icon}
+          />
+        )}
+        {TopComponent && height > 600 && (
+          <View
+            style={[
+              globalStyles.centered,
+              { height: "auto", paddingVertical: 20, width: 200 },
+            ]}
+          >
+            <TopComponent />
+          </View>
+        )}
+        <UiText
+          style={{
+            fontSize: 18,
+            paddingVertical: 10,
+            ...descriptionStyle,
+            textAlign: "center",
+            paddingHorizontal: 30,
+          }}
+        >
+          {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
+        </UiText>
+        {Component && height > 600 && (
+          <View style={{ width: 300, height: "auto" }}>
+            <Component />
+          </View>
+        )}
+      </View>
+    </View>
+  );
+};
+
+const MemoSlide = React.memo(Slide);
+
 const FlatBoard = (properties: FlatBoardProperties) => {
   const [step, setStep] = useState(0);
+  const targetStepRef = useRef(0);
   const { height, width } = useWindowDimensions();
   const {
     data,
@@ -48,129 +132,46 @@ const FlatBoard = (properties: FlatBoardProperties) => {
     headingStyle,
     descriptionStyle,
   } = properties;
-  const swipeReference = useRef<FlatList>(null);
+  const carouselRef = useRef<ICarouselInstance>(null);
 
   const nextStep = () => {
-    setStep(step + 1);
-    swipeReference.current &&
-      swipeReference.current.scrollToIndex({
-        animated: true,
-        index: step + 1,
-      });
+    const next = Math.min(targetStepRef.current + 1, data.length - 1);
+    targetStepRef.current = next;
+    setStep(next);
+    carouselRef.current?.scrollTo({ index: next, animated: true });
   };
 
   const previousStep = () => {
-    setStep(step - 1);
-    swipeReference.current &&
-      swipeReference.current.scrollToIndex({
-        animated: true,
-        index: step - 1,
-      });
+    const prev = Math.max(targetStepRef.current - 1, 0);
+    targetStepRef.current = prev;
+    setStep(prev);
+    carouselRef.current?.scrollTo({ index: prev, animated: true });
   };
 
-  const ListItem = (properties: OnBoardingData) => {
-    const corporate = useCorporateColor();
-    const { title, description, icon, Component, TopComponent } = properties;
-    return (
-      <View>
-        <View
-          style={{
-            height: 100,
-            marginTop: height / 20,
-            alignItems: "center",
-            width,
-          }}
-        >
-          {isVolksverpetzer && <Logo color={corporate} />}
-        </View>
-        <View style={[globalStyles.centered, { width, marginBottom: 100 }]}>
-          <UiText
-            style={{
-              ...headingStyle,
-              fontSize: height < 600 ? 22 : 24,
-              paddingVertical: 10,
-              color: corporate,
-            }}
-          >
-            {title}
-          </UiText>
-          {icon && (
-            <Image
-              style={{ height: height / 3, width: height / 3 }}
-              source={icon}
-            />
-          )}
-          {TopComponent && height > 600 && (
-            <View
-              style={[
-                globalStyles.centered,
-                { height: "auto", paddingVertical: 20, width: 200 },
-              ]}
-            >
-              <TopComponent />
-            </View>
-          )}
-
-          <UiText
-            style={{
-              fontSize: 18,
-              paddingVertical: 10,
-              ...descriptionStyle,
-              textAlign: "center",
-              paddingHorizontal: 30,
-            }}
-          >
-            {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
-          </UiText>
-          {Component && height > 600 && (
-            <View style={{ width: 300, height: "auto" }}>
-              <Component />
-            </View>
-          )}
-        </View>
-      </View>
-    );
-  };
-
-  const MemoListItem = React.memo(ListItem);
-
-  const onScrollEnd = (event) => {
-    const index = Math.floor(
-      Math.floor(event.nativeEvent.contentOffset.x) /
-        Math.floor(event.nativeEvent.layoutMeasurement.width),
-    );
+  const onSnapToItem = (index: number) => {
+    targetStepRef.current = index;
     setStep(index);
   };
 
   return (
     <View style={{ flex: 1 }}>
-      {useMemo(() => {
-        return (
-          <FlatList<OnBoardingData>
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item: OnBoardingData) => String(item.id)}
-            ref={swipeReference}
-            pagingEnabled
-            initialNumToRender={2}
-            maxToRenderPerBatch={2}
-            scrollEventThrottle={16}
-            onMomentumScrollEnd={onScrollEnd}
-            data={data}
-            renderItem={({ item }) => (
-              <MemoListItem
-                icon={item.icon}
-                description={item.description}
-                title={item.title}
-                id={item.id}
-                Component={item.Component}
-                TopComponent={item.TopComponent}
-              />
-            )}
-            contentContainerStyle={{ marginTop: "0%" }}
+      <Carousel
+        ref={carouselRef}
+        width={width}
+        height={height}
+        data={data}
+        loop={false}
+        onSnapToItem={onSnapToItem}
+        renderItem={({ item }) => (
+          <MemoSlide
+            {...item}
+            width={width}
+            height={height}
+            headingStyle={headingStyle}
+            descriptionStyle={descriptionStyle}
           />
-        );
-      }, [MemoListItem, data])}
+        )}
+      />
       <Stepper
         step={step}
         data={data}

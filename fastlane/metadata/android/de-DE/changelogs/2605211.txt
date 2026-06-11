@@ -1,0 +1,4 @@
+- Gespeicherte Quellen werden jetzt nach Artikel gruppiert
+- Impressum in den Einstellungen ergänzt
+- Hinweis bei leerem Feed
+- Performance-Verbesserungen und Fehlerbehebungen

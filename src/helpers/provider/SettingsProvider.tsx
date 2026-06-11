@@ -23,10 +23,10 @@ export const SettingsContext = createContext<SettContextInterface>({
 });
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
-  const [contentSettings, setContentSettings] = useState(
+  const [contentSettings, setContentSettings] = useState<ContentSettingType>(
     SettingsStore.defaultContentSettings,
   );
-  const [advancedSettings, setAdvancedSettings] = useState(
+  const [advancedSettings, setAdvancedSettings] = useState<AdvancedSettingType>(
     SettingsStore.defaultAdvancedSettings,
   );
   const [settingsLoaded, setSettingsLoaded] = useState(false);
@@ -72,7 +72,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   );
 
   if (!settingsLoaded) {
-    return;
+    return null;
   }
 
   return (

@@ -121,14 +121,6 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     }
   };
 
-  const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-    {
-      useNativeDriver: false,
-      listener: scrollListener,
-    },
-  );
-
   return (
     <View style={globalStyles.container}>
       <Animated.View
@@ -144,17 +136,15 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
         style={{
           backgroundColor,
         }}
-        onScroll={onScroll}
+        contentContainerStyle={[globalStyles.content]}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+          { useNativeDriver: false, listener: scrollListener },
+        )}
         ref={scrollReference}
         scrollEventThrottle={16}
       >
-        <View
-          onLayout={onRender}
-          style={{
-            maxWidth: 700,
-            margin: width > 700 ? "auto" : undefined,
-          }}
-        >
+        <View onLayout={onRender}>
           <Header
             article={article}
             article_image={article_image}
@@ -163,7 +153,6 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             date={date}
             slug={slug}
           />
-
           <Body
             article_content={article_content}
             article_title={article_title}

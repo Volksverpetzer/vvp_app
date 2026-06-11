@@ -17,11 +17,11 @@ import {
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import Collapsable from "#/components/design/Collapsable";
-import DesignedLink from "#/components/design/DesignedLink";
-import Divider from "#/components/design/Divider";
-import Space from "#/components/design/Space";
+import UiCollapsable from "#/components/ui/UiCollapsable";
+import UiDivider from "#/components/ui/UiDivider";
+import UiLink from "#/components/ui/UiLink";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
@@ -114,7 +114,6 @@ const SettingsScreen = () => {
         contentContainerStyle={[
           globalStyles.content,
           {
-            backgroundColor,
             paddingTop: HEADER_HEIGHT,
             gap: 20,
             paddingHorizontal: 0,
@@ -124,11 +123,13 @@ const SettingsScreen = () => {
           [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
           { useNativeDriver: false },
         )}
+        scrollEventThrottle={16}
       >
         <View>
-          <Collapsable
+          <UiCollapsable
             icon={<FeedIcon color={primary} size={24} />}
             title="Feed"
+            borderRadius={0}
           >
             <UiText style={styles.sectionText}>
               Was möchtest du in deinem Feed sehen?
@@ -137,57 +138,59 @@ const SettingsScreen = () => {
               saveSettings={saveContentSetting}
               settings={contentSettings}
             />
-          </Collapsable>
+          </UiCollapsable>
           {!Config.isFoss && (
-            <Collapsable
+            <UiCollapsable
               icon={<NotificationIcon color={primary} size={24} />}
               title="Benachrichtigungen"
+              borderRadius={0}
             >
               <SettingsList
                 saveSettings={saveNotificationSetting}
                 settings={notificationSettings}
               />
-            </Collapsable>
+            </UiCollapsable>
           )}
-          <Collapsable
+          <UiCollapsable
             icon={<SettingsIcon color={primary} size={24} />}
             title="Erweitert"
+            borderRadius={0}
           >
             <SettingsList
               saveSettings={saveAdvancedSetting}
               settings={advancedSettings}
             />
             {Config.enableEngagement && <BackupView />}
-          </Collapsable>
+          </UiCollapsable>
         </View>
-        <Divider paddingHorizontal={35} paddingVertical={5} />
+        <UiDivider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
-          <DesignedLink
+          <UiLink
             url={Config.aboutUrl}
             icon={<SearchIcon color={primary} size={24} />}
             text="Über uns"
           />
-          <DesignedLink
+          <UiLink
             url={Config.donations.support}
             icon={<GiveIcon color={primary} size={24} />}
             text="Unterstützen"
           />
-          <DesignedLink
+          <UiLink
             url={encodeURI("mailto:app@volksverpetzer.de")}
             icon={<FeedbackIcon color={primary} size={24} />}
             text="App-Feedback"
           />
-          <DesignedLink
+          <UiLink
             url={Config.dataProtectionUrl}
             icon={<LockIcon color={primary} size={24} />}
             text="Datenschutz"
           />
-          <DesignedLink
+          <UiLink
             url={Config.imprintUrl}
             icon={<ImprintIcon color={primary} size={24} />}
             text="Impressum"
           />
-          <DesignedLink
+          <UiLink
             url={Config.sourceUrl}
             icon={<CodeIcon color={primary} size={24} />}
             text="Quellcode"
@@ -203,7 +206,10 @@ const SettingsScreen = () => {
           </UiPressable>
           <UiPressable
             accessibilityRole="button"
-            onPress={() => PersonalStore.setOnboardingDone(false)}
+            onPress={() => {
+              PersonalStore.setOnboardingDone(false);
+              PersonalStore.setLastSeenChangelogVersionCode(0);
+            }}
           >
             <UiText>Intro zurücksetzen</UiText>
           </UiPressable>
@@ -249,7 +255,7 @@ const SettingsScreen = () => {
             {!Config.isFoss && `\nToken: ${token}`}
           </UiText>
         </View>
-        <Space size={100} />
+        <UiSpace size={100} />
       </ScrollView>
     </>
   );

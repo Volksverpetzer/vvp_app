@@ -60,6 +60,10 @@ const Level2: Record<string, TaskType> = {
     verbose: "Teile einen Fake-News-Link von deinem Browser aus mit der App",
     name: "Rechercheur",
   },
+  bskyshare: {
+    verbose: "Teile einen Bluesky-Post",
+    name: "Faktenhimmel",
+  },
 };
 
 const allTasks: Record<string, TaskType> = { ...Level0, ...Level1, ...Level2 };

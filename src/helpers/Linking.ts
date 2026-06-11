@@ -1,11 +1,17 @@
 import * as Linking from "expo-linking";
-import type { Href, Router } from "expo-router";
+import type { Href, ImperativeRouter } from "expo-router";
 
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
 import type { HttpsUrl } from "#/types";
 
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
+
+const parsePath = (url: string): string => {
+  const path = (Linking.parse(url).path ?? "").replace(/^\/+/, "");
+  if (!path) return "";
+  return path.endsWith("/") ? path : `${path}/`;
+};
 
 /**
  * Handles in-app navigation for links. Internal links (same hostname)
@@ -16,7 +22,11 @@ import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
  * @param router - Expo Router instance for navigation.
  * @param article_link - Optional article URL for analytics context.
  */
-const onLinkPress = (href: HttpsUrl, router: Router, article_link?: string) => {
+const onLinkPress = (
+  href: HttpsUrl,
+  router: ImperativeRouter,
+  article_link?: string,
+) => {
   const { hostname, path } = Linking.parse(href);
   const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
 
@@ -49,4 +59,4 @@ const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
   Linking.openURL(href);
 };
 
-export { onLinkPress, outBoundLinkPress };
+export { onLinkPress, outBoundLinkPress, parsePath };

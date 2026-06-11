@@ -1,9 +1,11 @@
 import type { FC } from "react";
 import React, { useMemo } from "react";
 import type { ViewStyle } from "react-native";
+import { View } from "react-native";
 
 import ShareBar from "#/components/bars/ShareBar";
-import View from "#/components/design/View";
+import UiCard from "#/components/ui/UiCard";
+import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
 import type { FaveableType, ShareableType } from "#/types";
 
 interface ComponentProperty<T> {
@@ -29,19 +31,13 @@ const GenericPost = (properties: ComponentProperty<object>) => {
     shareable,
     style,
   } = properties;
-  // Memoize the combined style to avoid re-creating the style object on every render.
   const combinedStyle: ViewStyle = useMemo(
-    () => ({
-      borderRadius: 15,
-      minHeight: 200,
-      overflow: "hidden",
-      ...style,
-    }),
+    () => ({ minHeight: 200, overflow: "hidden", padding: 0, ...style }),
     [style],
   );
 
   return (
-    <View style={combinedStyle}>
+    <UiCard style={combinedStyle}>
       <Component inView={inView} {...data} />
       {shareable ? (
         <ShareBar
@@ -51,9 +47,15 @@ const GenericPost = (properties: ComponentProperty<object>) => {
           contentType={contentType}
         />
       ) : (
-        <View style={{ paddingHorizontal: 30, height: 40, margin: 0 }} />
+        <View
+          style={{
+            paddingHorizontal: POST_PADDING_HORIZONTAL,
+            height: 40,
+            margin: 0,
+          }}
+        />
       )}
-    </View>
+    </UiCard>
   );
 };
 

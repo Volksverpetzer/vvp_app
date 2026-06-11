@@ -1,9 +1,8 @@
 import { useRouter } from "expo-router";
 import React, { useCallback, useMemo } from "react";
-import { useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
-import View from "#/components/design/View";
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";

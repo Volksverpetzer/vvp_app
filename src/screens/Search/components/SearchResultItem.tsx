@@ -4,11 +4,16 @@ import { useMemo } from "react";
 import { View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
-import Card from "#/components/design/Card";
 import Heading from "#/components/typography/Heading";
+import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
-import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
+import {
+  CARD_PADDING,
+  CONTENT_HORIZONTAL_PADDING,
+  CONTENT_MAX_WIDTH,
+  SOURCE_SANS_FONTS,
+} from "#/constants/GlobalStyles";
 import { getTagStyles } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -33,10 +38,11 @@ const SearchResultItem = ({
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
   const { width } = useWindowDimensions();
 
-  // Card has padding: 20 on each side (40 total horizontal padding)
-  // FlatList has paddingHorizontal: 20 (40 total horizontal padding)
-  // Subtract both from window width to get actual available content width
-  const contentWidth = width - 80;
+  // The card sits inside globalStyles.content (capped at CONTENT_MAX_WIDTH),
+  // so the HTML gets the window width minus both horizontal paddings.
+  const contentWidth =
+    Math.min(width, CONTENT_MAX_WIDTH) -
+    2 * (CARD_PADDING + CONTENT_HORIZONTAL_PADDING);
 
   const baseStyle = useMemo(
     () => ({
@@ -48,7 +54,7 @@ const SearchResultItem = ({
   );
 
   const content = (
-    <Card>
+    <UiCard>
       {title ? (
         <Heading style={{ color: textColor, marginBottom: 10 }}>
           {decode(title)}
@@ -65,7 +71,7 @@ const SearchResultItem = ({
       />
 
       {subtitle}
-    </Card>
+    </UiCard>
   );
 
   if (onPress) {

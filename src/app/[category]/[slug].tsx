@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 
-import LoadingFallback from "#/components/animations/LoadingFallback";
+import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
@@ -85,12 +85,7 @@ const LoadArticle = () => {
 
   // While we're fetching the article show a themed spinner instead of a webview
   if (isLoading) {
-    return (
-      <LoadingFallback
-        text="Lade Artikel..."
-        spinnerProps={{ size: "large" }}
-      />
-    );
+    return <UiSpinner text="Lade Artikel..." size="large" />;
   }
 
   // If we have an article, render it with the ArticleScreen
@@ -109,8 +104,8 @@ const LoadArticle = () => {
     const buildUrl = (base: string, ...segments: (string | undefined)[]) => {
       const trimmedBase = base.replace(/\/+$/, "");
       const path = segments
-        .filter(Boolean)
-        .map((s) => (s as string).replace(/^\/+|\/+$/g, ""))
+        .filter((s): s is string => Boolean(s))
+        .map((s) => s.replace(/^\/+|\/+$/g, ""))
         .join("/");
       return path ? `${trimmedBase}/${path}` : trimmedBase;
     };
@@ -120,9 +115,7 @@ const LoadArticle = () => {
   }
 
   // Fallback: Show loading state (shouldn't normally be reached)
-  return (
-    <LoadingFallback text="Lade Artikel..." spinnerProps={{ size: "large" }} />
-  );
+  return <UiSpinner text="Lade Artikel..." size="large" />;
 };
 
 export default LoadArticle;

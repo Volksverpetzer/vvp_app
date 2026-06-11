@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Config from "#/constants/Config";
 import { Achievements } from "#/helpers/Achievements";
@@ -23,8 +23,9 @@ interface SearchManagerState {
 interface SearchManagerActions {
   setSearch: (value: string) => void;
   setSearchParams: (value: string) => void;
-  setResultsLength: (length: number) => void;
+  setResultsLength: (length: number | undefined) => void;
   setIsLoading: (loading: boolean) => void;
+  setSearchType: (type: "ai" | "artikel") => void;
 }
 
 /**
@@ -42,7 +43,29 @@ const SearchManager = ({
     useState<string>(initialSearch);
   const [resultsLength, setResultsLength] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
-  const isAISearch = searchParameters !== "" && searchParameters !== null;
+  const [searchType, setSearchType] = useState<"ai" | "artikel">(
+    initialSearch?.includes("://") ? "ai" : "artikel",
+  );
+  const isAISearch = searchType === "ai";
+
+  // Reset resultsLength synchronously so the analytics effect never sees a
+  // stale count paired with a new query (useEffect-based reset fires too late).
+  const handleSetSearchParams = useCallback((value: string) => {
+    setResultsLength(undefined);
+    setSearchParameters(value);
+  }, []);
+
+  // Clear resultsLength on tab switch so the analytics effect doesn't re-fire
+  // with a stale count under the new searchType. Also reset isLoading when
+  // switching away from AI: useAISearch skips setIsLoading(false) on abort,
+  // which would leave the spinner stuck if the tab is switched mid-request.
+  const handleSetSearchType = useCallback((type: "ai" | "artikel") => {
+    setResultsLength(undefined);
+    setSearchType(type);
+    if (type === "artikel") {
+      setIsLoading(false);
+    }
+  }, []);
 
   // Set search achievement when search is performed
   useEffect(() => {
@@ -60,23 +83,20 @@ const SearchManager = ({
     }
   }, [resultsLength, searchParameters, isAISearch]);
 
-  // Set rechercheur achievement if search contains a URL
+  // Set rechercheur achievement if a non-AI search query contains a URL
   useEffect(() => {
-    if (searchParameters && searchParameters.includes("://")) {
+    if (!isAISearch && searchParameters && searchParameters.includes("://")) {
       Achievements.setAchievementValue("rechercheur");
     }
-  }, [searchParameters]);
+  }, [isAISearch, searchParameters]);
 
   // Update search when initialSearch changes (for shareIntent)
   useEffect(() => {
     if (initialSearch) {
       setSearch(initialSearch);
+      setResultsLength(undefined);
       setSearchParameters(initialSearch);
-
-      // If it's a URL, set the rechercheur achievement
-      if (initialSearch && initialSearch.includes("://")) {
-        Achievements.setAchievementValue("rechercheur");
-      }
+      setSearchType(initialSearch.includes("://") ? "ai" : "artikel");
     }
   }, [initialSearch]);
 
@@ -89,9 +109,10 @@ const SearchManager = ({
         isLoading,
         isAISearch,
         setSearch,
-        setSearchParams: setSearchParameters,
+        setSearchParams: handleSetSearchParams,
         setResultsLength,
         setIsLoading,
+        setSearchType: handleSetSearchType,
       })}
     </>
   );

@@ -1,0 +1,6 @@
+- Artikel können jetzt vorgelesen werden
+- Lesezeit für Artikel wird angezeigt
+- Aktualisiertes Design für die Bildvorschau, Quellen und Erfolge
+- Suchseite neu gestaltet und aufgeteilt in Artikel- und KI-Fake-Suche
+- "Nach oben scrollen" auf der Startseite repariert
+- Performance-Verbesserungen und Fehlerbehebungen

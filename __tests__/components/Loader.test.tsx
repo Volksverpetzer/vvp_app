@@ -3,14 +3,14 @@ import { Text } from "react-native";
 
 import Loader from "#/components/loader/Loader";
 
-jest.mock("#/components/animations/LoadingFallback", () => {
+jest.mock("#/components/ui/UiSpinner", () => {
   const { Text: MockText } = jest.requireActual("react-native");
-  return function MockLoadingFallback({ text }: { text?: string }) {
+  return function MockUiSpinner({ text }: { text?: string }) {
     return <MockText>{`loading:${text}`}</MockText>;
   };
 });
 
-jest.mock("#/components/design/ErrorCard", () => {
+jest.mock("#/components/ui/UiErrorCard", () => {
   const { Text: MockText } = jest.requireActual("react-native");
   return function MockErrorCard({ text }: { text?: string }) {
     return <MockText>{`error:${text}`}</MockText>;
@@ -94,7 +94,7 @@ describe("Loader", () => {
     await waitFor(() => {
       expect(
         getByText(
-          "error:Beitrag konnte nicht geladen werden. Bitte erneut versuchen.",
+          "error:Beitrag konnte nicht geladen werden. Bitte später erneut versuchen.",
         ),
       ).toBeTruthy();
     });
@@ -122,7 +122,7 @@ describe("Loader", () => {
 
     expect(
       queryByText(
-        "error:Beitrag konnte nicht geladen werden. Bitte erneut versuchen.",
+        "error:Beitrag konnte nicht geladen werden. Bitte später erneut versuchen.",
       ),
     ).toBeNull();
   });

@@ -73,7 +73,7 @@ const handleAndroidImageShare = async (
   uri: string,
   fileType: string,
   url: string,
-  properties: object,
+  properties: Record<string, unknown>,
 ): Promise<boolean> => {
   await Sharing.shareAsync(uri, {
     mimeType: "image/" + fileType,
@@ -102,7 +102,7 @@ const handleAndroidImageShare = async (
 const handleSuccessfulShare = async (
   url: string,
   activityType: string | null | undefined,
-  properties: object,
+  properties: Record<string, unknown>,
 ): Promise<boolean> => {
   await registerEvent(url, "Share", {
     activityType: activityType ?? "unknown",
@@ -112,6 +112,13 @@ const handleSuccessfulShare = async (
     Achievements.setAchievementValue("sharefact");
     // Update statistic for sharing an article
     Statistics.countArticleShared();
+  }
+  try {
+    if (new URL(url).hostname === "bsky.app") {
+      Achievements.setAchievementValue("bskyshare");
+    }
+  } catch {
+    // non-parseable URL (e.g. relative path), skip
   }
   await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   return true;
@@ -126,7 +133,7 @@ const handleSuccessfulShare = async (
  */
 const onShare = async (
   url: string,
-  properties: object = {},
+  properties: Record<string, unknown> = {},
 ): Promise<boolean> => {
   try {
     await Haptics.selectionAsync();
@@ -162,7 +169,7 @@ const onShare = async (
 
     return false;
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     return false;
   }
 };
@@ -176,7 +183,7 @@ const onShare = async (
  */
 const multishare = async (
   shareable: ShareableType[],
-  properties: object = {},
+  properties: Record<string, unknown> = {},
 ): Promise<boolean> => {
   Haptics.selectionAsync();
   if (shareable.length === 1) {

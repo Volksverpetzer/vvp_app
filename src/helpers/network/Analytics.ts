@@ -15,15 +15,15 @@ const plausibleClient = createClient("https://plausible.io");
  * @param properties - Additional properties
  * @param utm_campaign - UTM campaign (default: "app")
  * @param utm_source - UTM source (default: "app")
- * @returns Promise<unknown> - Response data
+ * @returns Promise<void>
  */
 const registerEvent = async (
   permalink: string,
   event: string,
-  properties?: object,
+  properties?: Record<string, unknown>,
   utm_campaign = "app",
   utm_source = "app",
-): Promise<unknown> => {
+): Promise<void> => {
   if (!Config.enableAnalytics) return;
   const { hostname } = Linking.parse(wpUrl);
   const payload = {
@@ -41,14 +41,9 @@ const registerEvent = async (
     },
   };
   try {
-    return await post<unknown, typeof payload>(
-      plausibleClient,
-      "/api/event",
-      payload,
-    );
+    await post<unknown, typeof payload>(plausibleClient, "/api/event", payload);
   } catch (error) {
     console.error(error);
-    return error;
   }
 };
 

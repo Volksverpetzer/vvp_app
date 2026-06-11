@@ -24,7 +24,7 @@ const BlockRenderer = (properties: BlockRenderProperties) => {
     return undefined;
   }
 
-  const DefaultRender = () => (
+  const defaultContent = (
     <View
       style={{
         alignSelf: "stretch",
@@ -42,12 +42,12 @@ const BlockRenderer = (properties: BlockRenderProperties) => {
         url={properties.url}
         renderIndex={properties.renderProps.renderIndex}
       >
-        <DefaultRender />
+        {defaultContent}
       </ReportingWrapper>
     );
   }
 
-  return <DefaultRender />;
+  return defaultContent;
 };
 
 export default BlockRenderer;

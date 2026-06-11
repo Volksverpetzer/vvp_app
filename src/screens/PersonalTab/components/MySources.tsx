@@ -7,11 +7,11 @@ import Swipeable, {
 
 import { DeleteIcon, LinkIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
-import Card from "#/components/design/Card";
-import Space from "#/components/design/Space";
 import Heading from "#/components/typography/Heading";
+import UiCard from "#/components/ui/UiCard";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -20,8 +20,16 @@ import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl, StoredSources } from "#/types";
 
-type SourceEntry = { href: HttpsUrl; text?: string; date?: string };
-type SlugGroup = { slug: string; latestDate: string; entries: SourceEntry[] };
+interface SourceEntry {
+  href: HttpsUrl;
+  text?: string;
+  date?: string;
+}
+interface SlugGroup {
+  slug: string;
+  latestDate: string;
+  entries: SourceEntry[];
+}
 
 const MySources = () => {
   const [sources, setSources] = useState<StoredSources>({});
@@ -71,7 +79,7 @@ const MySources = () => {
       {slugGroups.map((group) => {
         const title = group.entries.find((e) => e.text)?.text;
         return (
-          <Card key={group.slug} style={{ padding: 0 }}>
+          <UiCard key={group.slug} style={{ padding: 0 }}>
             <View style={{ padding: 30, gap: 10 }}>
               {title && (
                 <Heading style={{ color: Colors[colorScheme].text }}>
@@ -112,14 +120,14 @@ const MySources = () => {
                 </Swipeable>
               ))}
             </View>
-          </Card>
+          </UiCard>
         );
       })}
-      <Space size={50} />
+      <UiSpace size={50} />
       <UiEmptyState icon={<LinkIcon />}>
         Klicke auf Links in Artikeln, dann tauchen sie hier auf
       </UiEmptyState>
-      <Space size={100} />
+      <UiSpace size={100} />
     </View>
   );
 };

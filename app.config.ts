@@ -28,8 +28,10 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     userInterfaceStyle: "automatic",
     plugins: [
       "./plugins/gradleproperties.plugin.ts",
+      "@react-native-vector-icons/octicons",
       ["expo-router"],
       ["expo-asset"],
+      ["expo-audio", { microphonePermission: false }],
       [
         "expo-sharing",
         {
@@ -72,15 +74,18 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
           assetsPaths: ["./assets/rive"],
         },
       ],
+      [
+        "expo-splash-screen",
+        {
+          image: variableConfig.assets.splash,
+          backgroundColor: variableConfig.extraConfig.themeColor,
+        },
+      ],
       "expo-font",
       "expo-image",
       "expo-mail-composer",
       "expo-web-browser",
     ],
-    splash: {
-      image: variableConfig.assets.splash,
-      backgroundColor: variableConfig.extraConfig.themeColor,
-    },
     updates: {
       // Disable EAS updates for production builds
       enabled: false,
@@ -134,6 +139,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     extra: {
       ...variableConfig.extraConfig,
       isFoss: buildFossOnly,
+      ...(buildFossOnly && { enableAnalytics: false }),
     },
     ...(buildFossOnly && {
       autolinking: {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
-import Collapsable from "#/components/design/Collapsable";
+import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -54,40 +54,47 @@ export const ArticleSourceList = ({
     outBoundLinkPress(extension_url, article_link);
   };
 
+  const visibleLinks = Array.isArray(links)
+    ? links.filter((l) => (l.visitors ?? 0) > 0)
+    : [];
+
   return (
-    <Collapsable title="Quellen" defaultOpen={false} onToggle={setOpen}>
+    <UiCollapsable
+      title="Quellen"
+      defaultOpen={false}
+      onToggle={setOpen}
+      cardBackground={Colors[colorScheme].surface}
+    >
       <View>
-        {Array.isArray(links) && links.length > 0 ? (
-          links
-            .filter((l) => (l.visitors ?? 0) > 0)
-            .map((link, idx) => (
-              <View
-                key={idx}
-                style={{
-                  borderBottomColor: textColor,
-                  borderBottomWidth: 1,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingVertical: 8,
-                }}
+        {visibleLinks.length > 0 ? (
+          visibleLinks.map((link, idx) => (
+            <View
+              key={`${link.url}-${idx}`}
+              style={{
+                borderBottomColor: textColor,
+                borderBottomWidth: idx < visibleLinks.length - 1 ? 1 : 0,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingVertical: 8,
+              }}
+            >
+              <UiPressable
+                accessibilityRole="button"
+                style={{ width: "80%" }}
+                onPress={() => onPress(link.url)}
               >
-                <UiPressable
-                  accessibilityRole="button"
-                  style={{ width: "80%" }}
-                  onPress={() => onPress(link.url)}
-                >
-                  <UiText style={{ color: corporate }}>
-                    {link.url.split("?")[0].split("#")[0]}
-                  </UiText>
-                </UiPressable>
-                <UiText style={{ width: "20%" }}>{link.visitors} Clicks</UiText>
-              </View>
-            ))
+                <UiText style={{ color: corporate }}>
+                  {link.url.split("?")[0].split("#")[0]}
+                </UiText>
+              </UiPressable>
+              <UiText style={{ width: "20%" }}>{link.visitors} Clicks</UiText>
+            </View>
+          ))
         ) : (
           <UiText>Keine Daten</UiText>
         )}
       </View>
-    </Collapsable>
+    </UiCollapsable>
   );
 };

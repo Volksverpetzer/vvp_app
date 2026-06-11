@@ -4,7 +4,7 @@ import type { StyleProp, TextStyle } from "react-native";
 import { Linking, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
-import Card from "#/components/design/Card";
+import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -59,7 +59,7 @@ const LicensesListItem = (
   }
 
   return (
-    <Card style={styles.card}>
+    <UiCard style={styles.card}>
       {image && (
         <UiPressable
           accessibilityRole="button"
@@ -96,7 +96,7 @@ const LicensesListItem = (
           <ChevronIcon direction="right" color={iconColor} size={32} />
         </View>
       </UiPressable>
-    </Card>
+    </UiCard>
   );
 };
 

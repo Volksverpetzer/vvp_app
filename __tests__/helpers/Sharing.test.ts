@@ -328,6 +328,51 @@ describe("Sharing helpers", () => {
       expect(Statistics.countArticleShared).toHaveBeenCalled();
     });
 
+    it("should update bskyshare achievement for bsky.app URLs", async () => {
+      const url = "https://bsky.app/profile/handle/post/postId";
+      parseSpy.mockReturnValue({ path: "/profile/handle/post/postId" });
+      shareSpy.mockResolvedValue({
+        action: Share.sharedAction,
+        activityType: "facebook",
+      });
+
+      await onShare(url);
+
+      expect(Achievements.setAchievementValue).toHaveBeenCalledWith(
+        "bskyshare",
+      );
+      expect(Statistics.countArticleShared).not.toHaveBeenCalled();
+    });
+
+    it("should not throw and not award bskyshare for non-parseable URLs", async () => {
+      const url = "/relative/path/image.jpg";
+      parseSpy.mockReturnValue({ path: "/relative/path/image.jpg" });
+      shareSpy.mockResolvedValue({
+        action: Share.sharedAction,
+        activityType: "facebook",
+      });
+
+      await expect(onShare(url)).resolves.toBe(true);
+      expect(Achievements.setAchievementValue).not.toHaveBeenCalledWith(
+        "bskyshare",
+      );
+    });
+
+    it("should not award bskyshare for URLs that spoof bsky.app as a subdomain", async () => {
+      const url = "https://bsky.app.evil.com/phish";
+      parseSpy.mockReturnValue({ path: "/phish" });
+      shareSpy.mockResolvedValue({
+        action: Share.sharedAction,
+        activityType: "facebook",
+      });
+
+      await onShare(url);
+
+      expect(Achievements.setAchievementValue).not.toHaveBeenCalledWith(
+        "bskyshare",
+      );
+    });
+
     it("should not update achievements for non-volksverpetzer URLs", async () => {
       // Setup
       const url = "https://example.com/article";
@@ -425,7 +470,7 @@ describe("Sharing helpers", () => {
 
       // Assert
       expect(result).toBe(false);
-      expect(consoleErrorSpy).toHaveBeenCalledWith("Share failed");
+      expect(consoleErrorSpy).toHaveBeenCalledWith(new Error("Share failed"));
 
       // Restore console.error
       consoleErrorSpy.mockRestore();

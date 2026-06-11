@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 import { Animated } from "react-native";
-import type { StyleProp, ViewStyle } from "react-native";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
@@ -16,10 +16,11 @@ interface UiTabIconLabelProps {
   animatedLabelOpacity?: Animated.AnimatedInterpolation<number>;
 }
 
-const labelBaseStyle = {
-  alignSelf: "center" as const,
+const labelBaseStyle: TextStyle = {
+  alignSelf: "center",
   fontFamily: "SourceSansProBold",
   fontSize: 12,
+  lineHeight: 17,
 };
 
 const UiTabIconLabel = ({

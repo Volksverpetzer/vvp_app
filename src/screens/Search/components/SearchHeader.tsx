@@ -1,10 +1,10 @@
 import type { RefObject } from "react";
 import { useCallback } from "react";
-import { Keyboard, TextInput } from "react-native";
+import { Keyboard, TextInput, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -33,24 +33,33 @@ const SearchHeader = ({
   onSubmit,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].surface;
+  const backgroundColor = Colors[colorScheme].background;
   const corporate = Colors[colorScheme].primary;
 
-  // Extract the nested ternary operation into an independent variable
-  let faktenBotReaction;
-  if (resultsLength === undefined) {
-    faktenBotReaction = undefined;
-  } else {
-    faktenBotReaction = resultsLength > 0 ? 10 : 0;
-  }
+  // Show no reaction while loading so we don't display a stale previous result
+  const faktenBotReaction =
+    !isLoading && resultsLength !== undefined
+      ? resultsLength > 0
+        ? 10
+        : 0
+      : undefined;
 
   const handleSubmit = useCallback(() => {
-    setSearchParams(search);
+    const trimmed = search.trim();
+    if (trimmed.length < 2) {
+      Toast.show({
+        type: "info",
+        text1: "Bitte mindestens 2 Zeichen eingeben",
+      });
+      return;
+    }
+    if (trimmed !== search) setSearch(trimmed);
+    setSearchParams(trimmed);
     Keyboard.dismiss();
     if (onSubmit) {
       onSubmit();
     }
-  }, [search, setSearchParams, onSubmit]);
+  }, [search, setSearch, setSearchParams, onSubmit]);
 
   return (
     <>
@@ -71,12 +80,24 @@ const SearchHeader = ({
             fontFamily: "SourceSansProBold",
             fontSize: 22,
             color: corporate,
+            flex: 1,
+            textAlign: "center",
           }}
         >
-          Fact Check
+          {showFaktenBot ? "Fact Check" : "Artikel-Suche"}
         </UiText>
         {showFaktenBot && (
-          <FaktenBot reaction={faktenBotReaction} search={isLoading} />
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: 0,
+              justifyContent: "center",
+            }}
+          >
+            <FaktenBot reaction={faktenBotReaction} search={isLoading} />
+          </View>
         )}
       </View>
       <View

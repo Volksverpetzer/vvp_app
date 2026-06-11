@@ -9,8 +9,8 @@ import { Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
-import { type PropsWithChildren, useEffect } from "react";
-import { LogBox, Platform } from "react-native";
+import { type PropsWithChildren, useEffect, useState } from "react";
+import { LogBox, Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   SafeAreaProvider,
@@ -19,11 +19,12 @@ import {
 import type { ToastConfig } from "react-native-toast-message";
 import Toast from "react-native-toast-message";
 
-import View from "#/components/design/View";
+import ChangelogModal from "#/components/popups/ChangelogModal";
 import MissionPopup from "#/components/popups/MissionPopup";
 import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
+import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -87,23 +88,35 @@ const RootLayout = () => {
     SourceSansProBoldItalic: SourceSans3_700Bold_Italic,
   });
 
-  // On first mount check notification permissions and request if appropriate.
-  // The NotificationManager itself will skip simulators and respects canAskAgain.
+  const [showChangelog, setShowChangelog] = useState(false);
+
+  // On first mount: read onboarding state once, then gate both notification
+  // permission request and changelog display on it.
   useEffect(() => {
     (async () => {
       try {
         const onboardingDone = await PersonalStore.isOnboardingDone();
-        if (onboardingDone) {
-          await NotificationManager.checkAndRequestOnLaunch();
+        if (!onboardingDone) return;
+
+        await NotificationManager.checkAndRequestOnLaunch();
+
+        if (Changelog.notes) {
+          const lastSeen =
+            await PersonalStore.getLastSeenChangelogVersionCode();
+          if (lastSeen < Changelog.versionCode) {
+            setShowChangelog(true);
+          }
         }
       } catch (error) {
-        console.error(
-          "Error checking onboarding status for notifications:",
-          error,
-        );
+        console.error("Error during post-onboarding startup checks:", error);
       }
     })();
   }, []);
+
+  const dismissChangelog = async () => {
+    setShowChangelog(false);
+    await PersonalStore.setLastSeenChangelogVersionCode(Changelog.versionCode);
+  };
 
   useEffect(() => {
     if (loaded) {
@@ -158,6 +171,10 @@ const RootLayout = () => {
                 <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
               </Stack>
               <Toast config={toastConfig} />
+              <ChangelogModal
+                isVisible={showChangelog}
+                onClose={dismissChangelog}
+              />
             </AppFrame>
           </BadgeProvider>
         </SettingsProvider>

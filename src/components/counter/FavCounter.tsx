@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import type { TextStyle } from "react-native";
+import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";

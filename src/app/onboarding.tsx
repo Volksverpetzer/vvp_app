@@ -3,14 +3,15 @@ import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import { useContext, useState } from "react";
+import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
-import View from "#/components/design/View";
 import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
+import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -18,7 +19,7 @@ import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
 import type { NotificationSettingType, SettingType } from "#/types";
 
@@ -31,7 +32,9 @@ const Onboarding = () => {
     );
   const appName = Constants.expoConfig.name;
   const { contentSettings, setContentSettings } = useContext(SettingsContext);
-  const corporate = useCorporateColor();
+  const colorScheme = useAppColorScheme();
+  const backgroundColor = Colors[colorScheme].background;
+  const corporate = Colors[colorScheme].primary;
   const { bottom } = useSafeAreaInsets();
   const router = useRouter();
 
@@ -165,7 +168,13 @@ const Onboarding = () => {
   ];
 
   return (
-    <View style={{ flex: 1, paddingBottom: bottom }}>
+    <View
+      style={{
+        flex: 1,
+        paddingBottom: bottom,
+        backgroundColor,
+      }}
+    >
       <FlatBoard
         data={data}
         onFinish={agreeToTerms}

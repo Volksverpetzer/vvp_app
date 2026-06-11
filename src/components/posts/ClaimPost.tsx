@@ -1,9 +1,10 @@
 import * as WebBrowser from "expo-web-browser";
+import { View } from "react-native";
 
-import View from "#/components/design/View";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ClaimProperties } from "#/types";
 
@@ -24,7 +25,7 @@ const ClaimPost = (properties: ClaimProperties) => {
         <UiText
           style={{
             fontFamily: "SourceSansProBold",
-            paddingHorizontal: 30,
+            paddingHorizontal: POST_PADDING_HORIZONTAL,
             fontSize: 20,
             lineHeight: 26,
             textAlign: "left",
@@ -33,10 +34,16 @@ const ClaimPost = (properties: ClaimProperties) => {
         >
           {review.publisher.name}: {review.title}
         </UiText>
-        <UiText style={{ paddingHorizontal: 30, paddingVertical: 5, color }}>
+        <UiText
+          style={{
+            paddingHorizontal: POST_PADDING_HORIZONTAL,
+            paddingVertical: 5,
+            color,
+          }}
+        >
           {review.publisher.name} | {review.reviewDate?.split("T")[0]}
         </UiText>
-        <UiText style={{ paddingHorizontal: 30 }}>
+        <UiText style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
           {review.textualRating}
         </UiText>
       </View>

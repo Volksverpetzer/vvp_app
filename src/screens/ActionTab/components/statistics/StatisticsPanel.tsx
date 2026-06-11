@@ -2,7 +2,6 @@ import { StyleSheet, View } from "react-native";
 
 import type { OcticonsIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
-import Space from "#/components/design/Space";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -50,7 +49,9 @@ const StatisticsPanel = ({
   const muted = Colors[colorScheme].muted;
 
   return (
-    <View style={[globalStyles.centered, { width }]}>
+    <View
+      style={[globalStyles.centered, { width, gap: 10, paddingBottom: 10 }]}
+    >
       <View
         style={[
           globalStyles.row,
@@ -80,8 +81,6 @@ const StatisticsPanel = ({
           </UiText>
         )}
       </View>
-
-      <Space size={10} />
 
       <View style={panelStyles.contentRow}>
         {showLeftChevron && onLeftPress ? (
@@ -125,8 +124,6 @@ const StatisticsPanel = ({
           <View style={panelStyles.chevronSlot} />
         )}
       </View>
-
-      <Space size={10} />
     </View>
   );
 };

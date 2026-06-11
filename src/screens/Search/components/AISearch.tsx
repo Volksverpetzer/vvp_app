@@ -4,7 +4,9 @@ import { decode } from "html-entities";
 import { useCallback } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
+import { SafetyIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
+import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
@@ -29,9 +31,8 @@ const AISearch = ({
   setIsLoading,
   showFaktenBot = false,
 }: AISearchProperties) => {
-  const { results, error, loadingMessage, reactionValue, reload } = useAISearch(
-    { search, setResultsLength, setIsLoading },
-  );
+  const { results, error, noResults, loadingMessage, reactionValue, reload } =
+    useAISearch({ search, setResultsLength, setIsLoading });
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
@@ -62,13 +63,12 @@ const AISearch = ({
     [textColor, router],
   );
 
-  if (results.length === 0 && !error) {
+  if (results.length === 0 && !error && !noResults) {
     return (
-      <View style={[globalStyles.centered, { paddingTop: 100 }]}>
-        <UiText>
-          {loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}
-        </UiText>
-        <UiSpinner size="large" />
+      <View style={globalStyles.centered}>
+        <UiSpinner
+          text={loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}
+        />
         {showFaktenBot && (
           <View style={{ position: "absolute", top: 20, right: 20 }}>
             <FaktenBot search={true} reaction={reactionValue} />
@@ -78,9 +78,19 @@ const AISearch = ({
     );
   }
 
+  if (noResults) {
+    return (
+      <View style={globalStyles.centered}>
+        <UiEmptyState icon={<SafetyIcon />}>
+          Keine passenden Ergebnisse gefunden
+        </UiEmptyState>
+      </View>
+    );
+  }
+
   if (error) {
     return (
-      <View style={[globalStyles.centered, { paddingTop: 100 }]}>
+      <View style={globalStyles.centered}>
         <UiText>{error}</UiText>
         <UiText>Melde uns den Fake hier:</UiText>
         <UiPressable
@@ -129,15 +139,9 @@ const AISearch = ({
         data={results}
         keyExtractor={(_, index) => index.toString()}
         contentContainerStyle={{
-          paddingBottom: 200,
-          paddingHorizontal: 20,
+          paddingBottom: 100,
           gap: 20,
         }}
-        ListHeaderComponent={
-          <UiText style={{ textAlign: "center", marginVertical: 10 }}>
-            Ergebnisse der KI-Suche
-          </UiText>
-        }
         renderItem={renderItem}
       />
     </View>
