@@ -50,6 +50,7 @@ const SearchHeader = ({
       Toast.show({
         type: "info",
         text1: "Bitte mindestens 2 Zeichen eingeben",
+        position: "bottom",
       });
       return;
     }

@@ -40,8 +40,21 @@ const BackupView = () => {
         dialogTitle: "Backup exportieren",
         UTI: "public.json",
       });
+      Toast.show({
+        type: "success",
+        text1: "Export erfolgreich",
+        text2: "Deine Daten wurden exportiert.",
+        position: "bottom",
+        visibilityTime: 3000,
+        autoHide: true,
+      });
     } catch {
-      Toast.show({ type: "error", text1: "Export fehlgeschlagen" });
+      Toast.show({
+        type: "error",
+        text1: "Export fehlgeschlagen",
+        text2: "Versuche es erneut.",
+        position: "bottom",
+      });
     } finally {
       setBusy(null);
     }
@@ -58,7 +71,12 @@ const BackupView = () => {
 
       const uri = result.assets?.[0]?.uri;
       if (!uri) {
-        Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
+        Toast.show({
+          type: "error",
+          text1: "Ungültige Backup-Datei",
+          text2: "Das Format der Datei konnte nicht erkannt werden.",
+          position: "bottom",
+        });
         return;
       }
 
@@ -66,22 +84,42 @@ const BackupView = () => {
       const data: unknown = JSON.parse(content);
 
       if (!isObjectRecord(data)) {
-        Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
+        Toast.show({
+          type: "error",
+          text1: "Ungültige Backup-Datei",
+          text2: "Das Format der Datei konnte nicht erkannt werden.",
+          position: "bottom",
+        });
         return;
       }
 
       const { favorites, sources } = data;
 
       if (favorites !== undefined && !isValidFavorites(favorites)) {
-        Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
+        Toast.show({
+          type: "error",
+          text1: "Ungültige Backup-Datei",
+          text2: "Das Format der Datei konnte nicht erkannt werden.",
+          position: "bottom",
+        });
         return;
       }
       if (sources !== undefined && !isValidSources(sources)) {
-        Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
+        Toast.show({
+          type: "error",
+          text1: "Ungültige Backup-Datei",
+          text2: "Das Format der Datei konnte nicht erkannt werden.",
+          position: "bottom",
+        });
         return;
       }
       if (!favorites && !sources) {
-        Toast.show({ type: "error", text1: "Ungültige Backup-Datei" });
+        Toast.show({
+          type: "error",
+          text1: "Ungültige Backup-Datei",
+          text2: "Das Format der Datei konnte nicht erkannt werden.",
+          position: "bottom",
+        });
         return;
       }
 
@@ -96,9 +134,17 @@ const BackupView = () => {
         type: "success",
         text1: "Import erfolgreich",
         text2: "Deine Daten wurden wiederhergestellt.",
+        position: "bottom",
+        visibilityTime: 3000,
+        autoHide: true,
       });
     } catch {
-      Toast.show({ type: "error", text1: "Import fehlgeschlagen" });
+      Toast.show({
+        type: "error",
+        text1: "Import fehlgeschlagen",
+        text2: "Versuche es erneut.",
+        position: "bottom",
+      });
     } finally {
       setBusy(null);
     }

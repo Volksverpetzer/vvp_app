@@ -216,7 +216,27 @@ const SettingsScreen = () => {
           {!Config.isFoss && (
             <UiPressable
               accessibilityRole="button"
-              onPress={() => Notifications.registerForPushNotifications()}
+              onPress={() => {
+                Toast.show({
+                  type: "info",
+                  text1: "Benachrichtigungen zurücksetzen?",
+                  text2: "Drücke hier um die Benachrichtigungen zurückzusetzen",
+                  position: "bottom",
+                  visibilityTime: 5000,
+                  autoHide: true,
+                  onPress: () => {
+                    Toast.hide();
+                    Notifications.registerForPushNotifications();
+                    Toast.show({
+                      type: "success",
+                      text1: "Benachrichtigungen zurückgesetzt",
+                      position: "bottom",
+                      visibilityTime: 3000,
+                      autoHide: true,
+                    });
+                  },
+                });
+              }}
             >
               <UiText>Benachrichtigungen zurücksetzen</UiText>
             </UiPressable>
@@ -238,6 +258,7 @@ const SettingsScreen = () => {
                     type: "success",
                     text1: "Erfolge zurückgesetzt",
                     text2: "Alle Erfolge wurden zurückgesetzt",
+                    position: "bottom",
                     visibilityTime: 3000,
                     autoHide: true,
                   });
