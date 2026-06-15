@@ -41,16 +41,19 @@ const Onboarding = () => {
   const isFoss = Config.isFoss ?? false;
 
   const agreeToTerms = async () => {
+    await PersonalStore.setOnboardingDone();
+    updateBadgeState({ personal: false, action: true });
+    router.replace("/");
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+    // Register for push notifications after navigating so the home screen
+    // appears immediately without blocking on the system permission dialog.
+    // Of course not on fdroid where we don't have push notifications
     if (!isFoss) {
-      await Notifications.registerForPushNotifications().catch((error) => {
+      Notifications.registerForPushNotifications().catch((error) => {
         console.error("Failed to register for push notifications:", error);
       });
     }
-    await PersonalStore.setOnboardingDone().finally(() => {
-      updateBadgeState({ personal: false, action: true });
-      router.replace("/");
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    });
   };
 
   const saveContentSetting = (
