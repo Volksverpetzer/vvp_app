@@ -59,7 +59,11 @@ const Slide = ({
 }: SlideProps) => {
   const corporate = useCorporateColor();
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
       <View
         style={{
           height: 100,
