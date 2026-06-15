@@ -17,7 +17,7 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import type { ToastConfig } from "react-native-toast-message";
-import Toast from "react-native-toast-message";
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 
 import ChangelogModal from "#/components/popups/ChangelogModal";
 import MissionPopup from "#/components/popups/MissionPopup";
@@ -128,7 +128,15 @@ const RootLayout = () => {
     return <UiSpinner size="large" />;
   }
 
+  const toastTextStyles = {
+    text1Style: { fontSize: 16 },
+    text2Style: { fontSize: 14 },
+  };
+
   const toastConfig: ToastConfig = {
+    success: (props) => <BaseToast {...props} {...toastTextStyles} />,
+    info: (props) => <BaseToast {...props} {...toastTextStyles} />,
+    error: (props) => <ErrorToast {...props} {...toastTextStyles} />,
     achievement: ({ text1, text2 }) => (
       <MissionPopup text1={text1} text2={text2} />
     ),
