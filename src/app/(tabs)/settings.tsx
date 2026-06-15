@@ -207,8 +207,26 @@ const SettingsScreen = () => {
           <UiPressable
             accessibilityRole="button"
             onPress={() => {
-              PersonalStore.setOnboardingDone(false);
-              PersonalStore.setLastSeenChangelogVersionCode(0);
+              Toast.show({
+                type: "info",
+                text1: "Intro zurücksetzen?",
+                text2: "Drücke hier um das Intro zurückzusetzen",
+                position: "bottom",
+                visibilityTime: 5000,
+                autoHide: true,
+                onPress: () => {
+                  Toast.hide();
+                  PersonalStore.setOnboardingDone(false);
+                  PersonalStore.setLastSeenChangelogVersionCode(0);
+                  Toast.show({
+                    type: "success",
+                    text1: "Intro zurückgesetzt",
+                    text2: "Beim nächsten App-Start wird das Intro angezeigt",
+                    visibilityTime: 3000,
+                    autoHide: true,
+                  });
+                },
+              });
             }}
           >
             <UiText>Intro zurücksetzen</UiText>
