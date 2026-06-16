@@ -8,7 +8,7 @@ import type { WebViewErrorEvent } from "react-native-webview/lib/WebViewTypes";
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
-import { onLinkPress } from "#/helpers/Linking";
+import { normalizePath, onLinkPress } from "#/helpers/Linking";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -188,7 +188,7 @@ const EdgelessWebview = ({
             !isHttpsUrl(url) ||
             !isTopFrame ||
             !url ||
-            path.replace("/", "") === origPath.replace("/", "")
+            normalizePath(path) === normalizePath(origPath)
           )
             return true;
           // Route natively instead

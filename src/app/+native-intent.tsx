@@ -16,7 +16,7 @@ export function redirectSystemPath({ path }: { path: string }) {
 
   // 2. Option: the URL is from our registered url handler
   if (path.startsWith(wpUrl)) {
-    const urlPath = path.replace(wpUrl, "");
+    const urlPath = path.replace(wpUrl, "").replace(/\/$/, "");
     // Check if path should be excluded from deep linking
     if (shouldExcludeFromDeepLink(urlPath)) {
       // Return undefined to prevent routing for excluded paths

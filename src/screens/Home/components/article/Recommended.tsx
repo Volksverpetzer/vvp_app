@@ -4,6 +4,7 @@ import { View } from "react-native";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { normalizePath } from "#/helpers/Linking";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import type { HttpsUrl } from "#/types";
 
@@ -59,7 +60,7 @@ const Recommended = (properties: RecommendedProperties) => {
         }
         const url = new URL(match.url);
         const path = url.pathname;
-        const slug = path.replace(/\/+$/, "").split("/").pop();
+        const slug = normalizePath(path).split("/").pop();
         return (
           <View key={String(index)} style={{ margin: 12 }}>
             <LoadArticlePost slug={slug} elevated />

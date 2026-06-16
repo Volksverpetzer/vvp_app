@@ -14,6 +14,16 @@ const parsePath = (url: string): string => {
 };
 
 /**
+ * Strips leading and trailing slashes from a URL path.
+ * Use this for path comparisons and building Expo Router routes, where
+ * `/foo/bar`, `/foo/bar/`, and `foo/bar` should all be treated as equal.
+ *
+ * Note: distinct from `parsePath`, which intentionally adds a trailing slash
+ * for server API endpoint construction.
+ */
+const normalizePath = (path: string): string => path.replace(/^\/|\/$/g, "");
+
+/**
  * Handles in-app navigation for links. Internal links (same hostname)
  * are pushed to the router; external links open in the browser.
  * Links under /wp-content/uploads/ are treated as external and opened
@@ -39,8 +49,7 @@ const onLinkPress = (
 
   if (hostname === baseHostname) {
     if (path) {
-      const cleanPath = path.replace(/^\//, "").replace(/\/$/, "");
-      router.push(`/${cleanPath}` as Href);
+      router.push(`/${normalizePath(path)}` as Href);
       return;
     }
     router.push(hostname as Href);
@@ -59,4 +68,4 @@ const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
   Linking.openURL(href);
 };
 
-export { onLinkPress, outBoundLinkPress, parsePath };
+export { normalizePath, onLinkPress, outBoundLinkPress, parsePath };
