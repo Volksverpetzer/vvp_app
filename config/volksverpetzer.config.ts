@@ -1,10 +1,8 @@
-// @ts-check
-// Plain CommonJS so Expo's config loader can `require()` this sibling module
-// natively, without booting a TypeScript transpiler (tsx/esbuild) — which the
-// F-Droid source scanner strips. Types are preserved via JSDoc annotations.
+import type { ExpoConfig } from "@expo/config";
 
-/** @type {import("#/types").colorSchemeType} */
-const colorScheme = {
+import type { ExtraConfigType, colorSchemeType } from "#/types";
+
+const colorScheme: colorSchemeType = {
   light: {
     background: "#FFF",
     primary: "#1B7194",
@@ -46,8 +44,7 @@ const assets = {
   splash: "./assets/images/volksverpetzer/splash.png",
 };
 
-/** @type {import("#/types").ExtraConfigType} */
-const extraConfig = {
+const extraConfig: ExtraConfigType = {
   instagramAppId: "1064021441903778",
   apiUrl: "https://volksverpetzer-app.de",
   aiUrl: "https://ai.volksverpetzer-app.de",
@@ -132,14 +129,14 @@ const packageName = "de.volksverpetzer.app";
 
 const googleServicesFile = process.env.google_services;
 
-/** @type {import("@expo/config").ExpoConfig["android"]["intentFilters"][number]["data"]} */
-const AndroidIntentFilters = [
-  {
-    scheme: "https",
-    host: "www.volksverpetzer.de",
-    pathPattern: "/.*/.*",
-  },
-];
+const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data"] =
+  [
+    {
+      scheme: "https",
+      host: "www.volksverpetzer.de",
+      pathPattern: "/.*/.*",
+    },
+  ];
 
 const iOSAssociatedDomains = ["applinks:www.volksverpetzer.de"];
 
@@ -155,4 +152,4 @@ const config = {
   assets,
 };
 
-module.exports = config;
+export default config;

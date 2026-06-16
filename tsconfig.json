@@ -3,7 +3,6 @@
   "compilerOptions": {
     "strict": false,
     "skipLibCheck": true,
-    "allowJs": true,
     "moduleResolution": "bundler",
     "module": "preserve",
     "esModuleInterop": true,
@@ -21,7 +20,6 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.d.ts",
-    "config/*.js",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ]
