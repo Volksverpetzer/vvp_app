@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import React, { createRef } from "react";
 import type { TextInput } from "react-native";
 
+import { toast } from "#/helpers/toast";
 import SearchHeader from "#/screens/Search/components/SearchHeader";
 
 jest.mock("#/components/animations/FaktenBot", () =>
@@ -21,6 +22,15 @@ jest.mock("#/components/ui/UiText", () => {
 
 jest.mock("#/components/Icons", () => ({
   SearchIcon: jest.fn(() => null),
+}));
+
+jest.mock("#/helpers/toast", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    confirm: jest.fn(),
+  },
 }));
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
@@ -82,6 +92,26 @@ describe("SearchHeader", () => {
       expect(flatStyle).not.toContainEqual(
         expect.objectContaining({ backgroundColor: "#E2F0F5" }),
       );
+    });
+  });
+
+  describe("search validation", () => {
+    it("shows an info toast when fewer than 2 characters are submitted", () => {
+      const { getByLabelText } = render(
+        <SearchHeader {...baseProps} search="a" />,
+      );
+      fireEvent(getByLabelText("Text input field"), "submitEditing");
+      expect(toast.info).toHaveBeenCalledWith(
+        "Bitte mindestens 2 Zeichen eingeben",
+      );
+    });
+
+    it("does not show a toast when 2 or more characters are submitted", () => {
+      const { getByLabelText } = render(
+        <SearchHeader {...baseProps} search="ab" />,
+      );
+      fireEvent(getByLabelText("Text input field"), "submitEditing");
+      expect(toast.info).not.toHaveBeenCalled();
     });
   });
 

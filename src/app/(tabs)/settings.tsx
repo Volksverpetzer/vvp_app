@@ -3,7 +3,6 @@ import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import Toast from "react-native-toast-message";
 
 import {
   CodeIcon,
@@ -33,6 +32,7 @@ import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
+import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BackupView from "#/screens/Settings/components/BackupView";
 import type { NotificationSettingType, SettingType } from "#/types";
@@ -216,7 +216,16 @@ const SettingsScreen = () => {
           {!Config.isFoss && (
             <UiPressable
               accessibilityRole="button"
-              onPress={() => Notifications.registerForPushNotifications()}
+              onPress={() => {
+                toast.confirm(
+                  "Benachrichtigungen zurücksetzen?",
+                  "Drücke hier um die Benachrichtigungen zurückzusetzen",
+                  () => {
+                    Notifications.registerForPushNotifications();
+                    toast.success("Benachrichtigungen zurückgesetzt");
+                  },
+                );
+              }}
             >
               <UiText>Benachrichtigungen zurücksetzen</UiText>
             </UiPressable>
@@ -224,25 +233,17 @@ const SettingsScreen = () => {
           <UiPressable
             accessibilityRole="button"
             onPress={() => {
-              Toast.show({
-                type: "info",
-                text1: "Erfolge zurücksetzen?",
-                text2: "Drücke hier um alle Erfolge zurückzusetzen",
-                position: "bottom",
-                visibilityTime: 5000,
-                autoHide: true,
-                onPress: () => {
-                  Toast.hide();
+              toast.confirm(
+                "Erfolge zurücksetzen?",
+                "Drücke hier um alle Erfolge zurückzusetzen",
+                () => {
                   Achievements.resetEverything();
-                  Toast.show({
-                    type: "success",
-                    text1: "Erfolge zurückgesetzt",
-                    text2: "Alle Erfolge wurden zurückgesetzt",
-                    visibilityTime: 3000,
-                    autoHide: true,
-                  });
+                  toast.success(
+                    "Erfolge zurückgesetzt",
+                    "Alle Erfolge wurden zurückgesetzt",
+                  );
                 },
-              });
+              );
             }}
           >
             <UiText>Alle Erfolge zurücksetzen</UiText>

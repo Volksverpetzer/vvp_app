@@ -17,7 +17,7 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import type { ToastConfig } from "react-native-toast-message";
-import Toast from "react-native-toast-message";
+import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 
 import ChangelogModal from "#/components/popups/ChangelogModal";
 import MissionPopup from "#/components/popups/MissionPopup";
@@ -41,6 +41,11 @@ LogBox.ignoreLogs(["new NativeEventEmitter"]);
 SplashScreen.preventAutoHideAsync();
 
 const SECONDARY_BG_SCREENS = ["action", "support"];
+
+const TOAST_TEXT_STYLES = {
+  text1Style: { fontSize: 16 },
+  text2Style: { fontSize: 14 },
+};
 
 /**
  * Manages the background color for the app shell — including the notch/status bar
@@ -129,6 +134,9 @@ const RootLayout = () => {
   }
 
   const toastConfig: ToastConfig = {
+    success: (props) => <BaseToast {...props} {...TOAST_TEXT_STYLES} />,
+    info: (props) => <BaseToast {...props} {...TOAST_TEXT_STYLES} />,
+    error: (props) => <ErrorToast {...props} {...TOAST_TEXT_STYLES} />,
     achievement: ({ text1, text2 }) => (
       <MissionPopup text1={text1} text2={text2} />
     ),

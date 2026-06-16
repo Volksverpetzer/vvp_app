@@ -1,7 +1,6 @@
 import type { RefObject } from "react";
 import { useCallback } from "react";
 import { Keyboard, TextInput, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
@@ -9,6 +8,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface SearchHeaderProperties {
@@ -47,10 +47,7 @@ const SearchHeader = ({
   const handleSubmit = useCallback(() => {
     const trimmed = search.trim();
     if (trimmed.length < 2) {
-      Toast.show({
-        type: "info",
-        text1: "Bitte mindestens 2 Zeichen eingeben",
-      });
+      toast.info("Bitte mindestens 2 Zeichen eingeben");
       return;
     }
     if (trimmed !== search) setSearch(trimmed);
