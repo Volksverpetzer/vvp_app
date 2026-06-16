@@ -177,6 +177,10 @@ const RootLayout = () => {
                   options={{ title: "Unterstutzen" }}
                 />
                 <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
+                <Stack.Screen
+                  name="external"
+                  options={{ headerShown: false }}
+                />
               </Stack>
               <Toast config={toastConfig} />
               <ChangelogModal
