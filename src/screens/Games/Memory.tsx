@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { ViewStyle } from "react-native";
 import { Dimensions, StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
