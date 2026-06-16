@@ -1,8 +1,10 @@
-import type { ExpoConfig } from "@expo/config";
+// @ts-check
+// Plain CommonJS so Expo's config loader can `require()` this sibling module
+// natively, without booting a TypeScript transpiler (tsx/esbuild) — which the
+// F-Droid source scanner strips. Types are preserved via JSDoc annotations.
 
-import type { ExtraConfigType, colorSchemeType } from "#/types";
-
-const colorScheme: colorSchemeType = {
+/** @type {import("#/types").colorSchemeType} */
+const colorScheme = {
   light: {
     background: "#FFF",
     primary: "#DB0301",
@@ -44,7 +46,8 @@ const assets = {
   splash: "./assets/images/mimikama/splash_mimikama.png",
 };
 
-const extraConfig: ExtraConfigType = {
+/** @type {import("#/types").ExtraConfigType} */
+const extraConfig = {
   apiUrl: "https://mimikamaserver.azurewebsites.net",
   wpUrl: "https://www.mimikama.org",
   aboutUrl: "https://www.mimikama.org/ueber-uns/",
@@ -122,14 +125,14 @@ const packageName = "de.mimikama.app";
 
 const googleServicesFile = process.env.google_services_mimikama;
 
-const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data"] =
-  [
-    {
-      scheme: "https",
-      host: "*.mimikama.org",
-      pathPrefix: "/*/*/",
-    },
-  ];
+/** @type {import("@expo/config").ExpoConfig["android"]["intentFilters"][number]["data"]} */
+const AndroidIntentFilters = [
+  {
+    scheme: "https",
+    host: "*.mimikama.org",
+    pathPrefix: "/*/*/",
+  },
+];
 
 const iOSAssociatedDomains = ["applinks:www.mimikama.org"];
 
@@ -144,4 +147,4 @@ const config = {
   assets,
 };
 
-export default config;
+module.exports = config;
