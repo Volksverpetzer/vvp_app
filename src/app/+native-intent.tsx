@@ -17,11 +17,12 @@ export function redirectSystemPath({ path }: { path: string }) {
   // 2. Option: the URL is from our registered url handler
   if (path.startsWith(wpUrl)) {
     const urlPath = path.replace(wpUrl, "").replace(/\/$/, "");
-    // Check if path should be excluded from deep linking
+    // Check if path should be excluded from deep linking.
+    // Route to "/" so index.tsx renders and can call Linking.openURL to hand
+    // the URL off to the OS. Returning undefined here leaves no valid route
+    // for Expo Router and the URL is silently dropped.
     if (shouldExcludeFromDeepLink(urlPath)) {
-      // Return undefined to prevent routing for excluded paths
-      // The app will not handle this path and it will be opened by OS
-      return undefined;
+      return "/";
     }
     return urlPath;
   }
