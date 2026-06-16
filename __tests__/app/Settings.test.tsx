@@ -234,8 +234,18 @@ describe("SettingsScreen", () => {
     });
   });
 
-  describe("intro reset button", () => {
-    it("resets onboarding and changelog seen state when pressed", () => {
+  describe("intro reset button confirmation flow", () => {
+    it("shows a confirm toast when pressed", () => {
+      const { getByText } = render(<SettingsScreen />);
+      fireEvent.press(getByText("Intro zurücksetzen"));
+      expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
+        "Intro zurücksetzen?",
+        "Intro erscheint beim nächsten Start erneut",
+        expect.any(Function),
+      );
+    });
+
+    it("resets onboarding state and shows success toast on confirm", () => {
       const mock = jest.requireMock("#/helpers/Stores/PersonalStore") as {
         default: {
           setOnboardingDone: jest.Mock;
@@ -244,9 +254,15 @@ describe("SettingsScreen", () => {
       };
       const { getByText } = render(<SettingsScreen />);
       fireEvent.press(getByText("Intro zurücksetzen"));
+      const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
+      onConfirm();
       expect(mock.default.setOnboardingDone).toHaveBeenCalledWith(false);
       expect(mock.default.setLastSeenChangelogVersionCode).toHaveBeenCalledWith(
         0,
+      );
+      expect(jest.mocked(toast.success)).toHaveBeenCalledWith(
+        "Intro zurückgesetzt",
+        "Beim nächsten App-Start wird das Intro angezeigt",
       );
     });
   });
