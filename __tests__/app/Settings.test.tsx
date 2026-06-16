@@ -240,7 +240,7 @@ describe("SettingsScreen", () => {
       fireEvent.press(getByText("Intro zurücksetzen"));
       expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
         "Intro zurücksetzen?",
-        expect.any(String),
+        "Intro erscheint beim nächsten Start erneut",
         expect.any(Function),
       );
     });

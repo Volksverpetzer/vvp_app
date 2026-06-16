@@ -209,7 +209,7 @@ const SettingsScreen = () => {
             onPress={() => {
               toast.confirm(
                 "Intro zurücksetzen?",
-                "Beim nächsten App-Start siehst du das Intro erneut",
+                "Intro erscheint beim nächsten Start erneut",
                 () => {
                   PersonalStore.setOnboardingDone(false);
                   PersonalStore.setLastSeenChangelogVersionCode(0);
