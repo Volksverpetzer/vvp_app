@@ -42,6 +42,11 @@ SplashScreen.preventAutoHideAsync();
 
 const SECONDARY_BG_SCREENS = ["action", "support"];
 
+const TOAST_TEXT_STYLES = {
+  text1Style: { fontSize: 16 },
+  text2Style: { fontSize: 14 },
+};
+
 /**
  * Manages the background color for the app shell — including the notch/status bar
  * area — based on the current screen and color scheme. Lives inside all providers
@@ -128,15 +133,10 @@ const RootLayout = () => {
     return <UiSpinner size="large" />;
   }
 
-  const toastTextStyles = {
-    text1Style: { fontSize: 16 },
-    text2Style: { fontSize: 14 },
-  };
-
   const toastConfig: ToastConfig = {
-    success: (props) => <BaseToast {...props} {...toastTextStyles} />,
-    info: (props) => <BaseToast {...props} {...toastTextStyles} />,
-    error: (props) => <ErrorToast {...props} {...toastTextStyles} />,
+    success: (props) => <BaseToast {...props} {...TOAST_TEXT_STYLES} />,
+    info: (props) => <BaseToast {...props} {...TOAST_TEXT_STYLES} />,
+    error: (props) => <ErrorToast {...props} {...TOAST_TEXT_STYLES} />,
     achievement: ({ text1, text2 }) => (
       <MissionPopup text1={text1} text2={text2} />
     ),

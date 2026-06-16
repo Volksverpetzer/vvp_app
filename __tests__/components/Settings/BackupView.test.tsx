@@ -153,7 +153,10 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung exportieren"));
 
       await waitFor(() => {
-        expect(toast.error).toHaveBeenCalled();
+        expect(toast.error).toHaveBeenCalledWith(
+          "Export fehlgeschlagen",
+          "Versuche es erneut.",
+        );
         expect(Sharing.shareAsync).not.toHaveBeenCalled();
       });
     });
@@ -173,7 +176,10 @@ describe("BackupView", () => {
       await waitFor(() => {
         expect(FavoritesStore.setStoredFavs).toHaveBeenCalledTimes(1);
         expect(SourcesStore.setStoredSources).toHaveBeenCalledTimes(1);
-        expect(toast.success).toHaveBeenCalled();
+        expect(toast.success).toHaveBeenCalledWith(
+          "Import erfolgreich",
+          "Deine Daten wurden wiederhergestellt.",
+        );
       });
     });
 
@@ -187,7 +193,10 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(toast.error).toHaveBeenCalled();
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
+        );
         expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
       });
     });
@@ -218,7 +227,10 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(toast.error).toHaveBeenCalled();
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
+        );
         expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
       });
     });
@@ -236,7 +248,10 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(toast.error).toHaveBeenCalled();
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
+        );
         expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
       });
     });
@@ -252,7 +267,10 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(toast.error).toHaveBeenCalled();
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
+        );
       });
     });
 
@@ -267,7 +285,10 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(toast.error).toHaveBeenCalled();
+        expect(toast.error).toHaveBeenCalledWith(
+          "Import fehlgeschlagen",
+          "Versuche es erneut.",
+        );
       });
     });
 
@@ -286,7 +307,10 @@ describe("BackupView", () => {
       await waitFor(() => {
         expect(FavoritesStore.setStoredFavs).toHaveBeenCalledTimes(1);
         expect(SourcesStore.setStoredSources).not.toHaveBeenCalled();
-        expect(toast.success).toHaveBeenCalled();
+        expect(toast.success).toHaveBeenCalledWith(
+          "Import erfolgreich",
+          "Deine Daten wurden wiederhergestellt.",
+        );
       });
     });
 
@@ -307,7 +331,10 @@ describe("BackupView", () => {
       await waitFor(() => {
         expect(SourcesStore.setStoredSources).toHaveBeenCalledTimes(1);
         expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
-        expect(toast.success).toHaveBeenCalled();
+        expect(toast.success).toHaveBeenCalledWith(
+          "Import erfolgreich",
+          "Deine Daten wurden wiederhergestellt.",
+        );
       });
     });
 
@@ -324,7 +351,10 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(toast.error).toHaveBeenCalled();
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
+        );
         expect(SourcesStore.setStoredSources).not.toHaveBeenCalled();
       });
     });

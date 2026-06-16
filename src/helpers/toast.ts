@@ -18,6 +18,8 @@ export const toast = {
       text1,
       text2,
       position: "bottom",
+      visibilityTime: 4000,
+      autoHide: true,
     });
   },
 
