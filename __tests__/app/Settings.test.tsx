@@ -260,7 +260,10 @@ describe("SettingsScreen", () => {
       expect(mock.default.setLastSeenChangelogVersionCode).toHaveBeenCalledWith(
         0,
       );
-      expect(jest.mocked(toast.success)).toHaveBeenCalled();
+      expect(jest.mocked(toast.success)).toHaveBeenCalledWith(
+        "Intro zurückgesetzt",
+        "Beim nächsten App-Start wird das Intro angezeigt",
+      );
     });
   });
 
