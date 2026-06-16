@@ -1,6 +1,4 @@
 import type { ConfigContext, ExpoConfig } from "@expo/config";
-import "ts-node/register";
-import "tsx/cjs";
 
 import mimikamaConfig from "./config/mimikama.config";
 import vvpConfig from "./config/volksverpetzer.config";
