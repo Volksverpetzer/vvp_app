@@ -58,7 +58,7 @@ export default {
     licenseUrl:
       "https://github.com/oblador/react-native-vector-icons/raw/HEAD/LICENSE",
   },
-  "@rive-app/react-native@0.4.10": {
+  "@rive-app/react-native@0.4.11": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-nitro-react-native",
     licenseUrl:
@@ -146,7 +146,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-font@56.0.6": {
+  "expo-font@56.0.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -181,16 +181,16 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-notifications@56.0.17": {
+  "expo-notifications@56.0.18": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-router@56.2.10": {
+  "expo-router@56.2.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-sharing@56.0.17": {
+  "expo-sharing@56.0.18": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -219,7 +219,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@56.0.11": {
+  "expo@56.0.12": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
