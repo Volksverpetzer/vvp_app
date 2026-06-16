@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import type { ViewStyle } from "react-native";
 import { Dimensions, StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { DisinfoPair, MemoryCard } from "#/types";
 
@@ -36,12 +36,7 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
         ),
       );
       // Show toast with the desired format.
-      Toast.show({
-        type: "success",
-        text1: "Richtig",
-        text2: firstCard.factCheck,
-        position: "bottom",
-      });
+      toast.success("Richtig", firstCard.factCheck);
     }
   }, [firstCard, secondCard]);
 
