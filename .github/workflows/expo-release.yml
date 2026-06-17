@@ -74,7 +74,6 @@ jobs:
         working-directory: ${{ github.workspace }}/build
         run: |
           tar -xzvf "${APK_NAME}-foss.tar.gz"
-          find . -iname "*.apk"
           mv release/app-arm64-v8a-release.apk "${APK_NAME}-foss-arm64-v8a.apk"
           mv release/app-armeabi-v7a-release.apk "${APK_NAME}-foss-armeabi-v7a.apk"
 
