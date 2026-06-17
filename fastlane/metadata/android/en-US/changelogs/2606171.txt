@@ -1,0 +1,4 @@
+- Reworked onboarding
+- Reworked notifications (toasts)
+- Articles that are no longer available are now automatically removed from favorites
+- Bug fixes and performance improvements

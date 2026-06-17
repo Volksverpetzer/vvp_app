@@ -28,7 +28,10 @@ const loadFavoriteArticlePost = async (
 ): Promise<Post<{ article: ArticleProperties }> | undefined> => {
   const article = await WordPressAPI.getPost(slug);
   if (!article) {
-    console.error(`Article not found for slug: ${slug}`);
+    console.warn(
+      `Article not found for slug: ${slug}, removing from favorites`,
+    );
+    await FavoritesStore.removeFavorite(slug);
     return undefined;
   }
 
