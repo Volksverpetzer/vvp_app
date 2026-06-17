@@ -1,5 +1,5 @@
 export default {
-  "@algolia/client-search@5.54.0": {
+  "@algolia/client-search@5.54.1": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
@@ -32,6 +32,11 @@ export default {
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
   "@expo/metro-runtime@56.0.15": {
+    licenses: "MIT",
+    repository: "https://github.com/expo/expo",
+    licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
+  },
+  "@expo/require-utils@56.1.3": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
