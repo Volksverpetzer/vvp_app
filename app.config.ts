@@ -1,15 +1,27 @@
 import type { ConfigContext, ExpoConfig } from "@expo/config";
-import "ts-node/register";
-import "tsx/cjs";
+import { loadModuleSync } from "@expo/require-utils";
+import path from "node:path";
 
-import mimikamaConfig from "./config/mimikama.config";
-import vvpConfig from "./config/volksverpetzer.config";
+import type vvpConfig from "./config/volksverpetzer.config";
 import * as pkg from "./package.json";
+
+// Expo's config loader only transpiles this entry file; a plain `import` of a
+// sibling `./config/*.ts` would fall through to Node's require, which can't load
+// TypeScript. We load each variant through Expo's own per-file loader instead —
+// it transpiles via tsc / Node's native type-stripping (never esbuild, which the
+// F-Droid source scanner strips), and registers no global require hook. The
+// `import type` above is erased at runtime and only supplies the shared shape.
+type VariantConfig = typeof vvpConfig;
+
+const loadVariant = (name: "volksverpetzer" | "mimikama"): VariantConfig =>
+  loadModuleSync(path.join(__dirname, "config", `${name}.config.ts`)).default;
 
 // Fallback auf "volksverpetzer", wenn process.env.APP nicht gesetzt ist
 const appEnv = (process.env.APP ?? "volksverpetzer").toLowerCase();
 
-const variableConfig = appEnv === "volksverpetzer" ? vvpConfig : mimikamaConfig;
+const variableConfig = loadVariant(
+  appEnv === "volksverpetzer" ? "volksverpetzer" : "mimikama",
+);
 const buildFossOnly = process.env.BUILD_FOSS_ONLY === "true";
 
 const config = ({ config }: ConfigContext): ExpoConfig => {

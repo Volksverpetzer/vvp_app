@@ -3,7 +3,7 @@ name: Expo Preview
 on:
   push:
     branches:
-      - "*"
+      - "**"
 
 jobs:
   expo-preview:

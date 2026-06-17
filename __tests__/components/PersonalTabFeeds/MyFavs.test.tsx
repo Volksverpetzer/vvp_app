@@ -60,6 +60,7 @@ jest.mock("#/helpers/Stores/FavoritesStore", () => ({
   __esModule: true,
   default: {
     getAllFavorites: jest.fn(),
+    removeFavorite: jest.fn(),
   },
 }));
 
@@ -264,6 +265,67 @@ describe("MyFavs", () => {
     );
 
     consoleErrorSpy.mockRestore();
+  });
+
+  it("removes a stale article from storage and excludes it from the list", async () => {
+    const validArticleApiResponse = {
+      id: 1,
+      date: "2026-01-01T12:00:00Z",
+      date_gmt: "2026-01-01T12:00:00Z",
+      link: "https://www.volksverpetzer.de/faktencheck/valid-article",
+      slug: "valid-article",
+      title: { rendered: "Valid Article" },
+      yoast_head_json: { description: "Valid description" },
+      _links: { "wp:featuredmedia": [{ href: "https://example.com/image" }] },
+      categories: [],
+      authors: [],
+    };
+    const mappedValidPost = {
+      id: "valid-article",
+      component: jest.fn(),
+      data: {
+        article: { title: "Valid Article", link: validArticleApiResponse.link },
+      },
+      shareable: [
+        { url: validArticleApiResponse.link, title: "Artikel teilen" },
+      ],
+      contentFavIdentifier: "valid-article",
+      contentType: FAV_TYPE_ARTICLE,
+    };
+    const consoleWarnSpy = jest
+      .spyOn(console, "warn")
+      .mockImplementation(() => undefined);
+
+    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+      "stale-article": { contentType: FAV_TYPE_ARTICLE },
+      "valid-article": { contentType: FAV_TYPE_ARTICLE },
+    });
+    // favorites are iterated in reverse insertion order: valid-article first, stale-article second
+    (WordPressAPI.getPost as jest.Mock)
+      .mockResolvedValueOnce(validArticleApiResponse)
+      .mockResolvedValueOnce(null);
+    (WordPressFetcher.mapArticleToPost as jest.Mock).mockReturnValue(
+      mappedValidPost,
+    );
+    (FavoritesStore.removeFavorite as jest.Mock).mockResolvedValue(undefined);
+
+    render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+
+    expect(FavoritesStore.removeFavorite).toHaveBeenCalledWith("stale-article");
+    expect(FavoritesStore.removeFavorite).toHaveBeenCalledTimes(1);
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("stale-article"),
+    );
+    expect(GenericPost).not.toHaveBeenCalledWith(
+      expect.objectContaining({ contentFavIdentifier: "stale-article" }),
+      expect.anything(),
+    );
+
+    consoleWarnSpy.mockRestore();
   });
 
   it("does not refresh favorites while the screen is unfocused", async () => {
