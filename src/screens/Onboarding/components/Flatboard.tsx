@@ -5,6 +5,7 @@ import type {
   ColorValue,
   GestureResponderEvent,
   ImageRequireSource,
+  LayoutChangeEvent,
   TextStyle,
 } from "react-native";
 import { View, useWindowDimensions } from "react-native";
@@ -59,7 +60,7 @@ const Slide = ({
 }: SlideProps) => {
   const corporate = useCorporateColor();
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <View
         style={{
           height: 100,
@@ -124,6 +125,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   const [step, setStep] = useState(0);
   const targetStepRef = useRef(0);
   const { height, width } = useWindowDimensions();
+  const [containerHeight, setContainerHeight] = useState(height);
   const {
     data,
     onFinish,
@@ -153,12 +155,16 @@ const FlatBoard = (properties: FlatBoardProperties) => {
     setStep(index);
   };
 
+  const onLayout = (e: LayoutChangeEvent) => {
+    setContainerHeight(e.nativeEvent.layout.height);
+  };
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 }} onLayout={onLayout}>
       <Carousel
         ref={carouselRef}
         width={width}
-        height={height}
+        height={containerHeight}
         data={data}
         loop={false}
         onSnapToItem={onSnapToItem}
@@ -166,7 +172,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
           <MemoSlide
             {...item}
             width={width}
-            height={height}
+            height={containerHeight}
             headingStyle={headingStyle}
             descriptionStyle={descriptionStyle}
           />

@@ -14,7 +14,7 @@
 **Changelog**
 
 - [ ] `fastlane/metadata/android/de-DE/changelogs/{versionCode}.txt` created with German release notes
-- [ ] `pnpm changelog:sync` run — generates `src/constants/Changelog.ts` and copies to `en-US`
+- [ ] `pnpm prepare:changelog` run — generates `src/constants/Changelog.ts` and copies to `en-US`
 - [ ] All three files committed: `de-DE/{versionCode}.txt`, `en-US/{versionCode}.txt`, `Changelog.ts`
 
 **Quality**

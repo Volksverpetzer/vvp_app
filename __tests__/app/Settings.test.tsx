@@ -10,6 +10,7 @@ import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 
 import SettingsScreen from "#/app/(tabs)/settings";
+import { toast } from "#/helpers/toast";
 
 let mockIsFoss = false;
 let mockEnableEngagement = false;
@@ -128,9 +129,13 @@ jest.mock("#/components/Icons", () => ({
 jest.mock("react-native-gesture-handler", () => ({
   ScrollView: jest.fn(({ children }: any) => children),
 }));
-jest.mock("react-native-toast-message", () => ({
-  show: jest.fn(),
-  hide: jest.fn(),
+jest.mock("#/helpers/toast", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    confirm: jest.fn(),
+  },
 }));
 jest.mock("#/screens/Settings/components/BackupView", () => {
   const { Text } = require("react-native");
@@ -179,8 +184,68 @@ describe("SettingsScreen", () => {
     });
   });
 
-  describe("intro reset button", () => {
-    it("resets onboarding and changelog seen state when pressed", () => {
+  describe("notification reset button confirmation flow", () => {
+    it("shows a confirm toast when pressed", () => {
+      const { getByText } = render(<SettingsScreen />);
+      fireEvent.press(getByText("Benachrichtigungen zurücksetzen"));
+      expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
+        "Benachrichtigungen zurücksetzen?",
+        expect.any(String),
+        expect.any(Function),
+      );
+    });
+
+    it("calls registerForPushNotifications and shows success toast on confirm", () => {
+      const Notifications = jest.requireMock("#/helpers/Notifications") as {
+        default: { registerForPushNotifications: jest.Mock };
+      };
+      const { getByText } = render(<SettingsScreen />);
+      fireEvent.press(getByText("Benachrichtigungen zurücksetzen"));
+      const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
+      onConfirm();
+      expect(
+        Notifications.default.registerForPushNotifications,
+      ).toHaveBeenCalled();
+      expect(jest.mocked(toast.success)).toHaveBeenCalled();
+    });
+  });
+
+  describe("achievements reset button confirmation flow", () => {
+    it("shows a confirm toast when pressed", () => {
+      const { getByText } = render(<SettingsScreen />);
+      fireEvent.press(getByText("Alle Erfolge zurücksetzen"));
+      expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
+        "Erfolge zurücksetzen?",
+        expect.any(String),
+        expect.any(Function),
+      );
+    });
+
+    it("resets achievements and shows success toast on confirm", () => {
+      const { Achievements } = jest.requireMock("#/helpers/Achievements") as {
+        Achievements: { resetEverything: jest.Mock };
+      };
+      const { getByText } = render(<SettingsScreen />);
+      fireEvent.press(getByText("Alle Erfolge zurücksetzen"));
+      const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
+      onConfirm();
+      expect(Achievements.resetEverything).toHaveBeenCalled();
+      expect(jest.mocked(toast.success)).toHaveBeenCalled();
+    });
+  });
+
+  describe("intro reset button confirmation flow", () => {
+    it("shows a confirm toast when pressed", () => {
+      const { getByText } = render(<SettingsScreen />);
+      fireEvent.press(getByText("Intro zurücksetzen"));
+      expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
+        "Intro zurücksetzen?",
+        "Intro erscheint beim nächsten Start erneut",
+        expect.any(Function),
+      );
+    });
+
+    it("resets onboarding state and shows success toast on confirm", () => {
       const mock = jest.requireMock("#/helpers/Stores/PersonalStore") as {
         default: {
           setOnboardingDone: jest.Mock;
@@ -189,9 +254,15 @@ describe("SettingsScreen", () => {
       };
       const { getByText } = render(<SettingsScreen />);
       fireEvent.press(getByText("Intro zurücksetzen"));
+      const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
+      onConfirm();
       expect(mock.default.setOnboardingDone).toHaveBeenCalledWith(false);
       expect(mock.default.setLastSeenChangelogVersionCode).toHaveBeenCalledWith(
         0,
+      );
+      expect(jest.mocked(toast.success)).toHaveBeenCalledWith(
+        "Intro zurückgesetzt",
+        "Beim nächsten App-Start wird das Intro angezeigt",
       );
     });
   });

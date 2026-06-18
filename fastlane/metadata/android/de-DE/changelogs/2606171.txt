@@ -1,0 +1,4 @@
+- Onboarding überarbeitet
+- Benachrichtigungen (Toasts) überarbeitet
+- Nicht mehr verfügbare Artikel werden automatisch aus den Favoriten entfernt
+- Fehlerbehebungen und Performance-Verbesserungen

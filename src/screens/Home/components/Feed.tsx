@@ -178,7 +178,13 @@ const Feed = (properties: FeedProperties) => {
   );
 
   if (!initialLoad) {
-    return <UiSpinner text="Lade Feed..." size="large" />;
+    return (
+      <UiSpinner
+        text="Lade Feed..."
+        size="large"
+        containerStyle={properties.style}
+      />
+    );
   }
 
   if (properties.fetchers.length === 0) {

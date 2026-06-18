@@ -246,6 +246,26 @@ describe("Linking helpers", () => {
       );
     });
 
+    it("collapses trailing-slash redirect variants to the same value", () => {
+      // Regression for the EdgelessWebview white-page loop: a WordPress
+      // canonical redirect that only toggles the trailing slash must
+      // normalize to the same path so the WebView follows it instead of
+      // looping back into native navigation.
+      parseSpy
+        .mockReturnValueOnce({ path: "/aktuelles/slug" })
+        .mockReturnValueOnce({ path: "/aktuelles/slug/" });
+
+      const withoutSlash = parsePath(
+        "https://www.volksverpetzer.de/aktuelles/slug",
+      );
+      const withSlash = parsePath(
+        "https://www.volksverpetzer.de/aktuelles/slug/",
+      );
+
+      expect(withoutSlash).toBe("aktuelles/slug/");
+      expect(withSlash).toBe(withoutSlash);
+    });
+
     it("strips multiple leading slashes", () => {
       parseSpy.mockReturnValue({ path: "//artikel/slug/" });
       expect(parsePath("https://www.volksverpetzer.de/artikel/slug/")).toBe(

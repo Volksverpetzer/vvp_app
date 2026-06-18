@@ -21,6 +21,7 @@ jest.mock("#/components/bars/NavBar", () => jest.fn(() => null));
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
+  useCorporateColor: jest.fn(() => "#1B7194"),
 }));
 
 jest.mock("#/constants/Colors", () => ({
@@ -58,5 +59,23 @@ describe("ImageScreen", () => {
     expect(root.props.style).toEqual(
       expect.objectContaining({ backgroundColor: "#ffffff" }),
     );
+  });
+
+  it("shows an empty state instead of the Image when uri is missing", () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValueOnce({});
+    const { Image } = jest.requireMock("expo-image");
+    const { getByText } = render(<ImageScreen />);
+    expect(Image).not.toHaveBeenCalled();
+    expect(getByText("Bild konnte nicht geladen werden")).toBeTruthy();
+  });
+
+  it("shows an empty state instead of the Image when uri is an array", () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValueOnce({ uri: ["a.jpg", "b.jpg"] });
+    const { Image } = jest.requireMock("expo-image");
+    const { getByText } = render(<ImageScreen />);
+    expect(Image).not.toHaveBeenCalled();
+    expect(getByText("Bild konnte nicht geladen werden")).toBeTruthy();
   });
 });

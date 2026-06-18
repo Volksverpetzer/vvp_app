@@ -10,6 +10,7 @@ export const SOURCE_SANS_FONTS = [
 export const CONTENT_MAX_WIDTH = 700;
 export const CONTENT_HORIZONTAL_PADDING = 10;
 export const POST_PADDING_HORIZONTAL = 30;
+export const CARD_PADDING = 20;
 
 export const globalStyles = StyleSheet.create({
   centered: {

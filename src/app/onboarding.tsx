@@ -41,16 +41,17 @@ const Onboarding = () => {
   const isFoss = Config.isFoss ?? false;
 
   const agreeToTerms = async () => {
+    await PersonalStore.setOnboardingDone();
+    updateBadgeState({ personal: false, action: true });
+    router.replace("/");
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+    // Fire-and-forget so the permission dialog doesn't block the home screen.
     if (!isFoss) {
-      await Notifications.registerForPushNotifications().catch((error) => {
+      Notifications.registerForPushNotifications().catch((error) => {
         console.error("Failed to register for push notifications:", error);
       });
     }
-    await PersonalStore.setOnboardingDone().finally(() => {
-      updateBadgeState({ personal: false, action: true });
-      router.replace("/");
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    });
   };
 
   const saveContentSetting = (

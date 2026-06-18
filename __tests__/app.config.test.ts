@@ -7,10 +7,6 @@ import {
   jest,
 } from "@jest/globals";
 
-// Prevent ts-node/tsx from registering TypeScript hooks in the Jest environment
-jest.mock("ts-node/register", () => ({}));
-jest.mock("tsx/cjs", () => ({}));
-
 type ConfigFn = (ctx: { config: object }) => { extra: Record<string, unknown> };
 
 describe("app.config extra", () => {

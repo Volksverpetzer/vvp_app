@@ -69,7 +69,7 @@ export const ArticleSourceList = ({
         {visibleLinks.length > 0 ? (
           visibleLinks.map((link, idx) => (
             <View
-              key={link.url}
+              key={`${link.url}-${idx}`}
               style={{
                 borderBottomColor: textColor,
                 borderBottomWidth: idx < visibleLinks.length - 1 ? 1 : 0,

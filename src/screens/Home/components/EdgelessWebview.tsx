@@ -1,4 +1,3 @@
-import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useCallback, useRef } from "react";
 import { Platform, StyleSheet, View } from "react-native";
@@ -8,7 +7,7 @@ import type { WebViewErrorEvent } from "react-native-webview/lib/WebViewTypes";
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
-import { onLinkPress } from "#/helpers/Linking";
+import { onLinkPress, parsePath } from "#/helpers/Linking";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -181,14 +180,15 @@ const EdgelessWebview = ({
         onLoadEnd={onLoadEnd}
         onError={onError}
         onShouldStartLoadWithRequest={({ url, isTopFrame }) => {
-          // Allow the first load of the provided URI
-          const { path } = Linking.parse(url);
-          const { path: origPath } = Linking.parse(uri);
+          // Allow the first load of the provided URI. parsePath normalizes
+          // leading/trailing slashes so a WordPress canonical redirect that
+          // only toggles the trailing slash is treated as the same page
+          // instead of looping back into native navigation.
           if (
             !isHttpsUrl(url) ||
             !isTopFrame ||
             !url ||
-            path.replace("/", "") === origPath.replace("/", "")
+            parsePath(url) === parsePath(uri)
           )
             return true;
           // Route natively instead

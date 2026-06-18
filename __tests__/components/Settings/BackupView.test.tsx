@@ -4,10 +4,10 @@ import { fireEvent, render, waitFor } from "@testing-library/react-native";
 import * as DocumentPicker from "expo-document-picker";
 import * as Sharing from "expo-sharing";
 import React from "react";
-import Toast from "react-native-toast-message";
 
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
+import { toast } from "#/helpers/toast";
 import BackupView from "#/screens/Settings/components/BackupView";
 
 // ── expo-file-system ────────────────────────────────────────────────────────
@@ -35,9 +35,13 @@ jest.mock("expo-document-picker", () => ({
 }));
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
-jest.mock("react-native-toast-message", () => ({
-  __esModule: true,
-  default: { show: jest.fn() },
+jest.mock("#/helpers/toast", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    confirm: jest.fn(),
+  },
 }));
 
 // ── Stores ────────────────────────────────────────────────────────────────────
@@ -121,6 +125,25 @@ describe("BackupView", () => {
       });
     });
 
+    it("shows a success toast after the share sheet closes", async () => {
+      jest.mocked(FavoritesStore.getAllFavorites).mockResolvedValue({
+        abc: { contentType: "article" },
+      } as any);
+      jest.mocked(SourcesStore.getAllSources).mockResolvedValue({
+        "https://example.com": { slug: "example" },
+      } as any);
+
+      const { getByText } = render(<BackupView />);
+      fireEvent.press(getByText("Sammlung exportieren"));
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith(
+          "Export erfolgreich",
+          "Deine Daten wurden exportiert.",
+        );
+      });
+    });
+
     it("shows an error toast when export fails", async () => {
       jest
         .mocked(FavoritesStore.getAllFavorites)
@@ -130,8 +153,9 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung exportieren"));
 
       await waitFor(() => {
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "error" }),
+        expect(toast.error).toHaveBeenCalledWith(
+          "Export fehlgeschlagen",
+          "Versuche es erneut.",
         );
         expect(Sharing.shareAsync).not.toHaveBeenCalled();
       });
@@ -152,8 +176,9 @@ describe("BackupView", () => {
       await waitFor(() => {
         expect(FavoritesStore.setStoredFavs).toHaveBeenCalledTimes(1);
         expect(SourcesStore.setStoredSources).toHaveBeenCalledTimes(1);
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "success" }),
+        expect(toast.success).toHaveBeenCalledWith(
+          "Import erfolgreich",
+          "Deine Daten wurden wiederhergestellt.",
         );
       });
     });
@@ -168,8 +193,9 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "error" }),
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
         );
         expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
       });
@@ -201,8 +227,9 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "error" }),
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
         );
         expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
       });
@@ -221,8 +248,9 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "error" }),
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
         );
         expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
       });
@@ -239,8 +267,9 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "error" }),
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
         );
       });
     });
@@ -256,8 +285,9 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "error" }),
+        expect(toast.error).toHaveBeenCalledWith(
+          "Import fehlgeschlagen",
+          "Versuche es erneut.",
         );
       });
     });
@@ -277,8 +307,9 @@ describe("BackupView", () => {
       await waitFor(() => {
         expect(FavoritesStore.setStoredFavs).toHaveBeenCalledTimes(1);
         expect(SourcesStore.setStoredSources).not.toHaveBeenCalled();
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "success" }),
+        expect(toast.success).toHaveBeenCalledWith(
+          "Import erfolgreich",
+          "Deine Daten wurden wiederhergestellt.",
         );
       });
     });
@@ -300,8 +331,9 @@ describe("BackupView", () => {
       await waitFor(() => {
         expect(SourcesStore.setStoredSources).toHaveBeenCalledTimes(1);
         expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "success" }),
+        expect(toast.success).toHaveBeenCalledWith(
+          "Import erfolgreich",
+          "Deine Daten wurden wiederhergestellt.",
         );
       });
     });
@@ -319,8 +351,9 @@ describe("BackupView", () => {
       fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(Toast.show).toHaveBeenCalledWith(
-          expect.objectContaining({ type: "error" }),
+        expect(toast.error).toHaveBeenCalledWith(
+          "Ungültige Backup-Datei",
+          "Das Format der Datei konnte nicht erkannt werden.",
         );
         expect(SourcesStore.setStoredSources).not.toHaveBeenCalled();
       });
