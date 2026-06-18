@@ -56,6 +56,7 @@ const SettingsStore = {
   defaultNotificationSettings: {
     new_post: { value: true, name: "Neuer Artikel" },
     new_fact_check: { value: true, name: "Neuer Faktencheck" },
+    new_pruefpunkt: { value: true, name: "Neuer Prüfpunkt Artikel" },
   } satisfies NotificationSettingType,
 
   async getContentSettings(): Promise<ContentSettingType> {
@@ -138,7 +139,12 @@ const SettingsStore = {
   async getNotificationSettings(): Promise<NotificationSettingType> {
     try {
       const jsonValue = await BaseStore.getItem(this.keys.notificationSettings);
-      return BaseStore.parseJSON(jsonValue, this.defaultNotificationSettings);
+      const stored =
+        BaseStore.parseJSON<Partial<NotificationSettingType>>(jsonValue, {}) ??
+        {};
+      // Merge defaults so settings added later (e.g. new_pruefpunkt) appear for
+      // users whose stored settings predate them.
+      return { ...this.defaultNotificationSettings, ...stored };
     } catch (error) {
       console.error("Error retrieving notification settings:", error);
       return this.defaultNotificationSettings;

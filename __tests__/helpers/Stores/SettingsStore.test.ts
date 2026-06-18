@@ -250,6 +250,7 @@ describe("SettingsStore", () => {
       const settings: NotificationSettingType = {
         new_post: { value: false, name: "Neuer Artikel" },
         new_fact_check: { value: true, name: "Neuer Faktencheck" },
+        new_pruefpunkt: { value: false, name: "Neuer Prüfpunkt Artikel" },
       };
       jest
         .spyOn(BaseStore, "getItem")
@@ -259,7 +260,27 @@ describe("SettingsStore", () => {
       const result = await SettingsStore.getNotificationSettings();
 
       expect(BaseStore.getItem).toHaveBeenCalledWith("notificationSettings");
+      // Stored values win over defaults (new_pruefpunkt default is true here).
       expect(result).toEqual(settings);
+    });
+
+    it("merges defaults for settings missing newly added keys", async () => {
+      // Stored settings predate new_pruefpunkt (older app version).
+      const stored = {
+        new_post: { value: false, name: "Neuer Artikel" },
+        new_fact_check: { value: false, name: "Neuer Faktencheck" },
+      };
+      jest
+        .spyOn(BaseStore, "getItem")
+        .mockResolvedValue(JSON.stringify(stored));
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(stored);
+
+      const result = await SettingsStore.getNotificationSettings();
+
+      expect(result.new_pruefpunkt).toEqual(
+        SettingsStore.defaultNotificationSettings.new_pruefpunkt,
+      );
+      expect(result.new_post.value).toBe(false);
     });
 
     it("returns defaults on error", async () => {

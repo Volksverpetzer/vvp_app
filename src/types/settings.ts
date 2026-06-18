@@ -22,6 +22,7 @@ export type ContentSettingType = {
 export type NotificationSettingType = {
   new_post: SettingType;
   new_fact_check: SettingType;
+  new_pruefpunkt: SettingType;
 };
 
 export type AdvancedSettingType = {
