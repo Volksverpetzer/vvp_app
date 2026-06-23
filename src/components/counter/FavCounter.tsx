@@ -6,11 +6,9 @@ import { StarIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
-import { Achievements } from "#/helpers/Achievements";
-import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import { getFavs, registerFav } from "#/helpers/network/Engagement";
-import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+import { getFavs } from "#/helpers/network/Engagement";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useFavorite } from "#/hooks/useFavorite";
 import type { FaveableType, ShareableType } from "#/types";
 
 interface FavCounterProperties {
@@ -23,7 +21,6 @@ interface FavCounterProperties {
 
 const FavCounter = (properties: FavCounterProperties) => {
   const [favs, setFavs] = useState(0);
-  const [isFav, setIsFav] = useState(false);
   const color = useCorporateColor();
   const {
     contentFavIdentifier,
@@ -31,6 +28,11 @@ const FavCounter = (properties: FavCounterProperties) => {
     shareable,
     size = 20,
   } = properties;
+  const { isFav, toggleFavorite } = useFavorite(
+    contentFavIdentifier,
+    contentType,
+    shareable[0]?.url,
+  );
 
   const getAllFavs = useCallback(async () => {
     let _favs = 0;
@@ -42,32 +44,14 @@ const FavCounter = (properties: FavCounterProperties) => {
 
   useEffect(() => {
     if (Config.enableEngagement) getAllFavs();
-    if (contentFavIdentifier) {
-      FavoritesStore.isFavorite(contentFavIdentifier).then(setIsFav);
-    }
-  }, [contentFavIdentifier, getAllFavs]);
+  }, [getAllFavs]);
 
   if (!Config.enableEngagement) return <View />;
-
-  const handleFav = async () => {
-    if (contentFavIdentifier) {
-      if (isFav) {
-        await FavoritesStore.removeFavorite(contentFavIdentifier);
-        setIsFav(false);
-      } else {
-        setIsFav(true);
-        Achievements.setAchievementValue("favorite");
-        FavoritesStore.addFavorite(contentFavIdentifier, contentType);
-        updateBadgeState({ personal: true });
-        await registerFav(shareable[0].url);
-      }
-    }
-  };
 
   return (
     <UiPressable
       accessibilityRole="button"
-      onPress={handleFav}
+      onPress={toggleFavorite}
       hitSlop={20}
       style={{
         flexDirection: "row",
