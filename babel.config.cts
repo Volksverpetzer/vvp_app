@@ -4,13 +4,8 @@ module.exports = (api: ConfigAPI) => {
   api.cache.forever();
 
   return {
-    presets: [
-      "babel-preset-expo",
-      "@babel/preset-flow",
-      "@babel/preset-typescript",
-    ],
+    presets: ["babel-preset-expo"],
     plugins: [
-      "@babel/plugin-transform-flow-strip-types",
       [
         "module-resolver",
         {
