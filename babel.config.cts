@@ -18,7 +18,7 @@ module.exports = (api: ConfigAPI) => {
           },
         },
       ],
-      "react-native-reanimated/plugin",
+      "react-native-worklets/plugin",
     ],
   };
 };
