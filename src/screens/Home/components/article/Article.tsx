@@ -7,7 +7,6 @@ import type {
 } from "react-native";
 import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
 
-import NavBar from "#/components/bars/NavBar";
 import Footer from "#/components/views/Footer";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -22,6 +21,7 @@ import { stripVisualComposerShortcodes } from "#/helpers/utils/posts";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
+import ArticleToolbar from "./ArticleToolbar";
 import Body from "./Body";
 import Header from "./Header";
 import Recommended from "./Recommended";
@@ -169,7 +169,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
           <Footer article_link={article_link} onShare={onShare} />
         </View>
       </ScrollView>
-      <NavBar
+      <ArticleToolbar
         link={article_link}
         shareable={[{ url: article_link, title: article_title }]}
         contentFavIdentifier={slug}
