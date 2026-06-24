@@ -129,6 +129,9 @@ const packageName = "de.volksverpetzer.app";
 
 const googleServicesFile = process.env.google_services;
 
+// Both the www and apex hosts are registered so deep links resolve regardless
+// of which form the link uses (the site is moving off the www subdomain, but
+// previously shared links and the redirect still use www).
 const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data"] =
   [
     {
@@ -136,9 +139,17 @@ const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data
       host: "www.volksverpetzer.de",
       pathPattern: "/.*/.*",
     },
+    {
+      scheme: "https",
+      host: "volksverpetzer.de",
+      pathPattern: "/.*/.*",
+    },
   ];
 
-const iOSAssociatedDomains = ["applinks:www.volksverpetzer.de"];
+const iOSAssociatedDomains = [
+  "applinks:www.volksverpetzer.de",
+  "applinks:volksverpetzer.de",
+];
 
 const config = {
   extraConfig,
