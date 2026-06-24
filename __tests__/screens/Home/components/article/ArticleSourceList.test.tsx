@@ -107,6 +107,27 @@ describe("ArticleSourceList", () => {
       );
     });
 
+    it("shows a loading indicator instead of Keine Daten while links are loading", async () => {
+      let resolveLinks: (
+        value: { url: HttpsUrl; visitors: number }[],
+      ) => void = () => {};
+      mockGetLinks.mockReturnValue(
+        new Promise((resolve) => {
+          resolveLinks = resolve;
+        }),
+      );
+      const { getAllByRole, queryByText } = render(
+        <ArticleSourceList {...defaultProps} />,
+      );
+      act(() => openCollapsable(getAllByRole));
+
+      // While the request is in flight it must not prematurely claim "no data".
+      expect(queryByText("Keine Daten")).toBeNull();
+
+      act(() => resolveLinks([]));
+      await waitFor(() => expect(queryByText("Keine Daten")).toBeTruthy());
+    });
+
     it("shows Keine Daten when getLinks returns empty array", async () => {
       mockGetLinks.mockResolvedValue([]);
       const { getAllByRole, getByText } = render(
