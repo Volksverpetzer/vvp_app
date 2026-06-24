@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
 import { type TextStyle, View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
@@ -6,6 +5,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { getShares } from "#/helpers/network/Engagement";
+import { useEngagementCount } from "#/hooks/useEngagementCount";
 import type { ShareableType } from "#/types";
 
 interface ShareCounterProperties {
@@ -19,22 +19,12 @@ interface ShareCounterProperties {
 }
 
 const ShareCounter = (properties: ShareCounterProperties) => {
-  const [shares, setShares] = useState(0);
   const { color, size = 20, hideCount, onPress } = properties;
-
-  const getAllShares = useCallback(async () => {
-    let _shares = 0;
-    for (const shareable of properties.shareable) {
-      _shares = _shares + ((await getShares(shareable.url)) ?? 0);
-    }
-    setShares(_shares);
-  }, [properties.shareable]);
-
-  useEffect(() => {
-    if (!Config.enableEngagement) return;
-    if (hideCount) return;
-    getAllShares();
-  }, [getAllShares, hideCount]);
+  const shares = useEngagementCount(
+    properties.shareable,
+    getShares,
+    !hideCount,
+  );
 
   const hideCountResolved = hideCount || !Config.enableEngagement;
 
