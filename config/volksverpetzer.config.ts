@@ -159,9 +159,17 @@ const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data
       host: "www.volksverpetzer.de",
       pathPattern: "/.*/.*",
     },
+    {
+      scheme: "https",
+      host: "www.pruefpunkt.org",
+      pathPattern: "/.*/.*",
+    },
   ];
 
-const iOSAssociatedDomains = ["applinks:www.volksverpetzer.de"];
+const iOSAssociatedDomains = [
+  "applinks:www.volksverpetzer.de",
+  "applinks:www.pruefpunkt.org",
+];
 
 const config = {
   extraConfig,
