@@ -18,6 +18,7 @@ import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getTagStyles } from "#/helpers/utils/color";
+import { isSameHost } from "#/helpers/utils/host";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
@@ -124,7 +125,7 @@ const Body = (properties: BodyProperties) => {
             return;
           }
           if (!isHttpsUrl(href)) return;
-          if (!href.includes(Config.wpUrl) && Config.enableEngagement) {
+          if (!isSameHost(href, Config.wpUrl) && Config.enableEngagement) {
             SourcesStore.onAddSource(href, slug, article_title);
             Statistics.countSourceChecked();
           }

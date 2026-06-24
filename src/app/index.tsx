@@ -9,6 +9,7 @@ import NotificationManager from "#/helpers/Notifications";
 import Statistics from "#/helpers/Statistics";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
+import { normalizeHost } from "#/helpers/utils/host";
 
 /**
  * This is the entry point of the app.
@@ -36,8 +37,10 @@ const Index = () => {
         if (initialUrl) {
           const { hostname, path } = Linking.parse(initialUrl);
           const { hostname: baseHost } = Linking.parse(Config.wpUrl);
+          const isBaseHost =
+            normalizeHost(hostname) === normalizeHost(baseHost);
 
-          if (hostname === baseHost && shouldExcludeFromDeepLink(path)) {
+          if (isBaseHost && shouldExcludeFromDeepLink(path)) {
             await Linking.openURL(initialUrl);
             appOpenRoutine();
             const onboarded = await PersonalStore.isOnboardingDone();
@@ -47,7 +50,7 @@ const Index = () => {
 
           const hasPath =
             typeof path === "string" && path.replace(/\//g, "").length > 0;
-          if (hostname === baseHost && hasPath) {
+          if (isBaseHost && hasPath) {
             appOpenRoutine();
             return;
           }

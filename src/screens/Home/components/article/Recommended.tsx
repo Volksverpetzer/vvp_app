@@ -5,6 +5,7 @@ import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
+import { isSameHost } from "#/helpers/utils/host";
 import type { HttpsUrl } from "#/types";
 
 interface RecommendedProperties {
@@ -54,7 +55,7 @@ const Recommended = (properties: RecommendedProperties) => {
         </UiText>
       )}
       {matches?.map((match, index) => {
-        if (!match.url.includes(Config.wpUrl)) {
+        if (!isSameHost(match.url, Config.wpUrl)) {
           return null;
         }
         const url = new URL(match.url);
