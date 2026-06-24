@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -43,7 +44,10 @@ export const ArticleSourceList = ({
           if (Array.isArray(results) && results.length > 0) setLinks(results);
           else setLinks([]);
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          console.error(error);
+          setLinks([]);
+        });
     }
   }, [open, article_link]);
 
@@ -66,7 +70,9 @@ export const ArticleSourceList = ({
       cardBackground={Colors[colorScheme].surface}
     >
       <View>
-        {visibleLinks.length > 0 ? (
+        {links === undefined ? (
+          <UiSpinner size="small" containerStyle={{ paddingVertical: 8 }} />
+        ) : visibleLinks.length > 0 ? (
           visibleLinks.map((link, idx) => (
             <View
               key={`${link.url}-${idx}`}
