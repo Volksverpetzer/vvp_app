@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
 import type { TextStyle } from "react-native";
 import { View } from "react-native";
 
@@ -8,6 +7,7 @@ import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { getFavs } from "#/helpers/network/Engagement";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useEngagementCount } from "#/hooks/useEngagementCount";
 import { useFavorite } from "#/hooks/useFavorite";
 import type { FaveableType, ShareableType } from "#/types";
 
@@ -20,7 +20,6 @@ interface FavCounterProperties {
 }
 
 const FavCounter = (properties: FavCounterProperties) => {
-  const [favs, setFavs] = useState(0);
   const color = useCorporateColor();
   const {
     contentFavIdentifier,
@@ -33,18 +32,7 @@ const FavCounter = (properties: FavCounterProperties) => {
     contentType,
     shareable[0]?.url,
   );
-
-  const getAllFavs = useCallback(async () => {
-    let _favs = 0;
-    for (const item of shareable) {
-      _favs = _favs + ((await getFavs(item.url)) ?? 0);
-    }
-    setFavs(_favs);
-  }, [shareable]);
-
-  useEffect(() => {
-    if (Config.enableEngagement) getAllFavs();
-  }, [getAllFavs]);
+  const favs = useEngagementCount(shareable, getFavs);
 
   if (!Config.enableEngagement) return <View />;
 
