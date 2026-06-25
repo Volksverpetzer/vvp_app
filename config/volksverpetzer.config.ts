@@ -106,7 +106,7 @@ const extraConfig: ExtraConfigType = {
         enabled: true,
       },
       {
-        handle: "https://www.pruefpunkt.org",
+        handle: "https://pruefpunkt.org",
         label: "Prüfpunkt Artikel",
         sourceName: "Prüfpunkt",
         enabled: true,
@@ -172,12 +172,18 @@ const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data
       host: "www.pruefpunkt.org",
       pathPattern: "/.*/.*",
     },
+    {
+      scheme: "https",
+      host: "pruefpunkt.org",
+      pathPattern: "/.*/.*",
+    },
   ];
 
 const iOSAssociatedDomains = [
   "applinks:www.volksverpetzer.de",
   "applinks:volksverpetzer.de",
   "applinks:www.pruefpunkt.org",
+  "applinks:pruefpunkt.org",
 ];
 
 const config = {
