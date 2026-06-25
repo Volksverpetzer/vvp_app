@@ -1,0 +1,3 @@
+- Quellen zeigen jetzt eine Ladeanzeige, während sie geladen werden
+- Geteilte Links und Deep-Links öffnen sich zuverlässiger in der App
+- Fehlerbehebungen und Performance-Verbesserungen

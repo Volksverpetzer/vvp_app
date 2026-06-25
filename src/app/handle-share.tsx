@@ -10,6 +10,7 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
+import { normalizeHost } from "#/helpers/utils/host";
 
 const URL_SHARE_TYPE: ShareType = "url";
 const TEXT_SHARE_TYPE: ShareType = "text";
@@ -32,7 +33,7 @@ const HandleShare = () => {
         const { hostname, path } = Linking.parse(sharedUrl);
         const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
 
-        if (hostname !== baseHostname) {
+        if (normalizeHost(hostname) !== normalizeHost(baseHostname)) {
           router.replace({
             pathname: "/search",
             params: { tag: sharedUrl },

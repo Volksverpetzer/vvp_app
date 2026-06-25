@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -49,9 +49,11 @@ jobs:
   build-and-release-apk:
     needs: build-and-release-stores
     runs-on: ubuntu-latest
+    env:
+      APK_NAME: vvp-app-v${{ github.ref_name }}
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -61,13 +63,20 @@ jobs:
           setup-expo-token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 EAS Build - android apk
-        run: eas build --profile local-apk --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
+        run: eas build --profile local-apk --platform android --local --output ${{ github.workspace }}/build/${{ env.APK_NAME }}.apk
 
       - name: 🛠 Prepare F-Droid build
         run: pnpm prepare:fdroid
 
       - name: 🚀 EAS Build - android apk (FOSS)
-        run: eas build --profile fdroid --platform android --local --output ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss.apk
+        run: eas build --profile fdroid --platform android --local --output ${{ github.workspace }}/build/${{ env.APK_NAME }}-foss.tar.gz
+
+      - name: 📦 Extract FOSS per-ABI APKs
+        working-directory: ${{ github.workspace }}/build
+        run: |
+          tar -xzvf "${APK_NAME}-foss.tar.gz"
+          mv release/app-arm64-v8a-release.apk "${APK_NAME}-foss-arm64-v8a.apk"
+          mv release/app-armeabi-v7a-release.apk "${APK_NAME}-foss-armeabi-v7a.apk"
 
       - name: 🎂 Create GitHub Release
         uses: softprops/action-gh-release@v3
@@ -78,5 +87,6 @@ jobs:
           prerelease: true
           generate_release_notes: true
           files: |
-            ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}.apk
-            ${{ github.workspace }}/build/vvp-app-${{ github.ref_name }}-foss.apk
+            ${{ github.workspace }}/build/${{ env.APK_NAME }}.apk
+            ${{ github.workspace }}/build/${{ env.APK_NAME }}-foss-arm64-v8a.apk
+            ${{ github.workspace }}/build/${{ env.APK_NAME }}-foss-armeabi-v7a.apk
