@@ -41,8 +41,8 @@ describe("SettingsStore", () => {
       expect(result.bsky.value).toBe(false); // default
     });
 
-    it("migrates legacy wp/wp2 keys onto the configured wp feeds", async () => {
-      const stored = { wp: false, wp2: false };
+    it("migrates the legacy wp key onto the first configured wp feed", async () => {
+      const stored = { wp: false };
       jest
         .spyOn(BaseStore, "getItem")
         .mockResolvedValue(JSON.stringify(stored));
@@ -51,14 +51,14 @@ describe("SettingsStore", () => {
       const result = await SettingsStore.getContentSettings();
 
       expect(result["wp:volksverpetzer.de"].value).toBe(false);
-      expect(result["wp:pruefpunkt.org"].value).toBe(false);
+      // The second wp feed has no legacy key (wp2 never shipped) -> default.
+      expect(result["wp:pruefpunkt.org"].value).toBe(true);
 
       const storedArg = (BaseStore.setItem as jest.Mock).mock
         .calls[0][1] as string;
       const rewritten = JSON.parse(storedArg);
       expect(rewritten["wp:volksverpetzer.de"]).toBe(false);
       expect(rewritten).not.toHaveProperty("wp");
-      expect(rewritten).not.toHaveProperty("wp2");
     });
 
     it("migrates the legacy insta key onto the first configured insta feed", async () => {
@@ -75,7 +75,7 @@ describe("SettingsStore", () => {
     });
 
     it("prefers new wp keys over legacy ones", async () => {
-      const stored = { "wp:pruefpunkt.org": false, wp2: true };
+      const stored = { "wp:volksverpetzer.de": false, wp: true };
       jest
         .spyOn(BaseStore, "getItem")
         .mockResolvedValue(JSON.stringify(stored));
@@ -83,7 +83,7 @@ describe("SettingsStore", () => {
 
       const result = await SettingsStore.getContentSettings();
 
-      expect(result["wp:pruefpunkt.org"].value).toBe(false);
+      expect(result["wp:volksverpetzer.de"].value).toBe(false);
     });
 
     it("falls back to object-shaped stored values (migration)", async () => {

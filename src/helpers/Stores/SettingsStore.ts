@@ -23,12 +23,12 @@ const perFeedContentDefaults = Object.fromEntries([
   ]),
 ]);
 
-// Settings were previously stored under the static keys "wp", "wp2" and
-// "insta"; map them onto the corresponding configured feed entries.
+// Settings were previously stored under the static keys "wp" and "insta";
+// map them onto the first configured wp/insta feed entries. (The "wp2" key
+// from early Prüfpunkt builds never shipped to production, so there is
+// nothing to migrate from it.)
 const legacyFeedKeys: Record<string, string> = Object.fromEntries([
-  ...wpFeeds
-    .slice(0, 2)
-    .map((entry, index) => [getWpFeedKey(entry), index === 0 ? "wp" : "wp2"]),
+  ...wpFeeds.slice(0, 1).map((entry) => [getWpFeedKey(entry), "wp"]),
   ...instaFeeds.slice(0, 1).map((entry) => [getInstaFeedKey(entry), "insta"]),
 ]);
 
