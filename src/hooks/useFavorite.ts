@@ -34,6 +34,11 @@ export const useFavorite = (
       await FavoritesStore.removeFavorite(contentFavIdentifier);
       setIsFav(false);
     } else {
+      // A favorite without a content type would be persisted as an invalid
+      // StoredFav (contentType is required) and fail isValidStoredFav, which
+      // can discard the entire favorites set on the next read. Skip the add
+      // when the type is missing rather than corrupting storage.
+      if (!contentType) return;
       setIsFav(true);
       Achievements.setAchievementValue("favorite");
       FavoritesStore.addFavorite(contentFavIdentifier, contentType);

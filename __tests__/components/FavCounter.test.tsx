@@ -124,6 +124,30 @@ describe("FavCounter", () => {
     expect(registerFav).toHaveBeenCalledWith("https://example.com/one");
   });
 
+  it("does not persist a favorite when contentType is missing", async () => {
+    jest.mocked(getFavs).mockResolvedValue(2);
+
+    const { getByRole, getByText } = render(
+      <FavCounter
+        shareable={[shareable[0]]}
+        style={{}}
+        contentFavIdentifier={contentFavIdentifier}
+      />,
+    );
+
+    await waitFor(() => expect(getByText("star-outline")).toBeTruthy());
+
+    fireEvent.press(getByRole("button"));
+
+    await waitFor(() =>
+      expect(FavoritesStore.addFavorite).not.toHaveBeenCalled(),
+    );
+    // Storage stays untouched and the icon does not flip to "favorited".
+    expect(getByText("star-outline")).toBeTruthy();
+    expect(Achievements.setAchievementValue).not.toHaveBeenCalled();
+    expect(registerFav).not.toHaveBeenCalled();
+  });
+
   it("removes an existing favorite without registering a new engagement", async () => {
     jest.mocked(FavoritesStore.isFavorite).mockResolvedValue(true);
     jest.mocked(getFavs).mockResolvedValue(4);

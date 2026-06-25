@@ -1,11 +1,11 @@
 export default {
-  "@algolia/client-search@5.55.0": {
+  "@algolia/client-search@5.55.1": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.20.18": {
+  "@atproto/api@0.20.19": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
