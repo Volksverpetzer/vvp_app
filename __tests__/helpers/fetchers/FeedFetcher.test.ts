@@ -64,7 +64,7 @@ const wpCreated = createFetchersMock.mock.results[0]?.value as {
   feedFetcher: jest.Mock;
   searchFetcher: jest.Mock;
 };
-const wp2Created = createFetchersMock.mock.results[1]?.value as {
+const pruefpunktCreated = createFetchersMock.mock.results[1]?.value as {
   feedFetcher: jest.Mock;
   searchFetcher: jest.Mock;
 };
@@ -105,10 +105,10 @@ describe("FeedFetcher", () => {
     expect(FeedFetcher.fetchers.bsky).toBe(BlueskyFetcher.feedFetcher);
     expect(FeedFetcher.fetchers.bot).toBe(BotFetcher.feedFetcher);
     expect(FeedFetcher.fetchers["wp:pruefpunkt.org"]).toBe(
-      wp2Created.feedFetcher,
+      pruefpunktCreated.feedFetcher,
     );
     expect(FeedFetcher.fetchers["wp:pruefpunkt.org:search"]).toBe(
-      wp2Created.searchFetcher,
+      pruefpunktCreated.searchFetcher,
     );
   });
 

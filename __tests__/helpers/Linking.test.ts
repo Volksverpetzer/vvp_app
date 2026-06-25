@@ -137,10 +137,11 @@ describe("Linking helpers", () => {
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
-    it("should navigate to wp2 internal links in-app", () => {
-      const wp2Url = "https://www.pruefpunkt.org/faktencheck/some-article";
+    it("should navigate to secondary WP (Prüfpunkt) internal links in-app", () => {
+      const pruefpunktUrl =
+        "https://www.pruefpunkt.org/faktencheck/some-article";
       parseSpy.mockImplementation((url: string) => {
-        if (url === wp2Url) {
+        if (url === pruefpunktUrl) {
           return {
             hostname: "www.pruefpunkt.org",
             path: "/faktencheck/some-article",
@@ -152,11 +153,11 @@ describe("Linking helpers", () => {
         return { hostname: "www.volksverpetzer.de", path: "" };
       });
 
-      onLinkPress(wp2Url, router);
+      onLinkPress(pruefpunktUrl, router);
 
       expect(pushSpy).toHaveBeenCalledWith({
         pathname: "/faktencheck/some-article",
-        params: { originalUrl: wp2Url },
+        params: { originalUrl: pruefpunktUrl },
       });
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
