@@ -1,0 +1,3 @@
+- Sources now show a loading indicator while they load
+- Shared links and deep links open more reliably in the app
+- Bug fixes and performance improvements
