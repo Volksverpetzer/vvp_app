@@ -24,7 +24,8 @@
         "image": "auto"
       },
       "env": {
-        "APP": "volksverpetzer"
+        "APP": "volksverpetzer",
+        "BUILD_LABEL": "beta"
       }
     },
     "preview": {

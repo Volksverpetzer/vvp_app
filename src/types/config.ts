@@ -51,4 +51,5 @@ export interface ExtraConfigType {
   importantCats: Record<number, string>;
   audioCdnUrl?: HttpsUrl; // Base URL for AI-generated article audio (e.g. https://audio.example.com/audio)
   isFoss?: boolean; // true when built as a FOSS variant (Stripe and other proprietary modules are excluded)
+  buildLabel?: string; // optional label (e.g. "beta") shown on the settings screen to mark non-production store builds
 }
