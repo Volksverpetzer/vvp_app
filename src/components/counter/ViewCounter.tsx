@@ -36,12 +36,21 @@ const ViewCounter = (properties: ViewCounterProperties) => {
     if (!Config.enableEngagement) return;
     let isCancelled = false;
     setLoading(true);
-    getViews(url).then((views) => {
-      if (isCancelled) return;
-      setViews(views);
-      setLoading(false);
-      onLoad?.(views);
-    });
+    getViews(url)
+      .then((views) => {
+        if (isCancelled) return;
+        setViews(views);
+        setLoading(false);
+        onLoad?.(views);
+      })
+      .catch(() => {
+        // Treat a failed fetch as 0 so the loader resolves and onLoad always
+        // fires — otherwise the badge would spin forever.
+        if (isCancelled) return;
+        setViews(0);
+        setLoading(false);
+        onLoad?.(0);
+      });
 
     return () => {
       isCancelled = true;

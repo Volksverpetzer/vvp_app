@@ -107,6 +107,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }
   }, [inView, getImages]);
 
+  // Reset the view count when this row is recycled for a different article, so
+  // a previously-hidden (0-view) badge re-mounts and refetches for the new one.
+  useEffect(() => {
+    setViewCount(null);
+  }, [article.link]);
+
   // Memoize computed texts.
   const authorDateText = useMemo(() => {
     const authors =

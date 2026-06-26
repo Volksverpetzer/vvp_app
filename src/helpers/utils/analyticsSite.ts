@@ -1,20 +1,14 @@
 import * as Linking from "expo-linking";
 
 import Config from "#/constants/Config";
-
-/**
- * Normalizes a hostname to the form used as the backend `site` key and the
- * Plausible `domain` (lower-cased, without the `www.` prefix), e.g.
- * "volksverpetzer.de" or "pruefpunkt.org".
- */
-const normalizeHost = (host: string | null | undefined): string =>
-  (host ?? "").replace(/^www\./, "").toLowerCase();
+import { normalizeHost } from "#/helpers/utils/host";
 
 /**
  * Plausible sites the app is allowed to report to / query, derived from the
  * configured WordPress feeds plus the primary site. Mirrors the backend
  * `SITES` allow-list so the `?site=` parameter is always one the proxy
- * accepts.
+ * accepts. Hosts are normalized (lower-cased, without `www.`), e.g.
+ * "volksverpetzer.de" or "pruefpunkt.org".
  */
 const knownSites = (): string[] =>
   Array.from(

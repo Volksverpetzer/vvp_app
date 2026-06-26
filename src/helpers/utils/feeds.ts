@@ -8,15 +8,43 @@ import type {
   WpFeedKey,
 } from "#/types";
 
+import { normalizedHostOf } from "./host";
+
 /**
  * Liefert den Settings-/Fetcher-Key eines WordPress-Feeds,
  * z. B. "wp:pruefpunkt.org" für https://www.pruefpunkt.org.
  */
 export const getWpFeedKey = (entry: WpFeedEntry): WpFeedKey =>
-  `wp:${entry.handle
-    .replace(/^https?:\/\//, "")
-    .replace(/^www\./, "")
-    .replace(/\/.*$/, "")}`;
+  `wp:${normalizedHostOf(entry.handle)}`;
+
+/**
+ * Normalized hosts treated as in-app/internal: the primary WordPress site plus
+ * every configured WordPress feed. Used by the deep-link, share and in-app
+ * link handlers to decide whether a URL should open inside the app.
+ */
+export const getInternalWpHosts = (
+  primaryWpUrl: string,
+  wp?: WpFeedEntry[],
+): string[] =>
+  [primaryWpUrl, ...(wp ?? []).map((entry) => entry.handle)]
+    .map(normalizedHostOf)
+    .filter(Boolean);
+
+/**
+ * The configured secondary WordPress feed whose host matches `url`, or
+ * undefined when `url` is the primary site or not a configured feed. Secondary
+ * feeds need their own WordPress API and an `originalUrl` so the article route
+ * fetches from the right site.
+ */
+export const findSecondaryWpFeed = (
+  url: string | undefined,
+  primaryWpUrl: string,
+  wp?: WpFeedEntry[],
+): WpFeedEntry | undefined => {
+  const host = normalizedHostOf(url);
+  if (!host || host === normalizedHostOf(primaryWpUrl)) return undefined;
+  return (wp ?? []).find((entry) => normalizedHostOf(entry.handle) === host);
+};
 
 /**
  * Liefert den Settings-/Fetcher-Key eines Instagram-Feeds,

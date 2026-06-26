@@ -5,6 +5,8 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
+import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
+import { normalizedHostOf } from "#/helpers/utils/host";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
 import ArticleScreen from "#/screens/Home/components/article/Article";
 import type { ArticleProperties, HttpsUrl } from "#/types";
@@ -26,21 +28,10 @@ const LoadArticle = () => {
 
   // A WordPress feed entry from a different site than the primary one whose
   // host matches the original URL; articles from there need their own API.
-  const secondaryWp = useMemo(() => {
-    if (!originalUrl) return undefined;
-    const normalizeHost = (url: string) => {
-      try {
-        return new URL(url).hostname.replace(/^www\./, "");
-      } catch {
-        return "";
-      }
-    };
-    const host = normalizeHost(originalUrl);
-    if (!host || host === normalizeHost(wpUrl)) return undefined;
-    return (Config.feeds?.wp ?? []).find(
-      (entry) => normalizeHost(entry.handle) === host,
-    );
-  }, [originalUrl, wpUrl]);
+  const secondaryWp = useMemo(
+    () => findSecondaryWpFeed(originalUrl, wpUrl, Config.feeds?.wp),
+    [originalUrl, wpUrl],
+  );
 
   const secondaryApi = useMemo(
     () => (secondaryWp ? WordPressAPI.create(secondaryWp.handle) : null),
@@ -58,7 +49,13 @@ const LoadArticle = () => {
       setHasError(false);
 
       try {
-        const articleParameter = await ContentStore.getStoredArticle(slug);
+        // Look up the cache under the article's own site host so a slug that
+        // exists on both the primary and a secondary site can't collide.
+        const articleHost = normalizedHostOf(originalUrl ?? wpUrl);
+        const articleParameter = await ContentStore.getStoredArticle(
+          slug,
+          articleHost,
+        );
         if (signal.aborted) return;
 
         if (articleParameter) {
@@ -90,7 +87,7 @@ const LoadArticle = () => {
         setIsLoading(false);
       }
     },
-    [slug, secondaryApi],
+    [slug, secondaryApi, originalUrl, wpUrl],
   );
 
   useEffect(() => {

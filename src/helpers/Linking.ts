@@ -3,6 +3,8 @@ import type { Href, ImperativeRouter } from "expo-router";
 
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
+import { getInternalWpHosts } from "#/helpers/utils/feeds";
+import { normalizeHost } from "#/helpers/utils/host";
 import type { HttpsUrl } from "#/types";
 
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
@@ -22,22 +24,13 @@ const parsePath = (url: string): string => {
  * @param router - Expo Router instance for navigation.
  * @param article_link - Optional article URL for analytics context.
  */
-// Strip www. prefix so that pruefpunkt.org and www.pruefpunkt.org both match.
-const normalizeHost = (host: string | null): string =>
-  (host ?? "").replace(/^www\./, "");
-
 const onLinkPress = (
   href: HttpsUrl,
   router: ImperativeRouter,
   article_link?: string,
 ) => {
   const { hostname, path } = Linking.parse(href);
-  const internalHostnames = [
-    Config.wpUrl,
-    ...(Config.feeds?.wp ?? []).map((entry) => entry.handle),
-  ]
-    .filter(Boolean)
-    .map((url) => normalizeHost(Linking.parse(url!).hostname));
+  const internalHostnames = getInternalWpHosts(Config.wpUrl, Config.feeds?.wp);
   const normalizedHostname = normalizeHost(hostname);
 
   if (
@@ -57,7 +50,9 @@ const onLinkPress = (
       } as unknown as Href);
       return;
     }
-    router.push(hostname as Href);
+    // Bare-domain internal link (no path) — open the app home instead of
+    // pushing the raw hostname as a route, which never matches.
+    router.push("/");
     return;
   }
   outBoundLinkPress(href, article_link);

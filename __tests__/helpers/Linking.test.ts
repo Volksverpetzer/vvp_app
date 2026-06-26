@@ -133,7 +133,9 @@ describe("Linking helpers", () => {
 
       // Assert
       expect(Linking.parse).toHaveBeenCalledWith(internalUrl);
-      expect(pushSpy).toHaveBeenCalledWith("www.volksverpetzer.de");
+      // A bare-domain internal link (no path) opens the app home rather than
+      // pushing the raw hostname as a route, which never matches.
+      expect(pushSpy).toHaveBeenCalledWith("/");
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 

@@ -139,7 +139,7 @@ export default class WordPressAPI {
       },
       searchPosts(
         search: string,
-        page = 10,
+        page = 1,
         signal?: AbortSignal,
       ): Promise<LoadArticlePostProperties[]> {
         return netGet<LoadArticlePostProperties[]>(

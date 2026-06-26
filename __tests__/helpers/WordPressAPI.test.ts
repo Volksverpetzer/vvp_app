@@ -194,7 +194,7 @@ describe("WordPressAPI", () => {
           params: {
             orderby: "relevance",
             search: "faktencheck",
-            page: 10,
+            page: 1,
             _embed: "author",
           },
         },

@@ -1,4 +1,5 @@
 import BaseStore from "#/helpers/Storage";
+import { normalizedHostOf } from "#/helpers/utils/host";
 import type {
   ArticleProperties,
   BlueskyPostProperties,
@@ -9,14 +10,27 @@ const ContentStore = {
   contentKeyPrefix: "content_",
 
   /**
-   * Retrieves an article by its slug.
+   * Storage key for an article. Includes the article's site host so that the
+   * same slug published on two different WordPress sites (primary + a feed
+   * like pruefpunkt.org) maps to separate cache entries instead of colliding.
+   */
+  articleKey(slug: string, host?: string): string {
+    return `${this.contentKeyPrefix}${host ? `${host}_` : ""}${slug}`;
+  },
+
+  /**
+   * Retrieves an article by its slug and site host.
    * @param slug
+   * @param host normalized site host (e.g. "pruefpunkt.org")
    * @returns
    */
-  async getStoredArticle(slug: string): Promise<ArticleProperties | undefined> {
+  async getStoredArticle(
+    slug: string,
+    host?: string,
+  ): Promise<ArticleProperties | undefined> {
     try {
       const storedArticleJson = await BaseStore.getItem(
-        this.contentKeyPrefix + slug,
+        this.articleKey(slug, host),
       );
       return BaseStore.parseJSON(storedArticleJson);
     } catch (error) {
@@ -26,7 +40,8 @@ const ContentStore = {
   },
 
   /**
-   * References an article by its slug.
+   * References an article by its slug. The site host is derived from the
+   * article's own link so it lands under the same key the reader looks up.
    * @param slug
    * @param article
    * @returns
@@ -37,7 +52,7 @@ const ContentStore = {
   ): Promise<void> {
     try {
       await BaseStore.setItem(
-        this.contentKeyPrefix + slug,
+        this.articleKey(slug, normalizedHostOf(article.link)),
         JSON.stringify(article),
       );
     } catch (error) {
