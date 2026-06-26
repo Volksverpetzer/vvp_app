@@ -14,7 +14,7 @@ jest.mock("expo-router", () => ({
 
 jest.mock("#/components/counter/ViewCounter", () => ({
   __esModule: true,
-  default: () => null,
+  default: jest.fn(() => null),
 }));
 
 jest.mock("#/components/ui/UiSpinner", () => ({
@@ -172,6 +172,19 @@ describe("ArticlePost — elevated mode", () => {
       <ArticlePost article={baseArticle} inView={false} elevated={true} />,
     );
     expect(toJSON()).toBeTruthy();
+  });
+});
+
+describe("ArticlePost — engagement badge", () => {
+  it("does not mount ViewCounter when enableEngagement is false", () => {
+    // Config mock at the top of the file has enableEngagement: undefined (falsy),
+    // so the badge gate `Config.enableEngagement && ...` prevents ViewCounter from rendering.
+    const ViewCounter = require("#/components/counter/ViewCounter").default;
+    render(<ArticlePost article={baseArticle} inView={true} />);
+    // ViewCounter is mocked to () => null; if the gate works it is still
+    // part of the tree but only when engagement is enabled. With the default
+    // mock config (no enableEngagement), the whole badge branch is skipped.
+    expect(ViewCounter).not.toHaveBeenCalled();
   });
 });
 

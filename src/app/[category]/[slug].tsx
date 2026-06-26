@@ -1,18 +1,21 @@
 import { useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
+import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
+import { normalizedHostOf } from "#/helpers/utils/host";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
 import ArticleScreen from "#/screens/Home/components/article/Article";
-import type { ArticleProperties } from "#/types";
+import type { ArticleProperties, HttpsUrl } from "#/types";
 
 type LoadArticleParameters = {
   imageUrl?: string;
   slug: string;
   category?: string;
+  originalUrl?: string;
 };
 
 /**
@@ -21,7 +24,20 @@ type LoadArticleParameters = {
 const LoadArticle = () => {
   const parameters = useLocalSearchParams<LoadArticleParameters>();
   const wpUrl = Config.wpUrl;
-  const { slug, category } = parameters;
+  const { slug, category, originalUrl } = parameters;
+
+  // A WordPress feed entry from a different site than the primary one whose
+  // host matches the original URL; articles from there need their own API.
+  const secondaryWp = useMemo(
+    () => findSecondaryWpFeed(originalUrl, wpUrl, Config.feeds?.wp),
+    [originalUrl, wpUrl],
+  );
+
+  const secondaryApi = useMemo(
+    () => (secondaryWp ? WordPressAPI.create(secondaryWp.handle) : null),
+    [secondaryWp],
+  );
+
   const [article, setArticle] = useState<ArticleProperties | undefined>();
   const [imageUrl, setImageUrl] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -33,7 +49,13 @@ const LoadArticle = () => {
       setHasError(false);
 
       try {
-        const articleParameter = await ContentStore.getStoredArticle(slug);
+        // Look up the cache under the article's own site host so a slug that
+        // exists on both the primary and a secondary site can't collide.
+        const articleHost = normalizedHostOf(originalUrl ?? wpUrl);
+        const articleParameter = await ContentStore.getStoredArticle(
+          slug,
+          articleHost,
+        );
         if (signal.aborted) return;
 
         if (articleParameter) {
@@ -43,7 +65,17 @@ const LoadArticle = () => {
           return;
         }
 
-        const _article = await WordPressAPI.getPost(slug, signal);
+        const _article = secondaryApi
+          ? await secondaryApi.getPost(slug, signal)
+          : await WordPressAPI.getPost(slug, signal);
+        if (signal.aborted) return;
+        // No post for this slug — fall back to the webview instead of letting
+        // convertLoadProps throw on undefined for control flow.
+        if (!_article) {
+          setHasError(true);
+          setIsLoading(false);
+          return;
+        }
         const loadedArticle: ArticleProperties =
           WordPressAPI.convertLoadProps(_article);
 
@@ -63,7 +95,7 @@ const LoadArticle = () => {
         setIsLoading(false);
       }
     },
-    [slug],
+    [slug, secondaryApi, originalUrl, wpUrl],
   );
 
   useEffect(() => {
@@ -78,9 +110,9 @@ const LoadArticle = () => {
   }, [slug, fetchArticle]);
 
   if (!slug) {
-    // If no slug is provided, render the EdgelessWebview
-    const url = `${wpUrl}/${category || ""}`;
-    return <EdgelessWebview uri={url} />;
+    const baseUrl = secondaryWp?.handle ?? wpUrl;
+    const url = originalUrl ?? `${baseUrl}/${category || ""}`;
+    return <EdgelessWebview uri={url as HttpsUrl} />;
   }
 
   // While we're fetching the article show a themed spinner instead of a webview
@@ -100,8 +132,15 @@ const LoadArticle = () => {
 
   // If fetching failed, fall back to the webview for compatibility
   if (hasError) {
+    if (originalUrl) {
+      return <EdgelessWebview uri={originalUrl as HttpsUrl} />;
+    }
+
     // Safely build the URL without collapsing the protocol slashes
-    const buildUrl = (base: string, ...segments: (string | undefined)[]) => {
+    const buildFallbackUrl = (
+      base: string,
+      ...segments: (string | undefined)[]
+    ) => {
       const trimmedBase = base.replace(/\/+$/, "");
       const path = segments
         .filter((s): s is string => Boolean(s))
@@ -110,7 +149,7 @@ const LoadArticle = () => {
       return path ? `${trimmedBase}/${path}` : trimmedBase;
     };
 
-    const cleanPath = buildUrl(wpUrl, category, slug);
+    const cleanPath = buildFallbackUrl(wpUrl, category, slug);
     return <EdgelessWebview uri={cleanPath} />;
   }
 

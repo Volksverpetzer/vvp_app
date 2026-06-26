@@ -44,12 +44,10 @@ const HomeScreen = () => {
   });
 
   useEffect(() => {
-    const enabled = getEnabledFeeds(
-      Config.feeds,
-    ) as (keyof typeof contentSettings)[];
+    const enabled = getEnabledFeeds(Config.feeds);
     setFeedProperties({
       fetchers: enabled
-        .filter((feed) => contentSettings[feed].value)
+        .filter((feed) => contentSettings[feed]?.value)
         .map((feed) => ({
           fetcher: Fetcher[feed],
         })),

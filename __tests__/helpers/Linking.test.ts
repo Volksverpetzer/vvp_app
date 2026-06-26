@@ -21,6 +21,20 @@ jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
+    feeds: {
+      wp: [
+        {
+          handle: "https://www.volksverpetzer.de",
+          label: "Artikel",
+          enabled: true,
+        },
+        {
+          handle: "https://www.pruefpunkt.org",
+          label: "Prüfpunkt Artikel",
+          enabled: true,
+        },
+      ],
+    },
   },
 }));
 
@@ -65,7 +79,10 @@ describe("Linking helpers", () => {
 
       // Assert
       expect(Linking.parse).toHaveBeenCalledWith(internalUrl);
-      expect(pushSpy).toHaveBeenCalledWith("/politik/some-article");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/politik/some-article",
+        params: { originalUrl: internalUrl },
+      });
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
@@ -116,7 +133,34 @@ describe("Linking helpers", () => {
 
       // Assert
       expect(Linking.parse).toHaveBeenCalledWith(internalUrl);
-      expect(pushSpy).toHaveBeenCalledWith("www.volksverpetzer.de");
+      // A bare-domain internal link (no path) opens the app home rather than
+      // pushing the raw hostname as a route, which never matches.
+      expect(pushSpy).toHaveBeenCalledWith("/");
+      expect(Linking.openURL).not.toHaveBeenCalled();
+    });
+
+    it("should navigate to secondary WP (Prüfpunkt) internal links in-app", () => {
+      const pruefpunktUrl =
+        "https://www.pruefpunkt.org/faktencheck/some-article";
+      parseSpy.mockImplementation((url: string) => {
+        if (url === pruefpunktUrl) {
+          return {
+            hostname: "www.pruefpunkt.org",
+            path: "/faktencheck/some-article",
+          };
+        }
+        if (url === "https://www.pruefpunkt.org") {
+          return { hostname: "www.pruefpunkt.org", path: "" };
+        }
+        return { hostname: "www.volksverpetzer.de", path: "" };
+      });
+
+      onLinkPress(pruefpunktUrl, router);
+
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/faktencheck/some-article",
+        params: { originalUrl: pruefpunktUrl },
+      });
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
@@ -162,7 +206,10 @@ describe("Linking helpers", () => {
       onLinkPress(internalUrl, router);
 
       // Assert
-      expect(pushSpy).toHaveBeenCalledWith("/politik");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/politik",
+        params: { originalUrl: internalUrl },
+      });
     });
 
     it("should handle paths with leading slashes", () => {
@@ -180,7 +227,10 @@ describe("Linking helpers", () => {
       onLinkPress(internalUrl, router);
 
       // Assert
-      expect(pushSpy).toHaveBeenCalledWith("/politik");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/politik",
+        params: { originalUrl: internalUrl },
+      });
     });
   });
 

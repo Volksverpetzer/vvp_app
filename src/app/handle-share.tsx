@@ -10,7 +10,8 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
-import { normalizeHost } from "#/helpers/utils/host";
+import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
+import { isSameHost } from "#/helpers/utils/host";
 
 const URL_SHARE_TYPE: ShareType = "url";
 const TEXT_SHARE_TYPE: ShareType = "text";
@@ -30,10 +31,17 @@ const HandleShare = () => {
       const sharedUrl = firstPayload.value;
 
       try {
-        const { hostname, path } = Linking.parse(sharedUrl);
-        const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
+        const { path } = Linking.parse(sharedUrl);
+        // Open in-app when the shared URL is the primary site or a configured
+        // WordPress feed (e.g. pruefpunkt.org); otherwise treat it as a search.
+        const secondary = findSecondaryWpFeed(
+          sharedUrl,
+          Config.wpUrl,
+          Config.feeds?.wp,
+        );
+        const isInternal = isSameHost(sharedUrl, Config.wpUrl) || !!secondary;
 
-        if (normalizeHost(hostname) !== normalizeHost(baseHostname)) {
+        if (!isInternal) {
           router.replace({
             pathname: "/search",
             params: { tag: sharedUrl },
@@ -65,7 +73,16 @@ const HandleShare = () => {
               : `/${path}`
             : "/search";
 
-        router.replace(href as Href);
+        // Secondary-site articles need originalUrl so the article route fetches
+        // from the right WordPress API.
+        if (secondary && href !== "/search") {
+          router.replace({
+            pathname: href,
+            params: { originalUrl: sharedUrl },
+          } as unknown as Href);
+        } else {
+          router.replace(href as Href);
+        }
         clearSharedPayloads();
         return;
       } catch {

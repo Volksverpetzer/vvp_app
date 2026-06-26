@@ -104,6 +104,44 @@ describe("ContentStore", () => {
     });
   });
 
+  describe("multi-site article keying", () => {
+    const vvpArticle = {
+      slug: "shared-slug",
+      link: "https://www.volksverpetzer.de/faktencheck/shared-slug",
+      title: "VVP",
+    } as unknown as ArticleProperties;
+    const ppArticle = {
+      slug: "shared-slug",
+      link: "https://pruefpunkt.org/faktencheck/shared-slug",
+      title: "PP",
+    } as unknown as ArticleProperties;
+
+    it("keys a stored article by its site host so colliding slugs don't clash", async () => {
+      await ContentStore.setStoredArticle("shared-slug", vvpArticle);
+      await ContentStore.setStoredArticle("shared-slug", ppArticle);
+
+      expect(BaseStore.setItem).toHaveBeenCalledWith(
+        prefix + "volksverpetzer.de_shared-slug",
+        JSON.stringify(vvpArticle),
+      );
+      expect(BaseStore.setItem).toHaveBeenCalledWith(
+        prefix + "pruefpunkt.org_shared-slug",
+        JSON.stringify(ppArticle),
+      );
+    });
+
+    it("reads an article under the requested site host", async () => {
+      jest.spyOn(BaseStore, "getItem").mockResolvedValue(null);
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(undefined);
+
+      await ContentStore.getStoredArticle("shared-slug", "pruefpunkt.org");
+
+      expect(BaseStore.getItem).toHaveBeenCalledWith(
+        prefix + "pruefpunkt.org_shared-slug",
+      );
+    });
+  });
+
   describe("getStoredBskyPostById", () => {
     it("returns a parsed Bluesky post for the given id", async () => {
       jest

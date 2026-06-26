@@ -99,8 +99,12 @@ const extraConfig: ExtraConfigType = {
   enableAnalytics: false,
   enableEngagement: false,
   feeds: {
-    wp: { enabled: true },
-    insta: { enabled: true },
+    wp: [
+      { handle: "https://www.mimikama.org", label: "Artikel", enabled: true },
+    ],
+    insta: [
+      { handle: "mimikama.at", label: "Instagram Slides", enabled: true },
+    ],
   },
   colorScheme: colorScheme,
   assets: assets,

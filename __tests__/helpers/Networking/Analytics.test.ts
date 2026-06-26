@@ -78,7 +78,7 @@ describe("Analytics (Plausible)", () => {
         expect.objectContaining({
           name: "test_event",
           url: expect.stringContaining("https://www.volksverpetzer.de/article"),
-          domain: "www.volksverpetzer.de",
+          domain: "volksverpetzer.de",
           props: expect.objectContaining({
             platform: Platform.OS,
             OSversion: Platform.Version,
@@ -88,6 +88,16 @@ describe("Analytics (Plausible)", () => {
           }),
         }),
       );
+    });
+
+    it("should attribute the event to the pruefpunkt site for a pruefpunkt permalink", async () => {
+      parseSpy.mockReturnValue({ hostname: "www.pruefpunkt.org" });
+      postSpy.mockResolvedValue({ success: true });
+
+      await registerEvent("https://www.pruefpunkt.org/article", "test_event");
+
+      const [, , body] = postSpy.mock.calls[0];
+      expect(body.domain).toBe("pruefpunkt.org");
     });
 
     it("should include custom UTM parameters", async () => {

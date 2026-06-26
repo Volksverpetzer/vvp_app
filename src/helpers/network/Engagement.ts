@@ -1,6 +1,7 @@
 import Config from "#/constants/Config";
 import { parsePath } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
+import { resolveAnalyticsSite } from "#/helpers/utils/analyticsSite";
 import { createClient, get } from "#/helpers/utils/networking";
 import type { HttpsUrl } from "#/types";
 
@@ -8,12 +9,21 @@ const { apiUrl, wpUrl } = Config;
 const client = createClient(apiUrl);
 
 /**
+ * Builds the `?site=` query string that tells the proxy which Plausible site
+ * to query, derived from the resource's host (e.g. volksverpetzer.de vs
+ * pruefpunkt.org). Without it the backend defaults to the primary site.
+ */
+const siteQuery = (permalink?: HttpsUrl): string =>
+  `?site=${encodeURIComponent(resolveAnalyticsSite(permalink ?? wpUrl))}`;
+
+/**
  * Returns the page views for the current permalink
  * @param permalink - Link of the current Resource, defaults to Config.wpUrl if not provided
  * @returns Promise<number> - Number of views
  */
 const getViews = async (permalink?: HttpsUrl): Promise<number> => {
-  const endpoint = "/proxy/stats/" + parsePath(permalink ?? wpUrl);
+  const endpoint =
+    "/proxy/stats/" + parsePath(permalink ?? wpUrl) + siteQuery(permalink);
   try {
     const data = await get<{ pageviews: number }>(client, endpoint);
     return data.pageviews;
@@ -32,7 +42,7 @@ const getShares = async (permalink?: HttpsUrl): Promise<number> => {
   try {
     const data = await get<{ events: number }>(
       client,
-      `/proxy/shares/${parsePath(permalink ?? wpUrl)}`,
+      `/proxy/shares/${parsePath(permalink ?? wpUrl)}${siteQuery(permalink)}`,
     );
     return data.events;
   } catch (error) {
@@ -50,7 +60,7 @@ const getFavs = async (permalink?: HttpsUrl): Promise<number> => {
   try {
     const data = await get<{ events: number }>(
       client,
-      `/proxy/favs/${parsePath(permalink ?? wpUrl)}`,
+      `/proxy/favs/${parsePath(permalink ?? wpUrl)}${siteQuery(permalink)}`,
     );
     return data.events;
   } catch (error) {
@@ -70,7 +80,7 @@ const getLinks = async (
   try {
     const data = await get<{ links: { url: HttpsUrl; visitors: number }[] }>(
       client,
-      `/proxy/links/${parsePath(permalink ?? wpUrl)}`,
+      `/proxy/links/${parsePath(permalink ?? wpUrl)}${siteQuery(permalink)}`,
     );
     return data.links;
   } catch (error) {

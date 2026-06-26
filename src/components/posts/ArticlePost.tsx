@@ -57,6 +57,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Local state.
   const [imageUrl, setImgURL] = useState("");
   const [scrollProgress, setScrollProgress] = useState<DimensionValue>("0%");
+  const [viewCount, setViewCount] = useState<number | null>(null);
 
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
@@ -106,6 +107,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }
   }, [inView, getImages]);
 
+  // Reset the view count when this row is recycled for a different article, so
+  // a previously-hidden (0-view) badge re-mounts and refetches for the new one.
+  useEffect(() => {
+    setViewCount(null);
+  }, [article.link]);
+
   // Memoize computed texts.
   const authorDateText = useMemo(() => {
     const authors =
@@ -113,7 +120,9 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     const readingTime = article.reading_time
       ? ` | ${article.reading_time} Min.`
       : "";
-    return `${authors} | ${date}${readingTime}`;
+    return authors
+      ? `${authors} | ${date}${readingTime}`
+      : `${date}${readingTime}`;
   }, [article.authors, article.reading_time, date]);
 
   const excerpt = useMemo(
@@ -222,14 +231,16 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         <UiSpace size={10} />
         <UiText style={authorDateStyle}>{authorDateText}</UiText>
         <UiSpace size={10} />
-        {categoryText && (
+        {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>
-            <UiText style={categoryTextStyle}>{categoryText}</UiText>
+            <UiText style={categoryTextStyle}>
+              {article.sourceName || categoryText}
+            </UiText>
           </Badge>
         )}
-        {inView && (
+        {inView && Config.enableEngagement && viewCount !== 0 && (
           <Badge position="topRight" color={Colors[colorScheme].accent}>
-            <ViewCounter url={article.link} size={16} />
+            <ViewCounter url={article.link} size={16} onLoad={setViewCount} />
           </Badge>
         )}
         {excerpt ? (

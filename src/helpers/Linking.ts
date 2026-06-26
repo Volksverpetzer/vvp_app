@@ -3,6 +3,8 @@ import type { Href, ImperativeRouter } from "expo-router";
 
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
+import { getInternalWpHosts } from "#/helpers/utils/feeds";
+import { normalizeHost } from "#/helpers/utils/host";
 import type { HttpsUrl } from "#/types";
 
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
@@ -28,22 +30,29 @@ const onLinkPress = (
   article_link?: string,
 ) => {
   const { hostname, path } = Linking.parse(href);
-  const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
+  const internalHostnames = getInternalWpHosts(Config.wpUrl, Config.feeds?.wp);
+  const normalizedHostname = normalizeHost(hostname);
 
-  // Check if the path should be excluded from deep linking
-  if (hostname === baseHostname && shouldExcludeFromDeepLink(path)) {
-    // Treat excluded paths as external links
+  if (
+    internalHostnames.includes(normalizedHostname) &&
+    shouldExcludeFromDeepLink(path)
+  ) {
     outBoundLinkPress(href, article_link);
     return;
   }
 
-  if (hostname === baseHostname) {
+  if (internalHostnames.includes(normalizedHostname)) {
     if (path) {
       const cleanPath = path.replace(/^\//, "").replace(/\/$/, "");
-      router.push(`/${cleanPath}` as Href);
+      router.push({
+        pathname: `/${cleanPath}`,
+        params: { originalUrl: href },
+      } as unknown as Href);
       return;
     }
-    router.push(hostname as Href);
+    // Bare-domain internal link (no path) — open the app home instead of
+    // pushing the raw hostname as a route, which never matches.
+    router.push("/");
     return;
   }
   outBoundLinkPress(href, article_link);

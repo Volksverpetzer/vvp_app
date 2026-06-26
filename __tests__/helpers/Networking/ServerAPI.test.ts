@@ -310,6 +310,7 @@ describe("ServerAPI", () => {
         settings: {
           new_post: { value: true, name: "New Posts" },
           new_fact_check: { value: true, name: "Fact Checks" },
+          new_pruefpunkt: { value: true, name: "Prüfpunkt" },
         },
         os: "ios",
         version: "1.0.0",

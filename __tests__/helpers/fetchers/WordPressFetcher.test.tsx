@@ -1,6 +1,5 @@
 import Post from "#/helpers/Post";
 import type WordPressAPIClass from "#/helpers/network/WordPressAPI";
-import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { LoadArticlePostProperties } from "#/types";
 
@@ -126,78 +125,98 @@ describe("WordPressFetcher", () => {
     });
   });
 
-  describe("feedFetcher and searchFetcher", () => {
-    it("calls WordPressAPI.getPosts in feedFetcher", async () => {
-      const page = 2;
-      const articles = [makeArticle()];
-      const spy = jest
-        .spyOn(WordPressAPI, "getPosts" as any)
-        .mockResolvedValue(articles);
+  describe("createFetchers", () => {
+    const mockApi = {
+      getPosts: jest.fn(),
+      searchPosts: jest.fn(),
+    };
 
-      const result = await WordPressFetcher.feedFetcher({ page });
-
-      expect(spy).toHaveBeenCalledWith(page, undefined);
-      expect(result[0]).toBeInstanceOf(Post);
+    beforeEach(() => {
+      jest.clearAllMocks();
+      // Make mapArticleToPost return a post with a real data.article so stamp() can write sourceName.
+      jest
+        .spyOn(WordPressFetcher, "mapArticleToPost")
+        .mockImplementation(
+          (article) => ({ data: { article: { ...article } } }) as any,
+        );
     });
 
-    it("feedFetcher defaults to page 1 when called with no args", async () => {
-      const spy = jest
-        .spyOn(WordPressAPI, "getPosts" as any)
-        .mockResolvedValue([]);
-
-      await WordPressFetcher.feedFetcher();
-
-      expect(spy).toHaveBeenCalledWith(1, undefined);
+    afterEach(() => {
+      jest.restoreAllMocks();
     });
 
-    it("searchFetcher defaults to empty param when called with no args", async () => {
-      const spy = jest
-        .spyOn(WordPressAPI, "searchPosts" as any)
-        .mockResolvedValue([]);
-
-      await WordPressFetcher.searchFetcher();
-
-      expect(spy).toHaveBeenCalledWith("", 10, undefined);
+    it("returns feedFetcher and searchFetcher functions", () => {
+      const { feedFetcher, searchFetcher } =
+        WordPressFetcher.createFetchers(mockApi);
+      expect(typeof feedFetcher).toBe("function");
+      expect(typeof searchFetcher).toBe("function");
     });
 
-    it("forwards AbortSignal to getPosts in feedFetcher", async () => {
-      const page = 2;
-      const articles = [makeArticle()];
+    it("feedFetcher calls the provided api.getPosts", async () => {
+      mockApi.getPosts.mockResolvedValue([makeArticle({})]);
+      const { feedFetcher } = WordPressFetcher.createFetchers(mockApi);
+      await feedFetcher({ page: 2 });
+      expect(mockApi.getPosts).toHaveBeenCalledWith(2, undefined);
+    });
+
+    it("searchFetcher calls the provided api.searchPosts", async () => {
+      mockApi.searchPosts.mockResolvedValue([makeArticle({})]);
+      const { searchFetcher } = WordPressFetcher.createFetchers(mockApi);
+      await searchFetcher({ param: "test" });
+      expect(mockApi.searchPosts).toHaveBeenCalledWith("test", 1, undefined);
+    });
+
+    it("searchFetcher forwards page to api.searchPosts", async () => {
+      mockApi.searchPosts.mockResolvedValue([makeArticle({})]);
+      const { searchFetcher } = WordPressFetcher.createFetchers(mockApi);
+      await searchFetcher({ param: "test", page: 3 });
+      expect(mockApi.searchPosts).toHaveBeenCalledWith("test", 3, undefined);
+    });
+
+    it("stamps sourceName on every post when provided", async () => {
+      mockApi.getPosts.mockResolvedValue([
+        makeArticle({ id: 1 }),
+        makeArticle({ id: 2 }),
+      ]);
+      const { feedFetcher } = WordPressFetcher.createFetchers(
+        mockApi,
+        "TestSource",
+      );
+      const result = await feedFetcher({ page: 1 });
+      expect(
+        result.every((p) => p.data.article.sourceName === "TestSource"),
+      ).toBe(true);
+    });
+
+    it("does not set sourceName when not provided", async () => {
+      mockApi.getPosts.mockResolvedValue([makeArticle({})]);
+      const { feedFetcher } = WordPressFetcher.createFetchers(mockApi);
+      const result = await feedFetcher({ page: 1 });
+      expect(result[0].data.article.sourceName).toBeUndefined();
+    });
+
+    it("feedFetcher forwards AbortSignal to api.getPosts", async () => {
       const controller = new AbortController();
-      const spy = jest
-        .spyOn(WordPressAPI, "getPosts" as any)
-        .mockResolvedValue(articles);
+      mockApi.getPosts.mockResolvedValue([]);
+      const { feedFetcher } = WordPressFetcher.createFetchers(mockApi);
 
-      await WordPressFetcher.feedFetcher({ page, signal: controller.signal });
+      await feedFetcher({ page: 1, signal: controller.signal });
 
-      expect(spy).toHaveBeenCalledWith(page, controller.signal);
+      expect(mockApi.getPosts).toHaveBeenCalledWith(1, controller.signal);
     });
 
-    it("calls WordPressAPI.searchPosts in searchFetcher", async () => {
-      const parameter = "query";
-      const articles = [makeArticle()];
-      const spy = jest
-        .spyOn(WordPressAPI, "searchPosts" as any)
-        .mockResolvedValue(articles);
-
-      const result = await WordPressFetcher.searchFetcher({ param: parameter });
-
-      expect(spy).toHaveBeenCalledWith(parameter, 10, undefined);
-      expect(result[0]).toBeInstanceOf(Post);
-    });
-
-    it("forwards AbortSignal to searchPosts in searchFetcher", async () => {
+    it("searchFetcher forwards AbortSignal to api.searchPosts", async () => {
       const controller = new AbortController();
-      const spy = jest
-        .spyOn(WordPressAPI, "searchPosts" as any)
-        .mockResolvedValue([]);
+      mockApi.searchPosts.mockResolvedValue([]);
+      const { searchFetcher } = WordPressFetcher.createFetchers(mockApi);
 
-      await WordPressFetcher.searchFetcher({
-        param: "test",
-        signal: controller.signal,
-      });
+      await searchFetcher({ param: "test", signal: controller.signal });
 
-      expect(spy).toHaveBeenCalledWith("test", 10, controller.signal);
+      expect(mockApi.searchPosts).toHaveBeenCalledWith(
+        "test",
+        1,
+        controller.signal,
+      );
     });
   });
 });

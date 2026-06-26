@@ -1,11 +1,10 @@
 import * as Application from "expo-application";
-import * as Linking from "expo-linking";
 import { Dimensions, Platform } from "react-native";
 
 import Config from "#/constants/Config";
+import { resolveAnalyticsSite } from "#/helpers/utils/analyticsSite";
 import { createClient, post } from "#/helpers/utils/networking";
 
-const { wpUrl } = Config;
 const plausibleClient = createClient("https://plausible.io");
 
 /**
@@ -25,12 +24,15 @@ const registerEvent = async (
   utm_source = "app",
 ): Promise<void> => {
   if (!Config.enableAnalytics) return;
-  const { hostname } = Linking.parse(wpUrl);
+  // Fall back to the primary site when no resource link is provided (e.g. an
+  // outbound link tapped without article context), so the event URL and site
+  // are always well-formed instead of "undefined?...".
+  const resource = permalink || Config.wpUrl;
   const payload = {
     name: event,
-    url: `${permalink}?utm_source=${utm_source}&utm_medium=app&utm_campaign=${utm_campaign}`,
+    url: `${resource}?utm_source=${utm_source}&utm_medium=app&utm_campaign=${utm_campaign}`,
     referrer: "de.volksverpetzer.app",
-    domain: hostname,
+    domain: resolveAnalyticsSite(resource),
     props: {
       platform: Platform.OS,
       OSversion: Platform.Version,

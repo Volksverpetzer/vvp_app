@@ -99,8 +99,31 @@ const extraConfig: ExtraConfigType = {
   enableAnalytics: true,
   enableEngagement: true,
   feeds: {
-    wp: { enabled: true },
-    insta: { enabled: true },
+    wp: [
+      {
+        handle: "https://www.volksverpetzer.de",
+        label: "Artikel",
+        enabled: true,
+      },
+      {
+        handle: "https://pruefpunkt.org",
+        label: "Prüfpunkt Artikel",
+        sourceName: "Prüfpunkt",
+        enabled: true,
+      },
+    ],
+    insta: [
+      {
+        handle: "volksverpetzer",
+        label: "Instagram Slides",
+        enabled: true,
+      },
+      {
+        handle: "pruefpunkt",
+        label: "Prüfpunkt Instagram",
+        enabled: true,
+      },
+    ],
     yt: { enabled: true },
     bsky: { handle: "volksverpetzer.de", enabled: true },
   },
@@ -144,11 +167,23 @@ const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data
       host: "volksverpetzer.de",
       pathPattern: "/.*/.*",
     },
+    {
+      scheme: "https",
+      host: "www.pruefpunkt.org",
+      pathPattern: "/.*/.*",
+    },
+    {
+      scheme: "https",
+      host: "pruefpunkt.org",
+      pathPattern: "/.*/.*",
+    },
   ];
 
 const iOSAssociatedDomains = [
   "applinks:www.volksverpetzer.de",
   "applinks:volksverpetzer.de",
+  "applinks:www.pruefpunkt.org",
+  "applinks:pruefpunkt.org",
 ];
 
 const config = {

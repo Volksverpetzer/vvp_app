@@ -4,7 +4,15 @@ import { redirectSystemPath } from "#/app/+native-intent";
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: { wpUrl: "https://www.volksverpetzer.de" },
+  default: {
+    wpUrl: "https://www.volksverpetzer.de",
+    feeds: {
+      wp: [
+        { handle: "https://volksverpetzer.de", enabled: true },
+        { handle: "https://pruefpunkt.org", enabled: true },
+      ],
+    },
+  },
 }));
 
 jest.mock("#/helpers/DeepLinkFilter", () => ({
@@ -45,5 +53,21 @@ describe("redirectSystemPath", () => {
     expect(redirectSystemPath({ path: "https://example.com/x" })).toBe(
       "https://example.com/x",
     );
+  });
+
+  it("appends originalUrl for a secondary feed host so it fetches the right site", () => {
+    const result = redirectSystemPath({
+      path: "https://www.pruefpunkt.org/faktencheck/slug/",
+    });
+    expect(result).toBe(
+      "/faktencheck/slug/?originalUrl=" +
+        encodeURIComponent("https://www.pruefpunkt.org/faktencheck/slug/"),
+    );
+  });
+
+  it("does not append originalUrl for the primary site", () => {
+    expect(
+      redirectSystemPath({ path: "https://volksverpetzer.de/cat/slug/" }),
+    ).toBe("/cat/slug/");
   });
 });
