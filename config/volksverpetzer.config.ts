@@ -48,11 +48,11 @@ const extraConfig: ExtraConfigType = {
   instagramAppId: "1064021441903778",
   apiUrl: "https://volksverpetzer-app.de",
   aiUrl: "https://ai.volksverpetzer-app.de",
-  wpUrl: "https://www.volksverpetzer.de",
-  aboutUrl: "https://www.volksverpetzer.de/ueber-uns/",
+  wpUrl: "https://volksverpetzer.de",
+  aboutUrl: "https://volksverpetzer.de/ueber-uns/",
   sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
-  dataProtectionUrl: "https://www.volksverpetzer.de/datenschutzerklaerung/",
-  imprintUrl: "https://www.volksverpetzer.de/impressum-volksverpetzer/",
+  dataProtectionUrl: "https://volksverpetzer.de/datenschutzerklaerung/",
+  imprintUrl: "https://volksverpetzer.de/impressum-volksverpetzer/",
   eas: {
     projectId: "fd591077-fcb9-48ce-88d9-8bdff41c5564",
   },
@@ -67,7 +67,7 @@ const extraConfig: ExtraConfigType = {
     stripePublishableKey:
       "pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH", // cspell:disable-line
     steady: "https://steadyhq.com/volksverpetzer",
-    support: "https://www.volksverpetzer.de/unterstutzen/",
+    support: "https://volksverpetzer.de/unterstutzen/",
     paypal: "https://www.paypal.com/donate/?hosted_button_id=8LXQZGF3BDWVU",
     paypalEmail: "laschyk@volksverpetzer.de",
     paypalMatrix: [
