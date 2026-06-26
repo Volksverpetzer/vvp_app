@@ -1,3 +1,4 @@
+import Config from "#/constants/Config";
 import BaseStore from "#/helpers/Storage";
 import { normalizedHostOf } from "#/helpers/utils/host";
 import type {
@@ -29,9 +30,20 @@ const ContentStore = {
     host?: string,
   ): Promise<ArticleProperties | undefined> {
     try {
-      const storedArticleJson = await BaseStore.getItem(
+      let storedArticleJson = await BaseStore.getItem(
         this.articleKey(slug, host),
       );
+      // Backward-compat: articles cached before host-keying live under the
+      // legacy host-less key. Only fall back for the primary site, so a
+      // secondary slug can never read a legacy primary article (the collision
+      // host-keying exists to prevent).
+      if (
+        !storedArticleJson &&
+        host &&
+        host === normalizedHostOf(Config.wpUrl)
+      ) {
+        storedArticleJson = await BaseStore.getItem(this.articleKey(slug));
+      }
       return BaseStore.parseJSON(storedArticleJson);
     } catch (error) {
       console.error("Error retrieving stored article:", error);

@@ -68,6 +68,14 @@ const LoadArticle = () => {
         const _article = secondaryApi
           ? await secondaryApi.getPost(slug, signal)
           : await WordPressAPI.getPost(slug, signal);
+        if (signal.aborted) return;
+        // No post for this slug — fall back to the webview instead of letting
+        // convertLoadProps throw on undefined for control flow.
+        if (!_article) {
+          setHasError(true);
+          setIsLoading(false);
+          return;
+        }
         const loadedArticle: ArticleProperties =
           WordPressAPI.convertLoadProps(_article);
 

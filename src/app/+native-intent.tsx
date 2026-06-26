@@ -36,9 +36,14 @@ export function redirectSystemPath({ path }: { path: string }) {
       }
       // Secondary-site links must carry originalUrl so the article route
       // fetches from the right WordPress API; primary links use the default.
+      // Insert originalUrl into the query string (before any #hash) so
+      // expo-router parses it as a param rather than part of the fragment.
       if (secondary) {
-        const separator = urlPath.includes("?") ? "&" : "?";
-        return `${urlPath}${separator}originalUrl=${encodeURIComponent(parsedUrl.href)}`;
+        const originalUrlParam = `originalUrl=${encodeURIComponent(parsedUrl.href)}`;
+        const search = parsedUrl.search
+          ? `${parsedUrl.search}&${originalUrlParam}`
+          : `?${originalUrlParam}`;
+        return `${parsedUrl.pathname}${search}${parsedUrl.hash}`;
       }
       return urlPath;
     }
