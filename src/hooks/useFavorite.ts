@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 
 import { Achievements } from "#/helpers/Achievements";
-import ContentStore from "#/helpers/Stores/ContentStore";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerFav } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import type { FaveableType, HttpsUrl } from "#/types";
-import { FAV_TYPE_INSTA } from "#/types";
+import type { FaveableType, HttpsUrl, InstaPostProperties } from "#/types";
+import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
 /**
  * Encapsulates the "is this content saved as a favorite" state and the toggle behavior
@@ -15,11 +14,14 @@ import { FAV_TYPE_INSTA } from "#/types";
  * @param contentFavIdentifier Local-storage identifier for the favorite (e.g. slug)
  * @param contentType The type of content being saved as a favorite
  * @param registerUrl URL reported to the engagement backend when a favorite is added
+ * @param favPayload Instagram post to snapshot into the favorite, so it can be
+ *   rebuilt without the account-scoped by-id proxy
  */
 export const useFavorite = (
   contentFavIdentifier?: string,
   contentType?: FaveableType,
   registerUrl?: HttpsUrl,
+  favPayload?: InstaPostProperties,
 ) => {
   const [isFav, setIsFav] = useState(false);
 
@@ -43,20 +45,14 @@ export const useFavorite = (
       if (!contentType) return;
       setIsFav(true);
       Achievements.setAchievementValue("favorite");
-      // Instagram posts can't be re-fetched by id across accounts (the by-id
-      // proxy only serves the default account), so snapshot the post — it is in
-      // ContentStore because the user just viewed it — and store it with the fav.
-      const payload =
-        contentType === FAV_TYPE_INSTA
-          ? await ContentStore.getStoredInstaPost(contentFavIdentifier)
-          : undefined;
-      // registerUrl is the content's own source URL; persist it so favorites
-      // from a secondary WP feed (Prüfpunkt) reload from the right site.
+      // Articles are re-fetched by URL, so persist the source URL to reload them
+      // from the right site (e.g. a secondary Prüfpunkt feed). Instagram posts
+      // can't be re-fetched by id across accounts, so snapshot the post instead.
       await FavoritesStore.addFavorite(
         contentFavIdentifier,
         contentType,
-        registerUrl,
-        payload,
+        contentType === FAV_TYPE_ARTICLE ? registerUrl : undefined,
+        contentType === FAV_TYPE_INSTA ? favPayload : undefined,
       );
       updateBadgeState({ personal: true });
       if (registerUrl) await registerFav(registerUrl);

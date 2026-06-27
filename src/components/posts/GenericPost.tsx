@@ -6,7 +6,8 @@ import { View } from "react-native";
 import ShareBar from "#/components/bars/ShareBar";
 import UiCard from "#/components/ui/UiCard";
 import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
-import type { FaveableType, ShareableType } from "#/types";
+import type { FaveableType, InstaPostProperties, ShareableType } from "#/types";
+import { FAV_TYPE_INSTA } from "#/types";
 
 interface ComponentProperty<T> {
   component: FC<{ inView: boolean } & T>;
@@ -45,6 +46,13 @@ const GenericPost = (properties: ComponentProperty<object>) => {
           hideShareCount={!inView}
           contentFavIdentifier={contentFavIdentifier}
           contentType={contentType}
+          // For Instagram posts `data` is the post itself; snapshot it into the
+          // favorite so it survives without the account-scoped by-id proxy.
+          favPayload={
+            contentType === FAV_TYPE_INSTA
+              ? (data as InstaPostProperties)
+              : undefined
+          }
         />
       ) : (
         <View

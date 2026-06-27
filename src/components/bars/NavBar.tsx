@@ -11,13 +11,19 @@ import Colors from "#/constants/Colors";
 import { onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import type { FaveableType, HttpsUrl, ShareableType } from "#/types";
+import type {
+  FaveableType,
+  HttpsUrl,
+  InstaPostProperties,
+  ShareableType,
+} from "#/types";
 
 interface NavBarProperties {
   link?: HttpsUrl;
   shareable?: ShareableType[];
   contentFavIdentifier?: string;
   contentType?: FaveableType;
+  favPayload?: InstaPostProperties;
 }
 /**
  * NavBar component renders a top navigation bar with a customizable
@@ -37,7 +43,8 @@ interface NavBarProperties {
  * visible, it displays the share count and allows the link to be shared.
  */
 const NavBar = (properties: NavBarProperties) => {
-  const { contentFavIdentifier, contentType, link, shareable } = properties;
+  const { contentFavIdentifier, contentType, favPayload, link, shareable } =
+    properties;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
@@ -99,6 +106,7 @@ const NavBar = (properties: NavBarProperties) => {
             shareable={shareable}
             contentFavIdentifier={contentFavIdentifier}
             contentType={contentType}
+            favPayload={favPayload}
             style={{
               color: corporate,
               fontSize: 16,

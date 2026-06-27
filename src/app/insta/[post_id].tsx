@@ -107,6 +107,7 @@ const InstaScreen = () => {
         shareable={[{ url: data.permalink, title: data.caption }]}
         contentFavIdentifier={parameters.post_id}
         contentType="insta"
+        favPayload={data}
       />
     </View>
   );
