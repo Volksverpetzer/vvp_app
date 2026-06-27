@@ -10,6 +10,7 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
+import ContentStore from "#/helpers/Stores/ContentStore";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
@@ -53,10 +54,19 @@ const loadFavoriteArticlePost = async (
 
 const loadFavoriteInstaPost = async (
   id: string,
+  payload?: InstaPostProperties,
 ): Promise<Post<InstaPostProperties> | undefined> => {
   try {
-    const post = await API.getInstaPost(id);
-    if (post.media_type !== "IMAGE" && post.media_type !== "CAROUSEL_ALBUM") {
+    // Prefer the snapshot stored with the favorite (works for any account and
+    // without the backend), then the local cache, then the by-id proxy.
+    const post =
+      payload ??
+      (await ContentStore.getStoredInstaPost(id)) ??
+      (await API.getInstaPost(id));
+    if (
+      !post ||
+      (post.media_type !== "IMAGE" && post.media_type !== "CAROUSEL_ALBUM")
+    ) {
       return undefined;
     }
 
@@ -92,13 +102,13 @@ const MyFavs = () => {
       const results = await Promise.allSettled(
         Object.entries(favs)
           .reverse()
-          .map(async ([fav, { contentType, originalUrl }]) => {
+          .map(async ([fav, { contentType, originalUrl, payload }]) => {
             try {
               switch (contentType) {
                 case FAV_TYPE_ARTICLE:
                   return await loadFavoriteArticlePost(fav, originalUrl);
                 case FAV_TYPE_INSTA:
-                  return await loadFavoriteInstaPost(fav);
+                  return await loadFavoriteInstaPost(fav, payload);
               }
             } catch (error) {
               console.error(

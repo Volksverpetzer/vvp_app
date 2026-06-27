@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { Achievements } from "#/helpers/Achievements";
+import ContentStore from "#/helpers/Stores/ContentStore";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerFav } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import type { FaveableType, HttpsUrl } from "#/types";
+import { FAV_TYPE_INSTA } from "#/types";
 
 /**
  * Encapsulates the "is this content saved as a favorite" state and the toggle behavior
@@ -41,12 +43,20 @@ export const useFavorite = (
       if (!contentType) return;
       setIsFav(true);
       Achievements.setAchievementValue("favorite");
+      // Instagram posts can't be re-fetched by id across accounts (the by-id
+      // proxy only serves the default account), so snapshot the post — it is in
+      // ContentStore because the user just viewed it — and store it with the fav.
+      const payload =
+        contentType === FAV_TYPE_INSTA
+          ? await ContentStore.getStoredInstaPost(contentFavIdentifier)
+          : undefined;
       // registerUrl is the content's own source URL; persist it so favorites
       // from a secondary WP feed (Prüfpunkt) reload from the right site.
-      FavoritesStore.addFavorite(
+      await FavoritesStore.addFavorite(
         contentFavIdentifier,
         contentType,
         registerUrl,
+        payload,
       );
       updateBadgeState({ personal: true });
       if (registerUrl) await registerFav(registerUrl);

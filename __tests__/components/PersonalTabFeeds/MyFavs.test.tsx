@@ -1,6 +1,7 @@
 import { act, render, waitFor } from "@testing-library/react-native";
 
 import GenericPost from "#/components/posts/GenericPost";
+import ContentStore from "#/helpers/Stores/ContentStore";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
@@ -75,6 +76,13 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
   default: {
     getInstaPost: jest.fn(),
+  },
+}));
+
+jest.mock("#/helpers/Stores/ContentStore", () => ({
+  __esModule: true,
+  default: {
+    getStoredInstaPost: jest.fn(),
   },
 }));
 
@@ -255,6 +263,52 @@ describe("MyFavs", () => {
     expect(secondaryGetPost).toHaveBeenCalledWith("pp-article");
     expect(WordPressAPI.getPost).not.toHaveBeenCalled();
     expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+  });
+
+  it("rebuilds a secondary-account (Prüfpunkt) Instagram favorite from its stored snapshot", async () => {
+    const snapshot = {
+      id: "18100522658117977",
+      media_type: "IMAGE",
+      media_url: "https://example.com/pp.jpg",
+      caption: "Prüfpunkt insta caption",
+      timestamp: "2026-01-04T12:00:00Z",
+      permalink: "https://www.instagram.com/p/ppShortcode/",
+    };
+
+    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+      "18100522658117977": {
+        contentType: FAV_TYPE_INSTA,
+        payload: snapshot,
+      },
+    });
+
+    render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+
+    // Rendered straight from the snapshot — no account-scoped by-id proxy call,
+    // no local-cache lookup, and the favorite is not purged.
+    expect(API.getInstaPost).not.toHaveBeenCalled();
+    expect(ContentStore.getStoredInstaPost).not.toHaveBeenCalled();
+    expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+
+    const genericPostCalls = (
+      GenericPost as unknown as jest.Mock
+    ).mock.calls.map(([properties]) => properties);
+    expect(genericPostCalls[0]).toEqual(
+      expect.objectContaining({
+        contentFavIdentifier: "18100522658117977",
+        contentType: FAV_TYPE_INSTA,
+        shareable: [
+          {
+            title: "Instagram Post teilen",
+            url: "https://www.instagram.com/p/ppShortcode/",
+          },
+        ],
+      }),
+    );
   });
 
   it("skips a failing Instagram favorite without aborting the rest of the list", async () => {
