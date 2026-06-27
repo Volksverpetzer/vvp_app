@@ -10,7 +10,6 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
-import ContentStore from "#/helpers/Stores/ContentStore";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
@@ -58,11 +57,8 @@ const loadFavoriteInstaPost = async (
 ): Promise<Post<InstaPostProperties> | undefined> => {
   try {
     // Prefer the snapshot stored with the favorite (works for any account and
-    // without the backend), then the local cache, then the by-id proxy.
-    const post =
-      payload ??
-      (await ContentStore.getStoredInstaPost(id)) ??
-      (await API.getInstaPost(id));
+    // without the backend); otherwise re-fetch from the by-id proxy.
+    const post = payload ?? (await API.getInstaPost(id));
     if (
       !post ||
       (post.media_type !== "IMAGE" && post.media_type !== "CAROUSEL_ALBUM")

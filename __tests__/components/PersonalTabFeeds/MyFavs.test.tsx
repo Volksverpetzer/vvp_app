@@ -1,7 +1,6 @@
 import { act, render, waitFor } from "@testing-library/react-native";
 
 import GenericPost from "#/components/posts/GenericPost";
-import ContentStore from "#/helpers/Stores/ContentStore";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
@@ -76,13 +75,6 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
   default: {
     getInstaPost: jest.fn(),
-  },
-}));
-
-jest.mock("#/helpers/Stores/ContentStore", () => ({
-  __esModule: true,
-  default: {
-    getStoredInstaPost: jest.fn(),
   },
 }));
 
@@ -289,9 +281,8 @@ describe("MyFavs", () => {
     });
 
     // Rendered straight from the snapshot — no account-scoped by-id proxy call,
-    // no local-cache lookup, and the favorite is not purged.
+    // and the favorite is not purged.
     expect(API.getInstaPost).not.toHaveBeenCalled();
-    expect(ContentStore.getStoredInstaPost).not.toHaveBeenCalled();
     expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
 
     const genericPostCalls = (
