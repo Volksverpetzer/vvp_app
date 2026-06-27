@@ -5,7 +5,7 @@ import { Achievements } from "#/helpers/Achievements";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { getFavs, registerFav } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import type { FaveableType, ShareableType } from "#/types";
+import type { FaveableType, InstaPostProperties, ShareableType } from "#/types";
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
@@ -92,7 +92,7 @@ describe("FavCounter", () => {
 
   it("adds a favorite, registers engagement, and increments the visible count", async () => {
     jest.mocked(getFavs).mockResolvedValue(2);
-    const instaSnapshot = {
+    const instaSnapshot: InstaPostProperties = {
       id: contentFavIdentifier,
       media_type: "IMAGE",
       media_url: "https://example.com/image.jpg",
@@ -107,7 +107,7 @@ describe("FavCounter", () => {
         style={{}}
         contentFavIdentifier={contentFavIdentifier}
         contentType={contentType}
-        favPayload={instaSnapshot as never}
+        favPayload={instaSnapshot}
       />,
     );
 
