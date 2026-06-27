@@ -20,6 +20,9 @@ jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
+    feeds: {
+      wp: [{ handle: "https://www.pruefpunkt.org", enabled: true }],
+    },
   },
 }));
 jest.mock("#/components/Icons", () => ({
@@ -79,6 +82,7 @@ jest.mock("#/helpers/network/WordPressAPI", () => ({
   __esModule: true,
   default: {
     getPost: jest.fn(),
+    create: jest.fn(),
   },
 }));
 
@@ -194,6 +198,107 @@ describe("MyFavs", () => {
           inView: true,
         }),
       ]),
+    );
+  });
+
+  it("loads a secondary-feed (Prüfpunkt) favorite from its own site instead of purging it", async () => {
+    const pruefpunktApiResponse = {
+      id: 7,
+      date: "2026-01-03T12:00:00Z",
+      date_gmt: "2026-01-03T12:00:00Z",
+      link: "https://www.pruefpunkt.org/faktencheck/pp-article",
+      slug: "pp-article",
+      title: { rendered: "Prüfpunkt Article" },
+      yoast_head_json: { description: "PP description" },
+      _links: { "wp:featuredmedia": [{ href: "https://example.com/image" }] },
+      categories: [],
+      authors: [],
+    };
+    const mappedPruefpunktPost = {
+      id: "pp-article",
+      component: jest.fn(),
+      data: {
+        article: {
+          title: "Prüfpunkt Article",
+          link: pruefpunktApiResponse.link,
+        },
+      },
+      shareable: [{ url: pruefpunktApiResponse.link, title: "Artikel teilen" }],
+      contentFavIdentifier: "pp-article",
+      contentType: FAV_TYPE_ARTICLE,
+    };
+    const secondaryGetPost = jest.fn().mockResolvedValue(pruefpunktApiResponse);
+
+    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+      "pp-article": {
+        contentType: FAV_TYPE_ARTICLE,
+        originalUrl: "https://www.pruefpunkt.org/faktencheck/pp-article",
+      },
+    });
+    (WordPressAPI.create as jest.Mock).mockReturnValue({
+      getPost: secondaryGetPost,
+    });
+    (WordPressFetcher.mapArticleToPost as jest.Mock).mockReturnValue(
+      mappedPruefpunktPost,
+    );
+
+    render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+
+    // Resolved via the secondary site's API, never the primary one.
+    expect(WordPressAPI.create).toHaveBeenCalledWith(
+      "https://www.pruefpunkt.org",
+    );
+    expect(secondaryGetPost).toHaveBeenCalledWith("pp-article");
+    expect(WordPressAPI.getPost).not.toHaveBeenCalled();
+    expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+  });
+
+  it("rebuilds a secondary-account (Prüfpunkt) Instagram favorite from its stored snapshot", async () => {
+    const snapshot = {
+      id: "18100522658117977",
+      media_type: "IMAGE",
+      media_url: "https://example.com/pp.jpg",
+      caption: "Prüfpunkt insta caption",
+      timestamp: "2026-01-04T12:00:00Z",
+      permalink: "https://www.instagram.com/p/ppShortcode/",
+    };
+
+    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+      "18100522658117977": {
+        contentType: FAV_TYPE_INSTA,
+        payload: snapshot,
+      },
+    });
+
+    render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+
+    // Rendered straight from the snapshot — no account-scoped by-id proxy call,
+    // and the favorite is not purged.
+    expect(API.getInstaPost).not.toHaveBeenCalled();
+    expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+
+    const genericPostCalls = (
+      GenericPost as unknown as jest.Mock
+    ).mock.calls.map(([properties]) => properties);
+    expect(genericPostCalls[0]).toEqual(
+      expect.objectContaining({
+        contentFavIdentifier: "18100522658117977",
+        contentType: FAV_TYPE_INSTA,
+        shareable: [
+          {
+            title: "Instagram Post teilen",
+            url: "https://www.instagram.com/p/ppShortcode/",
+          },
+        ],
+      }),
     );
   });
 

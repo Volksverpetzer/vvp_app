@@ -5,7 +5,7 @@ import { Achievements } from "#/helpers/Achievements";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { getFavs, registerFav } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import type { FaveableType, ShareableType } from "#/types";
+import type { FaveableType, InstaPostProperties, ShareableType } from "#/types";
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
@@ -92,6 +92,14 @@ describe("FavCounter", () => {
 
   it("adds a favorite, registers engagement, and increments the visible count", async () => {
     jest.mocked(getFavs).mockResolvedValue(2);
+    const instaSnapshot: InstaPostProperties = {
+      id: contentFavIdentifier,
+      media_type: "IMAGE",
+      media_url: "https://example.com/image.jpg",
+      caption: "Snapshot caption",
+      timestamp: "2026-01-01T12:00:00Z",
+      permalink: "https://www.instagram.com/p/abc/",
+    };
 
     const { getByRole, getByText, queryByText } = render(
       <FavCounter
@@ -99,6 +107,7 @@ describe("FavCounter", () => {
         style={{}}
         contentFavIdentifier={contentFavIdentifier}
         contentType={contentType}
+        favPayload={instaSnapshot}
       />,
     );
 
@@ -116,9 +125,14 @@ describe("FavCounter", () => {
 
     expect(queryByText("2")).toBeNull();
     expect(Achievements.setAchievementValue).toHaveBeenCalledWith("favorite");
+    // The Instagram post passed in via favPayload is snapshotted into the
+    // favorite so it can be rebuilt without the account-scoped by-id proxy.
+    // originalUrl stays undefined — only articles are re-fetched by URL.
     expect(FavoritesStore.addFavorite).toHaveBeenCalledWith(
       contentFavIdentifier,
       contentType,
+      undefined,
+      instaSnapshot,
     );
     expect(updateBadgeState).toHaveBeenCalledWith({ personal: true });
     expect(registerFav).toHaveBeenCalledWith("https://example.com/one");

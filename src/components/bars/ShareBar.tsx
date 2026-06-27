@@ -6,18 +6,24 @@ import ShareCounter from "#/components/counter/ShareCounter";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { multishare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-import type { FaveableType, ShareableType } from "#/types";
+import type { FaveableType, InstaPostProperties, ShareableType } from "#/types";
 
 interface ShareBarProperties {
   shareable: ShareableType[];
   contentFavIdentifier?: string;
   contentType?: FaveableType;
+  favPayload?: InstaPostProperties;
   hideShareCount?: boolean;
 }
 
 const ShareBar = (properties: ShareBarProperties) => {
-  const { shareable, hideShareCount, contentFavIdentifier, contentType } =
-    properties;
+  const {
+    shareable,
+    hideShareCount,
+    contentFavIdentifier,
+    contentType,
+    favPayload,
+  } = properties;
   const [shares, setShares] = useState(0);
 
   const onPress = async () => {
@@ -52,6 +58,7 @@ const ShareBar = (properties: ShareBarProperties) => {
           shareable={shareable}
           contentFavIdentifier={contentFavIdentifier}
           contentType={contentType}
+          favPayload={favPayload}
           style={{ color, fontSize }}
         />
       )}
