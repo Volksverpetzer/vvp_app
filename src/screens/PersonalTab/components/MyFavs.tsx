@@ -17,12 +17,27 @@ import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
-import type { ArticleProperties, InstaPostProperties } from "#/types";
+import type { ArticleProperties, HttpsUrl, InstaPostProperties } from "#/types";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
 type FavoritePost =
   | Post<{ article: ArticleProperties }>
   | Post<InstaPostProperties>;
+
+// Reuse one API client per secondary site instead of rebuilding it for every
+// favorite on every load.
+const secondaryApiCache = new Map<
+  HttpsUrl,
+  ReturnType<typeof WordPressAPI.create>
+>();
+const secondaryApiFor = (handle: HttpsUrl) => {
+  let api = secondaryApiCache.get(handle);
+  if (!api) {
+    api = WordPressAPI.create(handle);
+    secondaryApiCache.set(handle, api);
+  }
+  return api;
+};
 
 const loadFavoriteArticlePost = async (
   slug: string,
@@ -36,7 +51,7 @@ const loadFavoriteArticlePost = async (
     Config.wpUrl,
     Config.feeds?.wp,
   );
-  const api = secondaryWp ? WordPressAPI.create(secondaryWp.handle) : null;
+  const api = secondaryWp ? secondaryApiFor(secondaryWp.handle) : null;
   const article = api
     ? await api.getPost(slug)
     : await WordPressAPI.getPost(slug);
