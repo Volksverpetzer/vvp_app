@@ -119,6 +119,7 @@ describe("FavCounter", () => {
     expect(FavoritesStore.addFavorite).toHaveBeenCalledWith(
       contentFavIdentifier,
       contentType,
+      "https://example.com/one",
     );
     expect(updateBadgeState).toHaveBeenCalledWith({ personal: true });
     expect(registerFav).toHaveBeenCalledWith("https://example.com/one");

@@ -12,6 +12,10 @@ export type ShareableType = {
 
 export type StoredFav = {
   contentType: FaveableType;
+  // Full source URL of the saved content. Needed so favorites from a
+  // secondary WordPress feed (e.g. Prüfpunkt) can be reloaded from the correct
+  // site instead of the primary one, which would 404 and purge the favorite.
+  originalUrl?: HttpsUrl;
 };
 
 export type StoredFavs = Record<string, StoredFav>;

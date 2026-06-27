@@ -1,5 +1,5 @@
 import BaseStore from "#/helpers/Storage";
-import type { FaveableType, StoredFavs } from "#/types";
+import type { FaveableType, HttpsUrl, StoredFavs } from "#/types";
 
 const FavoritesStore = {
   favKey: "favs",
@@ -34,15 +34,21 @@ const FavoritesStore = {
    * Adds a new favorite to storage.
    * @param {string} contentFavIdentifier The unique identifier for the content.
    * @param {FaveableType} contentType The type of content.
+   * @param {HttpsUrl} [originalUrl] Full source URL, used to reload favorites
+   *   from a secondary WordPress feed (e.g. Prüfpunkt) from the correct site.
    */
   async addFavorite(
     contentFavIdentifier: string,
     contentType: FaveableType,
+    originalUrl?: HttpsUrl,
   ): Promise<void> {
     const storedFavs = await this.getStoredFavs();
     const newStoredFavs = {
       ...storedFavs,
-      [contentFavIdentifier]: { contentType },
+      [contentFavIdentifier]: {
+        contentType,
+        ...(originalUrl && { originalUrl }),
+      },
     };
     await this.setStoredFavs(newStoredFavs);
   },

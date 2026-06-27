@@ -15,6 +15,7 @@ import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { ArticleProperties, InstaPostProperties } from "#/types";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
@@ -25,8 +26,20 @@ type FavoritePost =
 
 const loadFavoriteArticlePost = async (
   slug: string,
+  originalUrl?: string,
 ): Promise<Post<{ article: ArticleProperties }> | undefined> => {
-  const article = await WordPressAPI.getPost(slug);
+  // Articles from a secondary WordPress feed (e.g. Prüfpunkt) live on their own
+  // site, so reload them from that site's API instead of the primary one — which
+  // would 404 and purge the favorite below.
+  const secondaryWp = findSecondaryWpFeed(
+    originalUrl,
+    Config.wpUrl,
+    Config.feeds?.wp,
+  );
+  const api = secondaryWp ? WordPressAPI.create(secondaryWp.handle) : null;
+  const article = api
+    ? await api.getPost(slug)
+    : await WordPressAPI.getPost(slug);
   if (!article) {
     console.warn(
       `Article not found for slug: ${slug}, removing from favorites`,
@@ -79,11 +92,11 @@ const MyFavs = () => {
       const results = await Promise.allSettled(
         Object.entries(favs)
           .reverse()
-          .map(async ([fav, { contentType }]) => {
+          .map(async ([fav, { contentType, originalUrl }]) => {
             try {
               switch (contentType) {
                 case FAV_TYPE_ARTICLE:
-                  return await loadFavoriteArticlePost(fav);
+                  return await loadFavoriteArticlePost(fav, originalUrl);
                 case FAV_TYPE_INSTA:
                   return await loadFavoriteInstaPost(fav);
               }

@@ -4,7 +4,7 @@ import { Achievements } from "#/helpers/Achievements";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerFav } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import type { FaveableType } from "#/types";
+import type { FaveableType, HttpsUrl } from "#/types";
 
 /**
  * Encapsulates the "is this content saved as a favorite" state and the toggle behavior
@@ -17,7 +17,7 @@ import type { FaveableType } from "#/types";
 export const useFavorite = (
   contentFavIdentifier?: string,
   contentType?: FaveableType,
-  registerUrl?: string,
+  registerUrl?: HttpsUrl,
 ) => {
   const [isFav, setIsFav] = useState(false);
 
@@ -41,7 +41,13 @@ export const useFavorite = (
       if (!contentType) return;
       setIsFav(true);
       Achievements.setAchievementValue("favorite");
-      FavoritesStore.addFavorite(contentFavIdentifier, contentType);
+      // registerUrl is the content's own source URL; persist it so favorites
+      // from a secondary WP feed (Prüfpunkt) reload from the right site.
+      FavoritesStore.addFavorite(
+        contentFavIdentifier,
+        contentType,
+        registerUrl,
+      );
       updateBadgeState({ personal: true });
       if (registerUrl) await registerFav(registerUrl);
     }
