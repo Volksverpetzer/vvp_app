@@ -41,7 +41,7 @@ const secondaryApiFor = (handle: HttpsUrl) => {
 
 const loadFavoriteArticlePost = async (
   slug: string,
-  originalUrl?: string,
+  originalUrl?: HttpsUrl,
 ): Promise<Post<{ article: ArticleProperties }> | undefined> => {
   // Articles from a secondary WordPress feed (e.g. Prüfpunkt) live on their own
   // site, so reload them from that site's API instead of the primary one — which
