@@ -18,8 +18,10 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import UiTextInput from "#/components/ui/UiTextInput";
 import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
+import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import ReportStatusList from "#/screens/ReportTab/components/ReportStatusList";
@@ -117,6 +119,10 @@ const ReportScreen = () => {
       more_info: moreInfo,
       url,
       allowed_public: allowedPublic,
+    });
+    registerEvent(Config.wpUrl, "Report Submitted", {
+      allowed_public: allowedPublic,
+      has_url: url.trim().length > 0,
     });
     const updatedReports = [...reports, data];
     setReports(updatedReports);
