@@ -147,7 +147,7 @@
     "jest-react-native": "18.0.0",
     "license-checker-rseidelsohn": "5.0.1",
     "lint-staged": "17.0.8",
-    "prettier": "3.8.4",
+    "prettier": "3.9.0",
     "typedoc": "0.28.19",
     "typescript": "6.0.3"
   }

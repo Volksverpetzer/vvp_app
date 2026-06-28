@@ -1,13 +1,7 @@
 import type { HttpsUrl } from "./config";
 
 export type FeedType =
-  | "reddit"
-  | "wp"
-  | "insta"
-  | "yt"
-  | "tiktok"
-  | "bsky"
-  | "bot";
+  "reddit" | "wp" | "insta" | "yt" | "tiktok" | "bsky" | "bot";
 
 export type FeedEntry = {
   handle?: string;
@@ -35,9 +29,7 @@ export type InstaFeedKey = `insta:${string}`;
 
 /** Key of an enabled feed: either a plain feed type or a per-account key */
 export type FeedKey =
-  | Exclude<FeedType, "wp" | "insta">
-  | WpFeedKey
-  | InstaFeedKey;
+  Exclude<FeedType, "wp" | "insta"> | WpFeedKey | InstaFeedKey;
 
 export type FeedsConfig = Partial<
   Record<Exclude<FeedType, "wp" | "insta">, FeedEntry>

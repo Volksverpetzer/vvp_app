@@ -35,12 +35,7 @@ export type AnalyticsEvent =
  * letting it become a confusing no-op.
  */
 type ReservedPropKey =
-  | "platform"
-  | "OSversion"
-  | "appVersion"
-  | "appBuild"
-  | "buildLabel"
-  | "width";
+  "platform" | "OSversion" | "appVersion" | "appBuild" | "buildLabel" | "width";
 
 /**
  * Custom event properties: any keys/values, except that any reserved base-prop
