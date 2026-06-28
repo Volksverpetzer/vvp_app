@@ -21,7 +21,7 @@ const BlockRenderer = (properties: BlockRenderProperties) => {
   const { advancedSettings } = useContext(SettingsContext);
 
   if (!("TDefaultRenderer" in properties.renderProps)) {
-    return;
+    return null;
   }
 
   const defaultContent = (
