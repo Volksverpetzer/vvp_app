@@ -39,7 +39,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
           accessibilityRole="button"
           onPress={() => {
             registerPostInteraction(
-              `https://www.youtube.com/watch?v=${id}`,
+              `https://youtu.be/${id}`,
               "youtube",
               "play",
             );

@@ -42,7 +42,11 @@ const TiktokPost = (properties: TiktokPostProperties) => {
       <View style={[styles.container, { height }]}>
         <UiPressable
           onPress={() => {
-            registerPostInteraction(share_url ?? embed_link, "tiktok", "play");
+            registerPostInteraction(
+              (share_url ?? embed_link).split("?")[0],
+              "tiktok",
+              "play",
+            );
             setIsVideoLoaded(true);
           }}
           style={styles.thumbnailContainer}
