@@ -28,8 +28,11 @@ export type AnalyticsEvent =
 
 /**
  * Props that registerEvent always sets on every event. Callers must not pass
- * these keys: because `properties` is spread after the base props, reusing one
- * would silently overwrite the base value (e.g. the OS `platform`).
+ * these keys: the base props are spread after `...properties` so they always
+ * win at runtime, meaning a caller's reserved key (e.g. the OS `platform`)
+ * would be silently dropped. The type guard below rejects these keys for
+ * narrow literal types to surface the mistake at the call site rather than
+ * letting it become a confusing no-op.
  */
 type ReservedPropKey =
   | "platform"
