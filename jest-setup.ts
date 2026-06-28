@@ -7,7 +7,7 @@ declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean;
 }
 
-global.IS_REACT_ACT_ENVIRONMENT = true;
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 jest.mock("react-native/Libraries/Interaction/InteractionManager", () => ({
   createInteractionHandle: jest.fn(),
@@ -134,7 +134,7 @@ jest.mock("expo-application", () => ({
 }));
 
 jest.mock("expo/fetch", () => ({
-  fetch: (...args: unknown[]) => (global as any).fetch(...args),
+  fetch: (...args: unknown[]) => (globalThis as any).fetch(...args),
 }));
 
 const originalPlatform = Platform.OS;

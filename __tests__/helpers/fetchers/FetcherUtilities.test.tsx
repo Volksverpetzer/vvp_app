@@ -11,7 +11,7 @@ describe("FetcherUtils", () => {
     it("returns true for AbortError", () => {
       expect(
         FetcherUtilities.isAbortError(
-          Object.assign(new Error(), { name: "AbortError" }),
+          Object.assign(new Error("aborted"), { name: "AbortError" }),
         ),
       ).toBe(true);
     });
@@ -19,7 +19,7 @@ describe("FetcherUtils", () => {
     it("returns true for CanceledError", () => {
       expect(
         FetcherUtilities.isAbortError(
-          Object.assign(new Error(), { name: "CanceledError" }),
+          Object.assign(new Error("canceled"), { name: "CanceledError" }),
         ),
       ).toBe(true);
     });
@@ -27,7 +27,7 @@ describe("FetcherUtils", () => {
     it("returns true for ERR_CANCELED code", () => {
       expect(
         FetcherUtilities.isAbortError(
-          Object.assign(new Error(), { code: "ERR_CANCELED" }),
+          Object.assign(new Error("canceled"), { code: "ERR_CANCELED" }),
         ),
       ).toBe(true);
     });

@@ -35,7 +35,7 @@ const createDeferred = <T,>(): Deferred<T> => {
 
 describe("Loader", () => {
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
   afterEach(() => {

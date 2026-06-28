@@ -18,12 +18,12 @@ function normalizeRepoUrl(url) {
 }
 
 function buildLicenseUrl(repository, licenseFile) {
-  if (!repository || !licenseFile) return undefined;
+  if (!repository || !licenseFile) return;
   const basename = path.basename(licenseFile);
-  if (!/^(LICENSE|LICENCE|COPYING)/i.test(basename)) return undefined;
+  if (!/^(LICENSE|LICENCE|COPYING)/i.test(basename)) return;
   const normalized = normalizeRepoUrl(repository);
   const match = normalized.match(/^https?:\/\/github\.com\/([^/]+\/[^/]+)/);
-  if (!match) return undefined;
+  if (!match) return;
   return `https://github.com/${match[1]}/raw/HEAD/${basename}`;
 }
 

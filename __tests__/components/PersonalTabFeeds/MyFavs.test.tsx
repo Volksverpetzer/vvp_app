@@ -330,7 +330,7 @@ describe("MyFavs", () => {
     };
     const consoleErrorSpy = jest
       .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+      .mockImplementation(() => {});
 
     (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
       "example-article": { contentType: FAV_TYPE_ARTICLE },
@@ -399,7 +399,7 @@ describe("MyFavs", () => {
     };
     const consoleWarnSpy = jest
       .spyOn(console, "warn")
-      .mockImplementation(() => undefined);
+      .mockImplementation(() => {});
 
     (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
       "stale-article": { contentType: FAV_TYPE_ARTICLE },

@@ -104,7 +104,7 @@ export function createClient(
       const requestUrl = buildUrl(baseURL, url, params);
       const mergedHeaders: FetchHeaders = {
         ...baseHeaders,
-        ...(headers ?? {}),
+        ...headers,
       };
 
       const init: RequestInit = { method, headers: mergedHeaders, signal };

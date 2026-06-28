@@ -158,7 +158,7 @@ const Feed = (properties: FeedProperties) => {
   ]);
 
   const renderItem: ListRenderItem<Post<unknown>> = useCallback(({ item }) => {
-    if (typeof item.data !== "object") return undefined;
+    if (typeof item.data !== "object") return;
     return (
       <GenericPost
         key={item.id}

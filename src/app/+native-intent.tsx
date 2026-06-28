@@ -32,7 +32,7 @@ export function redirectSystemPath({ path }: { path: string }) {
       if (shouldExcludeFromDeepLink(urlPath)) {
         // Return undefined to prevent routing for excluded paths
         // The app will not handle this path and it will be opened by OS
-        return undefined;
+        return;
       }
       // Secondary-site links must carry originalUrl so the article route
       // fetches from the right WordPress API; primary links use the default.

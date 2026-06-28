@@ -22,7 +22,7 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
   const color = useCorporateColor();
   const showEngagement = Config.enableEngagement;
 
-  if (!showEngagement && !reading_time) return undefined;
+  if (!showEngagement && !reading_time) return;
 
   return (
     <View

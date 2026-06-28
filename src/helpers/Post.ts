@@ -11,6 +11,7 @@ export default class Post<T> implements P<T> {
     public id: P<T>["id"],
     public component: P<T>["component"],
     public data: P<T>["data"],
+    // eslint-disable-next-line unicorn/no-useless-undefined -- the default makes this positional param optional for callers
     public shareable: P<T>["shareable"] = undefined,
     public priority: P<T>["priority"] = 1,
     public contentFavIdentifier?: P<T>["contentFavIdentifier"],
