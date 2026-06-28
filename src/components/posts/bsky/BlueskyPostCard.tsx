@@ -16,6 +16,7 @@ import {
 } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { BlueskyPostProperties, HttpsUrl } from "#/types";
@@ -40,6 +41,11 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   }, [inView, postId, properties]);
 
   const navigateToPost = () => {
+    registerPostInteraction(
+      `https://bsky.app/profile/${author.handle}/post/${postId}`,
+      "bluesky",
+      "open",
+    );
     router.push(`/bsky/${postId}`);
   };
 

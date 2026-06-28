@@ -7,6 +7,7 @@ import { PlayIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { YouTubePostProperties } from "#/types";
 
@@ -36,7 +37,14 @@ const YouTubePost = (properties: YouTubePostProperties) => {
       <View style={{ flex: 1, overflow: "hidden", width: "100%", height }}>
         <UiPressable
           accessibilityRole="button"
-          onPress={() => setLoaded(true)}
+          onPress={() => {
+            registerPostInteraction(
+              `https://www.youtube.com/watch?v=${id}`,
+              "youtube",
+              "play",
+            );
+            setLoaded(true);
+          }}
           style={{ width: "100%", height, backgroundColor: corporate }}
         >
           <Image
