@@ -24,6 +24,9 @@ const registerEvent = async (
   utm_source = "app",
 ): Promise<void> => {
   if (!Config.enableAnalytics) return;
+  // Skip beta store builds so pre-release testing traffic doesn't distort the
+  // real user analytics. Production builds set no buildLabel.
+  if (Config.buildLabel === "beta") return;
   // Fall back to the primary site when no resource link is provided (e.g. an
   // outbound link tapped without article context), so the event URL and site
   // are always well-formed instead of "undefined?...".
@@ -38,6 +41,10 @@ const registerEvent = async (
       OSversion: Platform.Version,
       appVersion: Application?.nativeApplicationVersion,
       appBuild: Application?.nativeBuildVersion,
+      // Marks non-production store builds so traffic can be segmented in Plausible.
+      // Note: "beta" builds are skipped entirely above (no events sent).
+      // Production builds set no buildLabel, so we default to "production" for consistency.
+      buildLabel: Config.buildLabel ?? "production",
       width: Dimensions.get("window").width,
       ...properties,
     },
