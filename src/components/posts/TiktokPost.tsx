@@ -7,6 +7,7 @@ import { PlayIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 import type { TiktokPostProperties } from "#/types";
 
 const TIKTOK_BRAND_COLOR = "#FF0050";
@@ -22,6 +23,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
     title,
     cover_image_url,
     embed_link,
+    share_url,
     width: videoWidth,
     height: videoHeight,
   } = properties;
@@ -39,7 +41,14 @@ const TiktokPost = (properties: TiktokPostProperties) => {
     return (
       <View style={[styles.container, { height }]}>
         <UiPressable
-          onPress={() => setIsVideoLoaded(true)}
+          onPress={() => {
+            registerPostInteraction(
+              (share_url ?? embed_link).split("?")[0],
+              "tiktok",
+              "play",
+            );
+            setIsVideoLoaded(true);
+          }}
           style={styles.thumbnailContainer}
           accessibilityRole="button"
           accessibilityLabel={playButtonLabel}

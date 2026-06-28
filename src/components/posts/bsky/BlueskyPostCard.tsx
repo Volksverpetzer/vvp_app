@@ -9,13 +9,13 @@ import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import Config from "#/constants/Config";
 import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { BlueskyPostProperties, HttpsUrl } from "#/types";
@@ -28,7 +28,6 @@ const htmlPattern = /<[^>]+>/g;
 const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   const { post, inView, replies } = properties;
   const { record, author, uri } = post.post;
-  const { wpUrl } = Config;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
@@ -40,6 +39,11 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   }, [inView, postId, properties]);
 
   const navigateToPost = () => {
+    registerPostInteraction(
+      `https://bsky.app/profile/${author.handle}/post/${postId}`,
+      "bluesky",
+      "open",
+    );
     router.push(`/bsky/${postId}`);
   };
 
@@ -82,7 +86,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
         <UiPressable
           accessibilityRole="button"
           style={{ position: "absolute", top: 20, right: 20, zIndex: 100 }}
-          onPress={() => onLinkPress(url, router, wpUrl)}
+          onPress={() => onLinkPress(url, router, url)}
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >
           <ExternalLinkIcon color={Colors[colorScheme].iconMuted} />

@@ -4,7 +4,10 @@ import * as Linking from "expo-linking";
 import { Platform } from "react-native";
 
 import Config from "#/constants/Config";
-import { registerEvent } from "#/helpers/network/Analytics";
+import {
+  registerEvent,
+  registerPostInteraction,
+} from "#/helpers/network/Analytics";
 import { registerFav, registerViews } from "#/helpers/network/Engagement";
 import * as Networking from "#/helpers/utils/networking";
 
@@ -174,6 +177,28 @@ describe("Analytics (Plausible)", () => {
 
       const [, , body] = postSpy.mock.calls[0];
       expect(body.name).toBe("favorite");
+    });
+
+    it("registerPostInteraction should forward to registerEvent with platform/action props", async () => {
+      parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
+      postSpy.mockResolvedValue({ success: true });
+
+      await registerPostInteraction(
+        "https://youtu.be/abc123",
+        "youtube",
+        "play",
+      );
+
+      const [, , body] = postSpy.mock.calls[0];
+      expect(body.name).toBe("Post Interaction");
+      expect(body.props).toEqual(
+        expect.objectContaining({
+          post_platform: "youtube",
+          action: "play",
+          // OS platform prop must survive — not overwritten by post_platform
+          platform: Platform.OS,
+        }),
+      );
     });
   });
 

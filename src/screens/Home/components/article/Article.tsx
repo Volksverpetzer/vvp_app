@@ -10,6 +10,7 @@ import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
 import NavBar from "#/components/bars/NavBar";
 import Footer from "#/components/views/Footer";
 import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
@@ -18,6 +19,7 @@ import Statistics from "#/helpers/Statistics";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { registerViews } from "#/helpers/network/Engagement";
+import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { stripVisualComposerShortcodes } from "#/helpers/utils/posts";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ArticleProperties, HttpsUrl } from "#/types";
@@ -78,6 +80,20 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   useEffect(() => {
     registerViews(article_link);
     Statistics.countArticleRead();
+    // Adoption signal for secondary WordPress feeds (currently only Prüfpunkt):
+    // emit a distinct, countable event on the primary site so feed engagement
+    // can be tracked alongside the rest of the app's analytics.
+    const secondaryFeed = findSecondaryWpFeed(
+      article_link,
+      Config.wpUrl,
+      Config.feeds?.wp,
+    );
+    if (secondaryFeed?.sourceName) {
+      registerEvent(Config.wpUrl, "Pruefpunkt View", {
+        source: secondaryFeed.sourceName,
+        url: article_link,
+      });
+    }
   }, [article_link]);
 
   /**
