@@ -41,9 +41,9 @@ const registerEvent = async (
       OSversion: Platform.Version,
       appVersion: Application?.nativeApplicationVersion,
       appBuild: Application?.nativeBuildVersion,
-      // Marks non-production store builds (e.g. "beta") so beta traffic can be
-      // filtered out in the Plausible dashboard. Production builds set no
-      // buildLabel, so they report "production".
+      // Marks non-production store builds so traffic can be segmented in Plausible.
+      // Note: "beta" builds are skipped entirely above (no events sent).
+      // Production builds set no buildLabel, so we default to "production" for consistency.
       buildLabel: Config.buildLabel ?? "production",
       width: Dimensions.get("window").width,
       ...properties,
