@@ -137,7 +137,7 @@
     "eslint-config-expo": "56.0.4",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import-alias": "1.2.0",
-    "eslint-plugin-unicorn": "^69.0.0",
+    "eslint-plugin-unicorn": "^65.0.1",
     "eslint-plugin-unused-imports": "4.4.1",
     "expo-atlas": "0.4.3",
     "expo-build-properties": "56.0.19",

@@ -23,7 +23,15 @@ export default defineConfig([
       "unicorn/prefer-array-find": "error",
       "unicorn/prefer-array-some": "error",
       "unicorn/no-array-push-push": "error",
-      "unicorn/no-useless-undefined": "error",
+      // checkArguments off: passing an explicit `undefined` argument is
+      // legitimate and readable (e.g. tests calling fn(undefined) or
+      // mockResolvedValue(undefined)). checkArrowFunctionBody off so
+      // `() => undefined` callbacks aren't rewritten. Keeps the rule focused
+      // on genuinely useless `undefined` (e.g. `return undefined`).
+      "unicorn/no-useless-undefined": [
+        "error",
+        { checkArguments: false, checkArrowFunctionBody: false },
+      ],
       "unicorn/prefer-date-now": "error",
       "unicorn/throw-new-error": "error",
       "unicorn/error-message": "error",
