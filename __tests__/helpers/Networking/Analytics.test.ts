@@ -189,5 +189,23 @@ describe("Analytics (Plausible)", () => {
       };
       expect(typeof typeCheck).toBe("function");
     });
+
+    it("does not let a widened record overwrite base props at runtime", async () => {
+      parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
+      postSpy.mockResolvedValue({ success: true });
+
+      // A widened Record slips past the EventProps type guard (as Sharing's
+      // `...properties` passthrough would). The spread ordering must still
+      // keep the OS platform value intact.
+      const widened: Record<string, unknown> = {
+        platform: "evil",
+        custom: "ok",
+      };
+      await registerEvent("https://example.com", "FullRead", widened);
+
+      const [, , body] = postSpy.mock.calls[0];
+      expect(body.props.platform).toBe(Platform.OS);
+      expect(body.props.custom).toBe("ok");
+    });
   });
 });

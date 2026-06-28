@@ -80,6 +80,12 @@ const registerEvent = async <T extends Record<string, unknown>>(
     referrer: "de.volksverpetzer.app",
     domain: resolveAnalyticsSite(resource),
     props: {
+      // Caller props are spread first so the base props below always win:
+      // the EventProps type rejects reserved keys for narrow literals, but a
+      // widened `Record<string, unknown>` (e.g. Sharing's `...properties`)
+      // slips past the type guard, so this ordering is what actually
+      // guarantees base props can never be overwritten at runtime.
+      ...properties,
       platform: Platform.OS,
       OSversion: Platform.Version,
       appVersion: Application?.nativeApplicationVersion,
@@ -89,7 +95,6 @@ const registerEvent = async <T extends Record<string, unknown>>(
       // Production builds set no buildLabel, so we default to "production" for consistency.
       buildLabel: Config.buildLabel ?? "production",
       width: Dimensions.get("window").width,
-      ...properties,
     },
   };
   try {
