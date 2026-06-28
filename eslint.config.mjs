@@ -31,7 +31,9 @@ export default defineConfig([
       "unicorn/prefer-optional-catch-binding": "error",
       "unicorn/prefer-string-slice": "error",
       "unicorn/prefer-string-replace-all": "error",
-      "unicorn/prefer-node-protocol": "error",
+      // NOTE: prefer-node-protocol is intentionally omitted — Metro can't
+      // resolve the `node:` protocol for polyfilled builtins (e.g. node:buffer
+      // in src/hooks/useAISearch.ts), which breaks the bundle / EAS export.
       "unicorn/prefer-set-has": "error",
       "unicorn/no-useless-fallback-in-spread": "error",
       "unicorn/no-useless-spread": "error",

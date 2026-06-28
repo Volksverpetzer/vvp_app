@@ -1,4 +1,4 @@
-import { Buffer } from "node:buffer";
+import { Buffer } from "buffer";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { FaktenBotReaction } from "#/components/animations/FaktenBot";
