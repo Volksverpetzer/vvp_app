@@ -64,7 +64,7 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
 
   // Scroll to the default amount once the picker has measured its width
   useEffect(() => {
-    if (pickerWidth > 0 && initialIndex >= 0) {
+    if (pickerWidth > 0 && initialIndex !== -1) {
       scrollRef.current?.scrollTo({
         x: initialIndex * ITEM_WIDTH,
         animated: false,

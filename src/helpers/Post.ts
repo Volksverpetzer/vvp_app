@@ -11,7 +11,7 @@ export default class Post<T> implements P<T> {
     public id: P<T>["id"],
     public component: P<T>["component"],
     public data: P<T>["data"],
-    public shareable: P<T>["shareable"] = undefined,
+    public shareable?: P<T>["shareable"],
     public priority: P<T>["priority"] = 1,
     public contentFavIdentifier?: P<T>["contentFavIdentifier"],
     public contentType?: P<T>["contentType"],

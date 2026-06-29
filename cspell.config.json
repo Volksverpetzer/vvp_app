@@ -4,6 +4,7 @@
   "words": [
     "armeabi",
     "atproto",
+    "bafyreiabc",
     "bsky",
     "bskyshare",
     "cmplz",
@@ -17,6 +18,7 @@
     "artikel",
     "fakten",
     "faktenbot",
+    "favorited",
     "favs",
     "fdroid",
     "foss",
@@ -39,9 +41,11 @@
     "tnode",
     "tracken",
     "trivago",
+    "unconfigured",
     "vseslav",
     "volksverpetzer",
     "vvpapp",
+    "wwwx",
     "yoast",
     "youtu"
   ],

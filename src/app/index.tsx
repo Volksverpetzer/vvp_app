@@ -49,7 +49,7 @@ const Index = () => {
           }
 
           const hasPath =
-            typeof path === "string" && path.replace(/\//g, "").length > 0;
+            typeof path === "string" && path.replaceAll("/", "").length > 0;
           if (isBaseHost && hasPath) {
             appOpenRoutine();
             return;

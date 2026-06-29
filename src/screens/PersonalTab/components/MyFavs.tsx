@@ -21,8 +21,7 @@ import type { ArticleProperties, HttpsUrl, InstaPostProperties } from "#/types";
 import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
 
 type FavoritePost =
-  | Post<{ article: ArticleProperties }>
-  | Post<InstaPostProperties>;
+  Post<{ article: ArticleProperties }> | Post<InstaPostProperties>;
 
 // Reuse one API client per secondary site instead of rebuilding it for every
 // favorite on every load.

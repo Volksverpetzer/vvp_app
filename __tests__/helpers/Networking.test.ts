@@ -3,20 +3,20 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Networking from "#/helpers/utils/networking";
 
 // Mock AbortController
-(global as any).AbortController = class {
+(globalThis as any).AbortController = class {
   signal = {};
   abort = jest.fn();
 };
 
 // Mock fetch
-(global as any).fetch = jest.fn();
+(globalThis as any).fetch = jest.fn();
 
 // Mock setTimeout and clearTimeout
 const mockSetTimeout = jest.fn().mockImplementation(() => 123 as any) as any;
 const mockClearTimeout = jest.fn() as any;
 
-(global as any).setTimeout = mockSetTimeout;
-(global as any).clearTimeout = mockClearTimeout;
+(globalThis as any).setTimeout = mockSetTimeout;
+(globalThis as any).clearTimeout = mockClearTimeout;
 
 // Mock console.error
 (console.error as any) = jest.fn();
@@ -39,7 +39,7 @@ describe("Networking utilities", () => {
 
   it("createClient sends default headers on every request", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -61,7 +61,7 @@ describe("Networking utilities", () => {
     const client = Networking.createClient("https://example.com" as any, {
       Referer: "https://example.com",
     });
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -114,7 +114,7 @@ describe("Networking utilities", () => {
   });
 
   it("fetchWithTimeout listens to external AbortSignal and aborts internal controller", async () => {
-    const originalAbortController = (global as any).AbortController;
+    const originalAbortController = (globalThis as any).AbortController;
     const createdControllers: any[] = [];
 
     class TestAbortController {
@@ -135,7 +135,7 @@ describe("Networking utilities", () => {
     };
 
     try {
-      (global as any).AbortController = TestAbortController;
+      (globalThis as any).AbortController = TestAbortController;
       const client = Networking.createClient("https://x" as any);
       const fakeResponse = { data: { ok: true } };
       const mockRequest = (jest.fn() as jest.Mock<any>).mockResolvedValue(
@@ -170,13 +170,13 @@ describe("Networking utilities", () => {
         expect.any(Function),
       );
     } finally {
-      (global as any).AbortController = originalAbortController;
+      (globalThis as any).AbortController = originalAbortController;
     }
   });
 
   it("FetchError preserves response body", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
       mockJsonResponse({ error: "not found" }, 404),
     );
 
@@ -187,12 +187,12 @@ describe("Networking utilities", () => {
   });
 
   it("fetchWithTimeout does not log when controller is already aborted", async () => {
-    const originalAbortController = (global as any).AbortController;
+    const originalAbortController = (globalThis as any).AbortController;
     class AbortedController {
       signal = { aborted: true };
       abort = jest.fn();
     }
-    (global as any).AbortController = AbortedController;
+    (globalThis as any).AbortController = AbortedController;
 
     try {
       const client = Networking.createClient("https://x" as any);
@@ -205,18 +205,18 @@ describe("Networking utilities", () => {
 
       expect(console.error).not.toHaveBeenCalled();
     } finally {
-      (global as any).AbortController = originalAbortController;
+      (globalThis as any).AbortController = originalAbortController;
     }
   });
 
   it("fetchWithTimeout aborts immediately when external signal is already aborted", async () => {
-    const originalAbortController = (global as any).AbortController;
+    const originalAbortController = (globalThis as any).AbortController;
     const abortMock = jest.fn();
     class TrackingController {
       signal = { aborted: false };
       abort = abortMock;
     }
-    (global as any).AbortController = TrackingController;
+    (globalThis as any).AbortController = TrackingController;
 
     const externalSignal = {
       aborted: true,
@@ -235,13 +235,13 @@ describe("Networking utilities", () => {
       expect(abortMock).toHaveBeenCalled();
       expect(externalSignal.addEventListener).not.toHaveBeenCalled();
     } finally {
-      (global as any).AbortController = originalAbortController;
+      (globalThis as any).AbortController = originalAbortController;
     }
   });
 
   it("createClient resolves absolute URLs without prepending baseURL", async () => {
     const client = Networking.createClient("https://base.com" as any);
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -255,7 +255,7 @@ describe("Networking utilities", () => {
 
   it("createClient skips null and undefined params but includes falsy values", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -273,7 +273,7 @@ describe("Networking utilities", () => {
 
   it("createClient serialises POST body as JSON by default", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -289,7 +289,7 @@ describe("Networking utilities", () => {
 
   it("createClient passes string body as-is for POST", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -301,7 +301,7 @@ describe("Networking utilities", () => {
 
   it("createClient returns raw text when responseType is text", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(() =>
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
         status: 200,
@@ -318,7 +318,7 @@ describe("Networking utilities", () => {
 
   it("createClient parses empty response body as null", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(() =>
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
         status: 204,
@@ -335,7 +335,7 @@ describe("Networking utilities", () => {
 
   it("createClient falls back to raw text when response is not valid JSON", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (global.fetch as jest.Mock<any>).mockImplementationOnce(() =>
+    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
         status: 200,

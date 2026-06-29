@@ -144,7 +144,7 @@ const LoadArticle = () => {
       const trimmedBase = base.replace(/\/+$/, "");
       const path = segments
         .filter((s): s is string => Boolean(s))
-        .map((s) => s.replace(/^\/+|\/+$/g, ""))
+        .map((s) => s.replaceAll(/^\/+|\/+$/g, ""))
         .join("/");
       return path ? `${trimmedBase}/${path}` : trimmedBase;
     };

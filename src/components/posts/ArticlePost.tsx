@@ -158,7 +158,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   );
 
   const elevatedWrapperStyle = useMemo(() => {
-    if (!elevated) return undefined;
+    if (!elevated) return;
     const isDark = colorScheme === "dark";
     return {
       borderRadius: 15,

@@ -246,22 +246,22 @@ describe("Statistics", () => {
         [StatisticsStore.keys.appOpened]: {
           count: 10,
           streak: 5,
-          lastDate: new Date().getTime(),
+          lastDate: Date.now(),
         },
         [StatisticsStore.keys.articlesRead]: {
           count: 20,
           streak: 3,
-          lastDate: new Date().getTime(),
+          lastDate: Date.now(),
         },
         [StatisticsStore.keys.articlesShared]: {
           count: 5,
           streak: 1,
-          lastDate: new Date().getTime(),
+          lastDate: Date.now(),
         },
         [StatisticsStore.keys.sourcesChecked]: {
           count: 15,
           streak: 2,
-          lastDate: new Date().getTime(),
+          lastDate: Date.now(),
         },
       };
 

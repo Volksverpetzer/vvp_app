@@ -5,7 +5,7 @@ const withSplitAbi = (config: any) => {
     let gradle = mod.modResults.contents;
 
     // Remove any existing splits block to avoid duplicates
-    gradle = gradle.replace(
+    gradle = gradle.replaceAll(
       /\n\s*splits\s*\{\s*abi\s*\{[\s\S]*?\}\s*\}\s/g,
       "\n",
     );
