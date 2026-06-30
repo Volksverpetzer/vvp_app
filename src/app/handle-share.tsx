@@ -10,8 +10,10 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
+import { openExternalDownload } from "#/helpers/Linking";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { isSameHost } from "#/helpers/utils/host";
+import type { HttpsUrl } from "#/types";
 
 const URL_SHARE_TYPE: ShareType = "url";
 const TEXT_SHARE_TYPE: ShareType = "text";
@@ -51,7 +53,7 @@ const HandleShare = () => {
         }
 
         if (shouldExcludeFromDeepLink(path)) {
-          Linking.openURL(sharedUrl)
+          openExternalDownload(sharedUrl as HttpsUrl)
             .catch((linkError) => {
               console.warn(
                 "Failed to open excluded URL:",

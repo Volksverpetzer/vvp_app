@@ -40,12 +40,20 @@ describe("redirectSystemPath", () => {
     ).toBe("/cat/slug/");
   });
 
-  it("returns undefined for excluded paths so the OS handles them", () => {
-    expect(
-      redirectSystemPath({
-        path: "https://volksverpetzer.de/wp-content/uploads/file.pdf",
-      }),
-    ).toBeUndefined();
+  it("routes excluded upload paths to the external-link screen so they open in the browser", () => {
+    const uploadUrl =
+      "https://volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
+    expect(redirectSystemPath({ path: uploadUrl })).toBe(
+      `/external-link?url=${encodeURIComponent(uploadUrl)}`,
+    );
+  });
+
+  it("routes a secondary-host (Prüfpunkt) upload path to the external-link screen too", () => {
+    const uploadUrl =
+      "https://www.pruefpunkt.org/wp-content/uploads/2024/11/file.pdf";
+    expect(redirectSystemPath({ path: uploadUrl })).toBe(
+      `/external-link?url=${encodeURIComponent(uploadUrl)}`,
+    );
   });
 
   it("passes through unrelated/relative paths unchanged", () => {

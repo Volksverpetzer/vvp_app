@@ -1,8 +1,14 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
 import type { ImperativeRouter } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 
-import { onLinkPress, outBoundLinkPress, parsePath } from "#/helpers/Linking";
+import {
+  onLinkPress,
+  openExternalDownload,
+  outBoundLinkPress,
+  parsePath,
+} from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
 
 // Mock dependencies
@@ -10,6 +16,11 @@ jest.mock("expo-linking", () => ({
   __esModule: true,
   parse: jest.fn(),
   openURL: jest.fn(),
+}));
+
+jest.mock("expo-web-browser", () => ({
+  __esModule: true,
+  openBrowserAsync: jest.fn(() => Promise.resolve({ type: "opened" })),
 }));
 
 jest.mock("#/helpers/network/Analytics", () => ({
@@ -86,7 +97,7 @@ describe("Linking helpers", () => {
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
-    it("should treat wp-content/uploads paths as external links", () => {
+    it("should open wp-content/uploads paths externally (browser tab, not the app)", () => {
       // Setup
       const uploadUrl =
         "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
@@ -114,7 +125,10 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: uploadUrl },
       );
-      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
+      // Opened in a Custom Tab (expo-web-browser), not Linking.openURL — the
+      // latter could re-trigger the app on Android < 31 and loop.
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
     it("should handle internal links without path", () => {
@@ -324,6 +338,38 @@ describe("Linking helpers", () => {
         { url: externalUrl },
       );
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
+    });
+  });
+
+  describe("openExternalDownload", () => {
+    it("opens the URL in a browser tab and registers analytics", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
+      const articleContext = "https://www.volksverpetzer.de/article";
+
+      await openExternalDownload(uploadUrl, articleContext);
+
+      expect(registerEvent).toHaveBeenCalledWith(
+        articleContext,
+        "Outbound Link: Click",
+        { url: uploadUrl },
+      );
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
+    });
+
+    it("falls back to Linking.openURL when the browser tab fails", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/file.pdf";
+      (
+        WebBrowser.openBrowserAsync as jest.MockedFunction<
+          typeof WebBrowser.openBrowserAsync
+        >
+      ).mockRejectedValueOnce(new Error("no browser"));
+
+      await openExternalDownload(uploadUrl);
+
+      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
     });
   });
 });

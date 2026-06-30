@@ -28,11 +28,14 @@ export function redirectSystemPath({ path }: { path: string }) {
       : findSecondaryWpFeed(parsedUrl.href, wpUrl, Config.feeds?.wp);
     if (isPrimary || secondary) {
       const urlPath = parsedUrl.pathname + parsedUrl.search + parsedUrl.hash;
-      // Check if path should be excluded from deep linking
+      // Upload links (/wp-content/uploads/…) must not render in the app — they
+      // are files to download. On Android < 31 the manifest can't exclude them,
+      // so the OS still hands us the URL here; route to the external-link screen,
+      // which opens it in the browser and pops back. (On iOS, and Android 12+,
+      // the site-association / intent-filter exclude usually prevents the app
+      // from opening at all, so this is the fallback path.)
       if (shouldExcludeFromDeepLink(urlPath)) {
-        // Return undefined to prevent routing for excluded paths
-        // The app will not handle this path and it will be opened by OS
-        return;
+        return `/external-link?url=${encodeURIComponent(parsedUrl.href)}`;
       }
       // Secondary-site links must carry originalUrl so the article route
       // fetches from the right WordPress API; primary links use the default.
