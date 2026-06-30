@@ -155,27 +155,36 @@ const googleServicesFile = process.env.google_services;
 // Both the www and apex hosts are registered so deep links resolve regardless
 // of which form the link uses (the site is moving off the www subdomain, but
 // previously shared links and the redirect still use www).
+// Match only the app's single deep-linkable shape — a 2-segment article path
+// `/{category}/{slug}` (route src/app/[category]/[slug].tsx) with an optional
+// trailing slash — so the OS does NOT open the app for `/wp-content/uploads/…`
+// files (3+ segments), which should download in the browser instead.
+// `pathAdvancedPattern` is honored on Android 12+ (API 31); on older versions it
+// is ignored and the filter falls back to matching all paths, where the in-app
+// fallback (src/app/external-link.tsx) opens uploads externally instead.
+const ARTICLE_PATH_PATTERN = "/[^/]+/[^/]+/{0,1}";
+
 const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data"] =
   [
     {
       scheme: "https",
       host: "www.volksverpetzer.de",
-      pathPattern: "/.*/.*",
+      pathAdvancedPattern: ARTICLE_PATH_PATTERN,
     },
     {
       scheme: "https",
       host: "volksverpetzer.de",
-      pathPattern: "/.*/.*",
+      pathAdvancedPattern: ARTICLE_PATH_PATTERN,
     },
     {
       scheme: "https",
       host: "www.pruefpunkt.org",
-      pathPattern: "/.*/.*",
+      pathAdvancedPattern: ARTICLE_PATH_PATTERN,
     },
     {
       scheme: "https",
       host: "pruefpunkt.org",
-      pathPattern: "/.*/.*",
+      pathAdvancedPattern: ARTICLE_PATH_PATTERN,
     },
   ];
 

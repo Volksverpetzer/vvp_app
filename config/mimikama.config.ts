@@ -126,12 +126,16 @@ const packageName = "de.mimikama.app";
 
 const googleServicesFile = process.env.google_services_mimikama;
 
+// Match only a 2-segment article path `/{category}/{slug}` (optional trailing
+// slash) so the OS does not open the app for `/wp-content/uploads/…` files,
+// which should download in the browser instead. `pathAdvancedPattern` is honored
+// on Android 12+; on older versions the in-app fallback opens uploads externally.
 const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data"] =
   [
     {
       scheme: "https",
       host: "*.mimikama.org",
-      pathPrefix: "/*/*/",
+      pathAdvancedPattern: "/[^/]+/[^/]+/{0,1}",
     },
   ];
 
