@@ -126,18 +126,18 @@ const packageName = "de.mimikama.app";
 
 const googleServicesFile = process.env.google_services_mimikama;
 
-// Match only a 2-segment article path `/{category}/{slug}` (optional trailing
-// slash) so the OS does not open the app for `/wp-content/uploads/…` files,
-// which should download in the browser instead. `pathAdvancedPattern` is honored
-// on Android 12+; on older versions the in-app fallback opens uploads externally.
+// Match a 1-segment page and a 2-segment article `/{category}/{slug}` (each with
+// an optional trailing slash) so the OS does not open the app for
+// `/wp-content/uploads/…` files (3+ segments), which should download in the
+// browser instead. Advanced glob has no grouping, so the two cases are separate
+// patterns. `pathAdvancedPattern` is honored on Android 12+; on older versions
+// the in-app fallback opens uploads externally.
 const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data"] =
-  [
-    {
-      scheme: "https",
-      host: "*.mimikama.org",
-      pathAdvancedPattern: "/[^/]+/[^/]+/{0,1}",
-    },
-  ];
+  ["/[^/]+/{0,1}", "/[^/]+/[^/]+/{0,1}"].map((pathAdvancedPattern) => ({
+    scheme: "https",
+    host: "*.mimikama.org",
+    pathAdvancedPattern,
+  }));
 
 const iOSAssociatedDomains = ["applinks:www.mimikama.org"];
 

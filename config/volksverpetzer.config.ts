@@ -155,38 +155,38 @@ const googleServicesFile = process.env.google_services;
 // Both the www and apex hosts are registered so deep links resolve regardless
 // of which form the link uses (the site is moving off the www subdomain, but
 // previously shared links and the redirect still use www).
-// Match only the app's single deep-linkable shape — a 2-segment article path
-// `/{category}/{slug}` (route src/app/[category]/[slug].tsx) with an optional
-// trailing slash — so the OS does NOT open the app for `/wp-content/uploads/…`
-// files (3+ segments), which should download in the browser instead.
+//
+// Match only the app's deep-linkable shapes — a 1-segment page like
+// `/impressum-volksverpetzer/` (rendered in-app via the category webview) and a
+// 2-segment article `/{category}/{slug}` (route src/app/[category]/[slug].tsx),
+// each with an optional trailing slash. This deliberately does NOT match
+// `/wp-content/uploads/…` files (3+ segments), which should download in the
+// browser instead. Advanced glob has no grouping, so the 1- and 2-segment cases
+// are two separate patterns.
+//
 // `pathAdvancedPattern` is honored on Android 12+ (API 31); on older versions it
 // is ignored and the filter falls back to matching all paths, where the in-app
 // fallback (src/app/external-link.tsx) opens uploads externally instead.
-const ARTICLE_PATH_PATTERN = "/[^/]+/[^/]+/{0,1}";
+const ARTICLE_PATH_PATTERNS = [
+  "/[^/]+/{0,1}", // 1 segment, e.g. /impressum-volksverpetzer/
+  "/[^/]+/[^/]+/{0,1}", // 2 segments, e.g. /aktuelles/slug/
+];
+
+const DEEP_LINK_HOSTS = [
+  "www.volksverpetzer.de",
+  "volksverpetzer.de",
+  "www.pruefpunkt.org",
+  "pruefpunkt.org",
+];
 
 const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data"] =
-  [
-    {
+  DEEP_LINK_HOSTS.flatMap((host) =>
+    ARTICLE_PATH_PATTERNS.map((pathAdvancedPattern) => ({
       scheme: "https",
-      host: "www.volksverpetzer.de",
-      pathAdvancedPattern: ARTICLE_PATH_PATTERN,
-    },
-    {
-      scheme: "https",
-      host: "volksverpetzer.de",
-      pathAdvancedPattern: ARTICLE_PATH_PATTERN,
-    },
-    {
-      scheme: "https",
-      host: "www.pruefpunkt.org",
-      pathAdvancedPattern: ARTICLE_PATH_PATTERN,
-    },
-    {
-      scheme: "https",
-      host: "pruefpunkt.org",
-      pathAdvancedPattern: ARTICLE_PATH_PATTERN,
-    },
-  ];
+      host,
+      pathAdvancedPattern,
+    })),
+  );
 
 const iOSAssociatedDomains = [
   "applinks:www.volksverpetzer.de",
