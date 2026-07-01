@@ -152,9 +152,13 @@ const packageName = "de.volksverpetzer.app";
 
 const googleServicesFile = process.env.google_services;
 
-// Both the www and apex hosts are registered so deep links resolve regardless
-// of which form the link uses (the site is moving off the www subdomain, but
-// previously shared links and the redirect still use www).
+// Only apex hosts are registered — www subdomains redirect to apex via Bunny CDN
+// at the edge, so the origin never serves www requests. Neither Google
+// (assetlinks.json) nor Apple (apple-app-site-association) follow CDN redirects
+// during domain verification, so the www domains can never be verified. When a
+// user taps a www link the browser opens it, follows the CDN redirect to the
+// apex URL, and the browser then triggers the verified apex App Link / Universal
+// Link — opening the app with one extra browser hop.
 //
 // Match only the app's deep-linkable shapes — a 1-segment page like
 // `/impressum-volksverpetzer/` (rendered in-app via the category webview) and a
@@ -172,12 +176,7 @@ const ARTICLE_PATH_PATTERNS = [
   "/[^/]+/[^/]+/{0,1}", // 2 segments, e.g. /aktuelles/slug/
 ];
 
-const DEEP_LINK_HOSTS = [
-  "www.volksverpetzer.de",
-  "volksverpetzer.de",
-  "www.pruefpunkt.org",
-  "pruefpunkt.org",
-];
+const DEEP_LINK_HOSTS = ["volksverpetzer.de", "pruefpunkt.org"];
 
 const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data"] =
   DEEP_LINK_HOSTS.flatMap((host) =>
@@ -189,9 +188,7 @@ const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data
   );
 
 const iOSAssociatedDomains = [
-  "applinks:www.volksverpetzer.de",
   "applinks:volksverpetzer.de",
-  "applinks:www.pruefpunkt.org",
   "applinks:pruefpunkt.org",
 ];
 
