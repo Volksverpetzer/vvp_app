@@ -153,10 +153,12 @@ const packageName = "de.volksverpetzer.app";
 const googleServicesFile = process.env.google_services;
 
 // Only apex hosts are registered — www subdomains redirect to apex via Bunny CDN
-// at the edge, so the origin never serves www requests and Google/Apple cannot
-// verify a /.well-known/ file on www (CDN redirects are not followed). Any
-// www link a user taps gets browser-redirected to apex first, then the apex
-// entry handles the deep link.
+// at the edge, so the origin never serves www requests. Neither Google
+// (assetlinks.json) nor Apple (apple-app-site-association) follow CDN redirects
+// during domain verification, so the www domains can never be verified. When a
+// user taps a www link the browser opens it, follows the CDN redirect to the
+// apex URL, and the browser then triggers the verified apex App Link / Universal
+// Link — opening the app with one extra browser hop.
 //
 // Match only the app's deep-linkable shapes — a 1-segment page like
 // `/impressum-volksverpetzer/` (rendered in-app via the category webview) and a
