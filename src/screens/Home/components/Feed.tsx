@@ -80,7 +80,18 @@ const Feed = (properties: FeedProperties) => {
 
   useEffect(() => {
     if (!properties.showAnnouncements) return;
-    PersonalStore.getDismissedAnnouncements().then(setDismissedAnnouncements);
+    let cancelled = false;
+    PersonalStore.getDismissedAnnouncements().then((stored) => {
+      if (cancelled) return;
+      // Merge instead of replace: a dismissal made while this load was in
+      // flight must not be reverted by the (stale) stored value.
+      setDismissedAnnouncements((previous) => [
+        ...new Set([...previous, ...stored]),
+      ]);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [properties.showAnnouncements]);
 
   const activeAnnouncement = properties.showAnnouncements
