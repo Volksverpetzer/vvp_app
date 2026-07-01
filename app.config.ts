@@ -102,6 +102,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       "expo-font",
       "expo-image",
       "expo-mail-composer",
+      "expo-status-bar",
       "expo-web-browser",
     ],
     updates: {
