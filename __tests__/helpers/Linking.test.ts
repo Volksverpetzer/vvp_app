@@ -1,8 +1,15 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
 import type { ImperativeRouter } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 
-import { onLinkPress, outBoundLinkPress, parsePath } from "#/helpers/Linking";
+import {
+  isInternalUploadUrl,
+  onLinkPress,
+  openExternalDownload,
+  outBoundLinkPress,
+  parsePath,
+} from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
 
 // Mock dependencies
@@ -10,6 +17,11 @@ jest.mock("expo-linking", () => ({
   __esModule: true,
   parse: jest.fn(),
   openURL: jest.fn(),
+}));
+
+jest.mock("expo-web-browser", () => ({
+  __esModule: true,
+  openBrowserAsync: jest.fn(() => Promise.resolve({ type: "opened" })),
 }));
 
 jest.mock("#/helpers/network/Analytics", () => ({
@@ -86,7 +98,7 @@ describe("Linking helpers", () => {
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
-    it("should treat wp-content/uploads paths as external links", () => {
+    it("should open wp-content/uploads paths externally (browser tab, not the app)", () => {
       // Setup
       const uploadUrl =
         "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
@@ -114,7 +126,10 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: uploadUrl },
       );
-      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
+      // Opened in a Custom Tab (expo-web-browser), not Linking.openURL — the
+      // latter could re-trigger the app on Android < 31 and loop.
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
     it("should handle internal links without path", () => {
@@ -324,6 +339,94 @@ describe("Linking helpers", () => {
         { url: externalUrl },
       );
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
+    });
+  });
+
+  describe("openExternalDownload", () => {
+    it("opens the URL in a browser tab and registers analytics", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
+      const articleContext = "https://www.volksverpetzer.de/article";
+
+      await openExternalDownload(uploadUrl, articleContext);
+
+      expect(registerEvent).toHaveBeenCalledWith(
+        articleContext,
+        "Outbound Link: Click",
+        { url: uploadUrl },
+      );
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
+    });
+
+    it("falls back to Linking.openURL when the browser tab fails", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/file.pdf";
+      (
+        WebBrowser.openBrowserAsync as jest.MockedFunction<
+          typeof WebBrowser.openBrowserAsync
+        >
+      ).mockRejectedValueOnce(new Error("no browser"));
+
+      await openExternalDownload(uploadUrl);
+
+      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
+    });
+
+    it("does not reject when both the browser and openURL fail", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/file.pdf";
+      (
+        WebBrowser.openBrowserAsync as jest.MockedFunction<
+          typeof WebBrowser.openBrowserAsync
+        >
+      ).mockRejectedValueOnce(new Error("no browser"));
+      (
+        Linking.openURL as jest.MockedFunction<typeof Linking.openURL>
+      ).mockRejectedValueOnce(new Error("no handler"));
+
+      // Fire-and-forget callers rely on this never rejecting.
+      await expect(openExternalDownload(uploadUrl)).resolves.toBeUndefined();
+    });
+  });
+
+  describe("isInternalUploadUrl", () => {
+    it("accepts https uploads URLs on our WordPress hosts", () => {
+      expect(
+        isInternalUploadUrl(
+          "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf",
+        ),
+      ).toBe(true);
+      // www-insensitive + secondary feed host (pruefpunkt.org)
+      expect(
+        isInternalUploadUrl(
+          "https://pruefpunkt.org/wp-content/uploads/image.jpg",
+        ),
+      ).toBe(true);
+    });
+
+    it("rejects non-uploads paths on our hosts", () => {
+      expect(
+        isInternalUploadUrl("https://www.volksverpetzer.de/politik/some-slug/"),
+      ).toBe(false);
+    });
+
+    it("rejects foreign hosts even for an uploads path", () => {
+      expect(
+        isInternalUploadUrl("https://evil.com/wp-content/uploads/file.pdf"),
+      ).toBe(false);
+    });
+
+    it("rejects non-https schemes", () => {
+      expect(
+        isInternalUploadUrl(
+          "http://www.volksverpetzer.de/wp-content/uploads/file.pdf",
+        ),
+      ).toBe(false);
+    });
+
+    it("rejects unparseable input", () => {
+      expect(isInternalUploadUrl("not a url")).toBe(false);
     });
   });
 });

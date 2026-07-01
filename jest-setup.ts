@@ -123,6 +123,11 @@ jest.mock("expo-device", () => ({
   isDevice: true,
 }));
 
+jest.mock("expo-web-browser", () => ({
+  __esModule: true,
+  openBrowserAsync: jest.fn(() => Promise.resolve({ type: "opened" })),
+}));
+
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
   useCorporateColor: jest.fn(() => "#1b7194"),

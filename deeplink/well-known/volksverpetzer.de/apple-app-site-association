@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "LGZ66Q83U6.de.volksverpetzer.app",
+        "paths": ["NOT /wp-content/uploads/*", "/*/*"]
+      }
+    ]
+  }
+}
