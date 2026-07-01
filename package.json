@@ -15,7 +15,7 @@
   "license": "MIT",
   "scripts": {
     "start": "expo start",
-    "prebuild": "expo prebuild --clean",
+    "prebuild": "expo prebuild",
     "android": "expo run:android",
     "android:device": "expo run:android --device",
     "android:local": "pnpx eas-cli build -p android --profile local-apk --local",
@@ -46,8 +46,7 @@
     "prepare:changelog": "node scripts/prepare-changelog.mjs",
     "prepare:fdroid": "node scripts/prepare-fdroid.mjs",
     "prepare:licenses": "node scripts/prepare-licenses.js",
-    "update:deps": "pnpx npm-check-updates -c 1d -i --format group",
-    "watchman:reset": "watchman watch-del \"$PWD\" ; watchman watch-project \"$PWD\""
+    "update:deps": "pnpx npm-check-updates -c 1d -i --format group"
   },
   "dependencies": {
     "@algolia/client-search": "5.55.1",
