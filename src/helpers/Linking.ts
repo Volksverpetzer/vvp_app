@@ -99,10 +99,11 @@ const openExternalDownload = async (href: HttpsUrl, article_link?: string) => {
  * True when `href` is an https URL on one of our WordPress hosts pointing at a
  * `/wp-content/uploads/` file — i.e. exactly the URLs the external-link screen
  * is meant to open. Used to reject arbitrary URLs passed via the
- * `/external-link?url=` deep link (open-redirect hardening).
+ * `/external-link?url=` deep link (open-redirect hardening). A `true` result
+ * also narrows `href` to `HttpsUrl`, since the scheme is checked here.
  * @param href - The candidate URL.
  */
-const isInternalUploadUrl = (href: string): boolean => {
+const isInternalUploadUrl = (href: string): href is HttpsUrl => {
   try {
     const parsed = new URL(href);
     if (parsed.protocol !== "https:") return false;

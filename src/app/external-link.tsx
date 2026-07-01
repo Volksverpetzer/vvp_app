@@ -3,7 +3,6 @@ import { useEffect } from "react";
 
 import UiSpinner from "#/components/ui/UiSpinner";
 import { isInternalUploadUrl, openExternalDownload } from "#/helpers/Linking";
-import type { HttpsUrl } from "#/types";
 
 /**
  * Fallback screen for upload/download links (/wp-content/uploads/…) that the OS
@@ -25,7 +24,7 @@ const ExternalLink = () => {
         // open-redirect where a crafted `/external-link?url=…` deep link could
         // otherwise make the app open an arbitrary external URL.
         if (url && isInternalUploadUrl(url)) {
-          await openExternalDownload(url as HttpsUrl);
+          await openExternalDownload(url);
         }
       } finally {
         if (router.canGoBack()) {
