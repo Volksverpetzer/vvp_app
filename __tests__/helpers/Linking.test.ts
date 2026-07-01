@@ -4,6 +4,7 @@ import type { ImperativeRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 
 import {
+  isInternalUploadUrl,
   onLinkPress,
   openExternalDownload,
   outBoundLinkPress,
@@ -370,6 +371,62 @@ describe("Linking helpers", () => {
       await openExternalDownload(uploadUrl);
 
       expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
+    });
+
+    it("does not reject when both the browser and openURL fail", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/file.pdf";
+      (
+        WebBrowser.openBrowserAsync as jest.MockedFunction<
+          typeof WebBrowser.openBrowserAsync
+        >
+      ).mockRejectedValueOnce(new Error("no browser"));
+      (
+        Linking.openURL as jest.MockedFunction<typeof Linking.openURL>
+      ).mockRejectedValueOnce(new Error("no handler"));
+
+      // Fire-and-forget callers rely on this never rejecting.
+      await expect(openExternalDownload(uploadUrl)).resolves.toBeUndefined();
+    });
+  });
+
+  describe("isInternalUploadUrl", () => {
+    it("accepts https uploads URLs on our WordPress hosts", () => {
+      expect(
+        isInternalUploadUrl(
+          "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf",
+        ),
+      ).toBe(true);
+      // www-insensitive + secondary feed host (pruefpunkt.org)
+      expect(
+        isInternalUploadUrl(
+          "https://pruefpunkt.org/wp-content/uploads/image.jpg",
+        ),
+      ).toBe(true);
+    });
+
+    it("rejects non-uploads paths on our hosts", () => {
+      expect(
+        isInternalUploadUrl("https://www.volksverpetzer.de/politik/some-slug/"),
+      ).toBe(false);
+    });
+
+    it("rejects foreign hosts even for an uploads path", () => {
+      expect(
+        isInternalUploadUrl("https://evil.com/wp-content/uploads/file.pdf"),
+      ).toBe(false);
+    });
+
+    it("rejects non-https schemes", () => {
+      expect(
+        isInternalUploadUrl(
+          "http://www.volksverpetzer.de/wp-content/uploads/file.pdf",
+        ),
+      ).toBe(false);
+    });
+
+    it("rejects unparseable input", () => {
+      expect(isInternalUploadUrl("not a url")).toBe(false);
     });
   });
 });

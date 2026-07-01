@@ -78,7 +78,7 @@ const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
  * ignored), `Linking.openURL` would re-dispatch the URL back into our app and
  * loop. A Custom Tab never re-triggers the owning app's deep links, so the file
  * downloads/opens in the browser. Falls back to `openURL` if the browser call
- * fails.
+ * fails. Never rejects, so callers can safely fire-and-forget it.
  * @param href - The upload/download URL to open.
  * @param article_link - Optional article URL for analytics context.
  */
@@ -87,8 +87,42 @@ const openExternalDownload = async (href: HttpsUrl, article_link?: string) => {
   try {
     await WebBrowser.openBrowserAsync(href);
   } catch {
-    await Linking.openURL(href);
+    try {
+      await Linking.openURL(href);
+    } catch (error) {
+      console.warn("Failed to open external download:", href, error);
+    }
   }
 };
 
-export { onLinkPress, openExternalDownload, outBoundLinkPress, parsePath };
+/**
+ * True when `href` is an https URL on one of our WordPress hosts pointing at a
+ * `/wp-content/uploads/` file — i.e. exactly the URLs the external-link screen
+ * is meant to open. Used to reject arbitrary URLs passed via the
+ * `/external-link?url=` deep link (open-redirect hardening).
+ * @param href - The candidate URL.
+ */
+const isInternalUploadUrl = (href: string): boolean => {
+  try {
+    const parsed = new URL(href);
+    if (parsed.protocol !== "https:") return false;
+    const internalHostnames = getInternalWpHosts(
+      Config.wpUrl,
+      Config.feeds?.wp,
+    );
+    return (
+      internalHostnames.includes(normalizeHost(parsed.hostname)) &&
+      shouldExcludeFromDeepLink(parsed.pathname)
+    );
+  } catch {
+    return false;
+  }
+};
+
+export {
+  isInternalUploadUrl,
+  onLinkPress,
+  openExternalDownload,
+  outBoundLinkPress,
+  parsePath,
+};

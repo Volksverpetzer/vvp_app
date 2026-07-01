@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 
 import UiSpinner from "#/components/ui/UiSpinner";
-import { openExternalDownload } from "#/helpers/Linking";
+import { isInternalUploadUrl, openExternalDownload } from "#/helpers/Linking";
 import type { HttpsUrl } from "#/types";
 
 /**
@@ -19,13 +19,20 @@ const ExternalLink = () => {
 
   useEffect(() => {
     const open = async () => {
-      if (url) {
-        await openExternalDownload(url as HttpsUrl);
-      }
-      if (router.canGoBack()) {
-        router.back();
-      } else {
-        router.replace("/");
+      try {
+        // Only open URLs we produced ourselves — an https link to a
+        // /wp-content/uploads/ file on one of our hosts. This blocks an
+        // open-redirect where a crafted `/external-link?url=…` deep link could
+        // otherwise make the app open an arbitrary external URL.
+        if (url && isInternalUploadUrl(url)) {
+          await openExternalDownload(url as HttpsUrl);
+        }
+      } finally {
+        if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.replace("/");
+        }
       }
     };
     void open();
