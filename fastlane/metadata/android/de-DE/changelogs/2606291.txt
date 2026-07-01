@@ -1,2 +1,0 @@
-- Neu: Prüfpunkt-Feed mit Faktenchecks von Prüfpunkt – in den Einstellungen an- und abschaltbar
-- Fehlerbehebungen und Performance-Verbesserungen

@@ -1,2 +1,0 @@
-- New: Prüfpunkt feed with fact-checks from Prüfpunkt – can be toggled in settings
-- Bug fixes and performance improvements
