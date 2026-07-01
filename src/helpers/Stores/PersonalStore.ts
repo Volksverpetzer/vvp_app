@@ -8,6 +8,7 @@ const PersonalStore = {
     scrollPosition: "scrollPosition",
     longPressTip: "longPressTip",
     lastSeenChangelog: "lastSeenChangelog",
+    dismissedAnnouncements: "dismissedAnnouncements",
   },
 
   /**
@@ -66,6 +67,37 @@ const PersonalStore = {
       );
     } catch (error) {
       console.error("Error saving last seen changelog version code:", error);
+    }
+  },
+
+  /**
+   * Retrieves the ids of permanently dismissed in-feed announcement cards.
+   * @returns {Promise<string[]>} The dismissed announcement ids.
+   */
+  async getDismissedAnnouncements(): Promise<string[]> {
+    try {
+      const value = await BaseStore.getItem(this.keys.dismissedAnnouncements);
+      return BaseStore.parseJSON<string[]>(value, []);
+    } catch (error) {
+      console.error("Error retrieving dismissed announcements:", error);
+      return [];
+    }
+  },
+
+  /**
+   * Marks an in-feed announcement card as permanently dismissed.
+   * @param {string} id - The id of the announcement to dismiss.
+   */
+  async dismissAnnouncement(id: string): Promise<void> {
+    try {
+      const dismissed = await this.getDismissedAnnouncements();
+      if (dismissed.includes(id)) return;
+      await BaseStore.setItem(
+        this.keys.dismissedAnnouncements,
+        JSON.stringify([...dismissed, id]),
+      );
+    } catch (error) {
+      console.error("Error dismissing announcement:", error);
     }
   },
 
