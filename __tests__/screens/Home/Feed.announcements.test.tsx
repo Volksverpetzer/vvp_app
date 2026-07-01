@@ -28,7 +28,10 @@ jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children }: any) => <Text>{children}</Text>);
 });
-jest.mock("#/components/views/EmptyComponent", () => () => null);
+jest.mock("#/components/views/EmptyComponent", () => {
+  const { View } = require("react-native");
+  return jest.fn(() => <View testID="feed-empty-state" />);
+});
 jest.mock("#/components/posts/GenericPost", () => {
   const { View } = require("react-native");
   return jest.fn(() => <View testID="post-item" />);
@@ -135,5 +138,17 @@ describe("Feed announcements", () => {
 
     await waitFor(() => expect(queryByTestId("announcement-card")).toBeNull());
     expect(mockDismiss).toHaveBeenCalledWith("test-announcement");
+  });
+
+  it("still shows the empty state alongside the announcement when the feed is empty", async () => {
+    mockFetch.mockResolvedValue([]);
+    const { getByTestId } = render(
+      <Feed
+        showAnnouncements
+        fetchers={[{ fetcher: jest.fn().mockResolvedValue([]) }]}
+      />,
+    );
+    await waitFor(() => expect(getByTestId("announcement-card")).toBeTruthy());
+    expect(getByTestId("feed-empty-state")).toBeTruthy();
   });
 });

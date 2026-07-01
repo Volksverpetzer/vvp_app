@@ -18,7 +18,6 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import EmptyComponent from "#/components/views/EmptyComponent";
 import Announcements from "#/constants/Announcements";
-import type { AnnouncementEntry } from "#/constants/Announcements";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -44,17 +43,6 @@ export interface FeedProperties {
   /** Show the one-time in-feed announcement cards (see #/constants/Announcements). */
   showAnnouncements?: boolean;
 }
-
-interface AnnouncementListItem {
-  id: string;
-  kind: "announcement";
-  announcement: AnnouncementEntry;
-}
-
-type FeedListItem = Post<unknown> | AnnouncementListItem;
-
-const isAnnouncementItem = (item: FeedListItem): item is AnnouncementListItem =>
-  "kind" in item && item.kind === "announcement";
 
 /**
  * Generic Feed Takes Fetchers and Renders a Feed of their Posts in chronological order
@@ -99,21 +87,11 @@ const Feed = (properties: FeedProperties) => {
     : undefined;
 
   const dismissAnnouncement = useCallback((id: string) => {
-    setDismissedAnnouncements((previous) => [...previous, id]);
-    PersonalStore.dismissAnnouncement(id);
+    setDismissedAnnouncements((previous) =>
+      previous.includes(id) ? previous : [...previous, id],
+    );
+    void PersonalStore.dismissAnnouncement(id);
   }, []);
-
-  const displayItems = useMemo<FeedListItem[]>(() => {
-    if (!activeAnnouncement) return posts;
-    return [
-      {
-        id: `announcement:${activeAnnouncement.id}`,
-        kind: "announcement" as const,
-        announcement: activeAnnouncement,
-      },
-      ...posts,
-    ];
-  }, [posts, activeAnnouncement]);
 
   const updateLoadingStates = useCallback(() => {
     setRefresh(false);
@@ -214,32 +192,20 @@ const Feed = (properties: FeedProperties) => {
     },
   ]);
 
-  const renderItem: ListRenderItem<FeedListItem> = useCallback(
-    ({ item }) => {
-      if (isAnnouncementItem(item)) {
-        return (
-          <AnnouncementCard
-            key={item.id}
-            announcement={item.announcement}
-            onDismiss={dismissAnnouncement}
-          />
-        );
-      }
-      if (typeof item.data !== "object") return null;
-      return (
-        <GenericPost
-          key={item.id}
-          component={item.component}
-          data={item.data}
-          contentFavIdentifier={item.contentFavIdentifier}
-          contentType={item.contentType}
-          shareable={item.shareable}
-          inView={inViewRef.current.has(item.id)}
-        />
-      );
-    },
-    [dismissAnnouncement],
-  );
+  const renderItem: ListRenderItem<Post<unknown>> = useCallback(({ item }) => {
+    if (typeof item.data !== "object") return null;
+    return (
+      <GenericPost
+        key={item.id}
+        component={item.component}
+        data={item.data}
+        contentFavIdentifier={item.contentFavIdentifier}
+        contentType={item.contentType}
+        shareable={item.shareable}
+        inView={inViewRef.current.has(item.id)}
+      />
+    );
+  }, []);
 
   const contentContainerStyle = useMemo(
     () => [properties.style, globalStyles.content],
@@ -292,10 +258,20 @@ const Feed = (properties: FeedProperties) => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        data={displayItems}
+        data={posts}
         extraData={rerender}
         renderItem={renderItem}
         onEndReached={posts.length > 0 ? onLoadMore : undefined}
+        // Rendered as header (not a data item) so ListEmptyComponent still
+        // appears when the feed itself is empty.
+        ListHeaderComponent={
+          activeAnnouncement && (
+            <AnnouncementCard
+              announcement={activeAnnouncement}
+              onDismiss={dismissAnnouncement}
+            />
+          )
+        }
         ListFooterComponent={
           posts.length > 0 &&
           (isLoadingMore ? (
