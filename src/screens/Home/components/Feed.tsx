@@ -65,6 +65,7 @@ const Feed = (properties: FeedProperties) => {
   const [dismissedAnnouncements, setDismissedAnnouncements] = useState<
     string[]
   >([]);
+  const [dismissedLoaded, setDismissedLoaded] = useState(false);
 
   useEffect(() => {
     if (!properties.showAnnouncements) return;
@@ -76,15 +77,19 @@ const Feed = (properties: FeedProperties) => {
       setDismissedAnnouncements((previous) => [
         ...new Set([...previous, ...stored]),
       ]);
+      setDismissedLoaded(true);
     });
     return () => {
       cancelled = true;
     };
   }, [properties.showAnnouncements]);
 
-  const activeAnnouncement = properties.showAnnouncements
-    ? Announcements.find((a) => !dismissedAnnouncements.includes(a.id))
-    : undefined;
+  // Gate on dismissedLoaded so an already-dismissed announcement never flashes
+  // on first render before the stored dismissal state has been read.
+  const activeAnnouncement =
+    properties.showAnnouncements && dismissedLoaded
+      ? Announcements.find((a) => !dismissedAnnouncements.includes(a.id))
+      : undefined;
 
   const dismissAnnouncement = useCallback((id: string) => {
     setDismissedAnnouncements((previous) =>
