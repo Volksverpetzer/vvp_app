@@ -51,16 +51,24 @@ const AnnouncementCard = ({
                   {token.content}
                 </UiText>
               );
-            case "link":
+            case "link": {
+              // The tokenizer accepts any URL inside (…); only treat it as a
+              // real link if it is actually https, otherwise render plain text
+              // rather than casting an unvalidated string to HttpsUrl.
+              if (!token.url.startsWith("https://")) {
+                return <UiText key={key}>{token.content}</UiText>;
+              }
+              const url = token.url as HttpsUrl;
               return (
                 <UiText
                   key={key}
-                  onPress={() => onLinkPress(token.url as HttpsUrl, router)}
+                  onPress={() => onLinkPress(url, router)}
                   style={{ color: corporate, textDecorationLine: "underline" }}
                 >
                   {token.content}
                 </UiText>
               );
+            }
             default:
               return token.content;
           }
