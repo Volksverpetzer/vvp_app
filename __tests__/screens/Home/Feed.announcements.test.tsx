@@ -59,7 +59,14 @@ jest.mock("#/constants/GlobalStyles", () => ({
 }));
 jest.mock("#/constants/Announcements", () => ({
   __esModule: true,
-  default: [{ id: "test-announcement", message: "Test message" }],
+  default: [
+    {
+      id: "test-announcement",
+      message: "Test message",
+      actionLabel: "Test action",
+      route: "/settings",
+    },
+  ],
 }));
 jest.mock("#/helpers/Stores/PersonalStore", () => ({
   __esModule: true,
