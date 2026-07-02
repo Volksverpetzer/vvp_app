@@ -55,7 +55,7 @@ const AnnouncementCard = ({
               fontSize: 15,
             }}
           >
-            Verstanden
+            Alles klar!
           </UiText>
         </UiPressable>
         <UiPressable

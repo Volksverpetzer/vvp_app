@@ -22,8 +22,8 @@ const Announcements: AnnouncementEntry[] = [
   {
     id: "pruefpunkt-feed-2026-07",
     message:
-      "Wusstest du schon? Wir haben jetzt auch Prüfpunkt in unserer App! Falls du das nicht sehen möchtest, kannst du es in den Einstellungen abschalten.",
-    actionLabel: "Zu den Einstellungen",
+      "Neu: Unsere Wissenschafts-Plattform Prüfpunkt ist jetzt auch in der App! Was du in deinem Feed siehst, kannst du selbst bestimmen:",
+    actionLabel: "Feed-Einstellungen",
     route: "/settings",
   },
 ];
