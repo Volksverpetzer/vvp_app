@@ -59,7 +59,7 @@
     "@expo/require-utils": "57.0.0",
     "@likashefqet/react-native-image-zoom": "4.3.0",
     "@native-html/iframe-plugin": "2.6.1",
-    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-async-storage/async-storage": "3.1.1",
     "@react-native-vector-icons/octicons": "21.1.2",
     "@rive-app/react-native": "0.4.12",
     "@stripe/stripe-react-native": "0.64.0",
