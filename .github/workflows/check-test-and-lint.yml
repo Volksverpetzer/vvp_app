@@ -23,6 +23,10 @@ jobs:
         run: pnpm check
         shell: bash
 
+      - name: 🩺 Expo doctor
+        run: pnpm expo:doctor
+        shell: bash
+
       - name: 🔍 Check fastlane supply metadata
         uses: ashutoshgngwr/validate-fastlane-supply-metadata@v2
 
