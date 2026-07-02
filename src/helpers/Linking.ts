@@ -60,29 +60,21 @@ const onLinkPress = (
 };
 
 /**
- * Opens an external URL and logs an analytics event.
- * @param href - The outbound URL to open.
- * @param article_link - Optional article URL for analytics context.
- */
-const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
-  registerEvent(article_link, "Outbound Link: Click", { url: href });
-  Linking.openURL(href);
-};
-
-/**
- * Opens an upload/download URL (e.g. /wp-content/uploads/…) outside the app.
+ * Opens `href` in an in-app browser tab (Chrome Custom Tab /
+ * SFSafariViewController) via expo-web-browser rather than `Linking.openURL`,
+ * and logs an analytics event.
  *
- * Uses a Chrome Custom Tab / SFSafariViewController via expo-web-browser rather
- * than `Linking.openURL`: on Android versions where our app still claims the
- * upload URL (API < 31, where the manifest's `pathAdvancedPattern` exclude is
- * ignored), `Linking.openURL` would re-dispatch the URL back into our app and
- * loop. A Custom Tab never re-triggers the owning app's deep links, so the file
- * downloads/opens in the browser. Falls back to `openURL` if the browser call
- * fails. Never rejects, so callers can safely fire-and-forget it.
- * @param href - The upload/download URL to open.
+ * A Custom Tab never re-dispatches the URL back into an app that claims it as an
+ * App Link / Universal Link, so an outbound link can't loop back into our own
+ * app. This matters on Android ≤ 11 (API < 31), where the manifest's
+ * `pathAdvancedPattern` filters are ignored and our app claims every path on a
+ * deep-link host (e.g. volksverpetzer.de, pruefpunkt.org). Falls back to
+ * `openURL` — which also covers non-http schemes such as mailto: — if the
+ * browser call fails. Never rejects, so callers can safely fire-and-forget it.
+ * @param href - The URL to open.
  * @param article_link - Optional article URL for analytics context.
  */
-const openExternalDownload = async (href: HttpsUrl, article_link?: string) => {
+const openInAppBrowser = async (href: string, article_link?: string) => {
   registerEvent(article_link, "Outbound Link: Click", { url: href });
   try {
     await WebBrowser.openBrowserAsync(href);
@@ -90,10 +82,27 @@ const openExternalDownload = async (href: HttpsUrl, article_link?: string) => {
     try {
       await Linking.openURL(href);
     } catch (error) {
-      console.warn("Failed to open external download:", href, error);
+      console.warn("Failed to open link:", href, error);
     }
   }
 };
+
+/**
+ * Opens an external (outbound) URL outside the app. See {@link openInAppBrowser}.
+ * @param href - The outbound URL to open.
+ * @param article_link - Optional article URL for analytics context.
+ */
+const outBoundLinkPress = (href: HttpsUrl, article_link?: string) =>
+  openInAppBrowser(href, article_link);
+
+/**
+ * Opens an upload/download URL (e.g. /wp-content/uploads/…) outside the app.
+ * See {@link openInAppBrowser}.
+ * @param href - The upload/download URL to open.
+ * @param article_link - Optional article URL for analytics context.
+ */
+const openExternalDownload = (href: HttpsUrl, article_link?: string) =>
+  openInAppBrowser(href, article_link);
 
 /**
  * True when `href` is an https URL on one of our WordPress hosts pointing at a

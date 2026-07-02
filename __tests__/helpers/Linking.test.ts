@@ -203,7 +203,7 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
-      expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(externalUrl);
     });
 
     it("should handle paths with trailing slashes", () => {
@@ -308,13 +308,13 @@ describe("Linking helpers", () => {
   });
 
   describe("outBoundLinkPress", () => {
-    it("should open URL and register analytics event", () => {
+    it("should open URL and register analytics event", async () => {
       // Setup
       const externalUrl = "https://example.com";
       const articleContext = "https://www.volksverpetzer.de/article";
 
       // Execute
-      outBoundLinkPress(externalUrl, articleContext);
+      await outBoundLinkPress(externalUrl, articleContext);
 
       // Assert
       expect(registerEvent).toHaveBeenCalledWith(
@@ -322,15 +322,16 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
-      expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(externalUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
-    it("should handle missing article context", () => {
+    it("should handle missing article context", async () => {
       // Setup
       const externalUrl = "https://example.com";
 
       // Execute
-      outBoundLinkPress(externalUrl);
+      await outBoundLinkPress(externalUrl);
 
       // Assert
       expect(registerEvent).toHaveBeenCalledWith(
@@ -338,6 +339,19 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(externalUrl);
+    });
+
+    it("falls back to Linking.openURL when the browser tab fails", async () => {
+      const externalUrl = "https://example.com";
+      (
+        WebBrowser.openBrowserAsync as jest.MockedFunction<
+          typeof WebBrowser.openBrowserAsync
+        >
+      ).mockRejectedValueOnce(new Error("no browser"));
+
+      await outBoundLinkPress(externalUrl);
+
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
     });
   });
