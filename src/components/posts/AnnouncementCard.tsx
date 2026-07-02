@@ -15,11 +15,13 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
 // Designer spec: the mascot sits centered behind the card, with roughly its
-// top half — head and happily raised arms — peeking out above the tile.
-// 600x871 is the intrinsic size of einhorn.webp.
+// top half — head and happily raised arms — peeking out above the tile, and
+// shifted up a bit further so it overlaps the header-gradient boundary above
+// the feed. 600x871 is the intrinsic size of einhorn.webp.
 const MASCOT_WIDTH = 160;
 const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (871 / 600));
 const MASCOT_PEEK = Math.round(MASCOT_HEIGHT / 2);
+const MASCOT_OVERLAP = 28;
 
 interface AnnouncementCardProperties {
   announcement: AnnouncementEntry;
@@ -55,7 +57,7 @@ const AnnouncementCard = ({
             alignSelf: "center",
             height: MASCOT_HEIGHT,
             position: "absolute",
-            top: 0,
+            top: -MASCOT_OVERLAP,
             width: MASCOT_WIDTH,
           }}
         />
