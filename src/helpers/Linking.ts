@@ -75,7 +75,11 @@ const onLinkPress = (
  * @param article_link - Optional article URL for analytics context.
  */
 const openInAppBrowser = async (href: string, article_link?: string) => {
-  registerEvent(article_link, "Outbound Link: Click", { url: href });
+  // Fire-and-forget; the catch keeps a failing analytics call from surfacing
+  // as an unhandled rejection (it can never block the link from opening).
+  registerEvent(article_link, "Outbound Link: Click", { url: href }).catch(
+    (error) => console.warn("Failed to register outbound click:", error),
+  );
   try {
     await WebBrowser.openBrowserAsync(href);
   } catch {

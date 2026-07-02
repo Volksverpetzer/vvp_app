@@ -492,6 +492,28 @@ describe("PersonalStore", () => {
       expect(BaseStore.setItem).not.toHaveBeenCalled();
     });
 
+    it("should not lose an id when two dismissals overlap", async () => {
+      // Setup: a live in-memory store, so each read sees the previous write.
+      let stored: string | null = null;
+      getItemSpy.mockImplementation(() => Promise.resolve(stored));
+      jest
+        .spyOn(BaseStore, "parseJSON")
+        .mockImplementation((value) => JSON.parse((value as string) ?? "[]"));
+      jest.spyOn(BaseStore, "setItem").mockImplementation((_, value) => {
+        stored = value as string;
+        return Promise.resolve();
+      });
+
+      // Execute: fire both without awaiting in between (read-modify-write race)
+      await Promise.all([
+        PersonalStore.dismissAnnouncement("first-id"),
+        PersonalStore.dismissAnnouncement("second-id"),
+      ]);
+
+      // Assert
+      expect(JSON.parse(stored ?? "[]")).toEqual(["first-id", "second-id"]);
+    });
+
     it("should handle errors gracefully", async () => {
       // Setup
       getItemSpy.mockResolvedValue(null);

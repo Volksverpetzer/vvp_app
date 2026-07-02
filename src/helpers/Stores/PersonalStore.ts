@@ -1,6 +1,11 @@
 import BaseStore from "#/helpers/Storage";
 import type { StoredReports } from "#/types";
 
+// Serializes dismissAnnouncement's read-modify-write: callers fire-and-forget
+// it, so two quick dismissals could otherwise both read the same stored list
+// and the later write would drop the earlier id.
+let pendingDismissal: Promise<void> = Promise.resolve();
+
 const PersonalStore = {
   keys: {
     onboardingDone: "onboarded",
@@ -88,17 +93,20 @@ const PersonalStore = {
    * Marks an in-feed announcement card as permanently dismissed.
    * @param {string} id - The id of the announcement to dismiss.
    */
-  async dismissAnnouncement(id: string): Promise<void> {
-    try {
-      const dismissed = await this.getDismissedAnnouncements();
-      if (dismissed.includes(id)) return;
-      await BaseStore.setItem(
-        this.keys.dismissedAnnouncements,
-        JSON.stringify([...dismissed, id]),
-      );
-    } catch (error) {
-      console.error("Error dismissing announcement:", error);
-    }
+  dismissAnnouncement(id: string): Promise<void> {
+    pendingDismissal = pendingDismissal.then(async () => {
+      try {
+        const dismissed = await this.getDismissedAnnouncements();
+        if (dismissed.includes(id)) return;
+        await BaseStore.setItem(
+          this.keys.dismissedAnnouncements,
+          JSON.stringify([...dismissed, id]),
+        );
+      } catch (error) {
+        console.error("Error dismissing announcement:", error);
+      }
+    });
+    return pendingDismissal;
   },
 
   /**

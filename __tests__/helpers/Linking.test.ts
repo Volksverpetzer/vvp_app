@@ -26,7 +26,9 @@ jest.mock("expo-web-browser", () => ({
 
 jest.mock("#/helpers/network/Analytics", () => ({
   __esModule: true,
-  registerEvent: jest.fn(),
+  // Must return a promise like the real (async) implementation —
+  // openInAppBrowser chains .catch() on it.
+  registerEvent: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("#/constants/Config", () => ({
