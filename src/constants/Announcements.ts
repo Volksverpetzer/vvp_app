@@ -27,7 +27,7 @@ const Announcements: AnnouncementEntry[] = [
   {
     id: "pruefpunkt-feed-2026-07",
     message:
-      "**Neu**: Unsere Wissenschafts-Plattform [Prüfpunkt](https://pruefpunkt.org) ist jetzt auch in der App! Was du in deinem Feed siehst, kannst du selbst bestimmen:",
+      "**Neu**: Unsere Wissenschafts-Plattform Prüfpunkt ist jetzt auch in der App! Was du in deinem Feed siehst, kannst du selbst bestimmen:",
     actionLabel: "Feed-Einstellungen",
     route: "/settings",
   },
