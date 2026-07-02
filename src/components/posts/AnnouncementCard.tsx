@@ -7,7 +7,10 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import type { AnnouncementEntry } from "#/constants/Announcements";
 import Colors from "#/constants/Colors";
+import { onLinkPress } from "#/helpers/Linking";
+import { parseInlineMarkdown } from "#/helpers/utils/inlineMarkdown";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import type { HttpsUrl } from "#/types";
 
 interface AnnouncementCardProperties {
   announcement: AnnouncementEntry;
@@ -33,7 +36,35 @@ const AnnouncementCard = ({
   return (
     <UiCard>
       <UiText style={{ fontSize: 16, lineHeight: 22 }}>
-        {announcement.message}
+        {parseInlineMarkdown(announcement.message).map((token, index) => {
+          const key = String(index);
+          switch (token.type) {
+            case "bold":
+              return (
+                <UiText key={key} style={{ fontFamily: "SourceSansProBold" }}>
+                  {token.content}
+                </UiText>
+              );
+            case "italic":
+              return (
+                <UiText key={key} style={{ fontFamily: "SourceSansProItalic" }}>
+                  {token.content}
+                </UiText>
+              );
+            case "link":
+              return (
+                <UiText
+                  key={key}
+                  onPress={() => onLinkPress(token.url as HttpsUrl, router)}
+                  style={{ color: corporate, textDecorationLine: "underline" }}
+                >
+                  {token.content}
+                </UiText>
+              );
+            default:
+              return token.content;
+          }
+        })}
       </UiText>
       <UiSpace size={16} />
       <View style={{ flexDirection: "row", gap: 12 }}>

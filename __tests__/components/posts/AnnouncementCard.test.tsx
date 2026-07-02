@@ -10,6 +10,12 @@ jest.mock("expo-router", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
+const mockOnLinkPress = jest.fn();
+jest.mock("#/helpers/Linking", () => ({
+  __esModule: true,
+  onLinkPress: (...args: unknown[]) => mockOnLinkPress(...args),
+}));
+
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => "light",
 }));
@@ -48,20 +54,49 @@ describe("AnnouncementCard", () => {
     expect(getByText(announcement.message)).toBeTruthy();
   });
 
+  it("renders **bold** segments without the markers", () => {
+    const { getByText, queryByText } = render(
+      <AnnouncementCard
+        announcement={{ ...announcement, message: "**Neu**: hallo" }}
+        onDismiss={jest.fn()}
+      />,
+    );
+    expect(getByText("Neu")).toBeTruthy();
+    expect(queryByText("**Neu**: hallo")).toBeNull();
+  });
+
+  it("opens links via onLinkPress without rendering the markdown syntax", () => {
+    const { getByText, queryByText } = render(
+      <AnnouncementCard
+        announcement={{
+          ...announcement,
+          message: "mehr auf [Prüfpunkt](https://pruefpunkt.org)",
+        }}
+        onDismiss={jest.fn()}
+      />,
+    );
+    expect(queryByText(/\[Prüfpunkt\]/)).toBeNull();
+    fireEvent.press(getByText("Prüfpunkt"));
+    expect(mockOnLinkPress).toHaveBeenCalledWith(
+      "https://pruefpunkt.org",
+      expect.anything(),
+    );
+  });
+
   it("renders both action buttons", () => {
     const { getByText } = render(
       <AnnouncementCard announcement={announcement} onDismiss={jest.fn()} />,
     );
-    expect(getByText("Verstanden")).toBeTruthy();
+    expect(getByText("Alles klar!")).toBeTruthy();
     expect(getByText("Zu den Einstellungen")).toBeTruthy();
   });
 
-  it("dismisses without navigating when 'Verstanden' is pressed", () => {
+  it("dismisses without navigating when 'Alles klar!' is pressed", () => {
     const onDismiss = jest.fn();
     const { getByText } = render(
       <AnnouncementCard announcement={announcement} onDismiss={onDismiss} />,
     );
-    fireEvent.press(getByText("Verstanden"));
+    fireEvent.press(getByText("Alles klar!"));
     expect(onDismiss).toHaveBeenCalledWith(announcement.id);
     expect(mockPush).not.toHaveBeenCalled();
   });

@@ -3,6 +3,11 @@ import type { Href } from "expo-router";
 export interface AnnouncementEntry {
   /** Stable id — used as the permanent-dismissal key, never reuse across entries. */
   id: string;
+  /**
+   * Card body. Supports inline markdown: `**bold**`, `*italic*`, and
+   * `[text](https://…)` links. No block elements or nesting — see
+   * parseInlineMarkdown.
+   */
   message: string;
   actionLabel: string;
   route: Href;
@@ -22,7 +27,7 @@ const Announcements: AnnouncementEntry[] = [
   {
     id: "pruefpunkt-feed-2026-07",
     message:
-      "Neu: Unsere Wissenschafts-Plattform Prüfpunkt ist jetzt auch in der App! Was du in deinem Feed siehst, kannst du selbst bestimmen:",
+      "**Neu**: Unsere Wissenschafts-Plattform [Prüfpunkt](https://pruefpunkt.org) ist jetzt auch in der App! Was du in deinem Feed siehst, kannst du selbst bestimmen:",
     actionLabel: "Feed-Einstellungen",
     route: "/settings",
   },
