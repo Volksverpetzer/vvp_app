@@ -15,6 +15,7 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { isDarkMode } from "#/helpers/utils/color";
+import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
@@ -203,6 +204,15 @@ const IframeRenderer = ({
 
   if (htmlAttribs.class?.includes("wp-embedded-content")) {
     const slug = extractSlug(source);
+    // A WordPress embed points at the site it lives on. When that's a
+    // configured secondary feed (e.g. Prüfpunkt), load the related article
+    // from that site's API rather than the primary one, which wouldn't have
+    // the slug and would throw "Article not found".
+    const secondaryWp = findSecondaryWpFeed(
+      source,
+      Config.wpUrl,
+      Config.feeds?.wp,
+    );
 
     // If slug is empty, show a debug message instead of nothing
     if (!slug) {
@@ -230,7 +240,7 @@ const IframeRenderer = ({
         }}
       >
         <View style={{ margin: 12 }}>
-          <LoadArticlePost slug={slug} elevated />
+          <LoadArticlePost slug={slug} baseUrl={secondaryWp?.handle} elevated />
         </View>
       </View>
     );
