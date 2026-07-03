@@ -101,8 +101,13 @@ export default class WordPressAPI {
       signal,
     });
     const sizes = data?.media_details?.sizes;
-    const image = sizes?.medium_large?.source_url ?? sizes?.medium?.source_url;
-    const thumb = sizes?.thumbnail?.source_url;
+    // Fall back to the full-size original when a WordPress site hasn't generated
+    // intermediate image sizes (e.g. Prüfpunkt returns an empty `sizes` object).
+    const image =
+      sizes?.medium_large?.source_url ??
+      sizes?.medium?.source_url ??
+      data?.source_url;
+    const thumb = sizes?.thumbnail?.source_url ?? data?.source_url;
     return { image, thumb };
   }
 

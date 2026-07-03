@@ -1,0 +1,2 @@
+- New: Prüfpunkt feed with articles from Prüfpunkt – can be toggled in settings
+- Bug fixes and performance improvements
