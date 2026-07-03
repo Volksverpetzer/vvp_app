@@ -111,7 +111,16 @@ const LoadArticle = () => {
 
   if (!slug) {
     const baseUrl = secondaryWp?.handle ?? wpUrl;
-    const url = originalUrl ?? `${baseUrl}/${category || ""}`;
+    // WordPress permalinks are trailing-slash canonical and 404 (no redirect)
+    // on the slashless form, so rebuild with a trailing slash. The incoming
+    // deep link had one, but expo-router strips it when parsing the param.
+    const trimmedBase = baseUrl.replace(/\/+$/, "");
+    const trimmedCategory = (category || "").replaceAll(/^\/+|\/+$/g, "");
+    const url =
+      originalUrl ??
+      (trimmedCategory
+        ? `${trimmedBase}/${trimmedCategory}/`
+        : `${trimmedBase}/`);
     return <EdgelessWebview uri={url as HttpsUrl} />;
   }
 
@@ -146,7 +155,9 @@ const LoadArticle = () => {
         .filter((s): s is string => Boolean(s))
         .map((s) => s.replaceAll(/^\/+|\/+$/g, ""))
         .join("/");
-      return path ? `${trimmedBase}/${path}` : trimmedBase;
+      // Trailing slash to match WordPress's canonical permalink form, which
+      // otherwise 404s on the slashless URL (see the !slug branch above).
+      return path ? `${trimmedBase}/${path}/` : trimmedBase;
     };
 
     const cleanPath = buildFallbackUrl(wpUrl, category, slug);
