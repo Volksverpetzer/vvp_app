@@ -8,7 +8,7 @@ import type { Post } from "#/types";
 jest.mock("expo-router", () => ({
   __esModule: true,
   useRouter: () => ({ push: jest.fn() }),
-  useScrollToTop: () => undefined,
+  useScrollToTop: () => {},
 }));
 jest.mock("#/components/Icons", () => ({
   SearchIcon: () => null,
@@ -58,7 +58,7 @@ describe("Feed rendering", () => {
   beforeEach(() => jest.clearAllMocks());
 
   it("shows empty state when fetchers array is empty", async () => {
-    const { getByTestId } = render(<Feed fetchers={[]} />);
+    const { getByTestId } = await render(<Feed fetchers={[]} />);
     await waitFor(() => expect(getByTestId("empty-state")).toBeTruthy());
   });
 
@@ -78,7 +78,7 @@ describe("Feed rendering", () => {
     mockFetch.mockResolvedValueOnce(posts);
 
     const fetcher = jest.fn().mockResolvedValue(posts);
-    const { getByTestId } = render(<Feed fetchers={[{ fetcher }]} />);
+    const { getByTestId } = await render(<Feed fetchers={[{ fetcher }]} />);
 
     await waitFor(() => expect(getByTestId("post-item")).toBeTruthy());
   });
@@ -109,7 +109,7 @@ describe("Feed rendering", () => {
     mockFetch.mockResolvedValueOnce(posts);
 
     const fetcher = jest.fn().mockResolvedValue(posts);
-    const { getAllByTestId } = render(<Feed fetchers={[{ fetcher }]} />);
+    const { getAllByTestId } = await render(<Feed fetchers={[{ fetcher }]} />);
 
     await waitFor(() => expect(getAllByTestId("post-item")).toHaveLength(2));
   });

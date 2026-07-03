@@ -5,7 +5,7 @@ import { Achievements } from "#/helpers/Achievements";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { getFavs, registerFav } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import type { FaveableType, ShareableType } from "#/types";
+import type { FaveableType, InstaPostProperties, ShareableType } from "#/types";
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
@@ -77,7 +77,7 @@ describe("FavCounter", () => {
         Promise.resolve(url === "https://example.com/one" ? 2 : 3),
       );
 
-    const { getByText } = render(
+    const { getByText } = await render(
       <FavCounter shareable={shareable} style={{}} />,
     );
 
@@ -92,13 +92,22 @@ describe("FavCounter", () => {
 
   it("adds a favorite, registers engagement, and increments the visible count", async () => {
     jest.mocked(getFavs).mockResolvedValue(2);
+    const instaSnapshot: InstaPostProperties = {
+      id: contentFavIdentifier,
+      media_type: "IMAGE",
+      media_url: "https://example.com/image.jpg",
+      caption: "Snapshot caption",
+      timestamp: "2026-01-01T12:00:00Z",
+      permalink: "https://www.instagram.com/p/abc/",
+    };
 
-    const { getByRole, getByText, queryByText } = render(
+    const { getByRole, getByText, queryByText } = await render(
       <FavCounter
         shareable={[shareable[0]]}
         style={{}}
         contentFavIdentifier={contentFavIdentifier}
         contentType={contentType}
+        favPayload={instaSnapshot}
       />,
     );
 
@@ -107,7 +116,7 @@ describe("FavCounter", () => {
       expect(getByText("star-outline")).toBeTruthy();
     });
 
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
 
     await waitFor(() => {
       expect(getByText("3")).toBeTruthy();
@@ -116,9 +125,14 @@ describe("FavCounter", () => {
 
     expect(queryByText("2")).toBeNull();
     expect(Achievements.setAchievementValue).toHaveBeenCalledWith("favorite");
+    // The Instagram post passed in via favPayload is snapshotted into the
+    // favorite so it can be rebuilt without the account-scoped by-id proxy.
+    // originalUrl stays undefined — only articles are re-fetched by URL.
     expect(FavoritesStore.addFavorite).toHaveBeenCalledWith(
       contentFavIdentifier,
       contentType,
+      undefined,
+      instaSnapshot,
     );
     expect(updateBadgeState).toHaveBeenCalledWith({ personal: true });
     expect(registerFav).toHaveBeenCalledWith("https://example.com/one");
@@ -127,7 +141,7 @@ describe("FavCounter", () => {
   it("does not persist a favorite when contentType is missing", async () => {
     jest.mocked(getFavs).mockResolvedValue(2);
 
-    const { getByRole, getByText } = render(
+    const { getByRole, getByText } = await render(
       <FavCounter
         shareable={[shareable[0]]}
         style={{}}
@@ -137,7 +151,7 @@ describe("FavCounter", () => {
 
     await waitFor(() => expect(getByText("star-outline")).toBeTruthy());
 
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
 
     await waitFor(() =>
       expect(FavoritesStore.addFavorite).not.toHaveBeenCalled(),
@@ -152,7 +166,7 @@ describe("FavCounter", () => {
     jest.mocked(FavoritesStore.isFavorite).mockResolvedValue(true);
     jest.mocked(getFavs).mockResolvedValue(4);
 
-    const { getByRole, getByText } = render(
+    const { getByRole, getByText } = await render(
       <FavCounter
         shareable={[shareable[0]]}
         style={{}}
@@ -166,7 +180,7 @@ describe("FavCounter", () => {
       expect(getByText("star-filled")).toBeTruthy();
     });
 
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
 
     await waitFor(() => {
       expect(getByText("4")).toBeTruthy();
@@ -180,10 +194,10 @@ describe("FavCounter", () => {
     expect(registerFav).not.toHaveBeenCalled();
   });
 
-  it("renders an empty placeholder and skips engagement when disabled", () => {
+  it("renders an empty placeholder and skips engagement when disabled", async () => {
     mockConfig.enableEngagement = false;
 
-    const { queryByRole, queryByText } = render(
+    const { queryByRole, queryByText } = await render(
       <FavCounter
         shareable={shareable}
         style={{}}

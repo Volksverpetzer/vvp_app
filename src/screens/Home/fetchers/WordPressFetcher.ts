@@ -3,13 +3,19 @@ import Post from "#/helpers/Post";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import type { ArticleProperties, LoadArticlePostProperties } from "#/types";
 
+type WpApi = {
+  getPosts(
+    page?: number,
+    signal?: AbortSignal,
+  ): Promise<LoadArticlePostProperties[]>;
+  searchPosts(
+    search: string,
+    page?: number,
+    signal?: AbortSignal,
+  ): Promise<LoadArticlePostProperties[]>;
+};
+
 export const WordPressFetcher = {
-  /**
-   * Maps a WordPress article to a Post object.
-   * @param article The article to map.
-   * @param index The index of the article.
-   * @returns The mapped Post object.
-   */
   mapArticleToPost(
     article: LoadArticlePostProperties,
     index: number,
@@ -28,11 +34,6 @@ export const WordPressFetcher = {
     );
   },
 
-  /**
-   * Fetches posts from WordPress
-   * @param api The API function to use.
-   * @returns An array of posts.
-   */
   async wpBaseFetcher(
     api: (signal?: AbortSignal) => Promise<LoadArticlePostProperties[]>,
     signal?: AbortSignal,
@@ -54,32 +55,41 @@ export const WordPressFetcher = {
   },
 
   /**
-   * Fetches posts from WordPress
-   * @param page The page number to fetch (pagination)
-   * @returns An array of posts.
+   * Creates a feed/search fetcher pair for any WordPress-compatible API.
+   * Pass sourceName to stamp a source label on every returned article.
    */
-  feedFetcher: async ({
-    page = 1,
-    signal,
-  }: { page?: number; signal?: AbortSignal } = {}) => {
-    return await WordPressFetcher.wpBaseFetcher(
-      (_signal) => WordPressAPI.getPosts(page, _signal),
-      signal,
-    );
-  },
+  createFetchers(api: WpApi, sourceName?: string) {
+    const stamp = (posts: Post<{ article: ArticleProperties }>[]) => {
+      if (sourceName) {
+        posts.forEach((p) => {
+          p.data.article.sourceName = sourceName;
+        });
+      }
+      return posts;
+    };
 
-  /**
-   * Fetches posts from WordPress based on a search parameter.
-   * @param param The search parameter.
-   * @returns An array of posts.
-   */
-  searchFetcher: async ({
-    param: parameter = "",
-    signal,
-  }: { param?: string; signal?: AbortSignal } = {}) => {
-    return await WordPressFetcher.wpBaseFetcher(
-      (_signal) => WordPressAPI.searchPosts(parameter, 10, _signal),
-      signal,
-    );
+    return {
+      feedFetcher: async ({
+        page = 1,
+        signal,
+      }: { page?: number; signal?: AbortSignal } = {}) =>
+        stamp(
+          await WordPressFetcher.wpBaseFetcher(
+            (sig) => api.getPosts(page, sig),
+            signal,
+          ),
+        ),
+      searchFetcher: async ({
+        param: parameter = "",
+        page = 1,
+        signal,
+      }: { param?: string; page?: number; signal?: AbortSignal } = {}) =>
+        stamp(
+          await WordPressFetcher.wpBaseFetcher(
+            (sig) => api.searchPosts(parameter, page, sig),
+            signal,
+          ),
+        ),
+    };
   },
 };

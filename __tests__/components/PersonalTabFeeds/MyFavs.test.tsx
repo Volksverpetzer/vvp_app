@@ -20,6 +20,9 @@ jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
+    feeds: {
+      wp: [{ handle: "https://www.pruefpunkt.org", enabled: true }],
+    },
   },
 }));
 jest.mock("#/components/Icons", () => ({
@@ -41,10 +44,15 @@ jest.mock("#/components/ui/UiSpace", () => ({
   default: jest.fn(() => null),
 }));
 
-jest.mock("#/components/ui/UiText", () => ({
-  __esModule: true,
-  default: jest.fn(({ children }) => children),
-}));
+jest.mock("#/components/ui/UiText", () => {
+  // Wrap children in a real Text: RNTL 14's renderer rejects raw string
+  // children inside a View (e.g. the empty-favorites hint), unlike v13.
+  const { Text } = require("react-native");
+  return {
+    __esModule: true,
+    default: jest.fn(({ children }) => <Text>{children}</Text>),
+  };
+});
 
 jest.mock("#/components/posts/insta/InstaPostCard", () => ({
   __esModule: true,
@@ -79,6 +87,7 @@ jest.mock("#/helpers/network/WordPressAPI", () => ({
   __esModule: true,
   default: {
     getPost: jest.fn(),
+    create: jest.fn(),
   },
 }));
 
@@ -148,7 +157,7 @@ describe("MyFavs", () => {
     );
     (API.getInstaPost as jest.Mock).mockResolvedValue(instaApiResponse);
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(2);
@@ -197,6 +206,107 @@ describe("MyFavs", () => {
     );
   });
 
+  it("loads a secondary-feed (Prüfpunkt) favorite from its own site instead of purging it", async () => {
+    const pruefpunktApiResponse = {
+      id: 7,
+      date: "2026-01-03T12:00:00Z",
+      date_gmt: "2026-01-03T12:00:00Z",
+      link: "https://www.pruefpunkt.org/faktencheck/pp-article",
+      slug: "pp-article",
+      title: { rendered: "Prüfpunkt Article" },
+      yoast_head_json: { description: "PP description" },
+      _links: { "wp:featuredmedia": [{ href: "https://example.com/image" }] },
+      categories: [],
+      authors: [],
+    };
+    const mappedPruefpunktPost = {
+      id: "pp-article",
+      component: jest.fn(),
+      data: {
+        article: {
+          title: "Prüfpunkt Article",
+          link: pruefpunktApiResponse.link,
+        },
+      },
+      shareable: [{ url: pruefpunktApiResponse.link, title: "Artikel teilen" }],
+      contentFavIdentifier: "pp-article",
+      contentType: FAV_TYPE_ARTICLE,
+    };
+    const secondaryGetPost = jest.fn().mockResolvedValue(pruefpunktApiResponse);
+
+    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+      "pp-article": {
+        contentType: FAV_TYPE_ARTICLE,
+        originalUrl: "https://www.pruefpunkt.org/faktencheck/pp-article",
+      },
+    });
+    (WordPressAPI.create as jest.Mock).mockReturnValue({
+      getPost: secondaryGetPost,
+    });
+    (WordPressFetcher.mapArticleToPost as jest.Mock).mockReturnValue(
+      mappedPruefpunktPost,
+    );
+
+    await render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+
+    // Resolved via the secondary site's API, never the primary one.
+    expect(WordPressAPI.create).toHaveBeenCalledWith(
+      "https://www.pruefpunkt.org",
+    );
+    expect(secondaryGetPost).toHaveBeenCalledWith("pp-article");
+    expect(WordPressAPI.getPost).not.toHaveBeenCalled();
+    expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+  });
+
+  it("rebuilds a secondary-account (Prüfpunkt) Instagram favorite from its stored snapshot", async () => {
+    const snapshot = {
+      id: "18100522658117977",
+      media_type: "IMAGE",
+      media_url: "https://example.com/pp.jpg",
+      caption: "Prüfpunkt insta caption",
+      timestamp: "2026-01-04T12:00:00Z",
+      permalink: "https://www.instagram.com/p/ppShortcode/",
+    };
+
+    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+      "18100522658117977": {
+        contentType: FAV_TYPE_INSTA,
+        payload: snapshot,
+      },
+    });
+
+    await render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+
+    // Rendered straight from the snapshot — no account-scoped by-id proxy call,
+    // and the favorite is not purged.
+    expect(API.getInstaPost).not.toHaveBeenCalled();
+    expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+
+    const genericPostCalls = (
+      GenericPost as unknown as jest.Mock
+    ).mock.calls.map(([properties]) => properties);
+    expect(genericPostCalls[0]).toEqual(
+      expect.objectContaining({
+        contentFavIdentifier: "18100522658117977",
+        contentType: FAV_TYPE_INSTA,
+        shareable: [
+          {
+            title: "Instagram Post teilen",
+            url: "https://www.instagram.com/p/ppShortcode/",
+          },
+        ],
+      }),
+    );
+  });
+
   it("skips a failing Instagram favorite without aborting the rest of the list", async () => {
     const articleApiResponse = {
       id: 1,
@@ -225,7 +335,7 @@ describe("MyFavs", () => {
     };
     const consoleErrorSpy = jest
       .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+      .mockImplementation(() => {});
 
     (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
       "example-article": { contentType: FAV_TYPE_ARTICLE },
@@ -237,7 +347,7 @@ describe("MyFavs", () => {
     );
     (API.getInstaPost as jest.Mock).mockRejectedValue(new Error("network"));
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(1);
@@ -294,7 +404,7 @@ describe("MyFavs", () => {
     };
     const consoleWarnSpy = jest
       .spyOn(console, "warn")
-      .mockImplementation(() => undefined);
+      .mockImplementation(() => {});
 
     (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
       "stale-article": { contentType: FAV_TYPE_ARTICLE },
@@ -309,7 +419,7 @@ describe("MyFavs", () => {
     );
     (FavoritesStore.removeFavorite as jest.Mock).mockResolvedValue(undefined);
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(1);
@@ -331,7 +441,7 @@ describe("MyFavs", () => {
   it("does not refresh favorites while the screen is unfocused", async () => {
     mockUseIsFocused.mockReturnValue(false);
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(FavoritesStore.getAllFavorites).not.toHaveBeenCalled();
@@ -362,24 +472,22 @@ describe("MyFavs", () => {
       .mockReturnValueOnce(firstRequest)
       .mockReturnValueOnce(secondRequest);
 
-    const { rerender } = render(<MyFavs />);
+    const { rerender } = await render(<MyFavs />);
 
     // Trigger a second request by toggling focused off and back on
-    act(() => {
+    await act(() => {
       mockUseIsFocused.mockReturnValue(false);
     });
-    rerender(<MyFavs />);
+    await rerender(<MyFavs />);
 
-    act(() => {
+    await act(() => {
       mockUseIsFocused.mockReturnValue(true);
     });
-    rerender(<MyFavs />);
+    await rerender(<MyFavs />);
 
-    // Resolve the second (newer) request first with one article
-    act(() => {
-      resolveSecond({ "newer-article": { contentType: FAV_TYPE_ARTICLE } });
-    });
-
+    // Wire the article mocks before resolving: RNTL 14's awaited act() flushes
+    // the favorites-processing chain synchronously, so getPost/mapArticleToPost
+    // must already be configured when the newer request resolves.
     const newerArticleApiResponse = {
       id: 2,
       date: "2026-01-02T12:00:00Z",
@@ -412,6 +520,11 @@ describe("MyFavs", () => {
       newerMappedPost,
     );
 
+    // Resolve the second (newer) request first with one article
+    await act(() => {
+      resolveSecond({ "newer-article": { contentType: FAV_TYPE_ARTICLE } });
+    });
+
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(1);
     });
@@ -425,7 +538,7 @@ describe("MyFavs", () => {
 
     // Now resolve the first (older/stale) request — its results must be ignored
     (GenericPost as unknown as jest.Mock).mockClear();
-    act(() => {
+    await act(() => {
       resolveFirst({ "stale-article": { contentType: FAV_TYPE_ARTICLE } });
     });
 

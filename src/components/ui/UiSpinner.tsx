@@ -16,9 +16,18 @@ type UiSpinnerProperties = ActivityIndicatorProps & {
   text?: string;
 };
 
+// Branded loading image size per named spinner size: double React Native's
+// stock ActivityIndicator sizes (small ~20, large ~36) so the image reads at a
+// comparable visual weight to the old fixed 100px.
+const IMAGE_SIZE = { small: 40, large: 72 } as const;
+
 const UiSpinner = (props: UiSpinnerProperties) => {
   const { containerStyle, text, ...indicatorProps } = props;
   const corporate = useCorporateColor();
+  const imageSize =
+    typeof indicatorProps.size === "number"
+      ? indicatorProps.size
+      : IMAGE_SIZE[indicatorProps.size ?? "small"];
   return (
     <View
       style={[
@@ -30,7 +39,7 @@ const UiSpinner = (props: UiSpinnerProperties) => {
       {AppImages.loadingAnimation ? (
         <Image
           source={AppImages.loadingAnimation}
-          style={{ width: 100, height: 100 }}
+          style={{ width: imageSize, height: imageSize }}
         />
       ) : (
         <ActivityIndicator color={corporate} {...indicatorProps} />

@@ -64,7 +64,7 @@ describe("Recommended", () => {
       ],
     });
 
-    render(<Recommended article_link="https://example.com/article" />);
+    await render(<Recommended article_link="https://example.com/article" />);
 
     await waitFor(() => expect(recommendations).toHaveBeenCalledTimes(1));
   });
@@ -77,7 +77,7 @@ describe("Recommended", () => {
       .mockImplementation(() => {});
     recommendations.mockRejectedValue(new Error("network failure"));
 
-    render(<Recommended article_link="https://example.com/article" />);
+    await render(<Recommended article_link="https://example.com/article" />);
 
     await waitFor(() =>
       expect(consoleErrorSpy).toHaveBeenCalledWith(
@@ -99,14 +99,14 @@ describe("Recommended AbortController behavior", () => {
 
     recommendations.mockReturnValue(d.promise);
 
-    const { unmount } = render(
+    const { unmount } = await render(
       <Recommended article_link="https://example.com/article" />,
     );
 
     await waitFor(() => expect(recommendations).toHaveBeenCalledTimes(1));
     const signal = recommendations.mock.calls[0][1] as AbortSignal;
 
-    unmount();
+    await unmount();
     expect(signal.aborted).toBe(true);
 
     await act(async () => {

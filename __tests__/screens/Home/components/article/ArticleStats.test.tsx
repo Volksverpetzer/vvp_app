@@ -33,31 +33,31 @@ describe("ArticleStats — reading time", () => {
     mockConfig.enableEngagement = true;
   });
 
-  it("renders reading time with clock icon label when reading_time is set", () => {
-    const { getByText } = render(
+  it("renders reading time with clock icon label when reading_time is set", async () => {
+    const { getByText } = await render(
       <ArticleStats article_link={article_link} reading_time={12} />,
     );
     expect(getByText("12 Min.")).toBeTruthy();
   });
 
-  it("does not render reading time when reading_time is undefined", () => {
-    const { queryByText } = render(
+  it("does not render reading time when reading_time is undefined", async () => {
+    const { queryByText } = await render(
       <ArticleStats article_link={article_link} reading_time={undefined} />,
     );
     expect(queryByText(/Min\./)).toBeNull();
   });
 
-  it("renders reading time even when engagement is disabled", () => {
+  it("renders reading time even when engagement is disabled", async () => {
     mockConfig.enableEngagement = false;
-    const { getByText } = render(
+    const { getByText } = await render(
       <ArticleStats article_link={article_link} reading_time={5} />,
     );
     expect(getByText("5 Min.")).toBeTruthy();
   });
 
-  it("returns nothing when engagement is disabled and reading_time is absent", () => {
+  it("returns nothing when engagement is disabled and reading_time is absent", async () => {
     mockConfig.enableEngagement = false;
-    const { toJSON } = render(
+    const { toJSON } = await render(
       <ArticleStats article_link={article_link} reading_time={undefined} />,
     );
     expect(toJSON()).toBeNull();

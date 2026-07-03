@@ -61,12 +61,18 @@ class API {
 
   /**
    * Fetches the Instagram feed.
+   * @param account - Instagram account name; sent so the proxy can serve
+   * multiple accounts (it falls back to its default account otherwise).
    */
   static async getInstaFeed(
+    account?: string,
     signal?: AbortSignal,
   ): Promise<InstaPostProperties[]> {
+    const path = account
+      ? `/proxy/instaFeed?account=${encodeURIComponent(account)}`
+      : "/proxy/instaFeed";
     const response = await API.get<{ data: InstaPostProperties[] }>(
-      "/proxy/instaFeed",
+      path,
       undefined,
       signal,
     );

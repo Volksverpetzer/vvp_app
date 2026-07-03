@@ -414,4 +414,125 @@ describe("PersonalStore", () => {
       consoleErrorSpy.mockRestore();
     });
   });
+
+  describe("getDismissedAnnouncements", () => {
+    it("should use the correct storage key", async () => {
+      // Setup
+      getItemSpy.mockResolvedValue('["pruefpunkt-feed-2026-07"]');
+      jest
+        .spyOn(BaseStore, "parseJSON")
+        .mockReturnValue(["pruefpunkt-feed-2026-07"]);
+
+      // Execute
+      await PersonalStore.getDismissedAnnouncements();
+
+      // Assert
+      expect(getItemSpy).toHaveBeenCalledWith("dismissedAnnouncements");
+    });
+
+    it("should return an empty array when nothing is stored", async () => {
+      // Setup
+      getItemSpy.mockResolvedValue(null);
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue([]);
+
+      // Execute
+      const result = await PersonalStore.getDismissedAnnouncements();
+
+      // Assert
+      expect(BaseStore.parseJSON).toHaveBeenCalledWith(null, []);
+      expect(result).toEqual([]);
+    });
+
+    it("should handle errors and return an empty array", async () => {
+      // Setup
+      getItemSpy.mockRejectedValue(new Error("Storage error"));
+
+      // Execute
+      const result = await PersonalStore.getDismissedAnnouncements();
+
+      // Assert
+      expect(result).toEqual([]);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error retrieving dismissed announcements:",
+        expect.any(Error),
+      );
+
+      // Cleanup
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe("dismissAnnouncement", () => {
+    it("should append the id to the stored list", async () => {
+      // Setup
+      getItemSpy.mockResolvedValue('["other-id"]');
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(["other-id"]);
+
+      // Execute
+      await PersonalStore.dismissAnnouncement("pruefpunkt-feed-2026-07");
+
+      // Assert
+      expect(BaseStore.setItem).toHaveBeenCalledWith(
+        "dismissedAnnouncements",
+        JSON.stringify(["other-id", "pruefpunkt-feed-2026-07"]),
+      );
+    });
+
+    it("should not store a duplicate when the id is already dismissed", async () => {
+      // Setup
+      getItemSpy.mockResolvedValue('["pruefpunkt-feed-2026-07"]');
+      jest
+        .spyOn(BaseStore, "parseJSON")
+        .mockReturnValue(["pruefpunkt-feed-2026-07"]);
+
+      // Execute
+      await PersonalStore.dismissAnnouncement("pruefpunkt-feed-2026-07");
+
+      // Assert
+      expect(BaseStore.setItem).not.toHaveBeenCalled();
+    });
+
+    it("should not lose an id when two dismissals overlap", async () => {
+      // Setup: a live in-memory store, so each read sees the previous write.
+      let stored: string | null = null;
+      getItemSpy.mockImplementation(() => Promise.resolve(stored));
+      jest
+        .spyOn(BaseStore, "parseJSON")
+        .mockImplementation((value) => JSON.parse((value as string) ?? "[]"));
+      jest.spyOn(BaseStore, "setItem").mockImplementation((_, value) => {
+        stored = value as string;
+        return Promise.resolve();
+      });
+
+      // Execute: fire both without awaiting in between (read-modify-write race)
+      await Promise.all([
+        PersonalStore.dismissAnnouncement("first-id"),
+        PersonalStore.dismissAnnouncement("second-id"),
+      ]);
+
+      // Assert
+      expect(JSON.parse(stored ?? "[]")).toEqual(["first-id", "second-id"]);
+    });
+
+    it("should handle errors gracefully", async () => {
+      // Setup
+      getItemSpy.mockResolvedValue(null);
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue([]);
+      jest
+        .spyOn(BaseStore, "setItem")
+        .mockRejectedValue(new Error("Storage error"));
+
+      // Execute
+      await PersonalStore.dismissAnnouncement("pruefpunkt-feed-2026-07");
+
+      // Assert
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error dismissing announcement:",
+        expect.any(Error),
+      );
+
+      // Cleanup
+      consoleErrorSpy.mockRestore();
+    });
+  });
 });

@@ -40,7 +40,7 @@ LogBox.ignoreLogs(["new NativeEventEmitter"]);
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
-const SECONDARY_BG_SCREENS = ["action", "support"];
+const SECONDARY_BG_SCREENS = new Set(["action", "support"]);
 
 const TOAST_TEXT_STYLES = {
   text1Style: { fontSize: 16 },
@@ -57,7 +57,7 @@ const AppFrame = ({ children }: PropsWithChildren) => {
   const insets = useSafeAreaInsets();
   const segments = useSegments() as string[];
 
-  const isSecondaryBg = segments.some((s) => SECONDARY_BG_SCREENS.includes(s));
+  const isSecondaryBg = segments.some((s) => SECONDARY_BG_SCREENS.has(s));
   const backgroundColor = isSecondaryBg
     ? Colors[colorScheme].surface
     : Colors[colorScheme].background;

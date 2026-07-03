@@ -1,8 +1,15 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import * as Linking from "expo-linking";
 import type { ImperativeRouter } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 
-import { onLinkPress, outBoundLinkPress, parsePath } from "#/helpers/Linking";
+import {
+  isInternalUploadUrl,
+  onLinkPress,
+  openExternalDownload,
+  outBoundLinkPress,
+  parsePath,
+} from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
 
 // Mock dependencies
@@ -12,15 +19,36 @@ jest.mock("expo-linking", () => ({
   openURL: jest.fn(),
 }));
 
+jest.mock("expo-web-browser", () => ({
+  __esModule: true,
+  openBrowserAsync: jest.fn(() => Promise.resolve({ type: "opened" })),
+}));
+
 jest.mock("#/helpers/network/Analytics", () => ({
   __esModule: true,
-  registerEvent: jest.fn(),
+  // Must return a promise like the real (async) implementation —
+  // openInAppBrowser chains .catch() on it.
+  registerEvent: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://www.volksverpetzer.de",
+    feeds: {
+      wp: [
+        {
+          handle: "https://www.volksverpetzer.de",
+          label: "Artikel",
+          enabled: true,
+        },
+        {
+          handle: "https://www.pruefpunkt.org",
+          label: "Prüfpunkt Artikel",
+          enabled: true,
+        },
+      ],
+    },
   },
 }));
 
@@ -65,11 +93,14 @@ describe("Linking helpers", () => {
 
       // Assert
       expect(Linking.parse).toHaveBeenCalledWith(internalUrl);
-      expect(pushSpy).toHaveBeenCalledWith("/politik/some-article");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/politik/some-article",
+        params: { originalUrl: internalUrl },
+      });
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
-    it("should treat wp-content/uploads paths as external links", () => {
+    it("should open wp-content/uploads paths externally (browser tab, not the app)", () => {
       // Setup
       const uploadUrl =
         "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
@@ -97,7 +128,10 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: uploadUrl },
       );
-      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
+      // Opened in a Custom Tab (expo-web-browser), not Linking.openURL — the
+      // latter could re-trigger the app on Android < 31 and loop.
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
     it("should handle internal links without path", () => {
@@ -116,7 +150,34 @@ describe("Linking helpers", () => {
 
       // Assert
       expect(Linking.parse).toHaveBeenCalledWith(internalUrl);
-      expect(pushSpy).toHaveBeenCalledWith("www.volksverpetzer.de");
+      // A bare-domain internal link (no path) opens the app home rather than
+      // pushing the raw hostname as a route, which never matches.
+      expect(pushSpy).toHaveBeenCalledWith("/");
+      expect(Linking.openURL).not.toHaveBeenCalled();
+    });
+
+    it("should navigate to secondary WP (Prüfpunkt) internal links in-app", () => {
+      const pruefpunktUrl =
+        "https://www.pruefpunkt.org/faktencheck/some-article";
+      parseSpy.mockImplementation((url: string) => {
+        if (url === pruefpunktUrl) {
+          return {
+            hostname: "www.pruefpunkt.org",
+            path: "/faktencheck/some-article",
+          };
+        }
+        if (url === "https://www.pruefpunkt.org") {
+          return { hostname: "www.pruefpunkt.org", path: "" };
+        }
+        return { hostname: "www.volksverpetzer.de", path: "" };
+      });
+
+      onLinkPress(pruefpunktUrl, router);
+
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/faktencheck/some-article",
+        params: { originalUrl: pruefpunktUrl },
+      });
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
@@ -144,7 +205,7 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
-      expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(externalUrl);
     });
 
     it("should handle paths with trailing slashes", () => {
@@ -162,7 +223,10 @@ describe("Linking helpers", () => {
       onLinkPress(internalUrl, router);
 
       // Assert
-      expect(pushSpy).toHaveBeenCalledWith("/politik");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/politik",
+        params: { originalUrl: internalUrl },
+      });
     });
 
     it("should handle paths with leading slashes", () => {
@@ -180,7 +244,10 @@ describe("Linking helpers", () => {
       onLinkPress(internalUrl, router);
 
       // Assert
-      expect(pushSpy).toHaveBeenCalledWith("/politik");
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/politik",
+        params: { originalUrl: internalUrl },
+      });
     });
   });
 
@@ -243,13 +310,13 @@ describe("Linking helpers", () => {
   });
 
   describe("outBoundLinkPress", () => {
-    it("should open URL and register analytics event", () => {
+    it("should open URL and register analytics event", async () => {
       // Setup
       const externalUrl = "https://example.com";
       const articleContext = "https://www.volksverpetzer.de/article";
 
       // Execute
-      outBoundLinkPress(externalUrl, articleContext);
+      await outBoundLinkPress(externalUrl, articleContext);
 
       // Assert
       expect(registerEvent).toHaveBeenCalledWith(
@@ -257,15 +324,16 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
-      expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(externalUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
-    it("should handle missing article context", () => {
+    it("should handle missing article context", async () => {
       // Setup
       const externalUrl = "https://example.com";
 
       // Execute
-      outBoundLinkPress(externalUrl);
+      await outBoundLinkPress(externalUrl);
 
       // Assert
       expect(registerEvent).toHaveBeenCalledWith(
@@ -273,7 +341,108 @@ describe("Linking helpers", () => {
         "Outbound Link: Click",
         { url: externalUrl },
       );
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(externalUrl);
+    });
+
+    it("falls back to Linking.openURL when the browser tab fails", async () => {
+      const externalUrl = "https://example.com";
+      (
+        WebBrowser.openBrowserAsync as jest.MockedFunction<
+          typeof WebBrowser.openBrowserAsync
+        >
+      ).mockRejectedValueOnce(new Error("no browser"));
+
+      await outBoundLinkPress(externalUrl);
+
       expect(Linking.openURL).toHaveBeenCalledWith(externalUrl);
+    });
+  });
+
+  describe("openExternalDownload", () => {
+    it("opens the URL in a browser tab and registers analytics", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
+      const articleContext = "https://www.volksverpetzer.de/article";
+
+      await openExternalDownload(uploadUrl, articleContext);
+
+      expect(registerEvent).toHaveBeenCalledWith(
+        articleContext,
+        "Outbound Link: Click",
+        { url: uploadUrl },
+      );
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(uploadUrl);
+      expect(Linking.openURL).not.toHaveBeenCalled();
+    });
+
+    it("falls back to Linking.openURL when the browser tab fails", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/file.pdf";
+      (
+        WebBrowser.openBrowserAsync as jest.MockedFunction<
+          typeof WebBrowser.openBrowserAsync
+        >
+      ).mockRejectedValueOnce(new Error("no browser"));
+
+      await openExternalDownload(uploadUrl);
+
+      expect(Linking.openURL).toHaveBeenCalledWith(uploadUrl);
+    });
+
+    it("does not reject when both the browser and openURL fail", async () => {
+      const uploadUrl =
+        "https://www.volksverpetzer.de/wp-content/uploads/file.pdf";
+      (
+        WebBrowser.openBrowserAsync as jest.MockedFunction<
+          typeof WebBrowser.openBrowserAsync
+        >
+      ).mockRejectedValueOnce(new Error("no browser"));
+      (
+        Linking.openURL as jest.MockedFunction<typeof Linking.openURL>
+      ).mockRejectedValueOnce(new Error("no handler"));
+
+      // Fire-and-forget callers rely on this never rejecting.
+      await expect(openExternalDownload(uploadUrl)).resolves.toBeUndefined();
+    });
+  });
+
+  describe("isInternalUploadUrl", () => {
+    it("accepts https uploads URLs on our WordPress hosts", () => {
+      expect(
+        isInternalUploadUrl(
+          "https://www.volksverpetzer.de/wp-content/uploads/2024/11/file.pdf",
+        ),
+      ).toBe(true);
+      // www-insensitive + secondary feed host (pruefpunkt.org)
+      expect(
+        isInternalUploadUrl(
+          "https://pruefpunkt.org/wp-content/uploads/image.jpg",
+        ),
+      ).toBe(true);
+    });
+
+    it("rejects non-uploads paths on our hosts", () => {
+      expect(
+        isInternalUploadUrl("https://www.volksverpetzer.de/politik/some-slug/"),
+      ).toBe(false);
+    });
+
+    it("rejects foreign hosts even for an uploads path", () => {
+      expect(
+        isInternalUploadUrl("https://evil.com/wp-content/uploads/file.pdf"),
+      ).toBe(false);
+    });
+
+    it("rejects non-https schemes", () => {
+      expect(
+        isInternalUploadUrl(
+          "http://www.volksverpetzer.de/wp-content/uploads/file.pdf",
+        ),
+      ).toBe(false);
+    });
+
+    it("rejects unparseable input", () => {
+      expect(isInternalUploadUrl("not a url")).toBe(false);
     });
   });
 });

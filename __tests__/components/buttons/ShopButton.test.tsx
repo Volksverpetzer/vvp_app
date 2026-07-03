@@ -46,35 +46,37 @@ describe("ShopButton", () => {
     (Config as any).donations.shop = "https://shop.volksverpetzer.de";
   });
 
-  it("renders an accessible button when shop URL is configured", () => {
-    const { getByRole } = render(<ShopButton />);
+  it("renders an accessible button when shop URL is configured", async () => {
+    const { getByRole } = await render(<ShopButton />);
     expect(getByRole("button")).toBeTruthy();
   });
 
-  it("returns null when no shop URL is configured", () => {
+  it("returns null when no shop URL is configured", async () => {
     (Config as any).donations.shop = undefined;
-    const { queryByRole } = render(<ShopButton />);
+    const { queryByRole } = await render(<ShopButton />);
     expect(queryByRole("button")).toBeNull();
   });
 
-  it("opens the shop URL when pressed", () => {
-    const { getByRole } = render(<ShopButton />);
-    fireEvent.press(getByRole("button"));
+  it("opens the shop URL when pressed", async () => {
+    const { getByRole } = await render(<ShopButton />);
+    await fireEvent.press(getByRole("button"));
     expect(Linking.openURL).toHaveBeenCalledWith(
       "https://shop.volksverpetzer.de",
     );
   });
 
-  it("tracks analytics against article_link when provided", () => {
+  it("tracks analytics against article_link when provided", async () => {
     const articleLink = "https://www.volksverpetzer.de/artikel/test" as const;
-    const { getByRole } = render(<ShopButton article_link={articleLink} />);
-    fireEvent.press(getByRole("button"));
+    const { getByRole } = await render(
+      <ShopButton article_link={articleLink} />,
+    );
+    await fireEvent.press(getByRole("button"));
     expect(registerEvent).toHaveBeenCalledWith(articleLink, "Shop");
   });
 
-  it("falls back to wpUrl for analytics when article_link is omitted", () => {
-    const { getByRole } = render(<ShopButton />);
-    fireEvent.press(getByRole("button"));
+  it("falls back to wpUrl for analytics when article_link is omitted", async () => {
+    const { getByRole } = await render(<ShopButton />);
+    await fireEvent.press(getByRole("button"));
     expect(registerEvent).toHaveBeenCalledWith(
       "https://www.volksverpetzer.de",
       "Shop",

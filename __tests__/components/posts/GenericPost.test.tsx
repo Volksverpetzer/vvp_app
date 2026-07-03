@@ -32,8 +32,8 @@ const MockComponent = jest.fn(() => null) as React.FC<{ inView: boolean }>;
 describe("GenericPost", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("renders ShareBar when shareable prop is provided", () => {
-    const { getByTestId } = render(
+  it("renders ShareBar when shareable prop is provided", async () => {
+    const { getByTestId } = await render(
       <GenericPost
         component={MockComponent}
         data={{}}
@@ -44,8 +44,8 @@ describe("GenericPost", () => {
     expect(getByTestId("share-bar")).toBeTruthy();
   });
 
-  it("renders no ShareBar when shareable prop is not provided", () => {
-    const { queryByTestId } = render(
+  it("renders no ShareBar when shareable prop is not provided", async () => {
+    const { queryByTestId } = await render(
       <GenericPost component={MockComponent} data={{}} inView />,
     );
     expect(queryByTestId("share-bar")).toBeNull();

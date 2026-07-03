@@ -4,7 +4,15 @@ import { redirectSystemPath } from "#/app/+native-intent";
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: { wpUrl: "https://www.volksverpetzer.de" },
+  default: {
+    wpUrl: "https://www.volksverpetzer.de",
+    feeds: {
+      wp: [
+        { handle: "https://volksverpetzer.de", enabled: true },
+        { handle: "https://pruefpunkt.org", enabled: true },
+      ],
+    },
+  },
 }));
 
 jest.mock("#/helpers/DeepLinkFilter", () => ({
@@ -32,12 +40,20 @@ describe("redirectSystemPath", () => {
     ).toBe("/cat/slug/");
   });
 
-  it("returns undefined for excluded paths so the OS handles them", () => {
-    expect(
-      redirectSystemPath({
-        path: "https://volksverpetzer.de/wp-content/uploads/file.pdf",
-      }),
-    ).toBeUndefined();
+  it("routes excluded upload paths to the external-link screen so they open in the browser", () => {
+    const uploadUrl =
+      "https://volksverpetzer.de/wp-content/uploads/2024/11/file.pdf";
+    expect(redirectSystemPath({ path: uploadUrl })).toBe(
+      `/external-link?url=${encodeURIComponent(uploadUrl)}`,
+    );
+  });
+
+  it("routes a secondary-host (Prüfpunkt) upload path to the external-link screen too", () => {
+    const uploadUrl =
+      "https://www.pruefpunkt.org/wp-content/uploads/2024/11/file.pdf";
+    expect(redirectSystemPath({ path: uploadUrl })).toBe(
+      `/external-link?url=${encodeURIComponent(uploadUrl)}`,
+    );
   });
 
   it("passes through unrelated/relative paths unchanged", () => {
@@ -45,5 +61,21 @@ describe("redirectSystemPath", () => {
     expect(redirectSystemPath({ path: "https://example.com/x" })).toBe(
       "https://example.com/x",
     );
+  });
+
+  it("appends originalUrl for a secondary feed host so it fetches the right site", () => {
+    const result = redirectSystemPath({
+      path: "https://www.pruefpunkt.org/faktencheck/slug/",
+    });
+    expect(result).toBe(
+      "/faktencheck/slug/?originalUrl=" +
+        encodeURIComponent("https://www.pruefpunkt.org/faktencheck/slug/"),
+    );
+  });
+
+  it("does not append originalUrl for the primary site", () => {
+    expect(
+      redirectSystemPath({ path: "https://volksverpetzer.de/cat/slug/" }),
+    ).toBe("/cat/slug/");
   });
 });

@@ -14,8 +14,8 @@ function flattenStyle(style: unknown): Record<string, unknown> {
 }
 
 describe("UiDivider", () => {
-  it("renders correctly and applies padding/width/style props", () => {
-    const { toJSON } = render(
+  it("renders correctly and applies padding/width/style props", async () => {
+    const { toJSON } = await render(
       <UiDivider
         paddingHorizontal={12}
         thickness={4}
@@ -37,8 +37,8 @@ describe("UiDivider", () => {
     expect(lineStyle.height).toBe(4);
   });
 
-  it("matches snapshot", () => {
-    const { toJSON } = render(
+  it("matches snapshot", async () => {
+    const { toJSON } = await render(
       <UiDivider
         paddingHorizontal={12}
         thickness={4}

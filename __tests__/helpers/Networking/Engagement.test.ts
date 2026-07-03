@@ -44,7 +44,10 @@ describe("Engagement", () => {
 
   describe("getViews", () => {
     it("should return page views for a permalink", async () => {
-      parseSpy.mockReturnValue({ path: "/article" });
+      parseSpy.mockReturnValue({
+        path: "/article",
+        hostname: "www.volksverpetzer.de",
+      });
       getSpy.mockResolvedValue({ pageviews: 1234 });
 
       const result = await getViews("https://www.volksverpetzer.de/article");
@@ -54,9 +57,24 @@ describe("Engagement", () => {
       );
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/proxy/stats/article/",
+        "/proxy/stats/article/?site=volksverpetzer.de",
       );
       expect(result).toBe(1234);
+    });
+
+    it("should pass the pruefpunkt site for a pruefpunkt permalink", async () => {
+      parseSpy.mockReturnValue({
+        path: "/article",
+        hostname: "www.pruefpunkt.org",
+      });
+      getSpy.mockResolvedValue({ pageviews: 7 });
+
+      await getViews("https://www.pruefpunkt.org/article");
+
+      expect(getSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        "/proxy/stats/article/?site=pruefpunkt.org",
+      );
     });
 
     it("should handle missing permalink by using default wpUrl", async () => {
@@ -83,7 +101,10 @@ describe("Engagement", () => {
 
   describe("getShares", () => {
     it("should return share count for a permalink", async () => {
-      parseSpy.mockReturnValue({ path: "/article" });
+      parseSpy.mockReturnValue({
+        path: "/article",
+        hostname: "www.volksverpetzer.de",
+      });
       getSpy.mockResolvedValue({ events: 42 });
 
       const result = await getShares("https://www.volksverpetzer.de/article");
@@ -93,7 +114,7 @@ describe("Engagement", () => {
       );
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/proxy/shares/article/",
+        "/proxy/shares/article/?site=volksverpetzer.de",
       );
       expect(result).toBe(42);
     });
@@ -122,7 +143,10 @@ describe("Engagement", () => {
 
   describe("getFavs", () => {
     it("should return favorite count for a permalink", async () => {
-      parseSpy.mockReturnValue({ path: "/article" });
+      parseSpy.mockReturnValue({
+        path: "/article",
+        hostname: "www.volksverpetzer.de",
+      });
       getSpy.mockResolvedValue({ events: 15 });
 
       const result = await getFavs("https://www.volksverpetzer.de/article");
@@ -132,7 +156,7 @@ describe("Engagement", () => {
       );
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/proxy/favs/article/",
+        "/proxy/favs/article/?site=volksverpetzer.de",
       );
       expect(result).toBe(15);
     });
@@ -165,7 +189,10 @@ describe("Engagement", () => {
         { url: "https://example.com", visitors: 100 },
         { url: "https://another.com", visitors: 50 },
       ];
-      parseSpy.mockReturnValue({ path: "/article" });
+      parseSpy.mockReturnValue({
+        path: "/article",
+        hostname: "www.volksverpetzer.de",
+      });
       getSpy.mockResolvedValue({ links: expectedLinks });
 
       const result = await getLinks("https://www.volksverpetzer.de/article");
@@ -175,7 +202,7 @@ describe("Engagement", () => {
       );
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/proxy/links/article/",
+        "/proxy/links/article/?site=volksverpetzer.de",
       );
       expect(result).toEqual(expectedLinks);
     });

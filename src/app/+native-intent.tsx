@@ -1,6 +1,7 @@
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
-import { normalizeHost } from "#/helpers/utils/host";
+import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
+import { isSameHost } from "#/helpers/utils/host";
 
 export function redirectSystemPath({ path }: { path: string }) {
   const wpUrl = Config.wpUrl;
@@ -17,17 +18,35 @@ export function redirectSystemPath({ path }: { path: string }) {
 
   // 2. Option: the URL is from our registered url handler. Match on host
   // (ignoring a www. prefix) rather than a literal wpUrl prefix, so links
-  // arrive the same whether or not they carry www.
+  // arrive the same whether or not they carry www. Both the primary site and
+  // every configured WordPress feed (e.g. pruefpunkt.org) are registered.
   try {
     const parsedUrl = new URL(path);
-    const wpHost = new URL(wpUrl).hostname;
-    if (normalizeHost(parsedUrl.hostname) === normalizeHost(wpHost)) {
+    const isPrimary = isSameHost(parsedUrl.href, wpUrl);
+    const secondary = isPrimary
+      ? undefined
+      : findSecondaryWpFeed(parsedUrl.href, wpUrl, Config.feeds?.wp);
+    if (isPrimary || secondary) {
       const urlPath = parsedUrl.pathname + parsedUrl.search + parsedUrl.hash;
-      // Check if path should be excluded from deep linking
+      // Upload links (/wp-content/uploads/…) must not render in the app — they
+      // are files to download. On Android < 31 the manifest can't exclude them,
+      // so the OS still hands us the URL here; route to the external-link screen,
+      // which opens it in the browser and pops back. (On iOS, and Android 12+,
+      // the site-association / intent-filter exclude usually prevents the app
+      // from opening at all, so this is the fallback path.)
       if (shouldExcludeFromDeepLink(urlPath)) {
-        // Return undefined to prevent routing for excluded paths
-        // The app will not handle this path and it will be opened by OS
-        return undefined;
+        return `/external-link?url=${encodeURIComponent(parsedUrl.href)}`;
+      }
+      // Secondary-site links must carry originalUrl so the article route
+      // fetches from the right WordPress API; primary links use the default.
+      // Insert originalUrl into the query string (before any #hash) so
+      // expo-router parses it as a param rather than part of the fragment.
+      if (secondary) {
+        const originalUrlParam = `originalUrl=${encodeURIComponent(parsedUrl.href)}`;
+        const search = parsedUrl.search
+          ? `${parsedUrl.search}&${originalUrlParam}`
+          : `?${originalUrlParam}`;
+        return `${parsedUrl.pathname}${search}${parsedUrl.hash}`;
       }
       return urlPath;
     }

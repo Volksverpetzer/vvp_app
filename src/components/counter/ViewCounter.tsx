@@ -13,13 +13,20 @@ interface ViewCounterProperties {
   color?: ColorValue;
   style?: TextStyle;
   size?: number;
+  onLoad?: (count: number) => void;
 }
 
 /**
  * Renders View Counter for a given URL
  */
 const ViewCounter = (properties: ViewCounterProperties) => {
-  const { color: colorProp = "#fff", size = 24, style, url } = properties;
+  const {
+    color: colorProp = "#fff",
+    size = 24,
+    style,
+    url,
+    onLoad,
+  } = properties;
 
   const [isLoading, setLoading] = useState(true);
   const [views, setViews] = useState(0);
@@ -29,16 +36,26 @@ const ViewCounter = (properties: ViewCounterProperties) => {
     if (!Config.enableEngagement) return;
     let isCancelled = false;
     setLoading(true);
-    getViews(url).then((views) => {
-      if (isCancelled) return;
-      setViews(views);
-      setLoading(false);
-    });
+    getViews(url)
+      .then((views) => {
+        if (isCancelled) return;
+        setViews(views);
+        setLoading(false);
+        onLoad?.(views);
+      })
+      .catch(() => {
+        // Treat a failed fetch as 0 so the loader resolves and onLoad always
+        // fires — otherwise the badge would spin forever.
+        if (isCancelled) return;
+        setViews(0);
+        setLoading(false);
+        onLoad?.(0);
+      });
 
     return () => {
       isCancelled = true;
     };
-  }, [url]);
+  }, [url, onLoad]);
 
   if (!Config.enableEngagement) return null;
 

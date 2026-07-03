@@ -42,15 +42,15 @@ const Harness = ({ search }: { search: string }) => {
 describe("useAISearch — noResults", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("noResults is false while loading", () => {
+  it("noResults is false while loading", async () => {
     vectorSearch.mockReturnValue(new Promise(() => {}));
-    const { queryByTestId } = render(<Harness search="test" />);
+    const { queryByTestId } = await render(<Harness search="test" />);
     expect(queryByTestId("no-results")).toBeNull();
   });
 
   it("noResults becomes true when vectorSearch returns an empty array", async () => {
     vectorSearch.mockResolvedValue([] as AISearchResponse[]);
-    const { queryByTestId } = render(<Harness search="leer" />);
+    const { queryByTestId } = await render(<Harness search="leer" />);
     await waitFor(() => expect(queryByTestId("no-results")).not.toBeNull());
   });
 
@@ -58,7 +58,7 @@ describe("useAISearch — noResults", () => {
     vectorSearch.mockResolvedValue([
       { title: "Hit", text: "body", url: "https://example.com/1" },
     ]);
-    const { queryByTestId } = render(<Harness search="treffer" />);
+    const { queryByTestId } = await render(<Harness search="treffer" />);
     await waitFor(() => expect(queryByTestId("count").props.children).toBe(1));
     expect(queryByTestId("no-results")).toBeNull();
   });
@@ -68,11 +68,11 @@ describe("useAISearch — noResults", () => {
       .mockResolvedValueOnce([] as AISearchResponse[])
       .mockReturnValueOnce(new Promise(() => {}));
 
-    const { queryByTestId, rerender } = render(<Harness search="leer" />);
+    const { queryByTestId, rerender } = await render(<Harness search="leer" />);
     await waitFor(() => expect(queryByTestId("no-results")).not.toBeNull());
 
-    act(() => {
-      rerender(<Harness search="neu" />);
+    await act(async () => {
+      await rerender(<Harness search="neu" />);
     });
 
     expect(queryByTestId("no-results")).toBeNull();

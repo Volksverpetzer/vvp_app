@@ -1,8 +1,11 @@
 import * as Linking from "expo-linking";
 import type { Href, ImperativeRouter } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
+import { getInternalWpHosts } from "#/helpers/utils/feeds";
+import { normalizeHost } from "#/helpers/utils/host";
 import type { HttpsUrl } from "#/types";
 
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
@@ -28,35 +31,112 @@ const onLinkPress = (
   article_link?: string,
 ) => {
   const { hostname, path } = Linking.parse(href);
-  const { hostname: baseHostname } = Linking.parse(Config.wpUrl);
+  const internalHostnames = getInternalWpHosts(Config.wpUrl, Config.feeds?.wp);
+  const normalizedHostname = normalizeHost(hostname);
 
-  // Check if the path should be excluded from deep linking
-  if (hostname === baseHostname && shouldExcludeFromDeepLink(path)) {
-    // Treat excluded paths as external links
-    outBoundLinkPress(href, article_link);
+  if (
+    internalHostnames.includes(normalizedHostname) &&
+    shouldExcludeFromDeepLink(path)
+  ) {
+    openExternalDownload(href, article_link);
     return;
   }
 
-  if (hostname === baseHostname) {
+  if (internalHostnames.includes(normalizedHostname)) {
     if (path) {
       const cleanPath = path.replace(/^\//, "").replace(/\/$/, "");
-      router.push(`/${cleanPath}` as Href);
+      router.push({
+        pathname: `/${cleanPath}`,
+        params: { originalUrl: href },
+      } as unknown as Href);
       return;
     }
-    router.push(hostname as Href);
+    // Bare-domain internal link (no path) — open the app home instead of
+    // pushing the raw hostname as a route, which never matches.
+    router.push("/");
     return;
   }
   outBoundLinkPress(href, article_link);
 };
 
 /**
- * Opens an external URL and logs an analytics event.
+ * Opens `href` in an in-app browser tab (Chrome Custom Tab /
+ * SFSafariViewController) via expo-web-browser rather than `Linking.openURL`,
+ * and logs an analytics event.
+ *
+ * A Custom Tab never re-dispatches the URL back into an app that claims it as an
+ * App Link / Universal Link, so an outbound link can't loop back into our own
+ * app. This matters on Android ≤ 11 (API < 31), where the manifest's
+ * `pathAdvancedPattern` filters are ignored and our app claims every path on a
+ * deep-link host (e.g. volksverpetzer.de, pruefpunkt.org). Falls back to
+ * `openURL` — which also covers non-http schemes such as mailto: — if the
+ * browser call fails. Never rejects, so callers can safely fire-and-forget it.
+ * @param href - The URL to open.
+ * @param article_link - Optional article URL for analytics context.
+ */
+const openInAppBrowser = async (href: string, article_link?: string) => {
+  // Fire-and-forget; the catch keeps a failing analytics call from surfacing
+  // as an unhandled rejection (it can never block the link from opening).
+  registerEvent(article_link, "Outbound Link: Click", { url: href }).catch(
+    (error) => console.warn("Failed to register outbound click:", error),
+  );
+  try {
+    await WebBrowser.openBrowserAsync(href);
+  } catch {
+    try {
+      await Linking.openURL(href);
+    } catch (error) {
+      console.warn("Failed to open link:", href, error);
+    }
+  }
+};
+
+/**
+ * Opens an external (outbound) URL outside the app. See {@link openInAppBrowser}.
  * @param href - The outbound URL to open.
  * @param article_link - Optional article URL for analytics context.
  */
-const outBoundLinkPress = (href: HttpsUrl, article_link?: string) => {
-  registerEvent(article_link, "Outbound Link: Click", { url: href });
-  Linking.openURL(href);
+const outBoundLinkPress = (href: HttpsUrl, article_link?: string) =>
+  openInAppBrowser(href, article_link);
+
+/**
+ * Opens an upload/download URL (e.g. /wp-content/uploads/…) outside the app.
+ * See {@link openInAppBrowser}.
+ * @param href - The upload/download URL to open.
+ * @param article_link - Optional article URL for analytics context.
+ */
+const openExternalDownload = (href: HttpsUrl, article_link?: string) =>
+  openInAppBrowser(href, article_link);
+
+/**
+ * True when `href` is an https URL on one of our WordPress hosts pointing at a
+ * `/wp-content/uploads/` file — i.e. exactly the URLs the external-link screen
+ * is meant to open. Used to reject arbitrary URLs passed via the
+ * `/external-link?url=` deep link (open-redirect hardening). A `true` result
+ * also narrows `href` to `HttpsUrl`, since the scheme is checked here.
+ * @param href - The candidate URL.
+ */
+const isInternalUploadUrl = (href: string): href is HttpsUrl => {
+  try {
+    const parsed = new URL(href);
+    if (parsed.protocol !== "https:") return false;
+    const internalHostnames = getInternalWpHosts(
+      Config.wpUrl,
+      Config.feeds?.wp,
+    );
+    return (
+      internalHostnames.includes(normalizeHost(parsed.hostname)) &&
+      shouldExcludeFromDeepLink(parsed.pathname)
+    );
+  } catch {
+    return false;
+  }
 };
 
-export { onLinkPress, outBoundLinkPress, parsePath };
+export {
+  isInternalUploadUrl,
+  onLinkPress,
+  openExternalDownload,
+  outBoundLinkPress,
+  parsePath,
+};

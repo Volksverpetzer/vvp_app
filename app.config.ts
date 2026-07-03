@@ -24,6 +24,12 @@ const variableConfig = loadVariant(
 );
 const buildFossOnly = process.env.BUILD_FOSS_ONLY === "true";
 
+// Optional build label shown on the settings screen to mark non-production
+// store builds (e.g. "beta"). Set per profile via eas.json `env.BUILD_LABEL`
+// (the same mechanism as `APP`, and the only env that reaches EAS cloud build
+// workers). Production profiles set nothing, so production builds show no label.
+const buildLabel = process.env.BUILD_LABEL;
+
 const config = ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
@@ -96,6 +102,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       "expo-font",
       "expo-image",
       "expo-mail-composer",
+      "expo-status-bar",
       "expo-web-browser",
     ],
     updates: {
@@ -151,6 +158,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     extra: {
       ...variableConfig.extraConfig,
       isFoss: buildFossOnly,
+      ...(buildLabel && { buildLabel }),
       ...(buildFossOnly && { enableAnalytics: false }),
     },
     ...(buildFossOnly && {

@@ -45,7 +45,7 @@ describe("ShareCounter", () => {
         Promise.resolve(url === "https://example.com/one" ? 4 : 6),
       );
 
-    const { getByText } = render(
+    const { getByText } = await render(
       <ShareCounter
         shareable={shareable}
         shares={2}
@@ -64,8 +64,8 @@ describe("ShareCounter", () => {
     expect(getShares).toHaveBeenNthCalledWith(2, "https://example.com/two");
   });
 
-  it("skips fetching remote counts when the count is hidden", () => {
-    const { getByText } = render(
+  it("skips fetching remote counts when the count is hidden", async () => {
+    const { getByText } = await render(
       <ShareCounter shareable={shareable} shares={7} style={{}} hideCount />,
     );
 
@@ -76,21 +76,21 @@ describe("ShareCounter", () => {
     expect(getShares).not.toHaveBeenCalled();
   });
 
-  it("calls onPress from press and long press when interactive", () => {
+  it("calls onPress from press and long press when interactive", async () => {
     const onPress = jest.fn();
 
-    const { getByRole } = render(
+    const { getByRole } = await render(
       <ShareCounter shareable={shareable} style={{}} onPress={onPress} />,
     );
 
-    fireEvent.press(getByRole("button"));
-    fireEvent(getByRole("button"), "onLongPress");
+    await fireEvent.press(getByRole("button"));
+    await fireEvent(getByRole("button"), "onLongPress");
 
     expect(onPress).toHaveBeenCalledTimes(2);
   });
 
-  it("renders plain content without a button role when onPress is omitted", () => {
-    const { queryByRole, getByText } = render(
+  it("renders plain content without a button role when onPress is omitted", async () => {
+    const { queryByRole, getByText } = await render(
       <ShareCounter shareable={shareable} style={{}} />,
     );
 
@@ -98,10 +98,10 @@ describe("ShareCounter", () => {
     expect(getByText("share-icon:none:20")).toBeTruthy();
   });
 
-  it("renders an empty placeholder and skips engagement when disabled", () => {
+  it("renders an empty placeholder and skips engagement when disabled", async () => {
     mockConfig.enableEngagement = false;
 
-    const { queryByRole, queryByText } = render(
+    const { queryByRole, queryByText } = await render(
       <ShareCounter shareable={shareable} shares={3} style={{}} />,
     );
 

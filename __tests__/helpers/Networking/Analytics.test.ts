@@ -4,7 +4,10 @@ import * as Linking from "expo-linking";
 import { Platform } from "react-native";
 
 import Config from "#/constants/Config";
-import { registerEvent } from "#/helpers/network/Analytics";
+import {
+  registerEvent,
+  registerPostInteraction,
+} from "#/helpers/network/Analytics";
 import { registerFav, registerViews } from "#/helpers/network/Engagement";
 import * as Networking from "#/helpers/utils/networking";
 
@@ -66,19 +69,17 @@ describe("Analytics (Plausible)", () => {
       });
       postSpy.mockResolvedValue({ success: true });
 
-      await registerEvent(
-        "https://www.volksverpetzer.de/article",
-        "test_event",
-        { customProp: "value" },
-      );
+      await registerEvent("https://www.volksverpetzer.de/article", "FullRead", {
+        customProp: "value",
+      });
 
       expect(postSpy).toHaveBeenCalledWith(
         expect.anything(),
         "/api/event",
         expect.objectContaining({
-          name: "test_event",
+          name: "FullRead",
           url: expect.stringContaining("https://www.volksverpetzer.de/article"),
-          domain: "www.volksverpetzer.de",
+          domain: "volksverpetzer.de",
           props: expect.objectContaining({
             platform: Platform.OS,
             OSversion: Platform.Version,
@@ -90,13 +91,23 @@ describe("Analytics (Plausible)", () => {
       );
     });
 
+    it("should attribute the event to the pruefpunkt site for a pruefpunkt permalink", async () => {
+      parseSpy.mockReturnValue({ hostname: "www.pruefpunkt.org" });
+      postSpy.mockResolvedValue({ success: true });
+
+      await registerEvent("https://www.pruefpunkt.org/article", "FullRead");
+
+      const [, , body] = postSpy.mock.calls[0];
+      expect(body.domain).toBe("pruefpunkt.org");
+    });
+
     it("should include custom UTM parameters", async () => {
       parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
       postSpy.mockResolvedValue({ success: true });
 
       await registerEvent(
         "https://www.volksverpetzer.de/article",
-        "test_event",
+        "FullRead",
         {},
         "custom_campaign",
         "custom_source",
@@ -115,7 +126,7 @@ describe("Analytics (Plausible)", () => {
       const originalEnableAnalytics = Config.enableAnalytics;
       Config.enableAnalytics = false;
 
-      const result = await registerEvent("https://example.com", "event");
+      const result = await registerEvent("https://example.com", "FullRead");
 
       expect(postSpy).not.toHaveBeenCalled();
       expect(result).toBeUndefined();
@@ -129,7 +140,7 @@ describe("Analytics (Plausible)", () => {
       parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
       postSpy.mockResolvedValue({ success: true });
 
-      await registerEvent("https://example.com", "event");
+      await registerEvent("https://example.com", "FullRead");
 
       expect(postSpy).toHaveBeenCalled();
 
@@ -141,10 +152,7 @@ describe("Analytics (Plausible)", () => {
       const error = new Error("Network error");
       postSpy.mockRejectedValue(error);
 
-      await registerEvent(
-        "https://www.volksverpetzer.de/article",
-        "test_event",
-      );
+      await registerEvent("https://www.volksverpetzer.de/article", "FullRead");
 
       expect(consoleErrorSpy).toHaveBeenCalledWith(error);
     });
@@ -169,6 +177,60 @@ describe("Analytics (Plausible)", () => {
 
       const [, , body] = postSpy.mock.calls[0];
       expect(body.name).toBe("favorite");
+    });
+
+    it("registerPostInteraction should forward to registerEvent with platform/action props", async () => {
+      parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
+      postSpy.mockResolvedValue({ success: true });
+
+      await registerPostInteraction(
+        "https://youtu.be/abc123",
+        "youtube",
+        "play",
+      );
+
+      const [, , body] = postSpy.mock.calls[0];
+      expect(body.name).toBe("Post Interaction");
+      expect(body.props).toEqual(
+        expect.objectContaining({
+          post_platform: "youtube",
+          action: "play",
+          // OS platform prop must survive — not overwritten by post_platform
+          platform: Platform.OS,
+        }),
+      );
+    });
+  });
+
+  describe("type safety", () => {
+    it("rejects reserved prop keys and unknown event names at compile time", () => {
+      // Never executed — only type-checked by tsc. Each suppression directive
+      // below must catch a real error, or tsc fails with "unused directive".
+      const typeCheck = () => {
+        // @ts-expect-error reserved base prop must not be passed by callers
+        registerEvent("https://example.com", "FullRead", { platform: "x" });
+        // @ts-expect-error event name must be a member of AnalyticsEvent
+        registerEvent("https://example.com", "totally-made-up-event");
+      };
+      expect(typeof typeCheck).toBe("function");
+    });
+
+    it("does not let a widened record overwrite base props at runtime", async () => {
+      parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
+      postSpy.mockResolvedValue({ success: true });
+
+      // A widened Record slips past the EventProps type guard (as Sharing's
+      // `...properties` passthrough would). The spread ordering must still
+      // keep the OS platform value intact.
+      const widened: Record<string, unknown> = {
+        platform: "evil",
+        custom: "ok",
+      };
+      await registerEvent("https://example.com", "FullRead", widened);
+
+      const [, , body] = postSpy.mock.calls[0];
+      expect(body.props.platform).toBe(Platform.OS);
+      expect(body.props.custom).toBe("ok");
     });
   });
 });

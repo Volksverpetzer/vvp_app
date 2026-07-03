@@ -2,6 +2,7 @@ import cspellESLintPluginRecommended from "@cspell/eslint-plugin/recommended";
 import expoConfig from "eslint-config-expo/flat.js";
 import importAlias from "eslint-plugin-import-alias";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
 import { fileURLToPath } from "node:url";
@@ -12,6 +13,53 @@ export default defineConfig([
   expoConfig,
   cspellESLintPluginRecommended,
   eslintPluginPrettierRecommended,
+  {
+    // Cherry-picked unicorn rules — the recommended preset is too noisy for
+    // React Native (filename-case, no-null, prevent-abbreviations, prefer-module
+    // all fight RN conventions). We opt in to the correctness/modernization
+    // rules that carry their weight instead.
+    plugins: { unicorn: eslintPluginUnicorn },
+    rules: {
+      "unicorn/prefer-array-find": "error",
+      "unicorn/prefer-array-some": "error",
+      "unicorn/no-array-push-push": "error",
+      // checkArguments off: passing an explicit `undefined` argument is
+      // legitimate and readable (e.g. tests calling fn(undefined) or
+      // mockResolvedValue(undefined)). checkArrowFunctionBody off so
+      // `() => undefined` callbacks aren't rewritten. Keeps the rule focused
+      // on genuinely useless `undefined` (e.g. `return undefined`).
+      "unicorn/no-useless-undefined": [
+        "error",
+        { checkArguments: false, checkArrowFunctionBody: false },
+      ],
+      "unicorn/prefer-date-now": "error",
+      "unicorn/throw-new-error": "error",
+      "unicorn/error-message": "error",
+      "unicorn/no-instanceof-builtins": "error",
+      "unicorn/prefer-optional-catch-binding": "error",
+      "unicorn/prefer-string-slice": "error",
+      "unicorn/prefer-string-replace-all": "error",
+      // NOTE: prefer-node-protocol is intentionally omitted — Metro can't
+      // resolve the `node:` protocol for polyfilled builtins (e.g. node:buffer
+      // in src/hooks/useAISearch.ts), which breaks the bundle / EAS export.
+      "unicorn/prefer-set-has": "error",
+      "unicorn/no-useless-fallback-in-spread": "error",
+      "unicorn/no-useless-spread": "error",
+      "unicorn/consistent-existence-index-check": "error",
+      "unicorn/prefer-global-this": "error",
+    },
+  },
+  {
+    // The `import` plugin can't parse eslint-plugin-unicorn's dist (it uses
+    // import attributes / `with` syntax), producing false positives when this
+    // config file imports it. Disable those rules for the config file only.
+    files: ["eslint.config.mjs"],
+    rules: {
+      "import/namespace": "off",
+      "import/no-named-as-default": "off",
+      "import/no-named-as-default-member": "off",
+    },
+  },
   {
     ignores: [
       "**/pnpm-lock.yaml",

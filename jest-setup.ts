@@ -7,7 +7,7 @@ declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean;
 }
 
-global.IS_REACT_ACT_ENVIRONMENT = true;
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 jest.mock("react-native/Libraries/Interaction/InteractionManager", () => ({
   createInteractionHandle: jest.fn(),
@@ -29,6 +29,36 @@ jest.mock("expo-constants", () => ({
         enableActions: true,
         enableAnalytics: true,
         enableEngagement: true,
+        wpUrl: "https://www.volksverpetzer.de",
+        feeds: {
+          wp: [
+            {
+              handle: "https://www.volksverpetzer.de",
+              label: "Artikel",
+              enabled: true,
+            },
+            {
+              handle: "https://www.pruefpunkt.org",
+              label: "Prüfpunkt Artikel",
+              sourceName: "Prüfpunkt",
+              enabled: true,
+            },
+          ],
+          insta: [
+            {
+              handle: "volksverpetzer",
+              label: "Instagram Slides",
+              enabled: true,
+            },
+            {
+              handle: "pruefpunkt",
+              label: "Prüfpunkt Instagram",
+              enabled: true,
+            },
+          ],
+          yt: { enabled: true },
+          bsky: { handle: "volksverpetzer.de", enabled: true },
+        },
         colorScheme: {
           light: {
             text: "#111",
@@ -93,6 +123,11 @@ jest.mock("expo-device", () => ({
   isDevice: true,
 }));
 
+jest.mock("expo-web-browser", () => ({
+  __esModule: true,
+  openBrowserAsync: jest.fn(() => Promise.resolve({ type: "opened" })),
+}));
+
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
   useCorporateColor: jest.fn(() => "#1b7194"),
@@ -104,7 +139,7 @@ jest.mock("expo-application", () => ({
 }));
 
 jest.mock("expo/fetch", () => ({
-  fetch: (...args: unknown[]) => (global as any).fetch(...args),
+  fetch: (...args: unknown[]) => (globalThis as any).fetch(...args),
 }));
 
 const originalPlatform = Platform.OS;

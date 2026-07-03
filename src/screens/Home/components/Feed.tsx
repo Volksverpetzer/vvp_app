@@ -10,14 +10,17 @@ import type {
 import { FlatList, RefreshControl, View } from "react-native";
 
 import { SearchIcon, SettingsIcon, WorldIcon } from "#/components/Icons";
+import AnnouncementCard from "#/components/posts/AnnouncementCard";
 import GenericPost from "#/components/posts/GenericPost";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import EmptyComponent from "#/components/views/EmptyComponent";
+import Announcements from "#/constants/Announcements";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 import type { Post } from "#/types";
@@ -37,6 +40,8 @@ export interface FeedProperties {
   cutoffDate?: boolean;
   style?: ViewStyle;
   onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  /** Show the one-time in-feed announcement cards (see #/constants/Announcements). */
+  showAnnouncements?: boolean;
 }
 
 /**
@@ -57,6 +62,41 @@ const Feed = (properties: FeedProperties) => {
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
   const fetchControllerRef = useRef<AbortController | null>(null);
+  const [dismissedAnnouncements, setDismissedAnnouncements] = useState<
+    string[]
+  >([]);
+  const [dismissedLoaded, setDismissedLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!properties.showAnnouncements) return;
+    let cancelled = false;
+    PersonalStore.getDismissedAnnouncements().then((stored) => {
+      if (cancelled) return;
+      // Merge instead of replace: a dismissal made while this load was in
+      // flight must not be reverted by the (stale) stored value.
+      setDismissedAnnouncements((previous) => [
+        ...new Set([...previous, ...stored]),
+      ]);
+      setDismissedLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [properties.showAnnouncements]);
+
+  // Gate on dismissedLoaded so an already-dismissed announcement never flashes
+  // on first render before the stored dismissal state has been read.
+  const activeAnnouncement =
+    properties.showAnnouncements && dismissedLoaded
+      ? Announcements.find((a) => !dismissedAnnouncements.includes(a.id))
+      : undefined;
+
+  const dismissAnnouncement = useCallback((id: string) => {
+    setDismissedAnnouncements((previous) =>
+      previous.includes(id) ? previous : [...previous, id],
+    );
+    void PersonalStore.dismissAnnouncement(id);
+  }, []);
 
   const updateLoadingStates = useCallback(() => {
     setRefresh(false);
@@ -158,7 +198,7 @@ const Feed = (properties: FeedProperties) => {
   ]);
 
   const renderItem: ListRenderItem<Post<unknown>> = useCallback(({ item }) => {
-    if (typeof item.data !== "object") return undefined;
+    if (typeof item.data !== "object") return null;
     return (
       <GenericPost
         key={item.id}
@@ -227,6 +267,16 @@ const Feed = (properties: FeedProperties) => {
         extraData={rerender}
         renderItem={renderItem}
         onEndReached={posts.length > 0 ? onLoadMore : undefined}
+        // Rendered as header (not a data item) so ListEmptyComponent still
+        // appears when the feed itself is empty.
+        ListHeaderComponent={
+          activeAnnouncement && (
+            <AnnouncementCard
+              announcement={activeAnnouncement}
+              onDismiss={dismissAnnouncement}
+            />
+          )
+        }
         ListFooterComponent={
           posts.length > 0 &&
           (isLoadingMore ? (

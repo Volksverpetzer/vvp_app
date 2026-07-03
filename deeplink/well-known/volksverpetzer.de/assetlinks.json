@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "de.volksverpetzer.app",
+      "sha256_cert_fingerprints": [
+        "29:60:C3:E3:7C:C4:7F:9B:8A:09:BF:77:80:B5:19:2B:25:AC:ED:14:3B:26:BD:DE:F5:2A:E3:D0:98:31:E0:FA"
+      ]
+    }
+  }
+]

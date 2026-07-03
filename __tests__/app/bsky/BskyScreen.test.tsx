@@ -52,9 +52,9 @@ const makeMockPost = () => ({
 describe("BskyScreen", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("shows spinner while post is loading", () => {
+  it("shows spinner while post is loading", async () => {
     ContentStore.getStoredBskyPostById.mockReturnValue(new Promise(() => {}));
-    const { getByTestId } = render(<BskyScreen />);
+    const { getByTestId } = await render(<BskyScreen />);
     expect(getByTestId("spinner")).toBeTruthy();
   });
 
@@ -64,7 +64,7 @@ describe("BskyScreen", () => {
     );
     ContentStore.getStoredBskyPostById.mockResolvedValue(makeMockPost());
 
-    render(<BskyScreen />);
+    await render(<BskyScreen />);
 
     await waitFor(() => {
       expect(BlueskyPostDetail).toHaveBeenCalled();
@@ -74,7 +74,7 @@ describe("BskyScreen", () => {
   it("calls router.back() when post is not found", async () => {
     ContentStore.getStoredBskyPostById.mockResolvedValue(null);
 
-    render(<BskyScreen />);
+    await render(<BskyScreen />);
 
     await waitFor(() => {
       expect(mockRouterBack).toHaveBeenCalledTimes(1);

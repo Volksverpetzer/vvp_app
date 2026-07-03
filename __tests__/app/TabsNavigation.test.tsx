@@ -55,15 +55,15 @@ describe("TabsNavigation", () => {
     Config.enableEngagement = true;
   });
 
-  it("should hide personal tab when favorites are disabled", () => {
+  it("should hide personal tab when favorites are disabled", async () => {
     Config.enableEngagement = false;
-    render(<TabLayout />);
+    await render(<TabLayout />);
     expect(getPersonalTriggerProps()?.hidden).toBe(true);
   });
 
-  it("should show personal tab when favorites are enabled", () => {
+  it("should show personal tab when favorites are enabled", async () => {
     Config.enableEngagement = true;
-    render(<TabLayout />);
+    await render(<TabLayout />);
     expect(getPersonalTriggerProps()?.hidden).toBe(false);
   });
 });

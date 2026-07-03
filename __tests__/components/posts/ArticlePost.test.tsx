@@ -14,7 +14,7 @@ jest.mock("expo-router", () => ({
 
 jest.mock("#/components/counter/ViewCounter", () => ({
   __esModule: true,
-  default: () => null,
+  default: jest.fn(() => null),
 }));
 
 jest.mock("#/components/ui/UiSpinner", () => ({
@@ -83,8 +83,8 @@ describe("ArticlePost — reading time", () => {
     jest.clearAllMocks();
   });
 
-  it("shows reading time in the metadata line when reading_time is set", () => {
-    const { getByText } = render(
+  it("shows reading time in the metadata line when reading_time is set", async () => {
+    const { getByText } = await render(
       <ArticlePost
         article={{ ...baseArticle, reading_time: 12 }}
         inView={false}
@@ -93,8 +93,8 @@ describe("ArticlePost — reading time", () => {
     expect(getByText(/12 Min\./)).toBeTruthy();
   });
 
-  it("does not show reading time when reading_time is undefined", () => {
-    const { queryByText } = render(
+  it("does not show reading time when reading_time is undefined", async () => {
+    const { queryByText } = await render(
       <ArticlePost
         article={{ ...baseArticle, reading_time: undefined }}
         inView={false}
@@ -115,7 +115,7 @@ describe("ArticlePost — inView effects", () => {
     });
     PersonalStore.getScrollPosition.mockResolvedValue(0.5);
 
-    render(<ArticlePost article={baseArticle} inView={true} />);
+    await render(<ArticlePost article={baseArticle} inView={true} />);
 
     await waitFor(() =>
       expect(WordPressAPI.getFeatureImage).toHaveBeenCalled(),
@@ -134,7 +134,7 @@ describe("ArticlePost — inView effects", () => {
       .spyOn(console, "error")
       .mockImplementation(() => {});
 
-    render(<ArticlePost article={baseArticle} inView={true} />);
+    await render(<ArticlePost article={baseArticle} inView={true} />);
 
     await waitFor(() => expect(consoleSpy).toHaveBeenCalled());
     consoleSpy.mockRestore();
@@ -144,44 +144,57 @@ describe("ArticlePost — inView effects", () => {
 describe("ArticlePost — press handlers", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("calls onLinkPress when pressed", () => {
+  it("calls onLinkPress when pressed", async () => {
     const { onLinkPress } = require("#/helpers/Linking");
-    const { getByRole } = render(
+    const { getByRole } = await render(
       <ArticlePost article={baseArticle} inView={false} />,
     );
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
     expect(onLinkPress).toHaveBeenCalledWith(
       baseArticle.link,
       expect.anything(),
     );
   });
 
-  it("calls onShare on long press", () => {
+  it("calls onShare on long press", async () => {
     const { onShare } = require("#/helpers/Sharing");
-    const { getByRole } = render(
+    const { getByRole } = await render(
       <ArticlePost article={baseArticle} inView={false} />,
     );
-    fireEvent(getByRole("button"), "longPress");
+    await fireEvent(getByRole("button"), "longPress");
     expect(onShare).toHaveBeenCalledWith(baseArticle.link, expect.anything());
   });
 });
 
 describe("ArticlePost — elevated mode", () => {
-  it("wraps content in an elevated View when elevated is true", () => {
-    const { toJSON } = render(
+  it("wraps content in an elevated View when elevated is true", async () => {
+    const { toJSON } = await render(
       <ArticlePost article={baseArticle} inView={false} elevated={true} />,
     );
     expect(toJSON()).toBeTruthy();
   });
 });
 
+describe("ArticlePost — engagement badge", () => {
+  it("does not mount ViewCounter when enableEngagement is false", async () => {
+    // Config mock at the top of the file has enableEngagement: undefined (falsy),
+    // so the badge gate `Config.enableEngagement && ...` prevents ViewCounter from rendering.
+    const ViewCounter = require("#/components/counter/ViewCounter").default;
+    await render(<ArticlePost article={baseArticle} inView={true} />);
+    // ViewCounter is mocked to () => null; if the gate works it is still
+    // part of the tree but only when engagement is enabled. With the default
+    // mock config (no enableEngagement), the whole badge branch is skipped.
+    expect(ViewCounter).not.toHaveBeenCalled();
+  });
+});
+
 describe("ArticlePost — category badge", () => {
-  it("shows category label when importantCats has a match", () => {
+  it("shows category label when importantCats has a match", async () => {
     jest.mock("#/constants/Config", () => ({
       __esModule: true,
       default: { importantCats: { 5: "Faktisch falsch" } },
     }));
-    const { queryByText } = render(
+    const { queryByText } = await render(
       <ArticlePost
         article={{ ...baseArticle, categories: [5] }}
         inView={false}

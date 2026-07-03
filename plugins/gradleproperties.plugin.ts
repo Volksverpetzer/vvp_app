@@ -7,7 +7,7 @@ function setGradlePropertiesValue(config: any, key: string, value: string) {
       (item: any) => item.type === "property" && item.key === key,
     );
 
-    if (keyIdx >= 0) {
+    if (keyIdx !== -1) {
       exportedConfig.modResults.splice(keyIdx, 1, {
         type: "property",
         key,

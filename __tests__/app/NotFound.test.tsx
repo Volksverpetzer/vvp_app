@@ -33,13 +33,13 @@ jest.mock("#/constants/Colors", () => ({
 }));
 
 describe("NotFoundScreen", () => {
-  it("renders the 404 heading", () => {
-    const { getByTestId } = render(<NotFoundScreen />);
+  it("renders the 404 heading", async () => {
+    const { getByTestId } = await render(<NotFoundScreen />);
     expect(getByTestId("heading").props.children).toBe("404 Whoops!");
   });
 
-  it("renders the error message", () => {
-    const { getByTestId } = render(<NotFoundScreen />);
+  it("renders the error message", async () => {
+    const { getByTestId } = await render(<NotFoundScreen />);
     expect(getByTestId("empty-text").props.children).toBe(
       "Die angeforderte Seite konnte nicht gefunden werden.",
     );

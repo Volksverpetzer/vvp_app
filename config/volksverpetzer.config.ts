@@ -48,11 +48,11 @@ const extraConfig: ExtraConfigType = {
   instagramAppId: "1064021441903778",
   apiUrl: "https://volksverpetzer-app.de",
   aiUrl: "https://ai.volksverpetzer-app.de",
-  wpUrl: "https://www.volksverpetzer.de",
-  aboutUrl: "https://www.volksverpetzer.de/ueber-uns/",
+  wpUrl: "https://volksverpetzer.de",
+  aboutUrl: "https://volksverpetzer.de/ueber-uns/",
   sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
-  dataProtectionUrl: "https://www.volksverpetzer.de/datenschutzerklaerung/",
-  imprintUrl: "https://www.volksverpetzer.de/impressum-volksverpetzer/",
+  dataProtectionUrl: "https://volksverpetzer.de/datenschutzerklaerung/",
+  imprintUrl: "https://volksverpetzer.de/impressum-volksverpetzer/",
   eas: {
     projectId: "fd591077-fcb9-48ce-88d9-8bdff41c5564",
   },
@@ -67,7 +67,7 @@ const extraConfig: ExtraConfigType = {
     stripePublishableKey:
       "pk_live_51MAUglFricedKvSmI93lGEtbVgTLl3ng0X0CIKMacMDSmgSLtiRZYGDSTWLHvUuQHnONs4hvFUAfH5cmDkZ4wAvF00WDS1HasH", // cspell:disable-line
     steady: "https://steadyhq.com/volksverpetzer",
-    support: "https://www.volksverpetzer.de/unterstutzen/",
+    support: "https://volksverpetzer.de/unterstutzen/",
     paypal: "https://www.paypal.com/donate/?hosted_button_id=8LXQZGF3BDWVU",
     paypalEmail: "laschyk@volksverpetzer.de",
     paypalMatrix: [
@@ -99,8 +99,31 @@ const extraConfig: ExtraConfigType = {
   enableAnalytics: true,
   enableEngagement: true,
   feeds: {
-    wp: { enabled: true },
-    insta: { enabled: true },
+    wp: [
+      {
+        handle: "https://www.volksverpetzer.de",
+        label: "Artikel",
+        enabled: true,
+      },
+      {
+        handle: "https://pruefpunkt.org",
+        label: "Prüfpunkt Artikel",
+        sourceName: "Prüfpunkt",
+        enabled: true,
+      },
+    ],
+    insta: [
+      {
+        handle: "volksverpetzer",
+        label: "Instagram Slides",
+        enabled: true,
+      },
+      {
+        handle: "pruefpunkt",
+        label: "Prüfpunkt Instagram",
+        enabled: true,
+      },
+    ],
     yt: { enabled: true },
     bsky: { handle: "volksverpetzer.de", enabled: true },
   },
@@ -129,26 +152,44 @@ const packageName = "de.volksverpetzer.app";
 
 const googleServicesFile = process.env.google_services;
 
-// Both the www and apex hosts are registered so deep links resolve regardless
-// of which form the link uses (the site is moving off the www subdomain, but
-// previously shared links and the redirect still use www).
+// Only apex hosts are registered — www subdomains redirect to apex via Bunny CDN
+// at the edge, so the origin never serves www requests. Neither Google
+// (assetlinks.json) nor Apple (apple-app-site-association) follow CDN redirects
+// during domain verification, so the www domains can never be verified. When a
+// user taps a www link the browser opens it, follows the CDN redirect to the
+// apex URL, and the browser then triggers the verified apex App Link / Universal
+// Link — opening the app with one extra browser hop.
+//
+// Match only the app's deep-linkable shapes — a 1-segment page like
+// `/impressum-volksverpetzer/` (rendered in-app via the category webview) and a
+// 2-segment article `/{category}/{slug}` (route src/app/[category]/[slug].tsx),
+// each with an optional trailing slash. This deliberately does NOT match
+// `/wp-content/uploads/…` files (3+ segments), which should download in the
+// browser instead. Advanced glob has no grouping, so the 1- and 2-segment cases
+// are two separate patterns.
+//
+// `pathAdvancedPattern` is honored on Android 12+ (API 31); on older versions it
+// is ignored and the filter falls back to matching all paths, where the in-app
+// fallback (src/app/external-link.tsx) opens uploads externally instead.
+const ARTICLE_PATH_PATTERNS = [
+  "/[^/]+/{0,1}", // 1 segment, e.g. /impressum-volksverpetzer/
+  "/[^/]+/[^/]+/{0,1}", // 2 segments, e.g. /aktuelles/slug/
+];
+
+const DEEP_LINK_HOSTS = ["volksverpetzer.de", "pruefpunkt.org"];
+
 const AndroidIntentFilters: ExpoConfig["android"]["intentFilters"][number]["data"] =
-  [
-    {
+  DEEP_LINK_HOSTS.flatMap((host) =>
+    ARTICLE_PATH_PATTERNS.map((pathAdvancedPattern) => ({
       scheme: "https",
-      host: "www.volksverpetzer.de",
-      pathPattern: "/.*/.*",
-    },
-    {
-      scheme: "https",
-      host: "volksverpetzer.de",
-      pathPattern: "/.*/.*",
-    },
-  ];
+      host,
+      pathAdvancedPattern,
+    })),
+  );
 
 const iOSAssociatedDomains = [
-  "applinks:www.volksverpetzer.de",
   "applinks:volksverpetzer.de",
+  "applinks:pruefpunkt.org",
 ];
 
 const config = {

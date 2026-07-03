@@ -194,7 +194,7 @@ const multishare = async (
         type: "share",
         position: "bottom",
         autoHide: false,
-        onHide: () => undefined,
+        onHide: () => {},
         props: {
           items: shareable.map((item) => ({
             title: item.title,

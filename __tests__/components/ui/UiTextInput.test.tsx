@@ -26,23 +26,23 @@ describe("TextInput", () => {
     jest.mocked(useAppColorScheme).mockReturnValue("light");
   });
 
-  it("renders with light theme colors", () => {
-    const { getByTestId } = render(<UiTextInput testID="input" />);
+  it("renders with light theme colors", async () => {
+    const { getByTestId } = await render(<UiTextInput testID="input" />);
     const style = flatStyle(getByTestId("input").props.style);
     expect(style.backgroundColor).toBe("#BADDE8");
     expect(style.color).toBe("#111");
   });
 
-  it("renders with dark theme colors", () => {
+  it("renders with dark theme colors", async () => {
     jest.mocked(useAppColorScheme).mockReturnValue("dark");
-    const { getByTestId } = render(<UiTextInput testID="input" />);
+    const { getByTestId } = await render(<UiTextInput testID="input" />);
     const style = flatStyle(getByTestId("input").props.style);
     expect(style.backgroundColor).toBe("#777");
     expect(style.color).toBe("#F7F7F7");
   });
 
-  it("merges additional style props", () => {
-    const { getByTestId } = render(
+  it("merges additional style props", async () => {
+    const { getByTestId } = await render(
       <UiTextInput testID="input" style={{ borderWidth: 1 }} />,
     );
     const style = flatStyle(getByTestId("input").props.style);
@@ -50,8 +50,8 @@ describe("TextInput", () => {
     expect(style.backgroundColor).toBe("#BADDE8");
   });
 
-  it("passes through other props", () => {
-    const { getByTestId } = render(
+  it("passes through other props", async () => {
+    const { getByTestId } = await render(
       <UiTextInput testID="input" placeholder="Search..." editable={false} />,
     );
     const input = getByTestId("input");

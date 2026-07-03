@@ -118,6 +118,124 @@ describe("WordPressAPI", () => {
       expect(thumb).toBe("thumb");
       spy.mockRestore();
     });
+
+    it("falls back to source_url when no intermediate sizes exist", async () => {
+      // Prüfpunkt's WordPress returns an empty `sizes` object; only the
+      // full-size original is available via the top-level source_url.
+      const spy = jest.spyOn(Networking, "get").mockResolvedValue({
+        source_url: "https://pruefpunkt.org/wp-content/uploads/full.png",
+        media_details: { sizes: {} },
+      } as any);
+      const { image, thumb } = await WordPressAPI.getFeatureImage("href");
+      expect(image).toBe("https://pruefpunkt.org/wp-content/uploads/full.png");
+      expect(thumb).toBe("https://pruefpunkt.org/wp-content/uploads/full.png");
+      spy.mockRestore();
+    });
+  });
+
+  describe("create", () => {
+    it("calls createClient with the given URL", () => {
+      const spy = jest.spyOn(Networking, "createClient");
+      WordPressAPI.create("https://www.pruefpunkt.org");
+      expect(spy).toHaveBeenCalledWith("https://www.pruefpunkt.org");
+      spy.mockRestore();
+    });
+
+    it("getPosts calls networking.get with correct params", async () => {
+      const mockTimestamp = 1_234_567_890;
+      const nowSpy = jest.spyOn(Date, "now").mockReturnValue(mockTimestamp);
+      const spy = jest
+        .spyOn(Networking, "get")
+        .mockResolvedValue([{ id: 1 }] as any);
+
+      const api = WordPressAPI.create("https://www.pruefpunkt.org");
+      const result = await api.getPosts(3);
+
+      expect(spy).toHaveBeenCalledWith(
+        expect.anything(),
+        `/wp-json/wp/v2/posts`,
+        expect.objectContaining({
+          params: expect.objectContaining({
+            per_page: 10,
+            page: 3,
+            orderby: "date",
+            order: "desc",
+            _: mockTimestamp,
+            _embed: "author",
+          }),
+          headers: expect.objectContaining({
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          }),
+        }),
+      );
+      expect(result).toEqual([{ id: 1 }]);
+
+      nowSpy.mockRestore();
+      spy.mockRestore();
+    });
+
+    it("getPosts defaults to page 1", async () => {
+      const spy = jest.spyOn(Networking, "get").mockResolvedValue([] as any);
+
+      const api = WordPressAPI.create("https://www.pruefpunkt.org");
+      await api.getPosts();
+
+      expect(spy).toHaveBeenCalledWith(
+        expect.anything(),
+        `/wp-json/wp/v2/posts`,
+        expect.objectContaining({
+          params: expect.objectContaining({ page: 1 }),
+        }),
+      );
+      spy.mockRestore();
+    });
+
+    it("searchPosts calls networking.get with correct params", async () => {
+      const spy = jest
+        .spyOn(Networking, "get")
+        .mockResolvedValue([{ id: 2 }] as any);
+
+      const api = WordPressAPI.create("https://www.pruefpunkt.org");
+      const result = await api.searchPosts("faktencheck");
+
+      expect(spy).toHaveBeenCalledWith(
+        expect.anything(),
+        `/wp-json/wp/v2/posts`,
+        {
+          params: {
+            orderby: "relevance",
+            search: "faktencheck",
+            page: 1,
+            _embed: "author",
+          },
+        },
+      );
+      expect(result).toEqual([{ id: 2 }]);
+      spy.mockRestore();
+    });
+
+    it("searchPosts accepts a custom page number", async () => {
+      const spy = jest.spyOn(Networking, "get").mockResolvedValue([] as any);
+
+      const api = WordPressAPI.create("https://www.pruefpunkt.org");
+      await api.searchPosts("foo", 5);
+
+      expect(spy).toHaveBeenCalledWith(
+        expect.anything(),
+        `/wp-json/wp/v2/posts`,
+        {
+          params: {
+            orderby: "relevance",
+            search: "foo",
+            page: 5,
+            _embed: "author",
+          },
+        },
+      );
+      spy.mockRestore();
+    });
   });
 
   describe("convertLoadProps", () => {

@@ -1,6 +1,7 @@
 import type { HttpsUrl } from "#/types/config";
 
 export interface MediaResponse {
+  source_url?: string;
   media_details?: {
     sizes?: {
       medium_large?: { source_url: string };

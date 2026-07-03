@@ -262,6 +262,7 @@ const SettingsScreen = () => {
             Versionskennung: {Application.nativeApplicationVersion}
             &nbsp;-&nbsp;
             {Application.nativeBuildVersion}
+            {Config.buildLabel && ` - ${Config.buildLabel}`}
             {Config.isFoss && " - FOSS"}
             {!Config.isFoss && `\nToken: ${token}`}
           </UiText>
