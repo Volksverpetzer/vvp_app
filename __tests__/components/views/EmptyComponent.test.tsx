@@ -74,10 +74,11 @@ describe("EmptyComponent", () => {
     expect(getByTestId("slot-content")).toBeTruthy();
   });
 
-  it("renders without children", () => {
-    expect(
-      async () => await render(<EmptyComponent text="text" icon={<Icon />} />),
-    ).not.toThrow();
+  it("renders without children", async () => {
+    const { getByTestId } = await render(
+      <EmptyComponent text="text" icon={<Icon />} />,
+    );
+    expect(getByTestId("card")).toBeTruthy();
   });
 
   it("forwards onPress to the empty state", async () => {
