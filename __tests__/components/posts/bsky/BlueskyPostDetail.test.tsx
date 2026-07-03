@@ -56,25 +56,25 @@ describe("BlueskyPostDetail", () => {
     jest.clearAllMocks();
   });
 
-  it("renders the post text content", () => {
-    const { getByText } = render(
+  it("renders the post text content", async () => {
+    const { getByText } = await render(
       <BlueskyPostDetail post={makeFeedPost("Hello test post")} />,
     );
     expect(getByText("Hello test post")).toBeTruthy();
   });
 
-  it("renders the external link button with the correct accessibility label", () => {
-    const { getByRole } = render(
+  it("renders the external link button with the correct accessibility label", async () => {
+    const { getByRole } = await render(
       <BlueskyPostDetail post={makeFeedPost("Some text")} />,
     );
     expect(getByRole("button", { name: "In Bluesky öffnen" })).toBeTruthy();
   });
 
-  it("pressing the external link button calls onLinkPress with the Bluesky post URL", () => {
-    const { getByRole } = render(
+  it("pressing the external link button calls onLinkPress with the Bluesky post URL", async () => {
+    const { getByRole } = await render(
       <BlueskyPostDetail post={makeFeedPost("Some text")} />,
     );
-    fireEvent.press(getByRole("button", { name: "In Bluesky öffnen" }));
+    await fireEvent.press(getByRole("button", { name: "In Bluesky öffnen" }));
     expect(onLinkPress).toHaveBeenCalledTimes(1);
     expect(onLinkPress).toHaveBeenCalledWith(
       "https://bsky.app/profile/tester.bsky.social/post/abc123",
@@ -83,14 +83,14 @@ describe("BlueskyPostDetail", () => {
     );
   });
 
-  it("renders a PostText for each reply when replies are provided", () => {
+  it("renders a PostText for each reply when replies are provided", async () => {
     const { PostText } = jest.requireMock(
       "#/components/posts/bsky/PostText",
     ) as { PostText: jest.Mock };
     const reply1 = makeFeedPost("Reply one", "reply1");
     const reply2 = makeFeedPost("Reply two", "reply2");
 
-    render(
+    await render(
       <BlueskyPostDetail
         post={makeFeedPost("Main post")}
         replies={[reply1, reply2]}
@@ -107,22 +107,24 @@ describe("BlueskyPostDetail", () => {
     );
   });
 
-  it("renders no PostText when replies is not provided", () => {
+  it("renders no PostText when replies is not provided", async () => {
     const { PostText } = jest.requireMock(
       "#/components/posts/bsky/PostText",
     ) as { PostText: jest.Mock };
 
-    render(<BlueskyPostDetail post={makeFeedPost("Main post")} />);
+    await render(<BlueskyPostDetail post={makeFeedPost("Main post")} />);
 
     expect(PostText).not.toHaveBeenCalled();
   });
 
-  it("renders no PostText when replies is an empty array", () => {
+  it("renders no PostText when replies is an empty array", async () => {
     const { PostText } = jest.requireMock(
       "#/components/posts/bsky/PostText",
     ) as { PostText: jest.Mock };
 
-    render(<BlueskyPostDetail post={makeFeedPost("Main post")} replies={[]} />);
+    await render(
+      <BlueskyPostDetail post={makeFeedPost("Main post")} replies={[]} />,
+    );
 
     expect(PostText).not.toHaveBeenCalled();
   });

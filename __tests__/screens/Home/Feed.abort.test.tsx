@@ -77,7 +77,7 @@ describe("Feed AbortController behavior", () => {
       .mockImplementationOnce(() => d2.promise);
 
     const fetcher = jest.fn(() => Promise.resolve([]));
-    const { rerender, unmount } = render(
+    const { rerender, unmount } = await render(
       <Feed fetchers={[{ fetcher, props: {} }]} />,
     );
 
@@ -86,7 +86,7 @@ describe("Feed AbortController behavior", () => {
       fetchAndProcessPosts.mock.calls[0][1] as { signal: AbortSignal }
     ).signal;
 
-    rerender(
+    await rerender(
       <Feed
         fetchers={[
           { fetcher, props: {} },
@@ -104,7 +104,7 @@ describe("Feed AbortController behavior", () => {
     expect(firstSignal.aborted).toBe(true);
     expect(secondSignal.aborted).toBe(false);
 
-    unmount();
+    await unmount();
 
     await act(async () => {
       d1.resolve([]);

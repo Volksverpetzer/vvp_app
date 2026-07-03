@@ -43,30 +43,30 @@ jest.mock("#/components/Icons", () => {
 const Icon = () => <Text testID="custom-icon">icon</Text>;
 
 describe("EmptyComponent", () => {
-  it("renders the text", () => {
-    const { getByText } = render(
+  it("renders the text", async () => {
+    const { getByText } = await render(
       <EmptyComponent text="Nichts gefunden" icon={<Icon />} />,
     );
     expect(getByText("Nichts gefunden")).toBeTruthy();
   });
 
-  it("renders the icon", () => {
-    const { getByTestId } = render(
+  it("renders the icon", async () => {
+    const { getByTestId } = await render(
       <EmptyComponent text="Nichts gefunden" icon={<Icon />} />,
     );
     expect(getByTestId("custom-icon")).toBeTruthy();
   });
 
-  it("always renders the donate card", () => {
-    const { getByTestId, getByTestId: g } = render(
+  it("always renders the donate card", async () => {
+    const { getByTestId, getByTestId: g } = await render(
       <EmptyComponent text="text" icon={<Icon />} />,
     );
     expect(getByTestId("card")).toBeTruthy();
     expect(g("heart-icon")).toBeTruthy();
   });
 
-  it("renders children between the empty state and the donate card", () => {
-    const { getByTestId } = render(
+  it("renders children between the empty state and the donate card", async () => {
+    const { getByTestId } = await render(
       <EmptyComponent text="text" icon={<Icon />}>
         <Text testID="slot-content">between</Text>
       </EmptyComponent>,
@@ -75,17 +75,17 @@ describe("EmptyComponent", () => {
   });
 
   it("renders without children", () => {
-    expect(() =>
-      render(<EmptyComponent text="text" icon={<Icon />} />),
+    expect(
+      async () => await render(<EmptyComponent text="text" icon={<Icon />} />),
     ).not.toThrow();
   });
 
-  it("forwards onPress to the empty state", () => {
+  it("forwards onPress to the empty state", async () => {
     const onPress = jest.fn();
-    const { getByRole } = render(
+    const { getByRole } = await render(
       <EmptyComponent text="text" icon={<Icon />} onPress={onPress} />,
     );
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 });

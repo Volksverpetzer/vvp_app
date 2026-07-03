@@ -67,9 +67,11 @@ describe("useAISearch AbortController behavior", () => {
         return d2.promise;
       });
 
-    const { rerender, getByTestId } = render(<HookHarness search="first" />);
+    const { rerender, getByTestId } = await render(
+      <HookHarness search="first" />,
+    );
 
-    rerender(<HookHarness search="second" />);
+    await rerender(<HookHarness search="second" />);
 
     await waitFor(() => expect(vectorSearch).toHaveBeenCalledTimes(2));
     const firstSignal = vectorSearch.mock.calls[0][1] as AbortSignal;

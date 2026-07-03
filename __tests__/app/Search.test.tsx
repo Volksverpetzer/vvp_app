@@ -106,89 +106,89 @@ describe("SearchScreen", () => {
   beforeEach(() => jest.clearAllMocks());
 
   describe("default state (Artikel tab)", () => {
-    it("shows the Artikel tab tutorial on initial render", () => {
-      const { queryByTestId } = render(<SearchScreen />);
+    it("shows the Artikel tab tutorial on initial render", async () => {
+      const { queryByTestId } = await render(<SearchScreen />);
       expect(queryByTestId("tutorial-artikel")).not.toBeNull();
       expect(queryByTestId("tutorial-ai")).toBeNull();
     });
 
-    it("does not show FaktenBot header on initial render", () => {
-      const { queryByTestId } = render(<SearchScreen />);
+    it("does not show FaktenBot header on initial render", async () => {
+      const { queryByTestId } = await render(<SearchScreen />);
       expect(queryByTestId("faktenbot-active")).toBeNull();
     });
 
-    it("typing alone does not show results", () => {
-      const { getByTestId, queryByTestId } = render(<SearchScreen />);
-      fireEvent.changeText(getByTestId("search-input"), "corona");
+    it("typing alone does not show results", async () => {
+      const { getByTestId, queryByTestId } = await render(<SearchScreen />);
+      await fireEvent.changeText(getByTestId("search-input"), "corona");
       expect(queryByTestId("algolia-results")).toBeNull();
       expect(queryByTestId("tutorial-artikel")).not.toBeNull();
     });
 
-    it("shows Algolia results after submitting a 2+ character search", () => {
-      const { getByTestId, queryByTestId } = render(<SearchScreen />);
-      fireEvent.changeText(getByTestId("search-input"), "co");
-      fireEvent(getByTestId("search-input"), "submitEditing");
+    it("shows Algolia results after submitting a 2+ character search", async () => {
+      const { getByTestId, queryByTestId } = await render(<SearchScreen />);
+      await fireEvent.changeText(getByTestId("search-input"), "co");
+      await fireEvent(getByTestId("search-input"), "submitEditing");
       expect(queryByTestId("algolia-results")).not.toBeNull();
       expect(queryByTestId("tutorial-artikel")).toBeNull();
     });
 
-    it("passes the submitted search string to AlgoliaSearchResults", () => {
-      const { getByTestId } = render(<SearchScreen />);
-      fireEvent.changeText(getByTestId("search-input"), "corona");
-      fireEvent(getByTestId("search-input"), "submitEditing");
+    it("passes the submitted search string to AlgoliaSearchResults", async () => {
+      const { getByTestId } = await render(<SearchScreen />);
+      await fireEvent.changeText(getByTestId("search-input"), "corona");
+      await fireEvent(getByTestId("search-input"), "submitEditing");
       expect(getByTestId("algolia-results").props.children).toBe("corona");
     });
   });
 
   describe("tab switching", () => {
-    it("switches to AI tab when pressing KI-Faktenbot button", () => {
-      const { getByRole, queryByTestId } = render(<SearchScreen />);
-      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
+    it("switches to AI tab when pressing KI-Faktenbot button", async () => {
+      const { getByRole, queryByTestId } = await render(<SearchScreen />);
+      await fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
       expect(queryByTestId("tutorial-ai")).not.toBeNull();
       expect(queryByTestId("tutorial-artikel")).toBeNull();
     });
 
-    it("activates FaktenBot header when on AI tab", () => {
-      const { getByRole, queryByTestId } = render(<SearchScreen />);
-      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
+    it("activates FaktenBot header when on AI tab", async () => {
+      const { getByRole, queryByTestId } = await render(<SearchScreen />);
+      await fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
       expect(queryByTestId("faktenbot-active")).not.toBeNull();
     });
 
-    it("switches back to Artikel tab", () => {
-      const { getByRole, queryByTestId } = render(<SearchScreen />);
-      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
-      fireEvent.press(getByRole("tab", { name: "Artikel" }));
+    it("switches back to Artikel tab", async () => {
+      const { getByRole, queryByTestId } = await render(<SearchScreen />);
+      await fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
+      await fireEvent.press(getByRole("tab", { name: "Artikel" }));
       expect(queryByTestId("tutorial-artikel")).not.toBeNull();
       expect(queryByTestId("tutorial-ai")).toBeNull();
     });
   });
 
   describe("AI tab", () => {
-    it("typing alone does not trigger AI search", () => {
-      const { getByTestId, getByRole, queryByTestId } = render(
+    it("typing alone does not trigger AI search", async () => {
+      const { getByTestId, getByRole, queryByTestId } = await render(
         <SearchScreen />,
       );
-      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
-      fireEvent.changeText(getByTestId("search-input"), "corona");
+      await fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
+      await fireEvent.changeText(getByTestId("search-input"), "corona");
       expect(queryByTestId("ai-results")).toBeNull();
       expect(queryByTestId("tutorial-ai")).not.toBeNull();
     });
 
-    it("shows AI results after submitting", () => {
-      const { getByTestId, getByRole, queryByTestId } = render(
+    it("shows AI results after submitting", async () => {
+      const { getByTestId, getByRole, queryByTestId } = await render(
         <SearchScreen />,
       );
-      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
-      fireEvent.changeText(getByTestId("search-input"), "corona");
-      fireEvent(getByTestId("search-input"), "submitEditing");
+      await fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
+      await fireEvent.changeText(getByTestId("search-input"), "corona");
+      await fireEvent(getByTestId("search-input"), "submitEditing");
       expect(queryByTestId("ai-results")).not.toBeNull();
     });
 
-    it("passes the submitted string to AISearch", () => {
-      const { getByTestId, getByRole } = render(<SearchScreen />);
-      fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
-      fireEvent.changeText(getByTestId("search-input"), "corona");
-      fireEvent(getByTestId("search-input"), "submitEditing");
+    it("passes the submitted string to AISearch", async () => {
+      const { getByTestId, getByRole } = await render(<SearchScreen />);
+      await fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
+      await fireEvent.changeText(getByTestId("search-input"), "corona");
+      await fireEvent(getByTestId("search-input"), "submitEditing");
       expect(getByTestId("ai-results").props.children).toBe("corona");
     });
   });

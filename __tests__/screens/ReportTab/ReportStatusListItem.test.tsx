@@ -38,7 +38,7 @@ describe("ReportStatusListItem", () => {
       status: "pending",
     });
 
-    const { getByText } = render(<ReportStatusListItem id="abc-123" />);
+    const { getByText } = await render(<ReportStatusListItem id="abc-123" />);
 
     await waitFor(() => expect(getReportStatus).toHaveBeenCalled());
     expect(getByText("abc-123")).toBeTruthy();
@@ -47,7 +47,7 @@ describe("ReportStatusListItem", () => {
   it("passes the signal to getReportStatus", async () => {
     (getReportStatus as jest.Mock<any>).mockResolvedValue({ status: "posted" });
 
-    render(<ReportStatusListItem id="rep-1" />);
+    await render(<ReportStatusListItem id="rep-1" />);
 
     await waitFor(() => expect(getReportStatus).toHaveBeenCalledTimes(1));
 
@@ -64,14 +64,14 @@ describe("ReportStatusListItem", () => {
     });
     getReportStatus.mockReturnValue(pending);
 
-    const { unmount } = render(<ReportStatusListItem id="rep-2" />);
+    const { unmount } = await render(<ReportStatusListItem id="rep-2" />);
 
     await waitFor(() => expect(getReportStatus).toHaveBeenCalledTimes(1));
 
     const signal = (getReportStatus.mock.calls[0] as [string, AbortSignal])[1];
     expect(signal.aborted).toBe(false);
 
-    unmount();
+    await unmount();
     expect(signal.aborted).toBe(true);
 
     await act(() => {
@@ -89,10 +89,10 @@ describe("ReportStatusListItem", () => {
       .spyOn(console, "error")
       .mockImplementation(() => {});
 
-    const { unmount } = render(<ReportStatusListItem id="rep-3" />);
+    const { unmount } = await render(<ReportStatusListItem id="rep-3" />);
     await waitFor(() => expect(getReportStatus).toHaveBeenCalled());
 
-    unmount();
+    await unmount();
 
     await act(() => {
       resolve({ status: "posted" });
@@ -110,7 +110,7 @@ describe("ReportStatusListItem", () => {
       .spyOn(console, "error")
       .mockImplementation(() => {});
 
-    render(<ReportStatusListItem id="rep-4" />);
+    await render(<ReportStatusListItem id="rep-4" />);
 
     await waitFor(() => expect(getReportStatus).toHaveBeenCalled());
     consoleError.mockRestore();

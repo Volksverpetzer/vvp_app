@@ -95,8 +95,8 @@ describe("BackupView", () => {
   });
 
   describe("rendering", () => {
-    it("shows export and import rows", () => {
-      const { getByText } = render(<BackupView />);
+    it("shows export and import rows", async () => {
+      const { getByText } = await render(<BackupView />);
       expect(getByText("Sammlung exportieren")).toBeTruthy();
       expect(getByText("Sammlung importieren")).toBeTruthy();
     });
@@ -111,8 +111,8 @@ describe("BackupView", () => {
         "https://example.com": { slug: "example" },
       } as any);
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung exportieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung exportieren"));
 
       await waitFor(() => {
         expect(FavoritesStore.getAllFavorites).toHaveBeenCalledTimes(1);
@@ -133,8 +133,8 @@ describe("BackupView", () => {
         "https://example.com": { slug: "example" },
       } as any);
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung exportieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung exportieren"));
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalledWith(
@@ -149,8 +149,8 @@ describe("BackupView", () => {
         .mocked(FavoritesStore.getAllFavorites)
         .mockRejectedValue(new Error("disk full"));
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung exportieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung exportieren"));
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith(
@@ -170,8 +170,8 @@ describe("BackupView", () => {
       } as any);
       mockFileText.mockResolvedValue(validBackupJson);
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(FavoritesStore.setStoredFavs).toHaveBeenCalledTimes(1);
@@ -189,8 +189,8 @@ describe("BackupView", () => {
         assets: [],
       } as any);
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith(
@@ -207,8 +207,8 @@ describe("BackupView", () => {
         assets: [],
       } as any);
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
@@ -223,8 +223,8 @@ describe("BackupView", () => {
       } as any);
       mockFileText.mockResolvedValue(JSON.stringify([1, 2, 3]));
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith(
@@ -244,8 +244,8 @@ describe("BackupView", () => {
         JSON.stringify({ favorites: { abc: { contentType: "unknown" } } }),
       );
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith(
@@ -263,8 +263,8 @@ describe("BackupView", () => {
       } as any);
       mockFileText.mockResolvedValue(JSON.stringify({ other: "stuff" }));
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith(
@@ -281,8 +281,8 @@ describe("BackupView", () => {
       } as any);
       mockFileText.mockRejectedValue(new Error("read error"));
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith(
@@ -301,8 +301,8 @@ describe("BackupView", () => {
         JSON.stringify({ favorites: { abc: { contentType: "article" } } }),
       );
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(FavoritesStore.setStoredFavs).toHaveBeenCalledTimes(1);
@@ -325,8 +325,8 @@ describe("BackupView", () => {
         }),
       );
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(SourcesStore.setStoredSources).toHaveBeenCalledTimes(1);
@@ -347,8 +347,8 @@ describe("BackupView", () => {
         JSON.stringify({ sources: { "https://example.com": { slug: 99 } } }),
       );
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung importieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith(
@@ -369,8 +369,8 @@ describe("BackupView", () => {
         .mockResolvedValue(favorites as any);
       jest.mocked(SourcesStore.getAllSources).mockResolvedValue(sources as any);
 
-      const { getByText } = render(<BackupView />);
-      fireEvent.press(getByText("Sammlung exportieren"));
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung exportieren"));
 
       await waitFor(() => {
         expect(mockFileWrite).toHaveBeenCalledWith(

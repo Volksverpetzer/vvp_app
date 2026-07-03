@@ -5,6 +5,7 @@ import {
   within,
 } from "@testing-library/react-native";
 import { useFocusEffect } from "expo-router";
+import { useEffect } from "react";
 
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import MySources from "#/screens/PersonalTab/components/MySources";
@@ -72,15 +73,19 @@ const sources = {
 describe("MySources", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Mirror the real useFocusEffect: run the (stable, []-memoized) callback
+    // once on mount rather than on every render. Re-running on each render would
+    // re-fetch the full list and resurrect entries removed via handleDelete —
+    // which RNTL 14's extra async flushing now surfaces as a flaky failure.
     jest.mocked(useFocusEffect).mockImplementation((cb) => {
-      cb();
+      useEffect(() => cb(), [cb]);
     });
     jest.mocked(SourcesStore.getAllSources).mockResolvedValue(sources as any);
     jest.mocked(SourcesStore.removeSource).mockResolvedValue(undefined);
   });
 
   it("groups sources by slug, showing one heading per article", async () => {
-    const { queryAllByText } = render(<MySources />);
+    const { queryAllByText } = await render(<MySources />);
     await waitFor(() => {
       expect(queryAllByText("Article A")).toHaveLength(1);
       expect(queryAllByText("Article B")).toHaveLength(1);
@@ -88,7 +93,7 @@ describe("MySources", () => {
   });
 
   it("renders all URLs belonging to a slug group", async () => {
-    const { getByText } = render(<MySources />);
+    const { getByText } = await render(<MySources />);
     await waitFor(() => {
       expect(getByText("https://example.com/source-a1")).toBeTruthy();
       expect(getByText("https://example.com/source-a2")).toBeTruthy();
@@ -97,7 +102,7 @@ describe("MySources", () => {
   });
 
   it("removes only the tapped entry and keeps the rest visible", async () => {
-    const { getByTestId, queryByText } = render(<MySources />);
+    const { getByTestId, queryByText } = await render(<MySources />);
 
     await waitFor(() => {
       expect(
@@ -106,7 +111,7 @@ describe("MySources", () => {
     });
 
     const row = getByTestId("source-row-https://example.com/source-a2");
-    fireEvent.press(within(row).getByLabelText("Löschen"));
+    await fireEvent.press(within(row).getByLabelText("Löschen"));
 
     await waitFor(() => {
       expect(SourcesStore.removeSource).toHaveBeenCalledTimes(1);

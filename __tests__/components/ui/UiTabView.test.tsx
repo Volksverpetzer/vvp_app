@@ -5,8 +5,8 @@ import { Animated } from "react-native";
 import UiTabView from "#/components/ui/UiTabView";
 
 describe("UiTabView", () => {
-  it("renders children", () => {
-    const { getByText } = render(
+  it("renders children", async () => {
+    const { getByText } = await render(
       <UiTabView width={200}>
         <Animated.Text>Tab A</Animated.Text>
         <Animated.Text>Tab B</Animated.Text>
@@ -16,8 +16,8 @@ describe("UiTabView", () => {
     expect(getByText("Tab B")).toBeTruthy();
   });
 
-  it("renders a plain View without a height style when animatedHeight is not provided", () => {
-    const { toJSON } = render(
+  it("renders a plain View without a height style when animatedHeight is not provided", async () => {
+    const { toJSON } = await render(
       <UiTabView width={200}>
         <Animated.Text>content</Animated.Text>
       </UiTabView>,
@@ -30,12 +30,12 @@ describe("UiTabView", () => {
     expect(style.height).toBeUndefined();
   });
 
-  it("applies animatedHeight as the height style when provided", () => {
+  it("applies animatedHeight as the height style when provided", async () => {
     const animatedHeight = new Animated.Value(0).interpolate({
       inputRange: [0, 1],
       outputRange: [60, 40],
     });
-    const { toJSON } = render(
+    const { toJSON } = await render(
       <UiTabView width={200} animatedHeight={animatedHeight}>
         <Animated.Text>content</Animated.Text>
       </UiTabView>,
@@ -50,8 +50,8 @@ describe("UiTabView", () => {
     expect(style.width).toBe(200);
   });
 
-  it("applies pill shape styles", () => {
-    const { toJSON } = render(
+  it("applies pill shape styles", async () => {
+    const { toJSON } = await render(
       <UiTabView width={160}>
         <Animated.Text>content</Animated.Text>
       </UiTabView>,

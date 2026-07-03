@@ -42,10 +42,10 @@ describe("Loader", () => {
     jest.restoreAllMocks();
   });
 
-  it("renders loading fallback while request is pending", () => {
+  it("renders loading fallback while request is pending", async () => {
     const deferred = createDeferred<{ value: string }>();
 
-    const { getByText } = render(
+    const { getByText } = await render(
       <Loader
         keyValue="id-1"
         load={() => deferred.promise}
@@ -61,7 +61,7 @@ describe("Loader", () => {
     const deferred = createDeferred<{ value: string }>();
     const onLoaded = jest.fn();
 
-    const { getByText } = render(
+    const { getByText } = await render(
       <Loader
         keyValue="id-2"
         load={() => deferred.promise}
@@ -81,7 +81,7 @@ describe("Loader", () => {
   it("renders default error fallback when loading fails", async () => {
     const deferred = createDeferred<{ value: string }>();
 
-    const { getByText } = render(
+    const { getByText } = await render(
       <Loader
         keyValue="id-3"
         load={() => deferred.promise}
@@ -103,7 +103,7 @@ describe("Loader", () => {
   it("renders custom error UI when renderError is provided", async () => {
     const deferred = createDeferred<{ value: string }>();
 
-    const { getByText, queryByText } = render(
+    const { getByText, queryByText } = await render(
       <Loader
         keyValue="id-4"
         load={() => deferred.promise}

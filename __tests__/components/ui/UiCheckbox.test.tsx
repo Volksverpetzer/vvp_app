@@ -10,8 +10,8 @@ jest.mock("#/components/Icons", () => ({
 }));
 
 describe("UiCheckbox", () => {
-  it("renders children", () => {
-    const { getByText } = render(
+  it("renders children", async () => {
+    const { getByText } = await render(
       <UiCheckbox checked={false} onChange={jest.fn()}>
         <Text>Accept terms</Text>
       </UiCheckbox>,
@@ -19,46 +19,46 @@ describe("UiCheckbox", () => {
     expect(getByText("Accept terms")).toBeTruthy();
   });
 
-  it("has checkbox accessibility role", () => {
-    const { getByRole } = render(
+  it("has checkbox accessibility role", async () => {
+    const { getByRole } = await render(
       <UiCheckbox checked={false} onChange={jest.fn()} />,
     );
     expect(getByRole("checkbox")).toBeTruthy();
   });
 
-  it("reflects initial checked state in accessibility", () => {
-    const { getByRole } = render(
+  it("reflects initial checked state in accessibility", async () => {
+    const { getByRole } = await render(
       <UiCheckbox checked={true} onChange={jest.fn()} />,
     );
     expect(getByRole("checkbox", { checked: true })).toBeTruthy();
   });
 
-  it("calls onChange with the toggled value when pressed", () => {
+  it("calls onChange with the toggled value when pressed", async () => {
     const onChange = jest.fn();
-    const { getByRole } = render(
+    const { getByRole } = await render(
       <UiCheckbox checked={false} onChange={onChange} />,
     );
-    fireEvent.press(getByRole("checkbox"));
+    await fireEvent.press(getByRole("checkbox"));
     expect(onChange).toHaveBeenCalledWith(true);
   });
 
-  it("toggles from checked to unchecked", () => {
+  it("toggles from checked to unchecked", async () => {
     const onChange = jest.fn();
-    const { getByRole } = render(
+    const { getByRole } = await render(
       <UiCheckbox checked={true} onChange={onChange} />,
     );
-    fireEvent.press(getByRole("checkbox"));
+    await fireEvent.press(getByRole("checkbox"));
     expect(onChange).toHaveBeenCalledWith(false);
   });
 
-  it("updates accessibility state after parent re-renders with new checked value", () => {
+  it("updates accessibility state after parent re-renders with new checked value", async () => {
     const onChange = jest.fn();
-    const { getByRole, rerender } = render(
+    const { getByRole, rerender } = await render(
       <UiCheckbox checked={false} onChange={onChange} />,
     );
-    fireEvent.press(getByRole("checkbox"));
+    await fireEvent.press(getByRole("checkbox"));
     expect(onChange).toHaveBeenCalledWith(true);
-    rerender(<UiCheckbox checked={true} onChange={onChange} />);
+    await rerender(<UiCheckbox checked={true} onChange={onChange} />);
     expect(getByRole("checkbox", { checked: true })).toBeTruthy();
   });
 });

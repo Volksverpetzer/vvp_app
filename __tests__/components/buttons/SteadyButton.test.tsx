@@ -40,29 +40,31 @@ describe("SteadyButton", () => {
     jest.clearAllMocks();
   });
 
-  it("renders an accessible button", () => {
-    const { getByRole } = render(<SteadyButton />);
+  it("renders an accessible button", async () => {
+    const { getByRole } = await render(<SteadyButton />);
     expect(getByRole("button")).toBeTruthy();
   });
 
-  it("opens the Steady URL when pressed", () => {
-    const { getByRole } = render(<SteadyButton />);
-    fireEvent.press(getByRole("button"));
+  it("opens the Steady URL when pressed", async () => {
+    const { getByRole } = await render(<SteadyButton />);
+    await fireEvent.press(getByRole("button"));
     expect(Linking.openURL).toHaveBeenCalledWith(
       "https://steadyhq.com/de/volksverpetzer",
     );
   });
 
-  it("tracks analytics against article_link when provided", () => {
+  it("tracks analytics against article_link when provided", async () => {
     const articleLink = "https://www.volksverpetzer.de/artikel/test" as const;
-    const { getByRole } = render(<SteadyButton article_link={articleLink} />);
-    fireEvent.press(getByRole("button"));
+    const { getByRole } = await render(
+      <SteadyButton article_link={articleLink} />,
+    );
+    await fireEvent.press(getByRole("button"));
     expect(registerEvent).toHaveBeenCalledWith(articleLink, "Steady");
   });
 
-  it("falls back to wpUrl for analytics when article_link is omitted", () => {
-    const { getByRole } = render(<SteadyButton />);
-    fireEvent.press(getByRole("button"));
+  it("falls back to wpUrl for analytics when article_link is omitted", async () => {
+    const { getByRole } = await render(<SteadyButton />);
+    await fireEvent.press(getByRole("button"));
     expect(registerEvent).toHaveBeenCalledWith(
       "https://www.volksverpetzer.de",
       "Steady",

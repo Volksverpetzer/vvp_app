@@ -47,54 +47,54 @@ describe("ChangelogModal", () => {
   });
 
   describe("when visible", () => {
-    it("renders the heading", () => {
-      const { getByText } = render(
+    it("renders the heading", async () => {
+      const { getByText } = await render(
         <ChangelogModal isVisible onClose={onClose} />,
       );
       expect(getByText("Was ist neu?")).toBeTruthy();
     });
 
-    it("renders the version string", () => {
-      const { getByText } = render(
+    it("renders the version string", async () => {
+      const { getByText } = await render(
         <ChangelogModal isVisible onClose={onClose} />,
       );
       expect(getByText("Version 2.0.0")).toBeTruthy();
     });
 
-    it("renders the changelog notes", () => {
-      const { getByText } = render(
+    it("renders the changelog notes", async () => {
+      const { getByText } = await render(
         <ChangelogModal isVisible onClose={onClose} />,
       );
       expect(getByText("- Neue Funktion A\n- Fehlerbehebung B")).toBeTruthy();
     });
 
-    it("renders the confirm button", () => {
-      const { getByText } = render(
+    it("renders the confirm button", async () => {
+      const { getByText } = await render(
         <ChangelogModal isVisible onClose={onClose} />,
       );
       expect(getByText("Alles klar")).toBeTruthy();
     });
 
-    it("calls onClose when the close icon button is pressed", () => {
-      const { getByLabelText } = render(
+    it("calls onClose when the close icon button is pressed", async () => {
+      const { getByLabelText } = await render(
         <ChangelogModal isVisible onClose={onClose} />,
       );
-      fireEvent.press(getByLabelText("Schließen"));
+      await fireEvent.press(getByLabelText("Schließen"));
       expect(onClose).toHaveBeenCalledTimes(1);
     });
 
-    it("calls onClose when the confirm button is pressed", () => {
-      const { getByText } = render(
+    it("calls onClose when the confirm button is pressed", async () => {
+      const { getByText } = await render(
         <ChangelogModal isVisible onClose={onClose} />,
       );
-      fireEvent.press(getByText("Alles klar"));
+      await fireEvent.press(getByText("Alles klar"));
       expect(onClose).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("when not visible", () => {
-    it("renders nothing", () => {
-      const { queryByText } = render(
+    it("renders nothing", async () => {
+      const { queryByText } = await render(
         <ChangelogModal isVisible={false} onClose={onClose} />,
       );
       expect(queryByText("Was ist neu?")).toBeNull();

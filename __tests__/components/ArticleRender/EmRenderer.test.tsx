@@ -31,8 +31,8 @@ const getFontFamily = (style: unknown): string | undefined => {
 };
 
 describe("EmRenderer font family", () => {
-  it("uses SourceSansProBoldItalic when parent is SourceSansProBold", () => {
-    const { getByTestId } = render(
+  it("uses SourceSansProBoldItalic when parent is SourceSansProBold", async () => {
+    const { getByTestId } = await render(
       EmRenderer(makeProps("SourceSansProBold")) as React.ReactElement,
     );
     expect(getFontFamily(getByTestId("em-text").props.style)).toBe(
@@ -40,8 +40,8 @@ describe("EmRenderer font family", () => {
     );
   });
 
-  it("uses SourceSansProItalic when parent has a non-bold font", () => {
-    const { getByTestId } = render(
+  it("uses SourceSansProItalic when parent has a non-bold font", async () => {
+    const { getByTestId } = await render(
       EmRenderer(makeProps("SourceSansPro")) as React.ReactElement,
     );
     expect(getFontFamily(getByTestId("em-text").props.style)).toBe(
@@ -49,8 +49,8 @@ describe("EmRenderer font family", () => {
     );
   });
 
-  it("uses SourceSansProItalic when parent has no font family", () => {
-    const { getByTestId } = render(
+  it("uses SourceSansProItalic when parent has no font family", async () => {
+    const { getByTestId } = await render(
       EmRenderer(makeProps()) as React.ReactElement,
     );
     expect(getFontFamily(getByTestId("em-text").props.style)).toBe(

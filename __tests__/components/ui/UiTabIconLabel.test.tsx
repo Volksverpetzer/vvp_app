@@ -10,8 +10,8 @@ import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 const makeIcon = () => jest.fn((_color: string) => null);
 
 describe("UiTabIconLabel", () => {
-  it("renders the label text", () => {
-    const { getByText } = render(
+  it("renders the label text", async () => {
+    const { getByText } = await render(
       <UiTabIconLabel
         icon={makeIcon()}
         label="Favoriten"
@@ -22,9 +22,9 @@ describe("UiTabIconLabel", () => {
     expect(getByText("Favoriten")).toBeTruthy();
   });
 
-  it("calls onPress when the tab is pressed", () => {
+  it("calls onPress when the tab is pressed", async () => {
     const onPress = jest.fn();
-    const { getByRole } = render(
+    const { getByRole } = await render(
       <UiTabIconLabel
         icon={makeIcon()}
         label="Favoriten"
@@ -32,13 +32,13 @@ describe("UiTabIconLabel", () => {
         onPress={onPress}
       />,
     );
-    fireEvent.press(getByRole("tab"));
+    await fireEvent.press(getByRole("tab"));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
   describe("accessibility", () => {
-    it("exposes the label as accessibilityLabel", () => {
-      const { getByLabelText } = render(
+    it("exposes the label as accessibilityLabel", async () => {
+      const { getByLabelText } = await render(
         <UiTabIconLabel
           icon={makeIcon()}
           label="Favoriten"
@@ -49,8 +49,8 @@ describe("UiTabIconLabel", () => {
       expect(getByLabelText("Favoriten")).toBeTruthy();
     });
 
-    it("marks the tab as selected when active", () => {
-      const { getByRole } = render(
+    it("marks the tab as selected when active", async () => {
+      const { getByRole } = await render(
         <UiTabIconLabel
           icon={makeIcon()}
           label="Favoriten"
@@ -61,8 +61,8 @@ describe("UiTabIconLabel", () => {
       expect(getByRole("tab", { selected: true })).toBeTruthy();
     });
 
-    it("marks the tab as not selected when inactive", () => {
-      const { getByRole } = render(
+    it("marks the tab as not selected when inactive", async () => {
+      const { getByRole } = await render(
         <UiTabIconLabel
           icon={makeIcon()}
           label="Favoriten"
@@ -75,9 +75,9 @@ describe("UiTabIconLabel", () => {
   });
 
   describe("icon color", () => {
-    it("passes iconOnPrimary color to icon when active", () => {
+    it("passes iconOnPrimary color to icon when active", async () => {
       const icon = makeIcon();
-      render(
+      await render(
         <UiTabIconLabel
           icon={icon}
           label="Favoriten"
@@ -88,9 +88,9 @@ describe("UiTabIconLabel", () => {
       expect(icon).toHaveBeenCalledWith("#3893C0");
     });
 
-    it("passes iconMuted color to icon when inactive", () => {
+    it("passes iconMuted color to icon when inactive", async () => {
       const icon = makeIcon();
-      render(
+      await render(
         <UiTabIconLabel
           icon={icon}
           label="Favoriten"
@@ -103,8 +103,8 @@ describe("UiTabIconLabel", () => {
   });
 
   describe("background color", () => {
-    it("uses primary background when active", () => {
-      const { toJSON } = render(
+    it("uses primary background when active", async () => {
+      const { toJSON } = await render(
         <UiTabIconLabel
           icon={makeIcon()}
           label="Favoriten"
@@ -117,8 +117,8 @@ describe("UiTabIconLabel", () => {
       expect(combined.backgroundColor).toBe("#1b7194");
     });
 
-    it("uses muted background when inactive", () => {
-      const { toJSON } = render(
+    it("uses muted background when inactive", async () => {
+      const { toJSON } = await render(
         <UiTabIconLabel
           icon={makeIcon()}
           label="Favoriten"
@@ -133,8 +133,8 @@ describe("UiTabIconLabel", () => {
   });
 
   describe("label rendering", () => {
-    it("renders a static Animated.Text when no animation props are given", () => {
-      const { getByText } = render(
+    it("renders a static Animated.Text when no animation props are given", async () => {
+      const { getByText } = await render(
         <UiTabIconLabel
           icon={makeIcon()}
           label="Quellen"
@@ -145,7 +145,7 @@ describe("UiTabIconLabel", () => {
       expect(getByText("Quellen")).toBeTruthy();
     });
 
-    it("renders an animated label container when animatedLabelHeight is provided", () => {
+    it("renders an animated label container when animatedLabelHeight is provided", async () => {
       const animatedHeight = new Animated.Value(20).interpolate({
         inputRange: [0, 1],
         outputRange: [20, 0],
@@ -154,7 +154,7 @@ describe("UiTabIconLabel", () => {
         inputRange: [0, 1],
         outputRange: [1, 0],
       });
-      const { getByText } = render(
+      const { getByText } = await render(
         <UiTabIconLabel
           icon={makeIcon()}
           label="Quellen"

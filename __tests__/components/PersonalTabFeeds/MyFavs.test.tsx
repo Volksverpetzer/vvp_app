@@ -44,10 +44,15 @@ jest.mock("#/components/ui/UiSpace", () => ({
   default: jest.fn(() => null),
 }));
 
-jest.mock("#/components/ui/UiText", () => ({
-  __esModule: true,
-  default: jest.fn(({ children }) => children),
-}));
+jest.mock("#/components/ui/UiText", () => {
+  // Wrap children in a real Text: RNTL 14's renderer rejects raw string
+  // children inside a View (e.g. the empty-favorites hint), unlike v13.
+  const { Text } = require("react-native");
+  return {
+    __esModule: true,
+    default: jest.fn(({ children }) => <Text>{children}</Text>),
+  };
+});
 
 jest.mock("#/components/posts/insta/InstaPostCard", () => ({
   __esModule: true,
@@ -152,7 +157,7 @@ describe("MyFavs", () => {
     );
     (API.getInstaPost as jest.Mock).mockResolvedValue(instaApiResponse);
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(2);
@@ -242,7 +247,7 @@ describe("MyFavs", () => {
       mappedPruefpunktPost,
     );
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(1);
@@ -274,7 +279,7 @@ describe("MyFavs", () => {
       },
     });
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(1);
@@ -342,7 +347,7 @@ describe("MyFavs", () => {
     );
     (API.getInstaPost as jest.Mock).mockRejectedValue(new Error("network"));
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(1);
@@ -414,7 +419,7 @@ describe("MyFavs", () => {
     );
     (FavoritesStore.removeFavorite as jest.Mock).mockResolvedValue(undefined);
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(1);
@@ -436,7 +441,7 @@ describe("MyFavs", () => {
   it("does not refresh favorites while the screen is unfocused", async () => {
     mockUseIsFocused.mockReturnValue(false);
 
-    render(<MyFavs />);
+    await render(<MyFavs />);
 
     await waitFor(() => {
       expect(FavoritesStore.getAllFavorites).not.toHaveBeenCalled();
@@ -467,24 +472,22 @@ describe("MyFavs", () => {
       .mockReturnValueOnce(firstRequest)
       .mockReturnValueOnce(secondRequest);
 
-    const { rerender } = render(<MyFavs />);
+    const { rerender } = await render(<MyFavs />);
 
     // Trigger a second request by toggling focused off and back on
-    act(() => {
+    await act(() => {
       mockUseIsFocused.mockReturnValue(false);
     });
-    rerender(<MyFavs />);
+    await rerender(<MyFavs />);
 
-    act(() => {
+    await act(() => {
       mockUseIsFocused.mockReturnValue(true);
     });
-    rerender(<MyFavs />);
+    await rerender(<MyFavs />);
 
-    // Resolve the second (newer) request first with one article
-    act(() => {
-      resolveSecond({ "newer-article": { contentType: FAV_TYPE_ARTICLE } });
-    });
-
+    // Wire the article mocks before resolving: RNTL 14's awaited act() flushes
+    // the favorites-processing chain synchronously, so getPost/mapArticleToPost
+    // must already be configured when the newer request resolves.
     const newerArticleApiResponse = {
       id: 2,
       date: "2026-01-02T12:00:00Z",
@@ -517,6 +520,11 @@ describe("MyFavs", () => {
       newerMappedPost,
     );
 
+    // Resolve the second (newer) request first with one article
+    await act(() => {
+      resolveSecond({ "newer-article": { contentType: FAV_TYPE_ARTICLE } });
+    });
+
     await waitFor(() => {
       expect(GenericPost).toHaveBeenCalledTimes(1);
     });
@@ -530,7 +538,7 @@ describe("MyFavs", () => {
 
     // Now resolve the first (older/stale) request — its results must be ignored
     (GenericPost as unknown as jest.Mock).mockClear();
-    act(() => {
+    await act(() => {
       resolveFirst({ "stale-article": { contentType: FAV_TYPE_ARTICLE } });
     });
 

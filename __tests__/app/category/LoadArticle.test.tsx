@@ -49,13 +49,13 @@ const webviewUri = () => {
 describe("LoadArticle single-segment page (no slug)", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("builds a trailing-slash URL so WordPress does not 404", () => {
+  it("builds a trailing-slash URL so WordPress does not 404", async () => {
     const { useLocalSearchParams } = jest.requireMock("expo-router");
     useLocalSearchParams.mockReturnValue({
       category: "stellenausschreibung-redaktion",
     });
 
-    render(<LoadArticle />);
+    await render(<LoadArticle />);
 
     // Regression: the slashless form (…/stellenausschreibung-redaktion) is a
     // hard 404 on the live site; the trailing slash is the canonical permalink.
@@ -64,14 +64,14 @@ describe("LoadArticle single-segment page (no slug)", () => {
     );
   });
 
-  it("prefers the original deep-link URL verbatim when present", () => {
+  it("prefers the original deep-link URL verbatim when present", async () => {
     const { useLocalSearchParams } = jest.requireMock("expo-router");
     useLocalSearchParams.mockReturnValue({
       category: "stellenausschreibung-redaktion",
       originalUrl: "https://volksverpetzer.de/stellenausschreibung-redaktion/",
     });
 
-    render(<LoadArticle />);
+    await render(<LoadArticle />);
 
     expect(webviewUri()).toBe(
       "https://volksverpetzer.de/stellenausschreibung-redaktion/",
@@ -90,7 +90,7 @@ describe("LoadArticle article fallback (slug not found)", () => {
     });
 
     // No cached article and no post from the API -> hasError webview fallback.
-    render(<LoadArticle />);
+    await render(<LoadArticle />);
 
     await waitFor(() => {
       const EdgelessWebview = jest.requireMock(

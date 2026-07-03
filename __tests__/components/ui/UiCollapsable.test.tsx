@@ -23,13 +23,13 @@ describe("UiCollapsable", () => {
   });
 
   describe("title and icon", () => {
-    it("renders the title", () => {
-      const { getByText } = render(<UiCollapsable title="FAQ" />);
+    it("renders the title", async () => {
+      const { getByText } = await render(<UiCollapsable title="FAQ" />);
       expect(getByText("FAQ")).toBeTruthy();
     });
 
-    it("renders an optional icon", () => {
-      const { getByText } = render(
+    it("renders an optional icon", async () => {
+      const { getByText } = await render(
         <UiCollapsable title="FAQ" icon={<Text>icon</Text>} />,
       );
       expect(getByText("icon")).toBeTruthy();
@@ -37,8 +37,8 @@ describe("UiCollapsable", () => {
   });
 
   describe("collapsed state (default)", () => {
-    it("hides children", () => {
-      const { queryByText } = render(
+    it("hides children", async () => {
+      const { queryByText } = await render(
         <UiCollapsable title="FAQ">
           <Text>hidden content</Text>
         </UiCollapsable>,
@@ -46,14 +46,14 @@ describe("UiCollapsable", () => {
       expect(queryByText("hidden content")).toBeNull();
     });
 
-    it("shows chevron pointing down", () => {
-      render(<UiCollapsable title="FAQ" />);
+    it("shows chevron pointing down", async () => {
+      await render(<UiCollapsable title="FAQ" />);
       const lastCall = chevron.mock.calls[chevron.mock.calls.length - 1];
       expect((lastCall[0] as any).direction).toBe("down");
     });
 
-    it("has no background color", () => {
-      const { toJSON } = render(<UiCollapsable title="FAQ" />);
+    it("has no background color", async () => {
+      const { toJSON } = await render(<UiCollapsable title="FAQ" />);
       const root = toJSON() as any;
       const styles = [root.props.style].flat();
       expect(styles.every((s: any) => !s?.backgroundColor)).toBe(true);
@@ -61,8 +61,8 @@ describe("UiCollapsable", () => {
   });
 
   describe("defaultOpen", () => {
-    it("shows children", () => {
-      const { getByText } = render(
+    it("shows children", async () => {
+      const { getByText } = await render(
         <UiCollapsable title="FAQ" defaultOpen>
           <Text>visible content</Text>
         </UiCollapsable>,
@@ -70,14 +70,16 @@ describe("UiCollapsable", () => {
       expect(getByText("visible content")).toBeTruthy();
     });
 
-    it("shows chevron pointing up", () => {
-      render(<UiCollapsable title="FAQ" defaultOpen />);
+    it("shows chevron pointing up", async () => {
+      await render(<UiCollapsable title="FAQ" defaultOpen />);
       const lastCall = chevron.mock.calls[chevron.mock.calls.length - 1];
       expect((lastCall[0] as any).direction).toBe("up");
     });
 
-    it("applies a background color", () => {
-      const { toJSON } = render(<UiCollapsable title="FAQ" defaultOpen />);
+    it("applies a background color", async () => {
+      const { toJSON } = await render(
+        <UiCollapsable title="FAQ" defaultOpen />,
+      );
       const root = toJSON() as any;
       // backgroundColor lives on the Animated.View overlay (first child), not the root View
       const overlay = root.children[0];
@@ -87,44 +89,46 @@ describe("UiCollapsable", () => {
   });
 
   describe("toggling", () => {
-    it("expands on press and shows chevron up", () => {
-      const { getByRole, getByText } = render(
+    it("expands on press and shows chevron up", async () => {
+      const { getByRole, getByText } = await render(
         <UiCollapsable title="FAQ">
           <Text>now visible</Text>
         </UiCollapsable>,
       );
-      fireEvent.press(getByRole("button"));
+      await fireEvent.press(getByRole("button"));
       expect(getByText("now visible")).toBeTruthy();
       const lastCall = chevron.mock.calls[chevron.mock.calls.length - 1];
       expect((lastCall[0] as any).direction).toBe("up");
     });
 
-    it("collapses after a second press", () => {
-      const { getByRole, queryByText } = render(
+    it("collapses after a second press", async () => {
+      const { getByRole, queryByText } = await render(
         <UiCollapsable title="FAQ">
           <Text>content</Text>
         </UiCollapsable>,
       );
-      fireEvent.press(getByRole("button"));
-      fireEvent.press(getByRole("button"));
+      await fireEvent.press(getByRole("button"));
+      await fireEvent.press(getByRole("button"));
       expect(queryByText("content")).toBeNull();
     });
 
-    it("calls onToggle with alternating values", () => {
+    it("calls onToggle with alternating values", async () => {
       const onToggle = jest.fn();
-      const { getByRole } = render(
+      const { getByRole } = await render(
         <UiCollapsable title="FAQ" onToggle={onToggle} />,
       );
-      fireEvent.press(getByRole("button"));
-      fireEvent.press(getByRole("button"));
+      await fireEvent.press(getByRole("button"));
+      await fireEvent.press(getByRole("button"));
       expect(onToggle).toHaveBeenCalledTimes(2);
       expect(onToggle).toHaveBeenNthCalledWith(1, true);
       expect(onToggle).toHaveBeenNthCalledWith(2, false);
     });
 
-    it("does not throw without an onToggle handler", () => {
-      const { getByRole } = render(<UiCollapsable title="FAQ" />);
-      expect(() => fireEvent.press(getByRole("button"))).not.toThrow();
+    it("does not throw without an onToggle handler", async () => {
+      const { getByRole } = await render(<UiCollapsable title="FAQ" />);
+      expect(
+        async () => await fireEvent.press(getByRole("button")),
+      ).not.toThrow();
     });
   });
 });

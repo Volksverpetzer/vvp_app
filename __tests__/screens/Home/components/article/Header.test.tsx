@@ -95,8 +95,8 @@ describe("Header — reading time forwarded to ArticleStats", () => {
     ).default;
   });
 
-  it("passes reading_time to ArticleStats when set", () => {
-    render(
+  it("passes reading_time to ArticleStats when set", async () => {
+    await render(
       <Header
         {...defaultProps}
         article={{ ...baseArticle, reading_time: 8 }}
@@ -107,8 +107,8 @@ describe("Header — reading time forwarded to ArticleStats", () => {
     });
   });
 
-  it("passes undefined reading_time to ArticleStats when absent", () => {
-    render(
+  it("passes undefined reading_time to ArticleStats when absent", async () => {
+    await render(
       <Header
         {...defaultProps}
         article={{ ...baseArticle, reading_time: undefined }}
@@ -125,8 +125,8 @@ describe("Header — author byline", () => {
     jest.clearAllMocks();
   });
 
-  it("renders the author display name when authors are provided", () => {
-    const { getAllByText } = render(
+  it("renders the author display name when authors are provided", async () => {
+    const { getAllByText } = await render(
       <Header
         {...defaultProps}
         article={{ ...baseArticle, authors: [testAuthor] }}
@@ -136,8 +136,8 @@ describe("Header — author byline", () => {
     expect(getAllByText("Jane Doe").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("hides the author byline when authors is undefined", () => {
-    const { queryByText } = render(
+  it("hides the author byline when authors is undefined", async () => {
+    const { queryByText } = await render(
       <Header
         {...defaultProps}
         article={{ ...baseArticle, authors: undefined }}
@@ -146,15 +146,15 @@ describe("Header — author byline", () => {
     expect(queryByText(/\bvon\b/)).toBeNull();
   });
 
-  it("hides the author byline when authors is an empty array", () => {
-    const { queryByText } = render(
+  it("hides the author byline when authors is an empty array", async () => {
+    const { queryByText } = await render(
       <Header {...defaultProps} article={{ ...baseArticle, authors: [] }} />,
     );
     expect(queryByText(/\bvon\b/)).toBeNull();
   });
 
-  it("always renders the article date regardless of authors", () => {
-    const { getAllByText } = render(
+  it("always renders the article date regardless of authors", async () => {
+    const { getAllByText } = await render(
       <Header
         {...defaultProps}
         article={{ ...baseArticle, authors: undefined }}
@@ -172,22 +172,22 @@ describe("Header — AudioPlayer integration", () => {
     mockConfig.audioCdnUrl = undefined;
   });
 
-  it("does not render AudioPlayer when audioCdnUrl is not configured", () => {
-    render(<Header {...defaultProps} />);
+  it("does not render AudioPlayer when audioCdnUrl is not configured", async () => {
+    await render(<Header {...defaultProps} />);
     expect(MockAudioPlayer).not.toHaveBeenCalled();
   });
 
-  it("renders AudioPlayer with the correct URL when audioCdnUrl is set", () => {
+  it("renders AudioPlayer with the correct URL when audioCdnUrl is set", async () => {
     mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
-    render(<Header {...defaultProps} />);
+    await render(<Header {...defaultProps} />);
     expect(MockAudioPlayer.mock.calls[0][0]).toMatchObject({
       audioUrl: "https://vvpaudio.b-cdn.net/audio/test-article.mp3",
     });
   });
 
-  it("strips a trailing slash from audioCdnUrl before building the URL", () => {
+  it("strips a trailing slash from audioCdnUrl before building the URL", async () => {
     mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio/";
-    render(<Header {...defaultProps} />);
+    await render(<Header {...defaultProps} />);
     expect(MockAudioPlayer.mock.calls[0][0]).toMatchObject({
       audioUrl: "https://vvpaudio.b-cdn.net/audio/test-article.mp3",
     });

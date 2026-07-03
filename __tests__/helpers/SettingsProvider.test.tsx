@@ -54,13 +54,13 @@ describe("SettingsProvider", () => {
     mockSettingsStore.setAdvancedSettings.mockResolvedValue(undefined as never);
   });
 
-  it("renders null while settings are loading", () => {
+  it("renders null while settings are loading", async () => {
     mockSettingsStore.getContentSettings.mockReturnValue(new Promise(() => {}));
     mockSettingsStore.getAdvancedSettings.mockReturnValue(
       new Promise(() => {}),
     );
 
-    const { toJSON } = render(
+    const { toJSON } = await render(
       <SettingsProvider>
         <Text testID="child">visible</Text>
       </SettingsProvider>,
@@ -77,7 +77,7 @@ describe("SettingsProvider", () => {
       {} as AdvancedSettingType,
     );
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <SettingsProvider>
         <Text testID="child">visible</Text>
       </SettingsProvider>,
@@ -95,7 +95,7 @@ describe("SettingsProvider", () => {
       alwaysDarkMode: { value: true, name: "Immer Dark Mode" },
     } as unknown as AdvancedSettingType);
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <SettingsProvider>
         <ConsumerComponent />
       </SettingsProvider>,
@@ -133,14 +133,16 @@ describe("SettingsProvider", () => {
       );
     };
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <SettingsProvider>
         <SetterComponent />
       </SettingsProvider>,
     );
 
     await waitFor(() => getByTestId("toggle"));
-    act(() => getByTestId("toggle").props.onPress());
+    await act(() => {
+      getByTestId("toggle").props.onPress();
+    });
 
     await waitFor(() =>
       expect(mockSettingsStore.setContentSettings).toHaveBeenCalledWith(
@@ -157,7 +159,7 @@ describe("SettingsProvider", () => {
       new Error("storage failure"),
     );
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <SettingsProvider>
         <Text testID="child">visible</Text>
       </SettingsProvider>,

@@ -46,32 +46,32 @@ const baseProps = {
 describe("RedditPost", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("renders title and author", () => {
-    const { getByText } = render(<RedditPost {...baseProps} />);
+  it("renders title and author", async () => {
+    const { getByText } = await render(<RedditPost {...baseProps} />);
     expect(getByText("Test Reddit Post")).toBeTruthy();
     expect(getByText(/testuser/)).toBeTruthy();
   });
 
-  it("navigates to /image with the URL on press", () => {
-    const { getByRole } = render(<RedditPost {...baseProps} />);
-    fireEvent.press(getByRole("button"));
+  it("navigates to /image with the URL on press", async () => {
+    const { getByRole } = await render(<RedditPost {...baseProps} />);
+    await fireEvent.press(getByRole("button"));
     expect(mockPush).toHaveBeenCalledWith({
       pathname: "/image",
       params: { uri: "https://example.com/image.jpg" },
     });
   });
 
-  it("calls onShare on long press", () => {
+  it("calls onShare on long press", async () => {
     const { onShare } = jest.requireMock("#/helpers/Sharing");
-    const { getByRole } = render(<RedditPost {...baseProps} />);
-    fireEvent(getByRole("button"), "longPress");
+    const { getByRole } = await render(<RedditPost {...baseProps} />);
+    await fireEvent(getByRole("button"), "longPress");
     expect(onShare).toHaveBeenCalledWith("https://example.com/image.jpg", {
       location: "RedditPost",
     });
   });
 
-  it("uses crosspost author when available", () => {
-    const { getByText } = render(
+  it("uses crosspost author when available", async () => {
+    const { getByText } = await render(
       <RedditPost
         {...baseProps}
         crosspost_parent_list={[{ author: "crosspostuser" }]}
@@ -80,24 +80,24 @@ describe("RedditPost", () => {
     expect(getByText(/crosspostuser/)).toBeTruthy();
   });
 
-  it("uses thumbnail when inView is false", () => {
+  it("uses thumbnail when inView is false", async () => {
     const { Image } = require("expo-image");
-    render(<RedditPost {...baseProps} inView={false} />);
+    await render(<RedditPost {...baseProps} inView={false} />);
     const [props] = Image.mock.calls[0];
     expect(props.source.uri).toBe("https://example.com/thumbnail.jpg");
   });
 
-  it("uses full url when inView is true", () => {
+  it("uses full url when inView is true", async () => {
     const { Image } = require("expo-image");
-    render(<RedditPost {...baseProps} inView />);
+    await render(<RedditPost {...baseProps} inView />);
     const [props] = Image.mock.calls[0];
     expect(props.source.uri).toBe("https://example.com/image.jpg");
   });
 
-  it("uses smaller font size for long titles", () => {
+  it("uses smaller font size for long titles", async () => {
     const UiText = jest.requireMock("#/components/ui/UiText");
     const longTitle = "A".repeat(101);
-    render(<RedditPost {...baseProps} title={longTitle} />);
+    await render(<RedditPost {...baseProps} title={longTitle} />);
     const titleCallProps = UiText.mock.calls
       .map(([p]: any) => p)
       .find((p: any) => p.children === longTitle);
@@ -106,9 +106,9 @@ describe("RedditPost", () => {
     );
   });
 
-  it("uses normal font size for short titles", () => {
+  it("uses normal font size for short titles", async () => {
     const UiText = jest.requireMock("#/components/ui/UiText");
-    render(<RedditPost {...baseProps} />);
+    await render(<RedditPost {...baseProps} />);
     const titleCallProps = UiText.mock.calls
       .map(([p]: any) => p)
       .find((p: any) => p.children === "Test Reddit Post");

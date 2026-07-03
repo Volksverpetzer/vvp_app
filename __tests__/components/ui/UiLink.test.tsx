@@ -50,18 +50,18 @@ const icon = <View testID="icon" />;
 describe("UiLink", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("renders the link text", () => {
-    const { getByText } = render(
+  it("renders the link text", async () => {
+    const { getByText } = await render(
       <UiLink url="https://example.com" text="Impressum" icon={icon} />,
     );
     expect(getByText("Impressum")).toBeTruthy();
   });
 
-  it("opens browser for https URLs", () => {
-    const { getByTestId } = render(
+  it("opens browser for https URLs", async () => {
+    const { getByTestId } = await render(
       <UiLink url="https://example.com" text="Link" icon={icon} />,
     );
-    fireEvent.press(getByTestId("ui-link"));
+    await fireEvent.press(getByTestId("ui-link"));
     expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(
       "https://example.com",
     );
@@ -69,10 +69,10 @@ describe("UiLink", () => {
 
   it("uses MailComposer for mailto URLs when available", async () => {
     jest.mocked(MailComposer.isAvailableAsync).mockResolvedValue(true);
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <UiLink url="mailto:info@example.com" text="Kontakt" icon={icon} />,
     );
-    fireEvent.press(getByTestId("ui-link"));
+    await fireEvent.press(getByTestId("ui-link"));
     await Promise.resolve();
     expect(MailComposer.composeAsync).toHaveBeenCalledWith({
       recipients: ["info@example.com"],
@@ -82,10 +82,10 @@ describe("UiLink", () => {
   it("falls back to Linking.openURL for mailto when MailComposer unavailable", async () => {
     const { openURL } = require("expo-linking");
     jest.mocked(MailComposer.isAvailableAsync).mockResolvedValue(false);
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <UiLink url="mailto:info@example.com" text="Kontakt" icon={icon} />,
     );
-    fireEvent.press(getByTestId("ui-link"));
+    await fireEvent.press(getByTestId("ui-link"));
     await Promise.resolve();
     expect(openURL).toHaveBeenCalledWith("mailto:info@example.com");
   });
