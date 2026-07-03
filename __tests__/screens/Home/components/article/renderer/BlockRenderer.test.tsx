@@ -32,8 +32,8 @@ const baseRenderProps = {
   renderIndex: 0,
 };
 
-const wrap = (ui: React.ReactElement, advancedReporting = false) =>
-  render(
+const wrap = async (ui: React.ReactElement, advancedReporting = false) =>
+  await render(
     <SettingsContext.Provider
       value={{
         advancedSettings: {
@@ -49,23 +49,23 @@ const wrap = (ui: React.ReactElement, advancedReporting = false) =>
   );
 
 describe("BlockRenderer", () => {
-  it("renders nothing when TDefaultRenderer is absent from renderProps", () => {
-    const { toJSON } = wrap(
+  it("renders nothing when TDefaultRenderer is absent from renderProps", async () => {
+    const { toJSON } = await wrap(
       <BlockRenderer renderProps={{ renderIndex: 0 } as any} url={url} />,
     );
     expect(toJSON()).toBeNull();
   });
 
-  it("renders the TDefaultRenderer content without a ReportingWrapper by default", () => {
-    const { getByTestId, queryByTestId } = wrap(
+  it("renders the TDefaultRenderer content without a ReportingWrapper by default", async () => {
+    const { getByTestId, queryByTestId } = await wrap(
       <BlockRenderer renderProps={baseRenderProps} url={url} />,
     );
     expect(getByTestId("default-renderer")).toBeTruthy();
     expect(queryByTestId("reporting-wrapper")).toBeNull();
   });
 
-  it("wraps content in ReportingWrapper when advancedReporting is enabled", () => {
-    const { getByTestId } = wrap(
+  it("wraps content in ReportingWrapper when advancedReporting is enabled", async () => {
+    const { getByTestId } = await wrap(
       <BlockRenderer renderProps={baseRenderProps} url={url} />,
       true,
     );
@@ -73,8 +73,8 @@ describe("BlockRenderer", () => {
     expect(getByTestId("default-renderer")).toBeTruthy();
   });
 
-  it("passes renderIndex to ReportingWrapper", () => {
-    const { getByTestId } = wrap(
+  it("passes renderIndex to ReportingWrapper", async () => {
+    const { getByTestId } = await wrap(
       <BlockRenderer
         renderProps={{ ...baseRenderProps, renderIndex: 3 }}
         url={url}

@@ -77,7 +77,7 @@ describe("FavCounter", () => {
         Promise.resolve(url === "https://example.com/one" ? 2 : 3),
       );
 
-    const { getByText } = render(
+    const { getByText } = await render(
       <FavCounter shareable={shareable} style={{}} />,
     );
 
@@ -101,7 +101,7 @@ describe("FavCounter", () => {
       permalink: "https://www.instagram.com/p/abc/",
     };
 
-    const { getByRole, getByText, queryByText } = render(
+    const { getByRole, getByText, queryByText } = await render(
       <FavCounter
         shareable={[shareable[0]]}
         style={{}}
@@ -116,7 +116,7 @@ describe("FavCounter", () => {
       expect(getByText("star-outline")).toBeTruthy();
     });
 
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
 
     await waitFor(() => {
       expect(getByText("3")).toBeTruthy();
@@ -141,7 +141,7 @@ describe("FavCounter", () => {
   it("does not persist a favorite when contentType is missing", async () => {
     jest.mocked(getFavs).mockResolvedValue(2);
 
-    const { getByRole, getByText } = render(
+    const { getByRole, getByText } = await render(
       <FavCounter
         shareable={[shareable[0]]}
         style={{}}
@@ -151,7 +151,7 @@ describe("FavCounter", () => {
 
     await waitFor(() => expect(getByText("star-outline")).toBeTruthy());
 
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
 
     await waitFor(() =>
       expect(FavoritesStore.addFavorite).not.toHaveBeenCalled(),
@@ -166,7 +166,7 @@ describe("FavCounter", () => {
     jest.mocked(FavoritesStore.isFavorite).mockResolvedValue(true);
     jest.mocked(getFavs).mockResolvedValue(4);
 
-    const { getByRole, getByText } = render(
+    const { getByRole, getByText } = await render(
       <FavCounter
         shareable={[shareable[0]]}
         style={{}}
@@ -180,7 +180,7 @@ describe("FavCounter", () => {
       expect(getByText("star-filled")).toBeTruthy();
     });
 
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
 
     await waitFor(() => {
       expect(getByText("4")).toBeTruthy();
@@ -194,10 +194,10 @@ describe("FavCounter", () => {
     expect(registerFav).not.toHaveBeenCalled();
   });
 
-  it("renders an empty placeholder and skips engagement when disabled", () => {
+  it("renders an empty placeholder and skips engagement when disabled", async () => {
     mockConfig.enableEngagement = false;
 
-    const { queryByRole, queryByText } = render(
+    const { queryByRole, queryByText } = await render(
       <FavCounter
         shareable={shareable}
         style={{}}

@@ -72,7 +72,7 @@ describe("IframeRenderer dynamic height", () => {
 
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <IframeRenderer
         renderProps={renderProps}
         width={360}
@@ -129,7 +129,7 @@ describe("IframeRenderer dynamic height", () => {
 
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <IframeRenderer
         renderProps={renderProps}
         width={360}
@@ -185,7 +185,7 @@ describe("IframeRenderer dynamic height", () => {
 
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <IframeRenderer
         renderProps={renderProps}
         width={360}
@@ -241,7 +241,7 @@ describe("IframeRenderer dynamic height", () => {
 
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <IframeRenderer
         renderProps={renderProps}
         width={360}
@@ -297,7 +297,7 @@ describe("IframeRenderer dynamic height", () => {
 
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <IframeRenderer
         renderProps={renderProps}
         width={360}
@@ -353,7 +353,7 @@ describe("IframeRenderer dynamic height", () => {
     expect(height).toBe(360);
   });
 
-  it("should add dark parameter to Datawrapper URLs based on color scheme", () => {
+  it("should add dark parameter to Datawrapper URLs based on color scheme", async () => {
     const onLinkPress = jest.fn();
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -367,7 +367,7 @@ describe("IframeRenderer dynamic height", () => {
       },
     });
 
-    render(
+    await render(
       <IframeRenderer
         renderProps={renderProps}
         width={360}
@@ -382,7 +382,7 @@ describe("IframeRenderer dynamic height", () => {
     expect(resultUrl.searchParams.get("dark")).toBe("true");
   });
 
-  it("should add dark=false parameter to Datawrapper URLs in light mode", () => {
+  it("should add dark=false parameter to Datawrapper URLs in light mode", async () => {
     const onLinkPress = jest.fn();
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -396,7 +396,7 @@ describe("IframeRenderer dynamic height", () => {
       },
     });
 
-    render(
+    await render(
       <IframeRenderer
         renderProps={renderProps}
         width={360}
@@ -427,7 +427,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
   });
 
   describe("YouTube URL handling", () => {
-    it("should disable autoplay parameter for youtube.com URLs", () => {
+    it("should disable autoplay parameter for youtube.com URLs", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -437,7 +437,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      render(
+      await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -452,7 +452,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
       expect(resultUrl.searchParams.get("start")).toBe("10");
     });
 
-    it("should add Referer header for youtube.com URLs", () => {
+    it("should add Referer header for youtube.com URLs", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -462,7 +462,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      render(
+      await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -476,7 +476,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
       expect(typeof mockLastWebViewProps.source.headers.Referer).toBe("string");
     });
 
-    it("should handle youtube-nocookie.com URLs", () => {
+    it("should handle youtube-nocookie.com URLs", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -486,7 +486,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      render(
+      await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -502,7 +502,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
       expect(mockLastWebViewProps.source.headers).toHaveProperty("Referer");
     });
 
-    it("should handle youtu.be URLs", () => {
+    it("should handle youtu.be URLs", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -512,7 +512,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      render(
+      await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -529,7 +529,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
   });
 
   describe("Non-YouTube/non-Datawrapper URL pass-through", () => {
-    it("should pass through regular URLs without modification", () => {
+    it("should pass through regular URLs without modification", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -540,7 +540,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      render(
+      await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -553,7 +553,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
       expect(mockLastWebViewProps.source.headers).toBeUndefined();
     });
 
-    it("should pass through Vimeo URLs without modification", () => {
+    it("should pass through Vimeo URLs without modification", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -564,7 +564,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      render(
+      await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -577,7 +577,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
       expect(mockLastWebViewProps.source.headers).toBeUndefined();
     });
 
-    it("should pass through Twitter embed URLs without modification", () => {
+    it("should pass through Twitter embed URLs without modification", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -588,7 +588,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      render(
+      await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -603,7 +603,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
   });
 
   describe("Invalid URL handling", () => {
-    it("should render ErrorCard when URL has no hostname", () => {
+    it("should render ErrorCard when URL has no hostname", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -621,7 +621,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      const { getByText } = render(
+      const { getByText } = await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -635,7 +635,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
       parseSpy.mockRestore();
     });
 
-    it("should render ErrorCard when Linking.parse returns undefined hostname", () => {
+    it("should render ErrorCard when Linking.parse returns undefined hostname", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -653,7 +653,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      const { getByText } = render(
+      const { getByText } = await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -669,7 +669,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
   });
 
   describe("URL constructor failure handling", () => {
-    it("should handle valid YouTube URLs correctly", () => {
+    it("should handle valid YouTube URLs correctly", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -680,7 +680,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      render(
+      await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}
@@ -697,7 +697,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
       expect(mockLastWebViewProps.source.headers).toBeDefined();
     });
 
-    it("should handle minimal valid YouTube URLs", () => {
+    it("should handle minimal valid YouTube URLs", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -708,7 +708,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
         },
       });
 
-      render(
+      await render(
         <IframeRenderer
           renderProps={renderProps}
           width={360}

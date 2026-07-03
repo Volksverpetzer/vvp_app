@@ -40,15 +40,15 @@ describe("StatisticsView chevron navigation", () => {
     reanimated.scrollTo.mockImplementation(mockScrollTo);
   });
 
-  it("right chevron scrolls to panel width", () => {
-    const { getByRole } = render(<StatisticsView />);
-    fireEvent.press(getByRole("button", { name: "Nächste Seite" }));
+  it("right chevron scrolls to panel width", async () => {
+    const { getByRole } = await render(<StatisticsView />);
+    await fireEvent.press(getByRole("button", { name: "Nächste Seite" }));
     expect(mockScrollTo).toHaveBeenCalledWith(expect.anything(), 300, 0, true);
   });
 
-  it("left chevron scrolls back to start", () => {
-    const { getByRole } = render(<StatisticsView />);
-    fireEvent.press(getByRole("button", { name: "Vorherige Seite" }));
+  it("left chevron scrolls back to start", async () => {
+    const { getByRole } = await render(<StatisticsView />);
+    await fireEvent.press(getByRole("button", { name: "Vorherige Seite" }));
     expect(mockScrollTo).toHaveBeenCalledWith(expect.anything(), 0, 0, true);
   });
 });

@@ -49,30 +49,32 @@ const baseRenderProps = {
 describe("ImageRenderer", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("renders without crashing", () => {
-    const { toJSON } = render(<ImageRenderer {...baseRenderProps} />);
+  it("renders without crashing", async () => {
+    const { toJSON } = await render(<ImageRenderer {...baseRenderProps} />);
     expect(toJSON()).not.toBeNull();
   });
 
-  it("navigates to /image with the uri on press", () => {
-    const { getByTestId } = render(<ImageRenderer {...baseRenderProps} />);
-    fireEvent.press(getByTestId("image-pressable"));
+  it("navigates to /image with the uri on press", async () => {
+    const { getByTestId } = await render(
+      <ImageRenderer {...baseRenderProps} />,
+    );
+    await fireEvent.press(getByTestId("image-pressable"));
     expect(mockPush).toHaveBeenCalledWith({
       pathname: "/image",
       params: { uri: "https://example.com/article-image.jpg" },
     });
   });
 
-  it("renders the image with the uri from renderer props", () => {
+  it("renders the image with the uri from renderer props", async () => {
     const { Image } = jest.requireMock("expo-image");
-    render(<ImageRenderer {...baseRenderProps} />);
+    await render(<ImageRenderer {...baseRenderProps} />);
     const [props] = Image.mock.calls[0];
     expect(props.source.uri).toBe("https://example.com/article-image.jpg");
   });
 
-  it("updates aspect ratio after image loads", () => {
+  it("updates aspect ratio after image loads", async () => {
     const { Image } = jest.requireMock("expo-image");
-    render(<ImageRenderer {...baseRenderProps} />);
+    await render(<ImageRenderer {...baseRenderProps} />);
     const [firstProps] = Image.mock.calls[0];
     expect(firstProps.onLoad).toBeDefined();
     act(() => {

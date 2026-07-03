@@ -157,37 +157,37 @@ describe("SettingsScreen", () => {
   });
 
   describe("notifications collapsable", () => {
-    it("is visible when not FOSS", () => {
+    it("is visible when not FOSS", async () => {
       mockIsFoss = false;
-      const { queryByText } = render(<SettingsScreen />);
+      const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText("Benachrichtigungen")).not.toBeNull();
     });
 
-    it("is hidden when FOSS", () => {
+    it("is hidden when FOSS", async () => {
       mockIsFoss = true;
-      const { queryByText } = render(<SettingsScreen />);
+      const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText("Benachrichtigungen")).toBeNull();
     });
   });
 
   describe("notification reset button", () => {
-    it("is visible when not FOSS", () => {
+    it("is visible when not FOSS", async () => {
       mockIsFoss = false;
-      const { queryByText } = render(<SettingsScreen />);
+      const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText("Benachrichtigungen zurücksetzen")).not.toBeNull();
     });
 
-    it("is hidden when FOSS", () => {
+    it("is hidden when FOSS", async () => {
       mockIsFoss = true;
-      const { queryByText } = render(<SettingsScreen />);
+      const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText("Benachrichtigungen zurücksetzen")).toBeNull();
     });
   });
 
   describe("notification reset button confirmation flow", () => {
-    it("shows a confirm toast when pressed", () => {
-      const { getByText } = render(<SettingsScreen />);
-      fireEvent.press(getByText("Benachrichtigungen zurücksetzen"));
+    it("shows a confirm toast when pressed", async () => {
+      const { getByText } = await render(<SettingsScreen />);
+      await fireEvent.press(getByText("Benachrichtigungen zurücksetzen"));
       expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
         "Benachrichtigungen zurücksetzen?",
         expect.any(String),
@@ -195,12 +195,12 @@ describe("SettingsScreen", () => {
       );
     });
 
-    it("calls registerForPushNotifications and shows success toast on confirm", () => {
+    it("calls registerForPushNotifications and shows success toast on confirm", async () => {
       const Notifications = jest.requireMock("#/helpers/Notifications") as {
         default: { registerForPushNotifications: jest.Mock };
       };
-      const { getByText } = render(<SettingsScreen />);
-      fireEvent.press(getByText("Benachrichtigungen zurücksetzen"));
+      const { getByText } = await render(<SettingsScreen />);
+      await fireEvent.press(getByText("Benachrichtigungen zurücksetzen"));
       const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
       onConfirm();
       expect(
@@ -211,9 +211,9 @@ describe("SettingsScreen", () => {
   });
 
   describe("achievements reset button confirmation flow", () => {
-    it("shows a confirm toast when pressed", () => {
-      const { getByText } = render(<SettingsScreen />);
-      fireEvent.press(getByText("Alle Erfolge zurücksetzen"));
+    it("shows a confirm toast when pressed", async () => {
+      const { getByText } = await render(<SettingsScreen />);
+      await fireEvent.press(getByText("Alle Erfolge zurücksetzen"));
       expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
         "Erfolge zurücksetzen?",
         expect.any(String),
@@ -221,12 +221,12 @@ describe("SettingsScreen", () => {
       );
     });
 
-    it("resets achievements and shows success toast on confirm", () => {
+    it("resets achievements and shows success toast on confirm", async () => {
       const { Achievements } = jest.requireMock("#/helpers/Achievements") as {
         Achievements: { resetEverything: jest.Mock };
       };
-      const { getByText } = render(<SettingsScreen />);
-      fireEvent.press(getByText("Alle Erfolge zurücksetzen"));
+      const { getByText } = await render(<SettingsScreen />);
+      await fireEvent.press(getByText("Alle Erfolge zurücksetzen"));
       const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
       onConfirm();
       expect(Achievements.resetEverything).toHaveBeenCalled();
@@ -235,9 +235,9 @@ describe("SettingsScreen", () => {
   });
 
   describe("intro reset button confirmation flow", () => {
-    it("shows a confirm toast when pressed", () => {
-      const { getByText } = render(<SettingsScreen />);
-      fireEvent.press(getByText("Intro zurücksetzen"));
+    it("shows a confirm toast when pressed", async () => {
+      const { getByText } = await render(<SettingsScreen />);
+      await fireEvent.press(getByText("Intro zurücksetzen"));
       expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
         "Intro zurücksetzen?",
         "Intro erscheint beim nächsten Start erneut",
@@ -245,15 +245,15 @@ describe("SettingsScreen", () => {
       );
     });
 
-    it("resets onboarding state and shows success toast on confirm", () => {
+    it("resets onboarding state and shows success toast on confirm", async () => {
       const mock = jest.requireMock("#/helpers/Stores/PersonalStore") as {
         default: {
           setOnboardingDone: jest.Mock;
           setLastSeenChangelogVersionCode: jest.Mock;
         };
       };
-      const { getByText } = render(<SettingsScreen />);
-      fireEvent.press(getByText("Intro zurücksetzen"));
+      const { getByText } = await render(<SettingsScreen />);
+      await fireEvent.press(getByText("Intro zurücksetzen"));
       const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
       onConfirm();
       expect(mock.default.setOnboardingDone).toHaveBeenCalledWith(false);
@@ -268,15 +268,15 @@ describe("SettingsScreen", () => {
   });
 
   describe("backup (import/export)", () => {
-    it("is visible when enableEngagement is true", () => {
+    it("is visible when enableEngagement is true", async () => {
       mockEnableEngagement = true;
-      const { queryByText } = render(<SettingsScreen />);
+      const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText("BackupView")).not.toBeNull();
     });
 
-    it("is hidden when enableEngagement is false", () => {
+    it("is hidden when enableEngagement is false", async () => {
       mockEnableEngagement = false;
-      const { queryByText } = render(<SettingsScreen />);
+      const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText("BackupView")).toBeNull();
     });
   });
@@ -286,15 +286,15 @@ describe("SettingsScreen", () => {
       mockIsFoss = false;
     });
 
-    it("shows ' - FOSS' suffix when FOSS", () => {
+    it("shows ' - FOSS' suffix when FOSS", async () => {
       mockIsFoss = true;
-      const { queryByText } = render(<SettingsScreen />);
+      const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText(/ - FOSS/)).not.toBeNull();
     });
 
-    it("does not show FOSS suffix when not FOSS", () => {
+    it("does not show FOSS suffix when not FOSS", async () => {
       mockIsFoss = false;
-      const { queryByText } = render(<SettingsScreen />);
+      const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText(/ - FOSS/)).toBeNull();
     });
   });

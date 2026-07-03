@@ -44,57 +44,57 @@ describe("StandardStepper", () => {
   });
 
   describe("back button", () => {
-    it("hides the back button on the first step", () => {
-      const { queryByText } = render(
+    it("hides the back button on the first step", async () => {
+      const { queryByText } = await render(
         <StandardStepper step={0} data={makeData(3)} {...defaultHandlers} />,
       );
       expect(queryByText("Zurück")).toBeNull();
     });
 
-    it("shows the back button on steps after the first", () => {
-      const { getByText } = render(
+    it("shows the back button on steps after the first", async () => {
+      const { getByText } = await render(
         <StandardStepper step={1} data={makeData(3)} {...defaultHandlers} />,
       );
       expect(getByText("Zurück")).toBeTruthy();
     });
 
-    it("calls previousStep when the back button is pressed", () => {
-      const { getByText } = render(
+    it("calls previousStep when the back button is pressed", async () => {
+      const { getByText } = await render(
         <StandardStepper step={2} data={makeData(4)} {...defaultHandlers} />,
       );
-      fireEvent.press(getByText("Zurück"));
+      await fireEvent.press(getByText("Zurück"));
       expect(defaultHandlers.previousStep).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("next button", () => {
-    it("shows Weiter on steps before the last", () => {
-      const { getByText } = render(
+    it("shows Weiter on steps before the last", async () => {
+      const { getByText } = await render(
         <StandardStepper step={0} data={makeData(3)} {...defaultHandlers} />,
       );
       expect(getByText("Weiter")).toBeTruthy();
     });
 
-    it("calls nextStep when Weiter is pressed", () => {
-      const { getByText } = render(
+    it("calls nextStep when Weiter is pressed", async () => {
+      const { getByText } = await render(
         <StandardStepper step={1} data={makeData(3)} {...defaultHandlers} />,
       );
-      fireEvent.press(getByText("Weiter"));
+      await fireEvent.press(getByText("Weiter"));
       expect(defaultHandlers.nextStep).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("finish button", () => {
-    it("shows the finish button on the last step instead of Weiter", () => {
-      const { getByText, queryByText } = render(
+    it("shows the finish button on the last step instead of Weiter", async () => {
+      const { getByText, queryByText } = await render(
         <StandardStepper step={2} data={makeData(3)} {...defaultHandlers} />,
       );
       expect(getByText("Get Started")).toBeTruthy();
       expect(queryByText("Weiter")).toBeNull();
     });
 
-    it("uses buttonTitle prop when provided", () => {
-      const { getByText } = render(
+    it("uses buttonTitle prop when provided", async () => {
+      const { getByText } = await render(
         <StandardStepper
           step={2}
           data={makeData(3)}
@@ -105,11 +105,11 @@ describe("StandardStepper", () => {
       expect(getByText("Jetzt starten")).toBeTruthy();
     });
 
-    it("calls onFinish when the finish button is pressed", () => {
-      const { getByText } = render(
+    it("calls onFinish when the finish button is pressed", async () => {
+      const { getByText } = await render(
         <StandardStepper step={2} data={makeData(3)} {...defaultHandlers} />,
       );
-      fireEvent.press(getByText("Get Started"));
+      await fireEvent.press(getByText("Get Started"));
       expect(defaultHandlers.onFinish).toHaveBeenCalledTimes(1);
     });
   });

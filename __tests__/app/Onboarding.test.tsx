@@ -132,25 +132,25 @@ describe("Onboarding", () => {
   });
 
   describe("notification step visibility", () => {
-    it("includes the notifications step when IS_FOSS is false", () => {
+    it("includes the notifications step when IS_FOSS is false", async () => {
       mockIsFoss = false;
-      render(<Onboarding />);
+      await render(<Onboarding />);
 
       const ids = capturedData.map((s) => s.id);
       expect(ids).toContain(NOTIFICATION_STEP_ID);
     });
 
-    it("excludes the notifications step when IS_FOSS is true", () => {
+    it("excludes the notifications step when IS_FOSS is true", async () => {
       mockIsFoss = true;
-      render(<Onboarding />);
+      await render(<Onboarding />);
 
       const ids = capturedData.map((s) => s.id);
       expect(ids).not.toContain(NOTIFICATION_STEP_ID);
     });
 
-    it("keeps all other steps when IS_FOSS is true", () => {
+    it("keeps all other steps when IS_FOSS is true", async () => {
       mockIsFoss = true;
-      render(<Onboarding />);
+      await render(<Onboarding />);
 
       const ids = capturedData.map((s) => s.id);
       expect(ids).toContain(1); // Welcome
@@ -162,7 +162,7 @@ describe("Onboarding", () => {
   describe("agreeToTerms (onFinish callback)", () => {
     it("calls registerForPushNotifications when IS_FOSS is false", async () => {
       mockIsFoss = false;
-      render(<Onboarding />);
+      await render(<Onboarding />);
 
       await capturedOnFinish!();
 
@@ -174,7 +174,7 @@ describe("Onboarding", () => {
 
     it("skips registerForPushNotifications when IS_FOSS is true", async () => {
       mockIsFoss = true;
-      render(<Onboarding />);
+      await render(<Onboarding />);
 
       await capturedOnFinish!();
 
@@ -184,7 +184,7 @@ describe("Onboarding", () => {
 
     it("still completes onboarding when IS_FOSS is true", async () => {
       mockIsFoss = true;
-      render(<Onboarding />);
+      await render(<Onboarding />);
 
       await capturedOnFinish!();
 

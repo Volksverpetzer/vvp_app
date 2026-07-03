@@ -48,28 +48,28 @@ jest.mock("@react-native-vector-icons/octicons/static", () => ({
 }));
 
 describe("PersonalTab", () => {
-  it("renders Favoriten and Quellen tab buttons", () => {
-    const { getByRole } = render(<PersonalTab />);
+  it("renders Favoriten and Quellen tab buttons", async () => {
+    const { getByRole } = await render(<PersonalTab />);
     expect(getByRole("tab", { name: "Favoriten" })).toBeTruthy();
     expect(getByRole("tab", { name: "Quellen" })).toBeTruthy();
   });
 
-  it("shows MyFavs by default", () => {
-    const { getByText } = render(<PersonalTab />);
+  it("shows MyFavs by default", async () => {
+    const { getByText } = await render(<PersonalTab />);
     expect(getByText("MyFavs")).toBeTruthy();
   });
 
-  it("switches to MySources when Quellen tab is pressed", () => {
-    const { getByRole, getByText, queryByText } = render(<PersonalTab />);
-    fireEvent.press(getByRole("tab", { name: "Quellen" }));
+  it("switches to MySources when Quellen tab is pressed", async () => {
+    const { getByRole, getByText, queryByText } = await render(<PersonalTab />);
+    await fireEvent.press(getByRole("tab", { name: "Quellen" }));
     expect(getByText("MySources")).toBeTruthy();
     expect(queryByText("MyFavs")).toBeNull();
   });
 
-  it("switches back to MyFavs when Favoriten tab is pressed", () => {
-    const { getByRole, getByText, queryByText } = render(<PersonalTab />);
-    fireEvent.press(getByRole("tab", { name: "Quellen" }));
-    fireEvent.press(getByRole("tab", { name: "Favoriten" }));
+  it("switches back to MyFavs when Favoriten tab is pressed", async () => {
+    const { getByRole, getByText, queryByText } = await render(<PersonalTab />);
+    await fireEvent.press(getByRole("tab", { name: "Quellen" }));
+    await fireEvent.press(getByRole("tab", { name: "Favoriten" }));
     expect(getByText("MyFavs")).toBeTruthy();
     expect(queryByText("MySources")).toBeNull();
   });

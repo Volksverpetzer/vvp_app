@@ -19,49 +19,49 @@ const Icon = ({ color }: { color?: string }) => (
 );
 
 describe("UiEmptyState", () => {
-  it("renders children as text", () => {
-    const { getByText } = render(
+  it("renders children as text", async () => {
+    const { getByText } = await render(
       <UiEmptyState icon={<Icon />}>Keine Einträge</UiEmptyState>,
     );
     expect(getByText("Keine Einträge")).toBeTruthy();
   });
 
-  it("renders the icon", () => {
-    const { getByTestId } = render(
+  it("renders the icon", async () => {
+    const { getByTestId } = await render(
       <UiEmptyState icon={<Icon />}>text</UiEmptyState>,
     );
     expect(getByTestId("icon")).toBeTruthy();
   });
 
-  it("injects the corporate color into the icon when no color is set", () => {
-    const { getByTestId } = render(
+  it("injects the corporate color into the icon when no color is set", async () => {
+    const { getByTestId } = await render(
       <UiEmptyState icon={<Icon />}>text</UiEmptyState>,
     );
     const icon = getByTestId("icon");
     expect(icon.props.style).toMatchObject({ color: "#1b7194" });
   });
 
-  it("preserves an explicit color passed by the caller", () => {
-    const { getByTestId } = render(
+  it("preserves an explicit color passed by the caller", async () => {
+    const { getByTestId } = await render(
       <UiEmptyState icon={<Icon color="red" />}>text</UiEmptyState>,
     );
     const icon = getByTestId("icon");
     expect(icon.props.style).toMatchObject({ color: "red" });
   });
 
-  it("calls onPress when pressed", () => {
+  it("calls onPress when pressed", async () => {
     const onPress = jest.fn();
-    const { getByRole } = render(
+    const { getByRole } = await render(
       <UiEmptyState icon={<Icon />} onPress={onPress}>
         text
       </UiEmptyState>,
     );
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
-  it("does not have button role without onPress", () => {
-    const { queryByRole } = render(
+  it("does not have button role without onPress", async () => {
+    const { queryByRole } = await render(
       <UiEmptyState icon={<Icon />}>text</UiEmptyState>,
     );
     expect(queryByRole("button")).toBeNull();

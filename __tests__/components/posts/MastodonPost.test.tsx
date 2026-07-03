@@ -77,33 +77,33 @@ const basePost = {
 describe("MastodonPost", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("renders the account display name", () => {
-    const { getByText } = render(<MastodonPost {...basePost} />);
+  it("renders the account display name", async () => {
+    const { getByText } = await render(<MastodonPost {...basePost} />);
     expect(getByText(/Test User/)).toBeTruthy();
   });
 
-  it("renders the post content as excerpt by default", () => {
-    const { getByText } = render(<MastodonPost {...basePost} />);
+  it("renders the post content as excerpt by default", async () => {
+    const { getByText } = await render(<MastodonPost {...basePost} />);
     expect(getByText("Hello world")).toBeTruthy();
   });
 
-  it("renders full text when displayText is DISPLAY_TEXT_FULL", () => {
-    const { getByText } = render(
+  it("renders full text when displayText is DISPLAY_TEXT_FULL", async () => {
+    const { getByText } = await render(
       <MastodonPost {...basePost} displayText={DISPLAY_TEXT_FULL} />,
     );
     expect(getByText("Hello world")).toBeTruthy();
   });
 
-  it("hides content when displayText is DISPLAY_TEXT_NONE", () => {
-    const { queryByText } = render(
+  it("hides content when displayText is DISPLAY_TEXT_NONE", async () => {
+    const { queryByText } = await render(
       <MastodonPost {...basePost} displayText={DISPLAY_TEXT_NONE} />,
     );
     expect(queryByText("Hello world")).toBeNull();
   });
 
-  it("shows 'Mehr Lesen' when excerpt is shorter than full text", () => {
+  it("shows 'Mehr Lesen' when excerpt is shorter than full text", async () => {
     const longContent = "<p>" + "word ".repeat(100) + "</p>";
-    const { getByText } = render(
+    const { getByText } = await render(
       <MastodonPost
         {...basePost}
         content={longContent}
@@ -113,8 +113,8 @@ describe("MastodonPost", () => {
     expect(getByText("Mehr Lesen")).toBeTruthy();
   });
 
-  it("shows thread count when answers are present in DISPLAY_TEXT_EXCERPT mode", () => {
-    const { getByText } = render(
+  it("shows thread count when answers are present in DISPLAY_TEXT_EXCERPT mode", async () => {
+    const { getByText } = await render(
       <MastodonPost
         {...basePost}
         answers={[basePost, basePost]}
@@ -124,9 +124,9 @@ describe("MastodonPost", () => {
     expect(getByText(/Thread 1 von 3/)).toBeTruthy();
   });
 
-  it("renders answer content in DISPLAY_TEXT_FULL mode", () => {
+  it("renders answer content in DISPLAY_TEXT_FULL mode", async () => {
     const answer = { ...basePost, content: "<p>Answer text</p>" };
-    const { getByText } = render(
+    const { getByText } = await render(
       <MastodonPost
         {...basePost}
         answers={[answer]}
@@ -136,14 +136,14 @@ describe("MastodonPost", () => {
     expect(getByText("Answer text")).toBeTruthy();
   });
 
-  it("navigates when pressed in excerpt mode", () => {
+  it("navigates when pressed in excerpt mode", async () => {
     const { useRouter } = require("expo-router");
     const push = jest.fn();
     useRouter.mockReturnValue({ push });
-    const { getByRole } = render(
+    const { getByRole } = await render(
       <MastodonPost {...basePost} displayText={DISPLAY_TEXT_EXCERPT} />,
     );
-    fireEvent.press(getByRole("button"));
+    await fireEvent.press(getByRole("button"));
     expect(push).toHaveBeenCalledWith(`/bsky/${basePost.id}`);
   });
 });

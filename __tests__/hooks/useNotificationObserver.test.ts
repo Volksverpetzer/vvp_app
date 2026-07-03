@@ -44,8 +44,8 @@ describe("useNotificationObserver", () => {
       mockIsFoss = false;
     });
 
-    it("subscribes to notification responses on mount", () => {
-      renderHook(() => useNotificationObserver());
+    it("subscribes to notification responses on mount", async () => {
+      await renderHook(() => useNotificationObserver());
 
       expect(
         Notifications.getLastNotificationResponseAsync,
@@ -55,14 +55,14 @@ describe("useNotificationObserver", () => {
       ).toHaveBeenCalledTimes(1);
     });
 
-    it("removes the listener on unmount", () => {
+    it("removes the listener on unmount", async () => {
       const mockRemove = jest.fn();
       (
         Notifications.addNotificationResponseReceivedListener as jest.Mock
       ).mockReturnValue({ remove: mockRemove });
 
-      const { unmount } = renderHook(() => useNotificationObserver());
-      unmount();
+      const { unmount } = await renderHook(() => useNotificationObserver());
+      await unmount();
 
       expect(mockRemove).toHaveBeenCalledTimes(1);
     });
@@ -77,8 +77,8 @@ describe("useNotificationObserver", () => {
       mockIsFoss = false;
     });
 
-    it("does not subscribe to notifications", () => {
-      renderHook(() => useNotificationObserver());
+    it("does not subscribe to notifications", async () => {
+      await renderHook(() => useNotificationObserver());
 
       expect(
         Notifications.getLastNotificationResponseAsync,

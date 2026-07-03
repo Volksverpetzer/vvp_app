@@ -76,9 +76,9 @@ const makeMockInstaPost = () => ({
 describe("InstaScreen", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("shows spinner while post is loading", () => {
+  it("shows spinner while post is loading", async () => {
     ContentStore.getStoredInstaPost.mockReturnValue(new Promise(() => {}));
-    const { getByTestId } = render(<InstaScreen />);
+    const { getByTestId } = await render(<InstaScreen />);
     expect(getByTestId("spinner")).toBeTruthy();
   });
 
@@ -88,7 +88,7 @@ describe("InstaScreen", () => {
     );
     ContentStore.getStoredInstaPost.mockResolvedValue(makeMockInstaPost());
 
-    render(<InstaScreen />);
+    await render(<InstaScreen />);
 
     await waitFor(() => {
       expect(InstaPostDetail).toHaveBeenCalled();
@@ -101,7 +101,7 @@ describe("InstaScreen", () => {
       .requireMock("#/helpers/network/ServerAPI")
       .default.getInstaPost.mockResolvedValue(null);
 
-    render(<InstaScreen />);
+    await render(<InstaScreen />);
 
     await waitFor(() => {
       expect(mockRouterBack).toHaveBeenCalledTimes(1);

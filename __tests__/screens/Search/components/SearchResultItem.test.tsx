@@ -55,17 +55,17 @@ jest.mock("#/helpers/utils/color", () => ({
 describe("SearchResultItem", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("renders inside a plain View when onPress is not provided", () => {
-    const { getByTestId, queryByTestId } = render(
+  it("renders inside a plain View when onPress is not provided", async () => {
+    const { getByTestId, queryByTestId } = await render(
       <SearchResultItem title="Test Title" text="<p>Test</p>" />,
     );
     expect(getByTestId("ui-card")).toBeTruthy();
     expect(queryByTestId("pressable")).toBeNull();
   });
 
-  it("renders inside a UiPressable when onPress is provided", () => {
+  it("renders inside a UiPressable when onPress is provided", async () => {
     const onPress = jest.fn();
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <SearchResultItem
         title="Test Title"
         text="<p>Test</p>"
@@ -75,28 +75,28 @@ describe("SearchResultItem", () => {
     expect(getByTestId("pressable")).toBeTruthy();
   });
 
-  it("calls onPress when the pressable is tapped", () => {
+  it("calls onPress when the pressable is tapped", async () => {
     const onPress = jest.fn();
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <SearchResultItem
         title="Test Title"
         text="<p>Test</p>"
         onPress={onPress}
       />,
     );
-    fireEvent.press(getByTestId("pressable"));
+    await fireEvent.press(getByTestId("pressable"));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
-  it("renders the title as a Heading", () => {
-    const { getByTestId } = render(
+  it("renders the title as a Heading", async () => {
+    const { getByTestId } = await render(
       <SearchResultItem title="My Title" text="<p>content</p>" />,
     );
     expect(getByTestId("heading").props.children).toBe("My Title");
   });
 
-  it("renders no Heading when title is empty", () => {
-    const { queryByTestId } = render(
+  it("renders no Heading when title is empty", async () => {
+    const { queryByTestId } = await render(
       <SearchResultItem title="" text="<p>content</p>" />,
     );
     expect(queryByTestId("heading")).toBeNull();

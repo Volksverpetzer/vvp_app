@@ -102,7 +102,7 @@ describe("Feed announcements", () => {
   });
 
   it("does not show an announcement when showAnnouncements is not set", async () => {
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId, queryByTestId } = await render(
       <Feed fetchers={[{ fetcher: jest.fn().mockResolvedValue(posts) }]} />,
     );
     await waitFor(() => expect(getByTestId("post-item")).toBeTruthy());
@@ -110,7 +110,7 @@ describe("Feed announcements", () => {
   });
 
   it("shows the first non-dismissed announcement when showAnnouncements is set", async () => {
-    const { getByTestId, getByText } = render(
+    const { getByTestId, getByText } = await render(
       <Feed
         showAnnouncements
         fetchers={[{ fetcher: jest.fn().mockResolvedValue(posts) }]}
@@ -122,7 +122,7 @@ describe("Feed announcements", () => {
 
   it("does not show an announcement already recorded as dismissed", async () => {
     mockGetDismissed.mockResolvedValue(["test-announcement"]);
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId, queryByTestId } = await render(
       <Feed
         showAnnouncements
         fetchers={[{ fetcher: jest.fn().mockResolvedValue(posts) }]}
@@ -133,7 +133,7 @@ describe("Feed announcements", () => {
   });
 
   it("hides the announcement and persists dismissal when dismissed", async () => {
-    const { getByTestId, queryByTestId } = render(
+    const { getByTestId, queryByTestId } = await render(
       <Feed
         showAnnouncements
         fetchers={[{ fetcher: jest.fn().mockResolvedValue(posts) }]}
@@ -141,7 +141,7 @@ describe("Feed announcements", () => {
     );
     await waitFor(() => expect(getByTestId("announcement-card")).toBeTruthy());
 
-    fireEvent.press(getByTestId("announcement-card"));
+    await fireEvent.press(getByTestId("announcement-card"));
 
     await waitFor(() => expect(queryByTestId("announcement-card")).toBeNull());
     expect(mockDismiss).toHaveBeenCalledWith("test-announcement");
@@ -149,7 +149,7 @@ describe("Feed announcements", () => {
 
   it("still shows the empty state alongside the announcement when the feed is empty", async () => {
     mockFetch.mockResolvedValue([]);
-    const { getByTestId } = render(
+    const { getByTestId } = await render(
       <Feed
         showAnnouncements
         fetchers={[{ fetcher: jest.fn().mockResolvedValue([]) }]}

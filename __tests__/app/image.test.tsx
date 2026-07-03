@@ -35,46 +35,46 @@ jest.mock("#/constants/Colors", () => ({
 describe("ImageScreen", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("renders without crashing", () => {
-    const { toJSON } = render(<ImageScreen />);
+  it("renders without crashing", async () => {
+    const { toJSON } = await render(<ImageScreen />);
     expect(toJSON()).not.toBeNull();
   });
 
-  it("passes the uri from search params to the Image", () => {
+  it("passes the uri from search params to the Image", async () => {
     const { Image } = jest.requireMock("expo-image");
-    render(<ImageScreen />);
+    await render(<ImageScreen />);
     const [props] = Image.mock.calls[0];
     expect(props.source.uri).toBe("https://example.com/photo.jpg");
   });
 
-  it("renders the NavBar", () => {
+  it("renders the NavBar", async () => {
     const NavBar = jest.requireMock("#/components/bars/NavBar");
-    render(<ImageScreen />);
+    await render(<ImageScreen />);
     expect(NavBar).toHaveBeenCalled();
   });
 
-  it("applies background color from color scheme", () => {
-    const { toJSON } = render(<ImageScreen />);
+  it("applies background color from color scheme", async () => {
+    const { toJSON } = await render(<ImageScreen />);
     const root = toJSON() as any;
     expect(root.props.style).toEqual(
       expect.objectContaining({ backgroundColor: "#ffffff" }),
     );
   });
 
-  it("shows an empty state instead of the Image when uri is missing", () => {
+  it("shows an empty state instead of the Image when uri is missing", async () => {
     const { useLocalSearchParams } = jest.requireMock("expo-router");
     useLocalSearchParams.mockReturnValueOnce({});
     const { Image } = jest.requireMock("expo-image");
-    const { getByText } = render(<ImageScreen />);
+    const { getByText } = await render(<ImageScreen />);
     expect(Image).not.toHaveBeenCalled();
     expect(getByText("Bild konnte nicht geladen werden")).toBeTruthy();
   });
 
-  it("shows an empty state instead of the Image when uri is an array", () => {
+  it("shows an empty state instead of the Image when uri is an array", async () => {
     const { useLocalSearchParams } = jest.requireMock("expo-router");
     useLocalSearchParams.mockReturnValueOnce({ uri: ["a.jpg", "b.jpg"] });
     const { Image } = jest.requireMock("expo-image");
-    const { getByText } = render(<ImageScreen />);
+    const { getByText } = await render(<ImageScreen />);
     expect(Image).not.toHaveBeenCalled();
     expect(getByText("Bild konnte nicht geladen werden")).toBeTruthy();
   });

@@ -1,7 +1,6 @@
 import { describe, expect, it, jest } from "@jest/globals";
 import { render } from "@testing-library/react-native";
 import React from "react";
-import { ActivityIndicator } from "react-native";
 
 // Stable mock for expo-image — persists through jest.resetModules() so the
 // component and test share the same MockImage reference.
@@ -34,30 +33,34 @@ describe("UiSpinner", () => {
       Spinner = loadSpinner(null);
     });
 
-    it("renders an ActivityIndicator", () => {
-      const { UNSAFE_getByType } = render(<Spinner />);
-      expect(UNSAFE_getByType(ActivityIndicator)).toBeTruthy();
+    it("renders an ActivityIndicator", async () => {
+      // testID flows through UiSpinner's ActivityIndicatorProps spread onto the
+      // ActivityIndicator; RNTL 14 removed UNSAFE_getByType, so query by testID.
+      const { getByTestId } = await render(
+        <Spinner testID="activity-indicator" />,
+      );
+      expect(getByTestId("activity-indicator")).toBeTruthy();
     });
 
-    it("does not render text when text prop is omitted", () => {
-      const { queryByText } = render(<Spinner />);
+    it("does not render text when text prop is omitted", async () => {
+      const { queryByText } = await render(<Spinner />);
       expect(queryByText(/.+/)).toBeNull();
     });
 
-    it("renders text when text prop is provided", () => {
-      const { getByText } = render(<Spinner text="Lade Artikel..." />);
+    it("renders text when text prop is provided", async () => {
+      const { getByText } = await render(<Spinner text="Lade Artikel..." />);
       expect(getByText("Lade Artikel...")).toBeTruthy();
     });
 
-    it("applies textAlign:center to the text", () => {
-      const { getByText } = render(<Spinner text="Lade Artikel..." />);
+    it("applies textAlign:center to the text", async () => {
+      const { getByText } = await render(<Spinner text="Lade Artikel..." />);
       expect(getByText("Lade Artikel...").props.style).toMatchObject({
         textAlign: "center",
       });
     });
 
-    it("applies gap:12 to the container", () => {
-      const { toJSON } = render(<Spinner />);
+    it("applies gap:12 to the container", async () => {
+      const { toJSON } = await render(<Spinner />);
       const flatStyle = ((toJSON() as any).props.style as any[]).flat();
       expect(flatStyle).toContainEqual(expect.objectContaining({ gap: 12 }));
     });
@@ -69,18 +72,21 @@ describe("UiSpinner", () => {
       Spinner = loadSpinner({ uri: "logo_animated.gif" });
     });
 
-    it("does not render an ActivityIndicator", () => {
-      const { UNSAFE_queryAllByType } = render(<Spinner />);
-      expect(UNSAFE_queryAllByType(ActivityIndicator)).toHaveLength(0);
+    it("does not render an ActivityIndicator", async () => {
+      const { queryByTestId } = await render(
+        <Spinner testID="activity-indicator" />,
+      );
+      expect(queryByTestId("activity-indicator")).toBeNull();
     });
 
-    it("renders an expo-image Image", () => {
-      const { UNSAFE_getByType } = render(<Spinner />);
-      expect(UNSAFE_getByType(MockImage)).toBeTruthy();
+    it("renders an expo-image Image", async () => {
+      MockImage.mockClear();
+      await render(<Spinner />);
+      expect(MockImage).toHaveBeenCalled();
     });
 
-    it("still renders text when text prop is provided", () => {
-      const { getByText } = render(<Spinner text="Wird geladen..." />);
+    it("still renders text when text prop is provided", async () => {
+      const { getByText } = await render(<Spinner text="Wird geladen..." />);
       expect(getByText("Wird geladen...")).toBeTruthy();
     });
   });

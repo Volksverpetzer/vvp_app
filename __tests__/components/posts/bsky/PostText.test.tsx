@@ -54,15 +54,15 @@ const makePost = (record: Record<string, unknown>) => ({
 });
 
 describe("PostText", () => {
-  it("returns null when record has no text property", () => {
-    const { toJSON } = render(
+  it("returns null when record has no text property", async () => {
+    const { toJSON } = await render(
       <PostText feedViewPost={makePost({ $type: "app.bsky.feed.post" })} />,
     );
     expect(toJSON()).toBeNull();
   });
 
-  it("renders plain text content", () => {
-    const { getByText } = render(
+  it("renders plain text content", async () => {
+    const { getByText } = await render(
       <PostText
         feedViewPost={makePost({
           $type: "app.bsky.feed.post",

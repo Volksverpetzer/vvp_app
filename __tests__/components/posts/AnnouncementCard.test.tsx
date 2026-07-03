@@ -47,15 +47,15 @@ const announcement: AnnouncementEntry = {
 describe("AnnouncementCard", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  it("renders the announcement message", () => {
-    const { getByText } = render(
+  it("renders the announcement message", async () => {
+    const { getByText } = await render(
       <AnnouncementCard announcement={announcement} onDismiss={jest.fn()} />,
     );
     expect(getByText(announcement.message)).toBeTruthy();
   });
 
-  it("renders **bold** segments without the markers", () => {
-    const { getByText, queryByText } = render(
+  it("renders **bold** segments without the markers", async () => {
+    const { getByText, queryByText } = await render(
       <AnnouncementCard
         announcement={{ ...announcement, message: "**Neu**: hallo" }}
         onDismiss={jest.fn()}
@@ -65,8 +65,8 @@ describe("AnnouncementCard", () => {
     expect(queryByText("**Neu**: hallo")).toBeNull();
   });
 
-  it("opens links via onLinkPress without rendering the markdown syntax", () => {
-    const { getByText, queryByText } = render(
+  it("opens links via onLinkPress without rendering the markdown syntax", async () => {
+    const { getByText, queryByText } = await render(
       <AnnouncementCard
         announcement={{
           ...announcement,
@@ -76,37 +76,37 @@ describe("AnnouncementCard", () => {
       />,
     );
     expect(queryByText(/\[Prüfpunkt\]/)).toBeNull();
-    fireEvent.press(getByText("Prüfpunkt"));
+    await fireEvent.press(getByText("Prüfpunkt"));
     expect(mockOnLinkPress).toHaveBeenCalledWith(
       "https://pruefpunkt.org",
       expect.anything(),
     );
   });
 
-  it("renders both action buttons", () => {
-    const { getByText } = render(
+  it("renders both action buttons", async () => {
+    const { getByText } = await render(
       <AnnouncementCard announcement={announcement} onDismiss={jest.fn()} />,
     );
     expect(getByText("Alles klar!")).toBeTruthy();
     expect(getByText("Zu den Einstellungen")).toBeTruthy();
   });
 
-  it("dismisses without navigating when 'Alles klar!' is pressed", () => {
+  it("dismisses without navigating when 'Alles klar!' is pressed", async () => {
     const onDismiss = jest.fn();
-    const { getByText } = render(
+    const { getByText } = await render(
       <AnnouncementCard announcement={announcement} onDismiss={onDismiss} />,
     );
-    fireEvent.press(getByText("Alles klar!"));
+    await fireEvent.press(getByText("Alles klar!"));
     expect(onDismiss).toHaveBeenCalledWith(announcement.id);
     expect(mockPush).not.toHaveBeenCalled();
   });
 
-  it("dismisses and navigates when the action button is pressed", () => {
+  it("dismisses and navigates when the action button is pressed", async () => {
     const onDismiss = jest.fn();
-    const { getByText } = render(
+    const { getByText } = await render(
       <AnnouncementCard announcement={announcement} onDismiss={onDismiss} />,
     );
-    fireEvent.press(getByText("Zu den Einstellungen"));
+    await fireEvent.press(getByText("Zu den Einstellungen"));
     expect(onDismiss).toHaveBeenCalledWith(announcement.id);
     expect(mockPush).toHaveBeenCalledWith(announcement.route);
   });

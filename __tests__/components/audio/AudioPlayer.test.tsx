@@ -57,28 +57,28 @@ describe("AudioPlayer — visibility", () => {
     jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as any);
   });
 
-  it("renders nothing while the audio is not yet loaded", () => {
+  it("renders nothing while the audio is not yet loaded", async () => {
     jest
       .mocked(useAudioPlayerStatus)
       .mockReturnValue({ ...loadedStatus, isLoaded: false } as AudioStatus);
-    const { toJSON } = render(<AudioPlayer audioUrl={TEST_URL} />);
+    const { toJSON } = await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(toJSON()).toBeNull();
   });
 
-  it("renders nothing when the audio file has a load error (e.g. 404)", () => {
+  it("renders nothing when the audio file has a load error (e.g. 404)", async () => {
     jest.mocked(useAudioPlayerStatus).mockReturnValue({
       ...loadedStatus,
       error: "404 Not Found",
     } as AudioStatus);
-    const { toJSON } = render(<AudioPlayer audioUrl={TEST_URL} />);
+    const { toJSON } = await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(toJSON()).toBeNull();
   });
 
-  it("renders the player once audio is loaded", () => {
+  it("renders the player once audio is loaded", async () => {
     jest
       .mocked(useAudioPlayerStatus)
       .mockReturnValue(loadedStatus as AudioStatus);
-    const { toJSON } = render(<AudioPlayer audioUrl={TEST_URL} />);
+    const { toJSON } = await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(toJSON()).not.toBeNull();
   });
 });
@@ -92,44 +92,44 @@ describe("AudioPlayer — playback controls", () => {
       .mockReturnValue(loadedStatus as AudioStatus);
   });
 
-  it("calls setAudioModeAsync with playsInSilentMode on mount", () => {
-    render(<AudioPlayer audioUrl={TEST_URL} />);
+  it("calls setAudioModeAsync with playsInSilentMode on mount", async () => {
+    await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(setAudioModeAsync).toHaveBeenCalledWith({ playsInSilentMode: true });
   });
 
-  it("calls player.play() when button is pressed while paused", () => {
-    const { getByRole } = render(<AudioPlayer audioUrl={TEST_URL} />);
-    fireEvent.press(getByRole("button"));
+  it("calls player.play() when button is pressed while paused", async () => {
+    const { getByRole } = await render(<AudioPlayer audioUrl={TEST_URL} />);
+    await fireEvent.press(getByRole("button"));
     expect(mockPlayer.play).toHaveBeenCalledTimes(1);
     expect(mockPlayer.pause).not.toHaveBeenCalled();
   });
 
-  it("calls player.pause() when button is pressed while playing", () => {
+  it("calls player.pause() when button is pressed while playing", async () => {
     jest
       .mocked(useAudioPlayerStatus)
       .mockReturnValue({ ...loadedStatus, playing: true } as AudioStatus);
-    const { getByRole } = render(<AudioPlayer audioUrl={TEST_URL} />);
-    fireEvent.press(getByRole("button"));
+    const { getByRole } = await render(<AudioPlayer audioUrl={TEST_URL} />);
+    await fireEvent.press(getByRole("button"));
     expect(mockPlayer.pause).toHaveBeenCalledTimes(1);
     expect(mockPlayer.play).not.toHaveBeenCalled();
   });
 
-  it("calls seekTo(0) when the audio finishes", () => {
+  it("calls seekTo(0) when the audio finishes", async () => {
     jest.mocked(useAudioPlayerStatus).mockReturnValue({
       ...loadedStatus,
       didJustFinish: true,
     } as AudioStatus);
-    render(<AudioPlayer audioUrl={TEST_URL} />);
+    await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(mockPlayer.seekTo).toHaveBeenCalledWith(0);
   });
 
-  it("does not call seekTo(0) during normal playback", () => {
+  it("does not call seekTo(0) during normal playback", async () => {
     jest.mocked(useAudioPlayerStatus).mockReturnValue({
       ...loadedStatus,
       currentTime: 45,
       didJustFinish: false,
     } as AudioStatus);
-    render(<AudioPlayer audioUrl={TEST_URL} />);
+    await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(mockPlayer.seekTo).not.toHaveBeenCalled();
   });
 });
@@ -140,19 +140,19 @@ describe("AudioPlayer — accessibility labels", () => {
     jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as any);
   });
 
-  it("labels the button 'Abspielen' when paused", () => {
+  it("labels the button 'Abspielen' when paused", async () => {
     jest
       .mocked(useAudioPlayerStatus)
       .mockReturnValue({ ...loadedStatus, playing: false } as AudioStatus);
-    const { getByRole } = render(<AudioPlayer audioUrl={TEST_URL} />);
+    const { getByRole } = await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(getByRole("button", { name: "Abspielen" })).toBeTruthy();
   });
 
-  it("labels the button 'Pause' when playing", () => {
+  it("labels the button 'Pause' when playing", async () => {
     jest
       .mocked(useAudioPlayerStatus)
       .mockReturnValue({ ...loadedStatus, playing: true } as AudioStatus);
-    const { getByRole } = render(<AudioPlayer audioUrl={TEST_URL} />);
+    const { getByRole } = await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(getByRole("button", { name: "Pause" })).toBeTruthy();
   });
 });
@@ -163,13 +163,13 @@ describe("AudioPlayer — clamping", () => {
     jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as any);
   });
 
-  it("clamps remaining time to 0 when currentTime overshoots duration", () => {
+  it("clamps remaining time to 0 when currentTime overshoots duration", async () => {
     jest.mocked(useAudioPlayerStatus).mockReturnValue({
       ...loadedStatus,
       duration: 60,
       currentTime: 61,
     } as AudioStatus);
-    const { getByText } = render(<AudioPlayer audioUrl={TEST_URL} />);
+    const { getByText } = await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(getByText("0:00")).toBeTruthy();
   });
 });
@@ -188,13 +188,13 @@ describe("AudioPlayer — remaining time display", () => {
     ["0:05", 90, 85],
   ])(
     "shows %s remaining when duration=%s and currentTime=%s",
-    (expected, duration, currentTime) => {
+    async (expected, duration, currentTime) => {
       jest.mocked(useAudioPlayerStatus).mockReturnValue({
         ...loadedStatus,
         duration,
         currentTime,
       } as AudioStatus);
-      const { getByText } = render(<AudioPlayer audioUrl={TEST_URL} />);
+      const { getByText } = await render(<AudioPlayer audioUrl={TEST_URL} />);
       expect(getByText(expected)).toBeTruthy();
     },
   );
