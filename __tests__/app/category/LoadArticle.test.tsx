@@ -27,12 +27,15 @@ jest.mock("#/helpers/utils/feeds", () => ({
 
 jest.mock("#/helpers/Stores/ContentStore", () => ({
   __esModule: true,
-  default: { getStoredArticle: jest.fn(async () => null) },
+  default: { getStoredArticle: jest.fn(() => Promise.resolve(null)) },
 }));
 
 jest.mock("#/helpers/network/WordPressAPI", () => ({
   __esModule: true,
-  default: { getPost: jest.fn(async () => null), create: jest.fn(() => null) },
+  default: {
+    getPost: jest.fn(() => Promise.resolve(null)),
+    create: jest.fn(() => null),
+  },
 }));
 
 const webviewUri = () => {
