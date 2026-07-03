@@ -118,6 +118,19 @@ describe("WordPressAPI", () => {
       expect(thumb).toBe("thumb");
       spy.mockRestore();
     });
+
+    it("falls back to source_url when no intermediate sizes exist", async () => {
+      // Prüfpunkt's WordPress returns an empty `sizes` object; only the
+      // full-size original is available via the top-level source_url.
+      const spy = jest.spyOn(Networking, "get").mockResolvedValue({
+        source_url: "https://pruefpunkt.org/wp-content/uploads/full.png",
+        media_details: { sizes: {} },
+      } as any);
+      const { image, thumb } = await WordPressAPI.getFeatureImage("href");
+      expect(image).toBe("https://pruefpunkt.org/wp-content/uploads/full.png");
+      expect(thumb).toBe("https://pruefpunkt.org/wp-content/uploads/full.png");
+      spy.mockRestore();
+    });
   });
 
   describe("create", () => {
