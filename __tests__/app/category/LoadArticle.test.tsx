@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react-native";
+import { render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import LoadArticle from "#/app/[category]/[slug]";
@@ -23,6 +23,16 @@ jest.mock("#/constants/Config", () => ({
 
 jest.mock("#/helpers/utils/feeds", () => ({
   findSecondaryWpFeed: jest.fn(() => undefined),
+}));
+
+jest.mock("#/helpers/Stores/ContentStore", () => ({
+  __esModule: true,
+  default: { getStoredArticle: jest.fn(async () => null) },
+}));
+
+jest.mock("#/helpers/network/WordPressAPI", () => ({
+  __esModule: true,
+  default: { getPost: jest.fn(async () => null), create: jest.fn(() => null) },
 }));
 
 const webviewUri = () => {
@@ -63,5 +73,29 @@ describe("LoadArticle single-segment page (no slug)", () => {
     expect(webviewUri()).toBe(
       "https://volksverpetzer.de/stellenausschreibung-redaktion/",
     );
+  });
+});
+
+describe("LoadArticle article fallback (slug not found)", () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it("builds a trailing-slash /category/slug/ URL when the API has no post", async () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "klima",
+      slug: "some-slug",
+    });
+
+    // No cached article and no post from the API -> hasError webview fallback.
+    render(<LoadArticle />);
+
+    await waitFor(() => {
+      const EdgelessWebview = jest.requireMock(
+        "#/screens/Home/components/EdgelessWebview",
+      );
+      expect(EdgelessWebview).toHaveBeenCalled();
+    });
+
+    expect(webviewUri()).toBe("https://volksverpetzer.de/klima/some-slug/");
   });
 });
