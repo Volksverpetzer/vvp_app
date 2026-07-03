@@ -17,6 +17,21 @@ export type LoadProperties = {
   elevated?: boolean;
 };
 
+// Reuse one API client per secondary base URL so rendering many embedded
+// articles (or reloading one) doesn't rebuild a fetch client every time.
+const secondaryApiCache = new Map<
+  HttpsUrl,
+  ReturnType<typeof WordPressAPI.create>
+>();
+const secondaryApiFor = (baseUrl: HttpsUrl) => {
+  let api = secondaryApiCache.get(baseUrl);
+  if (!api) {
+    api = WordPressAPI.create(baseUrl);
+    secondaryApiCache.set(baseUrl, api);
+  }
+  return api;
+};
+
 /**
  * This component takes an article slug, pulls WordPress API and then Renders an Article Post with the Response
  */
@@ -26,7 +41,7 @@ const LoadArticlePost = (properties: LoadProperties) => {
   const loadArticle = useCallback(
     (articleSlug: string) => {
       const getPost = baseUrl
-        ? WordPressAPI.create(baseUrl).getPost
+        ? secondaryApiFor(baseUrl).getPost
         : WordPressAPI.getPost;
       return getPost(articleSlug).then((data) => {
         if (!data) {
