@@ -27,8 +27,9 @@ const ReportingWrapper = ({
 
   const errorReport = () => {
     router.push({
-      pathname: "/(tabs)/report",
+      pathname: "/(tabs)/contact",
       params: {
+        category: "report_fake",
         url,
         index: String(renderIndex),
       },

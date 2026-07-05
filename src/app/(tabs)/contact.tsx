@@ -6,13 +6,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  View,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
+import { ChevronIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import Heading from "#/components/typography/Heading";
-import UiCheckbox from "#/components/ui/UiCheckbox";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -20,30 +21,61 @@ import UiTextInput from "#/components/ui/UiTextInput";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
-import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import ReportStatusList from "#/screens/ReportTab/components/ReportStatusList";
+import type { ContactCategory } from "#/types";
 
-interface Report {
-  id: string;
-}
+const CATEGORIES: { key: ContactCategory; label: string }[] = [
+  { key: "report_fake", label: "Fake melden" },
+  { key: "app_feedback", label: "Feedback zur App" },
+  { key: "other", label: "Anderes Anliegen" },
+];
 
-const ReportScreen = () => {
+const categoryLabel = (category: ContactCategory) =>
+  CATEGORIES.find(({ key }) => key === category)?.label ?? "";
+
+const CATEGORY_TEXTS: Record<
+  ContactCategory,
+  { titleLabel: string; titleHint: string; messageLabel: string }
+> = {
+  report_fake: {
+    titleLabel: "Link zum Fake",
+    titleHint: "Gib einen Link ein",
+    messageLabel: "Was ist daran falsch?",
+  },
+  app_feedback: {
+    titleLabel: "Betreff",
+    titleHint: "Gib einen Betreff ein",
+    messageLabel: "Dein Feedback",
+  },
+  other: {
+    titleLabel: "Betreff",
+    titleHint: "Gib einen Betreff ein",
+    messageLabel: "Deine Nachricht",
+  },
+};
+
+const isValidCategory = (value?: string): value is ContactCategory =>
+  value === "report_fake" || value === "app_feedback" || value === "other";
+
+const ContactScreen = () => {
   // Local state variables
-  const [reports, setReports] = useState<Report[]>([]);
   const [buttonEnabled, setButtonEnabled] = useState(true);
   const [animation, setAnimation] = useState(false);
   const [error, setError] = useState("");
-  const [description, setDescription] = useState("");
-  const [url, setUrl] = useState("");
-  const [moreInfo, setMoreInfo] = useState("");
-  const [allowedPublic, setAllowedPublic] = useState(false);
+  const [category, setCategory] = useState<ContactCategory>("report_fake");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
 
   // Routing and dimensions
-  const parameters = useLocalSearchParams<{ url: string; index: string }>();
-  const { url: parameterUrl, index } = parameters;
+  const parameters = useLocalSearchParams<{
+    url: string;
+    index: string;
+    category: string;
+  }>();
+  const { url: parameterUrl, index, category: parameterCategory } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
   const {
@@ -58,6 +90,20 @@ const ReportScreen = () => {
   const styles = useMemo(
     () =>
       StyleSheet.create({
+        dropdown: {
+          backgroundColor: inputBackground,
+          borderRadius: 5,
+        },
+        dropdownItem: {
+          alignItems: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          padding: 10,
+        },
+        dropdownItemActive: {
+          backgroundColor: accent,
+          borderRadius: 5,
+        },
         errorText: {
           color: errorColor,
           fontSize: 18,
@@ -91,61 +137,66 @@ const ReportScreen = () => {
 
   // Populate initial fields and load reports on component mount or when params change
   useEffect(() => {
+    if (isValidCategory(parameterCategory)) {
+      setCategory(parameterCategory);
+    }
     if (index) {
-      setDescription(`Absatz ${index}`);
+      setMessage(`Absatz ${index}`);
     }
     if (parameterUrl) {
+      setCategory("report_fake");
       if (parameterUrl.includes("http")) {
-        setUrl(parameterUrl);
+        setTitle(parameterUrl);
       } else {
-        setDescription(parameterUrl);
+        setMessage(parameterUrl);
       }
     }
-    PersonalStore.getReports().then((storedReports) => {
-      setReports(storedReports || []);
-    });
-  }, [parameterUrl, index]);
+  }, [parameterUrl, index, parameterCategory]);
 
   // Callback to handle the submit action
   const onSubmit = useCallback(async () => {
-    if (description.trim().length < 10) {
-      setError("Bitte eine kurze Zusammenfassung eingeben");
+    if (category === "report_fake") {
+      if (!title.trim().toLowerCase().startsWith("http")) {
+        setError("Bitte einen Link zum Fake eingeben");
+        return;
+      }
+    } else if (title.trim().length === 0) {
+      setError("Bitte einen Betreff eingeben");
+      return;
+    }
+    if (message.trim().length < 10) {
+      setError("Bitte eine kurze Nachricht eingeben");
       return;
     }
     setButtonEnabled(false);
 
-    const data = await API.reportFake({
-      description,
-      more_info: moreInfo,
-      url,
-      allowed_public: allowedPublic,
+    await API.postContact({
+      category,
+      title: title.trim(),
+      message: message.trim(),
     });
-    registerEvent(Config.wpUrl, "Report Submitted", {
-      allowed_public: allowedPublic,
-      has_url: url.trim().length > 0,
+    registerEvent(Config.wpUrl, "Contact Submitted", {
+      category,
     });
-    const updatedReports = [...reports, data];
-    setReports(updatedReports);
-    await PersonalStore.setReports(updatedReports);
 
     setAnimation(true);
-    setDescription("");
-    setUrl("");
-    setMoreInfo("");
+    setTitle("");
+    setMessage("");
     setError("");
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setTimeout(() => {
       setAnimation(false);
       setButtonEnabled(true);
     }, 5000);
-  }, [description, moreInfo, url, allowedPublic, reports]);
+  }, [category, title, message]);
 
   const HEADER_HEIGHT = 150;
+  const texts = CATEGORY_TEXTS[category];
 
   return (
     <>
       <AnimatedHeader
-        title="Melden"
+        title="Kontakt"
         scrollOffsetY={scrollOffsetY}
         minHeight={100}
         maxHeight={HEADER_HEIGHT}
@@ -171,55 +222,75 @@ const ReportScreen = () => {
           )}
           scrollEventThrottle={16}
         >
-          <Heading style={{ marginBottom: 10 }}>Zusammenfassung</Heading>
-          <UiTextInput
-            accessibilityLabel="Text input field"
-            accessibilityHint="Gib eine kurze Zusammenfassung ein"
-            placeholder="..."
-            placeholderTextColor={textColor}
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            style={[styles.input, { height: 80 }]}
-          />
+          <Heading style={{ marginBottom: 10 }}>Worum geht es?</Heading>
+          <View style={styles.dropdown}>
+            <UiPressable
+              accessibilityRole="button"
+              accessibilityHint="Wähle eine Kategorie aus"
+              accessibilityState={{ expanded: dropdownOpen }}
+              onPress={() => setDropdownOpen(!dropdownOpen)}
+              style={styles.dropdownItem}
+            >
+              <UiText>{categoryLabel(category)}</UiText>
+              <ChevronIcon
+                color={textColor}
+                direction={dropdownOpen ? "up" : "down"}
+                size={16}
+              />
+            </UiPressable>
+            {dropdownOpen &&
+              CATEGORIES.map(({ key, label }) => (
+                <UiPressable
+                  key={key}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: category === key }}
+                  onPress={() => {
+                    setCategory(key);
+                    setDropdownOpen(false);
+                    setError("");
+                  }}
+                  style={[
+                    styles.dropdownItem,
+                    category === key && styles.dropdownItemActive,
+                  ]}
+                >
+                  <UiText
+                    style={
+                      category === key ? globalStyles.whiteText : undefined
+                    }
+                  >
+                    {label}
+                  </UiText>
+                </UiPressable>
+              ))}
+          </View>
           <UiSpace size={20} />
-          <Heading style={{ marginBottom: 10 }}>Link zum Fake</Heading>
+          <Heading style={{ marginBottom: 10 }}>{texts.titleLabel}</Heading>
           <UiTextInput
             accessibilityLabel="Text input field"
-            accessibilityHint="Gib einen Link ein"
+            accessibilityHint={texts.titleHint}
             placeholder="..."
             placeholderTextColor={textColor}
-            value={url}
-            onChangeText={setUrl}
+            value={title}
+            onChangeText={setTitle}
             style={styles.input}
           />
           <UiSpace size={20} />
-          <Heading style={{ marginBottom: 10 }}>Links zum Thema</Heading>
+          <Heading style={{ marginBottom: 10 }}>{texts.messageLabel}</Heading>
           <UiTextInput
             accessibilityLabel="Text input field"
-            accessibilityHint="Gib Links zum Thema ein"
+            accessibilityHint="Gib deine Nachricht ein"
             placeholder="..."
             placeholderTextColor={textColor}
-            value={moreInfo}
-            onChangeText={setMoreInfo}
+            value={message}
+            onChangeText={setMessage}
             multiline
-            style={[styles.input, { height: 80 }]}
+            style={[styles.input, { height: 120 }]}
           />
           <UiSpace size={20} />
           {error ? (
             <UiText style={styles.errorText}>{error}</UiText>
           ) : undefined}
-          <UiCheckbox
-            checked={allowedPublic}
-            onChange={(checked: boolean) => setAllowedPublic(checked)}
-          >
-            {/* ensure the text wraps and doesn't overflow */}
-            <UiText style={{ flex: 1 }}>
-              Der Report darf veröffentlicht werden, sodass andere ihn
-              kommentieren können.
-            </UiText>
-          </UiCheckbox>
-          <UiSpace size={20} />
           <UiPressable
             accessibilityRole="button"
             disabled={!buttonEnabled}
@@ -235,10 +306,9 @@ const ReportScreen = () => {
                 { textAlign: "center", fontSize: 18 },
               ]}
             >
-              Report
+              Senden
             </UiText>
           </UiPressable>
-          <ReportStatusList reports={reports} />
           <UiSpace size={100} />
         </ScrollView>
       </KeyboardAvoidingView>
@@ -246,4 +316,4 @@ const ReportScreen = () => {
   );
 };
 
-export default ReportScreen;
+export default ContactScreen;

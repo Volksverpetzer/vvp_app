@@ -71,9 +71,9 @@ const TabLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="report"
+        name="contact"
         options={{
-          title: "Fake melden",
+          title: "Kontakt",
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
             <ReportIcon color={color} size={size} />

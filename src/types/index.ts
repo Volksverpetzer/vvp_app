@@ -1,12 +1,12 @@
 export type * from "./colors";
 export type * from "./config";
+export type * from "./contacts";
 export type * from "./feeds";
 export type * from "./fetcher";
 export type * from "./game";
 export * from "./posts";
 export type * from "./regions";
 export type * from "./responses";
-export type * from "./reports";
 export type * from "./settings";
 export type * from "./statistics";
 export * from "./stores";

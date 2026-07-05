@@ -7,7 +7,6 @@ import { ScrollView } from "react-native-gesture-handler";
 import {
   CodeIcon,
   FeedIcon,
-  FeedbackIcon,
   GiveIcon,
   ImprintIcon,
   LockIcon,
@@ -174,11 +173,6 @@ const SettingsScreen = () => {
             url={Config.donations.support}
             icon={<GiveIcon color={primary} size={24} />}
             text="Unterstützen"
-          />
-          <UiLink
-            url={encodeURI("mailto:app@volksverpetzer.de")}
-            icon={<FeedbackIcon color={primary} size={24} />}
-            text="App-Feedback"
           />
           <UiLink
             url={Config.dataProtectionUrl}

@@ -67,13 +67,13 @@ const TabLayout = () => {
         <NativeTabs.Trigger.Label hidden>Aktionen</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="report">
+      <NativeTabs.Trigger name="contact">
         <NativeTabs.Trigger.Icon
           src={
             <NativeTabs.Trigger.VectorIcon family={Octicons} name="report" />
           }
         />
-        <NativeTabs.Trigger.Label hidden>Fake melden</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label hidden>Kontakt</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="settings">
