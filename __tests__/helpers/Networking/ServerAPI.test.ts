@@ -340,6 +340,9 @@ describe("ServerAPI", () => {
         category: "app_feedback" as const,
         title: "Dark mode",
         message: "Der Dark Mode ist zu hell.",
+        app_variant: "Volksverpetzer",
+        app_version: "2.3.0",
+        platform: "ios",
       };
       const responseData = { success: true, id: "contact123" };
       postSpy.mockResolvedValue(responseData);

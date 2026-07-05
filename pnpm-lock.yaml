@@ -24,8 +24,8 @@ importers:
         specifier: 0.4.1
         version: 0.4.1
       '@expo/config':
-        specifier: 57.0.1
-        version: 57.0.1(typescript@6.0.3)
+        specifier: 57.0.2
+        version: 57.0.2(typescript@6.0.3)
       '@expo/dom-webview':
         specifier: 57.0.0
         version: 57.0.0(expo@57.0.2)(react-native@0.86.0(@babel/core@7.29.7)(@react-native/jest-preset@0.85.3(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
@@ -33,8 +33,8 @@ importers:
         specifier: 57.0.3
         version: 57.0.3(@expo/log-box@57.0.0)(expo@57.0.2)(react-dom@19.2.3(react@19.2.3))(react-native@0.86.0(@babel/core@7.29.7)(@react-native/jest-preset@0.85.3(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       '@expo/require-utils':
-        specifier: 57.0.0
-        version: 57.0.0(typescript@6.0.3)
+        specifier: 57.0.1
+        version: 57.0.1(typescript@6.0.3)
       '@likashefqet/react-native-image-zoom':
         specifier: 4.3.0
         version: 4.3.0(b018143972a837ca413e6b7668a04b68)
@@ -1146,9 +1146,6 @@ packages:
   '@expo/config-types@57.0.1':
     resolution: {integrity: sha512-fo7d/Ym28uwGzdTV2leEvpsb9t+7i8YHjy471m31+cmDt4BRd/l7e94JHyrXAq4SWOBVus16S0JLqm89SRCCdw==}
 
-  '@expo/config@57.0.1':
-    resolution: {integrity: sha512-qj/OJ508aiRxoc8Ca9Ku8snDkiu5XjAx35vGP282CoQiUViM6RI3zAJUkOx7xpEzlj2z7mlbMBxLBy1Nf4v1Ug==}
-
   '@expo/config@57.0.2':
     resolution: {integrity: sha512-J/K4fBPs/wGMrK445Mz5fCuFhsOZjSEq+u7F0yCboCwQu+uPlkT/ZCi6/q5pOunFOTICFtLB5wfCKqf9Iz5iKA==}
 
@@ -1242,14 +1239,6 @@ packages:
 
   '@expo/prebuild-config@57.0.4':
     resolution: {integrity: sha512-wdyu9aOvU0/vW3U2/HgekQKrxh9v8Rqq74LNUXMsMFv+LeJz3MJfnexJNAL243/TwqEO396QRGqCe7ac11x/mw==}
-
-  '@expo/require-utils@57.0.0':
-    resolution: {integrity: sha512-6PPvmqdAz7ikxJUwg+g/JV1KKQJS1xkkh/r+z4tucvBelrM0vMnENV2QVVn4qDWS0FfSIcwuSYvvx+4od/Sa9w==}
-    peerDependencies:
-      typescript: ^5.0.0 || ^5.0.0-0 || ^6.0.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   '@expo/require-utils@57.0.1':
     resolution: {integrity: sha512-uXen5/4x7j60I5slShgZr5QEtJDBK8homFiNLDnDrNrxZhrRHXASo0H6JArs3/1PDzw1wahzhGWg2WKuYyZd0A==}
@@ -7813,22 +7802,6 @@ snapshots:
 
   '@expo/config-types@57.0.1': {}
 
-  '@expo/config@57.0.1(typescript@6.0.3)':
-    dependencies:
-      '@expo/config-plugins': 57.0.2(typescript@6.0.3)
-      '@expo/config-types': 57.0.1
-      '@expo/json-file': 11.0.0
-      '@expo/require-utils': 57.0.0(typescript@6.0.3)
-      deepmerge: 4.3.1
-      getenv: 2.0.0
-      glob: 13.0.6
-      resolve-workspace-root: 2.0.1
-      semver: 7.8.5
-      slugify: 1.6.9
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
   '@expo/config@57.0.2(typescript@6.0.3)':
     dependencies:
       '@expo/config-plugins': 57.0.2(typescript@6.0.3)
@@ -8045,16 +8018,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
-
-  '@expo/require-utils@57.0.0(typescript@6.0.3)':
-    dependencies:
-      '@babel/code-frame': 7.29.7
-      '@babel/core': 7.29.7
-      '@babel/plugin-transform-modules-commonjs': 7.29.7(@babel/core@7.29.7)
-    optionalDependencies:
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - supports-color
 
   '@expo/require-utils@57.0.1(typescript@6.0.3)':
     dependencies:

@@ -1,3 +1,4 @@
+import * as Application from "expo-application";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -23,6 +24,7 @@ import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
+import { appName } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ContactCategory } from "#/types";
 
@@ -174,6 +176,9 @@ const ContactScreen = () => {
       category,
       title: title.trim(),
       message: message.trim(),
+      app_variant: appName,
+      app_version: Application?.nativeApplicationVersion ?? "",
+      platform: Platform.OS,
     });
     registerEvent(Config.wpUrl, "Contact Submitted", {
       category,
