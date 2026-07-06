@@ -49,7 +49,7 @@ describe("ContactCard", () => {
 
     expect(mockPush).toHaveBeenCalledWith({
       pathname: "/(tabs)/contact",
-      params: { url: articleLink },
+      params: { category: "app_feedback", url: articleLink },
     });
   });
 });

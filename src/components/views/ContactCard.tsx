@@ -48,7 +48,7 @@ const ContactCard = ({ article_link }: ContactCardProperties) => {
         onPress={() =>
           router.push({
             pathname: "/(tabs)/contact",
-            params: { url: article_link },
+            params: { category: "app_feedback", url: article_link },
           })
         }
         style={{

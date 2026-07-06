@@ -117,6 +117,23 @@ describe("ContactScreen", () => {
     expect(getByText("Deine Nachricht")).toBeTruthy();
   });
 
+  it("defaults a url without category to the fake-report category", async () => {
+    mockParameters = { url: "https://example.com/fake" };
+    const { getByText, getByDisplayValue } = await render(<ContactScreen />);
+    expect(getByText("Fake reporten")).toBeTruthy();
+    expect(getByDisplayValue("https://example.com/fake")).toBeTruthy();
+  });
+
+  it("keeps an explicit category when a url is prefilled", async () => {
+    mockParameters = {
+      category: "app_feedback",
+      url: "https://example.com/artikel",
+    };
+    const { getByText, getByDisplayValue } = await render(<ContactScreen />);
+    expect(getByText("Feedback")).toBeTruthy();
+    expect(getByDisplayValue("https://example.com/artikel")).toBeTruthy();
+  });
+
   it("rejects a fake report without a link", async () => {
     mockParameters = { category: "report_fake" };
     const { getByText, getAllByPlaceholderText } = await render(

@@ -143,12 +143,14 @@ const ContactScreen = () => {
   useEffect(() => {
     if (isValidCategory(parameterCategory)) {
       setCategory(parameterCategory);
+    } else if (parameterUrl) {
+      // A url without an explicit category means a fake report
+      setCategory("report_fake");
     }
     if (index) {
       setMessage(`Absatz ${index}`);
     }
     if (parameterUrl) {
-      setCategory("report_fake");
       if (parameterUrl.includes("http")) {
         setTitle(parameterUrl);
       } else {
