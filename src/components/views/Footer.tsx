@@ -10,6 +10,7 @@ import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
+import ContactCard from "./ContactCard";
 import Support from "./Support";
 
 interface FooterProperties {
@@ -69,6 +70,15 @@ const Footer = (properties: FooterProperties) => {
         }}
       >
         <Support article_link={properties.article_link} />
+      </UiCard>
+      <UiSpace size={20} />
+      <UiCard
+        style={{
+          marginHorizontal: 12,
+          backgroundColor: Colors[colorScheme].surface,
+        }}
+      >
+        <ContactCard article_link={properties.article_link} />
       </UiCard>
       <UiSpace size={100} />
     </>
