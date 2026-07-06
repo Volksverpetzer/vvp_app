@@ -137,7 +137,7 @@ const ContactScreen = () => {
     [inputBackground, accent, muted, errorColor],
   );
 
-  // Populate initial fields and load reports on component mount or when params change
+  // Populate initial fields on component mount or when params change
   useEffect(() => {
     if (isValidCategory(parameterCategory)) {
       setCategory(parameterCategory);
@@ -172,14 +172,20 @@ const ContactScreen = () => {
     }
     setButtonEnabled(false);
 
-    await API.postContact({
-      category,
-      title: title.trim(),
-      message: message.trim(),
-      app_variant: appName,
-      app_version: Application?.nativeApplicationVersion ?? "",
-      platform: Platform.OS,
-    });
+    try {
+      await API.postContact({
+        category,
+        title: title.trim(),
+        message: message.trim(),
+        app_variant: appName,
+        app_version: Application?.nativeApplicationVersion ?? "",
+        platform: Platform.OS,
+      });
+    } catch {
+      setError("Senden fehlgeschlagen. Bitte versuche es später erneut.");
+      setButtonEnabled(true);
+      return;
+    }
     registerEvent(Config.wpUrl, "Contact Submitted", {
       category,
     });

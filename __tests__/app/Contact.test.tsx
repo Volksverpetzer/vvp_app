@@ -151,4 +151,33 @@ describe("ContactScreen", () => {
       }),
     );
   });
+
+  it("shows an error and allows retrying when submission fails", async () => {
+    mockParameters = { category: "other" };
+    (postContact as jest.Mock<any>).mockRejectedValue(new Error("network"));
+    const { getByText, getAllByPlaceholderText } = await render(
+      <ContactScreen />,
+    );
+    const [titleInput, messageInput] = getAllByPlaceholderText("...");
+    await fireEvent.changeText(titleInput, "Betreff");
+    await fireEvent.changeText(
+      messageInput,
+      "Eine ausreichend lange Nachricht.",
+    );
+    await fireEvent.press(getByText("Senden"));
+
+    await waitFor(() =>
+      expect(
+        getByText("Senden fehlgeschlagen. Bitte versuche es später erneut."),
+      ).toBeTruthy(),
+    );
+
+    // The button is re-enabled, so a retry triggers another request
+    (postContact as jest.Mock<any>).mockResolvedValue({
+      success: true,
+      id: "abc",
+    });
+    await fireEvent.press(getByText("Senden"));
+    await waitFor(() => expect(postContact).toHaveBeenCalledTimes(2));
+  });
 });
