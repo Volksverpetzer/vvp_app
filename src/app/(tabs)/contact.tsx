@@ -105,6 +105,12 @@ const ContactScreen = () => {
         categoryPillActive: {
           backgroundColor: primary,
         },
+        // Matches the UiTabIconLabel label font, just a little larger
+        categoryPillLabel: {
+          fontFamily: "SourceSansProBold",
+          fontSize: 14,
+          lineHeight: 19,
+        },
         errorText: {
           color: errorColor,
           fontSize: 18,
@@ -278,7 +284,10 @@ const ContactScreen = () => {
                 ]}
               >
                 <UiText
-                  style={category === key ? globalStyles.whiteText : undefined}
+                  style={[
+                    styles.categoryPillLabel,
+                    category === key && globalStyles.whiteText,
+                  ]}
                 >
                   {label}
                 </UiText>
