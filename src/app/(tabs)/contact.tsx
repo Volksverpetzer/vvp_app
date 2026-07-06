@@ -21,6 +21,7 @@ import UiTextInput from "#/components/ui/UiTextInput";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { AppImages } from "#/helpers/AppImages";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { appName } from "#/helpers/utils/variant";
@@ -82,6 +83,7 @@ const ContactScreen = () => {
     errorBackground: errorColor,
     muted,
     inputBackground,
+    primary,
     surface: backgroundColor,
     text: textColor,
   } = Colors[colorScheme];
@@ -95,13 +97,13 @@ const ContactScreen = () => {
           gap: 8,
         },
         categoryPill: {
-          backgroundColor: inputBackground,
+          backgroundColor: muted,
           borderRadius: 20,
           paddingHorizontal: 14,
           paddingVertical: 8,
         },
         categoryPillActive: {
-          backgroundColor: accent,
+          backgroundColor: primary,
         },
         errorText: {
           color: errorColor,
@@ -131,7 +133,7 @@ const ContactScreen = () => {
           backgroundColor: muted,
         },
       }),
-    [inputBackground, accent, muted, errorColor],
+    [inputBackground, accent, muted, errorColor, primary],
   );
 
   // Populate initial fields on component mount or when params change
@@ -231,7 +233,14 @@ const ContactScreen = () => {
         minHeight={100}
         maxHeight={HEADER_HEIGHT}
       />
-      <AnimatedSuccess animated={animation} />
+      <AnimatedSuccess
+        animated={animation}
+        subtitle="Deine Nachricht ist bei uns eingegangen!"
+        image={AppImages.successMascot ?? undefined}
+        imageStyle={
+          AppImages.successMascot ? { width: 180, height: 261 } : undefined
+        }
+      />
       <KeyboardAvoidingView
         style={globalStyles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -252,7 +261,7 @@ const ContactScreen = () => {
           )}
           scrollEventThrottle={16}
         >
-          <Heading style={{ marginBottom: 10 }}>Worum geht es?</Heading>
+          <Heading style={{ marginBottom: 10 }}>Thema wählen:</Heading>
           <View style={styles.categoryContainer}>
             {CATEGORIES.map(({ key, label }) => (
               <UiPressable
