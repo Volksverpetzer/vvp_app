@@ -340,6 +340,7 @@ describe("ServerAPI", () => {
         category: "app_feedback" as const,
         title: "Dark mode",
         message: "Der Dark Mode ist zu hell.",
+        email: "user@example.com",
         app_variant: "Volksverpetzer",
         app_version: "2.3.0",
         platform: "ios",

@@ -29,9 +29,9 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ContactCategory } from "#/types";
 
 const CATEGORIES: { key: ContactCategory; label: string }[] = [
-  { key: "report_fake", label: "Fake melden" },
-  { key: "app_feedback", label: "Feedback zur App" },
-  { key: "other", label: "Anderes Anliegen" },
+  { key: "app_feedback", label: "Feedback" },
+  { key: "report_fake", label: "Fake reporten" },
+  { key: "other", label: "Sonstiges" },
 ];
 
 const categoryLabel = (category: ContactCategory) =>
@@ -66,10 +66,11 @@ const ContactScreen = () => {
   const [buttonEnabled, setButtonEnabled] = useState(true);
   const [animation, setAnimation] = useState(false);
   const [error, setError] = useState("");
-  const [category, setCategory] = useState<ContactCategory>("report_fake");
+  const [category, setCategory] = useState<ContactCategory>("app_feedback");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("");
 
   // Routing and dimensions
   const parameters = useLocalSearchParams<{
@@ -174,6 +175,10 @@ const ContactScreen = () => {
       setError("Bitte eine kurze Nachricht eingeben");
       return;
     }
+    if (email.trim() && !email.includes("@")) {
+      setError("Bitte eine gültige E-Mail-Adresse eingeben");
+      return;
+    }
     setButtonEnabled(false);
 
     try {
@@ -181,6 +186,7 @@ const ContactScreen = () => {
         category,
         title: title.trim(),
         message: message.trim(),
+        email: email.trim(),
         app_variant: appName,
         app_version: Application?.nativeApplicationVersion ?? "",
         platform: Platform.OS,
@@ -204,7 +210,7 @@ const ContactScreen = () => {
       setAnimation(false);
       setButtonEnabled(true);
     }, 5000);
-  }, [category, title, message]);
+  }, [category, title, message, email]);
 
   const HEADER_HEIGHT = 150;
   const texts = CATEGORY_TEXTS[category];
@@ -302,6 +308,22 @@ const ContactScreen = () => {
             onChangeText={setMessage}
             multiline
             style={[styles.input, { height: 120 }]}
+          />
+          <UiSpace size={20} />
+          <Heading style={{ marginBottom: 10 }}>
+            E-Mail für Rückfragen (optional)
+          </Heading>
+          <UiTextInput
+            accessibilityLabel="Text input field"
+            accessibilityHint="Gib deine E-Mail-Adresse ein"
+            placeholder="..."
+            placeholderTextColor={textColor}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            autoComplete="email"
+            keyboardType="email-address"
+            style={styles.input}
           />
           <UiSpace size={20} />
           {error ? (

@@ -95,29 +95,30 @@ describe("ContactScreen", () => {
     });
   });
 
-  it("defaults to the fake-report category with a URL field", async () => {
+  it("defaults to the feedback category with a title field", async () => {
     const { getByText } = await render(<ContactScreen />);
-    expect(getByText("Fake melden")).toBeTruthy();
-    expect(getByText("Link zum Fake")).toBeTruthy();
+    expect(getByText("Feedback")).toBeTruthy();
+    expect(getByText("Betreff")).toBeTruthy();
   });
 
   it("switches labels when another category is selected", async () => {
     const { getByText } = await render(<ContactScreen />);
-    // open the dropdown, then pick app feedback
-    await fireEvent.press(getByText("Fake melden"));
-    await fireEvent.press(getByText("Feedback zur App"));
-    expect(getByText("Betreff")).toBeTruthy();
-    expect(getByText("Dein Feedback")).toBeTruthy();
+    // open the dropdown, then pick the fake report category
+    await fireEvent.press(getByText("Feedback"));
+    await fireEvent.press(getByText("Fake reporten"));
+    expect(getByText("Link zum Fake")).toBeTruthy();
+    expect(getByText("Was ist daran falsch?")).toBeTruthy();
   });
 
   it("pre-selects the category from route params", async () => {
     mockParameters = { category: "other" };
     const { getByText } = await render(<ContactScreen />);
-    expect(getByText("Anderes Anliegen")).toBeTruthy();
+    expect(getByText("Sonstiges")).toBeTruthy();
     expect(getByText("Deine Nachricht")).toBeTruthy();
   });
 
   it("rejects a fake report without a link", async () => {
+    mockParameters = { category: "report_fake" };
     const { getByText, getAllByPlaceholderText } = await render(
       <ContactScreen />,
     );
@@ -130,14 +131,37 @@ describe("ContactScreen", () => {
     expect(postContact).not.toHaveBeenCalled();
   });
 
+  it("rejects an invalid email address", async () => {
+    mockParameters = { category: "other" };
+    const { getByText, getAllByPlaceholderText } = await render(
+      <ContactScreen />,
+    );
+    const [titleInput, messageInput, emailInput] =
+      getAllByPlaceholderText("...");
+    await fireEvent.changeText(titleInput, "Betreff");
+    await fireEvent.changeText(
+      messageInput,
+      "Eine ausreichend lange Nachricht.",
+    );
+    await fireEvent.changeText(emailInput, "kein-at-zeichen");
+    await fireEvent.press(getByText("Senden"));
+
+    expect(
+      getByText("Bitte eine gültige E-Mail-Adresse eingeben"),
+    ).toBeTruthy();
+    expect(postContact).not.toHaveBeenCalled();
+  });
+
   it("submits a valid request with app metadata", async () => {
     mockParameters = { category: "app_feedback" };
     const { getByText, getAllByPlaceholderText } = await render(
       <ContactScreen />,
     );
-    const [titleInput, messageInput] = getAllByPlaceholderText("...");
+    const [titleInput, messageInput, emailInput] =
+      getAllByPlaceholderText("...");
     await fireEvent.changeText(titleInput, "Dark mode");
     await fireEvent.changeText(messageInput, "Der Dark Mode ist zu hell.");
+    await fireEvent.changeText(emailInput, "user@example.com");
     await fireEvent.press(getByText("Senden"));
 
     await waitFor(() =>
@@ -145,6 +169,7 @@ describe("ContactScreen", () => {
         category: "app_feedback",
         title: "Dark mode",
         message: "Der Dark Mode ist zu hell.",
+        email: "user@example.com",
         app_variant: "Volksverpetzer",
         app_version: "2.3.0",
         platform: expect.any(String),
