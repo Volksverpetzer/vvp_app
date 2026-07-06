@@ -101,10 +101,12 @@ describe("ContactScreen", () => {
     expect(getByText("Betreff")).toBeTruthy();
   });
 
-  it("switches labels when another category is selected", async () => {
+  it("shows all category pills and switches labels on selection", async () => {
     const { getByText } = await render(<ContactScreen />);
-    // open the dropdown, then pick the fake report category
-    await fireEvent.press(getByText("Feedback"));
+    expect(getByText("Feedback")).toBeTruthy();
+    expect(getByText("Fake reporten")).toBeTruthy();
+    expect(getByText("Sonstiges")).toBeTruthy();
+
     await fireEvent.press(getByText("Fake reporten"));
     expect(getByText("Link zum Fake")).toBeTruthy();
     expect(getByText("Was ist daran falsch?")).toBeTruthy();

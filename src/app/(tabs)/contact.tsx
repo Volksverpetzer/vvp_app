@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
-import { ChevronIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import Heading from "#/components/typography/Heading";
@@ -33,9 +32,6 @@ const CATEGORIES: { key: ContactCategory; label: string }[] = [
   { key: "report_fake", label: "Fake reporten" },
   { key: "other", label: "Sonstiges" },
 ];
-
-const categoryLabel = (category: ContactCategory) =>
-  CATEGORIES.find(({ key }) => key === category)?.label ?? "";
 
 const CATEGORY_TEXTS: Record<
   ContactCategory,
@@ -67,7 +63,6 @@ const ContactScreen = () => {
   const [animation, setAnimation] = useState(false);
   const [error, setError] = useState("");
   const [category, setCategory] = useState<ContactCategory>("app_feedback");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
@@ -94,19 +89,19 @@ const ContactScreen = () => {
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        dropdown: {
-          backgroundColor: inputBackground,
-          borderRadius: 5,
-        },
-        dropdownItem: {
-          alignItems: "center",
+        categoryContainer: {
           flexDirection: "row",
-          justifyContent: "space-between",
-          padding: 10,
+          flexWrap: "wrap",
+          gap: 8,
         },
-        dropdownItemActive: {
+        categoryPill: {
+          backgroundColor: inputBackground,
+          borderRadius: 20,
+          paddingHorizontal: 14,
+          paddingVertical: 8,
+        },
+        categoryPillActive: {
           backgroundColor: accent,
-          borderRadius: 5,
         },
         errorText: {
           color: errorColor,
@@ -258,46 +253,28 @@ const ContactScreen = () => {
           scrollEventThrottle={16}
         >
           <Heading style={{ marginBottom: 10 }}>Worum geht es?</Heading>
-          <View style={styles.dropdown}>
-            <UiPressable
-              accessibilityRole="button"
-              accessibilityHint="Wähle eine Kategorie aus"
-              accessibilityState={{ expanded: dropdownOpen }}
-              onPress={() => setDropdownOpen(!dropdownOpen)}
-              style={styles.dropdownItem}
-            >
-              <UiText>{categoryLabel(category)}</UiText>
-              <ChevronIcon
-                color={textColor}
-                direction={dropdownOpen ? "up" : "down"}
-                size={16}
-              />
-            </UiPressable>
-            {dropdownOpen &&
-              CATEGORIES.map(({ key, label }) => (
-                <UiPressable
-                  key={key}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: category === key }}
-                  onPress={() => {
-                    setCategory(key);
-                    setDropdownOpen(false);
-                    setError("");
-                  }}
-                  style={[
-                    styles.dropdownItem,
-                    category === key && styles.dropdownItemActive,
-                  ]}
+          <View style={styles.categoryContainer}>
+            {CATEGORIES.map(({ key, label }) => (
+              <UiPressable
+                key={key}
+                accessibilityRole="button"
+                accessibilityState={{ selected: category === key }}
+                onPress={() => {
+                  setCategory(key);
+                  setError("");
+                }}
+                style={[
+                  styles.categoryPill,
+                  category === key && styles.categoryPillActive,
+                ]}
+              >
+                <UiText
+                  style={category === key ? globalStyles.whiteText : undefined}
                 >
-                  <UiText
-                    style={
-                      category === key ? globalStyles.whiteText : undefined
-                    }
-                  >
-                    {label}
-                  </UiText>
-                </UiPressable>
-              ))}
+                  {label}
+                </UiText>
+              </UiPressable>
+            ))}
           </View>
           <UiSpace size={20} />
           <Heading style={{ marginBottom: 10 }}>{texts.titleLabel}</Heading>
