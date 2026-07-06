@@ -73,12 +73,13 @@ const ContactScreen = () => {
 
   // Routing and dimensions
   const parameters = useLocalSearchParams<{
-    url: string;
-    index: string;
-    category: string;
+    url?: string;
+    index?: string;
+    category?: string;
   }>();
   const { url: parameterUrl, index, category: parameterCategory } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
+  const resetTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const colorScheme = useAppColorScheme();
   const {
     accent,
@@ -155,6 +156,9 @@ const ContactScreen = () => {
     }
   }, [parameterUrl, index, parameterCategory]);
 
+  // Cancel the pending success-reset when the screen unmounts
+  useEffect(() => () => clearTimeout(resetTimeout.current), []);
+
   // Callback to handle the submit action
   const onSubmit = useCallback(async () => {
     if (category === "report_fake") {
@@ -195,7 +199,8 @@ const ContactScreen = () => {
     setMessage("");
     setError("");
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    setTimeout(() => {
+    clearTimeout(resetTimeout.current);
+    resetTimeout.current = setTimeout(() => {
       setAnimation(false);
       setButtonEnabled(true);
     }, 5000);
