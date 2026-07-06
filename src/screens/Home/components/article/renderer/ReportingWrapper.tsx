@@ -29,7 +29,7 @@ const ReportingWrapper = ({
     router.push({
       pathname: "/(tabs)/contact",
       params: {
-        category: "report_fake",
+        category: "app_feedback",
         url,
         index: String(renderIndex),
       },

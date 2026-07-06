@@ -141,21 +141,32 @@ const ContactScreen = () => {
 
   // Populate initial fields on component mount or when params change
   useEffect(() => {
-    if (isValidCategory(parameterCategory)) {
-      setCategory(parameterCategory);
-    } else if (parameterUrl) {
-      // A url without an explicit category means a fake report
-      setCategory("report_fake");
-    }
-    if (index) {
-      setMessage(`Absatz ${index}`);
+    const initialCategory = isValidCategory(parameterCategory)
+      ? parameterCategory
+      : parameterUrl
+        ? // A url without an explicit category means a fake report
+          "report_fake"
+        : undefined;
+    if (initialCategory) {
+      setCategory(initialCategory);
     }
     if (parameterUrl) {
-      if (parameterUrl.includes("http")) {
+      if (initialCategory === "report_fake" && parameterUrl.includes("http")) {
+        // The reported url is the title of a fake report
         setTitle(parameterUrl);
+        if (index) {
+          setMessage(`Absatz ${index}`);
+        }
       } else {
-        setMessage(parameterUrl);
+        // For feedback about an article, reference the url in the text
+        setMessage(
+          [parameterUrl, index ? `Absatz ${index}` : ""]
+            .filter(Boolean)
+            .join("\n") + "\n\n",
+        );
       }
+    } else if (index) {
+      setMessage(`Absatz ${index}`);
     }
   }, [parameterUrl, index, parameterCategory]);
 

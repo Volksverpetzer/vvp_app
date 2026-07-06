@@ -124,14 +124,17 @@ describe("ContactScreen", () => {
     expect(getByDisplayValue("https://example.com/fake")).toBeTruthy();
   });
 
-  it("keeps an explicit category when a url is prefilled", async () => {
+  it("prefills article feedback with the url in the message text", async () => {
     mockParameters = {
       category: "app_feedback",
       url: "https://example.com/artikel",
+      index: "3",
     };
     const { getByText, getByDisplayValue } = await render(<ContactScreen />);
     expect(getByText("Feedback")).toBeTruthy();
-    expect(getByDisplayValue("https://example.com/artikel")).toBeTruthy();
+    expect(
+      getByDisplayValue("https://example.com/artikel\nAbsatz 3\n\n"),
+    ).toBeTruthy();
   });
 
   it("rejects a fake report without a link", async () => {
