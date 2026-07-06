@@ -1,14 +1,14 @@
 {
   "name": "vvp_app",
-  "version": "2.3.0",
-  "versionCode": 2607031,
+  "version": "2.4.0",
+  "versionCode": 2607061,
   "main": "expo-router/entry",
   "expo": {
     "install": {
       "exclude": []
     }
   },
-  "packageManager": "pnpm@11.9.0",
+  "packageManager": "pnpm@11.10.0",
   "engines": {
     "node": "24.x"
   },
