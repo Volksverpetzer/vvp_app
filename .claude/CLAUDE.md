@@ -38,7 +38,7 @@ pnpm prepare:fdroid && BUILD_FOSS_ONLY=true npx expo prebuild --platform android
 ```
 src/
 ├── app/              # Expo Router file-based routes
-│   ├── (tabs)/       # Bottom tab screens (home, personal, action, report, settings)
+│   ├── (tabs)/       # Bottom tab screens (home, personal, action, contact, settings)
 │   ├── [category]/   # Dynamic article routes
 │   ├── game/         # Quiz game screens
 │   ├── bsky/, insta/ # Social media detail screens
