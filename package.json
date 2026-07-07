@@ -149,6 +149,7 @@
     "license-checker-rseidelsohn": "5.0.1",
     "lint-staged": "17.0.8",
     "prettier": "3.9.4",
+    "ts-node": "10.9.2",
     "typedoc": "0.28.20",
     "typescript": "6.0.3"
   }
