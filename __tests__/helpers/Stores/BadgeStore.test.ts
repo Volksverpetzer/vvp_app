@@ -48,7 +48,8 @@ describe("BadgeStore", () => {
   });
 
   describe("getBadgeStore", () => {
-    it("returns parsed badge state", async () => {
+    it("returns parsed badge state merged over the defaults", async () => {
+      // Stored state from an older app version without the contact badge
       const stored = { action: true, personal: false };
       jest
         .spyOn(BaseStore, "getItem")
@@ -58,18 +59,17 @@ describe("BadgeStore", () => {
       const result = await BadgeStore.getBadgeStore();
 
       expect(BaseStore.getItem).toHaveBeenCalledWith("badge");
-      expect(result).toEqual(stored);
+      // Missing keys fall back to their defaults (contact starts as true)
+      expect(result).toEqual({ ...stored, contact: true });
     });
 
     it("returns default state when storage is empty", async () => {
       jest.spyOn(BaseStore, "getItem").mockResolvedValue(null);
-      jest
-        .spyOn(BaseStore, "parseJSON")
-        .mockReturnValue({ action: false, personal: false });
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue({});
 
       const result = await BadgeStore.getBadgeStore();
 
-      expect(result).toEqual({ action: false, personal: false });
+      expect(result).toEqual(BadgeStore.defaultState);
     });
 
     it("returns default state on error", async () => {
@@ -82,7 +82,7 @@ describe("BadgeStore", () => {
 
       const result = await BadgeStore.getBadgeStore();
 
-      expect(result).toEqual({ action: false, personal: false });
+      expect(result).toEqual(BadgeStore.defaultState);
       expect(consoleSpy).toHaveBeenCalledWith(
         "Error retrieving badge state:",
         expect.any(Error),

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { ReactNode } from "react";
 
 import BadgeStore from "#/helpers/Stores/BadgeStore";
@@ -6,6 +12,7 @@ import BadgeStore from "#/helpers/Stores/BadgeStore";
 export interface BadgeState {
   action: boolean;
   personal: boolean;
+  contact: boolean;
 }
 
 type SetBadgeState = React.Dispatch<React.SetStateAction<BadgeState>>;
@@ -14,7 +21,7 @@ const BadgeContext = createContext<{
   badgeState: BadgeState;
   setBadgeState: SetBadgeState;
 }>({
-  badgeState: { action: false, personal: false },
+  badgeState: { action: false, personal: false, contact: true },
   setBadgeState: () => {
     throw new Error("setBadgeState function must be overridden by a provider");
   },
@@ -31,13 +38,23 @@ let externalSetBadgeState: SetBadgeState;
  */
 export const BadgeProvider = ({ children }: { children: ReactNode }) => {
   const [badgeState, setBadgeState] = useState(BadgeStore.defaultState);
+  const loaded = useRef(false);
 
   useEffect(() => {
     externalSetBadgeState = setBadgeState;
     BadgeStore.getBadgeStore().then((storedState) => {
       setBadgeState(storedState);
+      loaded.current = true;
     });
   }, [setBadgeState]);
+
+  // Persist changes so dismissed badges stay dismissed across restarts;
+  // only after the stored state has loaded, or the defaults would clobber it
+  useEffect(() => {
+    if (loaded.current) {
+      BadgeStore.setBadgeStore(badgeState);
+    }
+  }, [badgeState]);
 
   return (
     <BadgeContext.Provider value={{ badgeState, setBadgeState }}>

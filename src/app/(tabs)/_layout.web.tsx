@@ -75,6 +75,8 @@ const TabLayout = () => {
         options={{
           title: "Kontakt",
           tabBarShowLabel: false,
+          tabBarBadge: badgeState.contact ? " " : undefined,
+          tabBarBadgeStyle: { backgroundColor: corporate },
           tabBarIcon: ({ color, size }) => (
             <MailIcon color={color} size={size} />
           ),

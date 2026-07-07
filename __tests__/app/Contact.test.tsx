@@ -8,6 +8,11 @@ let mockParameters: Record<string, string> = {};
 
 jest.mock("expo-router", () => ({
   useLocalSearchParams: jest.fn(() => mockParameters),
+  useFocusEffect: jest.fn((callback: () => void) => callback()),
+}));
+
+jest.mock("#/helpers/provider/BadgeProvider", () => ({
+  updateBadgeState: jest.fn(),
 }));
 
 jest.mock("expo-application", () => ({

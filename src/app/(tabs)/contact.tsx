@@ -1,6 +1,6 @@
 import * as Application from "expo-application";
 import * as Haptics from "expo-haptics";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -24,6 +24,7 @@ import { globalStyles } from "#/constants/GlobalStyles";
 import { AppImages } from "#/helpers/AppImages";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { appName } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ContactCategory } from "#/types";
@@ -189,6 +190,13 @@ const ContactScreen = () => {
 
   // Cancel the pending success-reset when the screen unmounts
   useEffect(() => () => clearTimeout(resetTimeout.current), []);
+
+  // Opening the tab dismisses its "new feature" badge
+  useFocusEffect(
+    useCallback(() => {
+      updateBadgeState({ contact: false });
+    }, []),
+  );
 
   // Callback to handle the submit action
   const showFieldError = useCallback(
