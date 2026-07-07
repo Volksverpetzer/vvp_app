@@ -9,3 +9,17 @@ allowBuilds:
 nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 packages:
   - .
+minimumReleaseAgeExclude:
+  - "@expo/cli@57.0.5"
+  - "@expo/config-plugins@57.0.3"
+  - "@expo/fingerprint@0.20.3"
+  - "@expo/inline-modules@0.1.2"
+  - "@expo/prebuild-config@57.0.5"
+  - "@expo/router-server@57.0.2"
+  - babel-preset-expo@57.0.2
+  - expo-modules-autolinking@57.0.5
+  - expo@57.0.3
+  - "@expo/ui@57.0.4"
+  - expo-linking@57.0.2
+  - expo-router@57.0.4
+  - expo-sharing@57.0.3
