@@ -219,7 +219,8 @@ const ContactScreen = () => {
         category,
         title: title.trim(),
         message: message.trim(),
-        email: email.trim(),
+        // Omitted entirely when the optional field is left blank
+        ...(email.trim() ? { email: email.trim() } : {}),
         app_variant: appName,
         app_version: Application?.nativeApplicationVersion ?? "",
         platform: Platform.OS,

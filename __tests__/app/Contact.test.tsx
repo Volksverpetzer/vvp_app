@@ -210,6 +210,25 @@ describe("ContactScreen", () => {
     );
   });
 
+  it("omits the email field when left blank", async () => {
+    mockParameters = { category: "other" };
+    const { getByText, getAllByPlaceholderText } = await render(
+      <ContactScreen />,
+    );
+    const [titleInput, messageInput] = getAllByPlaceholderText("...");
+    await fireEvent.changeText(titleInput, "Betreff");
+    await fireEvent.changeText(
+      messageInput,
+      "Eine ausreichend lange Nachricht.",
+    );
+    await fireEvent.press(getByText("Senden"));
+
+    await waitFor(() => expect(postContact).toHaveBeenCalledTimes(1));
+    expect((postContact.mock.calls[0] as unknown[])[0]).not.toHaveProperty(
+      "email",
+    );
+  });
+
   it("shows an error and allows retrying when submission fails", async () => {
     mockParameters = { category: "other" };
     (postContact as jest.Mock<any>).mockRejectedValue(new Error("network"));

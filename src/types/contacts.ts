@@ -4,7 +4,7 @@ export type ContactRequest = {
   category: ContactCategory;
   title: string;
   message: string;
-  email: string;
+  email?: string;
   app_variant: string;
   app_version: string;
   platform: string;
