@@ -158,15 +158,16 @@ const ContactScreen = () => {
     if (initialCategory) {
       setCategory(initialCategory);
     }
+    // A new navigation intent replaces both fields so nothing stale from a
+    // previous entry point (or an earlier draft) is submitted accidentally
     if (parameterUrl) {
       if (initialCategory === "report_fake" && parameterUrl.includes("http")) {
         // The reported url is the title of a fake report
         setTitle(parameterUrl);
-        if (index) {
-          setMessage(`Absatz ${index}`);
-        }
+        setMessage(index ? `Absatz ${index}` : "");
       } else {
         // For feedback about an article, reference the url in the text
+        setTitle("");
         setMessage(
           [parameterUrl, index ? `Absatz ${index}` : ""]
             .filter(Boolean)
@@ -240,6 +241,7 @@ const ContactScreen = () => {
     setAnimation(true);
     setTitle("");
     setMessage("");
+    setEmail("");
     clearError();
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     clearTimeout(resetTimeout.current);
