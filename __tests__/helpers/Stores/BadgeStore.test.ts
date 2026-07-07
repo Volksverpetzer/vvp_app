@@ -23,7 +23,7 @@ describe("BadgeStore", () => {
 
   describe("setBadgeStore", () => {
     it("saves badge state as JSON string", async () => {
-      const state = { action: true, personal: false };
+      const state = { action: true, personal: false, contact: true };
       await BadgeStore.setBadgeStore(state);
       expect(BaseStore.setItem).toHaveBeenCalledWith(
         "badge",
@@ -38,7 +38,11 @@ describe("BadgeStore", () => {
       const consoleSpy = jest
         .spyOn(console, "error")
         .mockImplementation(() => {});
-      await BadgeStore.setBadgeStore({ action: true, personal: true });
+      await BadgeStore.setBadgeStore({
+        action: true,
+        personal: true,
+        contact: false,
+      });
       expect(consoleSpy).toHaveBeenCalledWith(
         "Error saving badge state:",
         expect.any(Error),
