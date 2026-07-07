@@ -150,7 +150,14 @@ describe("ContactScreen", () => {
     await fireEvent.press(getByText("Senden"));
 
     expect(getByText("Bitte einen Link zum Fake eingeben")).toBeTruthy();
+    // The offending input is highlighted with the error border
+    expect(titleInput).toHaveStyle({ borderColor: "#c00" });
+    expect(messageInput).not.toHaveStyle({ borderColor: "#c00" });
     expect(postContact).not.toHaveBeenCalled();
+
+    // Editing the field clears the error indication again
+    await fireEvent.changeText(titleInput, "https://example.com/fake");
+    expect(titleInput).not.toHaveStyle({ borderColor: "#c00" });
   });
 
   it("rejects an invalid email address", async () => {
@@ -171,6 +178,7 @@ describe("ContactScreen", () => {
     expect(
       getByText("Bitte eine gültige E-Mail-Adresse eingeben"),
     ).toBeTruthy();
+    expect(emailInput).toHaveStyle({ borderColor: "#c00" });
     expect(postContact).not.toHaveBeenCalled();
   });
 

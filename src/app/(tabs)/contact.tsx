@@ -63,6 +63,9 @@ const ContactScreen = () => {
   const [buttonEnabled, setButtonEnabled] = useState(true);
   const [animation, setAnimation] = useState(false);
   const [error, setError] = useState("");
+  const [errorField, setErrorField] = useState<
+    "title" | "message" | "email" | null
+  >(null);
   const [category, setCategory] = useState<ContactCategory>("app_feedback");
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
@@ -116,8 +119,14 @@ const ContactScreen = () => {
         input: {
           ...globalStyles.input,
           backgroundColor: inputBackground,
+          // Transparent by default so the error border causes no layout shift
+          borderColor: "transparent",
           borderRadius: 5,
+          borderWidth: 2,
           padding: 10,
+        },
+        inputError: {
+          borderColor: errorColor,
         },
         submitButton: {
           alignItems: "center",
@@ -171,22 +180,35 @@ const ContactScreen = () => {
   useEffect(() => () => clearTimeout(resetTimeout.current), []);
 
   // Callback to handle the submit action
+  const showFieldError = useCallback(
+    (field: "title" | "message" | "email", errorMessage: string) => {
+      setErrorField(field);
+      setError(errorMessage);
+    },
+    [],
+  );
+
+  const clearError = useCallback(() => {
+    setError("");
+    setErrorField(null);
+  }, []);
+
   const onSubmit = useCallback(async () => {
     if (category === "report_fake") {
       if (!title.trim().toLowerCase().startsWith("http")) {
-        setError("Bitte einen Link zum Fake eingeben");
+        showFieldError("title", "Bitte einen Link zum Fake eingeben");
         return;
       }
     } else if (title.trim().length === 0) {
-      setError("Bitte einen Betreff eingeben");
+      showFieldError("title", "Bitte einen Betreff eingeben");
       return;
     }
     if (message.trim().length < 10) {
-      setError("Bitte eine kurze Nachricht eingeben");
+      showFieldError("message", "Bitte eine kurze Nachricht eingeben");
       return;
     }
     if (email.trim() && !email.includes("@")) {
-      setError("Bitte eine gültige E-Mail-Adresse eingeben");
+      showFieldError("email", "Bitte eine gültige E-Mail-Adresse eingeben");
       return;
     }
     setButtonEnabled(false);
@@ -202,6 +224,7 @@ const ContactScreen = () => {
         platform: Platform.OS,
       });
     } catch {
+      setErrorField(null);
       setError("Senden fehlgeschlagen. Bitte versuche es später erneut.");
       setButtonEnabled(true);
       return;
@@ -213,14 +236,14 @@ const ContactScreen = () => {
     setAnimation(true);
     setTitle("");
     setMessage("");
-    setError("");
+    clearError();
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     clearTimeout(resetTimeout.current);
     resetTimeout.current = setTimeout(() => {
       setAnimation(false);
       setButtonEnabled(true);
     }, 5000);
-  }, [category, title, message, email]);
+  }, [category, title, message, email, showFieldError, clearError]);
 
   const HEADER_HEIGHT = 150;
   const texts = CATEGORY_TEXTS[category];
@@ -270,7 +293,7 @@ const ContactScreen = () => {
                 accessibilityState={{ selected: category === key }}
                 onPress={() => {
                   setCategory(key);
-                  setError("");
+                  clearError();
                 }}
                 style={[
                   styles.categoryPill,
@@ -296,8 +319,11 @@ const ContactScreen = () => {
             placeholder="..."
             placeholderTextColor={textColor}
             value={title}
-            onChangeText={setTitle}
-            style={styles.input}
+            onChangeText={(value) => {
+              setTitle(value);
+              if (errorField === "title") clearError();
+            }}
+            style={[styles.input, errorField === "title" && styles.inputError]}
           />
           <UiSpace size={20} />
           <Heading style={{ marginBottom: 10 }}>{texts.messageLabel}</Heading>
@@ -307,9 +333,16 @@ const ContactScreen = () => {
             placeholder="..."
             placeholderTextColor={textColor}
             value={message}
-            onChangeText={setMessage}
+            onChangeText={(value) => {
+              setMessage(value);
+              if (errorField === "message") clearError();
+            }}
             multiline
-            style={[styles.input, { height: 120 }]}
+            style={[
+              styles.input,
+              { height: 120 },
+              errorField === "message" && styles.inputError,
+            ]}
           />
           <UiSpace size={20} />
           <Heading style={{ marginBottom: 10 }}>
@@ -321,11 +354,14 @@ const ContactScreen = () => {
             placeholder="..."
             placeholderTextColor={textColor}
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(value) => {
+              setEmail(value);
+              if (errorField === "email") clearError();
+            }}
             autoCapitalize="none"
             autoComplete="email"
             keyboardType="email-address"
-            style={styles.input}
+            style={[styles.input, errorField === "email" && styles.inputError]}
           />
           <UiSpace size={20} />
           {error ? (
