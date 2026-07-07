@@ -89,12 +89,12 @@ const ContactScreen = () => {
   const {
     accent,
     errorBackground: errorColor,
-    iconMuted,
     muted,
     inputBackground,
     primary,
     surface: backgroundColor,
     text: textColor,
+    textMuted,
   } = Colors[colorScheme];
   // Memoized local styles to avoid re-creating on every render
   const styles = useMemo(
@@ -115,9 +115,10 @@ const ContactScreen = () => {
         categoryPillActive: {
           backgroundColor: primary,
         },
-        // Same grey as the inactive tab labels on the personal page
+        // Muted grey that stays readable on the input background (in dark
+        // mode iconMuted would be identical to the pill background)
         categoryPillLabelInactive: {
-          color: iconMuted,
+          color: textMuted,
         },
         errorText: {
           color: errorColor,
@@ -153,7 +154,7 @@ const ContactScreen = () => {
           backgroundColor: muted,
         },
       }),
-    [inputBackground, accent, muted, errorColor, primary, iconMuted],
+    [inputBackground, accent, muted, errorColor, primary, textMuted],
   );
 
   // Populate initial fields on component mount or when params change
