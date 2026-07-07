@@ -16,9 +16,3 @@ export interface AISearchResponse {
   text: string;
   title?: string;
 }
-
-export interface StatusResponse {
-  id: string;
-  status: "posted" | "pending";
-  url?: string;
-}

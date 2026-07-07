@@ -1,9 +1,10 @@
 import type { ReactElement } from "react";
-import { Animated } from "react-native";
+import { Animated, StyleSheet } from "react-native";
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface UiTabIconLabelProps {
@@ -17,10 +18,8 @@ interface UiTabIconLabelProps {
 }
 
 const labelBaseStyle: TextStyle = {
+  ...StyleSheet.flatten(globalStyles.pillLabel),
   alignSelf: "center",
-  fontFamily: "SourceSansProBold",
-  fontSize: 12,
-  lineHeight: 17,
 };
 
 const UiTabIconLabel = ({

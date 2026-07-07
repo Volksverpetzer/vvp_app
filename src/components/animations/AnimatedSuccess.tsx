@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Dimensions } from "react-native";
+import type { ImageSourcePropType, ImageStyle, StyleProp } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -9,10 +10,20 @@ import Success from "#assets/images/success.png";
 
 interface AnimatedSuccessProperties {
   animated: boolean;
+  title?: string;
+  subtitle?: string;
+  image?: ImageSourcePropType;
+  imageStyle?: StyleProp<ImageStyle>;
 }
 
 const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
-  const { animated } = properties;
+  const {
+    animated,
+    title = "Danke",
+    subtitle = "Du hast einen wichtigen Beitrag geleistet!",
+    image = Success,
+    imageStyle,
+  } = properties;
   const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
   const animation = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
@@ -108,10 +119,8 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
           },
         ]}
       >
-        <UiText style={{ color: "#fff", fontSize: 50 }}>Danke</UiText>
-        <UiText style={{ color: "#fff", fontSize: 20 }}>
-          Du hast einen wichtigen Beitrag geleistet!
-        </UiText>
+        <UiText style={{ color: "#fff", fontSize: 50 }}>{title}</UiText>
+        <UiText style={{ color: "#fff", fontSize: 20 }}>{subtitle}</UiText>
       </Animated.View>
       <Animated.Image
         style={[
@@ -125,8 +134,9 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
           {
             transform: [{ rotate: spin }, { scale: 0.75 }],
           },
+          imageStyle,
         ]}
-        source={Success}
+        source={image}
       />
     </>
   );

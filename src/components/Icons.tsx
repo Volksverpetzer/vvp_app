@@ -119,18 +119,6 @@ export const ReportIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="report" />
 );
 
-export const ReportStatusIcon = ({
-  status,
-  ...rest
-}: OcticonsProps & { status: "error" | "posted" | "pending" }) => (
-  <Octicons
-    {...rest}
-    name={
-      status === "error" ? "info" : status === "posted" ? "check" : "hourglass"
-    }
-  />
-);
-
 export const SafetyIcon = ({ size, ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="shield-check" size={size ?? 32} />
 );

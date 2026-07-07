@@ -67,7 +67,7 @@
     "domhandler": "6.0.1",
     "domutils": "4.0.2",
     "eslint-plugin-prettier": "5.5.6",
-    "expo": "57.0.2",
+    "expo": "57.0.3",
     "expo-application": "57.0.0",
     "expo-asset": "57.0.3",
     "expo-audio": "57.0.0",
@@ -84,11 +84,11 @@
     "expo-image": "57.0.0",
     "expo-keep-awake": "57.0.0",
     "expo-linear-gradient": "57.0.0",
-    "expo-linking": "57.0.1",
+    "expo-linking": "57.0.2",
     "expo-mail-composer": "57.0.0",
     "expo-notifications": "57.0.3",
-    "expo-router": "57.0.3",
-    "expo-sharing": "57.0.2",
+    "expo-router": "57.0.4",
+    "expo-sharing": "57.0.3",
     "expo-splash-screen": "57.0.2",
     "expo-status-bar": "57.0.0",
     "expo-system-ui": "57.0.0",
@@ -148,7 +148,7 @@
     "license-checker-rseidelsohn": "5.0.1",
     "lint-staged": "17.0.8",
     "prettier": "3.9.4",
-    "typedoc": "0.28.19",
+    "typedoc": "0.28.20",
     "typescript": "6.0.3"
   }
 }

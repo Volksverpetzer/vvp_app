@@ -50,4 +50,10 @@ export const globalStyles = StyleSheet.create({
   whiteText: {
     color: "white",
   },
+  /** Bold label for pill/tab selectors (category pills, UiTabIconLabel) */
+  pillLabel: {
+    fontFamily: "SourceSansProBold",
+    fontSize: 14,
+    lineHeight: 19,
+  },
 });

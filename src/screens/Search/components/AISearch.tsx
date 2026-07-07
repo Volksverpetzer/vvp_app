@@ -96,7 +96,10 @@ const AISearch = ({
         <UiPressable
           accessibilityRole="button"
           onPress={() => {
-            router.navigate({ pathname: "/report", params: { url: search } });
+            router.navigate({
+              pathname: "/contact",
+              params: { category: "app_feedback", url: search },
+            });
           }}
           style={[
             globalStyles.row,
