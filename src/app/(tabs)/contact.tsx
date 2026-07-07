@@ -88,6 +88,7 @@ const ContactScreen = () => {
   const {
     accent,
     errorBackground: errorColor,
+    iconMuted,
     muted,
     inputBackground,
     primary,
@@ -112,6 +113,10 @@ const ContactScreen = () => {
         },
         categoryPillActive: {
           backgroundColor: primary,
+        },
+        // Same grey as the inactive tab labels on the personal page
+        categoryPillLabelInactive: {
+          color: iconMuted,
         },
         errorText: {
           color: errorColor,
@@ -147,7 +152,7 @@ const ContactScreen = () => {
           backgroundColor: muted,
         },
       }),
-    [inputBackground, accent, muted, errorColor, primary],
+    [inputBackground, accent, muted, errorColor, primary, iconMuted],
   );
 
   // Populate initial fields on component mount or when params change
@@ -315,7 +320,9 @@ const ContactScreen = () => {
                 <UiText
                   style={[
                     globalStyles.pillLabel,
-                    category === key && globalStyles.whiteText,
+                    category === key
+                      ? globalStyles.whiteText
+                      : styles.categoryPillLabelInactive,
                   ]}
                 >
                   {label}
