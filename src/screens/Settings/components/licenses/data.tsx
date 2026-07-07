@@ -111,6 +111,11 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
+  "expo-blur@57.0.0": {
+    licenses: "MIT",
+    repository: "https://github.com/expo/expo",
+    licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
+  },
   "expo-clipboard@57.0.0": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
@@ -224,7 +229,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@57.0.3": {
+  "expo@57.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
