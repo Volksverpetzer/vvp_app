@@ -145,11 +145,14 @@ describe("ContactScreen", () => {
       <ContactScreen />,
     );
     const [titleInput, messageInput] = getAllByPlaceholderText("...");
-    await fireEvent.changeText(titleInput, "kein link");
     await fireEvent.changeText(messageInput, "Das ist ein Fake, ehrlich.");
-    await fireEvent.press(getByText("Senden"));
 
-    expect(getByText("Bitte einen Link zum Fake eingeben")).toBeTruthy();
+    // Not a link at all, and a scheme the server would reject with 400
+    for (const invalidUrl of ["kein link", "httpx://example.com"]) {
+      await fireEvent.changeText(titleInput, invalidUrl);
+      await fireEvent.press(getByText("Senden"));
+      expect(getByText("Bitte einen Link zum Fake eingeben")).toBeTruthy();
+    }
     // The offending input is highlighted with the error border
     expect(titleInput).toHaveStyle({ borderColor: "#c00" });
     expect(messageInput).not.toHaveStyle({ borderColor: "#c00" });

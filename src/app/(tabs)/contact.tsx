@@ -195,7 +195,8 @@ const ContactScreen = () => {
 
   const onSubmit = useCallback(async () => {
     if (category === "report_fake") {
-      if (!title.trim().toLowerCase().startsWith("http")) {
+      // Same rule as the server: the url must start with http:// or https://
+      if (!/^https?:\/\//i.test(title.trim())) {
         showFieldError("title", "Bitte einen Link zum Fake eingeben");
         return;
       }
