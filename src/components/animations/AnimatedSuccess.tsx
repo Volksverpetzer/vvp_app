@@ -1,3 +1,4 @@
+import { BlurView } from "expo-blur";
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Dimensions, StyleSheet } from "react-native";
 import type { ImageSourcePropType, ImageStyle, StyleProp } from "react-native";
@@ -29,8 +30,8 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   const colorScheme = useAppColorScheme();
   // The dome is a circle grown around its center; keep it small enough that
   // the image can sit on top of it, mostly outside the background
-  const domeDiameter = Math.min(screenWidth * 1.6, screenHeight * 0.9);
-  const domeCenterY = screenHeight * 0.8;
+  const domeDiameter = Math.min(screenWidth * 1.2, screenHeight * 0.6);
+  const domeCenterY = screenHeight * 0.95;
   const domeTop = domeCenterY - domeDiameter / 2;
   const imageHeight =
     (StyleSheet.flatten(imageStyle)?.height as number | undefined) ?? 200;
@@ -38,13 +39,13 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
     inputRange: [0, 100],
     outputRange: [0, domeDiameter],
   });
-  const dimOpacity = animation.interpolate({
+  const blurOpacity = animation.interpolate({
     inputRange: [0, 100],
-    outputRange: [0, 0.4],
+    outputRange: [0, 1],
   });
   const textPosition = animation.interpolate({
     inputRange: [0, 100],
-    outputRange: [0, -screenHeight * 0.7],
+    outputRange: [0, -screenHeight * 0.55],
   });
 
   const spinAnimation = useRef(new Animated.Value(0)).current;
@@ -103,20 +104,27 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
 
   return (
     <>
-      {/* Dim the form behind the animation */}
+      {/* Blur the form behind the animation (opacity fade, since the blur
+          intensity itself cannot be animated natively) */}
       <Animated.View
         pointerEvents="none"
         style={{
-          backgroundColor: "#000",
           bottom: 0,
           left: 0,
-          opacity: dimOpacity,
+          opacity: blurOpacity,
           position: "absolute",
           right: 0,
           top: 0,
           zIndex: 998,
         }}
-      />
+      >
+        <BlurView
+          intensity={40}
+          tint="dark"
+          experimentalBlurMethod="dimezisBlurView"
+          style={{ flex: 1 }}
+        />
+      </Animated.View>
       <Animated.View
         style={[
           {
