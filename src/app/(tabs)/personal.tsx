@@ -1,6 +1,6 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Animated, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { LinkIcon, StarIcon } from "#/components/Icons";
@@ -43,7 +43,12 @@ const PersonalTab = () => {
     () =>
       scrollOffsetY.interpolate({
         inputRange: [0, (HEADER_HEIGHT - MIN_HEIGHT) * 0.5],
-        outputRange: [17, 0],
+        // The expanded height must match the label's line height, or the
+        // overflow-hidden wrapper clips the text
+        outputRange: [
+          StyleSheet.flatten(globalStyles.pillLabel).lineHeight ?? 19,
+          0,
+        ],
         extrapolate: "clamp",
       }),
     [scrollOffsetY],

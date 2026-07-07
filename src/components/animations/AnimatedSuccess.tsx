@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Dimensions } from "react-native";
-import type { ImageSourcePropType, ImageStyle } from "react-native";
+import type { ImageSourcePropType, ImageStyle, StyleProp } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -13,7 +13,7 @@ interface AnimatedSuccessProperties {
   title?: string;
   subtitle?: string;
   image?: ImageSourcePropType;
-  imageStyle?: ImageStyle;
+  imageStyle?: StyleProp<ImageStyle>;
 }
 
 const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
