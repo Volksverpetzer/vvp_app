@@ -7,6 +7,8 @@ type styleColors = {
   surface: CSSProperties["color"];
   errorBackground: CSSProperties["color"];
   errorText: CSSProperties["color"];
+  // Error color readable as text/border on background and surface
+  error: CSSProperties["color"];
   iconMuted: CSSProperties["color"];
   muted: CSSProperties["color"];
   textMuted: CSSProperties["color"];

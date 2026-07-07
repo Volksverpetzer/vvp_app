@@ -91,7 +91,7 @@ const ContactScreen = () => {
   const colorScheme = useAppColorScheme();
   const {
     accent,
-    errorBackground: errorColor,
+    error: errorColor,
     muted,
     inputBackground,
     primary,
