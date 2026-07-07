@@ -79,7 +79,9 @@ const ContactScreen = () => {
   }>();
   const { url: parameterUrl, index, category: parameterCategory } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
-  const resetTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const resetTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const colorScheme = useAppColorScheme();
   const {
     accent,

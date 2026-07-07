@@ -98,7 +98,7 @@ const AISearch = ({
           onPress={() => {
             router.navigate({
               pathname: "/contact",
-              params: { category: "report_fake", url: search },
+              params: { category: "app_feedback", url: search },
             });
           }}
           style={[
