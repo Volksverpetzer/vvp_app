@@ -28,6 +28,8 @@ import { appName } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ContactCategory } from "#/types";
 
+const MIN_MESSAGE_LENGTH = 10;
+
 const CATEGORIES: { key: ContactCategory; label: string }[] = [
   { key: "app_feedback", label: "Feedback" },
   { key: "report_fake", label: "Fake reporten" },
@@ -208,8 +210,11 @@ const ContactScreen = () => {
       showFieldError("title", "Bitte einen Betreff eingeben");
       return;
     }
-    if (message.trim().length < 10) {
-      showFieldError("message", "Bitte eine kurze Nachricht eingeben");
+    if (message.trim().length < MIN_MESSAGE_LENGTH) {
+      showFieldError(
+        "message",
+        `Bitte eine kurze Nachricht eingeben (mindestens ${MIN_MESSAGE_LENGTH} Zeichen)`,
+      );
       return;
     }
     if (email.trim() && !email.includes("@")) {

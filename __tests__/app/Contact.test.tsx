@@ -163,6 +163,23 @@ describe("ContactScreen", () => {
     expect(titleInput).not.toHaveStyle({ borderColor: "#c00" });
   });
 
+  it("rejects a too short message with the minimum length in the error", async () => {
+    mockParameters = { category: "other" };
+    const { getByText, getAllByPlaceholderText } = await render(
+      <ContactScreen />,
+    );
+    const [titleInput, messageInput] = getAllByPlaceholderText("...");
+    await fireEvent.changeText(titleInput, "Betreff");
+    await fireEvent.changeText(messageInput, "zu kurz");
+    await fireEvent.press(getByText("Senden"));
+
+    expect(
+      getByText("Bitte eine kurze Nachricht eingeben (mindestens 10 Zeichen)"),
+    ).toBeTruthy();
+    expect(messageInput).toHaveStyle({ borderColor: "#c00" });
+    expect(postContact).not.toHaveBeenCalled();
+  });
+
   it("rejects an invalid email address", async () => {
     mockParameters = { category: "other" };
     const { getByText, getAllByPlaceholderText } = await render(
