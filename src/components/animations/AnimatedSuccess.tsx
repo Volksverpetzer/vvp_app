@@ -30,8 +30,8 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   const colorScheme = useAppColorScheme();
   // The dome is a circle grown around its center; keep it small enough that
   // the image can sit on top of it, mostly outside the background
-  const domeDiameter = Math.min(screenWidth * 1.2, screenHeight * 0.6);
-  const domeCenterY = screenHeight * 0.95;
+  const domeDiameter = Math.min(screenWidth * 1.4, screenHeight * 0.8);
+  const domeCenterY = screenHeight * 0.9;
   const domeTop = domeCenterY - domeDiameter / 2;
   const imageHeight =
     (StyleSheet.flatten(imageStyle)?.height as number | undefined) ?? 200;
@@ -45,7 +45,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   });
   const textPosition = animation.interpolate({
     inputRange: [0, 100],
-    outputRange: [0, -screenHeight * 0.55],
+    outputRange: [0, -screenHeight * 0.7],
   });
 
   const spinAnimation = useRef(new Animated.Value(0)).current;
@@ -145,8 +145,11 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
       <Animated.View
         style={[
           {
+            alignItems: "center",
+            left: 0,
             padding: 20,
             position: "absolute",
+            right: 0,
             top: screenHeight * 1.33,
             zIndex: 9999,
           },
@@ -155,8 +158,12 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
           },
         ]}
       >
-        <UiText style={{ color: "#fff", fontSize: 50 }}>{title}</UiText>
-        <UiText style={{ color: "#fff", fontSize: 20 }}>{subtitle}</UiText>
+        <UiText style={{ color: "#fff", fontSize: 50, textAlign: "center" }}>
+          {title}
+        </UiText>
+        <UiText style={{ color: "#fff", fontSize: 20, textAlign: "center" }}>
+          {subtitle}
+        </UiText>
       </Animated.View>
       {/* Sits on top of the dome, mostly outside the background */}
       <Animated.Image
