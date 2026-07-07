@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { Animated, Dimensions } from "react-native";
+import { Animated, Dimensions, StyleSheet } from "react-native";
 import type { ImageSourcePropType, ImageStyle, StyleProp } from "react-native";
 
 import UiText from "#/components/ui/UiText";
@@ -27,13 +27,24 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
   const animation = useRef(new Animated.Value(0)).current;
   const colorScheme = useAppColorScheme();
+  // The dome is a circle grown around its center; keep it small enough that
+  // the image can sit on top of it, mostly outside the background
+  const domeDiameter = Math.min(screenWidth * 1.6, screenHeight * 0.9);
+  const domeCenterY = screenHeight * 0.8;
+  const domeTop = domeCenterY - domeDiameter / 2;
+  const imageHeight =
+    (StyleSheet.flatten(imageStyle)?.height as number | undefined) ?? 200;
   const radius = animation.interpolate({
     inputRange: [0, 100],
-    outputRange: [0, screenWidth * 2],
+    outputRange: [0, domeDiameter],
+  });
+  const dimOpacity = animation.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, 0.4],
   });
   const textPosition = animation.interpolate({
     inputRange: [0, 100],
-    outputRange: [0, -screenHeight * 0.8],
+    outputRange: [0, -screenHeight * 0.7],
   });
 
   const spinAnimation = useRef(new Animated.Value(0)).current;
@@ -87,8 +98,25 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
 
   if (!animated) return;
 
+  const imageWidth =
+    (StyleSheet.flatten(imageStyle)?.width as number | undefined) ?? 200;
+
   return (
     <>
+      {/* Dim the form behind the animation */}
+      <Animated.View
+        pointerEvents="none"
+        style={{
+          backgroundColor: "#000",
+          bottom: 0,
+          left: 0,
+          opacity: dimOpacity,
+          position: "absolute",
+          right: 0,
+          top: 0,
+          zIndex: 998,
+        }}
+      />
       <Animated.View
         style={[
           {
@@ -96,7 +124,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
             borderRadius: 10,
             position: "absolute",
             left: screenWidth / 2,
-            top: screenHeight * 0.75,
+            top: domeCenterY,
             width: 1,
             height: 1,
             zIndex: 999,
@@ -122,17 +150,18 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
         <UiText style={{ color: "#fff", fontSize: 50 }}>{title}</UiText>
         <UiText style={{ color: "#fff", fontSize: 20 }}>{subtitle}</UiText>
       </Animated.View>
+      {/* Sits on top of the dome, mostly outside the background */}
       <Animated.Image
         style={[
           {
             opacity: opacity,
             position: "absolute",
-            top: screenHeight * 0.3,
-            left: screenWidth / 4,
+            top: domeTop - imageHeight * 0.8,
+            left: (screenWidth - imageWidth) / 2,
             zIndex: 9999,
           },
           {
-            transform: [{ rotate: spin }, { scale: 0.75 }],
+            transform: [{ rotate: spin }],
           },
           imageStyle,
         ]}

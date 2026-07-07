@@ -102,7 +102,8 @@ const ContactScreen = () => {
           gap: 8,
         },
         categoryPill: {
-          backgroundColor: muted,
+          // Same background as the input fields (design team feedback)
+          backgroundColor: inputBackground,
           borderRadius: 20,
           paddingHorizontal: 14,
           paddingVertical: 8,
