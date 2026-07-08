@@ -44,6 +44,7 @@ const SettingsList = (properties: SettingsListProperties) => {
     primaryMuted,
     textMuted,
     surface,
+    surfaceDisabled,
     surfaceInput,
     onPrimary,
   } = Colors[colorScheme];
@@ -76,7 +77,9 @@ const SettingsList = (properties: SettingsListProperties) => {
               : onPrimary,
             thumbColor: setting.value ? corporate : textMuted,
             trackColor: {
-              false: isDarkMode(colorScheme) ? textMuted : surfaceInput,
+              // Dark track under the light grey thumb — the thumb itself is
+              // textMuted, so the off-track must not use the same grey
+              false: isDarkMode(colorScheme) ? surfaceDisabled : surfaceInput,
               true: primaryMuted,
             },
             disabled,
