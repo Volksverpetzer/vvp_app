@@ -37,7 +37,7 @@ const AnnouncementCard = ({
   const corporate = Colors[colorScheme].primary;
   const surface = Colors[colorScheme].surface;
   const text = Colors[colorScheme].text;
-  const iconOnPrimary = Colors[colorScheme].iconOnPrimary;
+  const onPrimary = Colors[colorScheme].onPrimary;
 
   const handleAction = () => {
     onDismiss(announcement.id);
@@ -144,7 +144,7 @@ const AnnouncementCard = ({
           >
             <UiText
               style={{
-                color: iconOnPrimary,
+                color: onPrimary,
                 fontFamily: "SourceSansProBold",
                 fontSize: 15,
               }}

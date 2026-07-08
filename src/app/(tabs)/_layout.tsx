@@ -21,9 +21,9 @@ const TabLayout = () => {
     primary: corporate,
     accent,
     background,
-    iconMuted,
-    iconOnPrimary,
-    muted,
+    textMuted,
+    onPrimary,
+    surfaceDisabled,
   } = Colors[colorScheme];
   const actionsActive = Config.enableActions;
   const engagementActive = Config.enableEngagement;
@@ -35,12 +35,12 @@ const TabLayout = () => {
       badgeBackgroundColor={accent}
       disableTransparentOnScrollEdge
       iconColor={{
-        default: iconMuted,
-        selected: iconOnPrimary,
+        default: textMuted,
+        selected: onPrimary,
       }}
       indicatorColor={corporate}
       labelVisibilityMode="unlabeled"
-      shadowColor={muted}
+      shadowColor={surfaceDisabled}
     >
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Icon

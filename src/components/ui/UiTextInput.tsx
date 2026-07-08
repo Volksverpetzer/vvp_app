@@ -8,7 +8,7 @@ type UiTextInputProperties = DefaultTextInput["props"];
 const UiTextInput = (properties: UiTextInputProperties) => {
   const { style, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].inputBackground;
+  const backgroundColor = Colors[colorScheme].surfaceInput;
   const color = Colors[colorScheme].text;
 
   return (

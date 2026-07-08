@@ -89,7 +89,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
           onPress={() => onLinkPress(url, router)}
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >
-          <ExternalLinkIcon color={Colors[colorScheme].iconMuted} />
+          <ExternalLinkIcon color={Colors[colorScheme].textMuted} />
         </UiPressable>
 
         <BlueskyPostHeader author={author} />

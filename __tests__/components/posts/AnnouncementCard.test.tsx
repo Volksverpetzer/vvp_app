@@ -26,13 +26,13 @@ jest.mock("#/constants/Colors", () => ({
       primary: "#000",
       surface: "#eee",
       text: "#111",
-      iconOnPrimary: "#fff",
+      onPrimary: "#fff",
     },
     dark: {
       primary: "#000",
       surface: "#eee",
       text: "#111",
-      iconOnPrimary: "#fff",
+      onPrimary: "#fff",
     },
   },
 }));

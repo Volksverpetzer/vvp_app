@@ -48,9 +48,10 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 jest.mock("#/constants/Colors", () => ({
   light: {
     accent: "#e63312",
-    errorBackground: "#c00",
-    muted: "#999",
-    inputBackground: "#eee",
+    surfaceError: "#c00",
+    error: "#c00",
+    surfaceDisabled: "#999",
+    surfaceInput: "#eee",
     surface: "#fff",
     text: "#000",
   },

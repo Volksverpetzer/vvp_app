@@ -106,7 +106,7 @@ jest.mock("#/components/ui/UiText", () => {
 });
 jest.mock("#/components/views/SettingsList", () => jest.fn(() => null));
 jest.mock("#/constants/Colors", () => ({
-  light: { textHeading: "#333", background: "#fff" },
+  light: { primary: "#333", background: "#fff" },
 }));
 jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: { heading: {}, centered: {}, whiteText: {}, content: {} },
