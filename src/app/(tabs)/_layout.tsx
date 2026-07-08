@@ -69,10 +69,9 @@ const TabLayout = () => {
 
       <NativeTabs.Trigger name="contact">
         <NativeTabs.Trigger.Icon
-          src={
-            <NativeTabs.Trigger.VectorIcon family={Octicons} name="report" />
-          }
+          src={<NativeTabs.Trigger.VectorIcon family={Octicons} name="mail" />}
         />
+        <NativeTabs.Trigger.Badge hidden={!badgeState.contact} />
         <NativeTabs.Trigger.Label hidden>Kontakt</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 

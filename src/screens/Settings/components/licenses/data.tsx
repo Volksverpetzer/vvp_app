@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.20.25": {
+  "@atproto/api@0.20.26": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -63,7 +63,7 @@ export default {
     licenseUrl:
       "https://github.com/oblador/react-native-vector-icons/raw/HEAD/LICENSE",
   },
-  "@rive-app/react-native@0.4.13": {
+  "@rive-app/react-native@0.4.14": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-nitro-react-native",
     licenseUrl:
@@ -107,6 +107,11 @@ export default {
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
   "expo-audio@57.0.0": {
+    licenses: "MIT",
+    repository: "https://github.com/expo/expo",
+    licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
+  },
+  "expo-blur@57.0.0": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -224,7 +229,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@57.0.3": {
+  "expo@57.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",

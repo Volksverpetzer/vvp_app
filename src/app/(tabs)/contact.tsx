@@ -1,6 +1,7 @@
 import * as Application from "expo-application";
+import { BlurTargetView } from "expo-blur";
 import * as Haptics from "expo-haptics";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -9,6 +10,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import type { View as ViewType } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
@@ -21,12 +23,14 @@ import UiTextInput from "#/components/ui/UiTextInput";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
-import { AppImages } from "#/helpers/AppImages";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
+import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { appName } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ContactCategory } from "#/types";
+
+const MIN_MESSAGE_LENGTH = 10;
 
 const CATEGORIES: { key: ContactCategory; label: string }[] = [
   { key: "app_feedback", label: "Feedback" },
@@ -82,6 +86,8 @@ const ContactScreen = () => {
   const resetTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
+  // Screen content behind the success overlay, blurred on Android 12+
+  const blurTargetRef = useRef<ViewType>(null);
   const colorScheme = useAppColorScheme();
   const {
     accent,
@@ -91,6 +97,7 @@ const ContactScreen = () => {
     primary,
     surface: backgroundColor,
     text: textColor,
+    textMuted,
   } = Colors[colorScheme];
   // Memoized local styles to avoid re-creating on every render
   const styles = useMemo(
@@ -102,13 +109,19 @@ const ContactScreen = () => {
           gap: 8,
         },
         categoryPill: {
-          backgroundColor: muted,
+          // Same background as the input fields (design team feedback)
+          backgroundColor: inputBackground,
           borderRadius: 20,
           paddingHorizontal: 14,
           paddingVertical: 8,
         },
         categoryPillActive: {
           backgroundColor: primary,
+        },
+        // Muted grey that stays readable on the input background (in dark
+        // mode iconMuted would be identical to the pill background)
+        categoryPillLabelInactive: {
+          color: textMuted,
         },
         errorText: {
           color: errorColor,
@@ -144,7 +157,7 @@ const ContactScreen = () => {
           backgroundColor: muted,
         },
       }),
-    [inputBackground, accent, muted, errorColor, primary],
+    [inputBackground, accent, muted, errorColor, primary, textMuted],
   );
 
   // Populate initial fields on component mount or when params change
@@ -182,6 +195,13 @@ const ContactScreen = () => {
   // Cancel the pending success-reset when the screen unmounts
   useEffect(() => () => clearTimeout(resetTimeout.current), []);
 
+  // Opening the tab dismisses its "new feature" badge
+  useFocusEffect(
+    useCallback(() => {
+      updateBadgeState({ contact: false });
+    }, []),
+  );
+
   // Callback to handle the submit action
   const showFieldError = useCallback(
     (field: "title" | "message" | "email", errorMessage: string) => {
@@ -207,8 +227,11 @@ const ContactScreen = () => {
       showFieldError("title", "Bitte einen Betreff eingeben");
       return;
     }
-    if (message.trim().length < 10) {
-      showFieldError("message", "Bitte eine kurze Nachricht eingeben");
+    if (message.trim().length < MIN_MESSAGE_LENGTH) {
+      showFieldError(
+        "message",
+        `Bitte eine kurze Nachricht eingeben (mindestens ${MIN_MESSAGE_LENGTH} Zeichen)`,
+      );
       return;
     }
     if (email.trim() && !email.includes("@")) {
@@ -255,7 +278,7 @@ const ContactScreen = () => {
   const texts = CATEGORY_TEXTS[category];
 
   return (
-    <>
+    <BlurTargetView ref={blurTargetRef} style={globalStyles.container}>
       <AnimatedHeader
         title="Kontakt"
         scrollOffsetY={scrollOffsetY}
@@ -265,10 +288,7 @@ const ContactScreen = () => {
       <AnimatedSuccess
         animated={animation}
         subtitle="Deine Nachricht ist bei uns eingegangen!"
-        image={AppImages.successMascot ?? undefined}
-        imageStyle={
-          AppImages.successMascot ? { width: 180, height: 261 } : undefined
-        }
+        blurTargetRef={blurTargetRef}
       />
       <KeyboardAvoidingView
         style={globalStyles.container}
@@ -309,7 +329,9 @@ const ContactScreen = () => {
                 <UiText
                   style={[
                     globalStyles.pillLabel,
-                    category === key && globalStyles.whiteText,
+                    category === key
+                      ? globalStyles.whiteText
+                      : styles.categoryPillLabelInactive,
                   ]}
                 >
                   {label}
@@ -394,7 +416,7 @@ const ContactScreen = () => {
           <UiSpace size={100} />
         </ScrollView>
       </KeyboardAvoidingView>
-    </>
+    </BlurTargetView>
   );
 };
 

@@ -2,7 +2,7 @@ import { Tabs } from "expo-router";
 
 import {
   HomeIcon,
-  ReportIcon,
+  MailIcon,
   SettingsIcon,
   StarIcon,
   TrophyIcon,
@@ -75,8 +75,10 @@ const TabLayout = () => {
         options={{
           title: "Kontakt",
           tabBarShowLabel: false,
+          tabBarBadge: badgeState.contact ? " " : undefined,
+          tabBarBadgeStyle: { backgroundColor: corporate },
           tabBarIcon: ({ color, size }) => (
-            <ReportIcon color={color} size={size} />
+            <MailIcon color={color} size={size} />
           ),
         }}
       />

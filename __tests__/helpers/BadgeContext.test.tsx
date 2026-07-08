@@ -7,7 +7,7 @@ import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 jest.mock("#/helpers/Stores/BadgeStore", () => ({
   __esModule: true,
   default: {
-    defaultState: { action: false, personal: false },
+    defaultState: { action: false, personal: false, contact: true },
     getBadgeStore: jest.fn(),
     setBadgeStore: jest.fn(),
   },
@@ -35,7 +35,7 @@ describe("BadgeContext Logic", () => {
     it("should call getBadgeStore when initializing", async () => {
       const getSpy = jest
         .spyOn(BadgeStore, "getBadgeStore")
-        .mockResolvedValue({ action: true, personal: false });
+        .mockResolvedValue({ action: true, personal: false, contact: true });
 
       await BadgeStore.getBadgeStore();
 
@@ -44,7 +44,7 @@ describe("BadgeContext Logic", () => {
     });
 
     it("should call setBadgeStore when updating", async () => {
-      const newState = { action: true, personal: false };
+      const newState = { action: true, personal: false, contact: true };
       const setSpy = jest
         .spyOn(BadgeStore, "setBadgeStore")
         .mockResolvedValue(undefined);
@@ -63,7 +63,7 @@ describe("BadgeContext Logic", () => {
     });
 
     it("should accept badge state object", () => {
-      const testState = { action: true, personal: false };
+      const testState = { action: true, personal: false, contact: true };
 
       // Should not throw when called with valid state
       expect(() => updateBadgeState(testState)).not.toThrow();

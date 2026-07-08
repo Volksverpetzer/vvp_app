@@ -115,6 +115,10 @@ export const PlayIcon = ({
   </View>
 );
 
+export const MailIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="mail" />
+);
+
 export const ReportIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="report" />
 );
