@@ -142,12 +142,10 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
           zIndex: 998,
         }}
       >
-        <BlurView
-          intensity={40}
-          tint="dark"
-          experimentalBlurMethod="dimezisBlurView"
-          style={{ flex: 1 }}
-        />
+        {/* Real blur on iOS; on Android this renders as a translucent
+            dark tint (real Android blur would need a blurTarget ref
+            threaded through every caller) */}
+        <BlurView intensity={40} tint="dark" style={{ flex: 1 }} />
       </Animated.View>
       <Animated.View
         style={[
