@@ -21,7 +21,7 @@ const colorScheme: colorSchemeType = {
   dark: {
     background: "#050D0f",
     surface: "#142228",
-    surfaceInput: "#777",
+    surfaceInput: "#555",
     surfaceDisabled: "#333",
     surfaceError: "#7F1D1D",
     text: "#F7F7F7",

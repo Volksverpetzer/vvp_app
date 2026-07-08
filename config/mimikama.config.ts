@@ -6,7 +6,7 @@ const colorScheme: colorSchemeType = {
   light: {
     background: "#FFF",
     surface: "#EEE",
-    surfaceInput: "#A1A1A1",
+    surfaceInput: "#CCC",
     surfaceDisabled: "#BBB",
     surfaceError: "#B71C1C",
     text: "#000",
