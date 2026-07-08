@@ -140,6 +140,9 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
       statusBarTranslucent
       transparent
       visible
+      // Android back button: the overlay dismisses itself after a few
+      // seconds; deliberately not cancellable
+      onRequestClose={() => {}}
     >
       {/* Blur the form behind the animation (opacity fade, since the blur
           intensity itself cannot be animated natively) */}
