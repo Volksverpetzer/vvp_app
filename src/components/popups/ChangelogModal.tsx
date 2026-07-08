@@ -20,7 +20,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
   const corporate = Colors[colorScheme].primary;
   const surface = Colors[colorScheme].surface;
   const textMuted = Colors[colorScheme].textMuted;
-  const iconOnPrimary = Colors[colorScheme].iconOnPrimary;
+  const onPrimary = Colors[colorScheme].onPrimary;
 
   return (
     <Modal
@@ -57,7 +57,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
           onPress={onClose}
           style={[styles.button, { backgroundColor: corporate }]}
         >
-          <UiText style={[styles.buttonText, { color: iconOnPrimary }]}>
+          <UiText style={[styles.buttonText, { color: onPrimary }]}>
             Alles klar
           </UiText>
         </UiPressable>

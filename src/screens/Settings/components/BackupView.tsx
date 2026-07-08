@@ -22,7 +22,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 const BackupView = () => {
   const [busy, setBusy] = useState<"export" | "import" | null>(null);
   const colorScheme = useAppColorScheme();
-  const { primary, iconMuted } = Colors[colorScheme];
+  const { primary, textMuted } = Colors[colorScheme];
 
   const handleExport = async () => {
     setBusy("export");
@@ -135,7 +135,7 @@ const BackupView = () => {
         {busy === "export" ? (
           <ActivityIndicator color={primary} size="small" />
         ) : (
-          <UploadIcon size={18} color={busy ? iconMuted : primary} />
+          <UploadIcon size={18} color={busy ? textMuted : primary} />
         )}
       </UiPressable>
       <UiPressable
@@ -150,7 +150,7 @@ const BackupView = () => {
         {busy === "import" ? (
           <ActivityIndicator color={primary} size="small" />
         ) : (
-          <DownloadIcon size={18} color={busy ? iconMuted : primary} />
+          <DownloadIcon size={18} color={busy ? textMuted : primary} />
         )}
       </UiPressable>
     </View>

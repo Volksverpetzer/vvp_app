@@ -10,16 +10,16 @@ type UiErrorCardProperties = UiCardProperties & { text?: string };
 const UiErrorCard = (properties: UiErrorCardProperties) => {
   const { text, style, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].errorBackground;
-  const errorText = Colors[colorScheme].errorText;
+  const backgroundColor = Colors[colorScheme].surfaceError;
+  const onError = Colors[colorScheme].onError;
 
   return (
     <UiCard
       style={[{ backgroundColor, alignItems: "center", gap: 5 }, style]}
       {...otherProperties}
     >
-      <ErrorIcon color={errorText} />
-      <UiText style={{ color: errorText }}>
+      <ErrorIcon color={onError} />
+      <UiText style={{ color: onError }}>
         {text || "An error occurred. Please try again later."}
       </UiText>
     </UiCard>

@@ -5,7 +5,7 @@ import { Animated, StyleSheet } from "react-native";
 import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 
 // useAppColorScheme → "light", expo-constants colors mocked globally in jest-setup.ts
-// light scheme from jest-setup: iconOnPrimary="#3893C0", iconMuted="#aaa", muted="#bbb", primary="#1b7194"
+// light scheme from jest-setup: onPrimary="#3893C0", textMuted="#aaa", surfaceInput="#BADDE8", primary="#1b7194"
 
 const makeIcon = () => jest.fn((_color: string) => null);
 
@@ -75,7 +75,7 @@ describe("UiTabIconLabel", () => {
   });
 
   describe("icon color", () => {
-    it("passes iconOnPrimary color to icon when active", async () => {
+    it("passes onPrimary color to icon when active", async () => {
       const icon = makeIcon();
       await render(
         <UiTabIconLabel
@@ -88,7 +88,7 @@ describe("UiTabIconLabel", () => {
       expect(icon).toHaveBeenCalledWith("#3893C0");
     });
 
-    it("passes iconMuted color to icon when inactive", async () => {
+    it("passes textMuted color to icon when inactive", async () => {
       const icon = makeIcon();
       await render(
         <UiTabIconLabel
@@ -117,7 +117,7 @@ describe("UiTabIconLabel", () => {
       expect(combined.backgroundColor).toBe("#1b7194");
     });
 
-    it("uses muted background when inactive", async () => {
+    it("uses surfaceInput background when inactive", async () => {
       const { toJSON } = await render(
         <UiTabIconLabel
           icon={makeIcon()}
@@ -128,7 +128,7 @@ describe("UiTabIconLabel", () => {
       );
       const root = toJSON() as any;
       const combined = StyleSheet.flatten(root.props.style);
-      expect(combined.backgroundColor).toBe("#bbb");
+      expect(combined.backgroundColor).toBe("#BADDE8");
     });
   });
 

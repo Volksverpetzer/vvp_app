@@ -46,7 +46,7 @@ const StatisticsPanel = ({
   descriptionMap,
 }: StatsPanelProperties) => {
   const colorScheme = useAppColorScheme();
-  const muted = Colors[colorScheme].muted;
+  const textMuted = Colors[colorScheme].textMuted;
 
   return (
     <View
@@ -71,7 +71,7 @@ const StatisticsPanel = ({
           <UiText
             style={{
               fontSize: 12,
-              color: muted,
+              color: textMuted,
               paddingLeft: 10,
               paddingBottom: 3,
               alignSelf: "flex-end",

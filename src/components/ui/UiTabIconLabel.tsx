@@ -33,11 +33,11 @@ const UiTabIconLabel = ({
 }: UiTabIconLabelProps) => {
   const colorScheme = useAppColorScheme();
   const contentColor = isActive
-    ? Colors[colorScheme].iconOnPrimary
+    ? Colors[colorScheme].onPrimary
     : Colors[colorScheme].textMuted;
   const backgroundColor = isActive
     ? Colors[colorScheme].primary
-    : Colors[colorScheme].inputBackground;
+    : Colors[colorScheme].surfaceInput;
 
   return (
     <UiPressable

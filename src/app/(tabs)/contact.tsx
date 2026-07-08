@@ -92,8 +92,8 @@ const ContactScreen = () => {
   const {
     accent,
     error: errorColor,
-    muted,
-    inputBackground,
+    surfaceDisabled,
+    surfaceInput,
     primary,
     surface: backgroundColor,
     text: textColor,
@@ -109,7 +109,7 @@ const ContactScreen = () => {
           gap: 8,
         },
         categoryPill: {
-          backgroundColor: inputBackground,
+          backgroundColor: surfaceInput,
           borderRadius: 20,
           paddingHorizontal: 14,
           paddingVertical: 8,
@@ -130,7 +130,7 @@ const ContactScreen = () => {
         },
         input: {
           ...globalStyles.input,
-          backgroundColor: inputBackground,
+          backgroundColor: surfaceInput,
           // Transparent by default so the error border causes no layout shift
           borderColor: "transparent",
           borderRadius: 5,
@@ -151,10 +151,10 @@ const ContactScreen = () => {
           width: 120,
         },
         submitButtonDisabled: {
-          backgroundColor: muted,
+          backgroundColor: surfaceDisabled,
         },
       }),
-    [inputBackground, accent, muted, errorColor, primary, textMuted],
+    [surfaceInput, accent, surfaceDisabled, errorColor, primary, textMuted],
   );
 
   // Populate initial fields on component mount or when params change

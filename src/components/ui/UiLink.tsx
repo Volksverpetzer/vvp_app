@@ -54,7 +54,7 @@ const UiLink = (properties: UiLinkProperties) => {
         {properties.text}
       </Heading>
       <ExternalLinkIcon
-        color={Colors[colorScheme].iconMuted}
+        color={Colors[colorScheme].textMuted}
         style={{ marginLeft: "auto" }}
       />
     </UiPressable>

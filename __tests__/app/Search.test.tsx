@@ -30,18 +30,18 @@ jest.mock("#/constants/Colors", () => ({
   light: {
     surface: "#E2F0F5",
     primary: "#1B7194",
-    muted: "#BBB",
+    surfaceInput: "#BBB",
     text: "#111",
-    iconOnPrimary: "#FFF",
-    iconMuted: "#888",
+    onPrimary: "#FFF",
+    textMuted: "#888",
   },
   dark: {
     surface: "#142228",
     primary: "#3893C0",
-    muted: "#333",
+    surfaceInput: "#333",
     text: "#F7F7F7",
-    iconOnPrimary: "#FFF",
-    iconMuted: "#666",
+    onPrimary: "#FFF",
+    textMuted: "#666",
   },
 }));
 jest.mock("#/constants/GlobalStyles", () => ({

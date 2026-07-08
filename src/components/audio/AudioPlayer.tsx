@@ -155,7 +155,7 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         <View
           style={{
             height: 4,
-            backgroundColor: Colors[colorScheme].muted,
+            backgroundColor: Colors[colorScheme].surfaceDisabled,
             borderRadius: 2,
             overflow: "hidden",
           }}
