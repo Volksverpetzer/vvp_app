@@ -43,7 +43,18 @@ export const BadgeProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     externalSetBadgeState = setBadgeState;
     BadgeStore.getBadgeStore().then((storedState) => {
-      setBadgeState(storedState);
+      // Stored values override the defaults, but keys already changed
+      // before the async load resolved (e.g. a badge dismissed on first
+      // focus) must not be reverted by the stored state
+      setBadgeState((currentState) => {
+        const merged = { ...storedState };
+        for (const key of Object.keys(currentState) as (keyof BadgeState)[]) {
+          if (currentState[key] !== BadgeStore.defaultState[key]) {
+            merged[key] = currentState[key];
+          }
+        }
+        return merged;
+      });
       loaded.current = true;
     });
   }, [setBadgeState]);

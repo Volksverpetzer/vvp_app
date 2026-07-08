@@ -23,10 +23,12 @@ const BadgeStore = {
     try {
       const jsonValue = await BaseStore.getItem(this.key);
       // Merge over the defaults so newly introduced badges (missing in an
-      // older stored state) start with their default value
+      // older stored state) start with their default value; ignore stored
+      // values that parse to something other than an object
+      const parsed = BaseStore.parseJSON<Partial<BadgeState>>(jsonValue, {});
       return {
         ...this.defaultState,
-        ...BaseStore.parseJSON<Partial<BadgeState>>(jsonValue, {}),
+        ...(parsed && typeof parsed === "object" ? parsed : {}),
       };
     } catch (error) {
       console.error("Error retrieving badge state:", error);

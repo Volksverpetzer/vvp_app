@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
 import BaseStore from "#/helpers/Storage";
 import BadgeStore from "#/helpers/Stores/BadgeStore";
+import type { BadgeState } from "#/helpers/provider/BadgeProvider";
 
 jest.mock("#/helpers/Storage", () => ({
   __esModule: true,
@@ -70,6 +71,17 @@ describe("BadgeStore", () => {
     it("returns default state when storage is empty", async () => {
       jest.spyOn(BaseStore, "getItem").mockResolvedValue(null);
       jest.spyOn(BaseStore, "parseJSON").mockReturnValue({});
+
+      const result = await BadgeStore.getBadgeStore();
+
+      expect(result).toEqual(BadgeStore.defaultState);
+    });
+
+    it("ignores stored values that are not an object", async () => {
+      jest.spyOn(BaseStore, "getItem").mockResolvedValue("null");
+      jest
+        .spyOn(BaseStore, "parseJSON")
+        .mockReturnValue(null as unknown as Partial<BadgeState>);
 
       const result = await BadgeStore.getBadgeStore();
 
