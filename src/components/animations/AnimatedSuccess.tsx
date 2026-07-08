@@ -1,7 +1,13 @@
 import { BlurView } from "expo-blur";
 import { useCallback, useEffect, useRef } from "react";
+import type { RefObject } from "react";
 import { Animated, Dimensions, Image, Modal, StyleSheet } from "react-native";
-import type { ImageSourcePropType, ImageStyle, StyleProp } from "react-native";
+import type {
+  ImageSourcePropType,
+  ImageStyle,
+  StyleProp,
+  View,
+} from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -19,6 +25,12 @@ interface AnimatedSuccessProperties {
   subtitle?: string;
   image?: ImageSourcePropType;
   imageStyle?: StyleProp<ImageStyle>;
+  /**
+   * Ref to a BlurTargetView wrapping the screen content behind the
+   * animation. When given, Android 12+ renders a real blur; without it
+   * (or on older Androids) Android falls back to a translucent tint.
+   */
+  blurTargetRef?: RefObject<View | null>;
 }
 
 const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
@@ -32,6 +44,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
     imageStyle = image === AppImages.successMascot
       ? MASCOT_IMAGE_STYLE
       : undefined,
+    blurTargetRef,
   } = properties;
   const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
   const animation = useRef(new Animated.Value(0)).current;
@@ -142,10 +155,16 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
           zIndex: 998,
         }}
       >
-        {/* Real blur on iOS; on Android this renders as a translucent
-            dark tint (real Android blur would need a blurTarget ref
-            threaded through every caller) */}
-        <BlurView intensity={40} tint="dark" style={{ flex: 1 }} />
+        {/* Real blur on iOS always; on Android only when a blur target
+            is provided and the device runs Android 12+, otherwise a
+            translucent dark tint */}
+        <BlurView
+          intensity={40}
+          tint="dark"
+          blurMethod={blurTargetRef ? "dimezisBlurViewSdk31Plus" : "none"}
+          blurTarget={blurTargetRef}
+          style={{ flex: 1 }}
+        />
       </Animated.View>
       <Animated.View
         style={[

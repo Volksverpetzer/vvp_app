@@ -1,4 +1,5 @@
 import * as Application from "expo-application";
+import { BlurTargetView } from "expo-blur";
 import * as Haptics from "expo-haptics";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -9,6 +10,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import type { View as ViewType } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
@@ -84,6 +86,8 @@ const ContactScreen = () => {
   const resetTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
+  // Screen content behind the success overlay, blurred on Android 12+
+  const blurTargetRef = useRef<ViewType>(null);
   const colorScheme = useAppColorScheme();
   const {
     accent,
@@ -274,7 +278,7 @@ const ContactScreen = () => {
   const texts = CATEGORY_TEXTS[category];
 
   return (
-    <>
+    <BlurTargetView ref={blurTargetRef} style={globalStyles.container}>
       <AnimatedHeader
         title="Kontakt"
         scrollOffsetY={scrollOffsetY}
@@ -284,6 +288,7 @@ const ContactScreen = () => {
       <AnimatedSuccess
         animated={animation}
         subtitle="Deine Nachricht ist bei uns eingegangen!"
+        blurTargetRef={blurTargetRef}
       />
       <KeyboardAvoidingView
         style={globalStyles.container}
@@ -411,7 +416,7 @@ const ContactScreen = () => {
           <UiSpace size={100} />
         </ScrollView>
       </KeyboardAvoidingView>
-    </>
+    </BlurTargetView>
   );
 };
 
