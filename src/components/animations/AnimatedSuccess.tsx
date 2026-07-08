@@ -1,13 +1,17 @@
 import { BlurView } from "expo-blur";
 import { useCallback, useEffect, useRef } from "react";
-import { Animated, Dimensions, Image, StyleSheet } from "react-native";
+import { Animated, Dimensions, Image, Modal, StyleSheet } from "react-native";
 import type { ImageSourcePropType, ImageStyle, StyleProp } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { AppImages } from "#/helpers/AppImages";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import Success from "#assets/images/success.png";
+
+// Display size of the mascot (intrinsic 600x871, scaled down)
+const MASCOT_IMAGE_STYLE = { height: 261, width: 180 } as const;
 
 interface AnimatedSuccessProperties {
   animated: boolean;
@@ -22,8 +26,12 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
     animated,
     title = "Danke",
     subtitle = "Du hast einen wichtigen Beitrag geleistet!",
-    image = Success,
-    imageStyle,
+    // The variant mascot by default; Mimikama has none and falls back
+    // to the classic success icon
+    image = AppImages.successMascot ?? Success,
+    imageStyle = image === AppImages.successMascot
+      ? MASCOT_IMAGE_STYLE
+      : undefined,
   } = properties;
   const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
   const animation = useRef(new Animated.Value(0)).current;
@@ -111,7 +119,15 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   if (!animated) return null;
 
   return (
-    <>
+    // A transparent modal escapes any parent clipping (the donation card
+    // renders this deep inside a scroll view), covering the whole screen
+    <Modal
+      animationType="none"
+      navigationBarTranslucent
+      statusBarTranslucent
+      transparent
+      visible
+    >
       {/* Blur the form behind the animation (opacity fade, since the blur
           intensity itself cannot be animated natively) */}
       <Animated.View
@@ -190,7 +206,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
         ]}
         source={image}
       />
-    </>
+    </Modal>
   );
 };
 

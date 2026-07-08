@@ -21,7 +21,6 @@ import UiTextInput from "#/components/ui/UiTextInput";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
-import { AppImages } from "#/helpers/AppImages";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
@@ -285,10 +284,6 @@ const ContactScreen = () => {
       <AnimatedSuccess
         animated={animation}
         subtitle="Deine Nachricht ist bei uns eingegangen!"
-        image={AppImages.successMascot ?? undefined}
-        imageStyle={
-          AppImages.successMascot ? { width: 180, height: 261 } : undefined
-        }
       />
       <KeyboardAvoidingView
         style={globalStyles.container}
