@@ -132,7 +132,7 @@
     "@typescript-eslint/parser": "8.63.0",
     "babel-jest": "29.7.0",
     "babel-plugin-module-resolver": "5.0.3",
-    "babel-preset-expo": "57.0.1",
+    "babel-preset-expo": "57.0.2",
     "cspell": "10.0.1",
     "eslint": "9.39.4",
     "eslint-config-expo": "57.0.0",
