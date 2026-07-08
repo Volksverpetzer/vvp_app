@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { useCallback, useEffect, useRef } from "react";
-import { Animated, Dimensions, StyleSheet } from "react-native";
+import { Animated, Dimensions, Image, StyleSheet } from "react-native";
 import type { ImageSourcePropType, ImageStyle, StyleProp } from "react-native";
 
 import UiText from "#/components/ui/UiText";
@@ -33,8 +33,19 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   const domeDiameter = Math.min(screenWidth * 1.4, screenHeight * 0.8);
   const domeCenterY = screenHeight * 0.9;
   const domeTop = domeCenterY - domeDiameter / 2;
+  // Prefer explicit dimensions from imageStyle; otherwise fall back to the
+  // asset's intrinsic size so the image is positioned correctly for callers
+  // that don't pass a style (e.g. the donation flow's default icon)
+  const flattenedImageStyle = StyleSheet.flatten(imageStyle);
+  const resolvedAsset = Image.resolveAssetSource(image);
   const imageHeight =
-    (StyleSheet.flatten(imageStyle)?.height as number | undefined) ?? 200;
+    typeof flattenedImageStyle?.height === "number"
+      ? flattenedImageStyle.height
+      : (resolvedAsset?.height ?? 200);
+  const imageWidth =
+    typeof flattenedImageStyle?.width === "number"
+      ? flattenedImageStyle.width
+      : (resolvedAsset?.width ?? 200);
   const radius = animation.interpolate({
     inputRange: [0, 100],
     outputRange: [0, domeDiameter],
@@ -98,9 +109,6 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   }, [animated, animate, cleanUpSubmit]);
 
   if (!animated) return;
-
-  const imageWidth =
-    (StyleSheet.flatten(imageStyle)?.width as number | undefined) ?? 200;
 
   return (
     <>
