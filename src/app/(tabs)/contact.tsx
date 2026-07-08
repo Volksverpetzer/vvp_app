@@ -109,7 +109,6 @@ const ContactScreen = () => {
           gap: 8,
         },
         categoryPill: {
-          // Same background as the input fields (design team feedback)
           backgroundColor: inputBackground,
           borderRadius: 20,
           paddingHorizontal: 14,
@@ -118,8 +117,6 @@ const ContactScreen = () => {
         categoryPillActive: {
           backgroundColor: primary,
         },
-        // Muted grey that stays readable on the input background (in dark
-        // mode iconMuted would be identical to the pill background)
         categoryPillLabelInactive: {
           color: textMuted,
         },
