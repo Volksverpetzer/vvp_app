@@ -28,7 +28,9 @@ const BadgeStore = {
       const parsed = BaseStore.parseJSON<Partial<BadgeState>>(jsonValue, {});
       return {
         ...this.defaultState,
-        ...(parsed && typeof parsed === "object" ? parsed : {}),
+        ...(parsed && typeof parsed === "object" && !Array.isArray(parsed)
+          ? parsed
+          : {}),
       };
     } catch (error) {
       console.error("Error retrieving badge state:", error);

@@ -108,7 +108,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
     cleanUpSubmit();
   }, [animated, animate, cleanUpSubmit]);
 
-  if (!animated) return;
+  if (!animated) return null;
 
   return (
     <>

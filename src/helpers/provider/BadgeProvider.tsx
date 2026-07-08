@@ -30,6 +30,12 @@ const BadgeContext = createContext<{
 // Module-level variable to hold the external reference to setBadgeState
 let externalSetBadgeState: SetBadgeState;
 
+// Keys explicitly updated before the stored state finished loading; they
+// must win over the stored values when the async load resolves (comparing
+// against defaults would miss idempotent dismissals like "personal: false")
+let storeLoaded = false;
+const touchedBeforeLoad = new Set<keyof BadgeState>();
+
 /**
  * A React context that provides badge state and its setter.
  * This context is used for managing application-wide badge states, such as action or personal badges.
@@ -42,19 +48,20 @@ export const BadgeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     externalSetBadgeState = setBadgeState;
+    storeLoaded = false;
+    touchedBeforeLoad.clear();
     BadgeStore.getBadgeStore().then((storedState) => {
-      // Stored values override the defaults, but keys already changed
+      // Stored values override the defaults, but keys already updated
       // before the async load resolved (e.g. a badge dismissed on first
       // focus) must not be reverted by the stored state
       setBadgeState((currentState) => {
         const merged = { ...storedState };
-        for (const key of Object.keys(currentState) as (keyof BadgeState)[]) {
-          if (currentState[key] !== BadgeStore.defaultState[key]) {
-            merged[key] = currentState[key];
-          }
+        for (const key of touchedBeforeLoad) {
+          merged[key] = currentState[key];
         }
         return merged;
       });
+      storeLoaded = true;
       loaded.current = true;
     });
   }, [setBadgeState]);
@@ -98,6 +105,11 @@ export const useBadge = () => useContext(BadgeContext);
  */
 export const updateBadgeState = (newState: Partial<BadgeState>): void => {
   if (externalSetBadgeState) {
+    if (!storeLoaded) {
+      for (const key of Object.keys(newState) as (keyof BadgeState)[]) {
+        touchedBeforeLoad.add(key);
+      }
+    }
     // Merge new state with previous badge state
     externalSetBadgeState((previousState: BadgeState) => ({
       ...previousState,

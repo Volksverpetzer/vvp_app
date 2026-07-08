@@ -88,6 +88,17 @@ describe("BadgeStore", () => {
       expect(result).toEqual(BadgeStore.defaultState);
     });
 
+    it("ignores a stored array", async () => {
+      jest.spyOn(BaseStore, "getItem").mockResolvedValue("[]");
+      jest
+        .spyOn(BaseStore, "parseJSON")
+        .mockReturnValue([] as unknown as Partial<BadgeState>);
+
+      const result = await BadgeStore.getBadgeStore();
+
+      expect(result).toEqual(BadgeStore.defaultState);
+    });
+
     it("returns default state on error", async () => {
       jest
         .spyOn(BaseStore, "getItem")
