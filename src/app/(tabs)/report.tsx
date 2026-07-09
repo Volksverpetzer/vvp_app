@@ -113,9 +113,10 @@ const ReportScreen = () => {
       setError("Bitte eine kurze Zusammenfassung eingeben");
       return;
     }
+    const trimmedUrl = url.trim();
     if (
-      !url.toLowerCase().trim().startsWith("http://") &&
-      !url.toLowerCase().trim().startsWith("https://")
+      !trimmedUrl.toLowerCase().startsWith("http://") &&
+      !trimmedUrl.toLowerCase().startsWith("https://")
     ) {
       setError("Bitte einen gültigen Link eingeben (http:// oder https://)");
       return;
@@ -135,13 +136,13 @@ const ReportScreen = () => {
       const data = await API.reportFake({
         description,
         more_info: moreInfo,
-        url,
+        url: trimmedUrl,
         allowed_public: allowedPublic,
         token,
       });
       registerEvent(Config.wpUrl, "Report Submitted", {
         allowed_public: allowedPublic,
-        has_url: url.trim().length > 0,
+        has_url: trimmedUrl.length > 0,
       });
       const updatedReports = [...reports, data];
       setReports(updatedReports);
