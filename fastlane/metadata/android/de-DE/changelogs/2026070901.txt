@@ -1,0 +1,4 @@
+Kompatibilität mit neuem Server
+- Fake-Reports werden jetzt direkt in Asana erstellt statt per Mail
+- Nutzer erhalten Push-Benachrichtigungen, wenn ihr Report veröffentlicht wird
+- Verbesserte Validierung von Links beim Report-Formular
