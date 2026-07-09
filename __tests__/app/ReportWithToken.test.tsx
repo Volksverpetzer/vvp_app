@@ -36,10 +36,10 @@ describe("Report submission with token", () => {
     const mockResponse = { id: "report-id-123" };
 
     // Mock the token retrieval
-    (NotificationManager.getToken as any).mockResolvedValue(mockToken);
+    jest.mocked(NotificationManager.getToken).mockResolvedValue(mockToken);
 
     // Mock the API call
-    (API.reportFake as any).mockResolvedValue(mockResponse);
+    jest.mocked(API.reportFake).mockResolvedValue(mockResponse);
 
     // Execute - simulate what report.tsx does in onSubmit
     let token: string | undefined;
@@ -79,12 +79,12 @@ describe("Report submission with token", () => {
     const mockResponse = { id: "report-id-123" };
 
     // Mock the token retrieval to fail
-    (NotificationManager.getToken as any).mockRejectedValue(
-      new Error("Token retrieval failed"),
-    );
+    jest
+      .mocked(NotificationManager.getToken)
+      .mockRejectedValue(new Error("Token retrieval failed"));
 
     // Mock the API call
-    (API.reportFake as any).mockResolvedValue(mockResponse);
+    jest.mocked(API.reportFake).mockResolvedValue(mockResponse);
 
     // Execute - simulate what report.tsx does in onSubmit
     const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
@@ -126,10 +126,10 @@ describe("Report submission with token", () => {
     const mockResponse = { id: "report-id-123" };
 
     // getToken() resolves to "" on web/FOSS builds rather than rejecting
-    (NotificationManager.getToken as any).mockResolvedValue("");
+    jest.mocked(NotificationManager.getToken).mockResolvedValue("");
 
     // Mock the API call
-    (API.reportFake as any).mockResolvedValue(mockResponse);
+    jest.mocked(API.reportFake).mockResolvedValue(mockResponse);
 
     // Execute - simulate what report.tsx does in onSubmit
     let token: string | undefined;
