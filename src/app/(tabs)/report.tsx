@@ -113,6 +113,13 @@ const ReportScreen = () => {
       setError("Bitte eine kurze Zusammenfassung eingeben");
       return;
     }
+    if (
+      !url.toLowerCase().trim().startsWith("http://") &&
+      !url.toLowerCase().trim().startsWith("https://")
+    ) {
+      setError("Bitte einen gültigen Link eingeben (http:// oder https://)");
+      return;
+    }
     setButtonEnabled(false);
 
     let token: string | undefined;
