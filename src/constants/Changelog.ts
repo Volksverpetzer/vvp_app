@@ -2,8 +2,7 @@
 const Changelog = {
   version: "2.3.1",
   versionCode: 2026070901,
-  notes:
-    "Kompatibilität mit neuem Server\n- Fake-Reports werden jetzt direkt in Asana erstellt statt per Mail\n- Nutzer erhalten Push-Benachrichtigungen, wenn ihr Report veröffentlicht wird\n- Verbesserte Validierung von Links beim Report-Formular",
+  notes: "Melde-Funktionalität behoben",
 };
 
 export default Changelog;
