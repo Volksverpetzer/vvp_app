@@ -1,8 +1,9 @@
-export type Report = {
+export type ReportSubmission = {
   description: string;
   more_info: string;
   url: string;
   allowed_public: boolean;
+  token?: string;
 };
 
 export type StoredReport = {

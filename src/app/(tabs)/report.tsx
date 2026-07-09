@@ -20,6 +20,7 @@ import UiTextInput from "#/components/ui/UiTextInput";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
@@ -45,6 +46,7 @@ const ReportScreen = () => {
   const parameters = useLocalSearchParams<{ url: string; index: string }>();
   const { url: parameterUrl, index } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const colorScheme = useAppColorScheme();
   const {
     accent,
@@ -106,38 +108,78 @@ const ReportScreen = () => {
     });
   }, [parameterUrl, index]);
 
+  // Clear any pending success-animation timeout on unmount to avoid
+  // setting state on an unmounted component.
+  useEffect(() => {
+    return () => {
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Callback to handle the submit action
   const onSubmit = useCallback(async () => {
     if (description.trim().length < 10) {
       setError("Bitte eine kurze Zusammenfassung eingeben");
       return;
     }
+    const trimmedUrl = url.trim();
+    if (
+      trimmedUrl.length > 0 &&
+      !trimmedUrl.toLowerCase().startsWith("http://") &&
+      !trimmedUrl.toLowerCase().startsWith("https://")
+    ) {
+      setError("Bitte einen gültigen Link eingeben (http:// oder https://)");
+      return;
+    }
     setButtonEnabled(false);
 
-    const data = await API.reportFake({
-      description,
-      more_info: moreInfo,
-      url,
-      allowed_public: allowedPublic,
-    });
-    registerEvent(Config.wpUrl, "Report Submitted", {
-      allowed_public: allowedPublic,
-      has_url: url.trim().length > 0,
-    });
-    const updatedReports = [...reports, data];
-    setReports(updatedReports);
-    await PersonalStore.setReports(updatedReports);
+    let token: string | undefined;
+    try {
+      // getToken() resolves to "" on web/FOSS builds rather than rejecting;
+      // normalize that to undefined so we don't send an empty token string.
+      token = (await NotificationManager.getToken()) || undefined;
+    } catch (error) {
+      console.warn("Failed to get notification token:", error);
+    }
 
-    setAnimation(true);
-    setDescription("");
-    setUrl("");
-    setMoreInfo("");
-    setError("");
-    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    setTimeout(() => {
-      setAnimation(false);
+    try {
+      const data = await API.reportFake({
+        description,
+        more_info: moreInfo,
+        url: trimmedUrl,
+        allowed_public: allowedPublic,
+        token,
+      });
+      registerEvent(Config.wpUrl, "Report Submitted", {
+        allowed_public: allowedPublic,
+        has_url: trimmedUrl.length > 0,
+      });
+      const updatedReports = [...reports, data];
+      setReports(updatedReports);
+      await PersonalStore.setReports(updatedReports);
+
+      setAnimation(true);
+      setDescription("");
+      setUrl("");
+      setMoreInfo("");
+      setError("");
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+      successTimeoutRef.current = setTimeout(() => {
+        setAnimation(false);
+        setButtonEnabled(true);
+      }, 5000);
+    } catch (error) {
+      console.warn("Failed to submit report:", error);
+      setError(
+        "Der Bericht konnte nicht gesendet werden. Bitte versuche es erneut.",
+      );
       setButtonEnabled(true);
-    }, 5000);
+    }
   }, [description, moreInfo, url, allowedPublic, reports]);
 
   const HEADER_HEIGHT = 150;
