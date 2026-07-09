@@ -115,6 +115,7 @@ const ReportScreen = () => {
     }
     const trimmedUrl = url.trim();
     if (
+      trimmedUrl.length > 0 &&
       !trimmedUrl.toLowerCase().startsWith("http://") &&
       !trimmedUrl.toLowerCase().startsWith("https://")
     ) {
