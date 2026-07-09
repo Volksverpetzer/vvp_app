@@ -44,7 +44,7 @@ describe("Report submission with token", () => {
     // Execute - simulate what report.tsx does in onSubmit
     let token: string | undefined;
     try {
-      token = await NotificationManager.getToken();
+      token = (await NotificationManager.getToken()) || undefined;
     } catch (error) {
       console.warn("Failed to get notification token:", error);
     }
@@ -87,13 +87,15 @@ describe("Report submission with token", () => {
     (API.reportFake as any).mockResolvedValue(mockResponse);
 
     // Execute - simulate what report.tsx does in onSubmit
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
     let token: string | undefined;
     try {
-      token = await NotificationManager.getToken();
+      token = (await NotificationManager.getToken()) || undefined;
     } catch (error) {
       console.warn("Failed to get notification token:", error);
       // Token remains undefined
     }
+    warnSpy.mockRestore();
 
     const reportWithToken = {
       ...mockReport,
@@ -103,6 +105,48 @@ describe("Report submission with token", () => {
     const result = await API.reportFake(reportWithToken);
 
     // Assert - should still work even if token retrieval failed
+    expect(API.reportFake).toHaveBeenCalledWith({
+      description: "Test fake report",
+      more_info: "Test more info",
+      url: "https://example.com/fake",
+      allowed_public: true,
+      token: undefined,
+    });
+    expect(result).toEqual(mockResponse);
+  });
+
+  it("should normalize an empty token (web/FOSS builds) to undefined", async () => {
+    // Setup
+    const mockReport = {
+      description: "Test fake report",
+      more_info: "Test more info",
+      url: "https://example.com/fake",
+      allowed_public: true,
+    };
+    const mockResponse = { id: "report-id-123" };
+
+    // getToken() resolves to "" on web/FOSS builds rather than rejecting
+    (NotificationManager.getToken as any).mockResolvedValue("");
+
+    // Mock the API call
+    (API.reportFake as any).mockResolvedValue(mockResponse);
+
+    // Execute - simulate what report.tsx does in onSubmit
+    let token: string | undefined;
+    try {
+      token = (await NotificationManager.getToken()) || undefined;
+    } catch (error) {
+      console.warn("Failed to get notification token:", error);
+    }
+
+    const reportWithToken = {
+      ...mockReport,
+      token,
+    };
+
+    const result = await API.reportFake(reportWithToken);
+
+    // Assert - an empty string token must not be sent as-is
     expect(API.reportFake).toHaveBeenCalledWith({
       description: "Test fake report",
       more_info: "Test more info",

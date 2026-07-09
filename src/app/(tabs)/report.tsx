@@ -124,36 +124,46 @@ const ReportScreen = () => {
 
     let token: string | undefined;
     try {
-      token = await NotificationManager.getToken();
+      // getToken() resolves to "" on web/FOSS builds rather than rejecting;
+      // normalize that to undefined so we don't send an empty token string.
+      token = (await NotificationManager.getToken()) || undefined;
     } catch (error) {
       console.warn("Failed to get notification token:", error);
     }
 
-    const data = await API.reportFake({
-      description,
-      more_info: moreInfo,
-      url,
-      allowed_public: allowedPublic,
-      token,
-    });
-    registerEvent(Config.wpUrl, "Report Submitted", {
-      allowed_public: allowedPublic,
-      has_url: url.trim().length > 0,
-    });
-    const updatedReports = [...reports, data];
-    setReports(updatedReports);
-    await PersonalStore.setReports(updatedReports);
+    try {
+      const data = await API.reportFake({
+        description,
+        more_info: moreInfo,
+        url,
+        allowed_public: allowedPublic,
+        token,
+      });
+      registerEvent(Config.wpUrl, "Report Submitted", {
+        allowed_public: allowedPublic,
+        has_url: url.trim().length > 0,
+      });
+      const updatedReports = [...reports, data];
+      setReports(updatedReports);
+      await PersonalStore.setReports(updatedReports);
 
-    setAnimation(true);
-    setDescription("");
-    setUrl("");
-    setMoreInfo("");
-    setError("");
-    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    setTimeout(() => {
-      setAnimation(false);
+      setAnimation(true);
+      setDescription("");
+      setUrl("");
+      setMoreInfo("");
+      setError("");
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      setTimeout(() => {
+        setAnimation(false);
+        setButtonEnabled(true);
+      }, 5000);
+    } catch (error) {
+      console.warn("Failed to submit report:", error);
+      setError(
+        "Der Bericht konnte nicht gesendet werden. Bitte versuche es erneut.",
+      );
       setButtonEnabled(true);
-    }, 5000);
+    }
   }, [description, moreInfo, url, allowedPublic, reports]);
 
   const HEADER_HEIGHT = 150;
