@@ -20,6 +20,7 @@ import UiTextInput from "#/components/ui/UiTextInput";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
@@ -114,11 +115,19 @@ const ReportScreen = () => {
     }
     setButtonEnabled(false);
 
+    let token: string | undefined;
+    try {
+      token = await NotificationManager.getToken();
+    } catch (error) {
+      console.warn("Failed to get notification token:", error);
+    }
+
     const data = await API.reportFake({
       description,
       more_info: moreInfo,
       url,
       allowed_public: allowedPublic,
+      token,
     });
     registerEvent(Config.wpUrl, "Report Submitted", {
       allowed_public: allowedPublic,

@@ -3,6 +3,7 @@ export type Report = {
   more_info: string;
   url: string;
   allowed_public: boolean;
+  token?: string;
 };
 
 export type StoredReport = {
