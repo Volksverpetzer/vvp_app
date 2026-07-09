@@ -1,9 +1,32 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import React from "react";
 
+import ReportScreen from "#/app/(tabs)/report";
 import NotificationManager from "#/helpers/Notifications";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
+import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 
-// Mock the NotificationManager
+jest.mock("expo-router", () => ({
+  useLocalSearchParams: jest.fn(() => ({})),
+}));
+
+jest.mock("expo-haptics", () => ({
+  notificationAsync: jest.fn(() => Promise.resolve()),
+  NotificationFeedbackType: { Success: "success" },
+}));
+
+jest.mock("#/components/animations/AnimatedHeader", () => jest.fn(() => null));
+jest.mock("#/components/animations/AnimatedSuccess", () => jest.fn(() => null));
+jest.mock("#/screens/ReportTab/components/ReportStatusList", () =>
+  jest.fn(() => null),
+);
+
+jest.mock("react-native-gesture-handler", () => ({
+  ScrollView: ({ children }: any) => children,
+}));
+
 jest.mock("#/helpers/Notifications", () => ({
   __esModule: true,
   default: {
@@ -11,7 +34,6 @@ jest.mock("#/helpers/Notifications", () => ({
   },
 }));
 
-// Mock the API
 jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
   default: {
@@ -19,141 +41,151 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
   },
 }));
 
-describe("Report submission with token", () => {
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerEvent: jest.fn(() => Promise.resolve()),
+}));
+
+jest.mock("#/helpers/Stores/PersonalStore", () => ({
+  __esModule: true,
+  default: {
+    getReports: jest.fn(() => Promise.resolve([])),
+    setReports: jest.fn(() => Promise.resolve()),
+  },
+}));
+
+const fillValidForm = async ({
+  getByAccessibilityHint,
+  url = "https://example.com/fake",
+}: {
+  getByAccessibilityHint: (hint: string) => any;
+  url?: string;
+}) => {
+  await fireEvent.changeText(
+    getByAccessibilityHint("Gib eine kurze Zusammenfassung ein"),
+    "Test fake report description",
+  );
+  await fireEvent.changeText(getByAccessibilityHint("Gib einen Link ein"), url);
+};
+
+describe("Report submission", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mocked(PersonalStore.getReports).mockResolvedValue([]);
   });
 
-  it("should retrieve notification token and pass it to reportFake", async () => {
-    // Setup
+  it("retrieves the notification token and passes it to reportFake", async () => {
     const mockToken = "expo-push-token-xyz123";
-    const mockReport = {
-      description: "Test fake report",
-      more_info: "Test more info",
-      url: "https://example.com/fake",
-      allowed_public: true,
-    };
-    const mockResponse = { id: "report-id-123" };
-
-    // Mock the token retrieval
     jest.mocked(NotificationManager.getToken).mockResolvedValue(mockToken);
+    jest.mocked(API.reportFake).mockResolvedValue({ id: "report-id-123" });
 
-    // Mock the API call
-    jest.mocked(API.reportFake).mockResolvedValue(mockResponse);
+    const { getByAccessibilityHint, getByRole } = await render(
+      <ReportScreen />,
+    );
+    await fillValidForm({ getByAccessibilityHint });
+    await fireEvent.press(getByRole("button"));
 
-    // Execute - simulate what report.tsx does in onSubmit
-    let token: string | undefined;
-    try {
-      token = (await NotificationManager.getToken()) || undefined;
-    } catch (error) {
-      console.warn("Failed to get notification token:", error);
-    }
-
-    const reportWithToken = {
-      ...mockReport,
-      token,
-    };
-
-    const result = await API.reportFake(reportWithToken);
-
-    // Assert
-    expect(NotificationManager.getToken).toHaveBeenCalled();
-    expect(API.reportFake).toHaveBeenCalledWith({
-      description: "Test fake report",
-      more_info: "Test more info",
-      url: "https://example.com/fake",
-      allowed_public: true,
-      token: mockToken,
+    await waitFor(() => {
+      expect(API.reportFake).toHaveBeenCalledWith(
+        expect.objectContaining({ token: mockToken }),
+      );
     });
-    expect(result).toEqual(mockResponse);
   });
 
-  it("should handle token retrieval failure gracefully", async () => {
-    // Setup
-    const mockReport = {
-      description: "Test fake report",
-      more_info: "Test more info",
-      url: "https://example.com/fake",
-      allowed_public: true,
-    };
-    const mockResponse = { id: "report-id-123" };
-
-    // Mock the token retrieval to fail
-    jest
-      .mocked(NotificationManager.getToken)
-      .mockRejectedValue(new Error("Token retrieval failed"));
-
-    // Mock the API call
-    jest.mocked(API.reportFake).mockResolvedValue(mockResponse);
-
-    // Execute - simulate what report.tsx does in onSubmit
-    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
-    let token: string | undefined;
-    try {
-      token = (await NotificationManager.getToken()) || undefined;
-    } catch (error) {
-      console.warn("Failed to get notification token:", error);
-      // Token remains undefined
-    }
-    warnSpy.mockRestore();
-
-    const reportWithToken = {
-      ...mockReport,
-      token,
-    };
-
-    const result = await API.reportFake(reportWithToken);
-
-    // Assert - should still work even if token retrieval failed
-    expect(API.reportFake).toHaveBeenCalledWith({
-      description: "Test fake report",
-      more_info: "Test more info",
-      url: "https://example.com/fake",
-      allowed_public: true,
-      token: undefined,
-    });
-    expect(result).toEqual(mockResponse);
-  });
-
-  it("should normalize an empty token (web/FOSS builds) to undefined", async () => {
-    // Setup
-    const mockReport = {
-      description: "Test fake report",
-      more_info: "Test more info",
-      url: "https://example.com/fake",
-      allowed_public: true,
-    };
-    const mockResponse = { id: "report-id-123" };
-
-    // getToken() resolves to "" on web/FOSS builds rather than rejecting
+  it("normalizes an empty token (web/FOSS builds) to undefined", async () => {
     jest.mocked(NotificationManager.getToken).mockResolvedValue("");
+    jest.mocked(API.reportFake).mockResolvedValue({ id: "report-id-123" });
 
-    // Mock the API call
-    jest.mocked(API.reportFake).mockResolvedValue(mockResponse);
+    const { getByAccessibilityHint, getByRole } = await render(
+      <ReportScreen />,
+    );
+    await fillValidForm({ getByAccessibilityHint });
+    await fireEvent.press(getByRole("button"));
 
-    // Execute - simulate what report.tsx does in onSubmit
-    let token: string | undefined;
-    try {
-      token = (await NotificationManager.getToken()) || undefined;
-    } catch (error) {
-      console.warn("Failed to get notification token:", error);
-    }
-
-    const reportWithToken = {
-      ...mockReport,
-      token,
-    };
-
-    const result = await API.reportFake(reportWithToken);
-
-    // Assert - an empty string token must not be sent as-is
-    expect(API.reportFake).toHaveBeenCalledWith({
-      description: "Test fake report",
-      more_info: "Test more info",
-      url: "https://example.com/fake",
-      allowed_public: true,
-      token: undefined,
+    await waitFor(() => {
+      expect(API.reportFake).toHaveBeenCalledWith(
+        expect.objectContaining({ token: undefined }),
+      );
     });
-    expect(result).toEqual(mockResponse);
+  });
+
+  it("submits with an undefined token and logs a warning when token retrieval fails", async () => {
+    const tokenError = new Error("Token retrieval failed");
+    jest.mocked(NotificationManager.getToken).mockRejectedValue(tokenError);
+    jest.mocked(API.reportFake).mockResolvedValue({ id: "report-id-123" });
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+
+    const { getByAccessibilityHint, getByRole } = await render(
+      <ReportScreen />,
+    );
+    await fillValidForm({ getByAccessibilityHint });
+    await fireEvent.press(getByRole("button"));
+
+    await waitFor(() => {
+      expect(API.reportFake).toHaveBeenCalledWith(
+        expect.objectContaining({ token: undefined }),
+      );
+    });
+    expect(warnSpy).toHaveBeenCalledWith(
+      "Failed to get notification token:",
+      tokenError,
+    );
+    warnSpy.mockRestore();
+  });
+
+  it("trims the URL before submitting and tracking the analytics event", async () => {
+    jest.mocked(NotificationManager.getToken).mockResolvedValue("");
+    jest.mocked(API.reportFake).mockResolvedValue({ id: "report-id-123" });
+
+    const { getByAccessibilityHint, getByRole } = await render(
+      <ReportScreen />,
+    );
+    await fillValidForm({
+      getByAccessibilityHint,
+      url: "  https://example.com/fake  ",
+    });
+    await fireEvent.press(getByRole("button"));
+
+    await waitFor(() => {
+      expect(API.reportFake).toHaveBeenCalledWith(
+        expect.objectContaining({ url: "https://example.com/fake" }),
+      );
+    });
+    expect(registerEvent).toHaveBeenCalledWith(
+      expect.anything(),
+      "Report Submitted",
+      expect.objectContaining({ has_url: true }),
+    );
+  });
+
+  it("rejects a non-empty URL without http/https and does not submit", async () => {
+    const { getByAccessibilityHint, getByRole, findByText } = await render(
+      <ReportScreen />,
+    );
+    await fillValidForm({ getByAccessibilityHint, url: "example.com/fake" });
+    await fireEvent.press(getByRole("button"));
+
+    expect(
+      await findByText(
+        "Bitte einen gültigen Link eingeben (http:// oder https://)",
+      ),
+    ).toBeTruthy();
+    expect(API.reportFake).not.toHaveBeenCalled();
+  });
+
+  it("allows submitting with an empty URL", async () => {
+    jest.mocked(NotificationManager.getToken).mockResolvedValue("");
+    jest.mocked(API.reportFake).mockResolvedValue({ id: "report-id-123" });
+
+    const { getByAccessibilityHint, getByRole } = await render(
+      <ReportScreen />,
+    );
+    await fillValidForm({ getByAccessibilityHint, url: "" });
+    await fireEvent.press(getByRole("button"));
+
+    await waitFor(() => {
+      expect(API.reportFake).toHaveBeenCalledWith(
+        expect.objectContaining({ url: "" }),
+      );
+    });
   });
 });

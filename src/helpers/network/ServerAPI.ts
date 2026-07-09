@@ -12,7 +12,7 @@ import type {
   InstaPostProperties,
   MastodonPostProperties,
   NotificationSettingType,
-  Report,
+  ReportSubmission,
   StatusResponse,
   StoredReport,
   TiktokPostProperties,
@@ -219,8 +219,11 @@ class API {
   /**
    * Reports a fake post.
    */
-  static async reportFake(report: Report): Promise<StoredReport> {
-    return await API.post<StoredReport, Report>("/reportFake", report);
+  static async reportFake(report: ReportSubmission): Promise<StoredReport> {
+    return await API.post<StoredReport, ReportSubmission>(
+      "/reportFake",
+      report,
+    );
   }
 
   /**

@@ -1,4 +1,4 @@
-export type Report = {
+export type ReportSubmission = {
   description: string;
   more_info: string;
   url: string;

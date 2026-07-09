@@ -46,6 +46,7 @@ const ReportScreen = () => {
   const parameters = useLocalSearchParams<{ url: string; index: string }>();
   const { url: parameterUrl, index } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const colorScheme = useAppColorScheme();
   const {
     accent,
@@ -107,6 +108,16 @@ const ReportScreen = () => {
     });
   }, [parameterUrl, index]);
 
+  // Clear any pending success-animation timeout on unmount to avoid
+  // setting state on an unmounted component.
+  useEffect(() => {
+    return () => {
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Callback to handle the submit action
   const onSubmit = useCallback(async () => {
     if (description.trim().length < 10) {
@@ -155,7 +166,10 @@ const ReportScreen = () => {
       setMoreInfo("");
       setError("");
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setTimeout(() => {
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+      successTimeoutRef.current = setTimeout(() => {
         setAnimation(false);
         setButtonEnabled(true);
       }, 5000);
