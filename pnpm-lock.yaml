@@ -24,8 +24,8 @@ importers:
         specifier: 0.4.1
         version: 0.4.1
       '@expo/config':
-        specifier: 57.0.2
-        version: 57.0.2(typescript@6.0.3)
+        specifier: 57.0.3
+        version: 57.0.3(typescript@6.0.3)
       '@expo/dom-webview':
         specifier: 57.0.0
         version: 57.0.0(expo@57.0.4)(react-native@0.86.0(@babel/core@7.29.7)(@react-native/jest-preset@0.85.3(@babel/core@7.29.7)(react@19.2.3))(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
@@ -1154,9 +1154,6 @@ packages:
 
   '@expo/config-types@57.0.1':
     resolution: {integrity: sha512-fo7d/Ym28uwGzdTV2leEvpsb9t+7i8YHjy471m31+cmDt4BRd/l7e94JHyrXAq4SWOBVus16S0JLqm89SRCCdw==}
-
-  '@expo/config@57.0.2':
-    resolution: {integrity: sha512-J/K4fBPs/wGMrK445Mz5fCuFhsOZjSEq+u7F0yCboCwQu+uPlkT/ZCi6/q5pOunFOTICFtLB5wfCKqf9Iz5iKA==}
 
   '@expo/config@57.0.3':
     resolution: {integrity: sha512-IshqjjpGtT7wj86pxgsfMD1/abNMfu1wZ07ubyYO29l+PWa0eAh2TcpyLcyBaqo01IonF6646xWwrCPcdlUl3Q==}
@@ -7941,22 +7938,6 @@ snapshots:
 
   '@expo/config-types@57.0.1': {}
 
-  '@expo/config@57.0.2(typescript@6.0.3)':
-    dependencies:
-      '@expo/config-plugins': 57.0.3(typescript@6.0.3)
-      '@expo/config-types': 57.0.1
-      '@expo/json-file': 11.0.0
-      '@expo/require-utils': 57.0.1(typescript@6.0.3)
-      deepmerge: 4.3.1
-      getenv: 2.0.0
-      glob: 13.0.6
-      resolve-workspace-root: 2.0.1
-      semver: 7.8.5
-      slugify: 1.6.9
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
   '@expo/config@57.0.3(typescript@6.0.3)':
     dependencies:
       '@expo/config-plugins': 57.0.3(typescript@6.0.3)
@@ -8046,7 +8027,7 @@ snapshots:
 
   '@expo/local-build-cache-provider@57.0.2(typescript@6.0.3)':
     dependencies:
-      '@expo/config': 57.0.2(typescript@6.0.3)
+      '@expo/config': 57.0.3(typescript@6.0.3)
       chalk: 4.1.2
     transitivePeerDependencies:
       - supports-color
@@ -8066,7 +8047,7 @@ snapshots:
       '@babel/code-frame': 7.29.7
       '@babel/core': 7.29.7
       '@babel/generator': 7.29.7
-      '@expo/config': 57.0.2(typescript@6.0.3)
+      '@expo/config': 57.0.3(typescript@6.0.3)
       '@expo/env': 2.4.1
       '@expo/json-file': 11.0.0
       '@expo/metro': 56.0.0
@@ -8160,7 +8141,7 @@ snapshots:
 
   '@expo/prebuild-config@57.0.5(typescript@6.0.3)':
     dependencies:
-      '@expo/config': 57.0.2(typescript@6.0.3)
+      '@expo/config': 57.0.3(typescript@6.0.3)
       '@expo/config-plugins': 57.0.3(typescript@6.0.3)
       '@expo/config-types': 57.0.1
       '@expo/image-utils': 0.11.1(typescript@6.0.3)
