@@ -5,6 +5,7 @@ import { createClient, get as netGet } from "#/helpers/utils/networking";
 import type {
   ArticleProperties,
   HttpsUrl,
+  ImageCredit,
   LoadArticlePostProperties,
   MediaResponse,
 } from "#/types";
@@ -96,7 +97,11 @@ export default class WordPressAPI {
   static async getFeatureImage(
     href: string,
     signal?: AbortSignal,
-  ): Promise<{ image: string | undefined; thumb: string | undefined }> {
+  ): Promise<{
+    image: string | undefined;
+    thumb: string | undefined;
+    credit: ImageCredit | undefined;
+  }> {
     const data = await netGet<MediaResponse>(WordPressAPI.client, href, {
       signal,
     });
@@ -108,7 +113,17 @@ export default class WordPressAPI {
       sizes?.medium?.source_url ??
       data?.source_url;
     const thumb = sizes?.thumbnail?.source_url ?? data?.source_url;
-    return { image, thumb };
+    // Populated by the "Image Source Control" WordPress plugin. No source text
+    // means nothing worth showing (e.g. self-shot images), so credit stays undefined.
+    const source = data?.meta?.isc_image_source?.trim();
+    const credit: ImageCredit | undefined = source
+      ? {
+          source,
+          sourceUrl: data?.meta?.isc_image_source_url || undefined,
+          licence: data?.meta?.isc_image_licence || undefined,
+        }
+      : undefined;
+    return { image, thumb, credit };
   }
 
   /**

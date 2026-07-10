@@ -23,9 +23,10 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import type { ArticleProperties } from "#/types";
+import type { ArticleProperties, ImageCredit } from "#/types";
 
 import Badge from "./Badge";
+import ImageCreditBadge from "./ImageCreditBadge";
 
 const titleStyle: TextStyle = {
   fontFamily: "SourceSansProBold",
@@ -56,6 +57,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
 
   // Local state.
   const [imageUrl, setImgURL] = useState("");
+  const [imageCredit, setImageCredit] = useState<ImageCredit | undefined>();
   const [scrollProgress, setScrollProgress] = useState<DimensionValue>("0%");
   const [viewCount, setViewCount] = useState<number | null>(null);
 
@@ -88,12 +90,14 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Fetch the feature image when the article is in view.
   const getImages = useCallback(async () => {
     try {
-      const { image } = await WordPressAPI.getFeatureImage(
+      const { image, credit } = await WordPressAPI.getFeatureImage(
         article._links["wp:featuredmedia"][0].href,
       );
       setImgURL(image);
+      setImageCredit(credit);
       ContentStore.setStoredArticle(article.slug, {
         imageUrl: image,
+        imageCredit: credit,
         ...article,
       });
     } catch (error) {
@@ -243,6 +247,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
             <ViewCounter url={article.link} size={16} onLoad={setViewCount} />
           </Badge>
         )}
+        <ImageCreditBadge credit={imageCredit} position="bottomRight" />
         {excerpt ? (
           <>
             <UiText
