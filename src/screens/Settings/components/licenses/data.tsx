@@ -1,11 +1,11 @@
 export default {
-  "@algolia/client-search@5.55.1": {
+  "@algolia/client-search@5.55.2": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.20.26": {
+  "@atproto/api@0.20.27": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -21,7 +21,7 @@ export default {
     repository: "https://github.com/expo/google-fonts",
     licenseUrl: "https://github.com/expo/google-fonts/raw/HEAD/LICENSE",
   },
-  "@expo/config@57.0.2": {
+  "@expo/config@57.0.3": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
