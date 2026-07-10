@@ -26,6 +26,7 @@ import { globalStyles } from "#/constants/GlobalStyles";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+import { FetchError } from "#/helpers/utils/networking";
 import { appName } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ContactCategory } from "#/types";
@@ -248,9 +249,13 @@ const ContactScreen = () => {
         app_version: Application?.nativeApplicationVersion ?? "",
         platform: Platform.OS,
       });
-    } catch {
+    } catch (error_) {
       setErrorField(null);
-      setError("Senden fehlgeschlagen. Bitte versuche es später erneut.");
+      setError(
+        error_ instanceof FetchError && error_.status === 429
+          ? "Zu viele Anfragen. Bitte warte eine Minute und versuche es dann erneut."
+          : "Senden fehlgeschlagen. Bitte versuche es später erneut.",
+      );
       setButtonEnabled(true);
       return;
     }
