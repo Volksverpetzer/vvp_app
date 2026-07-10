@@ -8,7 +8,7 @@
       "exclude": []
     }
   },
-  "packageManager": "pnpm@11.10.0",
+  "packageManager": "pnpm@11.11.0",
   "engines": {
     "node": "24.x"
   },
@@ -49,11 +49,11 @@
     "update:deps": "pnpx npm-check-updates -c 1d -i --format group"
   },
   "dependencies": {
-    "@algolia/client-search": "5.55.1",
-    "@atproto/api": "0.20.26",
+    "@algolia/client-search": "5.55.2",
+    "@atproto/api": "0.20.27",
     "@babel/runtime": "7.29.7",
     "@expo-google-fonts/source-sans-3": "0.4.1",
-    "@expo/config": "57.0.2",
+    "@expo/config": "57.0.3",
     "@expo/dom-webview": "57.0.0",
     "@expo/metro-runtime": "57.0.3",
     "@expo/require-utils": "57.0.1",
@@ -132,7 +132,7 @@
     "@typescript-eslint/parser": "8.63.0",
     "babel-jest": "29.7.0",
     "babel-plugin-module-resolver": "5.0.3",
-    "babel-preset-expo": "57.0.1",
+    "babel-preset-expo": "57.0.2",
     "cspell": "10.0.1",
     "eslint": "9.39.4",
     "eslint-config-expo": "57.0.0",
@@ -148,7 +148,7 @@
     "jest-react-native": "18.0.0",
     "license-checker-rseidelsohn": "5.0.1",
     "lint-staged": "17.0.8",
-    "prettier": "3.9.4",
+    "prettier": "3.9.5",
     "ts-node": "10.9.2",
     "typedoc": "0.28.20",
     "typescript": "6.0.3"

@@ -3,6 +3,7 @@ import { fireEvent, render, waitFor } from "@testing-library/react-native";
 
 import ContactScreen from "#/app/(tabs)/contact";
 import API from "#/helpers/network/ServerAPI";
+import { FetchError } from "#/helpers/utils/networking";
 
 let mockParameters: Record<string, string> = {};
 
@@ -279,5 +280,38 @@ describe("ContactScreen", () => {
     });
     await fireEvent.press(getByText("Senden"));
     await waitFor(() => expect(postContact).toHaveBeenCalledTimes(2));
+  });
+
+  it("shows a rate-limit message when submission fails with 429", async () => {
+    mockParameters = { category: "other" };
+    (postContact as jest.Mock<any>).mockRejectedValue(
+      new FetchError("Too Many Requests", {
+        status: 429,
+        statusText: "Too Many Requests",
+        url: "https://example.com/contact",
+        body: null,
+      }),
+    );
+    const { getByText, queryByText, getAllByPlaceholderText } = await render(
+      <ContactScreen />,
+    );
+    const [titleInput, messageInput] = getAllByPlaceholderText("...");
+    await fireEvent.changeText(titleInput, "Betreff");
+    await fireEvent.changeText(
+      messageInput,
+      "Eine ausreichend lange Nachricht.",
+    );
+    await fireEvent.press(getByText("Senden"));
+
+    await waitFor(() =>
+      expect(
+        getByText(
+          "Zu viele Anfragen. Bitte warte eine Minute und versuche es dann erneut.",
+        ),
+      ).toBeTruthy(),
+    );
+    expect(
+      queryByText("Senden fehlgeschlagen. Bitte versuche es später erneut."),
+    ).toBeNull();
   });
 });
