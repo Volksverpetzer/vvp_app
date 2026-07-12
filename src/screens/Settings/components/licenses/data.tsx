@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.20.27": {
+  "@atproto/api@0.20.28": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -306,7 +306,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-community/react-native-svg/raw/HEAD/LICENSE",
   },
-  "react-native-toast-message@2.3.3": {
+  "react-native-toast-message@2.4.0": {
     licenses: "MIT",
     repository: "https://github.com/calintamas/react-native-toast-message",
     licenseUrl:
