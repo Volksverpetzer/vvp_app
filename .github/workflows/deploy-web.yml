@@ -52,9 +52,9 @@ jobs:
           ' sh
         shell: bash
 
-      - name: 🧹 Purge index.html from the CDN cache
+      - name: 🧹 Purge web entry URLs from the CDN cache
         env:
-          # Public base URL of the deployed web app, e.g. https://app.volksverpetzer.de
+          # Public base URL of the deployed web app, e.g. https://web.volksverpetzer.de
           WEB_URL: ${{ secrets.BUNNY_WEB_URL }}
           API_KEY: ${{ secrets.BUNNY_API_KEY }}
         run: |
