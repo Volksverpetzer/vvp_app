@@ -35,19 +35,21 @@ jobs:
             echo "::error::BUNNY_STORAGE_ZONE_NAME and BUNNY_STORAGE_PASSWORD secrets must be set"
             exit 1
           fi
-          HOST="${STORAGE_HOST:-storage.bunnycdn.com}"
+          export HOST="${STORAGE_HOST:-storage.bunnycdn.com}"
           cd dist
-          FILES=$(find . -type f | sed 's|^\./||')
-          COUNT=$(echo "$FILES" | wc -l | tr -d ' ')
+          COUNT=$(find . -type f | wc -l | tr -d ' ')
           echo "Uploading $COUNT files to $HOST/$STORAGE_ZONE"
-          echo "$FILES" | xargs -P 8 -I {} sh -c '
+          # Filenames are passed as positional parameters, never interpolated
+          # into the script text, so they cannot be executed as shell code
+          find . -type f -print0 | xargs -0 -P 8 -n 1 sh -c '
+            f="${1#./}"
             curl --fail --silent --show-error --retry 3 --retry-all-errors \
               -H "AccessKey: $STORAGE_KEY" \
               -H "Content-Type: application/octet-stream" \
-              --upload-file "{}" \
-              "https://'"$HOST"'/'"$STORAGE_ZONE"'/{}" > /dev/null \
-              && echo "  ✓ {}" || { echo "  ✗ {}"; exit 1; }
-          '
+              --upload-file "$1" \
+              "https://$HOST/$STORAGE_ZONE/$f" > /dev/null \
+              && echo "  ✓ $f" || { echo "  ✗ $f"; exit 1; }
+          ' sh
         shell: bash
 
       - name: 🧹 Purge index.html from the CDN cache
@@ -60,6 +62,8 @@ jobs:
             echo "BUNNY_WEB_URL / BUNNY_API_KEY not set — skipping cache purge"
             exit 0
           fi
+          # Tolerate a trailing slash in the configured base URL
+          WEB_URL="${WEB_URL%/}"
           # Only these URLs are purged — the JS bundles are content-hashed and
           # never need purging, and no other zone or site is touched
           for path in "/" "/index.html" "/metadata.json"; do
