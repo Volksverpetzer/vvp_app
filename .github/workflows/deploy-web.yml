@@ -50,17 +50,22 @@ jobs:
           '
         shell: bash
 
-      - name: 🧹 Purge pull zone cache
+      - name: 🧹 Purge index.html from the CDN cache
         env:
-          PULLZONE_ID: ${{ secrets.BUNNY_PULLZONE_ID }}
+          # Public base URL of the deployed web app, e.g. https://app.volksverpetzer.de
+          WEB_URL: ${{ secrets.BUNNY_WEB_URL }}
           API_KEY: ${{ secrets.BUNNY_API_KEY }}
         run: |
-          if [ -z "$PULLZONE_ID" ] || [ -z "$API_KEY" ]; then
-            echo "BUNNY_PULLZONE_ID / BUNNY_API_KEY not set — skipping cache purge"
+          if [ -z "$WEB_URL" ] || [ -z "$API_KEY" ]; then
+            echo "BUNNY_WEB_URL / BUNNY_API_KEY not set — skipping cache purge"
             exit 0
           fi
-          curl --fail --silent --show-error --request POST \
-            -H "AccessKey: $API_KEY" \
-            "https://api.bunny.net/pullzone/$PULLZONE_ID/purgeCache"
-          echo "Pull zone cache purged"
+          # Only these URLs are purged — the JS bundles are content-hashed and
+          # never need purging, and no other zone or site is touched
+          for path in "/" "/index.html" "/metadata.json"; do
+            curl --fail --silent --show-error --request POST \
+              -H "AccessKey: $API_KEY" \
+              "https://api.bunny.net/purge?url=$(printf %s "$WEB_URL$path" | sed 's|/|%2F|g; s|:|%3A|g')"
+            echo "purged $WEB_URL$path"
+          done
         shell: bash
