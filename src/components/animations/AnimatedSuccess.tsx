@@ -1,7 +1,8 @@
+import { Asset } from "expo-asset";
 import { BlurView } from "expo-blur";
 import { useCallback, useEffect, useRef } from "react";
 import type { RefObject } from "react";
-import { Animated, Dimensions, Image, Modal, StyleSheet } from "react-native";
+import { Animated, Dimensions, Modal, StyleSheet } from "react-native";
 import type {
   ImageSourcePropType,
   ImageStyle,
@@ -58,7 +59,15 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
   // asset's intrinsic size so the image is positioned correctly for callers
   // that don't pass a style (e.g. the donation flow's default icon)
   const flattenedImageStyle = StyleSheet.flatten(imageStyle);
-  const resolvedAsset = Image.resolveAssetSource(image);
+  // Image.resolveAssetSource doesn't exist on react-native-web; expo-asset
+  // resolves module IDs on all platforms, and object sources carry their
+  // own optional width/height
+  const resolvedAsset =
+    typeof image === "number"
+      ? Asset.fromModule(image)
+      : Array.isArray(image)
+        ? undefined
+        : image;
   const imageHeight =
     typeof flattenedImageStyle?.height === "number"
       ? flattenedImageStyle.height
