@@ -8,7 +8,7 @@ import type {
   LayoutChangeEvent,
   TextStyle,
 } from "react-native";
-import { View, useWindowDimensions } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 
@@ -159,25 +159,44 @@ const FlatBoard = (properties: FlatBoardProperties) => {
     setContainerHeight(e.nativeEvent.layout.height);
   };
 
+  // On web the first render happens before the window is measured, and the
+  // carousel throws on width 0; the dimensions update triggers a re-render
+  if (!width) return null;
+
   return (
     <View style={{ flex: 1 }} onLayout={onLayout}>
-      <Carousel
-        ref={carouselRef}
-        width={width}
-        height={containerHeight}
-        data={data}
-        loop={false}
-        onSnapToItem={onSnapToItem}
-        renderItem={({ item }) => (
+      {Platform.OS === "web" ? (
+        // The reanimated carousel doesn't paint its items reliably on web;
+        // the stepper drives navigation via the step state anyway, so web
+        // only loses the swipe gesture
+        <View style={{ flex: 1 }}>
           <MemoSlide
-            {...item}
+            {...data[step]}
             width={width}
             height={containerHeight}
             headingStyle={headingStyle}
             descriptionStyle={descriptionStyle}
           />
-        )}
-      />
+        </View>
+      ) : (
+        <Carousel
+          ref={carouselRef}
+          width={width}
+          height={containerHeight}
+          data={data}
+          loop={false}
+          onSnapToItem={onSnapToItem}
+          renderItem={({ item }) => (
+            <MemoSlide
+              {...item}
+              width={width}
+              height={containerHeight}
+              headingStyle={headingStyle}
+              descriptionStyle={descriptionStyle}
+            />
+          )}
+        />
+      )}
       <Stepper
         step={step}
         data={data}
