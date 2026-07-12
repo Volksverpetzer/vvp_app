@@ -1,0 +1,66 @@
+name: Deploy Web to Bunny
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-web
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v7
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-node: "true"
+
+      - name: 📦 Export web bundle
+        run: npx expo export --platform web
+        shell: bash
+
+      - name: ⬆️ Upload to Bunny storage
+        env:
+          STORAGE_ZONE: ${{ secrets.BUNNY_STORAGE_ZONE_NAME }}
+          STORAGE_KEY: ${{ secrets.BUNNY_STORAGE_PASSWORD }}
+          # Region-specific hostname, e.g. storage.bunnycdn.com (DE) or
+          # ny.storage.bunnycdn.com — see the storage zone's FTP & API access page
+          STORAGE_HOST: ${{ secrets.BUNNY_STORAGE_HOST }}
+        run: |
+          if [ -z "$STORAGE_ZONE" ] || [ -z "$STORAGE_KEY" ]; then
+            echo "::error::BUNNY_STORAGE_ZONE_NAME and BUNNY_STORAGE_PASSWORD secrets must be set"
+            exit 1
+          fi
+          HOST="${STORAGE_HOST:-storage.bunnycdn.com}"
+          cd dist
+          FILES=$(find . -type f | sed 's|^\./||')
+          COUNT=$(echo "$FILES" | wc -l | tr -d ' ')
+          echo "Uploading $COUNT files to $HOST/$STORAGE_ZONE"
+          echo "$FILES" | xargs -P 8 -I {} sh -c '
+            curl --fail --silent --show-error --retry 3 --retry-all-errors \
+              -H "AccessKey: $STORAGE_KEY" \
+              -H "Content-Type: application/octet-stream" \
+              --upload-file "{}" \
+              "https://'"$HOST"'/'"$STORAGE_ZONE"'/{}" > /dev/null \
+              && echo "  ✓ {}" || { echo "  ✗ {}"; exit 1; }
+          '
+        shell: bash
+
+      - name: 🧹 Purge pull zone cache
+        env:
+          PULLZONE_ID: ${{ secrets.BUNNY_PULLZONE_ID }}
+          API_KEY: ${{ secrets.BUNNY_API_KEY }}
+        run: |
+          if [ -z "$PULLZONE_ID" ] || [ -z "$API_KEY" ]; then
+            echo "BUNNY_PULLZONE_ID / BUNNY_API_KEY not set — skipping cache purge"
+            exit 0
+          fi
+          curl --fail --silent --show-error --request POST \
+            -H "AccessKey: $API_KEY" \
+            "https://api.bunny.net/pullzone/$PULLZONE_ID/purgeCache"
+          echo "Pull zone cache purged"
+        shell: bash
