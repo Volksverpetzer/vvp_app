@@ -159,6 +159,10 @@ const FlatBoard = (properties: FlatBoardProperties) => {
     setContainerHeight(e.nativeEvent.layout.height);
   };
 
+  // On web the first render happens before the window is measured, and the
+  // carousel throws on width 0; the dimensions update triggers a re-render
+  if (!width) return null;
+
   return (
     <View style={{ flex: 1 }} onLayout={onLayout}>
       <Carousel
