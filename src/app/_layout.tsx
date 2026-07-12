@@ -5,6 +5,7 @@ import {
   SourceSans3_700Bold_Italic,
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
+import OcticonsFont from "@react-native-vector-icons/octicons/fonts/Octicons.ttf";
 import { Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -91,6 +92,9 @@ const RootLayout = () => {
     SourceSansProItalic: SourceSans3_400Regular_Italic,
     SourceSansProBold: SourceSans3_700Bold,
     SourceSansProBoldItalic: SourceSans3_700Bold_Italic,
+    // The icon font is bundled natively by the vector-icons config plugin,
+    // but on web it has to be registered explicitly
+    ...(Platform.OS === "web" && { Octicons: OcticonsFont }),
   });
 
   const [showChangelog, setShowChangelog] = useState(false);
