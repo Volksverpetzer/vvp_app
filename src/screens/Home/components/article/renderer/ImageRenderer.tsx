@@ -1,7 +1,7 @@
 import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import type { InternalRendererProps, TBlock } from "react-native-render-html";
 import { useInternalRenderer } from "react-native-render-html";
@@ -10,9 +10,11 @@ import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
-import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import type { HttpsUrl, ImageCredit } from "#/types";
+import { useImageCredit } from "#/hooks/useImageCredit";
+import type { HttpsUrl } from "#/types";
+
+import { hasFigcaptionSibling, mediaIdOf } from "./imageCreditNodes";
 
 interface ImageRendererProperties extends InternalRendererProps<TBlock> {
   url?: HttpsUrl;
@@ -21,7 +23,6 @@ interface ImageRendererProperties extends InternalRendererProps<TBlock> {
 const ImageRenderer = ({ url, ...properties }: ImageRendererProperties) => {
   const [ratio, setRatio] = useState(1.5);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [credit, setCredit] = useState<ImageCredit | undefined>();
   const { rendererProps } = useInternalRenderer("img", properties);
   const { width } = useWindowDimensions();
   const colorScheme = useAppColorScheme();
@@ -29,28 +30,13 @@ const ImageRenderer = ({ url, ...properties }: ImageRendererProperties) => {
   const backgroundColor = Colors[colorScheme].background;
   const router = useRouter();
 
-  // WordPress tags content images with their attachment id via a
-  // wp-image-{id} class; that id leads to the Image Source Control credit.
-  const mediaId = /wp-image-(\d+)/.exec(
-    properties.tnode.attributes?.class ?? "",
-  )?.[1];
-
-  useEffect(() => {
-    if (!mediaId || !url) return;
-    const controller = new AbortController();
-
-    WordPressAPI.getMediaCredit(mediaId, url, controller.signal)
-      .then((_credit) => {
-        if (!controller.signal.aborted) setCredit(_credit);
-      })
-      .catch(() => {
-        // Image just renders without a credit badge.
-      });
-
-    return () => {
-      controller.abort();
-    };
-  }, [mediaId, url]);
+  // When the image has a caption, FigcaptionRenderer shows the credit badge
+  // on the caption row instead of overlaying it on the image.
+  const hasCaption = hasFigcaptionSibling(properties.tnode);
+  const credit = useImageCredit(
+    hasCaption ? undefined : mediaIdOf(properties.tnode),
+    url,
+  );
 
   const onLoad = (event: ImageLoadEventData) => {
     if (isLoaded) return;
