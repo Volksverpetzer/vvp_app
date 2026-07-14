@@ -1,7 +1,9 @@
-import { useCallback } from "react";
-import { FlatList } from "react-native";
+import { useCallback, useRef } from "react";
+import { FlatList, View } from "react-native";
 
+import BackToTopButton from "#/components/buttons/BackToTopButton";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { useBackToTop } from "#/hooks/useBackToTop";
 
 import LicensesListItem from "./LicenseListItem";
 import Data from "./data";
@@ -27,6 +29,8 @@ const extractNameFromGithubUrl = (url: string) => {
  * Renders a list of open source licenses.
  */
 const Licenses = () => {
+  const listReference = useRef<FlatList>(null);
+  const backToTop = useBackToTop();
   const renderItem = useCallback(
     ({ item }) => <LicensesListItem {...item} />,
     [],
@@ -66,12 +70,23 @@ const Licenses = () => {
   });
 
   return (
-    <FlatList
-      keyExtractor={(item) => item.id}
-      data={licenses}
-      renderItem={renderItem}
-      contentContainerStyle={[globalStyles.content, { gap: 10 }]}
-    />
+    <View style={globalStyles.container}>
+      <FlatList
+        ref={listReference}
+        keyExtractor={(item) => item.id}
+        data={licenses}
+        renderItem={renderItem}
+        contentContainerStyle={[globalStyles.content, { gap: 10 }]}
+        onScroll={backToTop.onScroll}
+        scrollEventThrottle={16}
+      />
+      <BackToTopButton
+        visible={backToTop.visible}
+        onPress={() =>
+          listReference.current?.scrollToOffset({ offset: 0, animated: true })
+        }
+      />
+    </View>
   );
 };
 
