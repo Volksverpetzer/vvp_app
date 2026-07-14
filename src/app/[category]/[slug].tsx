@@ -9,7 +9,7 @@ import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { normalizedHostOf } from "#/helpers/utils/host";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
 import ArticleScreen from "#/screens/Home/components/article/Article";
-import type { ArticleProperties, HttpsUrl } from "#/types";
+import type { ArticleProperties, HttpsUrl, ImageCredit } from "#/types";
 
 type LoadArticleParameters = {
   imageUrl?: string;
@@ -40,6 +40,7 @@ const LoadArticle = () => {
 
   const [article, setArticle] = useState<ArticleProperties | undefined>();
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [imageCredit, setImageCredit] = useState<ImageCredit | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
 
@@ -61,6 +62,7 @@ const LoadArticle = () => {
         if (articleParameter) {
           setArticle(articleParameter);
           setImageUrl(articleParameter.imageUrl || "");
+          setImageCredit(articleParameter.imageCredit);
           setIsLoading(false);
           return;
         }
@@ -79,7 +81,7 @@ const LoadArticle = () => {
         const loadedArticle: ArticleProperties =
           WordPressAPI.convertLoadProps(_article);
 
-        const { image } = await WordPressAPI.getFeatureImage(
+        const { image, credit } = await WordPressAPI.getFeatureImage(
           loadedArticle._links["wp:featuredmedia"][0].href,
           signal,
         );
@@ -87,6 +89,7 @@ const LoadArticle = () => {
         if (signal.aborted) return;
         setArticle(loadedArticle);
         setImageUrl(image);
+        setImageCredit(credit);
         setIsLoading(false);
       } catch (error_) {
         if (signal.aborted) return;
@@ -135,6 +138,7 @@ const LoadArticle = () => {
     const articleWithImage = {
       ...article,
       imageUrl: imageUrl || article.imageUrl || "",
+      imageCredit: imageCredit ?? article.imageCredit,
     };
     return <ArticleScreen article={articleWithImage} />;
   }

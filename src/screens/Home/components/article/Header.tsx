@@ -14,6 +14,7 @@ import {
 import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
+import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -117,17 +118,20 @@ const Header = (properties: HeaderProperties) => {
 
   return (
     <>
-      <UiPressable
-        accessibilityRole="button"
-        onLongPress={() => setVisible(true)}
-        onLayout={onLayout}
-      >
-        <Image
-          style={{ margin: "auto", height, width: "100%" }}
-          source={{ uri: article_image }}
-          placeholder={LoadingImage}
-        />
-      </UiPressable>
+      <View style={{ position: "relative" }}>
+        <UiPressable
+          accessibilityRole="button"
+          onLongPress={() => setVisible(true)}
+          onLayout={onLayout}
+        >
+          <Image
+            style={{ margin: "auto", height, width: "100%" }}
+            source={{ uri: article_image }}
+            placeholder={LoadingImage}
+          />
+        </UiPressable>
+        <ImageCreditBadge credit={article.imageCredit} position="bottomRight" />
+      </View>
       <UiSpace size={30} />
       <UiText
         style={{

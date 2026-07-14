@@ -75,6 +75,10 @@ export const HomeIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="home" />
 );
 
+export const InfoIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="info" />
+);
+
 export const HeartIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="heart-fill" />
 );

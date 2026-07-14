@@ -5,6 +5,7 @@ import { createClient, get as netGet } from "#/helpers/utils/networking";
 import type {
   ArticleProperties,
   HttpsUrl,
+  ImageCredit,
   LoadArticlePostProperties,
   MediaResponse,
 } from "#/types";
@@ -96,8 +97,16 @@ export default class WordPressAPI {
   static async getFeatureImage(
     href: string,
     signal?: AbortSignal,
-  ): Promise<{ image: string | undefined; thumb: string | undefined }> {
+  ): Promise<{
+    image: string | undefined;
+    thumb: string | undefined;
+    credit: ImageCredit | undefined;
+  }> {
+    // Only request the fields we actually read: the full media object is large,
+    // and scoping to these keeps the ISC `meta` from depending on site-specific
+    // REST defaults (mirrors getMediaCredit).
     const data = await netGet<MediaResponse>(WordPressAPI.client, href, {
+      params: { _fields: "source_url,media_details,meta" },
       signal,
     });
     const sizes = data?.media_details?.sizes;
@@ -108,7 +117,47 @@ export default class WordPressAPI {
       sizes?.medium?.source_url ??
       data?.source_url;
     const thumb = sizes?.thumbnail?.source_url ?? data?.source_url;
-    return { image, thumb };
+    return { image, thumb, credit: WordPressAPI.extractImageCredit(data) };
+  }
+
+  /**
+   * Parse the "Image Source Control" WordPress plugin metadata from a media
+   * response. No source text means nothing worth showing (e.g. self-shot
+   * images), so the credit stays undefined.
+   */
+  static extractImageCredit(data?: MediaResponse): ImageCredit | undefined {
+    // All three are free-form WordPress admin input; trim and treat
+    // whitespace-only values as absent so the UI never shows blank licences
+    // or links with stray spaces.
+    const source = data?.meta?.isc_image_source?.trim();
+    return source
+      ? {
+          source,
+          sourceUrl: data?.meta?.isc_image_source_url?.trim() || undefined,
+          licence: data?.meta?.isc_image_licence?.trim() || undefined,
+        }
+      : undefined;
+  }
+
+  /**
+   * Get the image credit for a media attachment by id, e.g. from the
+   * wp-image-{id} class WordPress puts on images in post content.
+   * @param mediaId - The attachment id
+   * @param articleUrl - Any URL on the article's site; determines which
+   *   WordPress API to query (articles can come from secondary sites)
+   */
+  static async getMediaCredit(
+    mediaId: string,
+    articleUrl: HttpsUrl,
+    signal?: AbortSignal,
+  ): Promise<ImageCredit | undefined> {
+    const origin = new URL(articleUrl).origin;
+    const data = await netGet<MediaResponse>(
+      WordPressAPI.client,
+      `${origin}/wp-json/wp/v2/media/${mediaId}`,
+      { params: { _fields: "meta" }, signal },
+    );
+    return WordPressAPI.extractImageCredit(data);
   }
 
   /**
