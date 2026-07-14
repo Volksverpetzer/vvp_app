@@ -11,6 +11,11 @@ interface FigcaptionRendererProperties extends InternalRendererProps<TBlock> {
   url?: HttpsUrl;
 }
 
+// The badge's touch target (see MIN_TOUCH_TARGET in Badge). Inset the caption
+// by this on both sides so the centered text/link never sits under the badge
+// or has its taps intercepted, while staying centered under the image.
+const BADGE_INSET = 44;
+
 /**
  * Renders a figure caption with the sibling image's credit badge overlaid on
  * the caption row, so caption text and credit share the line below the image.
@@ -23,8 +28,11 @@ const FigcaptionRenderer = ({
   const image = findImageTNode(properties.tnode.parent ?? undefined);
   const credit = useImageCredit(mediaIdOf(image), url);
 
+  // Only reserve space for the badge when there's actually a credit to show.
+  const inset = credit ? BADGE_INSET : 0;
+
   return (
-    <View>
+    <View style={{ paddingHorizontal: inset }}>
       <TDefaultRenderer {...defaultProperties} />
       <ImageCreditBadge credit={credit} position="topRight" />
     </View>
