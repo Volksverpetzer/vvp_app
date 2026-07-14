@@ -153,6 +153,10 @@ describe("NotificationManager", () => {
 
   describe("registerForPushNotifications", () => {
     afterEach(() => {
+      // Restore spied implementations (getPermissionsAsync, console.warn,
+      // etc.) so they don't leak into later tests — the file only runs
+      // clearAllMocks() globally, which doesn't undo spyOn implementations.
+      jest.restoreAllMocks();
       // Restore Device.isDevice after each test via the setter
       const Device = jest.requireMock("expo-device") as any;
       Device.__setIsDeviceValue(true);
@@ -224,14 +228,13 @@ describe("NotificationManager", () => {
       jest
         .spyOn(Notifications, "requestPermissionsAsync")
         .mockResolvedValue({ status: "denied" } as any);
-      const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+      jest.spyOn(console, "warn").mockImplementation(() => {});
 
       const result = await NotificationManager.registerForPushNotifications({
         new_post: { value: false, name: "New Posts" },
       });
 
       expect(result.notificationSettings.new_post.value).toBe(false);
-      warnSpy.mockRestore();
     });
 
     it("returns the merged settings, not the stale stored ones, when notifications are unavailable (e.g. web)", async () => {
@@ -272,16 +275,13 @@ describe("NotificationManager", () => {
       jest
         .spyOn(Notifications, "getExpoPushTokenAsync")
         .mockRejectedValue(new Error("token fetch failed"));
-      const errorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
+      jest.spyOn(console, "error").mockImplementation(() => {});
 
       const result = await NotificationManager.registerForPushNotifications({
         new_post: { value: false, name: "New Posts" },
       });
 
       expect(result.notificationSettings.new_post.value).toBe(false);
-      errorSpy.mockRestore();
     });
 
     it("returns the merged settings, not the stale stored ones, when no token is returned", async () => {
