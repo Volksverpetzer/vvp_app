@@ -199,7 +199,7 @@ const NotificationManager = {
       } catch (error) {
         console.error(error);
         return {
-          status: "error getting token" + error,
+          status: `error getting token: ${error}`,
           notificationSettings,
         };
       }
