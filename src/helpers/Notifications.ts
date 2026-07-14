@@ -136,30 +136,27 @@ const NotificationManager = {
     status: string;
     notificationSettings: NotificationSettingType;
   }> {
-    if (Config.isFoss) {
-      const storedSettings = await SettingsStore.getNotificationSettings();
-      return { status: "foss", notificationSettings: storedSettings };
-    }
-    ensureNotificationsConfigured();
-    const Notifications = getNotifications();
-    if (!Notifications) {
-      const storedSettings = await SettingsStore.getNotificationSettings();
-      return { status: "unavailable", notificationSettings: storedSettings };
-    }
-
-    let token: string;
-
     const storedSettings = await SettingsStore.getNotificationSettings();
-
     const notificationSettings = {
       ...SettingsStore.defaultNotificationSettings,
       ...storedSettings,
       ...newSettings,
     };
-
     // Persist locally right away so settings survive even if push
-    // registration below fails or is skipped (no permission, no device).
+    // registration below fails or is unavailable (FOSS build, web, no
+    // permission, no device).
     await SettingsStore.setNotificationSettings(notificationSettings);
+
+    if (Config.isFoss) {
+      return { status: "foss", notificationSettings };
+    }
+    ensureNotificationsConfigured();
+    const Notifications = getNotifications();
+    if (!Notifications) {
+      return { status: "unavailable", notificationSettings };
+    }
+
+    let token: string;
 
     if (Platform.OS === "android") {
       // Create a default channel for general notifications
@@ -212,8 +209,6 @@ const NotificationManager = {
     } else {
       return { status: "ok", notificationSettings };
     }
-
-    /** Merge default, stored, and new settings. */
 
     const body = {
       expo_token: token,

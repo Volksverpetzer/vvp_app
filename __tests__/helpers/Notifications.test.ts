@@ -224,13 +224,40 @@ describe("NotificationManager", () => {
       jest
         .spyOn(Notifications, "requestPermissionsAsync")
         .mockResolvedValue({ status: "denied" } as any);
-      jest.spyOn(console, "warn").mockImplementation(() => {});
+      const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
 
       const result = await NotificationManager.registerForPushNotifications({
         new_post: { value: false, name: "New Posts" },
       });
 
       expect(result.notificationSettings.new_post.value).toBe(false);
+      warnSpy.mockRestore();
+    });
+
+    it("returns the merged settings, not the stale stored ones, when notifications are unavailable (e.g. web)", async () => {
+      const platform = (jest.requireMock("react-native") as any).Platform;
+      platform.OS = "web";
+      try {
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue({ new_post: { value: true, name: "New Posts" } });
+
+        const result = await NotificationManager.registerForPushNotifications({
+          new_post: { value: false, name: "New Posts" },
+        });
+
+        expect(result.status).toBe("unavailable");
+        expect(result.notificationSettings.new_post.value).toBe(false);
+        expect(SettingsStore.setNotificationSettings).toHaveBeenCalledWith(
+          expect.objectContaining({
+            new_post: { value: false, name: "New Posts" },
+          }),
+        );
+      } finally {
+        platform.OS = "ios";
+      }
     });
 
     it("returns the merged settings, not the stale stored ones, when fetching the token throws", async () => {
@@ -245,13 +272,16 @@ describe("NotificationManager", () => {
       jest
         .spyOn(Notifications, "getExpoPushTokenAsync")
         .mockRejectedValue(new Error("token fetch failed"));
-      jest.spyOn(console, "error").mockImplementation(() => {});
+      const errorSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
       const result = await NotificationManager.registerForPushNotifications({
         new_post: { value: false, name: "New Posts" },
       });
 
       expect(result.notificationSettings.new_post.value).toBe(false);
+      errorSpy.mockRestore();
     });
 
     it("returns the merged settings, not the stale stored ones, when no token is returned", async () => {
