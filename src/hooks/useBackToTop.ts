@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { NativeScrollEvent, NativeSyntheticEvent } from "react-native";
 import { useWindowDimensions } from "react-native";
 
@@ -14,10 +14,16 @@ export const useBackToTop = (threshold?: number) => {
   const windowHeight = useWindowDimensions().height;
   const showAfter = threshold ?? windowHeight;
   const [visible, setVisible] = useState(false);
+  // Scroll events fire ~60x/s; only touch state when visibility actually flips.
+  const visibleReference = useRef(false);
 
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      setVisible(event.nativeEvent.contentOffset.y > showAfter);
+      const nextVisible = event.nativeEvent.contentOffset.y > showAfter;
+      if (nextVisible !== visibleReference.current) {
+        visibleReference.current = nextVisible;
+        setVisible(nextVisible);
+      }
     },
     [showAfter],
   );
