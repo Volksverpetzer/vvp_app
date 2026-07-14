@@ -144,7 +144,7 @@ export default class WordPressAPI {
    */
   static async getMediaCredit(
     mediaId: string,
-    articleUrl: string,
+    articleUrl: HttpsUrl,
     signal?: AbortSignal,
   ): Promise<ImageCredit | undefined> {
     const origin = new URL(articleUrl).origin;

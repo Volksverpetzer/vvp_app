@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import WordPressAPI from "#/helpers/network/WordPressAPI";
-import type { ImageCredit } from "#/types";
+import type { HttpsUrl, ImageCredit } from "#/types";
 
 /**
  * Fetches the Image Source Control credit for a media attachment.
@@ -9,7 +9,7 @@ import type { ImageCredit } from "#/types";
  */
 export const useImageCredit = (
   mediaId?: string,
-  articleUrl?: string,
+  articleUrl?: HttpsUrl,
 ): ImageCredit | undefined => {
   const [credit, setCredit] = useState<ImageCredit | undefined>();
 

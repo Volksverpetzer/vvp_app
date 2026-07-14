@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import type { InternalRendererProps, TBlock } from "react-native-render-html";
 
+import { MIN_TOUCH_TARGET } from "#/components/posts/Badge";
 import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
 import { useImageCredit } from "#/hooks/useImageCredit";
 import type { HttpsUrl } from "#/types";
@@ -10,11 +11,6 @@ import { findImageTNode, mediaIdOf } from "./imageCreditNodes";
 interface FigcaptionRendererProperties extends InternalRendererProps<TBlock> {
   url?: HttpsUrl;
 }
-
-// The badge's touch target (see MIN_TOUCH_TARGET in Badge). Inset the caption
-// by this on both sides so the centered text/link never sits under the badge
-// or has its taps intercepted, while staying centered under the image.
-const BADGE_INSET = 44;
 
 /**
  * Renders a figure caption with the sibling image's credit badge overlaid on
@@ -28,8 +24,10 @@ const FigcaptionRenderer = ({
   const image = findImageTNode(properties.tnode.parent ?? undefined);
   const credit = useImageCredit(mediaIdOf(image), url);
 
-  // Only reserve space for the badge when there's actually a credit to show.
-  const inset = credit ? BADGE_INSET : 0;
+  // Inset the centered caption by the badge's touch target on both sides so the
+  // text/link never sits under the top-right badge or has its taps intercepted.
+  // Only reserve the space when there's actually a credit to show.
+  const inset = credit ? MIN_TOUCH_TARGET : 0;
 
   return (
     <View style={{ paddingHorizontal: inset }}>

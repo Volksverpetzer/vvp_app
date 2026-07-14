@@ -8,7 +8,7 @@ export type BadgePosition =
   "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
 
 // Minimum touch target per Apple HIG (44pt) / Material (48dp) guidance.
-const MIN_TOUCH_TARGET = 44;
+export const MIN_TOUCH_TARGET = 44;
 
 interface BadgeProperties {
   children: ReactNode;
