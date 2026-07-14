@@ -24,14 +24,14 @@ const ImageCreditBadge = ({ credit, position }: ImageCreditBadgeProperties) => {
 
   return (
     <>
-      <Badge position={position} color="rgba(0,0,0,0.6)">
+      <Badge position={position} color="transparent">
         <UiPressable
           accessibilityRole="button"
           accessibilityLabel="Bildquelle anzeigen"
           hitSlop={8}
           onPress={() => setIsVisible(true)}
         >
-          <InfoIcon size={14} color="#fff" />
+          <InfoIcon size={14} color="#999" />
         </UiPressable>
       </Badge>
       <ImageCreditModal
