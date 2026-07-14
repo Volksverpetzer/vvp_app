@@ -28,6 +28,18 @@ describe("useBackToTop", () => {
     expect(result.current.visible).toBe(false);
   });
 
+  it("re-evaluates when the threshold changes without a new scroll event", async () => {
+    const { result, rerender } = await renderHook(
+      ({ threshold }: { threshold: number }) => useBackToTop(threshold),
+      { initialProps: { threshold: 500 } },
+    );
+    await act(() => result.current.onScroll(scrollEvent(800)));
+    expect(result.current.visible).toBe(true);
+    // e.g. device rotation: the same offset is below the new threshold
+    await rerender({ threshold: 1000 });
+    expect(result.current.visible).toBe(false);
+  });
+
   it("stays hidden at exactly the threshold", async () => {
     const { result } = await renderHook(() => useBackToTop(500));
     await act(() => result.current.onScroll(scrollEvent(500)));

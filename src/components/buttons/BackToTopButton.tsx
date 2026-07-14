@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     width: 48,
   },
   container: {
+    borderRadius: 24,
     bottom: 20,
     position: "absolute",
     right: 20,
