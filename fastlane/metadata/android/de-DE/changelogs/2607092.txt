@@ -1,3 +1,4 @@
 - Neu: Kontakt-Tab statt "Fake melden" – Feedback geben, Fakes reporten oder andere Anliegen senden, optional mit E-Mail für Rückfragen
 - Neu: Feedback zu einem Artikel direkt vom Artikelende aus senden
+- Neu: "Nach oben"-Button in Artikeln, Suchergebnissen und Lizenzen – erscheint beim Scrollen und bringt dich mit einem Tipp zurück an den Anfang
 - Fehlerbehebungen und Performance-Verbesserungen
