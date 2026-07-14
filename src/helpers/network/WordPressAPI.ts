@@ -113,17 +113,44 @@ export default class WordPressAPI {
       sizes?.medium?.source_url ??
       data?.source_url;
     const thumb = sizes?.thumbnail?.source_url ?? data?.source_url;
-    // Populated by the "Image Source Control" WordPress plugin. No source text
-    // means nothing worth showing (e.g. self-shot images), so credit stays undefined.
+    return { image, thumb, credit: WordPressAPI.extractImageCredit(data) };
+  }
+
+  /**
+   * Parse the "Image Source Control" WordPress plugin metadata from a media
+   * response. No source text means nothing worth showing (e.g. self-shot
+   * images), so the credit stays undefined.
+   */
+  static extractImageCredit(data?: MediaResponse): ImageCredit | undefined {
     const source = data?.meta?.isc_image_source?.trim();
-    const credit: ImageCredit | undefined = source
+    return source
       ? {
           source,
           sourceUrl: data?.meta?.isc_image_source_url || undefined,
           licence: data?.meta?.isc_image_licence || undefined,
         }
       : undefined;
-    return { image, thumb, credit };
+  }
+
+  /**
+   * Get the image credit for a media attachment by id, e.g. from the
+   * wp-image-{id} class WordPress puts on images in post content.
+   * @param mediaId - The attachment id
+   * @param articleUrl - Any URL on the article's site; determines which
+   *   WordPress API to query (articles can come from secondary sites)
+   */
+  static async getMediaCredit(
+    mediaId: string,
+    articleUrl: string,
+    signal?: AbortSignal,
+  ): Promise<ImageCredit | undefined> {
+    const origin = new URL(articleUrl).origin;
+    const data = await netGet<MediaResponse>(
+      WordPressAPI.client,
+      `${origin}/wp-json/wp/v2/media/${mediaId}`,
+      { params: { _fields: "meta" }, signal },
+    );
+    return WordPressAPI.extractImageCredit(data);
   }
 
   /**

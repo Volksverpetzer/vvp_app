@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import { InfoIcon } from "#/components/Icons";
 import ImageCreditModal from "#/components/popups/ImageCreditModal";
-import UiPressable from "#/components/ui/UiPressable";
 import type { ImageCredit } from "#/types";
 
 import Badge, { type BadgePosition } from "./Badge";
@@ -24,15 +23,13 @@ const ImageCreditBadge = ({ credit, position }: ImageCreditBadgeProperties) => {
 
   return (
     <>
-      <Badge position={position} color="transparent">
-        <UiPressable
-          accessibilityRole="button"
-          accessibilityLabel="Bildquelle anzeigen"
-          hitSlop={8}
-          onPress={() => setIsVisible(true)}
-        >
-          <InfoIcon size={14} color="#999" />
-        </UiPressable>
+      <Badge
+        position={position}
+        color="transparent"
+        accessibilityLabel="Bildquelle anzeigen"
+        onPress={() => setIsVisible(true)}
+      >
+        <InfoIcon size={14} color="#999" />
       </Badge>
       <ImageCreditModal
         isVisible={isVisible}

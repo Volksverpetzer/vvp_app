@@ -83,7 +83,7 @@ const Body = (properties: BodyProperties) => {
     p: (renderProperties) =>
       BlockRenderer({ renderProps: renderProperties, url: article_link }),
     img: (renderProperties: InternalRendererProps<TBlock>) =>
-      ImageRenderer({ ...renderProperties }),
+      ImageRenderer({ ...renderProperties, url: article_link }),
     h2: (renderProperties) =>
       HeaderRenderer({ ...renderProperties, componentRefs: headerReferences }),
     blockquote: (renderProperties) =>
