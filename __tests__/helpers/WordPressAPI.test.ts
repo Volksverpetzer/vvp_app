@@ -116,6 +116,13 @@ describe("WordPressAPI", () => {
       const { image, thumb } = await WordPressAPI.getFeatureImage("href");
       expect(image).toBe("mlarge");
       expect(thumb).toBe("thumb");
+      expect(spy).toHaveBeenCalledWith(
+        WordPressAPI["client"],
+        "href",
+        expect.objectContaining({
+          params: { _fields: "source_url,media_details,meta" },
+        }),
+      );
       spy.mockRestore();
     });
 

@@ -102,7 +102,11 @@ export default class WordPressAPI {
     thumb: string | undefined;
     credit: ImageCredit | undefined;
   }> {
+    // Only request the fields we actually read: the full media object is large,
+    // and scoping to these keeps the ISC `meta` from depending on site-specific
+    // REST defaults (mirrors getMediaCredit).
     const data = await netGet<MediaResponse>(WordPressAPI.client, href, {
+      params: { _fields: "source_url,media_details,meta" },
       signal,
     });
     const sizes = data?.media_details?.sizes;
