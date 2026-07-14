@@ -3,7 +3,7 @@ const Changelog = {
   version: "2.4.0",
   versionCode: 2607092,
   notes:
-    '- Neu: Kontakt-Tab statt "Fake melden" – Feedback geben, Fakes reporten oder andere Anliegen senden, optional mit E-Mail für Rückfragen\n- Neu: Feedback zu einem Artikel direkt vom Artikelende aus senden\n- Neu: "Nach oben"-Button in Artikeln, Suchergebnissen und Lizenzen – erscheint beim Scrollen und bringt dich mit einem Tipp zurück an den Anfang\n- Fehlerbehebungen und Performance-Verbesserungen',
+    '- Neu: Kontakt-Tab statt "Fake melden" – Feedback geben, Fakes reporten oder andere Anliegen senden, optional mit E-Mail für Rückfragen\n- Neu: Feedback zu einem Artikel direkt vom Artikelende aus senden\n- Neu: "Nach oben"-Button in Artikeln, Suchergebnissen und Lizenzen – erscheint beim Scrollen und bringt dich mit einem Tipp zurück an den Anfang\n- Neu: Bildquellen – ein kleines Info-Symbol an Artikel- und Beitragsbildern zeigt auf Tipp Quelle, Urheber:in und Lizenz an\n- Fehlerbehebungen und Performance-Verbesserungen',
 };
 
 export default Changelog;
