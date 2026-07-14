@@ -157,6 +157,10 @@ const NotificationManager = {
       ...newSettings,
     };
 
+    // Persist locally right away so settings survive even if push
+    // registration below fails or is skipped (no permission, no device).
+    await SettingsStore.setNotificationSettings(notificationSettings);
+
     if (Platform.OS === "android") {
       // Create a default channel for general notifications
       await Notifications.setNotificationChannelAsync("default", {
@@ -191,7 +195,7 @@ const NotificationManager = {
       }
       if (finalStatus !== "granted") {
         console.warn("Notification permission not granted");
-        return { status: finalStatus, notificationSettings: storedSettings };
+        return { status: finalStatus, notificationSettings };
       }
       try {
         token = await NotificationManager.getToken();
@@ -199,11 +203,11 @@ const NotificationManager = {
         console.error(error);
         return {
           status: "error getting token" + error,
-          notificationSettings: storedSettings,
+          notificationSettings,
         };
       }
       if (!token) {
-        return { status: "No Token", notificationSettings: storedSettings };
+        return { status: "No Token", notificationSettings };
       }
     } else {
       return { status: "ok", notificationSettings };
@@ -217,7 +221,6 @@ const NotificationManager = {
       os: Platform.OS,
       version: Application?.nativeBuildVersion,
     };
-    await SettingsStore.setNotificationSettings(notificationSettings);
     const response = await API.registerNotifications(body);
     return { status: response.status, notificationSettings };
   },
