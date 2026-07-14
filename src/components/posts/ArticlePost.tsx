@@ -111,10 +111,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }
   }, [inView, getImages]);
 
-  // Reset the view count when this row is recycled for a different article, so
-  // a previously-hidden (0-view) badge re-mounts and refetches for the new one.
+  // Reset per-article state when this row is recycled for a different article,
+  // so a previously-hidden (0-view) badge re-mounts and refetches, and the old
+  // article's image credit can't linger on the new one until its fetch lands.
   useEffect(() => {
     setViewCount(null);
+    setImageCredit(undefined);
   }, [article.link]);
 
   // Memoize computed texts.
