@@ -1,7 +1,7 @@
 {
   "name": "vvp_app",
   "version": "2.4.0",
-  "versionCode": 2607092,
+  "versionCode": 2607141,
   "main": "expo-router/entry",
   "expo": {
     "install": {
