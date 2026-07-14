@@ -1,3 +1,4 @@
 - New: Contact tab replaces "Report fake" – send feedback, report fakes or other requests, optionally with an email for follow-up questions
 - New: Send feedback about an article directly from the end of the article
+- New: Back-to-top button in articles, search results and licenses – appears while scrolling and returns you to the top with one tap
 - Bug fixes and performance improvements
