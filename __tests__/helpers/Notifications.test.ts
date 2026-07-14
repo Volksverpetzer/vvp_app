@@ -151,6 +151,160 @@ describe("NotificationManager", () => {
     });
   });
 
+  describe("registerForPushNotifications", () => {
+    afterEach(() => {
+      // Restore spied implementations (getPermissionsAsync, console.warn,
+      // etc.) so they don't leak into later tests — the file only runs
+      // clearAllMocks() globally, which doesn't undo spyOn implementations.
+      jest.restoreAllMocks();
+      // Restore Device.isDevice after each test via the setter
+      const Device = jest.requireMock("expo-device") as any;
+      Device.__setIsDeviceValue(true);
+    });
+
+    it("persists the merged settings before checking permissions or fetching a token", async () => {
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({ new_post: { value: true, name: "New Posts" } });
+      const getPermissionsSpy = jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "granted" } as any);
+      jest
+        .spyOn(Notifications, "getExpoPushTokenAsync")
+        .mockResolvedValue({ data: "ExponentPushToken[test]" } as any);
+      const API = (jest.requireMock("#/helpers/network/ServerAPI") as any)
+        .default;
+      API.registerNotifications.mockResolvedValue({ status: "ok" });
+
+      await NotificationManager.registerForPushNotifications({
+        new_post: { value: false, name: "New Posts" },
+      });
+
+      expect(SettingsStore.setNotificationSettings).toHaveBeenCalledWith(
+        expect.objectContaining({
+          new_post: { value: false, name: "New Posts" },
+        }),
+      );
+      const setOrder = (SettingsStore.setNotificationSettings as jest.Mock).mock
+        .invocationCallOrder[0];
+      const permissionsOrder = getPermissionsSpy.mock.invocationCallOrder[0];
+      expect(setOrder).toBeLessThan(permissionsOrder);
+    });
+
+    it("persists and returns the merged settings on simulators/emulators without registering a token", async () => {
+      const Device = jest.requireMock("expo-device") as any;
+      Device.__setIsDeviceValue(false);
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({ new_post: { value: true, name: "New Posts" } });
+
+      const result = await NotificationManager.registerForPushNotifications({
+        new_post: { value: false, name: "New Posts" },
+      });
+
+      expect(result.status).toBe("ok");
+      expect(result.notificationSettings.new_post.value).toBe(false);
+      expect(SettingsStore.setNotificationSettings).toHaveBeenCalledTimes(1);
+      expect(SettingsStore.setNotificationSettings).toHaveBeenCalledWith(
+        expect.objectContaining({
+          new_post: { value: false, name: "New Posts" },
+        }),
+      );
+    });
+
+    it("returns the merged settings, not the stale stored ones, when permission is denied", async () => {
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({ new_post: { value: true, name: "New Posts" } });
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "denied" } as any);
+      jest
+        .spyOn(Notifications, "requestPermissionsAsync")
+        .mockResolvedValue({ status: "denied" } as any);
+      jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      const result = await NotificationManager.registerForPushNotifications({
+        new_post: { value: false, name: "New Posts" },
+      });
+
+      expect(result.notificationSettings.new_post.value).toBe(false);
+    });
+
+    it("returns the merged settings, not the stale stored ones, when notifications are unavailable (e.g. web)", async () => {
+      const platform = (jest.requireMock("react-native") as any).Platform;
+      platform.OS = "web";
+      try {
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue({ new_post: { value: true, name: "New Posts" } });
+
+        const result = await NotificationManager.registerForPushNotifications({
+          new_post: { value: false, name: "New Posts" },
+        });
+
+        expect(result.status).toBe("unavailable");
+        expect(result.notificationSettings.new_post.value).toBe(false);
+        expect(SettingsStore.setNotificationSettings).toHaveBeenCalledWith(
+          expect.objectContaining({
+            new_post: { value: false, name: "New Posts" },
+          }),
+        );
+      } finally {
+        platform.OS = "ios";
+      }
+    });
+
+    it("returns the merged settings, not the stale stored ones, when fetching the token throws", async () => {
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({ new_post: { value: true, name: "New Posts" } });
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "granted" } as any);
+      jest
+        .spyOn(Notifications, "getExpoPushTokenAsync")
+        .mockRejectedValue(new Error("token fetch failed"));
+      jest.spyOn(console, "error").mockImplementation(() => {});
+
+      const result = await NotificationManager.registerForPushNotifications({
+        new_post: { value: false, name: "New Posts" },
+      });
+
+      expect(result.notificationSettings.new_post.value).toBe(false);
+    });
+
+    it("returns the merged settings, not the stale stored ones, when no token is returned", async () => {
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({ new_post: { value: true, name: "New Posts" } });
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "granted" } as any);
+      jest
+        .spyOn(Notifications, "getExpoPushTokenAsync")
+        .mockResolvedValue({ data: "" } as any);
+
+      const result = await NotificationManager.registerForPushNotifications({
+        new_post: { value: false, name: "New Posts" },
+      });
+
+      expect(result.notificationSettings.new_post.value).toBe(false);
+    });
+  });
+
   describe("checkAndRequestOnLaunch", () => {
     afterEach(() => {
       // Restore Device.isDevice after each test via the setter
