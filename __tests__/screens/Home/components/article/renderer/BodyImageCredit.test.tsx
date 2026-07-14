@@ -12,6 +12,7 @@ import {
 } from "#/screens/Home/components/article/ElementHandlers";
 import FigcaptionRenderer from "#/screens/Home/components/article/renderer/FigcaptionRenderer";
 import ImageRenderer from "#/screens/Home/components/article/renderer/ImageRenderer";
+import type { HttpsUrl } from "#/types";
 
 const mockGetMediaCredit = jest.fn();
 
@@ -50,7 +51,7 @@ const htmlWithoutCaption = `
 <p class="wp-block-paragraph">After text</p>
 `;
 
-const articleLink =
+const articleLink: HttpsUrl =
   "https://volksverpetzer.de/aktuelles/blaue-schelle-niederlagen-afd/";
 
 // Mirrors how Body.tsx wires RenderHtml (renderers, element models, visitors).
@@ -75,11 +76,11 @@ const renderBody = (html: string) =>
       }}
       renderers={{
         img: (renderProperties: InternalRendererProps<TBlock>) =>
-          ImageRenderer({ ...renderProperties, url: articleLink as never }),
+          ImageRenderer({ ...renderProperties, url: articleLink }),
         figcaption: (renderProperties: InternalRendererProps<TBlock>) =>
           FigcaptionRenderer({
             ...renderProperties,
-            url: articleLink as never,
+            url: articleLink,
           }),
       }}
     />,

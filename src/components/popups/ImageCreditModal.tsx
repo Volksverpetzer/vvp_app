@@ -28,9 +28,10 @@ const ImageCreditModal = ({
   const textMuted = Colors[colorScheme].textMuted;
 
   // isc_image_source_url is free-form WordPress admin input, not guaranteed
-  // https — only offer it as a tappable link when it actually is one.
-  const sourceUrl = credit.sourceUrl?.startsWith("https://")
-    ? (credit.sourceUrl as HttpsUrl)
+  // https — trim and only offer it as a tappable link when it actually is one.
+  const trimmedSourceUrl = credit.sourceUrl?.trim();
+  const sourceUrl = trimmedSourceUrl?.startsWith("https://")
+    ? (trimmedSourceUrl as HttpsUrl)
     : undefined;
 
   return (

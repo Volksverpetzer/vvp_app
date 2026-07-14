@@ -14,6 +14,9 @@ export const useImageCredit = (
   const [credit, setCredit] = useState<ImageCredit | undefined>();
 
   useEffect(() => {
+    // Reset first so a changed/removed input can't leave a previous image's
+    // credit badge showing for the wrong image.
+    setCredit(undefined);
     if (!mediaId || !articleUrl) return;
     const controller = new AbortController();
 

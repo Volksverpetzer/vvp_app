@@ -122,12 +122,15 @@ export default class WordPressAPI {
    * images), so the credit stays undefined.
    */
   static extractImageCredit(data?: MediaResponse): ImageCredit | undefined {
+    // All three are free-form WordPress admin input; trim and treat
+    // whitespace-only values as absent so the UI never shows blank licences
+    // or links with stray spaces.
     const source = data?.meta?.isc_image_source?.trim();
     return source
       ? {
           source,
-          sourceUrl: data?.meta?.isc_image_source_url || undefined,
-          licence: data?.meta?.isc_image_licence || undefined,
+          sourceUrl: data?.meta?.isc_image_source_url?.trim() || undefined,
+          licence: data?.meta?.isc_image_licence?.trim() || undefined,
         }
       : undefined;
   }

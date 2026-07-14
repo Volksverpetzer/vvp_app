@@ -47,7 +47,9 @@ const ImageRenderer = ({ url, ...properties }: ImageRendererProperties) => {
   };
 
   return (
-    <View style={globalStyles.centered}>
+    // flex: 0 so the wrapper hugs the image height; otherwise the absolutely
+    // positioned badge could sit below the image in a taller container.
+    <View style={[globalStyles.centered, { flex: 0 }]}>
       <UiPressable
         accessibilityRole="button"
         onPress={() => router.push({ pathname: "/image", params: { uri } })}

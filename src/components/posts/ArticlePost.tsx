@@ -213,22 +213,27 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       onLongPress={handleLongPress}
     >
       <View style={containerStyle}>
-        <Image
-          style={imageStyle}
-          source={{ uri: imageUrl }}
-          placeholder={AppImages.loadingAnimation}
-          contentFit="cover"
-        />
-        {!imageUrl && !AppImages.loadingAnimation && (
-          <UiSpinner
-            containerStyle={{
-              position: "absolute",
-              height,
-              top: 0,
-              left: 0,
-            }}
+        {/* Relative wrapper so the credit badge anchors to the thumbnail
+            rather than the bottom of the whole card. */}
+        <View style={{ position: "relative" }}>
+          <Image
+            style={imageStyle}
+            source={{ uri: imageUrl }}
+            placeholder={AppImages.loadingAnimation}
+            contentFit="cover"
           />
-        )}
+          {!imageUrl && !AppImages.loadingAnimation && (
+            <UiSpinner
+              containerStyle={{
+                position: "absolute",
+                height,
+                top: 0,
+                left: 0,
+              }}
+            />
+          )}
+          <ImageCreditBadge credit={imageCredit} position="bottomRight" />
+        </View>
         <View style={progressBarStyle} />
         <UiSpace size={10} />
         <UiText style={titleStyle}>{article.title}</UiText>
@@ -247,7 +252,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
             <ViewCounter url={article.link} size={16} onLoad={setViewCount} />
           </Badge>
         )}
-        <ImageCreditBadge credit={imageCredit} position="bottomRight" />
         {excerpt ? (
           <>
             <UiText
