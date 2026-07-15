@@ -81,11 +81,7 @@ const RightAction: FC<RightActionProps> = ({
           ]}
         >
           {icon}
-          {label && (
-            <UiText style={{ color: fg, fontFamily: "SourceSansProBold" }}>
-              {label}
-            </UiText>
-          )}
+          {label && <UiText style={{ color: fg }}>{label}</UiText>}
         </Animated.View>
       </UiPressable>
     </RNView>
