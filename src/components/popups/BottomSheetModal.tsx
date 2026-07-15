@@ -50,8 +50,11 @@ const BottomSheetModal = ({
       <View
         style={[
           styles.container,
-          { backgroundColor: surface, paddingBottom: 28 + insets.bottom },
+          // containerStyle first so caller overrides (e.g. maxHeight) apply,
+          // but the safe-area padding/background stay authoritative and can't
+          // be accidentally clobbered — that inset is this component's job.
           containerStyle,
+          { backgroundColor: surface, paddingBottom: 28 + insets.bottom },
         ]}
       >
         <View style={[styles.handle, { backgroundColor: textMuted }]} />
