@@ -119,7 +119,11 @@ const SearchHeader = ({
           onSubmitEditing={handleSubmit}
           style={[
             globalStyles.whiteText,
-            { fontSize: INPUT_FONT_SIZE, width: "100%" },
+            {
+              fontFamily: "SourceSansPro",
+              fontSize: INPUT_FONT_SIZE,
+              width: "100%",
+            },
           ]}
           onChangeText={setSearch}
           returnKeyType="search"
