@@ -137,6 +137,10 @@ const ContactScreen = () => {
           borderRadius: 5,
           borderWidth: 2,
           padding: 10,
+          // Tighter side padding and a larger type size than the shared input
+          // default, per design feedback on the contact form.
+          paddingHorizontal: 14,
+          fontSize: 18,
         },
         inputError: {
           borderColor: errorColor,

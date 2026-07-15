@@ -103,6 +103,13 @@ jest.mock("expo-router", () => {
 
 jest.mock("@react-native-async-storage/async-storage", () => mockAsyncStorage);
 
+jest.mock("react-native-safe-area-context", () => {
+  // The bundled mock only exposes a default export; surface its members as
+  // named exports too so `import { useSafeAreaInsets }` resolves.
+  const mock = require("react-native-safe-area-context/jest/mock").default;
+  return { __esModule: true, default: mock, ...mock };
+});
+
 jest.mock("expo-notifications", () => ({
   getPermissionsAsync: jest.fn(),
   requestPermissionsAsync: jest.fn(),

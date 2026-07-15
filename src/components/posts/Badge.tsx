@@ -57,8 +57,12 @@ const Badge = ({
           {
             minWidth: MIN_TOUCH_TARGET,
             minHeight: MIN_TOUCH_TARGET,
-            alignItems: "center",
-            justifyContent: "center",
+            // Keep the visible glyph anchored to the badge's own corner while
+            // the (larger) touch target grows inward — otherwise a centered
+            // icon floats toward the image middle and, on our title images,
+            // lifts off the white footer strip onto the artwork.
+            alignItems: isLeft ? "flex-start" : "flex-end",
+            justifyContent: isTop ? "flex-start" : "flex-end",
           },
         ]}
       >
