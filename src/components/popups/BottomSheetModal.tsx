@@ -50,9 +50,10 @@ const BottomSheetModal = ({
       <View
         style={[
           styles.container,
-          // containerStyle first so caller overrides (e.g. maxHeight) apply,
-          // but the safe-area padding/background stay authoritative and can't
-          // be accidentally clobbered — that inset is this component's job.
+          // containerStyle sits between the base container style and the
+          // safe-area object below: it can override styles.container (e.g.
+          // maxHeight), but the trailing object still wins over containerStyle,
+          // keeping the safe-area padding/background authoritative.
           containerStyle,
           { backgroundColor: surface, paddingBottom: 28 + insets.bottom },
         ]}
