@@ -17,9 +17,9 @@ const HomeScreen = () => {
     >
       <UiText style={styles.title}>Willkommen zum Memory-Spiel</UiText>
       <UiText style={styles.description}>
-        Erleben Sie verschiedene Memory-Spiele, bei denen Sie z. B.
+        Erlebe verschiedene Memory-Spiele, bei denen du z. B.
         Desinformationstechniken und zugehörige Falschinformationen kennenlernen
-        können. Wählen Sie ein Spiel aus, um zu beginnen.
+        kannst. Wähle ein Spiel aus, um zu beginnen.
       </UiText>
       <UiPressable accessibilityRole="button" style={styles.button}>
         <Link href="/game/DesinformationMemory" style={styles.link}>

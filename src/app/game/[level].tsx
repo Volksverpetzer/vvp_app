@@ -83,7 +83,7 @@ const GameScreen = () => {
     >
       <UiText style={styles.title}>Memory-Spiel: {gameId}</UiText>
       <View style={styles.levelContainer}>
-        <UiText style={styles.levelText}>Wählen Sie Ihr Level:</UiText>
+        <UiText style={styles.levelText}>Wähle dein Level:</UiText>
         <UiPressable
           accessibilityRole="button"
           style={[
