@@ -118,7 +118,10 @@ const SearchHeader = ({
           placeholder="Suche ..."
           placeholderTextColor="white"
           onSubmitEditing={handleSubmit}
-          style={[globalStyles.whiteText, { width: "100%" }]}
+          style={[
+            globalStyles.whiteText,
+            { fontSize: globalStyles.input.fontSize, width: "100%" },
+          ]}
           onChangeText={setSearch}
           returnKeyType="search"
         />

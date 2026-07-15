@@ -138,10 +138,10 @@ const ContactScreen = () => {
           borderWidth: 2,
           // Explicit vertical + horizontal padding (overriding the shared
           // input's paddingHorizontal: 25) so the intent is unambiguous:
-          // tighter sides and a larger type size, per contact-form design feedback.
+          // tighter sides than the shared input. The type size (fontSize: 18)
+          // now comes from globalStyles.input, shared with the search field.
           paddingVertical: 10,
           paddingHorizontal: 14,
-          fontSize: 18,
         },
         inputError: {
           borderColor: errorColor,

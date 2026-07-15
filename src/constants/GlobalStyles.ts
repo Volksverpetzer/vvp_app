@@ -36,6 +36,7 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 40,
     minHeight: 40,
     paddingHorizontal: 25,
+    fontSize: 18,
   },
   row: {
     alignItems: "center",
