@@ -19,7 +19,7 @@ const GRADIENT_LOCATIONS: [number, number] = [0.7, 1];
  * both the animated collapsing headers and the static search header render
  * their content inside it.
  */
-const HeaderGradient = ({
+const UiHeaderGradient = ({
   children,
   style,
 }: PropsWithChildren<{ style?: StyleProp<ViewStyle> }>) => {
@@ -38,4 +38,4 @@ const HeaderGradient = ({
   );
 };
 
-export default HeaderGradient;
+export default UiHeaderGradient;

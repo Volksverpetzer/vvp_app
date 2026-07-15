@@ -4,7 +4,7 @@ import { Keyboard, TextInput, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
-import HeaderGradient from "#/components/ui/HeaderGradient";
+import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -60,7 +60,7 @@ const SearchHeader = ({
 
   return (
     <>
-      <HeaderGradient
+      <UiHeaderGradient
         style={[
           globalStyles.row,
           {
@@ -95,7 +95,7 @@ const SearchHeader = ({
             <FaktenBot reaction={faktenBotReaction} search={isLoading} />
           </View>
         )}
-      </HeaderGradient>
+      </UiHeaderGradient>
       <View
         style={[
           globalStyles.row,

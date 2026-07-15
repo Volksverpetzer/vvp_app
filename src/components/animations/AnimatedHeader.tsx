@@ -5,7 +5,7 @@ import { Animated, View } from "react-native";
 import type { ViewStyle } from "react-native";
 
 import { HeartIcon } from "#/components/Icons";
-import HeaderGradient from "#/components/ui/HeaderGradient";
+import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import Colors from "#/constants/Colors";
@@ -118,7 +118,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
 
   return (
     <Animated.View style={animatedViewStyle}>
-      <HeaderGradient style={gradientContainerStyle}>
+      <UiHeaderGradient style={gradientContainerStyle}>
         {!hideSupportHeart && (
           <UiPressable
             accessibilityRole="button"
@@ -153,7 +153,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
           {children}
         </View>
         <UiSpace size={45} />
-      </HeaderGradient>
+      </UiHeaderGradient>
     </Animated.View>
   );
 };

@@ -24,7 +24,7 @@ jest.mock("#/components/Icons", () => ({
   SearchIcon: jest.fn(() => null),
 }));
 
-jest.mock("#/components/ui/HeaderGradient", () => {
+jest.mock("#/components/ui/UiHeaderGradient", () => {
   const { View } = require("react-native");
   return jest.fn(({ children, style }: any) => (
     <View testID="header-gradient" style={style}>
@@ -89,12 +89,12 @@ describe("SearchHeader", () => {
   });
 
   describe("header background", () => {
-    it("renders the header inside the shared HeaderGradient with no solid fill", async () => {
+    it("renders the header inside the shared UiHeaderGradient with no solid fill", async () => {
       const { getByTestId } = await render(
         <SearchHeader {...baseProps} showFaktenBot={false} />,
       );
       // The header no longer paints a solid block behind the title; it uses the
-      // app-wide HeaderGradient (fading into the surface below) so it matches
+      // app-wide UiHeaderGradient (fading into the surface below) so it matches
       // the other headers. It must therefore set neither a solid background
       // nor the surface color on the header container itself.
       const header = getByTestId("header-gradient");
