@@ -1,9 +1,6 @@
-import { StyleSheet, View } from "react-native";
-import Modal from "react-native-modal";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native";
 
-import { CloseIcon } from "#/components/Icons";
-import Heading from "#/components/typography/Heading";
+import BottomSheetModal from "#/components/popups/BottomSheetModal";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -24,9 +21,7 @@ const ImageCreditModal = ({
   credit,
 }: ImageCreditModalProperties) => {
   const colorScheme = useAppColorScheme();
-  const insets = useSafeAreaInsets();
   const corporate = Colors[colorScheme].primary;
-  const surface = Colors[colorScheme].surface;
   const textMuted = Colors[colorScheme].textMuted;
 
   // isc_image_source_url is free-form WordPress admin input, not guaranteed
@@ -37,90 +32,40 @@ const ImageCreditModal = ({
     : undefined;
 
   return (
-    <Modal
+    <BottomSheetModal
       isVisible={isVisible}
-      onSwipeComplete={onClose}
-      onBackdropPress={onClose}
-      swipeDirection="down"
-      style={styles.modal}
+      onClose={onClose}
+      title="Bildquelle"
     >
-      <View
-        style={[
-          styles.container,
-          // Lift the sheet content above the Android nav bar / home indicator
-          // so the source text isn't jammed against the system UI.
-          { backgroundColor: surface, paddingBottom: 20 + insets.bottom },
-        ]}
-      >
-        <View style={[styles.handle, { backgroundColor: textMuted }]} />
-        <UiSpace size={16} />
-        <View style={styles.header}>
-          <Heading style={styles.title}>Bildquelle</Heading>
+      <UiSpace size={12} />
+      <UiText style={styles.source}>{credit.source}</UiText>
+      {credit.licence ? (
+        <>
+          <UiSpace size={8} />
+          <UiText style={[styles.licence, { color: textMuted }]}>
+            {credit.licence}
+          </UiText>
+        </>
+      ) : null}
+      {sourceUrl ? (
+        <>
+          <UiSpace size={12} />
           <UiPressable
-            accessibilityRole="button"
-            accessibilityLabel="Schließen"
-            onPress={onClose}
-            hitSlop={8}
+            accessibilityRole="link"
+            onPress={() => outBoundLinkPress(sourceUrl)}
           >
-            <CloseIcon size={28} color={corporate} />
-          </UiPressable>
-        </View>
-        <UiSpace size={12} />
-        <UiText style={styles.source}>{credit.source}</UiText>
-        {credit.licence ? (
-          <>
-            <UiSpace size={8} />
-            <UiText style={[styles.licence, { color: textMuted }]}>
-              {credit.licence}
+            <UiText style={[styles.link, { color: corporate }]}>
+              {sourceUrl}
             </UiText>
-          </>
-        ) : null}
-        {sourceUrl ? (
-          <>
-            <UiSpace size={12} />
-            <UiPressable
-              accessibilityRole="link"
-              onPress={() => outBoundLinkPress(sourceUrl)}
-            >
-              <UiText style={[styles.link, { color: corporate }]}>
-                {sourceUrl}
-              </UiText>
-            </UiPressable>
-          </>
-        ) : null}
-        <UiSpace size={20} />
-      </View>
-    </Modal>
+          </UiPressable>
+        </>
+      ) : null}
+      <UiSpace size={20} />
+    </BottomSheetModal>
   );
 };
 
 const styles = StyleSheet.create({
-  modal: {
-    justifyContent: "flex-end",
-    margin: 0,
-  },
-  container: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingHorizontal: 20,
-    // paddingBottom is applied inline to include the safe-area inset.
-  },
-  handle: {
-    alignSelf: "center",
-    borderRadius: 2,
-    height: 4,
-    marginTop: 12,
-    width: 40,
-  },
-  header: {
-    alignItems: "center",
-    backgroundColor: "transparent",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  title: {
-    fontSize: 20,
-  },
   source: {
     fontSize: 16,
   },
