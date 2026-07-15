@@ -44,8 +44,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  description: { fontSize: 16, marginBottom: 30, textAlign: "center" },
-  link: { color: "#fff", fontSize: 16 },
+  description: {
+    fontFamily: "SourceSansPro",
+    fontSize: 16,
+    marginBottom: 30,
+    textAlign: "center",
+  },
+  link: { color: "#fff", fontFamily: "SourceSansPro", fontSize: 16 },
   title: { fontSize: 24, fontFamily: "SourceSansProBold", marginBottom: 20 },
 });
 
