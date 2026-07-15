@@ -12,6 +12,7 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import {
+  DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
@@ -67,7 +68,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const greyText = Colors[colorScheme].textMuted;
   const { width } = useFeedDimensions();
   const router = useRouter();
-  const height = useMemo(() => 0.5125 * (width - 26), [width]);
+  const height = useMemo(() => DEFAULT_IMAGE_ASPECT_RATIO * width, [width]);
 
   // Memoize importantCats mapping (optional, here we rely on the static outside mapping).
   const importantCats = useMemo(() => Config.importantCats, []);

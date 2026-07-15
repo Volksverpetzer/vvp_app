@@ -12,6 +12,11 @@ export const CONTENT_HORIZONTAL_PADDING = 10;
 export const POST_PADDING_HORIZONTAL = 30;
 export const CARD_PADDING = 20;
 
+// Height/width ratio of WordPress's default featured-image crop (e.g. 1200x615),
+// used as the fallback aspect ratio for post thumbnails whose real image
+// dimensions aren't known ahead of layout.
+export const DEFAULT_IMAGE_ASPECT_RATIO = 0.5125;
+
 export const globalStyles = StyleSheet.create({
   centered: {
     alignItems: "center",
