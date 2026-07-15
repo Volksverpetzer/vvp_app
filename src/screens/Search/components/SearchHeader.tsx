@@ -8,7 +8,7 @@ import HeaderGradient from "#/components/ui/HeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { globalStyles } from "#/constants/GlobalStyles";
+import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -119,7 +119,7 @@ const SearchHeader = ({
           onSubmitEditing={handleSubmit}
           style={[
             globalStyles.whiteText,
-            { fontSize: globalStyles.input.fontSize, width: "100%" },
+            { fontSize: INPUT_FONT_SIZE, width: "100%" },
           ]}
           onChangeText={setSearch}
           returnKeyType="search"

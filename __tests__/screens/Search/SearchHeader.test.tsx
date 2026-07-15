@@ -53,6 +53,7 @@ jest.mock("#/constants/Colors", () => ({
 
 jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: { row: {}, input: {}, whiteText: {} },
+  INPUT_FONT_SIZE: 18,
 }));
 
 const baseProps = {

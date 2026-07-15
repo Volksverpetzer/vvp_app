@@ -60,6 +60,7 @@ jest.mock("#/constants/Colors", () => ({
 
 jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: { container: {}, content: {}, input: {}, whiteText: {} },
+  INPUT_FONT_SIZE: 18,
 }));
 
 jest.mock("#/components/animations/AnimatedHeader", () => jest.fn(() => null));

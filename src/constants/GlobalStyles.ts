@@ -17,6 +17,12 @@ export const CARD_PADDING = 20;
 // dimensions aren't known ahead of layout.
 export const DEFAULT_IMAGE_ASPECT_RATIO = 0.5125;
 
+// Shared font size for text inputs (search field, contact form). Kept as a
+// standalone constant rather than living on `globalStyles.input`, because that
+// style is also spread onto container Views (e.g. the search input row), where
+// a text-only prop like fontSize doesn't belong.
+export const INPUT_FONT_SIZE = 18;
+
 export const globalStyles = StyleSheet.create({
   centered: {
     alignItems: "center",
@@ -36,7 +42,6 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 40,
     minHeight: 40,
     paddingHorizontal: 25,
-    fontSize: 18,
   },
   row: {
     alignItems: "center",

@@ -22,7 +22,7 @@ import UiText from "#/components/ui/UiText";
 import UiTextInput from "#/components/ui/UiTextInput";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
+import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
@@ -138,10 +138,12 @@ const ContactScreen = () => {
           borderWidth: 2,
           // Explicit vertical + horizontal padding (overriding the shared
           // input's paddingHorizontal: 25) so the intent is unambiguous:
-          // tighter sides than the shared input. The type size (fontSize: 18)
-          // now comes from globalStyles.input, shared with the search field.
+          // tighter sides than the shared input.
           paddingVertical: 10,
           paddingHorizontal: 14,
+          // Shared text size, applied to the actual TextInput (the shared
+          // input style is layout-only, since it's also used on container Views).
+          fontSize: INPUT_FONT_SIZE,
         },
         inputError: {
           borderColor: errorColor,
