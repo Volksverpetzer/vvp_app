@@ -4,10 +4,11 @@ import { Keyboard, TextInput, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
+import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { globalStyles } from "#/constants/GlobalStyles";
+import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -33,7 +34,6 @@ const SearchHeader = ({
   onSubmit,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].background;
   const corporate = Colors[colorScheme].primary;
 
   // Show no reaction while loading so we don't display a stale previous result
@@ -60,14 +60,13 @@ const SearchHeader = ({
 
   return (
     <>
-      <View
+      <UiHeaderGradient
         style={[
           globalStyles.row,
           {
             height: 100,
             justifyContent: "flex-end",
             paddingRight: 20,
-            backgroundColor,
           },
         ]}
       >
@@ -96,7 +95,7 @@ const SearchHeader = ({
             <FaktenBot reaction={faktenBotReaction} search={isLoading} />
           </View>
         )}
-      </View>
+      </UiHeaderGradient>
       <View
         style={[
           globalStyles.row,
@@ -118,7 +117,14 @@ const SearchHeader = ({
           placeholder="Suche ..."
           placeholderTextColor="white"
           onSubmitEditing={handleSubmit}
-          style={[globalStyles.whiteText, { width: "100%" }]}
+          style={[
+            globalStyles.whiteText,
+            {
+              fontFamily: "SourceSansPro",
+              fontSize: INPUT_FONT_SIZE,
+              width: "100%",
+            },
+          ]}
           onChangeText={setSearch}
           returnKeyType="search"
         />

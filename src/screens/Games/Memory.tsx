@@ -108,7 +108,7 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
     return (
       <View style={headerStyle}>
         <UiText style={styles.headerText}>
-          Tippen Sie auf eine Karte, um deren Inhalt anzuzeigen.
+          Tippe auf eine Karte, um deren Inhalt anzuzeigen.
         </UiText>
       </View>
     );

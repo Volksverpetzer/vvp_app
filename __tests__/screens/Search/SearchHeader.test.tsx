@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
 import React, { createRef } from "react";
+import { StyleSheet } from "react-native";
 import type { TextInput } from "react-native";
 
 import { toast } from "#/helpers/toast";
@@ -24,6 +25,15 @@ jest.mock("#/components/Icons", () => ({
   SearchIcon: jest.fn(() => null),
 }));
 
+jest.mock("#/components/ui/UiHeaderGradient", () => {
+  const { View } = require("react-native");
+  return jest.fn(({ children, style }: any) => (
+    <View testID="header-gradient" style={style}>
+      {children}
+    </View>
+  ));
+});
+
 jest.mock("#/helpers/toast", () => ({
   toast: {
     success: jest.fn(),
@@ -44,6 +54,7 @@ jest.mock("#/constants/Colors", () => ({
 
 jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: { row: {}, input: {}, whiteText: {} },
+  INPUT_FONT_SIZE: 18,
 }));
 
 const baseProps = {
@@ -78,28 +89,21 @@ describe("SearchHeader", () => {
     });
   });
 
-  describe("header background color", () => {
-    it("uses Colors[colorScheme].background (not surface) for the header", async () => {
-      const { toJSON } = await render(
+  describe("header background", () => {
+    it("renders the header inside the shared UiHeaderGradient with no solid fill", async () => {
+      const { getByTestId } = await render(
         <SearchHeader {...baseProps} showFaktenBot={false} />,
       );
-      // RNTL 14's toJSON() returns the root node as an object; multiple roots
-      // are wrapped in a container node with an empty-string type whose
-      // children are the actual top-level elements. Unwrap to the header View.
-      const json = toJSON() as any;
-      const roots = Array.isArray(json)
-        ? json
-        : json?.type === ""
-          ? json.children
-          : [json];
-      const headerView = roots[0];
-      const flatStyle = (headerView.props.style as any[]).flat();
-      expect(flatStyle).toContainEqual(
-        expect.objectContaining({ backgroundColor: "#FFF" }),
-      );
-      expect(flatStyle).not.toContainEqual(
-        expect.objectContaining({ backgroundColor: "#E2F0F5" }),
-      );
+      // The header no longer paints a solid block behind the title; it uses the
+      // app-wide UiHeaderGradient (fading into the surface below) so it matches
+      // the other headers. The header container itself must therefore set no
+      // backgroundColor at all — the gradient provides the (fading) background.
+      const header = getByTestId("header-gradient");
+      // StyleSheet.flatten resolves any registered StyleSheet IDs into the final
+      // merged style object, so a backgroundColor applied via StyleSheet.create
+      // would still be caught (a plain array flatten leaves it as a numeric ID).
+      const flatStyle = StyleSheet.flatten(header.props.style) ?? {};
+      expect(flatStyle.backgroundColor).toBeUndefined();
     });
   });
 

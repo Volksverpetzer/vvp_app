@@ -14,7 +14,7 @@ const UiTextInput = (properties: UiTextInputProperties) => {
   return (
     <DefaultTextInput
       style={[
-        { backgroundColor, color },
+        { backgroundColor, color, fontFamily: "SourceSansPro" },
         // Android vertically centers multiline text by default; start at
         // the top like iOS does (no-op on single-line inputs and iOS)
         properties.multiline ? { textAlignVertical: "top" } : undefined,

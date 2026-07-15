@@ -1,6 +1,6 @@
 import type { FC, ReactElement } from "react";
 import type { ColorValue } from "react-native";
-import { Text as RNText, View as RNView } from "react-native";
+import { View as RNView } from "react-native";
 import type { SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 import type { SharedValue } from "react-native-reanimated";
 import Animated, {
@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import UiPressable from "#/components/ui/UiPressable";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -80,11 +81,7 @@ const RightAction: FC<RightActionProps> = ({
           ]}
         >
           {icon}
-          {label && (
-            <RNText style={{ color: fg, fontFamily: "SourceSansProBold" }}>
-              {label}
-            </RNText>
-          )}
+          {label && <UiText style={{ color: fg }}>{label}</UiText>}
         </Animated.View>
       </UiPressable>
     </RNView>

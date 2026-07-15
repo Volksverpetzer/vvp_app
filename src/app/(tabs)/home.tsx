@@ -10,7 +10,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
+import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
@@ -80,7 +80,7 @@ const HomeScreen = () => {
           <UiText
             style={[
               globalStyles.whiteText,
-              { fontFamily: "SourceSansPro", fontSize: 16 },
+              { fontFamily: "SourceSansPro", fontSize: INPUT_FONT_SIZE },
             ]}
           >
             Suche ...
