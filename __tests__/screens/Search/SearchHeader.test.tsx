@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
 import React, { createRef } from "react";
+import { StyleSheet } from "react-native";
 import type { TextInput } from "react-native";
 
 import { toast } from "#/helpers/toast";
@@ -98,13 +99,12 @@ describe("SearchHeader", () => {
       // the other headers. It must therefore set neither a solid background
       // nor the surface color on the header container itself.
       const header = getByTestId("header-gradient");
-      const flatStyle = ([] as any[]).concat(header.props.style).flat();
-      expect(flatStyle).not.toContainEqual(
-        expect.objectContaining({ backgroundColor: "#FFF" }),
-      );
-      expect(flatStyle).not.toContainEqual(
-        expect.objectContaining({ backgroundColor: "#E2F0F5" }),
-      );
+      // StyleSheet.flatten resolves any registered StyleSheet IDs into the final
+      // merged style object, so a backgroundColor applied via StyleSheet.create
+      // would still be caught (a plain array flatten leaves it as a numeric ID).
+      const flatStyle = StyleSheet.flatten(header.props.style) ?? {};
+      expect(flatStyle.backgroundColor).not.toBe("#FFF");
+      expect(flatStyle.backgroundColor).not.toBe("#E2F0F5");
     });
   });
 
