@@ -96,15 +96,14 @@ describe("SearchHeader", () => {
       );
       // The header no longer paints a solid block behind the title; it uses the
       // app-wide UiHeaderGradient (fading into the surface below) so it matches
-      // the other headers. It must therefore set neither a solid background
-      // nor the surface color on the header container itself.
+      // the other headers. The header container itself must therefore set no
+      // backgroundColor at all — the gradient provides the (fading) background.
       const header = getByTestId("header-gradient");
       // StyleSheet.flatten resolves any registered StyleSheet IDs into the final
       // merged style object, so a backgroundColor applied via StyleSheet.create
       // would still be caught (a plain array flatten leaves it as a numeric ID).
       const flatStyle = StyleSheet.flatten(header.props.style) ?? {};
-      expect(flatStyle.backgroundColor).not.toBe("#FFF");
-      expect(flatStyle.backgroundColor).not.toBe("#E2F0F5");
+      expect(flatStyle.backgroundColor).toBeUndefined();
     });
   });
 
