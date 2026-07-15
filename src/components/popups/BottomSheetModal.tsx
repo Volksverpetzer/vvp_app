@@ -50,7 +50,7 @@ const BottomSheetModal = ({
       <View
         style={[
           styles.container,
-          { backgroundColor: surface, paddingBottom: 20 + insets.bottom },
+          { backgroundColor: surface, paddingBottom: 28 + insets.bottom },
           containerStyle,
         ]}
       >
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
+    paddingTop: 12,
   },
   handle: {
     alignSelf: "center",

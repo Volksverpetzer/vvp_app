@@ -43,7 +43,6 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
           Alles klar
         </UiText>
       </UiPressable>
-      <UiSpace size={8} />
     </BottomSheetModal>
   );
 };

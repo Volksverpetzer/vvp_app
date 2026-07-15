@@ -37,7 +37,6 @@ const ImageCreditModal = ({
       onClose={onClose}
       title="Bildquelle"
     >
-      <UiSpace size={12} />
       <UiText style={styles.source}>{credit.source}</UiText>
       {credit.licence ? (
         <>
@@ -60,7 +59,6 @@ const ImageCreditModal = ({
           </UiPressable>
         </>
       ) : null}
-      <UiSpace size={20} />
     </BottomSheetModal>
   );
 };
