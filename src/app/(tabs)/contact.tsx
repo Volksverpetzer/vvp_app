@@ -136,9 +136,10 @@ const ContactScreen = () => {
           borderColor: "transparent",
           borderRadius: 5,
           borderWidth: 2,
-          padding: 10,
-          // Tighter side padding and a larger type size than the shared input
-          // default, per design feedback on the contact form.
+          // Explicit vertical + horizontal padding (overriding the shared
+          // input's paddingHorizontal: 25) so the intent is unambiguous:
+          // tighter sides and a larger type size, per contact-form design feedback.
+          paddingVertical: 10,
           paddingHorizontal: 14,
           fontSize: 18,
         },

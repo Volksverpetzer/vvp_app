@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 2,
     height: 4,
-    marginTop: 12,
     width: 40,
   },
   header: {
