@@ -4,6 +4,7 @@ import { Keyboard, TextInput, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
+import HeaderGradient from "#/components/ui/HeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -33,7 +34,6 @@ const SearchHeader = ({
   onSubmit,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].background;
   const corporate = Colors[colorScheme].primary;
 
   // Show no reaction while loading so we don't display a stale previous result
@@ -60,14 +60,13 @@ const SearchHeader = ({
 
   return (
     <>
-      <View
+      <HeaderGradient
         style={[
           globalStyles.row,
           {
             height: 100,
             justifyContent: "flex-end",
             paddingRight: 20,
-            backgroundColor,
           },
         ]}
       >
@@ -96,7 +95,7 @@ const SearchHeader = ({
             <FaktenBot reaction={faktenBotReaction} search={isLoading} />
           </View>
         )}
-      </View>
+      </HeaderGradient>
       <View
         style={[
           globalStyles.row,

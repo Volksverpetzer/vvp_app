@@ -24,6 +24,15 @@ jest.mock("#/components/Icons", () => ({
   SearchIcon: jest.fn(() => null),
 }));
 
+jest.mock("#/components/ui/HeaderGradient", () => {
+  const { View } = require("react-native");
+  return jest.fn(({ children, style }: any) => (
+    <View testID="header-gradient" style={style}>
+      {children}
+    </View>
+  ));
+});
+
 jest.mock("#/helpers/toast", () => ({
   toast: {
     success: jest.fn(),
@@ -78,23 +87,18 @@ describe("SearchHeader", () => {
     });
   });
 
-  describe("header background color", () => {
-    it("uses Colors[colorScheme].background (not surface) for the header", async () => {
-      const { toJSON } = await render(
+  describe("header background", () => {
+    it("renders the header inside the shared HeaderGradient with no solid fill", async () => {
+      const { getByTestId } = await render(
         <SearchHeader {...baseProps} showFaktenBot={false} />,
       );
-      // RNTL 14's toJSON() returns the root node as an object; multiple roots
-      // are wrapped in a container node with an empty-string type whose
-      // children are the actual top-level elements. Unwrap to the header View.
-      const json = toJSON() as any;
-      const roots = Array.isArray(json)
-        ? json
-        : json?.type === ""
-          ? json.children
-          : [json];
-      const headerView = roots[0];
-      const flatStyle = (headerView.props.style as any[]).flat();
-      expect(flatStyle).toContainEqual(
+      // The header no longer paints a solid block behind the title; it uses the
+      // app-wide HeaderGradient (fading into the surface below) so it matches
+      // the other headers. It must therefore set neither a solid background
+      // nor the surface color on the header container itself.
+      const header = getByTestId("header-gradient");
+      const flatStyle = ([] as any[]).concat(header.props.style).flat();
+      expect(flatStyle).not.toContainEqual(
         expect.objectContaining({ backgroundColor: "#FFF" }),
       );
       expect(flatStyle).not.toContainEqual(

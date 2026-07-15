@@ -1,4 +1,3 @@
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import type { PropsWithChildren, ReactNode } from "react";
 import React, { useMemo } from "react";
@@ -6,10 +5,10 @@ import { Animated, View } from "react-native";
 import type { ViewStyle } from "react-native";
 
 import { HeartIcon } from "#/components/Icons";
+import HeaderGradient from "#/components/ui/HeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import Colors from "#/constants/Colors";
-import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 /**
@@ -35,8 +34,6 @@ const gradientContainerStyle: ViewStyle = {
   justifyContent: "flex-end",
 };
 
-const GRADIENT_LOCATIONS: [number, number] = [0.7, 1];
-
 /**
  * AnimatedHeader renders a collapsible header bar that shrinks and fades
  * based on scroll position. It accepts an optional title (string or node)
@@ -54,11 +51,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
 
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  const backgroundColor = Colors[colorScheme].background;
   const router = useRouter();
-
-  // Compute the RGB values only when backgroundColor changes.
-  const [r, g, b] = useMemo(() => hexToRgb(backgroundColor), [backgroundColor]);
 
   // Calculate scroll distance only when props change
   const H_SCROLL_DISTANCE = useMemo(
@@ -125,11 +118,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
 
   return (
     <Animated.View style={animatedViewStyle}>
-      <LinearGradient
-        colors={[`rgba(${r},${g},${b},1)`, `rgba(${r},${g},${b},0.1)`]}
-        locations={GRADIENT_LOCATIONS}
-        style={gradientContainerStyle}
-      >
+      <HeaderGradient style={gradientContainerStyle}>
         {!hideSupportHeart && (
           <UiPressable
             accessibilityRole="button"
@@ -164,7 +153,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
           {children}
         </View>
         <UiSpace size={45} />
-      </LinearGradient>
+      </HeaderGradient>
     </Animated.View>
   );
 };
