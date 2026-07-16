@@ -1,11 +1,8 @@
 import type { TextProps } from "react-native";
 import { Text } from "react-native";
 
-import {
-  type FontSizeToken,
-  fontSizes,
-} from "#/components/typography/fontSizes";
 import Colors from "#/constants/Colors";
+import { type FontSizeToken, fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 type TextProperties = TextProps & {

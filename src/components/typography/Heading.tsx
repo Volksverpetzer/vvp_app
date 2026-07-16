@@ -3,9 +3,8 @@ import type { TextProps } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-
-import { fontSizes } from "./fontSizes";
 
 interface HeadingProperties extends TextProps {
   children: ReactNode;

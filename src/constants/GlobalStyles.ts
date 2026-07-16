@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { fontSizes } from "#/components/typography/fontSizes";
+import { fontSizes } from "#/constants/FontSizes";
 
 export const SOURCE_SANS_FONTS = [
   "SourceSansPro",

@@ -3,10 +3,10 @@ import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { CheckboxIcon, CircleIcon } from "#/components/Icons";
-import { fontSizes } from "#/components/typography/fontSizes";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
 import type { LevelType, TaskType } from "#/helpers/Achievements";
 import { AchievementConfig, Achievements } from "#/helpers/Achievements";

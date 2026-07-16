@@ -1,5 +1,5 @@
-import { fontSizes } from "#/components/typography/fontSizes";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 
 export const isDarkMode = (mode: AppColorScheme) => mode === "dark";

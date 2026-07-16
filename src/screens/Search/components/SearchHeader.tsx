@@ -4,11 +4,11 @@ import { Keyboard, TextInput, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
-import { fontSizes } from "#/components/typography/fontSizes";
 import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
