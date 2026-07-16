@@ -1,7 +1,7 @@
 import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import QRCode from "react-native-qrcode-svg";
 
@@ -16,6 +16,11 @@ import { buildGiroCodePayload } from "#/helpers/utils/girocode";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const HEADER_HEIGHT = 50;
+
+// The GiroCode is only useful where a second device scans the screen — i.e. the
+// desktop web version. On a phone the user holds the only device, so we lead
+// with the clipboard instead and hide the QR.
+const showQrCode = Platform.OS === "web";
 
 const BankTransferScreen = () => {
   // Amount pre-selected in the Donate picker (optional).
@@ -61,26 +66,35 @@ const BankTransferScreen = () => {
           schätzen
         </UiText>
         <UiSpace size={24} />
-        <UiText size="base" style={{ textAlign: "center" }}>
-          Scanne diesen Code mit deiner Banking-App, um die Überweisung
-          vorausgefüllt zu öffnen – daraus kannst du direkt einen Dauerauftrag
-          machen:
-        </UiText>
-        <UiSpace size={16} />
-        <View
-          style={{
-            backgroundColor: "#ffffff",
-            padding: 16,
-            borderRadius: 12,
-          }}
-        >
-          <QRCode value={giroCode} size={220} />
-        </View>
-        <UiSpace size={24} />
-        <UiText size="base" style={{ textAlign: "center" }}>
-          Oder überweise manuell – die IBAN ist bereits in deiner
-          Zwischenablage:
-        </UiText>
+        {showQrCode ? (
+          <>
+            <UiText size="base" style={{ textAlign: "center" }}>
+              Scanne diesen Code mit der Banking-App auf deinem Handy, um die
+              Überweisung vorausgefüllt zu öffnen – daraus kannst du direkt
+              einen Dauerauftrag machen:
+            </UiText>
+            <UiSpace size={16} />
+            <View
+              style={{
+                backgroundColor: "#ffffff",
+                padding: 16,
+                borderRadius: 12,
+              }}
+            >
+              <QRCode value={giroCode} size={220} />
+            </View>
+            <UiSpace size={24} />
+            <UiText size="base" style={{ textAlign: "center" }}>
+              Oder überweise manuell – die IBAN ist bereits in deiner
+              Zwischenablage:
+            </UiText>
+          </>
+        ) : (
+          <UiText size="base" style={{ textAlign: "center" }}>
+            Die IBAN ist bereits in deiner Zwischenablage. Füge sie in deiner
+            Banking-App ein und richte dort einen Dauerauftrag ein:
+          </UiText>
+        )}
         <UiSpace size={16} />
         <UiText selectable size="base" style={{ textAlign: "center" }}>
           Name: {Config.donations.account.holder} {`\n`}
