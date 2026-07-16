@@ -26,12 +26,14 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
       title="Was ist neu?"
       containerStyle={styles.container}
     >
-      <UiText style={[styles.version, { color: textMuted }]}>
+      <UiText size="sm" style={[styles.version, { color: textMuted }]}>
         Version {Changelog.version}
       </UiText>
       <UiSpace size={12} />
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
-        <UiText style={styles.notes}>{Changelog.notes}</UiText>
+        <UiText size="base" style={styles.notes}>
+          {Changelog.notes}
+        </UiText>
       </ScrollView>
       <UiSpace size={20} />
       <UiPressable
@@ -39,7 +41,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
         onPress={onClose}
         style={[styles.button, { backgroundColor: corporate }]}
       >
-        <UiText style={[styles.buttonText, { color: onPrimary }]}>
+        <UiText size="base" style={[styles.buttonText, { color: onPrimary }]}>
           Alles klar
         </UiText>
       </UiPressable>
@@ -52,14 +54,12 @@ const styles = StyleSheet.create({
     maxHeight: "80%",
   },
   version: {
-    fontSize: 13,
     marginTop: 2,
   },
   scroll: {
     flexShrink: 1,
   },
   notes: {
-    fontSize: 15,
     lineHeight: 22,
   },
   button: {
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: "SourceSansProBold",
-    fontSize: 16,
   },
 });
 

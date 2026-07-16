@@ -26,10 +26,10 @@ const StatisticsBox = ({
     <View
       style={[boxStyles.container, { backgroundColor: primaryMuted }, style]}
     >
-      <UiText style={boxStyles.valueText} numberOfLines={1}>
+      <UiText size="xl" style={boxStyles.valueText} numberOfLines={1}>
         {statistic[valueKey]}
       </UiText>
-      <UiText style={boxStyles.labelText} numberOfLines={2}>
+      <UiText size="xs" style={boxStyles.labelText} numberOfLines={2}>
         {descriptionMap[statisticsKey]}
       </UiText>
     </View>
@@ -46,13 +46,11 @@ const boxStyles = StyleSheet.create({
   valueText: {
     color: "white",
     width: "100%",
-    fontSize: 20,
     textAlign: "center",
   },
   labelText: {
     color: "white",
     width: "100%",
-    fontSize: 12,
     textAlign: "center",
   },
 });

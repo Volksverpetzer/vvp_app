@@ -29,7 +29,9 @@ const UiEmptyState = ({
   const content = (
     <>
       {coloredIcon}
-      <UiText style={{ textAlign: "center", fontSize: 18 }}>{children}</UiText>
+      <UiText size="lg" style={{ textAlign: "center" }}>
+        {children}
+      </UiText>
     </>
   );
 

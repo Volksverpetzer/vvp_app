@@ -129,7 +129,7 @@ const BackupView = () => {
         disabled={!!busy}
         style={rowStyle}
       >
-        <UiText style={{ fontSize: 16, opacity: busy === "import" ? 0.4 : 1 }}>
+        <UiText size="base" style={{ opacity: busy === "import" ? 0.4 : 1 }}>
           Sammlung exportieren
         </UiText>
         {busy === "export" ? (
@@ -144,7 +144,7 @@ const BackupView = () => {
         disabled={!!busy}
         style={rowStyle}
       >
-        <UiText style={{ fontSize: 16, opacity: busy === "export" ? 0.4 : 1 }}>
+        <UiText size="base" style={{ opacity: busy === "export" ? 0.4 : 1 }}>
           Sammlung importieren
         </UiText>
         {busy === "import" ? (

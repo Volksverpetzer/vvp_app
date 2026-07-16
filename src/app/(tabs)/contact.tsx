@@ -123,7 +123,6 @@ const ContactScreen = () => {
         },
         errorText: {
           color: errorColor,
-          fontSize: 18,
           fontFamily: "SourceSansProBold",
           marginBottom: 20,
           paddingHorizontal: 12,
@@ -402,7 +401,9 @@ const ContactScreen = () => {
           />
           <UiSpace size={20} />
           {error ? (
-            <UiText style={styles.errorText}>{error}</UiText>
+            <UiText size="lg" style={styles.errorText}>
+              {error}
+            </UiText>
           ) : undefined}
           <UiPressable
             accessibilityRole="button"
@@ -414,10 +415,8 @@ const ContactScreen = () => {
             ]}
           >
             <UiText
-              style={[
-                globalStyles.whiteText,
-                { textAlign: "center", fontSize: 18 },
-              ]}
+              size="lg"
+              style={[globalStyles.whiteText, { textAlign: "center" }]}
             >
               Senden
             </UiText>

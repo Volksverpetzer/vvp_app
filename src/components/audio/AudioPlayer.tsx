@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
 import { PauseIcon, UnmuteIcon } from "#/components/Icons";
+import { fontSizes } from "#/components/typography/fontSizes";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -174,7 +175,7 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         accessible={false}
         importantForAccessibility="no"
         style={{
-          fontSize: 13,
+          fontSize: fontSizes.sm,
           color: Colors[colorScheme].textMuted,
           minWidth: 38,
           textAlign: "right",

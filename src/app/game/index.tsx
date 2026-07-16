@@ -15,8 +15,10 @@ const HomeScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText style={styles.title}>Willkommen zum Memory-Spiel</UiText>
-      <UiText style={styles.description}>
+      <UiText size="xxl" style={styles.title}>
+        Willkommen zum Memory-Spiel
+      </UiText>
+      <UiText size="base" style={styles.description}>
         Erlebe verschiedene Memory-Spiele, bei denen du z. B.
         Desinformationstechniken und zugehörige Falschinformationen kennenlernen
         kannst. Wähle ein Spiel aus, um zu beginnen.
@@ -45,9 +47,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  description: { fontSize: 16, marginBottom: 30, textAlign: "center" },
+  description: { marginBottom: 30, textAlign: "center" },
   link: { color: "#fff", fontFamily: "SourceSansPro", fontSize: 16 },
-  title: { fontSize: 24, fontFamily: "SourceSansProBold", marginBottom: 20 },
+  title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
 });
 
 export default HomeScreen;

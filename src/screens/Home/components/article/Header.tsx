@@ -134,9 +134,9 @@ const Header = (properties: HeaderProperties) => {
       </View>
       <UiSpace size={30} />
       <UiText
+        size="headline"
         style={{
           paddingHorizontal: 20,
-          fontSize: 26,
           textAlign: "left",
           fontFamily: "SourceSansProBold",
         }}
@@ -144,8 +144,8 @@ const Header = (properties: HeaderProperties) => {
         {article_title}
       </UiText>
       <UiText
+        size="lg"
         style={{
-          fontSize: 18,
           textAlign: "left",
           paddingVertical: 10,
           paddingHorizontal: 20,
@@ -229,10 +229,10 @@ const Header = (properties: HeaderProperties) => {
             />
             <UiSpace size={20} />
             <UiText
+              size="headline"
               style={{
                 color: Colors.dark.text,
                 paddingHorizontal: 20,
-                fontSize: 26,
                 textAlign: "left",
                 fontFamily: "SourceSansProBold",
               }}
@@ -241,10 +241,10 @@ const Header = (properties: HeaderProperties) => {
             </UiText>
             <UiSpace size={20} />
             <UiText
+              size="lg"
               style={{
                 color: Colors.dark.text,
                 paddingHorizontal: 20,
-                fontSize: 18,
                 textAlign: "left",
               }}
             >

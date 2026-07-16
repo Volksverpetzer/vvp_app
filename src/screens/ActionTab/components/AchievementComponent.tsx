@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { CheckboxIcon, CircleIcon } from "#/components/Icons";
+import { fontSizes } from "#/components/typography/fontSizes";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -75,7 +76,7 @@ const AchievementComponent = () => {
             backgroundColor={highlight}
             color="white"
             textStyle={{
-              fontSize: 22,
+              fontSize: fontSizes.xxl,
               fontFamily: "SourceSansProBoldItalic",
             }}
             containerStyle={{ height: 45, marginTop: -30 }}
@@ -109,9 +110,10 @@ const AchievementComponent = () => {
                 <CircleIcon size={16} color="white" />
               )}
               <UiText
+                size="base"
                 style={[
                   globalStyles.whiteText,
-                  { fontSize: 16, padding: 5, paddingLeft: 20 },
+                  { padding: 5, paddingLeft: 20 },
                 ]}
               >
                 {task.verbose}

@@ -123,9 +123,9 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
                   }}
                 >
                   <UiText
+                    size="lg"
                     style={{
                       textAlign: "center",
-                      fontSize: 18,
                       color: pickerColorText,
                     }}
                   >

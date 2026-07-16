@@ -4,6 +4,7 @@ import { Keyboard, TextInput, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
+import { fontSizes } from "#/components/typography/fontSizes";
 import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
@@ -74,7 +75,7 @@ const SearchHeader = ({
           style={{
             paddingTop: 20,
             fontFamily: "SourceSansProBold",
-            fontSize: 22,
+            fontSize: fontSizes.xxl,
             color: corporate,
             flex: 1,
             textAlign: "center",

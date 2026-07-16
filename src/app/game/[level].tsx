@@ -81,9 +81,13 @@ const GameScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText style={styles.title}>Memory-Spiel: {gameId}</UiText>
+      <UiText size="xl" style={styles.title}>
+        Memory-Spiel: {gameId}
+      </UiText>
       <View style={styles.levelContainer}>
-        <UiText style={styles.levelText}>Wähle dein Level:</UiText>
+        <UiText size="base" style={styles.levelText}>
+          Wähle dein Level:
+        </UiText>
         <UiPressable
           accessibilityRole="button"
           style={[
@@ -142,8 +146,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 20,
   },
-  levelText: { fontSize: 16, marginRight: 10 },
-  title: { fontSize: 20, fontFamily: "SourceSansProBold", marginBottom: 20 },
+  levelText: { marginRight: 10 },
+  title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
 });
 
 export default GameScreen;

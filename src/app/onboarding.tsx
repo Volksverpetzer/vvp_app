@@ -154,11 +154,11 @@ const Onboarding = () => {
           }}
         >
           <UiText
+            size="xl"
             style={{
               color: corporate,
               textAlign: "center",
               padding: 40,
-              fontSize: 20,
             }}
           >
             Datenschutzerklärung

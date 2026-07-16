@@ -53,7 +53,7 @@ const Support = ({ article_link }: SupportProperties) => {
         background={backgroundColor}
         article_link={article_link}
       />
-      <UiText style={{ textAlign: "center", fontSize: 16 }}>
+      <UiText size="base" style={{ textAlign: "center" }}>
         Du willst die Extrameile gehen?{"\n"}
         Damit jeder Cent bei uns ankommt,{"\n"}kannst du einen
       </UiText>
@@ -64,7 +64,7 @@ const Support = ({ article_link }: SupportProperties) => {
       >
         <Heading style={{ color: corporate }}>Dauerauftrag</Heading>
       </UiPressable>
-      <UiText style={{ textAlign: "center", fontSize: 16 }}>
+      <UiText size="base" style={{ textAlign: "center" }}>
         direkt bei der Bank einrichten.
       </UiText>
       <Modal
@@ -88,18 +88,18 @@ const Support = ({ article_link }: SupportProperties) => {
               <CloseIcon size={48} color={corporate} />
             </UiPressable>
           </View>
-          <UiText style={{ fontSize: 25 }}>Banküberweisung</UiText>
+          <UiText size="xxl">Banküberweisung</UiText>
           <UiSpace size={20} />
-          <UiText style={{ fontSize: 16, textAlign: "center" }}>
+          <UiText size="base" style={{ textAlign: "center" }}>
             Wow! Du bist der Hammer! Danke für deine Mühe, wir wissen das echt
             zu schätzen
           </UiText>
           <UiSpace size={20} />
-          <UiText style={{ fontSize: 16, textAlign: "center" }}>
+          <UiText size="base" style={{ textAlign: "center" }}>
             IBAN ist in die Zwischenablage kopiert, hier nochmal zur Sicherheit:
           </UiText>
           <UiSpace size={20} />
-          <UiText selectable style={{ fontSize: 16, textAlign: "center" }}>
+          <UiText selectable size="base" style={{ textAlign: "center" }}>
             Name: {Config.donations.account.holder} {`\n`}
             Bank: {Config.donations.account.bank} {`\n`}
             IBAN: {Config.donations.account.IBAN} {`\n`}

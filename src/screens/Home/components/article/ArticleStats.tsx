@@ -34,7 +34,9 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
       {!!reading_time && (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <ClockIcon size={16} color={color} />
-          <UiText style={{ color, fontSize: 16 }}>{reading_time} Min.</UiText>
+          <UiText size="base" style={{ color }}>
+            {reading_time} Min.
+          </UiText>
         </View>
       )}
       {showEngagement && (

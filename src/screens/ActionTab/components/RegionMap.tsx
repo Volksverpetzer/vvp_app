@@ -90,9 +90,7 @@ const RegionMap = () => {
         <Legend text="Schlusslicht" color={corporate} />
         <UiSpace size={8} />
         <View>
-          <UiText
-            style={[globalStyles.whiteText, { fontSize: 12, marginTop: 20 }]}
-          >
+          <UiText size="xs" style={[globalStyles.whiteText, { marginTop: 20 }]}>
             Shares aus der Volksverpetzer-App pro Kopf im Bundesland
           </UiText>
         </View>
@@ -104,10 +102,8 @@ const RegionMap = () => {
         }}
       >
         <UiText
-          style={[
-            globalStyles.whiteText,
-            { fontSize: 20, fontFamily: "SourceSansProBold" },
-          ]}
+          size="xl"
+          style={[globalStyles.whiteText, { fontFamily: "SourceSansProBold" }]}
         >
           Bundesländer Ranking
         </UiText>
@@ -134,7 +130,7 @@ const RegionMap = () => {
               }}
             >
               <Icon style={{ left: -8 }} />
-              <UiText style={{ fontSize: 12, color: corporate }}>
+              <UiText size="xs" style={{ color: corporate }}>
                 {` ${region.name}`}
               </UiText>
             </View>
@@ -144,10 +140,8 @@ const RegionMap = () => {
         {regionData?.slice(3).map((region, idx) => (
           <UiText
             key={region.region}
-            style={[
-              globalStyles.whiteText,
-              { fontSize: 13, paddingVertical: 2 },
-            ]}
+            size="sm"
+            style={[globalStyles.whiteText, { paddingVertical: 2 }]}
           >
             {`${idx + 4}. ${region.name}`}
           </UiText>
