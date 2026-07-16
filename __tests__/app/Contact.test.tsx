@@ -134,10 +134,12 @@ describe("ContactScreen", () => {
     mockParameters = {
       category: "app_feedback",
       url: "https://example.com/artikel",
+      title: "Ein echter Titel",
       index: "3",
     };
     const { getByText, getByDisplayValue } = await render(<ContactScreen />);
     expect(getByText("Feedback")).toBeTruthy();
+    expect(getByDisplayValue("Artikel: Ein echter Titel")).toBeTruthy();
     expect(
       getByDisplayValue("https://example.com/artikel\nAbsatz 3\n\n"),
     ).toBeTruthy();

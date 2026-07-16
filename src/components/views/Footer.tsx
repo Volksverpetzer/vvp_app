@@ -15,6 +15,7 @@ import Support from "./Support";
 
 interface FooterProperties {
   article_link: HttpsUrl;
+  article_title?: string;
   onShare: (article_link: string, properties: Record<string, unknown>) => void;
 }
 
@@ -78,7 +79,10 @@ const Footer = (properties: FooterProperties) => {
           backgroundColor: Colors[colorScheme].surface,
         }}
       >
-        <ContactCard article_link={properties.article_link} />
+        <ContactCard
+          article_link={properties.article_link}
+          article_title={properties.article_title}
+        />
       </UiCard>
       <UiSpace size={100} />
     </>

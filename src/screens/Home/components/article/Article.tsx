@@ -187,7 +187,11 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
               }
             />
             <Recommended article_link={article_link}></Recommended>
-            <Footer article_link={article_link} onShare={onShare} />
+            <Footer
+              article_link={article_link}
+              article_title={article_title}
+              onShare={onShare}
+            />
           </View>
         </ScrollView>
         <BackToTopButton

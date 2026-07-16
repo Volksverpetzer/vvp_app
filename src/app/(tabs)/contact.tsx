@@ -80,8 +80,14 @@ const ContactScreen = () => {
     url?: string;
     index?: string;
     category?: string;
+    title?: string;
   }>();
-  const { url: parameterUrl, index, category: parameterCategory } = parameters;
+  const {
+    url: parameterUrl,
+    index,
+    category: parameterCategory,
+    title: parameterTitle,
+  } = parameters;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const resetTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
@@ -182,8 +188,9 @@ const ContactScreen = () => {
         setTitle(parameterUrl);
         setMessage(index ? `Absatz ${index}` : "");
       } else {
-        // For feedback about an article, reference the url in the text
-        setTitle("");
+        // For feedback about an article, reference the article title in the
+        // subject and keep the full url in the text
+        setTitle(parameterTitle ? `Artikel: ${parameterTitle}` : "");
         setMessage(
           [parameterUrl, index ? `Absatz ${index}` : ""]
             .filter(Boolean)
@@ -193,7 +200,7 @@ const ContactScreen = () => {
     } else if (index) {
       setMessage(`Absatz ${index}`);
     }
-  }, [parameterUrl, index, parameterCategory]);
+  }, [parameterUrl, index, parameterCategory, parameterTitle]);
 
   // Cancel the pending success-reset when the screen unmounts
   useEffect(() => () => clearTimeout(resetTimeout.current), []);
