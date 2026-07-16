@@ -32,7 +32,6 @@ import ImageCreditBadge from "./ImageCreditBadge";
 const titleStyle: TextStyle = {
   fontFamily: "SourceSansProBold",
   paddingHorizontal: POST_PADDING_HORIZONTAL,
-  fontSize: 20,
   lineHeight: 26,
   textAlign: "left",
 };
@@ -199,13 +198,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       paddingHorizontal: POST_PADDING_HORIZONTAL,
       textAlign: "left" as const,
       color: greyText,
-      fontSize: 16,
     }),
     [greyText],
   );
   const categoryTextStyle: TextStyle[] = [
     globalStyles.whiteText,
-    { textAlign: "right", fontSize: 14 },
+    { textAlign: "right" },
   ];
 
   const content = (
@@ -239,13 +237,17 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         </View>
         <View style={progressBarStyle} />
         <UiSpace size={10} />
-        <UiText style={titleStyle}>{article.title}</UiText>
+        <UiText size="xl" style={titleStyle}>
+          {article.title}
+        </UiText>
         <UiSpace size={10} />
-        <UiText style={authorDateStyle}>{authorDateText}</UiText>
+        <UiText size="base" style={authorDateStyle}>
+          {authorDateText}
+        </UiText>
         <UiSpace size={10} />
         {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>
-            <UiText style={categoryTextStyle}>
+            <UiText size="sm" style={categoryTextStyle}>
               {article.sourceName || categoryText}
             </UiText>
           </Badge>
@@ -258,9 +260,9 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         {excerpt ? (
           <>
             <UiText
+              size="base"
               style={{
                 paddingHorizontal: POST_PADDING_HORIZONTAL,
-                fontSize: 16,
               }}
             >
               {excerpt}

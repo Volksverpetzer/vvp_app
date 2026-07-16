@@ -103,9 +103,9 @@ const RedditPost = (properties: RedditProperties) => {
             source={{ uri: imageUri }}
           />
           <UiText
+            size={size === 16 ? "base" : "lg"}
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
-              fontSize: size,
               lineHeight: size === 16 ? 22 : 24,
               fontFamily: "SourceSansProBold",
               textAlign: "left",
@@ -115,9 +115,9 @@ const RedditPost = (properties: RedditProperties) => {
             {properties.title}
           </UiText>
           <UiText
+            size="base"
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
-              fontSize: 16,
               paddingBottom: 10,
               color: "#999",
             }}

@@ -81,33 +81,29 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
             />
             <View style={{ marginLeft: 10 }}>
               <Heading>&nbsp;{account.display_name}&nbsp;</Heading>
-              <UiText style={{ fontSize: 14, color: grey }}>
+              <UiText size="sm" style={{ color: grey }}>
                 &nbsp;@{account.acct}&nbsp;
               </UiText>
             </View>
           </View>
           <UiSpace size={20} />
           {displayText !== DISPLAY_TEXT_NONE && (
-            <UiText style={{ lineHeight: 24, fontSize: 18 }}>
+            <UiText size="lg" style={{ lineHeight: 24 }}>
               {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
             </UiText>
           )}
           {displayText === DISPLAY_TEXT_EXCERPT &&
             excerpt.length < fulltext.length && (
               <UiText
-                style={{
-                  lineHeight: 24,
-                  fontSize: 18,
-                  color: corporate,
-                  marginBottom: 20,
-                }}
+                size="lg"
+                style={{ lineHeight: 24, color: corporate, marginBottom: 20 }}
               >
                 Mehr Lesen
               </UiText>
             )}
           {displayText !== DISPLAY_TEXT_FULL && (
             <View style={globalStyles.row}>
-              <UiText style={{ lineHeight: 24, fontSize: 18, color: grey }}>
+              <UiText size="lg" style={{ lineHeight: 24, color: grey }}>
                 {new Date(created_at).toLocaleTimeString("de-DE", {
                   year: "numeric",
                   month: "numeric",
@@ -117,9 +113,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
                 })}
               </UiText>
               {answers && answers.length > 0 && (
-                <UiText
-                  style={{ lineHeight: 24, fontSize: 18, color: corporate }}
-                >
+                <UiText size="lg" style={{ lineHeight: 24, color: corporate }}>
                   Thread 1 von {answers.length + 1}
                 </UiText>
               )}
@@ -140,7 +134,8 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               return (
                 <UiText
                   key={String(index)}
-                  style={{ lineHeight: 24, fontSize: 18 }}
+                  size="lg"
+                  style={{ lineHeight: 24 }}
                 >
                   {fullText}
                 </UiText>

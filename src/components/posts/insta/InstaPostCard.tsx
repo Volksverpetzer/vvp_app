@@ -84,9 +84,11 @@ const InstaPostCard = (properties: InstaPostProperties) => {
           opacity: 1,
         }}
       >
-        <UiText style={{ fontSize: 16 }}>{excerpt}…</UiText>
+        <UiText size="base">{excerpt}…</UiText>
         <View style={[globalStyles.row, { justifyContent: "flex-end" }]}>
-          <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
+          <UiText size="base" style={{ color: corporate }}>
+            mehr
+          </UiText>
         </View>
       </UiPressable>
     </View>
