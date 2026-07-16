@@ -112,6 +112,15 @@ const BankTransferScreen = () => {
             </View>
           </UiCard>
         )}
+        {!showQrCode && (
+          <>
+            <UiSpace size={20} />
+            <UiText size="base" style={{ textAlign: "center" }}>
+              IBAN ist in die Zwischenablage kopiert, hier nochmal zur
+              Sicherheit:
+            </UiText>
+          </>
+        )}
         <UiSpace size={16} />
         <UiText selectable size="base" style={{ textAlign: "center" }}>
           Name: {Config.donations.account.holder} {`\n`}
