@@ -104,6 +104,7 @@
     "react-native-hyperlink": "0.1.2",
     "react-native-modal": "14.0.0-rc.1",
     "react-native-nitro-modules": "0.36.1",
+    "react-native-qrcode-svg": "^6.3.21",
     "react-native-reanimated": "4.5.0",
     "react-native-reanimated-carousel": "4.0.3",
     "react-native-render-html": "6.3.4",

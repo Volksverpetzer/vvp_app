@@ -24,10 +24,21 @@ interface DonateProperties {
   showPicker?: boolean;
   background?: string;
   article_link?: HttpsUrl;
+  onAmountChange?: (amount: number) => void;
 }
 
-const Donate = ({ article_link, ...properties }: DonateProperties) => {
+const Donate = ({
+  article_link,
+  onAmountChange,
+  ...properties
+}: DonateProperties) => {
   const [amount, setAmount] = useState(10);
+
+  // Notify the parent whenever the selected amount changes (e.g. for the
+  // bank-transfer GiroCode, which lives in the Support modal above).
+  useEffect(() => {
+    onAmountChange?.(amount);
+  }, [amount, onAmountChange]);
   const [pickerWidth, setPickerWidth] = useState(0);
   const [successAnimated, setSuccessAnimated] = useState(false);
   const [isPlatformPaySupported, setIsPlatformPaySupported] = useState(true);
