@@ -42,7 +42,7 @@ LogBox.ignoreLogs(["new NativeEventEmitter"]);
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
-const SECONDARY_BG_SCREENS = new Set(["action", "support"]);
+const SECONDARY_BG_SCREENS = new Set(["action", "support", "bank-transfer"]);
 
 const TOAST_TEXT_STYLES = {
   text1Style: { fontSize: fontSizes.base },
@@ -180,6 +180,10 @@ const RootLayout = () => {
                 <Stack.Screen
                   name="support"
                   options={{ title: "Unterstutzen" }}
+                />
+                <Stack.Screen
+                  name="bank-transfer"
+                  options={{ title: "Banküberweisung" }}
                 />
                 <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
               </Stack>
