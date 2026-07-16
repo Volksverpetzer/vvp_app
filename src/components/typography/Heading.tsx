@@ -5,6 +5,8 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
+import { fontSizes } from "./fontSizes";
+
 interface HeadingProperties extends TextProps {
   children: ReactNode;
 }
@@ -17,7 +19,7 @@ const Heading = ({ style, children, ...props }: HeadingProperties) => {
         {
           color: Colors[colorScheme].text,
           fontFamily: "SourceSansProBold",
-          fontSize: 18,
+          fontSize: fontSizes.lg,
         },
         style,
       ]}
