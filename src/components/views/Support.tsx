@@ -89,7 +89,14 @@ const Support = ({ article_link }: SupportProperties) => {
         onSwipeComplete={() => setShowBank(false)}
         swipeDirection={["down", "up"]}
       >
-        <View style={{ padding: 20, alignItems: "center" }}>
+        <View
+          style={{
+            padding: 20,
+            alignItems: "center",
+            backgroundColor,
+            borderRadius: 16,
+          }}
+        >
           <View
             style={{
               width: "100%",
