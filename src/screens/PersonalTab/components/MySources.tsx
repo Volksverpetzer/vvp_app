@@ -81,11 +81,7 @@ const MySources = () => {
           <UiCard key={group.slug} style={{ padding: 0 }}>
             <View style={{ padding: 30, gap: 10 }}>
               {title && (
-                <UiText
-                  bold
-                  size="lg"
-                  style={{ color: Colors[colorScheme].text }}
-                >
+                <UiText bold size="lg">
                   {title}
                 </UiText>
               )}

@@ -50,7 +50,7 @@ const UiLink = (properties: UiLinkProperties) => {
       ]}
     >
       {properties.icon && <View style={{ width: 24 }}>{properties.icon}</View>}
-      <UiText bold size="lg" style={{ color: Colors[colorScheme].text }}>
+      <UiText bold size="lg">
         {properties.text}
       </UiText>
       <ExternalLinkIcon

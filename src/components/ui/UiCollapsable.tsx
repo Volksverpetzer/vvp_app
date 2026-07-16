@@ -62,7 +62,7 @@ const UiCollapsable = ({
       >
         <View style={styles.title}>
           {icon}
-          <UiText bold size="lg" style={[{ color: textColor }]}>
+          <UiText bold size="lg">
             {title}
           </UiText>
         </View>

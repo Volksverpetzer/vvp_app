@@ -56,7 +56,7 @@ const SearchResultItem = ({
   const content = (
     <UiCard>
       {title ? (
-        <UiText bold size="lg" style={{ color: textColor, marginBottom: 10 }}>
+        <UiText bold size="lg" style={{ marginBottom: 10 }}>
           {decode(title)}
         </UiText>
       ) : null}
