@@ -134,7 +134,7 @@ const Header = (properties: HeaderProperties) => {
       </View>
       <UiSpace size={30} />
       <UiText
-        size="headline"
+        size="xxl"
         style={{
           paddingHorizontal: 20,
           textAlign: "left",
@@ -229,7 +229,7 @@ const Header = (properties: HeaderProperties) => {
             />
             <UiSpace size={20} />
             <UiText
-              size="headline"
+              size="xxl"
               style={{
                 color: Colors.dark.text,
                 paddingHorizontal: 20,

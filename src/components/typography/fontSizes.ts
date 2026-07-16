@@ -6,9 +6,10 @@
  * (`<UiText size="lg">`); reach for the raw values only where `UiText` isn't
  * involved (e.g. RenderHTML tag styles, plain StyleSheets).
  *
- * The scale deliberately has a small number of steps. Historic one-off sizes
- * (13, 15, 22, 25) were collapsed onto the nearest step — a ±1px shift is a fair
- * trade for one fewer size to reason about.
+ * The steps are an arithmetic +2 progression (xs–xxl == Tailwind's xs–2xl), not
+ * a constant-ratio modular scale: fine control in the reading range (14–18) is
+ * worth more in a UI than mathematical elegance. Historic one-off sizes
+ * (13, 15, 22, 25, 26) were collapsed onto the nearest step.
  */
 export const fontSizes = {
   /** Fine print: metadata, timestamps, tiny map labels. */
@@ -21,10 +22,8 @@ export const fontSizes = {
   lg: 18,
   /** Section titles. */
   xl: 20,
-  /** Screen titles, article sub-headings (h2–h5). */
+  /** Largest step: screen/article titles and article sub-headings (h2–h5). */
   xxl: 24,
-  /** Article headline. */
-  headline: 26,
 } as const;
 
 export type FontSizeToken = keyof typeof fontSizes;
