@@ -10,13 +10,17 @@ import type { HttpsUrl } from "#/types";
 
 interface ContactCardProperties {
   article_link: HttpsUrl;
+  article_title?: string;
 }
 
 /**
  * Card at the bottom of an article that links to the contact tab with
- * the article url prefilled in the form.
+ * the article url (and title, when available) prefilled in the form.
  */
-const ContactCard = ({ article_link }: ContactCardProperties) => {
+const ContactCard = ({
+  article_link,
+  article_title,
+}: ContactCardProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const { accent, text } = Colors[colorScheme];
@@ -48,7 +52,11 @@ const ContactCard = ({ article_link }: ContactCardProperties) => {
         onPress={() =>
           router.push({
             pathname: "/(tabs)/contact",
-            params: { category: "app_feedback", url: article_link },
+            params: {
+              category: "app_feedback",
+              url: article_link,
+              ...(article_title ? { title: article_title } : {}),
+            },
           })
         }
         style={{
