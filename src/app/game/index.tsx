@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const HomeScreen = () => {
@@ -48,7 +49,11 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   description: { marginBottom: 30, textAlign: "center" },
-  link: { color: "#fff", fontFamily: "SourceSansPro", fontSize: 16 },
+  link: {
+    color: "#fff",
+    fontFamily: "SourceSansPro",
+    fontSize: fontSizes.base,
+  },
   title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
 });
 

@@ -61,7 +61,7 @@ const BottomSheetModal = ({
         <View style={[styles.handle, { backgroundColor: textMuted }]} />
         <UiSpace size={16} />
         <View style={styles.header}>
-          <Heading style={styles.title}>{title}</Heading>
+          <Heading size="xl">{title}</Heading>
           <UiPressable
             accessibilityRole="button"
             accessibilityLabel="Schließen"
@@ -99,9 +99,6 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     flexDirection: "row",
     justifyContent: "space-between",
-  },
-  title: {
-    fontSize: 20,
   },
 });
 

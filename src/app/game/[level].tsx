@@ -5,6 +5,7 @@ import { StyleSheet, View } from "react-native";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MemoryGame from "#/screens/Games/Memory";
 import type { DisinfoPair } from "#/types";
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 10,
   },
-  backLink: { color: "#fff", fontSize: 16 },
+  backLink: { color: "#fff", fontSize: fontSizes.base },
   container: {
     alignItems: "center",
     flex: 1,

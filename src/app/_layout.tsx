@@ -27,6 +27,7 @@ import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
@@ -44,8 +45,8 @@ SplashScreen.preventAutoHideAsync();
 const SECONDARY_BG_SCREENS = new Set(["action", "support"]);
 
 const TOAST_TEXT_STYLES = {
-  text1Style: { fontSize: 16 },
-  text2Style: { fontSize: 14 },
+  text1Style: { fontSize: fontSizes.base },
+  text2Style: { fontSize: fontSizes.sm },
 };
 
 /**
