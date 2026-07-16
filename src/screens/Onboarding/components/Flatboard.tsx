@@ -73,9 +73,9 @@ const Slide = ({
       </View>
       <View style={[globalStyles.centered, { width, marginBottom: 100 }]}>
         <UiText
+          size="xxl"
           style={{
             ...headingStyle,
-            fontSize: height < 600 ? 22 : 24,
             paddingVertical: 10,
             color: corporate,
           }}
@@ -99,8 +99,8 @@ const Slide = ({
           </View>
         )}
         <UiText
+          size="lg"
           style={{
-            fontSize: 18,
             paddingVertical: 10,
             ...descriptionStyle,
             textAlign: "center",

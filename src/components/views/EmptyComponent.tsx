@@ -45,7 +45,7 @@ const EmptyComponent = ({
         ]}
       >
         <HeartIcon color={corporate} size={56} />
-        <UiText style={{ fontSize: 18 }}>
+        <UiText size="lg">
           Unterstütze uns im unermüdlichen Kampf gegen Fake News und verzerrte
           Narrative
         </UiText>

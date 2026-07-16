@@ -38,7 +38,7 @@ const ContactCard = ({ article_link }: ContactCardProperties) => {
       >
         Etwas stimmt nicht?
       </UiText>
-      <UiText style={{ textAlign: "center", fontSize: 16 }}>
+      <UiText size="base" style={{ textAlign: "center" }}>
         Du hast einen Fehler in diesem Artikel gefunden oder möchtest uns etwas
         dazu mitteilen?
       </UiText>
@@ -61,10 +61,8 @@ const ContactCard = ({ article_link }: ContactCardProperties) => {
         }}
       >
         <UiText
-          style={[
-            globalStyles.whiteText,
-            { textAlign: "center", fontSize: 18 },
-          ]}
+          size="lg"
+          style={[globalStyles.whiteText, { textAlign: "center" }]}
         >
           Schreib uns
         </UiText>

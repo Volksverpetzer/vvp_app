@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { View } from "react-native";
 
-import Heading from "#/components/typography/Heading";
+import UiText from "#/components/ui/UiText";
 import type { PostAuthor } from "#/types";
 
 interface BlueskyPostHeaderProps {
@@ -24,7 +24,9 @@ export const BlueskyPostHeader = ({ author }: BlueskyPostHeaderProps) => {
         source={{ uri: author.avatar }}
         style={{ width: 40, height: 40, borderRadius: 20 }}
       />
-      <Heading>{displayName}</Heading>
+      <UiText bold size="lg">
+        {displayName}
+      </UiText>
     </View>
   );
 };

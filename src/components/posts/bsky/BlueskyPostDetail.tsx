@@ -64,7 +64,9 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
         style={{ flex: 1 }}
         onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
       >
-        <UiText style={{ lineHeight: 24, fontSize: 18 }}>{fulltext}</UiText>
+        <UiText size="lg" style={{ lineHeight: 24 }}>
+          {fulltext}
+        </UiText>
       </Hyperlink>
 
       {replies &&

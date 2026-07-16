@@ -10,11 +10,6 @@ jest.mock("#/components/Icons", () => ({
   ChevronIcon: jest.fn(() => null),
 }));
 
-jest.mock("#/components/typography/Heading", () => {
-  const { Text } = require("react-native");
-  return jest.fn(({ children }: any) => <Text>{children}</Text>);
-});
-
 const chevron = ChevronIcon as jest.Mock;
 
 describe("UiCollapsable", () => {

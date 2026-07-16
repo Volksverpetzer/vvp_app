@@ -8,6 +8,7 @@ import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -74,7 +75,7 @@ const SearchHeader = ({
           style={{
             paddingTop: 20,
             fontFamily: "SourceSansProBold",
-            fontSize: 22,
+            fontSize: fontSizes.xxl,
             color: corporate,
             flex: 1,
             textAlign: "center",

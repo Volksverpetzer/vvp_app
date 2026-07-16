@@ -130,7 +130,7 @@ const SettingsScreen = () => {
             title="Feed"
             borderRadius={0}
           >
-            <UiText style={styles.sectionText}>
+            <UiText size="base" style={styles.sectionText}>
               Was möchtest du in deinem Feed sehen?
             </UiText>
             <SettingsList
@@ -277,7 +277,6 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   sectionText: {
-    fontSize: 16,
     paddingHorizontal: 20,
   },
 });

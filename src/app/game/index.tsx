@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const HomeScreen = () => {
@@ -15,8 +16,10 @@ const HomeScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText style={styles.title}>Willkommen zum Memory-Spiel</UiText>
-      <UiText style={styles.description}>
+      <UiText size="xxl" style={styles.title}>
+        Willkommen zum Memory-Spiel
+      </UiText>
+      <UiText size="base" style={styles.description}>
         Erlebe verschiedene Memory-Spiele, bei denen du z. B.
         Desinformationstechniken und zugehörige Falschinformationen kennenlernen
         kannst. Wähle ein Spiel aus, um zu beginnen.
@@ -45,9 +48,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  description: { fontSize: 16, marginBottom: 30, textAlign: "center" },
-  link: { color: "#fff", fontFamily: "SourceSansPro", fontSize: 16 },
-  title: { fontSize: 24, fontFamily: "SourceSansProBold", marginBottom: 20 },
+  description: { marginBottom: 30, textAlign: "center" },
+  link: {
+    color: "#fff",
+    fontFamily: "SourceSansPro",
+    fontSize: fontSizes.base,
+  },
+  title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
 });
 
 export default HomeScreen;

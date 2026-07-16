@@ -11,6 +11,7 @@ import { PauseIcon, UnmuteIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import {
   useAppColorScheme,
   useCorporateColor,
@@ -174,7 +175,7 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
         accessible={false}
         importantForAccessibility="no"
         style={{
-          fontSize: 13,
+          fontSize: fontSizes.sm,
           color: Colors[colorScheme].textMuted,
           minWidth: 38,
           textAlign: "right",

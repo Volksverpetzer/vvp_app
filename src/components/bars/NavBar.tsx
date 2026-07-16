@@ -8,6 +8,7 @@ import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -94,7 +95,11 @@ const NavBar = (properties: NavBarProperties) => {
           <ShareCounter
             color={corporate}
             shareable={[{ title: "title", url: link }]}
-            style={{ color: corporate, fontSize: 16, alignSelf: "center" }}
+            style={{
+              color: corporate,
+              fontSize: fontSizes.base,
+              alignSelf: "center",
+            }}
             onPress={() => onShare(link, { location: "ArticleTop" })}
           />
         )}
@@ -109,7 +114,7 @@ const NavBar = (properties: NavBarProperties) => {
             favPayload={favPayload}
             style={{
               color: corporate,
-              fontSize: 16,
+              fontSize: fontSizes.base,
             }}
           />
         )}

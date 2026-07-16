@@ -15,7 +15,6 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
-import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -123,7 +122,6 @@ const ContactScreen = () => {
         },
         errorText: {
           color: errorColor,
-          fontSize: 18,
           fontFamily: "SourceSansProBold",
           marginBottom: 20,
           paddingHorizontal: 12,
@@ -319,7 +317,9 @@ const ContactScreen = () => {
           )}
           scrollEventThrottle={16}
         >
-          <Heading style={{ marginBottom: 10 }}>Thema wählen:</Heading>
+          <UiText bold size="lg" style={{ marginBottom: 10 }}>
+            Thema wählen:
+          </UiText>
           <View style={styles.categoryContainer}>
             {CATEGORIES.map(({ key, label }) => (
               <UiPressable
@@ -349,7 +349,9 @@ const ContactScreen = () => {
             ))}
           </View>
           <UiSpace size={20} />
-          <Heading style={{ marginBottom: 10 }}>{texts.titleLabel}</Heading>
+          <UiText bold size="lg" style={{ marginBottom: 10 }}>
+            {texts.titleLabel}
+          </UiText>
           <UiTextInput
             accessibilityLabel="Text input field"
             accessibilityHint={texts.titleHint}
@@ -363,7 +365,9 @@ const ContactScreen = () => {
             style={[styles.input, errorField === "title" && styles.inputError]}
           />
           <UiSpace size={20} />
-          <Heading style={{ marginBottom: 10 }}>{texts.messageLabel}</Heading>
+          <UiText bold size="lg" style={{ marginBottom: 10 }}>
+            {texts.messageLabel}
+          </UiText>
           <UiTextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib deine Nachricht ein"
@@ -382,9 +386,9 @@ const ContactScreen = () => {
             ]}
           />
           <UiSpace size={20} />
-          <Heading style={{ marginBottom: 10 }}>
+          <UiText bold size="lg" style={{ marginBottom: 10 }}>
             E-Mail für Rückfragen (optional)
-          </Heading>
+          </UiText>
           <UiTextInput
             accessibilityLabel="Text input field"
             accessibilityHint="Gib deine E-Mail-Adresse ein"
@@ -402,7 +406,9 @@ const ContactScreen = () => {
           />
           <UiSpace size={20} />
           {error ? (
-            <UiText style={styles.errorText}>{error}</UiText>
+            <UiText size="lg" style={styles.errorText}>
+              {error}
+            </UiText>
           ) : undefined}
           <UiPressable
             accessibilityRole="button"
@@ -414,10 +420,8 @@ const ContactScreen = () => {
             ]}
           >
             <UiText
-              style={[
-                globalStyles.whiteText,
-                { textAlign: "center", fontSize: 18 },
-              ]}
+              size="lg"
+              style={[globalStyles.whiteText, { textAlign: "center" }]}
             >
               Senden
             </UiText>

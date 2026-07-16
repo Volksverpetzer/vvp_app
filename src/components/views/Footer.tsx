@@ -31,10 +31,10 @@ const Footer = (properties: FooterProperties) => {
     <>
       <View style={{ paddingBottom: 30, alignItems: "center" }}>
         <UiText
+          size="lg"
           style={{
             textAlign: "center",
             paddingVertical: 30,
-            fontSize: 18,
             color: corporate,
           }}
         >

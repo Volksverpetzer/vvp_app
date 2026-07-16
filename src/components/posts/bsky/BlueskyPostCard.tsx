@@ -98,7 +98,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
           linkStyle={{ color: corporate }}
           onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
         >
-          <UiText style={{ lineHeight: 24, fontSize: 18 }}>
+          <UiText size="lg" style={{ lineHeight: 24 }}>
             {isTruncated ? `${excerpt}…` : excerpt}
           </UiText>
         </Hyperlink>
@@ -106,8 +106,8 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
         <View style={globalStyles.row}>
           {createdAt && (
             <UiText
+              size="base"
               style={{
-                fontSize: 16,
                 color: grey,
                 textAlign: "right",
               }}
@@ -122,12 +122,14 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
             </UiText>
           )}
           {replies?.length > 0 ? (
-            <UiText style={{ fontSize: 16, color: corporate }}>
+            <UiText size="base" style={{ color: corporate }}>
               Thread (1 von {replies.length + 1})
             </UiText>
           ) : (
             isTruncated && (
-              <UiText style={{ fontSize: 16, color: corporate }}>mehr</UiText>
+              <UiText size="base" style={{ color: corporate }}>
+                mehr
+              </UiText>
             )
           )}
         </View>

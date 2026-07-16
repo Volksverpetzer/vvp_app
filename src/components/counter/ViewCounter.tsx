@@ -67,9 +67,9 @@ const ViewCounter = (properties: ViewCounterProperties) => {
         <ActivityIndicator color={color} />
       ) : (
         <UiText
+          size="sm"
           style={{
             color: color,
-            fontSize: 14,
             ...style,
           }}
         >

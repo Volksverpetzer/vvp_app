@@ -54,7 +54,9 @@ export const PostText = ({ feedViewPost, uri }: PostTextProps) => {
       linkText={(url) => linkTextToUrlMap[url]}
       onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
     >
-      <UiText style={{ lineHeight: 24, fontSize: 18 }}>{decodedText}</UiText>
+      <UiText size="lg" style={{ lineHeight: 24 }}>
+        {decodedText}
+      </UiText>
     </Hyperlink>
   );
 };

@@ -5,6 +5,7 @@ import { StyleSheet, View } from "react-native";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MemoryGame from "#/screens/Games/Memory";
 import type { DisinfoPair } from "#/types";
@@ -81,9 +82,13 @@ const GameScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText style={styles.title}>Memory-Spiel: {gameId}</UiText>
+      <UiText size="xl" style={styles.title}>
+        Memory-Spiel: {gameId}
+      </UiText>
       <View style={styles.levelContainer}>
-        <UiText style={styles.levelText}>Wähle dein Level:</UiText>
+        <UiText size="base" style={styles.levelText}>
+          Wähle dein Level:
+        </UiText>
         <UiPressable
           accessibilityRole="button"
           style={[
@@ -122,7 +127,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 10,
   },
-  backLink: { color: "#fff", fontSize: 16 },
+  backLink: { color: "#fff", fontSize: fontSizes.base },
   container: {
     alignItems: "center",
     flex: 1,
@@ -142,8 +147,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 20,
   },
-  levelText: { fontSize: 16, marginRight: 10 },
-  title: { fontSize: 20, fontFamily: "SourceSansProBold", marginBottom: 20 },
+  levelText: { marginRight: 10 },
+  title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
 });
 
 export default GameScreen;

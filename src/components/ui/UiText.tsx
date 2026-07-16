@@ -2,12 +2,23 @@ import type { TextProps } from "react-native";
 import { Text } from "react-native";
 
 import Colors from "#/constants/Colors";
+import { type FontSizeToken, fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-type TextProperties = TextProps & { key?: string };
+type TextProperties = TextProps & {
+  key?: string;
+  /**
+   * Font size from the shared scale (see {@link fontSizes}). Prefer this over a
+   * raw `fontSize` in `style` so text stays on the typographic scale. An
+   * explicit `fontSize` in `style` still wins if you need to override.
+   */
+  size?: FontSizeToken;
+  /** Render in SourceSansProBold instead of the regular weight. */
+  bold?: boolean;
+};
 
 const UiText = (properties: TextProperties) => {
-  const { style, ...otherProperties } = properties;
+  const { style, size, bold, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
 
@@ -16,9 +27,10 @@ const UiText = (properties: TextProperties) => {
       style={[
         { color },
         {
-          fontFamily: "SourceSansPro",
+          fontFamily: bold ? "SourceSansProBold" : "SourceSansPro",
           includeFontPadding: false,
         },
+        size ? { fontSize: fontSizes[size] } : null,
         style,
       ]}
       {...otherProperties}

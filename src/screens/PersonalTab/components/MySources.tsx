@@ -7,7 +7,6 @@ import Swipeable, {
 
 import { DeleteIcon, LinkIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
-import Heading from "#/components/typography/Heading";
 import UiCard from "#/components/ui/UiCard";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiPressable from "#/components/ui/UiPressable";
@@ -82,9 +81,9 @@ const MySources = () => {
           <UiCard key={group.slug} style={{ padding: 0 }}>
             <View style={{ padding: 30, gap: 10 }}>
               {title && (
-                <Heading style={{ color: Colors[colorScheme].text }}>
+                <UiText bold size="lg">
                   {title}
-                </Heading>
+                </UiText>
               )}
               {group.entries.map((entry) => (
                 <Swipeable

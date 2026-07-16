@@ -289,10 +289,10 @@ const Feed = (properties: FeedProperties) => {
                 onPress={() => router.push("/search")}
               >
                 <UiText
+                  size="lg"
                   style={{
                     textAlign: "center",
                     paddingVertical: 30,
-                    fontSize: 18,
                     color: corporate,
                   }}
                 >

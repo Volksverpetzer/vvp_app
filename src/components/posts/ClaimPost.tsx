@@ -23,10 +23,10 @@ const ClaimPost = (properties: ClaimProperties) => {
     <UiPressable accessibilityRole="button" onPress={handleSelectClaim}>
       <View style={{ paddingBottom: 0, flex: 1 }}>
         <UiText
+          size="xl"
           style={{
             fontFamily: "SourceSansProBold",
             paddingHorizontal: POST_PADDING_HORIZONTAL,
-            fontSize: 20,
             lineHeight: 26,
             textAlign: "left",
             paddingTop: 20,

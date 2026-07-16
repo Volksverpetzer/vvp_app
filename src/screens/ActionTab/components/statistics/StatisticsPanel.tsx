@@ -60,17 +60,18 @@ const StatisticsPanel = ({
       >
         <StatisticsIcon name={icon} size={32} color="white" />
         <UiText
+          size="xl"
           style={[
             globalStyles.whiteText,
-            { fontSize: 20, fontFamily: "SourceSansProBold", marginLeft: 10 },
+            { fontFamily: "SourceSansProBold", marginLeft: 10 },
           ]}
         >
           {title}
         </UiText>
         {subtitle && (
           <UiText
+            size="xs"
             style={{
-              fontSize: 12,
               color: textMuted,
               paddingLeft: 10,
               paddingBottom: 3,

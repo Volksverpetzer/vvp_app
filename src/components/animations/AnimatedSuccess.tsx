@@ -214,7 +214,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
         <UiText style={{ color: "#fff", fontSize: 50, textAlign: "center" }}>
           {title}
         </UiText>
-        <UiText style={{ color: "#fff", fontSize: 20, textAlign: "center" }}>
+        <UiText size="xl" style={{ color: "#fff", textAlign: "center" }}>
           {subtitle}
         </UiText>
       </Animated.View>

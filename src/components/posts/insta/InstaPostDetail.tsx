@@ -54,12 +54,8 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
       />
       <Hyperlink linkStyle={{ color: corporate }} onPress={handleLinkPress}>
         <UiText
-          style={{
-            paddingHorizontal: 10,
-            paddingBottom: 50,
-            fontSize: 18,
-            lineHeight: 24,
-          }}
+          size="lg"
+          style={{ paddingHorizontal: 10, paddingBottom: 50, lineHeight: 24 }}
         >
           {caption}
         </UiText>

@@ -37,11 +37,11 @@ const ImageCreditModal = ({
       onClose={onClose}
       title="Bildquelle"
     >
-      <UiText style={styles.source}>{credit.source}</UiText>
+      <UiText size="base">{credit.source}</UiText>
       {credit.licence ? (
         <>
           <UiSpace size={8} />
-          <UiText style={[styles.licence, { color: textMuted }]}>
+          <UiText size="sm" style={{ color: textMuted }}>
             {credit.licence}
           </UiText>
         </>
@@ -53,7 +53,7 @@ const ImageCreditModal = ({
             accessibilityRole="link"
             onPress={() => outBoundLinkPress(sourceUrl)}
           >
-            <UiText style={[styles.link, { color: corporate }]}>
+            <UiText size="sm" style={[styles.link, { color: corporate }]}>
               {sourceUrl}
             </UiText>
           </UiPressable>
@@ -64,14 +64,7 @@ const ImageCreditModal = ({
 };
 
 const styles = StyleSheet.create({
-  source: {
-    fontSize: 16,
-  },
-  licence: {
-    fontSize: 14,
-  },
   link: {
-    fontSize: 14,
     textDecorationLine: "underline",
   },
 });

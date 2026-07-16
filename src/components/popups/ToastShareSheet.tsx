@@ -19,7 +19,9 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText style={styles.title}>Teilen</UiText>
+      <UiText size="lg" style={styles.title}>
+        Teilen
+      </UiText>
       <ScrollView style={styles.list}>
         {items.map((item, index) => (
           <UiPressable
@@ -28,7 +30,9 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
             style={styles.button}
             onPress={item.onPress}
           >
-            <UiText style={styles.buttonText}>{item.title}</UiText>
+            <UiText size="base" style={styles.buttonText}>
+              {item.title}
+            </UiText>
           </UiPressable>
         ))}
         <UiPressable
@@ -36,7 +40,7 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
           style={[styles.button, styles.cancelButton]}
           onPress={onCancel}
         >
-          <UiText style={[styles.buttonText, styles.cancelText]}>
+          <UiText size="base" style={[styles.buttonText, styles.cancelText]}>
             Abbrechen
           </UiText>
         </UiPressable>
@@ -56,7 +60,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#222",
-    fontSize: 16,
   },
   cancelButton: {
     backgroundColor: "#ffeaea",
@@ -77,7 +80,6 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "#333",
-    fontSize: 18,
     fontFamily: "SourceSansProBold",
     marginBottom: 12,
   },
