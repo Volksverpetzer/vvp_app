@@ -5,9 +5,9 @@ import Modal from "react-native-modal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CloseIcon } from "#/components/Icons";
-import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -61,7 +61,9 @@ const BottomSheetModal = ({
         <View style={[styles.handle, { backgroundColor: textMuted }]} />
         <UiSpace size={16} />
         <View style={styles.header}>
-          <Heading size="xl">{title}</Heading>
+          <UiText bold size="xl">
+            {title}
+          </UiText>
           <UiPressable
             accessibilityRole="button"
             accessibilityLabel="Schließen"

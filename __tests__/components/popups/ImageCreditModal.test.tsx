@@ -15,13 +15,6 @@ jest.mock("#/components/Icons", () => ({
   CloseIcon: jest.fn(() => null),
 }));
 
-jest.mock("#/components/typography/Heading", () => {
-  const { Text } = require("react-native");
-  return jest.fn(({ children, style }: any) => (
-    <Text style={style}>{children}</Text>
-  ));
-});
-
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children, style }: any) => (

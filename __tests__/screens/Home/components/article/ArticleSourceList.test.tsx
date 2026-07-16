@@ -12,11 +12,6 @@ jest.mock("#/components/Icons", () => ({
   ChevronIcon: jest.fn(() => null),
 }));
 
-jest.mock("#/components/typography/Heading", () => {
-  const { Text } = require("react-native");
-  return jest.fn(({ children }: any) => <Text>{children}</Text>);
-});
-
 const mockConfig = { enableEngagement: true };
 jest.mock("#/constants/Config", () => ({
   __esModule: true,

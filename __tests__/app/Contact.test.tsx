@@ -68,10 +68,6 @@ jest.mock("#/components/animations/AnimatedSuccess", () => jest.fn(() => null));
 jest.mock("#/components/Icons", () => ({
   ChevronIcon: jest.fn(() => null),
 }));
-jest.mock("#/components/typography/Heading", () => {
-  const { Text } = require("react-native");
-  return jest.fn(({ children }: any) => <Text>{children}</Text>);
-});
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children }: any) => <Text>{children}</Text>);

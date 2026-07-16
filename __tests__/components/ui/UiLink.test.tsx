@@ -15,10 +15,6 @@ jest.mock("expo-web-browser", () => ({ openBrowserAsync: jest.fn() }));
 jest.mock("#/components/Icons", () => ({
   ExternalLinkIcon: () => null,
 }));
-jest.mock("#/components/typography/Heading", () => {
-  const { Text } = require("react-native");
-  return jest.fn(({ children }: any) => <Text>{children}</Text>);
-});
 jest.mock("#/components/ui/UiPressable", () => {
   const { Pressable } = require("react-native");
   return jest.fn(({ children, onPress, accessibilityRole }: any) => (

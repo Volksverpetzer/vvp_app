@@ -20,7 +20,7 @@ jest.mock("#/components/views/EmptyComponent", () => {
   return jest.fn(({ text }: any) => <Text testID="empty-text">{text}</Text>);
 });
 
-jest.mock("#/components/typography/Heading", () => {
+jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children }: any) => (
     <Text testID="heading">{children}</Text>

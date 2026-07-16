@@ -4,9 +4,9 @@ import { useMemo } from "react";
 import { View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
-import Heading from "#/components/typography/Heading";
 import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import {
   CARD_PADDING,
@@ -56,9 +56,9 @@ const SearchResultItem = ({
   const content = (
     <UiCard>
       {title ? (
-        <Heading style={{ color: textColor, marginBottom: 10 }}>
+        <UiText bold size="lg" style={{ color: textColor, marginBottom: 10 }}>
           {decode(title)}
-        </Heading>
+        </UiText>
       ) : null}
 
       <RenderHtml

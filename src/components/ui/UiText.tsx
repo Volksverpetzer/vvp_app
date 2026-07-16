@@ -13,10 +13,12 @@ type TextProperties = TextProps & {
    * explicit `fontSize` in `style` still wins if you need to override.
    */
   size?: FontSizeToken;
+  /** Render in SourceSansProBold instead of the regular weight. */
+  bold?: boolean;
 };
 
 const UiText = (properties: TextProperties) => {
-  const { style, size, ...otherProperties } = properties;
+  const { style, size, bold, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();
   const color = Colors[colorScheme].text;
 
@@ -25,7 +27,7 @@ const UiText = (properties: TextProperties) => {
       style={[
         { color },
         {
-          fontFamily: "SourceSansPro",
+          fontFamily: bold ? "SourceSansProBold" : "SourceSansPro",
           includeFontPadding: false,
         },
         size ? { fontSize: fontSizes[size] } : null,

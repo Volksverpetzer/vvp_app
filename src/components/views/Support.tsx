@@ -4,7 +4,6 @@ import { View } from "react-native";
 import Modal from "react-native-modal";
 
 import { CloseIcon, HeartIcon } from "#/components/Icons";
-import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -62,7 +61,9 @@ const Support = ({ article_link }: SupportProperties) => {
         onPress={banktransfer}
         style={{ padding: 10 }}
       >
-        <Heading style={{ color: corporate }}>Dauerauftrag</Heading>
+        <UiText bold size="lg" style={{ color: corporate }}>
+          Dauerauftrag
+        </UiText>
       </UiPressable>
       <UiText size="base" style={{ textAlign: "center" }}>
         direkt bei der Bank einrichten.
