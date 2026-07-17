@@ -203,7 +203,7 @@ const SettingsScreen = () => {
             onPress={() => {
               toast.confirm(
                 "Intro zurücksetzen?",
-                "Intro erscheint beim nächsten Start erneut",
+                "Drücke hier um das Intro zurückzusetzen",
                 () => {
                   PersonalStore.setOnboardingDone(false);
                   PersonalStore.setLastSeenChangelogVersionCode(0);
@@ -223,7 +223,7 @@ const SettingsScreen = () => {
               onPress={() => {
                 toast.confirm(
                   "Benachrichtigungen zurücksetzen?",
-                  "Drücke hier um die Benachrichtigungen zurückzusetzen",
+                  "Drücke hier um sie zurückzusetzen",
                   () => {
                     Notifications.registerForPushNotifications();
                     toast.success("Benachrichtigungen zurückgesetzt");
