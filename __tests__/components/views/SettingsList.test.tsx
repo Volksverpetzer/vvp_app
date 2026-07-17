@@ -9,6 +9,15 @@ jest.mock("#/components/ui/UiText", () => {
   return jest.fn(({ children }: any) => <Text>{children}</Text>);
 });
 
+jest.mock("#/components/ui/UiPressable", () => {
+  const { Pressable } = require("react-native");
+  return jest.fn(({ children, onPress, ...props }: any) => (
+    <Pressable onPress={onPress} {...props}>
+      {children}
+    </Pressable>
+  ));
+});
+
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
 }));
@@ -118,5 +127,70 @@ describe("SettingsList", () => {
     });
 
     consoleErrorSpy.mockRestore();
+  });
+
+  describe("disabled (permission denied)", () => {
+    it("disables every switch and shows off, regardless of the stored value", async () => {
+      const saveSettings = jest.fn(() => {});
+      const { getAllByTestId } = await render(
+        <SettingsList
+          saveSettings={saveSettings}
+          settings={settings}
+          disabled
+        />,
+      );
+
+      for (const switchElement of getAllByTestId("settingSwitch")) {
+        expect(switchElement.props.disabled).toBe(true);
+        expect(switchElement.props.value).toBe(false);
+      }
+    });
+
+    it("shows the disabled message and opens Settings when pressed", async () => {
+      const saveSettings = jest.fn(() => {});
+      const onDisabledPress = jest.fn();
+      const { getByText } = await render(
+        <SettingsList
+          saveSettings={saveSettings}
+          settings={settings}
+          disabled
+          disabledMessage="Benachrichtigungen sind deaktiviert."
+          onDisabledPress={onDisabledPress}
+        />,
+      );
+
+      const message = getByText("Benachrichtigungen sind deaktiviert.");
+      expect(message).toBeTruthy();
+      await fireEvent.press(message);
+      expect(onDisabledPress).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not render a message row when disabledMessage is not provided", async () => {
+      const saveSettings = jest.fn(() => {});
+      const { queryAllByRole } = await render(
+        <SettingsList
+          saveSettings={saveSettings}
+          settings={settings}
+          disabled
+        />,
+      );
+
+      expect(queryAllByRole("button")).toHaveLength(0);
+    });
+
+    it("does not disable switches when disabled is false", async () => {
+      const saveSettings = jest.fn(() => {});
+      const { getAllByTestId } = await render(
+        <SettingsList
+          saveSettings={saveSettings}
+          settings={settings}
+          disabled={false}
+        />,
+      );
+
+      for (const switchElement of getAllByTestId("settingSwitch")) {
+        expect(switchElement.props.disabled).toBe(false);
+      }
+    });
   });
 });

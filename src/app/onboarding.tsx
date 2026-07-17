@@ -1,8 +1,9 @@
 import Constants from "expo-constants";
 import * as Haptics from "expo-haptics";
+import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -20,9 +21,12 @@ import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
+import type { OnBoardingData } from "#/screens/Onboarding/components/Flatboard";
 import type { NotificationSettingType, SettingType } from "#/types";
 
 import WelcomeVVP from "#assets/images/welcome.webp";
+
+const NOTIFICATION_STEP_ID = 7;
 
 const Onboarding = () => {
   const [notificationSettings, setNotificationSettings] =
@@ -38,6 +42,24 @@ const Onboarding = () => {
   const router = useRouter();
 
   const isFoss = Config.isFoss ?? false;
+  const hasRequestedNotificationPermission = useRef(false);
+  const [notificationPermissionDenied, setNotificationPermissionDenied] =
+    useState(false);
+
+  const onStepChange = (item: OnBoardingData) => {
+    if (item.id !== NOTIFICATION_STEP_ID) return;
+    if (hasRequestedNotificationPermission.current) return;
+    hasRequestedNotificationPermission.current = true;
+
+    Notifications.requestPermissionAndApplyDefaults()
+      .then(({ status, notificationSettings: updatedNotificationSettings }) => {
+        setNotificationSettings(updatedNotificationSettings);
+        setNotificationPermissionDenied(status === "denied");
+      })
+      .catch((error) => {
+        console.error("Failed to request notification permission:", error);
+      });
+  };
 
   const agreeToTerms = async () => {
     await PersonalStore.setOnboardingDone();
@@ -45,7 +67,9 @@ const Onboarding = () => {
     router.replace("/");
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-    // Fire-and-forget so the permission dialog doesn't block the home screen.
+    // Permission was already requested on the notification step; this just
+    // makes sure the token/server registration is in sync, fire-and-forget
+    // so it doesn't block the home screen.
     if (!isFoss) {
       Notifications.registerForPushNotifications().catch((error) => {
         console.error("Failed to register for push notifications:", error);
@@ -111,7 +135,7 @@ const Onboarding = () => {
     ...(!isFoss
       ? [
           {
-            id: 7,
+            id: NOTIFICATION_STEP_ID,
             title: "Push Benachrichtigungen",
             description: `Faktenchecks hinken naturgemäß immer hinterher. Um schnellstmöglich Faktenchecks zu erhalten und zu teilen, kannst du dir Push-Benachrichtigungen aktivieren. Das kann wichtig sein, damit die Fakten deine Freunde oder Familie erreichen, bevor der Fake sie aufs Glatteis führt.`,
             Component: () => (
@@ -138,6 +162,9 @@ const Onboarding = () => {
                 <SettingsList
                   saveSettings={saveNotificationSetting}
                   settings={notificationSettings}
+                  disabled={notificationPermissionDenied}
+                  disabledMessage="Benachrichtigungen sind deaktiviert. Tippe hier, um sie in den Einstellungen zu aktivieren."
+                  onDisabledPress={() => Linking.openSettings()}
                 />
               </View>
             ),
@@ -182,6 +209,7 @@ const Onboarding = () => {
       <FlatBoard
         data={data}
         onFinish={agreeToTerms}
+        onStepChange={onStepChange}
         accentColor={corporate}
         buttonTitle="Los geht's"
         hideIndicator

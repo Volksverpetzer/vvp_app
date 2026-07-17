@@ -221,6 +221,53 @@ const NotificationManager = {
   },
 
   /**
+   * Requests OS notification permission (prompting the user if the status is
+   * still undetermined) and syncs all notification-category switches to
+   * match the outcome: granted -> all on, denied/dismissed -> all off.
+   * Used by the onboarding notification step, which wants the OS prompt to
+   * appear as soon as the step is shown rather than per-switch.
+   */
+  async requestPermissionAndApplyDefaults(): Promise<{
+    status: string;
+    notificationSettings: NotificationSettingType;
+  }> {
+    const storedSettings = await SettingsStore.getNotificationSettings();
+    const currentSettings = {
+      ...SettingsStore.defaultNotificationSettings,
+      ...storedSettings,
+    };
+
+    if (Config.isFoss) {
+      return { status: "foss", notificationSettings: currentSettings };
+    }
+    ensureNotificationsConfigured();
+    const Notifications = getNotifications();
+    if (!Notifications || !Device.isDevice) {
+      return { status: "unavailable", notificationSettings: currentSettings };
+    }
+
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+
+    const granted = finalStatus === "granted";
+    const notificationSettings = Object.fromEntries(
+      Object.entries(currentSettings).map(([key, setting]) => [
+        key,
+        { ...setting, value: granted },
+      ]),
+    ) as NotificationSettingType;
+
+    return await NotificationManager.registerForPushNotifications(
+      notificationSettings,
+    );
+  },
+
+  /**
    * On app launch check current permissions and request them when appropriate.
    * - If status is UNDETERMINED -> request permissions
    * - If status is DENIED but canAskAgain -> request permissions

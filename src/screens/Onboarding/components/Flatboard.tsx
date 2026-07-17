@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import type { FC } from "react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type {
   ColorValue,
   GestureResponderEvent,
@@ -32,6 +32,7 @@ export type OnBoardingData = {
 interface FlatBoardProperties {
   data: OnBoardingData[];
   onFinish: (event: GestureResponderEvent) => void;
+  onStepChange?: (item: OnBoardingData, step: number) => void;
   accentColor?: ColorValue;
   buttonTitle?: string;
   variant?: "standard" | "modern";
@@ -129,12 +130,18 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   const {
     data,
     onFinish,
+    onStepChange,
     accentColor,
     buttonTitle,
     headingStyle,
     descriptionStyle,
   } = properties;
   const carouselRef = useRef<ICarouselInstance>(null);
+
+  useEffect(() => {
+    onStepChange?.(data[step], step);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   const nextStep = () => {
     const next = Math.min(targetStepRef.current + 1, data.length - 1);
