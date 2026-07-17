@@ -1,14 +1,10 @@
-import * as Clipboard from "expo-clipboard";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import Modal from "react-native-modal";
 
-import { CloseIcon, HeartIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
-import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import Config from "#/constants/Config";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -19,14 +15,17 @@ interface SupportProperties {
 }
 
 const Support = ({ article_link }: SupportProperties) => {
-  const [showBank, setShowBank] = useState(false);
+  const [amount, setAmount] = useState(10);
+  const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
   const corporate = Colors[colorScheme].primary;
 
-  const banktransfer = async () => {
-    setShowBank(true);
-    await Clipboard.setStringAsync(Config.donations.account.IBAN);
+  const banktransfer = () => {
+    router.push({
+      pathname: "/bank-transfer",
+      params: { amount: String(amount) },
+    });
   };
 
   return (
@@ -51,6 +50,7 @@ const Support = ({ article_link }: SupportProperties) => {
         paypalAlways={true}
         background={backgroundColor}
         article_link={article_link}
+        onAmountChange={setAmount}
       />
       <UiText size="base" style={{ textAlign: "center" }}>
         Du willst die Extrameile gehen?{"\n"}
@@ -68,47 +68,6 @@ const Support = ({ article_link }: SupportProperties) => {
       <UiText size="base" style={{ textAlign: "center" }}>
         direkt bei der Bank einrichten.
       </UiText>
-      <Modal
-        isVisible={showBank}
-        onSwipeComplete={() => setShowBank(false)}
-        swipeDirection={["down", "up"]}
-      >
-        <View style={{ padding: 20, alignItems: "center" }}>
-          <View
-            style={{
-              width: "100%",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-              padding: 5,
-            }}
-          >
-            <UiPressable
-              accessibilityRole="button"
-              onPress={() => setShowBank(false)}
-            >
-              <CloseIcon size={48} color={corporate} />
-            </UiPressable>
-          </View>
-          <UiText size="xxl">Banküberweisung</UiText>
-          <UiSpace size={20} />
-          <UiText size="base" style={{ textAlign: "center" }}>
-            Wow! Du bist der Hammer! Danke für deine Mühe, wir wissen das echt
-            zu schätzen
-          </UiText>
-          <UiSpace size={20} />
-          <UiText size="base" style={{ textAlign: "center" }}>
-            IBAN ist in die Zwischenablage kopiert, hier nochmal zur Sicherheit:
-          </UiText>
-          <UiSpace size={20} />
-          <UiText selectable size="base" style={{ textAlign: "center" }}>
-            Name: {Config.donations.account.holder} {`\n`}
-            Bank: {Config.donations.account.bank} {`\n`}
-            IBAN: {Config.donations.account.IBAN} {`\n`}
-            Verwendungszweck: {Config.donations.account.note} {`\n`}
-          </UiText>
-          <HeartIcon color={corporate} size={32} />
-        </View>
-      </Modal>
     </View>
   );
 };
