@@ -156,11 +156,11 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
       {/* Blur the form behind the animation (opacity fade, since the blur
           intensity itself cannot be animated natively) */}
       <Animated.View
-        pointerEvents="none"
         style={{
           bottom: 0,
           left: 0,
           opacity: blurOpacity,
+          pointerEvents: "none",
           position: "absolute",
           right: 0,
           top: 0,

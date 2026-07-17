@@ -135,8 +135,7 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
               ))}
             </ScrollView>
             <LinearGradient
-              pointerEvents="none"
-              style={StyleSheet.absoluteFill}
+              style={[StyleSheet.absoluteFill, { pointerEvents: "none" }]}
               colors={[
                 pickerColor,
                 pickerColor + "aa",

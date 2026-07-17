@@ -51,7 +51,9 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             style={{ flex: 1, width: width - 24, backgroundColor: corporate }}
             source={{ uri: preview }}
           />
-          <View style={globalStyles.centeredAbsolute} pointerEvents="none">
+          <View
+            style={[globalStyles.centeredAbsolute, { pointerEvents: "none" }]}
+          >
             <PlayIcon size={56} color={YOUTUBE_BRAND_COLOR} />
           </View>
         </UiPressable>

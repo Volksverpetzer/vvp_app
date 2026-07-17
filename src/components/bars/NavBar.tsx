@@ -70,13 +70,13 @@ const NavBar = (properties: NavBarProperties) => {
       <LinearGradient
         colors={[`rgba(${r},${g},${b},0)`, `rgba(${r},${g},${b},1)`]}
         locations={[0, 1]}
-        pointerEvents="none"
         style={{
           position: "absolute",
           top: -30,
           left: 0,
           right: 0,
           height: 30,
+          pointerEvents: "none",
         }}
       />
 
