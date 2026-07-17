@@ -98,4 +98,25 @@ describe("SettingsList", () => {
 
     consoleErrorSpy.mockRestore();
   });
+
+  it("re-enables the switch even when saveSettings throws synchronously", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    const saveSettings = jest.fn(() => {
+      throw new Error("sync failure");
+    });
+
+    const { getAllByTestId } = await render(
+      <SettingsList saveSettings={saveSettings} settings={settings} />,
+    );
+
+    await fireEvent(getAllByTestId("settingSwitch")[0], "valueChange", false);
+
+    await waitFor(() => {
+      expect(getAllByTestId("settingSwitch")[0].props.disabled).toBe(false);
+    });
+
+    consoleErrorSpy.mockRestore();
+  });
 });

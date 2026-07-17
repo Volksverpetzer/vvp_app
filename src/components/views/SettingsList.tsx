@@ -82,7 +82,8 @@ const SettingsList = (properties: SettingsListProperties) => {
             disabled: pendingKeys.has(key),
             onValueChange: (value: boolean) => {
               setPendingKeys((prev) => new Set(prev).add(key));
-              Promise.resolve(properties.saveSettings(value, key, setting))
+              Promise.resolve()
+                .then(() => properties.saveSettings(value, key, setting))
                 .catch((error) => {
                   console.error("Error saving setting:", error);
                 })
