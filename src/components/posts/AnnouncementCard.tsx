@@ -52,10 +52,10 @@ const AnnouncementCard = ({
         <Image
           source={mascot}
           accessible={false}
+          pointerEvents="none"
           style={{
             alignSelf: "center",
             height: MASCOT_HEIGHT,
-            pointerEvents: "none",
             position: "absolute",
             top: -MASCOT_OVERLAP,
             width: MASCOT_WIDTH,
