@@ -1,4 +1,4 @@
-import { type ComponentProps, useEffect, useState } from "react";
+import { type ComponentProps, useState } from "react";
 import type { ColorValue } from "react-native";
 import { Switch, View } from "react-native";
 
@@ -17,8 +17,7 @@ interface SettingsListProperties {
     value: boolean,
     key: string,
     setting: SettingType,
-    setUpdate?: (arg0: boolean) => void,
-  ) => void;
+  ) => void | Promise<void>;
   settings: {
     [id: string]: SettingType;
   };
@@ -33,11 +32,9 @@ type ExtendedSwitchProps = ComponentProps<typeof Switch> & {
 };
 
 const SettingsList = (properties: SettingsListProperties) => {
-  const [disabled, setDisabled] = useState(false);
-  const [update, setUpdate] = useState(false);
-  useEffect(() => {
-    setDisabled(false);
-  }, [properties.settings, update]);
+  // Tracks in-flight saves per key, not globally, so toggling one switch
+  // doesn't disable/grey out its siblings while its save is pending.
+  const [pendingKeys, setPendingKeys] = useState<Set<string>>(new Set());
   const colorScheme = useAppColorScheme();
   const {
     primary: corporate,
@@ -82,11 +79,20 @@ const SettingsList = (properties: SettingsListProperties) => {
               false: isDarkMode(colorScheme) ? surfaceDisabled : surfaceInput,
               true: primaryMuted,
             },
-            disabled,
+            disabled: pendingKeys.has(key),
             onValueChange: (value: boolean) => {
-              setDisabled(true);
-              properties.saveSettings(value, key, setting, setUpdate);
-              setUpdate(false);
+              setPendingKeys((prev) => new Set(prev).add(key));
+              Promise.resolve(properties.saveSettings(value, key, setting))
+                .catch((error) => {
+                  console.error("Error saving setting:", error);
+                })
+                .finally(() => {
+                  setPendingKeys((prev) => {
+                    const next = new Set(prev);
+                    next.delete(key);
+                    return next;
+                  });
+                });
             },
             value: setting.value,
           };
