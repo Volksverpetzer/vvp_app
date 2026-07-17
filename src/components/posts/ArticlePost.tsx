@@ -166,12 +166,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const elevatedWrapperStyle = useMemo(() => {
     if (!elevated) return;
     const isDark = colorScheme === "dark";
+    const shadowRgb = isDark ? "255, 255, 255" : "0, 0, 0";
+    const shadowOpacity = isDark ? 0.12 : 0.2;
     return {
       borderRadius: 15,
-      shadowColor: isDark ? "#fff" : "#000",
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: isDark ? 0.12 : 0.2,
-      shadowRadius: 1.41,
+      boxShadow: `0px 1px 1.41px rgba(${shadowRgb}, ${shadowOpacity})`,
       elevation: 2,
     };
   }, [elevated, colorScheme]);

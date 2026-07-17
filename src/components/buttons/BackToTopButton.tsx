@@ -63,12 +63,9 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 24,
     bottom: 20,
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
     position: "absolute",
     right: 20,
-    shadowColor: "#000",
-    shadowOffset: { height: 2, width: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
   },
 });
 

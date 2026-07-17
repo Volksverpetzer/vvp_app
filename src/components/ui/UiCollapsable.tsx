@@ -49,10 +49,10 @@ const UiCollapsable = ({
   return (
     <View style={{ paddingHorizontal: 20, borderRadius, overflow: "hidden" }}>
       <Animated.View
-        pointerEvents="none"
         style={[
           StyleSheet.absoluteFill,
           { backgroundColor: resolvedCardBg, opacity: fadeAnim },
+          { pointerEvents: "none" },
         ]}
       />
       <UiPressable
