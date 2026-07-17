@@ -1,11 +1,11 @@
 export default {
-  "@algolia/client-search@5.55.2": {
+  "@algolia/client-search@5.56.0": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.20.28": {
+  "@atproto/api@0.20.29": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -63,7 +63,7 @@ export default {
     licenseUrl:
       "https://github.com/oblador/react-native-vector-icons/raw/HEAD/LICENSE",
   },
-  "@rive-app/react-native@0.4.14": {
+  "@rive-app/react-native@0.4.18": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-nitro-react-native",
     licenseUrl:
