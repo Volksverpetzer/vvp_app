@@ -203,14 +203,11 @@ const SettingsScreen = () => {
             onPress={() => {
               toast.confirm(
                 "Intro zurücksetzen?",
-                "Intro erscheint beim nächsten Start erneut",
+                "Drücke hier, um das Intro zurückzusetzen",
                 () => {
                   PersonalStore.setOnboardingDone(false);
                   PersonalStore.setLastSeenChangelogVersionCode(0);
-                  toast.success(
-                    "Intro zurückgesetzt",
-                    "Beim nächsten App-Start wird das Intro angezeigt",
-                  );
+                  toast.success("Intro zurückgesetzt");
                 },
               );
             }}
@@ -223,7 +220,7 @@ const SettingsScreen = () => {
               onPress={() => {
                 toast.confirm(
                   "Benachrichtigungen zurücksetzen?",
-                  "Drücke hier um die Benachrichtigungen zurückzusetzen",
+                  "Drücke hier, um sie zurückzusetzen",
                   () => {
                     Notifications.registerForPushNotifications();
                     toast.success("Benachrichtigungen zurückgesetzt");
@@ -239,13 +236,10 @@ const SettingsScreen = () => {
             onPress={() => {
               toast.confirm(
                 "Erfolge zurücksetzen?",
-                "Drücke hier um alle Erfolge zurückzusetzen",
+                "Drücke hier, um alle Erfolge zurückzusetzen",
                 () => {
                   Achievements.resetEverything();
-                  toast.success(
-                    "Erfolge zurückgesetzt",
-                    "Alle Erfolge wurden zurückgesetzt",
-                  );
+                  toast.success("Erfolge zurückgesetzt");
                 },
               );
             }}

@@ -85,6 +85,15 @@ const AppFrame = ({ children }: PropsWithChildren) => {
   );
 };
 
+/**
+ * Wraps Toast so its bottom offset clears the Android nav bar, matching the
+ * padding approach used by BottomSheetModal/ChangelogModal.
+ */
+const AppToast = ({ config }: { config: ToastConfig }) => {
+  const insets = useSafeAreaInsets();
+  return <Toast config={config} bottomOffset={40 + insets.bottom} />;
+};
+
 const RootLayout = () => {
   useNotificationObserver();
 
@@ -183,7 +192,7 @@ const RootLayout = () => {
                 />
                 <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
               </Stack>
-              <Toast config={toastConfig} />
+              <AppToast config={toastConfig} />
               <ChangelogModal
                 isVisible={showChangelog}
                 onClose={dismissChangelog}

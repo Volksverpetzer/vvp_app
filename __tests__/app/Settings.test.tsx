@@ -240,7 +240,7 @@ describe("SettingsScreen", () => {
       await fireEvent.press(getByText("Intro zurücksetzen"));
       expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
         "Intro zurücksetzen?",
-        "Intro erscheint beim nächsten Start erneut",
+        "Drücke hier, um das Intro zurückzusetzen",
         expect.any(Function),
       );
     });
@@ -262,7 +262,6 @@ describe("SettingsScreen", () => {
       );
       expect(jest.mocked(toast.success)).toHaveBeenCalledWith(
         "Intro zurückgesetzt",
-        "Beim nächsten App-Start wird das Intro angezeigt",
       );
     });
   });
