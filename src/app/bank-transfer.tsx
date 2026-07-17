@@ -91,28 +91,6 @@ const BankTransferScreen = () => {
             </UiText>
           </>
         ) : (
-          <UiCard
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 14,
-              width: "100%",
-            }}
-          >
-            <ExternalLinkIcon size={32} color={corporate} />
-            <View style={{ flex: 1, backgroundColor: "transparent" }}>
-              <UiText bold size="lg" style={{ color: corporate }}>
-                Jetzt in deine Banking-App wechseln
-              </UiText>
-              <UiSpace size={4} />
-              <UiText size="base">
-                Die IBAN ist kopiert – dort einfügen und einen Dauerauftrag
-                einrichten.
-              </UiText>
-            </View>
-          </UiCard>
-        )}
-        {!showQrCode && (
           <>
             <UiSpace size={20} />
             <UiText size="base" style={{ textAlign: "center" }}>
