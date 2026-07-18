@@ -4,7 +4,7 @@ import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AppState, View } from "react-native";
+import { AppState, Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
@@ -67,8 +67,11 @@ const Onboarding = () => {
   // Settings (via the disabled-message deep link) and comes back while still
   // on the notification step, re-check the outcome so the switches unlock
   // without waiting for a remount. Only re-checks, never re-prompts.
+  // Skipped on web: there is no notification module there, getPermissions
+  // reports a stub "denied", and reacting to it would falsely lock the
+  // switches whenever the browser tab loses and regains visibility.
   useEffect(() => {
-    if (isFoss) return;
+    if (isFoss || Platform.OS === "web") return;
     const subscription = AppState.addEventListener("change", (nextState) => {
       if (nextState !== "active") return;
       if (!hasRequestedNotificationPermission.current) return;
@@ -91,13 +94,21 @@ const Onboarding = () => {
     router.replace("/");
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-    // Permission was already requested on the notification step; this just
-    // makes sure the token/server registration is in sync, fire-and-forget
-    // so it doesn't block the home screen.
+    // Permission was already requested on the notification step; if granted,
+    // make sure the token/server registration is in sync (fire-and-forget so
+    // it doesn't block the home screen). Skipped when not granted, because
+    // registerForPushNotifications would re-request permission and show a
+    // second OS dialog on Android right after the user just denied.
     if (!isFoss) {
-      Notifications.registerForPushNotifications().catch((error) => {
-        console.error("Failed to register for push notifications:", error);
-      });
+      Notifications.getPermissions()
+        .then((permissions) =>
+          permissions.granted
+            ? Notifications.registerForPushNotifications()
+            : undefined,
+        )
+        .catch((error) => {
+          console.error("Failed to register for push notifications:", error);
+        });
     }
   };
 

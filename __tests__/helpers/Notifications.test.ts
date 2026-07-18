@@ -354,19 +354,28 @@ describe("NotificationManager", () => {
       jest
         .spyOn(Notifications, "getPermissionsAsync")
         .mockResolvedValue({ status: "undetermined" } as any);
-      jest
+      const requestSpy = jest
         .spyOn(Notifications, "requestPermissionsAsync")
         .mockResolvedValue({ status: "denied" } as any);
       jest.spyOn(console, "warn").mockImplementation(() => {});
+      const API = (jest.requireMock("#/helpers/network/ServerAPI") as any)
+        .default;
 
       const result =
         await NotificationManager.requestPermissionAndApplyDefaults();
 
       expect(result.notificationSettings.new_post.value).toBe(false);
       expect(result.notificationSettings.new_fact_check.value).toBe(false);
+      // The denied path must not fall through to registerForPushNotifications,
+      // which would trigger a second permission request and a server call.
+      expect(requestSpy).toHaveBeenCalledTimes(1);
+      expect(API.registerNotifications).not.toHaveBeenCalled();
+      expect(SettingsStore.setNotificationSettings).toHaveBeenCalledWith(
+        result.notificationSettings,
+      );
     });
 
-    it("does not re-prompt when permission is already granted", async () => {
+    it("does not re-prompt and keeps stored switch values when permission is already granted", async () => {
       (
         SettingsStore.getNotificationSettings as jest.MockedFunction<
           () => Promise<any>
@@ -387,7 +396,10 @@ describe("NotificationManager", () => {
         await NotificationManager.requestPermissionAndApplyDefaults();
 
       expect(requestSpy).not.toHaveBeenCalled();
-      expect(result.notificationSettings.new_post.value).toBe(true);
+      // No prompt was shown, so the user's stored choice (off) must survive
+      // instead of being overwritten by the all-on grant defaults — e.g.
+      // when onboarding is re-entered after the user customized settings.
+      expect(result.notificationSettings.new_post.value).toBe(false);
     });
 
     it("returns unavailable on simulators without requesting permission", async () => {

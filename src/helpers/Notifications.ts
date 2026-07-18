@@ -221,12 +221,15 @@ const NotificationManager = {
   },
 
   /**
-   * Requests OS notification permission whenever it is not already granted
-   * and syncs all notification-category switches to match the outcome:
-   * granted -> all on, denied/dismissed -> all off. The OS only actually
-   * shows a dialog while it may still ask (undetermined, or denied with
-   * canAskAgain on Android); otherwise the request resolves silently with
-   * the existing denial.
+   * Requests OS notification permission when it is not already granted and
+   * syncs all notification-category switches to the outcome of that request:
+   * freshly granted -> all on, denied/dismissed -> all off. When permission
+   * was already granted beforehand (no prompt shown, e.g. onboarding was
+   * re-entered), the stored switch values are kept as-is and only the
+   * token/server registration is refreshed. The OS only actually shows a
+   * dialog while it may still ask (undetermined, or denied with canAskAgain
+   * on Android); otherwise the request resolves silently with the existing
+   * denial.
    * Used by the onboarding notification step, which wants the OS prompt to
    * appear as soon as the step is shown rather than per-switch.
    */
@@ -251,12 +254,16 @@ const NotificationManager = {
 
     const { status: existingStatus } =
       await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
+
+    if (existingStatus === "granted") {
+      // Permission was already granted before this step — no prompt was
+      // shown, so don't force the all-on defaults over switch values the
+      // user may have customized; just refresh token/server registration.
+      return await NotificationManager.registerForPushNotifications();
     }
 
+    const { status: finalStatus } =
+      await Notifications.requestPermissionsAsync();
     const granted = finalStatus === "granted";
     const notificationSettings = Object.fromEntries(
       Object.entries(currentSettings).map(([key, setting]) => [

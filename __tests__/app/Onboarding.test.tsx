@@ -51,6 +51,9 @@ jest.mock("#/helpers/Notifications", () => ({
     requestPermissionAndApplyDefaults: jest.fn(() =>
       Promise.resolve({ status: "granted", notificationSettings: {} }),
     ),
+    getPermissions: jest.fn(() =>
+      Promise.resolve({ status: "granted", granted: true }),
+    ),
   },
 }));
 
@@ -301,6 +304,21 @@ describe("Onboarding", () => {
       expect(Notifications.registerForPushNotifications).toHaveBeenCalledTimes(
         1,
       );
+      expect(PersonalStore.setOnboardingDone).toHaveBeenCalledTimes(1);
+    });
+
+    it("skips registerForPushNotifications when permission is not granted", async () => {
+      mockIsFoss = false;
+      (Notifications.getPermissions as jest.Mock).mockImplementationOnce(() =>
+        Promise.resolve({ status: "denied", granted: false }),
+      );
+      await render(<Onboarding />);
+
+      await capturedOnFinish!();
+
+      // Registering would call requestPermissionsAsync again and show a
+      // second OS dialog right after the user denied on the step.
+      expect(Notifications.registerForPushNotifications).not.toHaveBeenCalled();
       expect(PersonalStore.setOnboardingDone).toHaveBeenCalledTimes(1);
     });
 
