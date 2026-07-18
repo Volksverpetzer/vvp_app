@@ -1,7 +1,8 @@
 import * as Application from "expo-application";
-import { useRouter } from "expo-router";
-import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import * as Linking from "expo-linking";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Animated, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import {
@@ -45,6 +46,8 @@ const SettingsScreen = () => {
     useState<NotificationSettingType>(
       SettingsStore.defaultNotificationSettings,
     );
+  const [notificationPermissionDenied, setNotificationPermissionDenied] =
+    useState(false);
   const {
     contentSettings,
     setContentSettings,
@@ -97,6 +100,28 @@ const SettingsScreen = () => {
     getToken();
   }, []);
 
+  // Re-check the OS permission whenever this tab regains focus (e.g. the
+  // user just came back from toggling it in the system Settings app), so the
+  // switches reflect reality rather than a request made once at mount.
+  useFocusEffect(
+    useCallback(() => {
+      if (Config.isFoss || Platform.OS === "web") return;
+      let isActive = true;
+      Notifications.getPermissions()
+        .then((permissions) => {
+          if (isActive) {
+            setNotificationPermissionDenied(permissions.status === "denied");
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to check notification permission:", error);
+        });
+      return () => {
+        isActive = false;
+      };
+    }, []),
+  );
+
   return (
     <>
       <AnimatedHeader
@@ -147,6 +172,9 @@ const SettingsScreen = () => {
               <SettingsList
                 saveSettings={saveNotificationSetting}
                 settings={notificationSettings}
+                disabled={notificationPermissionDenied}
+                disabledMessage="Benachrichtigungen sind in den Systemeinstellungen deaktiviert. Tippe hier, um sie zu aktivieren."
+                onDisabledPress={() => Linking.openSettings()}
               />
             </UiCollapsable>
           )}

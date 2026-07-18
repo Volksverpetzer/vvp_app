@@ -2,6 +2,7 @@ import { type ComponentProps, useState } from "react";
 import type { ColorValue } from "react-native";
 import { Switch, View } from "react-native";
 
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -21,6 +22,12 @@ interface SettingsListProperties {
   settings: {
     [id: string]: SettingType;
   };
+  // Used when every switch in this list is gated behind a single external
+  // permission (e.g. OS notification permission) that's been denied — the
+  // switches can't do anything until the user re-enables it in Settings.
+  disabled?: boolean;
+  disabledMessage?: string;
+  onDisabledPress?: () => void;
 }
 
 // Extend native Switch props locally to allow `activeThumbColor` which
@@ -46,9 +53,29 @@ const SettingsList = (properties: SettingsListProperties) => {
     onPrimary,
   } = Colors[colorScheme];
   const activeSettings = getEnabledFeeds(Config.feeds);
+  const { disabled, disabledMessage, onDisabledPress } = properties;
 
   return (
     <View style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
+      {disabled &&
+        disabledMessage &&
+        (onDisabledPress ? (
+          <UiPressable
+            accessibilityRole="button"
+            onPress={onDisabledPress}
+            style={{ paddingBottom: 10 }}
+          >
+            <UiText size="base" style={{ color: textMuted }}>
+              {disabledMessage}
+            </UiText>
+          </UiPressable>
+        ) : (
+          <View style={{ paddingBottom: 10 }}>
+            <UiText size="base" style={{ color: textMuted }}>
+              {disabledMessage}
+            </UiText>
+          </View>
+        ))}
       {Object.keys(properties.settings)
         .sort((keyA, keyB) => {
           return properties.settings[keyA].name.localeCompare(
@@ -72,14 +99,14 @@ const SettingsList = (properties: SettingsListProperties) => {
             ios_backgroundColor: isDarkMode(colorScheme) // ios only
               ? surface
               : onPrimary,
-            thumbColor: setting.value ? corporate : textMuted,
+            thumbColor: setting.value && !disabled ? corporate : textMuted,
             trackColor: {
               // Dark track under the light grey thumb — the thumb itself is
               // textMuted, so the off-track must not use the same grey
               false: isDarkMode(colorScheme) ? surfaceDisabled : surfaceInput,
               true: primaryMuted,
             },
-            disabled: pendingKeys.has(key),
+            disabled: disabled || pendingKeys.has(key),
             onValueChange: (value: boolean) => {
               setPendingKeys((prev) => new Set(prev).add(key));
               Promise.resolve()
@@ -95,7 +122,7 @@ const SettingsList = (properties: SettingsListProperties) => {
                   });
                 });
             },
-            value: setting.value,
+            value: disabled ? false : setting.value,
           };
 
           return (

@@ -305,6 +305,121 @@ describe("NotificationManager", () => {
     });
   });
 
+  describe("requestPermissionAndApplyDefaults", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+      const Device = jest.requireMock("expo-device") as any;
+      Device.__setIsDeviceValue(true);
+    });
+
+    it("requests permission and turns every switch on when granted", async () => {
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({
+        new_post: { value: false, name: "New Posts" },
+        new_fact_check: { value: false, name: "New Fact Check" },
+      });
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "undetermined" } as any);
+      const requestSpy = jest
+        .spyOn(Notifications, "requestPermissionsAsync")
+        .mockResolvedValue({ status: "granted" } as any);
+      jest
+        .spyOn(Notifications, "getExpoPushTokenAsync")
+        .mockResolvedValue({ data: "ExponentPushToken[test]" } as any);
+      const API = (jest.requireMock("#/helpers/network/ServerAPI") as any)
+        .default;
+      API.registerNotifications.mockResolvedValue({ status: "ok" });
+
+      const result =
+        await NotificationManager.requestPermissionAndApplyDefaults();
+
+      expect(requestSpy).toHaveBeenCalled();
+      expect(result.notificationSettings.new_post.value).toBe(true);
+      expect(result.notificationSettings.new_fact_check.value).toBe(true);
+    });
+
+    it("requests permission and turns every switch off when denied", async () => {
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({
+        new_post: { value: true, name: "New Posts" },
+        new_fact_check: { value: true, name: "New Fact Check" },
+      });
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "undetermined" } as any);
+      const requestSpy = jest
+        .spyOn(Notifications, "requestPermissionsAsync")
+        .mockResolvedValue({ status: "denied" } as any);
+      jest.spyOn(console, "warn").mockImplementation(() => {});
+      const API = (jest.requireMock("#/helpers/network/ServerAPI") as any)
+        .default;
+
+      const result =
+        await NotificationManager.requestPermissionAndApplyDefaults();
+
+      expect(result.notificationSettings.new_post.value).toBe(false);
+      expect(result.notificationSettings.new_fact_check.value).toBe(false);
+      // The denied path must not fall through to registerForPushNotifications,
+      // which would trigger a second permission request and a server call.
+      expect(requestSpy).toHaveBeenCalledTimes(1);
+      expect(API.registerNotifications).not.toHaveBeenCalled();
+      expect(SettingsStore.setNotificationSettings).toHaveBeenCalledWith(
+        result.notificationSettings,
+      );
+    });
+
+    it("does not re-prompt and keeps stored switch values when permission is already granted", async () => {
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({ new_post: { value: false, name: "New Posts" } });
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "granted" } as any);
+      const requestSpy = jest.spyOn(Notifications, "requestPermissionsAsync");
+      jest
+        .spyOn(Notifications, "getExpoPushTokenAsync")
+        .mockResolvedValue({ data: "ExponentPushToken[test]" } as any);
+      const API = (jest.requireMock("#/helpers/network/ServerAPI") as any)
+        .default;
+      API.registerNotifications.mockResolvedValue({ status: "ok" });
+
+      const result =
+        await NotificationManager.requestPermissionAndApplyDefaults();
+
+      expect(requestSpy).not.toHaveBeenCalled();
+      // No prompt was shown, so the user's stored choice (off) must survive
+      // instead of being overwritten by the all-on grant defaults — e.g.
+      // when onboarding is re-entered after the user customized settings.
+      expect(result.notificationSettings.new_post.value).toBe(false);
+    });
+
+    it("returns unavailable on simulators without requesting permission", async () => {
+      const Device = jest.requireMock("expo-device") as any;
+      Device.__setIsDeviceValue(false);
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({ new_post: { value: true, name: "New Posts" } });
+      const requestSpy = jest.spyOn(Notifications, "requestPermissionsAsync");
+
+      const result =
+        await NotificationManager.requestPermissionAndApplyDefaults();
+
+      expect(requestSpy).not.toHaveBeenCalled();
+      expect(result.status).toBe("unavailable");
+    });
+  });
+
   describe("checkAndRequestOnLaunch", () => {
     afterEach(() => {
       // Restore Device.isDevice after each test via the setter
@@ -495,7 +610,10 @@ describe("NotificationManager", () => {
 
         expect(permissionsSpy).not.toHaveBeenCalled();
         expect(result.status).toBe("foss");
-        expect(result.notificationSettings).toEqual(mockSettings);
+        expect(result.notificationSettings).toEqual({
+          ...SettingsStore.defaultNotificationSettings,
+          ...mockSettings,
+        });
       });
     });
 
@@ -506,6 +624,30 @@ describe("NotificationManager", () => {
         await NotificationManager.checkAndRequestOnLaunch();
 
         expect(spy).not.toHaveBeenCalled();
+      });
+    });
+
+    describe("requestPermissionAndApplyDefaults", () => {
+      it("returns stored settings with status 'foss' without requesting permission", async () => {
+        const mockSettings = {
+          new_post: { value: true, name: "Neue Artikel" },
+        };
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue(mockSettings);
+        const permissionsSpy = jest.spyOn(Notifications, "getPermissionsAsync");
+
+        const result =
+          await NotificationManager.requestPermissionAndApplyDefaults();
+
+        expect(permissionsSpy).not.toHaveBeenCalled();
+        expect(result.status).toBe("foss");
+        expect(result.notificationSettings).toEqual({
+          ...SettingsStore.defaultNotificationSettings,
+          ...mockSettings,
+        });
       });
     });
 
