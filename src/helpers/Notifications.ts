@@ -221,9 +221,12 @@ const NotificationManager = {
   },
 
   /**
-   * Requests OS notification permission (prompting the user if the status is
-   * still undetermined) and syncs all notification-category switches to
-   * match the outcome: granted -> all on, denied/dismissed -> all off.
+   * Requests OS notification permission whenever it is not already granted
+   * and syncs all notification-category switches to match the outcome:
+   * granted -> all on, denied/dismissed -> all off. The OS only actually
+   * shows a dialog while it may still ask (undetermined, or denied with
+   * canAskAgain on Android); otherwise the request resolves silently with
+   * the existing denial.
    * Used by the onboarding notification step, which wants the OS prompt to
    * appear as soon as the step is shown rather than per-switch.
    */
