@@ -3,8 +3,8 @@ import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
-import { useContext, useRef, useState } from "react";
-import { View } from "react-native";
+import { useContext, useEffect, useRef, useState } from "react";
+import { AppState, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
@@ -43,10 +43,12 @@ const Onboarding = () => {
 
   const isFoss = Config.isFoss ?? false;
   const hasRequestedNotificationPermission = useRef(false);
+  const isOnNotificationStepRef = useRef(false);
   const [notificationPermissionDenied, setNotificationPermissionDenied] =
     useState(false);
 
   const onStepChange = (item: OnBoardingData) => {
+    isOnNotificationStepRef.current = item.id === NOTIFICATION_STEP_ID;
     if (item.id !== NOTIFICATION_STEP_ID) return;
     if (hasRequestedNotificationPermission.current) return;
     hasRequestedNotificationPermission.current = true;
@@ -60,6 +62,28 @@ const Onboarding = () => {
         console.error("Failed to request notification permission:", error);
       });
   };
+
+  // If the user backgrounds the app to flip the OS permission in system
+  // Settings (via the disabled-message deep link) and comes back while still
+  // on the notification step, re-check the outcome so the switches unlock
+  // without waiting for a remount. Only re-checks, never re-prompts.
+  useEffect(() => {
+    if (isFoss) return;
+    const subscription = AppState.addEventListener("change", (nextState) => {
+      if (nextState !== "active") return;
+      if (!hasRequestedNotificationPermission.current) return;
+      if (!isOnNotificationStepRef.current) return;
+
+      Notifications.getPermissions()
+        .then((permissions) => {
+          setNotificationPermissionDenied(permissions.status === "denied");
+        })
+        .catch((error) => {
+          console.error("Failed to re-check notification permission:", error);
+        });
+    });
+    return () => subscription.remove();
+  }, [isFoss]);
 
   const agreeToTerms = async () => {
     await PersonalStore.setOnboardingDone();

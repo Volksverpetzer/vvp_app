@@ -139,7 +139,8 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   const carouselRef = useRef<ICarouselInstance>(null);
 
   useEffect(() => {
-    onStepChange?.(data[step], step);
+    const item = data[step];
+    if (item) onStepChange?.(item, step);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 

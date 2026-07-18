@@ -107,11 +107,15 @@ const SettingsScreen = () => {
     useCallback(() => {
       if (Config.isFoss || Platform.OS === "web") return;
       let isActive = true;
-      Notifications.getPermissions().then((permissions) => {
-        if (isActive) {
-          setNotificationPermissionDenied(permissions.status === "denied");
-        }
-      });
+      Notifications.getPermissions()
+        .then((permissions) => {
+          if (isActive) {
+            setNotificationPermissionDenied(permissions.status === "denied");
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to check notification permission:", error);
+        });
       return () => {
         isActive = false;
       };

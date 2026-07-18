@@ -57,17 +57,25 @@ const SettingsList = (properties: SettingsListProperties) => {
 
   return (
     <View style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
-      {disabled && disabledMessage && (
-        <UiPressable
-          accessibilityRole="button"
-          onPress={onDisabledPress}
-          style={{ paddingBottom: 10 }}
-        >
-          <UiText size="base" style={{ color: textMuted }}>
-            {disabledMessage}
-          </UiText>
-        </UiPressable>
-      )}
+      {disabled &&
+        disabledMessage &&
+        (onDisabledPress ? (
+          <UiPressable
+            accessibilityRole="button"
+            onPress={onDisabledPress}
+            style={{ paddingBottom: 10 }}
+          >
+            <UiText size="base" style={{ color: textMuted }}>
+              {disabledMessage}
+            </UiText>
+          </UiPressable>
+        ) : (
+          <View style={{ paddingBottom: 10 }}>
+            <UiText size="base" style={{ color: textMuted }}>
+              {disabledMessage}
+            </UiText>
+          </View>
+        ))}
       {Object.keys(properties.settings)
         .sort((keyA, keyB) => {
           return properties.settings[keyA].name.localeCompare(
