@@ -138,10 +138,19 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   } = properties;
   const carouselRef = useRef<ICarouselInstance>(null);
 
+  // Keep the latest data/callback in refs so the step effect below always
+  // sees fresh values without re-firing when the parent re-renders with new
+  // prop identities while the step stays the same.
+  const dataRef = useRef(data);
+  const onStepChangeRef = useRef(onStepChange);
   useEffect(() => {
-    const item = data[step];
-    if (item) onStepChange?.(item, step);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    dataRef.current = data;
+    onStepChangeRef.current = onStepChange;
+  });
+
+  useEffect(() => {
+    const item = dataRef.current[step];
+    if (item) onStepChangeRef.current?.(item, step);
   }, [step]);
 
   const nextStep = () => {

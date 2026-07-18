@@ -262,6 +262,16 @@ const NotificationManager = {
       ]),
     ) as NotificationSettingType;
 
+    if (!granted) {
+      // Persist the all-off settings locally, but skip
+      // registerForPushNotifications: its own permission check would call
+      // requestPermissionsAsync a second time (re-prompting on platforms
+      // where canAskAgain is still true), and without permission there is
+      // no token to register anyway.
+      await SettingsStore.setNotificationSettings(notificationSettings);
+      return { status: finalStatus, notificationSettings };
+    }
+
     return await NotificationManager.registerForPushNotifications(
       notificationSettings,
     );
