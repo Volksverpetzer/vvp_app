@@ -220,6 +220,29 @@ describe("Onboarding", () => {
         Notifications.requestPermissionAndApplyDefaults,
       ).toHaveBeenCalledTimes(1);
     });
+
+    it("retries the request on a later visit after a failure", async () => {
+      mockIsFoss = false;
+      jest
+        .mocked(Notifications.requestPermissionAndApplyDefaults)
+        .mockRejectedValueOnce(new Error("native module failure"));
+      jest.spyOn(console, "error").mockImplementation(() => {});
+      await render(<Onboarding />);
+
+      await act(async () => {
+        capturedOnStepChange!({ id: NOTIFICATION_STEP_ID }, 2);
+        await Promise.resolve();
+      });
+      await act(async () => {
+        capturedOnStepChange!({ id: 1 }, 0);
+        capturedOnStepChange!({ id: NOTIFICATION_STEP_ID }, 2);
+        await Promise.resolve();
+      });
+
+      expect(
+        Notifications.requestPermissionAndApplyDefaults,
+      ).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe("notification switches disabled state", () => {

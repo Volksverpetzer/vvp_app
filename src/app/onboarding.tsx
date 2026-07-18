@@ -59,6 +59,10 @@ const Onboarding = () => {
         setNotificationPermissionDenied(status === "denied");
       })
       .catch((error) => {
+        // Allow a retry when the user revisits this step — otherwise a
+        // transient failure would leave the switches un-initialized for
+        // the rest of the session.
+        hasRequestedNotificationPermission.current = false;
         console.error("Failed to request notification permission:", error);
       });
   };
