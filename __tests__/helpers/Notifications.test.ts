@@ -610,7 +610,10 @@ describe("NotificationManager", () => {
 
         expect(permissionsSpy).not.toHaveBeenCalled();
         expect(result.status).toBe("foss");
-        expect(result.notificationSettings).toEqual(mockSettings);
+        expect(result.notificationSettings).toEqual({
+          ...SettingsStore.defaultNotificationSettings,
+          ...mockSettings,
+        });
       });
     });
 
@@ -641,7 +644,10 @@ describe("NotificationManager", () => {
 
         expect(permissionsSpy).not.toHaveBeenCalled();
         expect(result.status).toBe("foss");
-        expect(result.notificationSettings).toEqual(mockSettings);
+        expect(result.notificationSettings).toEqual({
+          ...SettingsStore.defaultNotificationSettings,
+          ...mockSettings,
+        });
       });
     });
 
