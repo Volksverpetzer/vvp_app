@@ -61,7 +61,7 @@
     "@native-html/iframe-plugin": "2.6.1",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-vector-icons/octicons": "21.1.2",
-    "@rive-app/react-native": "0.4.18",
+    "@rive-app/react-native": "0.4.19",
     "@stripe/stripe-react-native": "0.64.0",
     "buffer": "6.0.3",
     "domhandler": "6.0.1",
