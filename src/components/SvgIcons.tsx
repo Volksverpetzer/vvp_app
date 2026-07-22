@@ -12,8 +12,8 @@ interface SvgIconProperties extends SvgProps {
 export const Logo = ({ width, color, ...rest }: SvgIconProperties) => (
   <Svg {...rest} width={width ?? 76} height={width ?? 76} fill="none">
     <Rect width={76} height={76} rx={38} fill={color} />
-    <Path d="M56.65 27.5 35 65 13.35 27.5h43.3Z" stroke="#fff" />
-    <Path d="M62.383 24.5 39 65 15.617 24.5h46.766Z" stroke="#fff" />
+    <Path d="M56.65 20.75 35 58.25 13.35 20.75h43.3Z" stroke="#fff" />
+    <Path d="M62.383 17.75 39 58.25 15.617 17.75h46.766Z" stroke="#fff" />
   </Svg>
 );
 
