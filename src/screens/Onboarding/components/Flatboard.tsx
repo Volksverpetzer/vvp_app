@@ -72,17 +72,19 @@ const Slide = ({
       >
         {isVolksverpetzer && <Logo color={corporate} />}
       </View>
+      <UiText
+        size="xxl"
+        style={{
+          ...headingStyle,
+          paddingVertical: 10,
+          color: corporate,
+          textAlign: "center",
+          width,
+        }}
+      >
+        {title}
+      </UiText>
       <View style={[globalStyles.centered, { width, marginBottom: 100 }]}>
-        <UiText
-          size="xxl"
-          style={{
-            ...headingStyle,
-            paddingVertical: 10,
-            color: corporate,
-          }}
-        >
-          {title}
-        </UiText>
         {icon && (
           <Image
             style={{ height: height / 3, width: height / 3 }}
