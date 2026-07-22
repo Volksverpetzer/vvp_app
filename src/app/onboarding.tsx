@@ -175,8 +175,8 @@ const Onboarding = () => {
       ? [
           {
             id: NOTIFICATION_STEP_ID,
-            title: "Push Benachrichtigungen",
-            description: `Faktenchecks hinken naturgemäß immer hinterher. Um schnellstmöglich Faktenchecks zu erhalten und zu teilen, kannst du dir Push-Benachrichtigungen aktivieren. Das kann wichtig sein, damit die Fakten deine Freunde oder Familie erreichen, bevor der Fake sie aufs Glatteis führt.`,
+            title: "Push-Benachrichtigungen",
+            description: `Benachrichtigungen halten dich auf dem Laufenden, können dich aber auch ablenken. Wähle die aus, die dich wirklich interessieren.`,
             Component: () => (
               <View>
                 <View
@@ -214,7 +214,7 @@ const Onboarding = () => {
       id: 8,
       title: "Prio: Datenschutz",
       description: `Unser Versprechen: Wir geben uns alle Mühe, den Datenkraken so wenig zu überliefern wie möglich. Du braucht keine Accounts, wir tracken dich nicht. Mit der Nutzung stimmst du unserer Datenschutzerklärung zu.`,
-      TopComponent: () => <SafetyIcon color={corporate} size={80} />,
+      TopComponent: () => <SafetyIcon color={corporate} size={60} />,
       Component: () => (
         <UiPressable
           accessibilityRole="button"

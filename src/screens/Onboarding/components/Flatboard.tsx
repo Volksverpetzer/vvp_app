@@ -8,7 +8,7 @@ import type {
   LayoutChangeEvent,
   TextStyle,
 } from "react-native";
-import { Platform, View, useWindowDimensions } from "react-native";
+import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 
@@ -62,60 +62,75 @@ const Slide = ({
   const corporate = useCorporateColor();
   return (
     <View style={{ flex: 1 }}>
-      <View
+      {isVolksverpetzer && (
+        <View
+          style={{
+            height: 100,
+            marginTop: height / 20,
+            alignItems: "center",
+            width,
+          }}
+        >
+          <Logo color={corporate} />
+        </View>
+      )}
+      <UiText
+        size="xxl"
         style={{
-          height: 100,
-          marginTop: height / 20,
-          alignItems: "center",
+          textAlign: "center",
           width,
+          marginTop: isVolksverpetzer ? 0 : height / 20,
+          ...headingStyle,
+          paddingVertical: 10,
+          color: corporate,
         }}
       >
-        {isVolksverpetzer && <Logo color={corporate} />}
-      </View>
-      <View style={[globalStyles.centered, { width, marginBottom: 100 }]}>
-        <UiText
-          size="xxl"
-          style={{
-            ...headingStyle,
-            paddingVertical: 10,
-            color: corporate,
-          }}
-        >
-          {title}
-        </UiText>
-        {icon && (
-          <Image
-            style={{ height: height / 3, width: height / 3 }}
-            source={icon}
-          />
-        )}
-        {TopComponent && height > 600 && (
-          <View
-            style={[
-              globalStyles.centered,
-              { height: "auto", paddingVertical: 20, width: 200 },
-            ]}
+        {title}
+      </UiText>
+      <ScrollView
+        style={{ flex: 1, width }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          alignItems: "center",
+          paddingBottom: 100,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={globalStyles.centered}>
+          {icon && (
+            <Image
+              style={{ height: height / 3, width: height / 3 }}
+              source={icon}
+            />
+          )}
+          {TopComponent && height > 600 && (
+            <View
+              style={[
+                globalStyles.centered,
+                { height: "auto", paddingVertical: 20, width: 200 },
+              ]}
+            >
+              <TopComponent />
+            </View>
+          )}
+          <UiText
+            size="lg"
+            style={{
+              paddingVertical: 10,
+              ...descriptionStyle,
+              textAlign: "center",
+              paddingHorizontal: 30,
+            }}
           >
-            <TopComponent />
-          </View>
-        )}
-        <UiText
-          size="lg"
-          style={{
-            paddingVertical: 10,
-            ...descriptionStyle,
-            textAlign: "center",
-            paddingHorizontal: 30,
-          }}
-        >
-          {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
-        </UiText>
+            {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
+          </UiText>
+        </View>
         {Component && height > 600 && (
           <View style={{ width: 300, height: "auto" }}>
             <Component />
           </View>
         )}
-      </View>
+      </ScrollView>
     </View>
   );
 };
