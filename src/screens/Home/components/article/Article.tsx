@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import type { RefObject } from "react";
 import { useEffect, useRef } from "react";
 import type {
   LayoutChangeEvent,
@@ -32,6 +33,8 @@ import Recommended from "./Recommended";
 
 interface ArticleScreenProperties {
   article: ArticleProperties;
+  /** Decoded URL fragment of the deep link (e.g. "quellen") to scroll to. */
+  anchor?: string;
 }
 
 /**
@@ -45,7 +48,7 @@ interface ArticleScreenProperties {
  * @returns
  */
 const ArticleScreen = (properties: ArticleScreenProperties) => {
-  const { article } = properties;
+  const { article, anchor } = properties;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const scrollProgress = useRef(new Animated.Value(0)).current;
   const scrollReference = useRef<ScrollView>(null);
@@ -58,6 +61,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const fullRead = useRef(false);
   const savedPosition = useRef(0);
   const heightCaptured = useRef(false);
+  // Refs to rendered headers by their HTML id, registered by HeaderRenderer.
+  // Used both for in-article anchor links and for deep links with a fragment.
+  const headerReferences = useRef<Record<string, RefObject<View>>>({});
+  // The anchor still waiting to be aligned. Content height keeps changing
+  // while images load in, so we re-align on every content size change until
+  // the user takes over scrolling (a one-shot scroll would land wrong).
+  const pendingAnchor = useRef(anchor);
   const mounted = useRef(true);
   const slug = article.slug;
   const article_image = article.imageUrl;
@@ -100,8 +110,25 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   }, [article_link]);
 
   /**
+   * Scrolls to the header element registered under the given anchor id.
+   * No-op when the id doesn't match a rendered header (e.g. the target
+   * element isn't an h2), matching the behavior of in-article anchor links.
+   * @param id The decoded HTML id of the target header
+   */
+  const scrollToAnchor = (id: string) => {
+    const headerNode = headerReferences.current[id]?.current;
+    const scrollView = scrollReference.current;
+    if (!headerNode || !scrollView) return;
+    headerNode.measureLayout(scrollView.getInnerViewNode(), (_x, y) => {
+      scrollView.scrollTo({ y, animated: false });
+    });
+  };
+
+  /**
    * Called once when the article layout is rendered.
    * Captures the content height and restores the scroll position saved in storage.
+   * When the article was opened via an anchored deep link, jumps to the anchor
+   * instead of restoring the saved reading position.
    * Prevents re-running after the first layout via heightCaptured flag.
    * @param event LayoutChangeEvent containing nativeEvent.layout.height
    */
@@ -109,6 +136,10 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     if (heightCaptured.current) return;
     heightCaptured.current = true;
     const height = event.nativeEvent.layout.height;
+    if (pendingAnchor.current) {
+      scrollToAnchor(pendingAnchor.current);
+      return;
+    }
     PersonalStore.getScrollPosition(slug).then((progress) => {
       if (!mounted.current || progress > 0.8) return;
       savedPosition.current = progress;
@@ -164,6 +195,15 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
           )}
           ref={scrollReference}
           scrollEventThrottle={16}
+          onContentSizeChange={() => {
+            // Re-align the pending anchor whenever async content (images,
+            // embeds) resizes the article above it.
+            if (pendingAnchor.current) scrollToAnchor(pendingAnchor.current);
+          }}
+          onScrollBeginDrag={() => {
+            // The user took over — stop snapping back to the anchor.
+            pendingAnchor.current = undefined;
+          }}
         >
           <View onLayout={onRender}>
             <Header
@@ -181,7 +221,8 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
               article_link={article_link}
               maxWidth={maxWidth}
               width={width}
-              scrollRef={scrollReference}
+              headerRefs={headerReferences}
+              onAnchorPress={scrollToAnchor}
               onLinkPress={(event, href: HttpsUrl) =>
                 onLinkPress(href, router, article_link)
               }

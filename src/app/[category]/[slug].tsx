@@ -5,6 +5,7 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
+import { decodeAnchor } from "#/helpers/utils/anchors";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { normalizedHostOf } from "#/helpers/utils/host";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
@@ -16,6 +17,8 @@ type LoadArticleParameters = {
   slug: string;
   category?: string;
   originalUrl?: string;
+  // Expo Router exposes the URL fragment (…/#quellen) as the `#` param.
+  "#"?: string;
 };
 
 /**
@@ -24,7 +27,12 @@ type LoadArticleParameters = {
 const LoadArticle = () => {
   const parameters = useLocalSearchParams<LoadArticleParameters>();
   const wpUrl = Config.wpUrl;
-  const { slug, category, originalUrl } = parameters;
+  const { slug, category, originalUrl, "#": rawAnchor } = parameters;
+
+  // Normalize once: decode potential percent-encoding, then re-encode when
+  // rebuilding a webview URL so the fragment stays valid either way.
+  const anchor = rawAnchor ? decodeAnchor(rawAnchor) : undefined;
+  const anchorSuffix = anchor ? `#${encodeURIComponent(anchor)}` : "";
 
   // A WordPress feed entry from a different site than the primary one whose
   // host matches the original URL; articles from there need their own API.
@@ -119,11 +127,12 @@ const LoadArticle = () => {
     // deep link had one, but expo-router strips it when parsing the param.
     const trimmedBase = baseUrl.replace(/\/+$/, "");
     const trimmedCategory = (category || "").replaceAll(/^\/+|\/+$/g, "");
+    // originalUrl is the full deep link and already carries its own fragment.
     const url =
       originalUrl ??
       (trimmedCategory
-        ? `${trimmedBase}/${trimmedCategory}/`
-        : `${trimmedBase}/`);
+        ? `${trimmedBase}/${trimmedCategory}/${anchorSuffix}`
+        : `${trimmedBase}/${anchorSuffix}`);
     return <EdgelessWebview uri={url as HttpsUrl} />;
   }
 
@@ -140,7 +149,7 @@ const LoadArticle = () => {
       imageUrl: imageUrl || article.imageUrl || "",
       imageCredit: imageCredit ?? article.imageCredit,
     };
-    return <ArticleScreen article={articleWithImage} />;
+    return <ArticleScreen article={articleWithImage} anchor={anchor} />;
   }
 
   // If fetching failed, fall back to the webview for compatibility
@@ -164,7 +173,7 @@ const LoadArticle = () => {
       return path ? `${trimmedBase}/${path}/` : trimmedBase;
     };
 
-    const cleanPath = buildFallbackUrl(wpUrl, category, slug);
+    const cleanPath = buildFallbackUrl(wpUrl, category, slug) + anchorSuffix;
     return <EdgelessWebview uri={cleanPath} />;
   }
 

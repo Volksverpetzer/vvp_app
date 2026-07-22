@@ -101,4 +101,50 @@ describe("LoadArticle article fallback (slug not found)", () => {
 
     expect(webviewUri()).toBe("https://volksverpetzer.de/klima/some-slug/");
   });
+
+  it("keeps the deep-link anchor on the fallback URL so the webview jumps to it", async () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    // Custom post types (e.g. /project/…) are not served by the posts API,
+    // so anchored deep links to them always land on this fallback.
+    useLocalSearchParams.mockReturnValue({
+      category: "project",
+      slug: "10fakten",
+      "#": "quellen",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => {
+      const EdgelessWebview = jest.requireMock(
+        "#/screens/Home/components/EdgelessWebview",
+      );
+      expect(EdgelessWebview).toHaveBeenCalled();
+    });
+
+    expect(webviewUri()).toBe(
+      "https://volksverpetzer.de/project/10fakten/#quellen",
+    );
+  });
+
+  it("re-encodes a percent-encoded anchor exactly once", async () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "project",
+      slug: "10fakten",
+      "#": "die-quellen%20",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => {
+      const EdgelessWebview = jest.requireMock(
+        "#/screens/Home/components/EdgelessWebview",
+      );
+      expect(EdgelessWebview).toHaveBeenCalled();
+    });
+
+    expect(webviewUri()).toBe(
+      "https://volksverpetzer.de/project/10fakten/#die-quellen%20",
+    );
+  });
 });

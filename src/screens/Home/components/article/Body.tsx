@@ -1,9 +1,8 @@
 import { iframeModel } from "@native-html/iframe-plugin";
 import type { ChildNode } from "domhandler";
 import type { RefObject } from "react";
-import React, { useMemo, useRef } from "react";
-import type { GestureResponderEvent, ScrollView } from "react-native";
-import type { View } from "react-native-reanimated/lib/typescript/Animated";
+import React, { useMemo } from "react";
+import type { GestureResponderEvent, View } from "react-native";
 import type {
   CustomTagRendererRecord,
   Element,
@@ -17,6 +16,7 @@ import Config from "#/constants/Config";
 import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
+import { decodeAnchor } from "#/helpers/utils/anchors";
 import { getTagStyles } from "#/helpers/utils/color";
 import { isSameHost } from "#/helpers/utils/host";
 import { isHttpsUrl } from "#/helpers/utils/networking";
@@ -45,7 +45,10 @@ interface BodyProperties {
   onLinkPress: (event: GestureResponderEvent, href: HttpsUrl) => void;
   width: number;
   maxWidth: number;
-  scrollRef: RefObject<ScrollView>;
+  /** Header refs by HTML id, owned by ArticleScreen (also used for deep-link anchors). */
+  headerRefs: RefObject<Record<string, RefObject<View>>>;
+  /** Scrolls the article to the header with the given (decoded) anchor id. */
+  onAnchorPress: (id: string) => void;
 }
 
 /**
@@ -60,7 +63,8 @@ const Body = (properties: BodyProperties) => {
     width,
     maxWidth,
     onLinkPress,
-    scrollRef,
+    headerRefs,
+    onAnchorPress,
     slug,
     article_title,
   } = properties;
@@ -70,8 +74,6 @@ const Body = (properties: BodyProperties) => {
     () => getTagStyles(colorScheme),
     [colorScheme],
   );
-
-  const headerReferences = useRef<Record<string, RefObject<View>>>({});
 
   const renderers: CustomTagRendererRecord = {
     iframe: (renderProperties) =>
@@ -88,7 +90,7 @@ const Body = (properties: BodyProperties) => {
     figcaption: (renderProperties: InternalRendererProps<TBlock>) =>
       FigcaptionRenderer({ ...renderProperties, url: article_link }),
     h2: (renderProperties) =>
-      HeaderRenderer({ ...renderProperties, componentRefs: headerReferences }),
+      HeaderRenderer({ ...renderProperties, componentRefs: headerRefs }),
     blockquote: (renderProperties) =>
       BlockRenderer({ renderProps: renderProperties, url: article_link }),
     em: (renderProperties) => EmRenderer(renderProperties),
@@ -114,16 +116,9 @@ const Body = (properties: BodyProperties) => {
             href.startsWith("about:///blank#")
           ) {
             if (href.includes("#")) {
-              const id = href.split("#")[1];
-              const reference = headerReferences.current[id];
-              if (reference) {
-                reference.current.measureLayout(
-                  scrollRef.current.getInnerViewNode(),
-                  (x, y) => {
-                    scrollRef.current.scrollTo({ y: y, animated: false });
-                  },
-                );
-              }
+              // Fragments in hrefs may be percent-encoded (e.g. a trailing
+              // %20), while header ids are raw text — decode once to match.
+              onAnchorPress(decodeAnchor(href.split("#")[1] ?? ""));
             }
             return;
           }
@@ -136,7 +131,7 @@ const Body = (properties: BodyProperties) => {
         },
       },
     }),
-    [article_link, article_title, onLinkPress, scrollRef, slug],
+    [article_link, article_title, onAnchorPress, onLinkPress, slug],
   );
 
   /**

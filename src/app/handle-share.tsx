@@ -80,15 +80,29 @@ const HandleShare = () => {
               : `/${path}`
             : "/search";
 
+        // Linking.parse drops the URL fragment; carry it over from the raw
+        // URL so anchored shares (…/article/#quellen) still jump to their
+        // section. Expo Router exposes it to the route as the `#` param.
+        let fragment = "";
+        try {
+          fragment = new URL(sharedUrl).hash;
+        } catch {
+          // Not an absolute URL — no fragment to carry over.
+        }
+
         // Secondary-site articles need originalUrl so the article route fetches
         // from the right WordPress API.
         if (secondary && href !== "/search") {
           router.replace({
             pathname: href,
-            params: { originalUrl: sharedUrl },
+            params: {
+              originalUrl: sharedUrl,
+              ...(fragment && { "#": fragment.slice(1) }),
+            },
           } as unknown as Href);
         } else {
-          router.replace(href as Href);
+          const anchoredHref = href === "/search" ? href : `${href}${fragment}`;
+          router.replace(anchoredHref as Href);
         }
         clearSharedPayloads();
         return;
