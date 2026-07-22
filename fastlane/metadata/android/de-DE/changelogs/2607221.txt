@@ -1,0 +1,5 @@
+- Neu: Kontakt-Tab – Feedback geben, Fakes melden oder andere Anliegen senden, auch direkt vom Artikelende aus
+- Neu: "Nach oben"-Button beim Scrollen
+- Neu: Bildquellen-Info an Artikelbildern
+- Onboarding und Design aufpoliert, einheitliche Schriftgrößen
+- Fehlerbehebungen und Performance-Verbesserungen
