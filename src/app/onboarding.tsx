@@ -175,8 +175,8 @@ const Onboarding = () => {
       ? [
           {
             id: NOTIFICATION_STEP_ID,
-            title: "Push Benachrichtigungen",
-            description: `Benachrichtigungen, sie halten dich auf dem Laufenden, können dich aber auch ablenken. Wähle die aus, die dich wirklich interessieren.`,
+            title: "Push-Benachrichtigungen",
+            description: `Benachrichtigungen halten dich auf dem Laufenden, können dich aber auch ablenken. Wähle die aus, die dich wirklich interessieren.`,
             Component: () => (
               <View>
                 <View
