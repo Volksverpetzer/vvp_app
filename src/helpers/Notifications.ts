@@ -12,6 +12,12 @@ import SettingsStore from "./Stores/SettingsStore";
 
 let cachedNotifications: typeof ExpoNotifications | null = null;
 let notificationsConfigured = false;
+// Serializes registerForPushNotifications calls (see its doc comment).
+let registrationChain: Promise<void> = Promise.resolve();
+// Android notification channels only need to be created once per process;
+// re-creating them on every registration adds two awaits to each settings
+// toggle for nothing (Android freezes channel config after first creation).
+let channelsConfigured = false;
 
 const getNotifications = (): typeof ExpoNotifications | null => {
   if (Config.isFoss) return null;
@@ -127,10 +133,34 @@ const NotificationManager = {
 
   /**
    * Registers the device for push notifications and sends the token along with settings.
+   *
+   * Calls are serialized through a shared promise chain: each registration
+   * reads stored settings, merges its own keys, and writes/POSTs the full
+   * object, so two concurrent calls could otherwise resurrect each other's
+   * stale values (read-merge-write race).
    * @param newSettings - Optional new notification settings to be sent to the server.
    * @returns A promise that resolves to an object containing the status and notification settings.
    */
-  async registerForPushNotifications(
+  registerForPushNotifications(
+    newSettings?: Partial<NotificationSettingType>,
+  ): Promise<{
+    status: string;
+    notificationSettings: NotificationSettingType;
+  }> {
+    const run = registrationChain.then(() =>
+      this.performRegistration(newSettings),
+    );
+    // Keep the chain alive after failures so the next call still runs.
+    registrationChain = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
+  },
+
+  /** Inner implementation of registerForPushNotifications — do not call
+   * directly, it must only run serialized through the chain above. */
+  async performRegistration(
     newSettings?: Partial<NotificationSettingType>,
   ): Promise<{
     status: string;
@@ -158,7 +188,8 @@ const NotificationManager = {
 
     let token: string;
 
-    if (Platform.OS === "android") {
+    if (Platform.OS === "android" && !channelsConfigured) {
+      channelsConfigured = true;
       // Create a default channel for general notifications
       await Notifications.setNotificationChannelAsync("default", {
         name: "Default Notifications",
