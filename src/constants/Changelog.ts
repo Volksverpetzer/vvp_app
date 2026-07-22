@@ -3,7 +3,7 @@ const Changelog = {
   version: "2.4.0",
   versionCode: 2607221,
   notes:
-    "- Neu: Beim Onboarding wird die Berechtigung für Push-Benachrichtigungen direkt abgefragt\n- Onboarding aufpoliert: Logo, Layout und Texte überarbeitet\n- Benachrichtigungs-Schalter reagieren jetzt sofort und deine Auswahl wird zuverlässig gespeichert\n- Einheitliche Schriftgrößen und viele kleine Design-Verbesserungen\n- Fehlerbehebungen und Performance-Verbesserungen",
+    '- Neu: Kontakt-Tab – Feedback geben, Fakes melden oder andere Anliegen senden, auch direkt vom Artikelende aus\n- Neu: "Nach oben"-Button beim Scrollen\n- Neu: Bildquellen-Info an Artikelbildern\n- Neu: Push-Berechtigung wird beim Onboarding abgefragt; Schalter reagieren sofort und werden zuverlässig gespeichert\n- Onboarding und Design aufpoliert, einheitliche Schriftgrößen\n- Fehlerbehebungen und Performance-Verbesserungen',
 };
 
 export default Changelog;
