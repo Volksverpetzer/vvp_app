@@ -44,6 +44,11 @@ const Onboarding = () => {
   const isFoss = Config.isFoss ?? false;
   const hasRequestedNotificationPermission = useRef(false);
   const isOnNotificationStepRef = useRef(false);
+  // Monotonic id for settings syncs: a sync only applies its full-object
+  // result to state if no newer sync (toggle or permission request) started
+  // in the meantime — otherwise a slow, stale sync would visibly revert a
+  // newer optimistic toggle of a *different* switch.
+  const settingsSyncSeqRef = useRef(0);
   const [notificationPermissionDenied, setNotificationPermissionDenied] =
     useState(false);
 
@@ -53,9 +58,12 @@ const Onboarding = () => {
     if (hasRequestedNotificationPermission.current) return;
     hasRequestedNotificationPermission.current = true;
 
+    const syncId = ++settingsSyncSeqRef.current;
     Notifications.requestPermissionAndApplyDefaults()
       .then(({ status, notificationSettings: updatedNotificationSettings }) => {
-        setNotificationSettings(updatedNotificationSettings);
+        if (syncId === settingsSyncSeqRef.current) {
+          setNotificationSettings(updatedNotificationSettings);
+        }
         setNotificationPermissionDenied(status === "denied");
       })
       .catch((error) => {
@@ -132,10 +140,22 @@ const Onboarding = () => {
     setting: SettingType,
   ): Promise<void> => {
     const newSetting = { ...setting, value };
-    const { notificationSettings: updatedNotificationSettings } =
-      await Notifications.registerForPushNotifications({ [key]: newSetting });
-    setNotificationSettings(updatedNotificationSettings);
+    // Flip the switch immediately — the token fetch and server registration
+    // below can take seconds on a real device and must not block the UI.
+    // The sync's merged full-settings result is applied afterwards, but only
+    // if no newer sync started meanwhile (see settingsSyncSeqRef).
+    setNotificationSettings((previous) => ({ ...previous, [key]: newSetting }));
     Haptics.selectionAsync();
+    const syncId = ++settingsSyncSeqRef.current;
+    try {
+      const { notificationSettings: updatedNotificationSettings } =
+        await Notifications.registerForPushNotifications({ [key]: newSetting });
+      if (syncId === settingsSyncSeqRef.current) {
+        setNotificationSettings(updatedNotificationSettings);
+      }
+    } catch (error) {
+      console.error("Failed to sync notification setting:", error);
+    }
   };
 
   const data = [

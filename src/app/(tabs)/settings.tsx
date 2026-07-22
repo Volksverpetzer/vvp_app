@@ -1,4 +1,5 @@
 import * as Application from "expo-application";
+import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
@@ -46,6 +47,11 @@ const SettingsScreen = () => {
     useState<NotificationSettingType>(
       SettingsStore.defaultNotificationSettings,
     );
+  // Monotonic id for settings syncs: a sync only applies its full-object
+  // result to state if no newer sync started in the meantime — otherwise a
+  // slow, stale sync would visibly revert a newer optimistic toggle of a
+  // *different* switch.
+  const settingsSyncSeqRef = useRef(0);
   const [notificationPermissionDenied, setNotificationPermissionDenied] =
     useState(false);
   const {
@@ -87,35 +93,69 @@ const SettingsScreen = () => {
     setting: SettingType,
   ): Promise<void> => {
     const newSetting = { ...setting, value };
-    const { notificationSettings: updatedNotificationSettings } =
-      await Notifications.registerForPushNotifications({ [key]: newSetting });
-    setNotificationSettings(updatedNotificationSettings);
+    // Flip the switch immediately — the token fetch and server registration
+    // below can take seconds on a real device and must not block the UI.
+    // The sync's merged full-settings result is applied afterwards, but only
+    // if no newer sync started meanwhile (see settingsSyncSeqRef).
+    setNotificationSettings((previous) => ({ ...previous, [key]: newSetting }));
+    Haptics.selectionAsync();
+    const syncId = ++settingsSyncSeqRef.current;
+    try {
+      const { notificationSettings: updatedNotificationSettings } =
+        await Notifications.registerForPushNotifications({ [key]: newSetting });
+      if (syncId === settingsSyncSeqRef.current) {
+        setNotificationSettings(updatedNotificationSettings);
+      }
+    } catch (error) {
+      console.error("Failed to sync notification setting:", error);
+    }
   };
 
   useEffect(() => {
     const getToken = async () => {
-      const token = await Notifications.getToken();
-      setToken(token);
+      try {
+        const token = await Notifications.getToken();
+        setToken(token);
+      } catch (error) {
+        // getToken rethrows (no network, no Play Services, …) — the token
+        // line simply stays empty in that case.
+        console.error("Failed to get push token:", error);
+      }
     };
     getToken();
   }, []);
 
   // Re-check the OS permission whenever this tab regains focus (e.g. the
   // user just came back from toggling it in the system Settings app), so the
-  // switches reflect reality rather than a request made once at mount.
+  // switches reflect reality rather than a request made once at mount. Also
+  // load the stored notification settings — without this the switches show
+  // the defaults, not what the user actually configured.
   useFocusEffect(
     useCallback(() => {
-      if (Config.isFoss || Platform.OS === "web") return;
       let isActive = true;
-      Notifications.getPermissions()
-        .then((permissions) => {
-          if (isActive) {
-            setNotificationPermissionDenied(permissions.status === "denied");
+      const seqAtFocus = settingsSyncSeqRef.current;
+      SettingsStore.getNotificationSettings()
+        .then((storedSettings) => {
+          // Skip if a toggle sync started since focus — its optimistic state
+          // is newer than what storage held when this load began.
+          if (isActive && seqAtFocus === settingsSyncSeqRef.current) {
+            setNotificationSettings(storedSettings);
           }
         })
         .catch((error) => {
-          console.error("Failed to check notification permission:", error);
+          console.error("Failed to load notification settings:", error);
         });
+      if (!Config.isFoss && Platform.OS !== "web") {
+        Notifications.getPermissions()
+          .then((permissions) => {
+            if (isActive) {
+              setNotificationPermissionDenied(permissions.status === "denied");
+            }
+          })
+          .catch((error) => {
+            console.error("Failed to check notification permission:", error);
+          });
+      }
       return () => {
         isActive = false;
       };
