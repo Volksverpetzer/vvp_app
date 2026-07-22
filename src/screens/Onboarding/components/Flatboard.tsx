@@ -84,34 +84,36 @@ const Slide = ({
       >
         {title}
       </UiText>
-      <View style={[globalStyles.centered, { width, marginBottom: 100 }]}>
-        {icon && (
-          <Image
-            style={{ height: height / 3, width: height / 3 }}
-            source={icon}
-          />
-        )}
-        {TopComponent && height > 600 && (
-          <View
-            style={[
-              globalStyles.centered,
-              { height: "auto", paddingVertical: 20, width: 200 },
-            ]}
+      <View style={{ flex: 1, alignItems: "center", width, marginBottom: 100 }}>
+        <View style={globalStyles.centered}>
+          {icon && (
+            <Image
+              style={{ height: height / 3, width: height / 3 }}
+              source={icon}
+            />
+          )}
+          {TopComponent && height > 600 && (
+            <View
+              style={[
+                globalStyles.centered,
+                { height: "auto", paddingVertical: 20, width: 200 },
+              ]}
+            >
+              <TopComponent />
+            </View>
+          )}
+          <UiText
+            size="lg"
+            style={{
+              paddingVertical: 10,
+              ...descriptionStyle,
+              textAlign: "center",
+              paddingHorizontal: 30,
+            }}
           >
-            <TopComponent />
-          </View>
-        )}
-        <UiText
-          size="lg"
-          style={{
-            paddingVertical: 10,
-            ...descriptionStyle,
-            textAlign: "center",
-            paddingHorizontal: 30,
-          }}
-        >
-          {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
-        </UiText>
+            {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
+          </UiText>
+        </View>
         {Component && height > 600 && (
           <View style={{ width: 300, height: "auto" }}>
             <Component />
