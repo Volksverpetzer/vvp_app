@@ -12,7 +12,10 @@ import SettingsStore from "./Stores/SettingsStore";
 
 let cachedNotifications: typeof ExpoNotifications | null = null;
 let notificationsConfigured = false;
-// Serializes registerForPushNotifications calls (see its doc comment).
+// Serializes the fast local read-merge-write of notification settings so
+// concurrent calls can't resurrect each other's stale values in storage.
+let persistChain: Promise<void> = Promise.resolve();
+// Serializes the slow network part (token fetch + server registration).
 let registrationChain: Promise<void> = Promise.resolve();
 // Android notification channels only need to be created once per process;
 // re-creating them on every registration adds two awaits to each settings
@@ -134,10 +137,13 @@ const NotificationManager = {
   /**
    * Registers the device for push notifications and sends the token along with settings.
    *
-   * Calls are serialized through a shared promise chain: each registration
-   * reads stored settings, merges its own keys, and writes/POSTs the full
-   * object, so two concurrent calls could otherwise resurrect each other's
-   * stale values (read-merge-write race).
+   * Two-phase design: the local read-merge-write of settings happens
+   * immediately (serialized only against other persists, which take
+   * milliseconds), while the slow token fetch + server registration is
+   * serialized on its own chain. Persisting inside the network chain
+   * caused a real bug: a toggle's persist queued behind an earlier call's
+   * multi-second token fetch, so storage kept the earlier call's values
+   * long enough for the settings tab to read stale data.
    * @param newSettings - Optional new notification settings to be sent to the server.
    * @returns A promise that resolves to an object containing the status and notification settings.
    */
@@ -147,10 +153,35 @@ const NotificationManager = {
     status: string;
     notificationSettings: NotificationSettingType;
   }> {
-    const run = registrationChain.then(() =>
-      this.performRegistration(newSettings),
+    // Phase 1 — merge and persist right away, so storage reflects the
+    // user's latest choice within milliseconds even while earlier syncs
+    // are still doing network work.
+    const persisted = persistChain.then(async () => {
+      const storedSettings = await SettingsStore.getNotificationSettings();
+      const notificationSettings = {
+        ...SettingsStore.defaultNotificationSettings,
+        ...storedSettings,
+        ...newSettings,
+      };
+      await SettingsStore.setNotificationSettings(notificationSettings);
+      return notificationSettings;
+    });
+    // Keep the chains alive after failures so the next call still runs.
+    persistChain = persisted.then(
+      () => undefined,
+      () => undefined,
     );
-    // Keep the chain alive after failures so the next call still runs.
+
+    // Phase 2 — slow token/server sync, serialized separately. Capture the
+    // previous chain now: reading the variable inside the callback would
+    // see the already-reassigned chain (which includes this run) and
+    // deadlock waiting on itself.
+    const previousRegistration = registrationChain;
+    const run = persisted.then((notificationSettings) =>
+      previousRegistration.then(() =>
+        this.performServerRegistration(notificationSettings),
+      ),
+    );
     registrationChain = run.then(
       () => undefined,
       () => undefined,
@@ -158,25 +189,15 @@ const NotificationManager = {
     return run;
   },
 
-  /** Inner implementation of registerForPushNotifications — do not call
-   * directly, it must only run serialized through the chain above. */
-  async performRegistration(
-    newSettings?: Partial<NotificationSettingType>,
+  /** Network half of registerForPushNotifications (permission check, token
+   * fetch, server registration) — do not call directly, it must only run
+   * serialized through the registration chain above. */
+  async performServerRegistration(
+    notificationSettings: NotificationSettingType,
   ): Promise<{
     status: string;
     notificationSettings: NotificationSettingType;
   }> {
-    const storedSettings = await SettingsStore.getNotificationSettings();
-    const notificationSettings = {
-      ...SettingsStore.defaultNotificationSettings,
-      ...storedSettings,
-      ...newSettings,
-    };
-    // Persist locally right away so settings survive even if push
-    // registration below fails or is unavailable (FOSS build, web, no
-    // permission, no device).
-    await SettingsStore.setNotificationSettings(notificationSettings);
-
     if (Config.isFoss) {
       return { status: "foss", notificationSettings };
     }
@@ -241,9 +262,15 @@ const NotificationManager = {
       return { status: "ok", notificationSettings };
     }
 
+    // Re-read storage right before the POST: while this sync waited in the
+    // chain, a newer toggle may already have persisted — the server should
+    // always receive the latest settings, not this sync's snapshot. The
+    // caller still gets this call's own merge back (callers guard against
+    // stale trailing updates themselves via their sync ids).
+    const latestSettings = await SettingsStore.getNotificationSettings();
     const body = {
       expo_token: token,
-      settings: notificationSettings,
+      settings: latestSettings,
       os: Platform.OS,
       version: Application?.nativeBuildVersion,
     };
