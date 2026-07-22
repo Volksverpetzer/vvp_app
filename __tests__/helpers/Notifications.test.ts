@@ -193,6 +193,68 @@ describe("NotificationManager", () => {
       expect(setOrder).toBeLessThan(permissionsOrder);
     });
 
+    it("persists a toggle immediately while an earlier sync is still fetching its token", async () => {
+      // Regression test for the onboarding bug: the permission grant kicks
+      // off an all-on registration whose token fetch takes seconds; a
+      // toggle made during that window must reach storage right away, not
+      // queue behind the network work — otherwise the settings tab reads
+      // stale all-on values.
+      let storage: Record<string, unknown> = {};
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockImplementation(() => Promise.resolve({ ...storage } as any));
+      (
+        SettingsStore.setNotificationSettings as jest.MockedFunction<
+          (s: any) => Promise<void>
+        >
+      ).mockImplementation((s: any) => {
+        storage = s;
+        return Promise.resolve();
+      });
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "granted" } as any);
+      let resolveToken: () => void = () => {};
+      jest
+        .spyOn(Notifications, "getExpoPushTokenAsync")
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              resolveToken = () =>
+                resolve({ data: "ExponentPushToken[slow]" } as any);
+            }),
+        )
+        .mockResolvedValue({ data: "ExponentPushToken[fast]" } as any);
+      const API = (jest.requireMock("#/helpers/network/ServerAPI") as any)
+        .default;
+      API.registerNotifications.mockResolvedValue({ status: "ok" });
+
+      // All-on registration (permission grant) — token fetch hangs.
+      const first = NotificationManager.registerForPushNotifications({
+        new_post: { value: true, name: "New Posts" },
+      } as any);
+      // User toggles off while the first sync is stuck on its token.
+      const second = NotificationManager.registerForPushNotifications({
+        new_post: { value: false, name: "New Posts" },
+      } as any);
+
+      // Let the persist chain flush without resolving the token.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect((storage as any).new_post.value).toBe(false);
+
+      resolveToken();
+      await Promise.all([first, second]);
+      expect((storage as any).new_post.value).toBe(false);
+      // Every POST carries the latest settings, including the first sync
+      // whose own snapshot was outdated by the time it reached the server.
+      for (const call of API.registerNotifications.mock.calls) {
+        expect((call[0] as any).settings.new_post.value).toBe(false);
+      }
+      expect(API.registerNotifications).toHaveBeenCalledTimes(2);
+    });
+
     it("persists and returns the merged settings on simulators/emulators without registering a token", async () => {
       const Device = jest.requireMock("expo-device") as any;
       Device.__setIsDeviceValue(false);
