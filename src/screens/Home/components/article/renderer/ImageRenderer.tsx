@@ -2,16 +2,25 @@ import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import type { InternalRendererProps, TBlock } from "react-native-render-html";
 import { useInternalRenderer } from "react-native-render-html";
 
+import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useImageCredit } from "#/hooks/useImageCredit";
+import type { HttpsUrl } from "#/types";
 
-const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
+import { hasFigcaptionSibling, mediaIdOf } from "./imageCreditNodes";
+
+interface ImageRendererProperties extends InternalRendererProps<TBlock> {
+  url?: HttpsUrl;
+}
+
+const ImageRenderer = ({ url, ...properties }: ImageRendererProperties) => {
   const [ratio, setRatio] = useState(1.5);
   const [isLoaded, setIsLoaded] = useState(false);
   const { rendererProps } = useInternalRenderer("img", properties);
@@ -20,6 +29,14 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
   const uri = rendererProps.source.uri;
   const backgroundColor = Colors[colorScheme].background;
   const router = useRouter();
+
+  // When the image has a caption, FigcaptionRenderer shows the credit badge
+  // on the caption row instead of overlaying it on the image.
+  const hasCaption = hasFigcaptionSibling(properties.tnode);
+  const credit = useImageCredit(
+    hasCaption ? undefined : mediaIdOf(properties.tnode),
+    url,
+  );
 
   const onLoad = (event: ImageLoadEventData) => {
     if (isLoaded) return;
@@ -30,17 +47,21 @@ const ImageRenderer = (properties: InternalRendererProps<TBlock>) => {
   };
 
   return (
-    <UiPressable
-      accessibilityRole="button"
-      style={globalStyles.centered}
-      onPress={() => router.push({ pathname: "/image", params: { uri } })}
-    >
-      <Image
-        onLoad={onLoad}
-        source={{ uri }}
-        style={{ width, height: width * ratio, backgroundColor }}
-      />
-    </UiPressable>
+    // flex: 0 so the wrapper hugs the image height; otherwise the absolutely
+    // positioned badge could sit below the image in a taller container.
+    <View style={[globalStyles.centered, { flex: 0 }]}>
+      <UiPressable
+        accessibilityRole="button"
+        onPress={() => router.push({ pathname: "/image", params: { uri } })}
+      >
+        <Image
+          onLoad={onLoad}
+          source={{ uri }}
+          style={{ width, height: width * ratio, backgroundColor }}
+        />
+      </UiPressable>
+      <ImageCreditBadge credit={credit} position="bottomRight" />
+    </View>
   );
 };
 

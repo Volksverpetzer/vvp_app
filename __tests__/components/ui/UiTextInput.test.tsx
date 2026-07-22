@@ -11,8 +11,8 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 jest.mock("#/constants/Colors", () => ({
   __esModule: true,
   default: {
-    light: { inputBackground: "#BADDE8", text: "#111" },
-    dark: { inputBackground: "#777", text: "#F7F7F7" },
+    light: { surfaceInput: "#BADDE8", text: "#111" },
+    dark: { surfaceInput: "#777", text: "#F7F7F7" },
   },
 }));
 

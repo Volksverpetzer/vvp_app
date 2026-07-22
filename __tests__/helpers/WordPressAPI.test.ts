@@ -116,6 +116,13 @@ describe("WordPressAPI", () => {
       const { image, thumb } = await WordPressAPI.getFeatureImage("href");
       expect(image).toBe("mlarge");
       expect(thumb).toBe("thumb");
+      expect(spy).toHaveBeenCalledWith(
+        WordPressAPI["client"],
+        "href",
+        expect.objectContaining({
+          params: { _fields: "source_url,media_details,meta" },
+        }),
+      );
       spy.mockRestore();
     });
 
@@ -129,6 +136,75 @@ describe("WordPressAPI", () => {
       const { image, thumb } = await WordPressAPI.getFeatureImage("href");
       expect(image).toBe("https://pruefpunkt.org/wp-content/uploads/full.png");
       expect(thumb).toBe("https://pruefpunkt.org/wp-content/uploads/full.png");
+      spy.mockRestore();
+    });
+  });
+
+  describe("extractImageCredit", () => {
+    it("returns the credit when a source is present", () => {
+      const credit = WordPressAPI.extractImageCredit({
+        meta: {
+          isc_image_source: "Media Tenor",
+          isc_image_source_url: "https://example.com/source",
+          isc_image_licence: "CC BY 4.0",
+        },
+      } as any);
+      expect(credit).toEqual({
+        source: "Media Tenor",
+        sourceUrl: "https://example.com/source",
+        licence: "CC BY 4.0",
+      });
+    });
+
+    it("trims all fields and drops whitespace-only url/licence", () => {
+      const credit = WordPressAPI.extractImageCredit({
+        meta: {
+          isc_image_source: "  Media Tenor  ",
+          isc_image_source_url: "  https://example.com/source  ",
+          isc_image_licence: "   ",
+        },
+      } as any);
+      expect(credit).toEqual({
+        source: "Media Tenor",
+        sourceUrl: "https://example.com/source",
+        licence: undefined,
+      });
+    });
+
+    it("returns undefined when the source is empty or whitespace", () => {
+      expect(
+        WordPressAPI.extractImageCredit({
+          meta: { isc_image_source: "   ", isc_image_source_url: "x" },
+        } as any),
+      ).toBeUndefined();
+      expect(
+        WordPressAPI.extractImageCredit({ meta: {} } as any),
+      ).toBeUndefined();
+      expect(WordPressAPI.extractImageCredit(undefined)).toBeUndefined();
+    });
+  });
+
+  describe("getMediaCredit", () => {
+    it("requests the media endpoint on the article's own origin", async () => {
+      const spy = jest.spyOn(Networking, "get").mockResolvedValue({
+        meta: { isc_image_source: "Media Tenor" },
+      } as any);
+
+      const credit = await WordPressAPI.getMediaCredit(
+        "101850",
+        "https://volksverpetzer.de/aktuelles/some-article/",
+      );
+
+      expect(spy).toHaveBeenCalledWith(
+        WordPressAPI["client"],
+        "https://volksverpetzer.de/wp-json/wp/v2/media/101850",
+        expect.objectContaining({ params: { _fields: "meta" } }),
+      );
+      expect(credit).toEqual({
+        source: "Media Tenor",
+        sourceUrl: undefined,
+        licence: undefined,
+      });
       spy.mockRestore();
     });
   });

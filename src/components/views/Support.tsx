@@ -4,7 +4,6 @@ import { View } from "react-native";
 import Modal from "react-native-modal";
 
 import { CloseIcon, HeartIcon } from "#/components/Icons";
-import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -53,7 +52,7 @@ const Support = ({ article_link }: SupportProperties) => {
         background={backgroundColor}
         article_link={article_link}
       />
-      <UiText style={{ textAlign: "center", fontSize: 16 }}>
+      <UiText size="base" style={{ textAlign: "center" }}>
         Du willst die Extrameile gehen?{"\n"}
         Damit jeder Cent bei uns ankommt,{"\n"}kannst du einen
       </UiText>
@@ -62,9 +61,11 @@ const Support = ({ article_link }: SupportProperties) => {
         onPress={banktransfer}
         style={{ padding: 10 }}
       >
-        <Heading style={{ color: corporate }}>Dauerauftrag</Heading>
+        <UiText bold size="lg" style={{ color: corporate }}>
+          Dauerauftrag
+        </UiText>
       </UiPressable>
-      <UiText style={{ textAlign: "center", fontSize: 16 }}>
+      <UiText size="base" style={{ textAlign: "center" }}>
         direkt bei der Bank einrichten.
       </UiText>
       <Modal
@@ -72,7 +73,14 @@ const Support = ({ article_link }: SupportProperties) => {
         onSwipeComplete={() => setShowBank(false)}
         swipeDirection={["down", "up"]}
       >
-        <View style={{ padding: 20, alignItems: "center" }}>
+        <View
+          style={{
+            padding: 20,
+            alignItems: "center",
+            backgroundColor,
+            borderRadius: 16,
+          }}
+        >
           <View
             style={{
               width: "100%",
@@ -88,18 +96,18 @@ const Support = ({ article_link }: SupportProperties) => {
               <CloseIcon size={48} color={corporate} />
             </UiPressable>
           </View>
-          <UiText style={{ fontSize: 25 }}>Banküberweisung</UiText>
+          <UiText size="xxl">Banküberweisung</UiText>
           <UiSpace size={20} />
-          <UiText style={{ fontSize: 16, textAlign: "center" }}>
+          <UiText size="base" style={{ textAlign: "center" }}>
             Wow! Du bist der Hammer! Danke für deine Mühe, wir wissen das echt
             zu schätzen
           </UiText>
           <UiSpace size={20} />
-          <UiText style={{ fontSize: 16, textAlign: "center" }}>
+          <UiText size="base" style={{ textAlign: "center" }}>
             IBAN ist in die Zwischenablage kopiert, hier nochmal zur Sicherheit:
           </UiText>
           <UiSpace size={20} />
-          <UiText selectable style={{ fontSize: 16, textAlign: "center" }}>
+          <UiText selectable size="base" style={{ textAlign: "center" }}>
             Name: {Config.donations.account.holder} {`\n`}
             Bank: {Config.donations.account.bank} {`\n`}
             IBAN: {Config.donations.account.IBAN} {`\n`}

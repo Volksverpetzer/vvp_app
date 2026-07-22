@@ -1,0 +1,5 @@
+- New: Contact tab – send feedback, report fakes or other requests, also directly from the end of an article
+- New: Back-to-top button while scrolling
+- New: Image source info on article images
+- Polished onboarding and design, unified font sizes
+- Bug fixes and performance improvements

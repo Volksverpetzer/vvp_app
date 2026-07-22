@@ -101,9 +101,7 @@ describe("RedditPost", () => {
     const titleCallProps = UiText.mock.calls
       .map(([p]: any) => p)
       .find((p: any) => p.children === longTitle);
-    expect(titleCallProps?.style).toEqual(
-      expect.objectContaining({ fontSize: 16 }),
-    );
+    expect(titleCallProps?.size).toBe("base");
   });
 
   it("uses normal font size for short titles", async () => {
@@ -112,8 +110,6 @@ describe("RedditPost", () => {
     const titleCallProps = UiText.mock.calls
       .map(([p]: any) => p)
       .find((p: any) => p.children === "Test Reddit Post");
-    expect(titleCallProps?.style).toEqual(
-      expect.objectContaining({ fontSize: 18 }),
-    );
+    expect(titleCallProps?.size).toBe("lg");
   });
 });

@@ -129,27 +129,6 @@ describe("ServerAPI", () => {
     });
   });
 
-  describe("getReportStatus", () => {
-    it("should call get with correct path and UUID", async () => {
-      // Setup
-      const uuid = "123e4567-e89b-12d3-a456-426614174000";
-      const responseData = { id: uuid, status: "pending" };
-      getSpy.mockResolvedValue(responseData);
-
-      // Execute
-      const result = await API.getReportStatus(uuid);
-
-      // Assert
-      expect(getSpy).toHaveBeenCalledWith(
-        expect.anything(),
-        "/statusFake/123e4567-e89b-12d3-a456-426614174000",
-        undefined,
-        undefined,
-      );
-      expect(result).toEqual(responseData);
-    });
-  });
-
   describe("getInstaFeed", () => {
     it("should call get with correct path", async () => {
       // Setup
@@ -354,26 +333,29 @@ describe("ServerAPI", () => {
     });
   });
 
-  describe("reportFake", () => {
-    it("should call post with report data", async () => {
+  describe("postContact", () => {
+    it("should call post with contact data", async () => {
       // Setup
-      const report = {
-        description: "Fake news",
-        more_info: "Additional details",
-        url: "https://example.com/fake",
-        allowed_public: true,
+      const contact = {
+        category: "app_feedback" as const,
+        title: "Dark mode",
+        message: "Der Dark Mode ist zu hell.",
+        email: "user@example.com",
+        app_variant: "Volksverpetzer",
+        app_version: "2.3.0",
+        platform: "ios",
       };
-      const responseData = { id: "report123" };
+      const responseData = { success: true, id: "contact123" };
       postSpy.mockResolvedValue(responseData);
 
       // Execute
-      const result = await API.reportFake(report);
+      const result = await API.postContact(contact);
 
       // Assert
       expect(postSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/reportFake",
-        report,
+        "/contact",
+        contact,
         undefined,
         undefined,
       );

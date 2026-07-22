@@ -9,12 +9,11 @@ import {
 import type {
   AISearchResponse,
   ClaimProperties,
+  ContactRequest,
+  ContactResponse,
   InstaPostProperties,
   MastodonPostProperties,
   NotificationSettingType,
-  ReportSubmission,
-  StatusResponse,
-  StoredReport,
   TiktokPostProperties,
   YouTubePostProperties,
 } from "#/types";
@@ -217,27 +216,10 @@ class API {
   }
 
   /**
-   * Reports a fake post.
+   * Submits a contact request (fake report, app feedback or other topic).
    */
-  static async reportFake(report: ReportSubmission): Promise<StoredReport> {
-    return await API.post<StoredReport, ReportSubmission>(
-      "/reportFake",
-      report,
-    );
-  }
-
-  /**
-   * Fetch status of a report
-   */
-  static async getReportStatus(
-    uuid: string,
-    signal?: AbortSignal,
-  ): Promise<StatusResponse> {
-    return await API.get<StatusResponse>(
-      "/statusFake/" + uuid,
-      undefined,
-      signal,
-    );
+  static async postContact(body: ContactRequest): Promise<ContactResponse> {
+    return await API.post<ContactResponse, ContactRequest>("/contact", body);
   }
 
   /**

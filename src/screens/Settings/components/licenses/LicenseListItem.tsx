@@ -79,6 +79,7 @@ const LicensesListItem = (
       >
         <View style={styles.content}>
           <UiText
+            size="base"
             style={[styles.name, { color: textColor }]}
             numberOfLines={1}
             ellipsizeMode="tail"
@@ -88,7 +89,7 @@ const LicensesListItem = (
           <Link style={[styles.text, { color: textColor }]} url={licenseUrl}>
             {licenses}
           </Link>
-          <UiText style={[styles.name, { color: textColor }]}>
+          <UiText size="base" style={[styles.name, { color: textColor }]}>
             {packageVersion}
           </UiText>
         </View>
@@ -149,7 +150,6 @@ const getStyles = (cardBackground: string) =>
       marginLeft: 8,
     },
     name: {
-      fontSize: 16,
       fontFamily: "SourceSansProBold",
       flexShrink: 1, // ensure the title can shrink instead of overflowing
     },

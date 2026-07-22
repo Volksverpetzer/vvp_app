@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import type { FC } from "react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type {
   ColorValue,
   GestureResponderEvent,
@@ -8,7 +8,7 @@ import type {
   LayoutChangeEvent,
   TextStyle,
 } from "react-native";
-import { View, useWindowDimensions } from "react-native";
+import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 
@@ -32,6 +32,7 @@ export type OnBoardingData = {
 interface FlatBoardProperties {
   data: OnBoardingData[];
   onFinish: (event: GestureResponderEvent) => void;
+  onStepChange?: (item: OnBoardingData, step: number) => void;
   accentColor?: ColorValue;
   buttonTitle?: string;
   variant?: "standard" | "modern";
@@ -61,60 +62,75 @@ const Slide = ({
   const corporate = useCorporateColor();
   return (
     <View style={{ flex: 1 }}>
-      <View
+      {isVolksverpetzer && (
+        <View
+          style={{
+            height: 100,
+            marginTop: height / 20,
+            alignItems: "center",
+            width,
+          }}
+        >
+          <Logo color={corporate} />
+        </View>
+      )}
+      <UiText
+        size="xxl"
         style={{
-          height: 100,
-          marginTop: height / 20,
-          alignItems: "center",
+          textAlign: "center",
           width,
+          marginTop: isVolksverpetzer ? 0 : height / 20,
+          ...headingStyle,
+          paddingVertical: 10,
+          color: corporate,
         }}
       >
-        {isVolksverpetzer && <Logo color={corporate} />}
-      </View>
-      <View style={[globalStyles.centered, { width, marginBottom: 100 }]}>
-        <UiText
-          style={{
-            ...headingStyle,
-            fontSize: height < 600 ? 22 : 24,
-            paddingVertical: 10,
-            color: corporate,
-          }}
-        >
-          {title}
-        </UiText>
-        {icon && (
-          <Image
-            style={{ height: height / 3, width: height / 3 }}
-            source={icon}
-          />
-        )}
-        {TopComponent && height > 600 && (
-          <View
-            style={[
-              globalStyles.centered,
-              { height: "auto", paddingVertical: 20, width: 200 },
-            ]}
+        {title}
+      </UiText>
+      <ScrollView
+        style={{ flex: 1, width }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          alignItems: "center",
+          paddingBottom: 100,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={globalStyles.centered}>
+          {icon && (
+            <Image
+              style={{ height: height / 3, width: height / 3 }}
+              source={icon}
+            />
+          )}
+          {TopComponent && height > 600 && (
+            <View
+              style={[
+                globalStyles.centered,
+                { height: "auto", paddingVertical: 20, width: 200 },
+              ]}
+            >
+              <TopComponent />
+            </View>
+          )}
+          <UiText
+            size="lg"
+            style={{
+              paddingVertical: 10,
+              ...descriptionStyle,
+              textAlign: "center",
+              paddingHorizontal: 30,
+            }}
           >
-            <TopComponent />
-          </View>
-        )}
-        <UiText
-          style={{
-            fontSize: 18,
-            paddingVertical: 10,
-            ...descriptionStyle,
-            textAlign: "center",
-            paddingHorizontal: 30,
-          }}
-        >
-          {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
-        </UiText>
+            {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
+          </UiText>
+        </View>
         {Component && height > 600 && (
           <View style={{ width: 300, height: "auto" }}>
             <Component />
           </View>
         )}
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -129,12 +145,28 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   const {
     data,
     onFinish,
+    onStepChange,
     accentColor,
     buttonTitle,
     headingStyle,
     descriptionStyle,
   } = properties;
   const carouselRef = useRef<ICarouselInstance>(null);
+
+  // Keep the latest data/callback in refs so the step effect below always
+  // sees fresh values without re-firing when the parent re-renders with new
+  // prop identities while the step stays the same.
+  const dataRef = useRef(data);
+  const onStepChangeRef = useRef(onStepChange);
+  useEffect(() => {
+    dataRef.current = data;
+    onStepChangeRef.current = onStepChange;
+  });
+
+  useEffect(() => {
+    const item = dataRef.current[step];
+    if (item) onStepChangeRef.current?.(item, step);
+  }, [step]);
 
   const nextStep = () => {
     const next = Math.min(targetStepRef.current + 1, data.length - 1);
@@ -159,25 +191,44 @@ const FlatBoard = (properties: FlatBoardProperties) => {
     setContainerHeight(e.nativeEvent.layout.height);
   };
 
+  // On web the first render happens before the window is measured, and the
+  // carousel throws on width 0; the dimensions update triggers a re-render
+  if (!width) return null;
+
   return (
     <View style={{ flex: 1 }} onLayout={onLayout}>
-      <Carousel
-        ref={carouselRef}
-        width={width}
-        height={containerHeight}
-        data={data}
-        loop={false}
-        onSnapToItem={onSnapToItem}
-        renderItem={({ item }) => (
+      {Platform.OS === "web" ? (
+        // The reanimated carousel doesn't paint its items reliably on web;
+        // the stepper drives navigation via the step state anyway, so web
+        // only loses the swipe gesture
+        <View style={{ flex: 1 }}>
           <MemoSlide
-            {...item}
+            {...data[step]}
             width={width}
             height={containerHeight}
             headingStyle={headingStyle}
             descriptionStyle={descriptionStyle}
           />
-        )}
-      />
+        </View>
+      ) : (
+        <Carousel
+          ref={carouselRef}
+          width={width}
+          height={containerHeight}
+          data={data}
+          loop={false}
+          onSnapToItem={onSnapToItem}
+          renderItem={({ item }) => (
+            <MemoSlide
+              {...item}
+              width={width}
+              height={containerHeight}
+              headingStyle={headingStyle}
+              descriptionStyle={descriptionStyle}
+            />
+          )}
+        />
+      )}
       <Stepper
         step={step}
         data={data}

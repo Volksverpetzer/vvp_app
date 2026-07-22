@@ -15,10 +15,6 @@ jest.mock("expo-web-browser", () => ({ openBrowserAsync: jest.fn() }));
 jest.mock("#/components/Icons", () => ({
   ExternalLinkIcon: () => null,
 }));
-jest.mock("#/components/typography/Heading", () => {
-  const { Text } = require("react-native");
-  return jest.fn(({ children }: any) => <Text>{children}</Text>);
-});
 jest.mock("#/components/ui/UiPressable", () => {
   const { Pressable } = require("react-native");
   return jest.fn(({ children, onPress, accessibilityRole }: any) => (
@@ -37,8 +33,8 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 jest.mock("#/constants/Colors", () => ({
   __esModule: true,
   default: {
-    light: { text: "#111", iconMuted: "#888" },
-    dark: { text: "#eee", iconMuted: "#444" },
+    light: { text: "#111", textMuted: "#888" },
+    dark: { text: "#eee", textMuted: "#444" },
   },
 }));
 jest.mock("#/constants/GlobalStyles", () => ({

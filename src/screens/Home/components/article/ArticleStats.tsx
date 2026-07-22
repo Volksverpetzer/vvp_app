@@ -6,6 +6,7 @@ import ShareCounter from "#/components/counter/ShareCounter";
 import ViewCounter from "#/components/counter/ViewCounter";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { fontSizes } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
@@ -34,7 +35,9 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
       {!!reading_time && (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
           <ClockIcon size={16} color={color} />
-          <UiText style={{ color, fontSize: 16 }}>{reading_time} Min.</UiText>
+          <UiText size="base" style={{ color }}>
+            {reading_time} Min.
+          </UiText>
         </View>
       )}
       {showEngagement && (
@@ -42,11 +45,11 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
           <ViewCounter
             {...{ url: article_link }}
             color={color}
-            style={{ fontSize: 16 }}
+            style={{ fontSize: fontSizes.base }}
             size={16}
           />
           <ShareCounter
-            style={{ fontSize: 16, color }}
+            style={{ fontSize: fontSizes.base, color }}
             shareable={[{ title: "Link teilen", url: article_link }]}
             color={color}
             size={16}

@@ -8,6 +8,7 @@ import type {
 import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
+import BackToTopButton from "#/components/buttons/BackToTopButton";
 import Footer from "#/components/views/Footer";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -22,6 +23,7 @@ import { registerViews } from "#/helpers/network/Engagement";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { stripVisualComposerShortcodes } from "#/helpers/utils/posts";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useBackToTop } from "#/hooks/useBackToTop";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
 import Body from "./Body";
@@ -49,6 +51,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const scrollReference = useRef<ScrollView>(null);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
+  const backToTop = useBackToTop();
   const corporate = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].background;
 
@@ -123,6 +126,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
    * @param event ScrollEvent containing contentOffset.y and contentSize.height
    */
   const scrollListener = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    backToTop.onScroll(event);
     const progress =
       event.nativeEvent.contentOffset.y / event.nativeEvent.contentSize.height;
     scrollProgress.setValue(progress * 1.1 * width);
@@ -148,43 +152,55 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
           backgroundColor: corporate,
         }}
       ></Animated.View>
-      <ScrollView
-        style={{
-          backgroundColor,
-        }}
-        contentContainerStyle={[globalStyles.content]}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-          { useNativeDriver: false, listener: scrollListener },
-        )}
-        ref={scrollReference}
-        scrollEventThrottle={16}
-      >
-        <View onLayout={onRender}>
-          <Header
-            article={article}
-            article_image={article_image}
-            article_link={article_link}
-            article_title={article_title}
-            date={date}
-            slug={slug}
-          />
-          <Body
-            article_content={article_content}
-            article_title={article_title}
-            slug={slug}
-            article_link={article_link}
-            maxWidth={maxWidth}
-            width={width}
-            scrollRef={scrollReference}
-            onLinkPress={(event, href: HttpsUrl) =>
-              onLinkPress(href, router, article_link)
-            }
-          />
-          <Recommended article_link={article_link}></Recommended>
-          <Footer article_link={article_link} onShare={onShare} />
-        </View>
-      </ScrollView>
+      <View style={globalStyles.container}>
+        <ScrollView
+          style={{
+            backgroundColor,
+          }}
+          contentContainerStyle={[globalStyles.content]}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+            { useNativeDriver: false, listener: scrollListener },
+          )}
+          ref={scrollReference}
+          scrollEventThrottle={16}
+        >
+          <View onLayout={onRender}>
+            <Header
+              article={article}
+              article_image={article_image}
+              article_link={article_link}
+              article_title={article_title}
+              date={date}
+              slug={slug}
+            />
+            <Body
+              article_content={article_content}
+              article_title={article_title}
+              slug={slug}
+              article_link={article_link}
+              maxWidth={maxWidth}
+              width={width}
+              scrollRef={scrollReference}
+              onLinkPress={(event, href: HttpsUrl) =>
+                onLinkPress(href, router, article_link)
+              }
+            />
+            <Recommended article_link={article_link}></Recommended>
+            <Footer
+              article_link={article_link}
+              article_title={article_title}
+              onShare={onShare}
+            />
+          </View>
+        </ScrollView>
+        <BackToTopButton
+          visible={backToTop.visible}
+          onPress={() =>
+            scrollReference.current?.scrollTo({ y: 0, animated: true })
+          }
+        />
+      </View>
       <NavBar
         link={article_link}
         shareable={[{ url: article_link, title: article_title }]}

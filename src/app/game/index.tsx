@@ -1,8 +1,10 @@
 import { Link } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const HomeScreen = () => {
@@ -14,12 +16,14 @@ const HomeScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <Text style={styles.title}>Willkommen zum Memory-Spiel</Text>
-      <Text style={styles.description}>
-        Erleben Sie verschiedene Memory-Spiele, bei denen Sie z. B.
+      <UiText size="xxl" style={styles.title}>
+        Willkommen zum Memory-Spiel
+      </UiText>
+      <UiText size="base" style={styles.description}>
+        Erlebe verschiedene Memory-Spiele, bei denen du z. B.
         Desinformationstechniken und zugehörige Falschinformationen kennenlernen
-        können. Wählen Sie ein Spiel aus, um zu beginnen.
-      </Text>
+        kannst. Wähle ein Spiel aus, um zu beginnen.
+      </UiText>
       <UiPressable accessibilityRole="button" style={styles.button}>
         <Link href="/game/DesinformationMemory" style={styles.link}>
           Desinformation Memory
@@ -44,9 +48,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
-  description: { fontSize: 16, marginBottom: 30, textAlign: "center" },
-  link: { color: "#fff", fontSize: 16 },
-  title: { fontSize: 24, fontFamily: "SourceSansProBold", marginBottom: 20 },
+  description: { marginBottom: 30, textAlign: "center" },
+  link: {
+    color: "#fff",
+    fontFamily: "SourceSansPro",
+    fontSize: fontSizes.base,
+  },
+  title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
 });
 
 export default HomeScreen;

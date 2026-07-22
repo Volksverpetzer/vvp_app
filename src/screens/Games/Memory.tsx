@@ -94,7 +94,7 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
           <View style={styles.headerCardsContainer}>
             {cardsToRender.map((card) => (
               <View style={styles.headerCard} key={card.instanceId}>
-                <UiText style={styles.headerCardText}>
+                <UiText size="sm" style={styles.headerCardText}>
                   {card.cardType === "misinfo" && card.fullContent
                     ? card.fullContent
                     : card.content}
@@ -107,8 +107,8 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
     }
     return (
       <View style={headerStyle}>
-        <UiText style={styles.headerText}>
-          Tippen Sie auf eine Karte, um deren Inhalt anzuzeigen.
+        <UiText size="base" style={styles.headerText}>
+          Tippe auf eine Karte, um deren Inhalt anzuzeigen.
         </UiText>
       </View>
     );
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     padding: 5,
   },
-  headerCardText: { fontSize: 14, textAlign: "center" },
+  headerCardText: { textAlign: "center" },
   headerCardsContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   },
   headerError: { backgroundColor: "#f8d7da" },
   headerSuccess: { backgroundColor: "#d4edda" },
-  headerText: { fontSize: 16, textAlign: "center" },
+  headerText: { textAlign: "center" },
   matchedCard: { borderColor: "#28a745" },
   selectedCard: { borderColor: "#ffa500" },
 });

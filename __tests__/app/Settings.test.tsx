@@ -6,8 +6,9 @@ import {
   it,
   jest,
 } from "@jest/globals";
-import { fireEvent, render } from "@testing-library/react-native";
-import React from "react";
+import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { useFocusEffect } from "expo-router";
+import React, { useEffect } from "react";
 
 import SettingsScreen from "#/app/(tabs)/settings";
 import { toast } from "#/helpers/toast";
@@ -32,7 +33,12 @@ jest.mock("#/constants/Config", () => ({
 
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(() => ({ push: jest.fn() })),
+  useFocusEffect: jest.fn(),
   router: { push: jest.fn() },
+}));
+
+jest.mock("expo-linking", () => ({
+  openSettings: jest.fn(),
 }));
 
 jest.mock("expo-application", () => ({
@@ -44,6 +50,7 @@ jest.mock("#/helpers/Notifications", () => ({
   __esModule: true,
   default: {
     getToken: jest.fn(() => Promise.resolve("")),
+    getPermissions: jest.fn(() => Promise.resolve({ status: "granted" })),
     registerForPushNotifications: jest.fn(() =>
       Promise.resolve({ notificationSettings: {} }),
     ),
@@ -154,6 +161,11 @@ describe("SettingsScreen", () => {
       advancedSettings: {},
       setAdvancedSettings: jest.fn(),
     });
+    // Mirror the real useFocusEffect: run the (stable, []-memoized) callback
+    // once on mount, same pattern used in MySources.test.tsx.
+    jest.mocked(useFocusEffect).mockImplementation((cb) => {
+      useEffect(() => cb(), [cb]);
+    });
   });
 
   describe("notifications collapsable", () => {
@@ -167,6 +179,82 @@ describe("SettingsScreen", () => {
       mockIsFoss = true;
       const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText("Benachrichtigungen")).toBeNull();
+    });
+  });
+
+  describe("notification permission state", () => {
+    const getNotificationListProps = () => {
+      const SettingsList = jest.requireMock(
+        "#/components/views/SettingsList",
+      ) as jest.Mock;
+      // Every re-render re-invokes the mock for all three SettingsList
+      // usages (feed/notifications/advanced), so take the most recent
+      // notifications call rather than the first (pre-permission-check) one.
+      return SettingsList.mock.calls.findLast(
+        (call: any[]) => "onDisabledPress" in call[0],
+      )?.[0] as { disabled: boolean; onDisabledPress: () => void } | undefined;
+    };
+
+    it("disables the notification switches when permission is denied", async () => {
+      const Notifications = jest.requireMock("#/helpers/Notifications") as {
+        default: { getPermissions: jest.Mock<any> };
+      };
+      Notifications.default.getPermissions.mockResolvedValue({
+        status: "denied",
+      });
+
+      await render(<SettingsScreen />);
+
+      await waitFor(() => {
+        expect(getNotificationListProps()?.disabled).toBe(true);
+      });
+    });
+
+    it("keeps the notification switches enabled when permission is granted", async () => {
+      const Notifications = jest.requireMock("#/helpers/Notifications") as {
+        default: { getPermissions: jest.Mock<any> };
+      };
+      Notifications.default.getPermissions.mockResolvedValue({
+        status: "granted",
+      });
+
+      await render(<SettingsScreen />);
+      await waitFor(() => {
+        expect(Notifications.default.getPermissions).toHaveBeenCalledTimes(1);
+      });
+
+      expect(getNotificationListProps()?.disabled).toBe(false);
+    });
+
+    it("opens system Settings when the disabled message is pressed", async () => {
+      const Notifications = jest.requireMock("#/helpers/Notifications") as {
+        default: { getPermissions: jest.Mock<any> };
+      };
+      Notifications.default.getPermissions.mockResolvedValue({
+        status: "denied",
+      });
+      const Linking = jest.requireMock("expo-linking") as {
+        openSettings: jest.Mock;
+      };
+
+      await render(<SettingsScreen />);
+      await waitFor(() => {
+        expect(getNotificationListProps()?.disabled).toBe(true);
+      });
+      getNotificationListProps()?.onDisabledPress();
+
+      expect(Linking.openSettings).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not check permissions in FOSS mode", async () => {
+      mockIsFoss = true;
+      const Notifications = jest.requireMock("#/helpers/Notifications") as {
+        default: { getPermissions: jest.Mock<any> };
+      };
+
+      await render(<SettingsScreen />);
+
+      expect(Notifications.default.getPermissions).not.toHaveBeenCalled();
     });
   });
 
@@ -240,7 +328,7 @@ describe("SettingsScreen", () => {
       await fireEvent.press(getByText("Intro zurücksetzen"));
       expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
         "Intro zurücksetzen?",
-        "Intro erscheint beim nächsten Start erneut",
+        "Drücke hier, um das Intro zurückzusetzen",
         expect.any(Function),
       );
     });
@@ -262,7 +350,6 @@ describe("SettingsScreen", () => {
       );
       expect(jest.mocked(toast.success)).toHaveBeenCalledWith(
         "Intro zurückgesetzt",
-        "Beim nächsten App-Start wird das Intro angezeigt",
       );
     });
   });

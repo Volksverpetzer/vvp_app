@@ -12,6 +12,15 @@ import SettingsStore from "./Stores/SettingsStore";
 
 let cachedNotifications: typeof ExpoNotifications | null = null;
 let notificationsConfigured = false;
+// Serializes the fast local read-merge-write of notification settings so
+// concurrent calls can't resurrect each other's stale values in storage.
+let persistChain: Promise<void> = Promise.resolve();
+// Serializes the slow network part (token fetch + server registration).
+let registrationChain: Promise<void> = Promise.resolve();
+// Android notification channels only need to be created once per process;
+// re-creating them on every registration adds two awaits to each settings
+// toggle for nothing (Android freezes channel config after first creation).
+let channelsConfigured = false;
 
 const getNotifications = (): typeof ExpoNotifications | null => {
   if (Config.isFoss) return null;
@@ -127,37 +136,81 @@ const NotificationManager = {
 
   /**
    * Registers the device for push notifications and sends the token along with settings.
+   *
+   * Two-phase design: the local read-merge-write of settings happens
+   * immediately (serialized only against other persists, which take
+   * milliseconds), while the slow token fetch + server registration is
+   * serialized on its own chain. Persisting inside the network chain
+   * caused a real bug: a toggle's persist queued behind an earlier call's
+   * multi-second token fetch, so storage kept the earlier call's values
+   * long enough for the settings tab to read stale data.
    * @param newSettings - Optional new notification settings to be sent to the server.
    * @returns A promise that resolves to an object containing the status and notification settings.
    */
-  async registerForPushNotifications(
+  registerForPushNotifications(
     newSettings?: Partial<NotificationSettingType>,
   ): Promise<{
     status: string;
     notificationSettings: NotificationSettingType;
   }> {
-    if (Config.isFoss) {
+    // Phase 1 — merge and persist right away, so storage reflects the
+    // user's latest choice within milliseconds even while earlier syncs
+    // are still doing network work.
+    const persisted = persistChain.then(async () => {
       const storedSettings = await SettingsStore.getNotificationSettings();
-      return { status: "foss", notificationSettings: storedSettings };
+      const notificationSettings = {
+        ...SettingsStore.defaultNotificationSettings,
+        ...storedSettings,
+        ...newSettings,
+      };
+      await SettingsStore.setNotificationSettings(notificationSettings);
+      return notificationSettings;
+    });
+    // Keep the chains alive after failures so the next call still runs.
+    persistChain = persisted.then(
+      () => undefined,
+      () => undefined,
+    );
+
+    // Phase 2 — slow token/server sync, serialized separately. Capture the
+    // previous chain now: reading the variable inside the callback would
+    // see the already-reassigned chain (which includes this run) and
+    // deadlock waiting on itself.
+    const previousRegistration = registrationChain;
+    const run = persisted.then((notificationSettings) =>
+      previousRegistration.then(() =>
+        this.performServerRegistration(notificationSettings),
+      ),
+    );
+    registrationChain = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
+  },
+
+  /** Network half of registerForPushNotifications (permission check, token
+   * fetch, server registration) — do not call directly, it must only run
+   * serialized through the registration chain above. */
+  async performServerRegistration(
+    notificationSettings: NotificationSettingType,
+  ): Promise<{
+    status: string;
+    notificationSettings: NotificationSettingType;
+  }> {
+    if (Config.isFoss) {
+      return { status: "foss", notificationSettings };
     }
     ensureNotificationsConfigured();
     const Notifications = getNotifications();
     if (!Notifications) {
-      const storedSettings = await SettingsStore.getNotificationSettings();
-      return { status: "unavailable", notificationSettings: storedSettings };
+      return { status: "unavailable", notificationSettings };
     }
 
     let token: string;
 
-    const storedSettings = await SettingsStore.getNotificationSettings();
-
-    const notificationSettings = {
-      ...SettingsStore.defaultNotificationSettings,
-      ...storedSettings,
-      ...newSettings,
-    };
-
-    if (Platform.OS === "android") {
+    if (Platform.OS === "android" && !channelsConfigured) {
+      channelsConfigured = true;
       // Create a default channel for general notifications
       await Notifications.setNotificationChannelAsync("default", {
         name: "Default Notifications",
@@ -191,35 +244,105 @@ const NotificationManager = {
       }
       if (finalStatus !== "granted") {
         console.warn("Notification permission not granted");
-        return { status: finalStatus, notificationSettings: storedSettings };
+        return { status: finalStatus, notificationSettings };
       }
       try {
         token = await NotificationManager.getToken();
       } catch (error) {
         console.error(error);
         return {
-          status: "error getting token" + error,
-          notificationSettings: storedSettings,
+          status: `error getting token: ${error}`,
+          notificationSettings,
         };
       }
       if (!token) {
-        return { status: "No Token", notificationSettings: storedSettings };
+        return { status: "No Token", notificationSettings };
       }
     } else {
       return { status: "ok", notificationSettings };
     }
 
-    /** Merge default, stored, and new settings. */
-
+    // Re-read storage right before the POST: while this sync waited in the
+    // chain, a newer toggle may already have persisted — the server should
+    // always receive the latest settings, not this sync's snapshot. The
+    // caller still gets this call's own merge back (callers guard against
+    // stale trailing updates themselves via their sync ids).
+    const latestSettings = await SettingsStore.getNotificationSettings();
     const body = {
       expo_token: token,
-      settings: notificationSettings,
+      settings: latestSettings,
       os: Platform.OS,
       version: Application?.nativeBuildVersion,
     };
-    await SettingsStore.setNotificationSettings(notificationSettings);
     const response = await API.registerNotifications(body);
     return { status: response.status, notificationSettings };
+  },
+
+  /**
+   * Requests OS notification permission when it is not already granted and
+   * syncs all notification-category switches to the outcome of that request:
+   * freshly granted -> all on, denied/dismissed -> all off. When permission
+   * was already granted beforehand (no prompt shown, e.g. onboarding was
+   * re-entered), the stored switch values are kept as-is and only the
+   * token/server registration is refreshed. The OS only actually shows a
+   * dialog while it may still ask (undetermined, or denied with canAskAgain
+   * on Android); otherwise the request resolves silently with the existing
+   * denial.
+   * Used by the onboarding notification step, which wants the OS prompt to
+   * appear as soon as the step is shown rather than per-switch.
+   */
+  async requestPermissionAndApplyDefaults(): Promise<{
+    status: string;
+    notificationSettings: NotificationSettingType;
+  }> {
+    const storedSettings = await SettingsStore.getNotificationSettings();
+    const currentSettings = {
+      ...SettingsStore.defaultNotificationSettings,
+      ...storedSettings,
+    };
+
+    if (Config.isFoss) {
+      return { status: "foss", notificationSettings: currentSettings };
+    }
+    ensureNotificationsConfigured();
+    const Notifications = getNotifications();
+    if (!Notifications || !Device.isDevice) {
+      return { status: "unavailable", notificationSettings: currentSettings };
+    }
+
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+
+    if (existingStatus === "granted") {
+      // Permission was already granted before this step — no prompt was
+      // shown, so don't force the all-on defaults over switch values the
+      // user may have customized; just refresh token/server registration.
+      return await NotificationManager.registerForPushNotifications();
+    }
+
+    const { status: finalStatus } =
+      await Notifications.requestPermissionsAsync();
+    const granted = finalStatus === "granted";
+    const notificationSettings = Object.fromEntries(
+      Object.entries(currentSettings).map(([key, setting]) => [
+        key,
+        { ...setting, value: granted },
+      ]),
+    ) as NotificationSettingType;
+
+    if (!granted) {
+      // Persist the all-off settings locally, but skip
+      // registerForPushNotifications: its own permission check would call
+      // requestPermissionsAsync a second time (re-prompting on platforms
+      // where canAskAgain is still true), and without permission there is
+      // no token to register anyway.
+      await SettingsStore.setNotificationSettings(notificationSettings);
+      return { status: finalStatus, notificationSettings };
+    }
+
+    return await NotificationManager.registerForPushNotifications(
+      notificationSettings,
+    );
   },
 
   /**

@@ -1,13 +1,14 @@
 import * as Application from "expo-application";
-import { useRouter } from "expo-router";
-import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import * as Haptics from "expo-haptics";
+import * as Linking from "expo-linking";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Animated, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import {
   CodeIcon,
   FeedIcon,
-  FeedbackIcon,
   GiveIcon,
   ImprintIcon,
   LockIcon,
@@ -46,6 +47,13 @@ const SettingsScreen = () => {
     useState<NotificationSettingType>(
       SettingsStore.defaultNotificationSettings,
     );
+  // Monotonic id for settings syncs: a sync only applies its full-object
+  // result to state if no newer sync started in the meantime — otherwise a
+  // slow, stale sync would visibly revert a newer optimistic toggle of a
+  // *different* switch.
+  const settingsSyncSeqRef = useRef(0);
+  const [notificationPermissionDenied, setNotificationPermissionDenied] =
+    useState(false);
   const {
     contentSettings,
     setContentSettings,
@@ -85,18 +93,74 @@ const SettingsScreen = () => {
     setting: SettingType,
   ): Promise<void> => {
     const newSetting = { ...setting, value };
-    const { notificationSettings: updatedNotificationSettings } =
-      await Notifications.registerForPushNotifications({ [key]: newSetting });
-    setNotificationSettings(updatedNotificationSettings);
+    // Flip the switch immediately — the token fetch and server registration
+    // below can take seconds on a real device and must not block the UI.
+    // The sync's merged full-settings result is applied afterwards, but only
+    // if no newer sync started meanwhile (see settingsSyncSeqRef).
+    setNotificationSettings((previous) => ({ ...previous, [key]: newSetting }));
+    Haptics.selectionAsync();
+    const syncId = ++settingsSyncSeqRef.current;
+    try {
+      const { notificationSettings: updatedNotificationSettings } =
+        await Notifications.registerForPushNotifications({ [key]: newSetting });
+      if (syncId === settingsSyncSeqRef.current) {
+        setNotificationSettings(updatedNotificationSettings);
+      }
+    } catch (error) {
+      console.error("Failed to sync notification setting:", error);
+    }
   };
 
   useEffect(() => {
     const getToken = async () => {
-      const token = await Notifications.getToken();
-      setToken(token);
+      try {
+        const token = await Notifications.getToken();
+        setToken(token);
+      } catch (error) {
+        // getToken rethrows (no network, no Play Services, …) — the token
+        // line simply stays empty in that case.
+        console.error("Failed to get push token:", error);
+      }
     };
     getToken();
   }, []);
+
+  // Re-check the OS permission whenever this tab regains focus (e.g. the
+  // user just came back from toggling it in the system Settings app), so the
+  // switches reflect reality rather than a request made once at mount. Also
+  // load the stored notification settings — without this the switches show
+  // the defaults, not what the user actually configured.
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      const seqAtFocus = settingsSyncSeqRef.current;
+      SettingsStore.getNotificationSettings()
+        .then((storedSettings) => {
+          // Skip if a toggle sync started since focus — its optimistic state
+          // is newer than what storage held when this load began.
+          if (isActive && seqAtFocus === settingsSyncSeqRef.current) {
+            setNotificationSettings(storedSettings);
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to load notification settings:", error);
+        });
+      if (!Config.isFoss && Platform.OS !== "web") {
+        Notifications.getPermissions()
+          .then((permissions) => {
+            if (isActive) {
+              setNotificationPermissionDenied(permissions.status === "denied");
+            }
+          })
+          .catch((error) => {
+            console.error("Failed to check notification permission:", error);
+          });
+      }
+      return () => {
+        isActive = false;
+      };
+    }, []),
+  );
 
   return (
     <>
@@ -131,7 +195,7 @@ const SettingsScreen = () => {
             title="Feed"
             borderRadius={0}
           >
-            <UiText style={styles.sectionText}>
+            <UiText size="base" style={styles.sectionText}>
               Was möchtest du in deinem Feed sehen?
             </UiText>
             <SettingsList
@@ -148,6 +212,9 @@ const SettingsScreen = () => {
               <SettingsList
                 saveSettings={saveNotificationSetting}
                 settings={notificationSettings}
+                disabled={notificationPermissionDenied}
+                disabledMessage="Benachrichtigungen sind in den Systemeinstellungen deaktiviert. Tippe hier, um sie zu aktivieren."
+                onDisabledPress={() => Linking.openSettings()}
               />
             </UiCollapsable>
           )}
@@ -174,11 +241,6 @@ const SettingsScreen = () => {
             url={Config.donations.support}
             icon={<GiveIcon color={primary} size={24} />}
             text="Unterstützen"
-          />
-          <UiLink
-            url={encodeURI("mailto:app@volksverpetzer.de")}
-            icon={<FeedbackIcon color={primary} size={24} />}
-            text="App-Feedback"
           />
           <UiLink
             url={Config.dataProtectionUrl}
@@ -209,14 +271,11 @@ const SettingsScreen = () => {
             onPress={() => {
               toast.confirm(
                 "Intro zurücksetzen?",
-                "Intro erscheint beim nächsten Start erneut",
+                "Drücke hier, um das Intro zurückzusetzen",
                 () => {
                   PersonalStore.setOnboardingDone(false);
                   PersonalStore.setLastSeenChangelogVersionCode(0);
-                  toast.success(
-                    "Intro zurückgesetzt",
-                    "Beim nächsten App-Start wird das Intro angezeigt",
-                  );
+                  toast.success("Intro zurückgesetzt");
                 },
               );
             }}
@@ -229,7 +288,7 @@ const SettingsScreen = () => {
               onPress={() => {
                 toast.confirm(
                   "Benachrichtigungen zurücksetzen?",
-                  "Drücke hier um die Benachrichtigungen zurückzusetzen",
+                  "Drücke hier, um sie zurückzusetzen",
                   () => {
                     Notifications.registerForPushNotifications();
                     toast.success("Benachrichtigungen zurückgesetzt");
@@ -245,13 +304,10 @@ const SettingsScreen = () => {
             onPress={() => {
               toast.confirm(
                 "Erfolge zurücksetzen?",
-                "Drücke hier um alle Erfolge zurückzusetzen",
+                "Drücke hier, um alle Erfolge zurückzusetzen",
                 () => {
                   Achievements.resetEverything();
-                  toast.success(
-                    "Erfolge zurückgesetzt",
-                    "Alle Erfolge wurden zurückgesetzt",
-                  );
+                  toast.success("Erfolge zurückgesetzt");
                 },
               );
             }}
@@ -283,7 +339,6 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   sectionText: {
-    fontSize: 16,
     paddingHorizontal: 20,
   },
 });

@@ -28,7 +28,7 @@ const CardComponent = ({ card, onPress }: CardComponentProperties) => {
       onPress={() => onPress(card)}
     >
       <View style={cardStyles.cardInner}>
-        <UiText style={cardStyles.cardText}>
+        <UiText size="base" style={cardStyles.cardText}>
           {card.isFlipped || card.isMatched ? card.content : "?"}
         </UiText>
       </View>
@@ -50,7 +50,7 @@ const cardStyles = StyleSheet.create({
     width: cardSize - 10,
   },
   cardInner: { alignItems: "center", justifyContent: "center" },
-  cardText: { fontSize: 16, textAlign: "center" },
+  cardText: { textAlign: "center" },
   matchedCard: { borderColor: "#28a745" },
   selectedCard: { borderColor: "#ffa500" },
 });

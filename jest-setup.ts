@@ -62,31 +62,27 @@ jest.mock("expo-constants", () => ({
         colorScheme: {
           light: {
             text: "#111",
-            textHeading: "#1B7194",
             background: "#fff",
             surface: "#E2F0F5",
-            iconMuted: "#aaa",
-            muted: "#bbb",
+            surfaceInput: "#BADDE8",
+            surfaceDisabled: "#bbb",
             textMuted: "#aaa",
-            iconOnPrimary: "#3893C0",
-            inputBackground: "#BADDE8",
+            onPrimary: "#3893C0",
             accent: "#DB2685",
             primary: "#1b7194",
-            primaryTint: "#3893C0",
+            primaryMuted: "#3893C0",
           },
           dark: {
             text: "#111",
-            textHeading: "#1B7194",
             background: "#fff",
             surface: "#E2F0F5",
-            iconMuted: "#aaa",
-            muted: "#bbb",
+            surfaceInput: "#BADDE8",
+            surfaceDisabled: "#bbb",
             textMuted: "#aaa",
-            iconOnPrimary: "#3893C0",
-            inputBackground: "#BADDE8",
+            onPrimary: "#3893C0",
             accent: "#DB2685",
             primary: "#1b7194",
-            primaryTint: "#3893C0",
+            primaryMuted: "#3893C0",
           },
         },
       },
@@ -106,6 +102,13 @@ jest.mock("expo-router", () => {
 });
 
 jest.mock("@react-native-async-storage/async-storage", () => mockAsyncStorage);
+
+jest.mock("react-native-safe-area-context", () => {
+  // The bundled mock only exposes a default export; surface its members as
+  // named exports too so `import { useSafeAreaInsets }` resolves.
+  const mock = require("react-native-safe-area-context/jest/mock").default;
+  return { __esModule: true, default: mock, ...mock };
+});
 
 jest.mock("expo-notifications", () => ({
   getPermissionsAsync: jest.fn(),

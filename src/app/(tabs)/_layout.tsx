@@ -21,9 +21,9 @@ const TabLayout = () => {
     primary: corporate,
     accent,
     background,
-    iconMuted,
-    iconOnPrimary,
-    muted,
+    textMuted,
+    onPrimary,
+    surfaceDisabled,
   } = Colors[colorScheme];
   const actionsActive = Config.enableActions;
   const engagementActive = Config.enableEngagement;
@@ -35,12 +35,12 @@ const TabLayout = () => {
       badgeBackgroundColor={accent}
       disableTransparentOnScrollEdge
       iconColor={{
-        default: iconMuted,
-        selected: iconOnPrimary,
+        default: textMuted,
+        selected: onPrimary,
       }}
       indicatorColor={corporate}
       labelVisibilityMode="unlabeled"
-      shadowColor={muted}
+      shadowColor={surfaceDisabled}
     >
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Icon
@@ -67,13 +67,12 @@ const TabLayout = () => {
         <NativeTabs.Trigger.Label hidden>Aktionen</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="report">
+      <NativeTabs.Trigger name="contact">
         <NativeTabs.Trigger.Icon
-          src={
-            <NativeTabs.Trigger.VectorIcon family={Octicons} name="report" />
-          }
+          src={<NativeTabs.Trigger.VectorIcon family={Octicons} name="mail" />}
         />
-        <NativeTabs.Trigger.Label hidden>Fake melden</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Badge hidden={!badgeState.contact} />
+        <NativeTabs.Trigger.Label hidden>Kontakt</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="settings">

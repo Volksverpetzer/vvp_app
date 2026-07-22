@@ -2,6 +2,7 @@ import type { AppBskyFeedDefs } from "@atproto/api";
 import type { FC } from "react";
 
 import type { HttpsUrl } from "./config";
+import type { ImageCredit } from "./responses";
 import type { FaveableType, ShareableType } from "./stores";
 
 export const DISPLAY_TEXT_FULL = "full";
@@ -46,6 +47,7 @@ export interface ArticleProperties {
   content?: { rendered: string };
   authors?: { display_name: string; slug: string }[];
   imageUrl?: string;
+  imageCredit?: ImageCredit;
   sourceName?: string;
   reading_time?: number;
 }

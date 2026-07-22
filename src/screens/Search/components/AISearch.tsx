@@ -1,11 +1,12 @@
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { decode } from "html-entities";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 import { SafetyIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
+import BackToTopButton from "#/components/buttons/BackToTopButton";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -15,6 +16,7 @@ import { globalStyles } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useBackToTop } from "#/hooks/useBackToTop";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 import type { AISearchResponse } from "#/types";
 
@@ -37,6 +39,8 @@ const AISearch = ({
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
   const textColor = Colors[colorScheme].text;
+  const listReference = useRef<FlatList>(null);
+  const backToTop = useBackToTop();
 
   const renderItem = useCallback(
     ({ item }: { item: AISearchResponse }) => {
@@ -48,10 +52,10 @@ const AISearch = ({
           text={item.text}
           subtitle={
             <UiText
+              size="base"
               style={{
                 fontFamily: "SourceSansProBold",
                 color: textColor,
-                fontSize: 16,
               }}
             >
               {hostname ?? item.url}
@@ -96,7 +100,10 @@ const AISearch = ({
         <UiPressable
           accessibilityRole="button"
           onPress={() => {
-            router.navigate({ pathname: "/report", params: { url: search } });
+            router.navigate({
+              pathname: "/contact",
+              params: { category: "app_feedback", url: search },
+            });
           }}
           style={[
             globalStyles.row,
@@ -136,6 +143,7 @@ const AISearch = ({
         </View>
       )}
       <FlatList
+        ref={listReference}
         data={results}
         keyExtractor={(_, index) => index.toString()}
         contentContainerStyle={{
@@ -143,6 +151,14 @@ const AISearch = ({
           gap: 20,
         }}
         renderItem={renderItem}
+        onScroll={backToTop.onScroll}
+        scrollEventThrottle={16}
+      />
+      <BackToTopButton
+        visible={backToTop.visible}
+        onPress={() =>
+          listReference.current?.scrollToOffset({ offset: 0, animated: true })
+        }
       />
     </View>
   );

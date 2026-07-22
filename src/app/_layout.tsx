@@ -5,6 +5,7 @@ import {
   SourceSans3_700Bold_Italic,
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
+import OcticonsFont from "@react-native-vector-icons/octicons/fonts/Octicons.ttf";
 import { Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -26,6 +27,7 @@ import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
@@ -43,8 +45,8 @@ SplashScreen.preventAutoHideAsync();
 const SECONDARY_BG_SCREENS = new Set(["action", "support"]);
 
 const TOAST_TEXT_STYLES = {
-  text1Style: { fontSize: 16 },
-  text2Style: { fontSize: 14 },
+  text1Style: { fontSize: fontSizes.base },
+  text2Style: { fontSize: fontSizes.sm },
 };
 
 /**
@@ -83,6 +85,15 @@ const AppFrame = ({ children }: PropsWithChildren) => {
   );
 };
 
+/**
+ * Wraps Toast so its bottom offset clears the Android nav bar, matching the
+ * padding approach used by BottomSheetModal/ChangelogModal.
+ */
+const AppToast = ({ config }: { config: ToastConfig }) => {
+  const insets = useSafeAreaInsets();
+  return <Toast config={config} bottomOffset={40 + insets.bottom} />;
+};
+
 const RootLayout = () => {
   useNotificationObserver();
 
@@ -91,6 +102,9 @@ const RootLayout = () => {
     SourceSansProItalic: SourceSans3_400Regular_Italic,
     SourceSansProBold: SourceSans3_700Bold,
     SourceSansProBoldItalic: SourceSans3_700Bold_Italic,
+    // The icon font is bundled natively by the vector-icons config plugin,
+    // but on web it has to be registered explicitly
+    ...(Platform.OS === "web" && { Octicons: OcticonsFont }),
   });
 
   const [showChangelog, setShowChangelog] = useState(false);
@@ -178,7 +192,7 @@ const RootLayout = () => {
                 />
                 <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
               </Stack>
-              <Toast config={toastConfig} />
+              <AppToast config={toastConfig} />
               <ChangelogModal
                 isVisible={showChangelog}
                 onClose={dismissChangelog}

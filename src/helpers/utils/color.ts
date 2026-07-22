@@ -1,4 +1,5 @@
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 
 export const isDarkMode = (mode: AppColorScheme) => mode === "dark";
@@ -35,7 +36,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     em: {
       fontFamily: "SourceSansProItalic",
     },
-    p: { color: textColor, padding: 10, fontSize: 18 },
+    p: { color: textColor, padding: 10, fontSize: fontSizes.lg },
     strong: {
       color: textColor,
       fontFamily: "SourceSansProBold",
@@ -49,25 +50,25 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       textTransform: "uppercase" as const,
       color: textColor,
       padding: 10,
-      fontSize: 24,
+      fontSize: fontSizes.xxl,
     },
     h3: {
       textTransform: "uppercase" as const,
       color: textColor,
       padding: 10,
-      fontSize: 24,
+      fontSize: fontSizes.xxl,
     },
     h4: {
       textTransform: "uppercase" as const,
       color: textColor,
       padding: 10,
-      fontSize: 24,
+      fontSize: fontSizes.xxl,
     },
-    h5: { color: textColor, padding: 10, fontSize: 22 },
+    h5: { color: textColor, padding: 10, fontSize: fontSizes.xxl },
     li: {
       color: textColor,
       paddingHorizontal: 10,
-      fontSize: 18,
+      fontSize: fontSizes.lg,
       marginBottom: 10,
     },
     img: { minHeight: 200 },
@@ -78,13 +79,13 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     iframe: { left: 100 },
     figcaption: {
       color: textColor,
-      fontSize: 14,
+      fontSize: fontSizes.sm,
       padding: 10,
       textAlign: "center" as const,
     },
     blockquote: {
       color: textColor,
-      fontSize: 18,
+      fontSize: fontSizes.lg,
       fontFamily: "SourceSansProItalic",
       paddingLeft: 20,
       paddingRight: 10,
@@ -96,7 +97,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     },
     cite: {
       color: textColor,
-      fontSize: 14,
+      fontSize: fontSizes.sm,
       fontFamily: "SourceSansProItalic",
       textAlign: "right" as const,
       paddingTop: 5,

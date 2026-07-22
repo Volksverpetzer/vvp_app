@@ -1,19 +1,22 @@
 import { searchClient } from "@algolia/client-search";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
+import BackToTopButton from "#/components/buttons/BackToTopButton";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
+import { globalStyles } from "#/constants/GlobalStyles";
 import {
   ALGOLIA_APP_ID,
   ALGOLIA_INDEX_NAME,
   ALGOLIA_SEARCH_KEY,
 } from "#/constants/Search";
 import { onLinkPress } from "#/helpers/Linking";
+import { useBackToTop } from "#/hooks/useBackToTop";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 
 const algoliaClient = searchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
@@ -33,6 +36,8 @@ const AlgoliaSearchResults = ({
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const router = useRouter();
+  const listReference = useRef<FlatList>(null);
+  const backToTop = useBackToTop();
 
   useEffect(() => {
     if (!searchString || searchString.length < 2) {
@@ -124,19 +129,30 @@ const AlgoliaSearchResults = ({
   }
 
   return (
-    <FlatList
-      data={results}
-      contentContainerStyle={{
-        paddingBottom: 100,
-        gap: 20,
-      }}
-      keyExtractor={(item) => item.objectID}
-      renderItem={renderItem}
-      initialNumToRender={5}
-      maxToRenderPerBatch={10}
-      windowSize={5}
-      keyboardDismissMode="on-drag"
-    />
+    <View style={globalStyles.container}>
+      <FlatList
+        ref={listReference}
+        data={results}
+        contentContainerStyle={{
+          paddingBottom: 100,
+          gap: 20,
+        }}
+        keyExtractor={(item) => item.objectID}
+        renderItem={renderItem}
+        initialNumToRender={5}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        keyboardDismissMode="on-drag"
+        onScroll={backToTop.onScroll}
+        scrollEventThrottle={16}
+      />
+      <BackToTopButton
+        visible={backToTop.visible}
+        onPress={() =>
+          listReference.current?.scrollToOffset({ offset: 0, animated: true })
+        }
+      />
+    </View>
   );
 };
 

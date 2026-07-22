@@ -7,6 +7,8 @@ const BadgeStore = {
   defaultState: {
     action: false,
     personal: false,
+    // Highlights the new contact tab until it is opened once
+    contact: true,
   } as BadgeState,
 
   async setBadgeStore(badgeState: BadgeState) {
@@ -20,13 +22,19 @@ const BadgeStore = {
   async getBadgeStore(): Promise<BadgeState> {
     try {
       const jsonValue = await BaseStore.getItem(this.key);
-      return BaseStore.parseJSON<BadgeState>(jsonValue, {
-        action: false,
-        personal: false,
-      });
+      // Merge over the defaults so newly introduced badges (missing in an
+      // older stored state) start with their default value; ignore stored
+      // values that parse to something other than an object
+      const parsed = BaseStore.parseJSON<Partial<BadgeState>>(jsonValue, {});
+      return {
+        ...this.defaultState,
+        ...(parsed && typeof parsed === "object" && !Array.isArray(parsed)
+          ? parsed
+          : {}),
+      };
     } catch (error) {
       console.error("Error retrieving badge state:", error);
-      return { action: false, personal: false };
+      return this.defaultState;
     }
   },
 };

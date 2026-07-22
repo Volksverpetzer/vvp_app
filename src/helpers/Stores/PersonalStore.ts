@@ -1,5 +1,4 @@
 import BaseStore from "#/helpers/Storage";
-import type { StoredReports } from "#/types";
 
 // Serializes dismissAnnouncement's read-modify-write: callers fire-and-forget
 // it, so two quick dismissals could otherwise both read the same stored list
@@ -9,7 +8,6 @@ let pendingDismissal: Promise<void> = Promise.resolve();
 const PersonalStore = {
   keys: {
     onboardingDone: "onboarded",
-    reports: "reports",
     scrollPosition: "scrollPosition",
     longPressTip: "longPressTip",
     lastSeenChangelog: "lastSeenChangelog",
@@ -107,32 +105,6 @@ const PersonalStore = {
       }
     });
     return pendingDismissal;
-  },
-
-  /**
-   * Stores the reports.
-   * @param {StoredReports} reports - The reports to store.
-   */
-  async setReports(reports: StoredReports): Promise<void> {
-    try {
-      await BaseStore.setItem(this.keys.reports, JSON.stringify(reports));
-    } catch (error) {
-      console.error("Error saving reports:", error);
-    }
-  },
-
-  /**
-   * Retrieves the reports.
-   * @returns {Promise<StoredReports>} The stored reports.
-   */
-  async getReports(): Promise<StoredReports> {
-    try {
-      const jsonValue = await BaseStore.getItem(this.keys.reports);
-      return BaseStore.parseJSON<StoredReports>(jsonValue, []);
-    } catch (error) {
-      console.error("Error retrieving reports:", error);
-      return [];
-    }
   },
 
   /**

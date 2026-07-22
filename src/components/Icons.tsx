@@ -75,6 +75,10 @@ export const HomeIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="home" />
 );
 
+export const InfoIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="info" />
+);
+
 export const HeartIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="heart-fill" />
 );
@@ -115,20 +119,12 @@ export const PlayIcon = ({
   </View>
 );
 
-export const ReportIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="report" />
+export const MailIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="mail" />
 );
 
-export const ReportStatusIcon = ({
-  status,
-  ...rest
-}: OcticonsProps & { status: "error" | "posted" | "pending" }) => (
-  <Octicons
-    {...rest}
-    name={
-      status === "error" ? "info" : status === "posted" ? "check" : "hourglass"
-    }
-  />
+export const ReportIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="report" />
 );
 
 export const SafetyIcon = ({ size, ...rest }: OcticonsProps) => (

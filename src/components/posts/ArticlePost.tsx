@@ -12,6 +12,7 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import {
+  DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
@@ -23,14 +24,14 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
-import type { ArticleProperties } from "#/types";
+import type { ArticleProperties, ImageCredit } from "#/types";
 
 import Badge from "./Badge";
+import ImageCreditBadge from "./ImageCreditBadge";
 
 const titleStyle: TextStyle = {
   fontFamily: "SourceSansProBold",
   paddingHorizontal: POST_PADDING_HORIZONTAL,
-  fontSize: 20,
   lineHeight: 26,
   textAlign: "left",
 };
@@ -56,6 +57,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
 
   // Local state.
   const [imageUrl, setImgURL] = useState("");
+  const [imageCredit, setImageCredit] = useState<ImageCredit | undefined>();
   const [scrollProgress, setScrollProgress] = useState<DimensionValue>("0%");
   const [viewCount, setViewCount] = useState<number | null>(null);
 
@@ -65,7 +67,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const greyText = Colors[colorScheme].textMuted;
   const { width } = useFeedDimensions();
   const router = useRouter();
-  const height = useMemo(() => 0.5125 * (width - 26), [width]);
+  const height = useMemo(() => DEFAULT_IMAGE_ASPECT_RATIO * width, [width]);
 
   // Memoize importantCats mapping (optional, here we rely on the static outside mapping).
   const importantCats = useMemo(() => Config.importantCats, []);
@@ -88,12 +90,14 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Fetch the feature image when the article is in view.
   const getImages = useCallback(async () => {
     try {
-      const { image } = await WordPressAPI.getFeatureImage(
+      const { image, credit } = await WordPressAPI.getFeatureImage(
         article._links["wp:featuredmedia"][0].href,
       );
       setImgURL(image);
+      setImageCredit(credit);
       ContentStore.setStoredArticle(article.slug, {
         imageUrl: image,
+        imageCredit: credit,
         ...article,
       });
     } catch (error) {
@@ -107,10 +111,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }
   }, [inView, getImages]);
 
-  // Reset the view count when this row is recycled for a different article, so
-  // a previously-hidden (0-view) badge re-mounts and refetches for the new one.
+  // Reset per-article state when this row is recycled for a different article,
+  // so a previously-hidden (0-view) badge re-mounts and refetches, and the old
+  // article's image credit can't linger on the new one until its fetch lands.
   useEffect(() => {
     setViewCount(null);
+    setImageCredit(undefined);
   }, [article.link]);
 
   // Memoize computed texts.
@@ -160,12 +166,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const elevatedWrapperStyle = useMemo(() => {
     if (!elevated) return;
     const isDark = colorScheme === "dark";
+    const shadowRgb = isDark ? "255, 255, 255" : "0, 0, 0";
+    const shadowOpacity = isDark ? 0.12 : 0.2;
     return {
       borderRadius: 15,
-      shadowColor: isDark ? "#fff" : "#000",
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: isDark ? 0.12 : 0.2,
-      shadowRadius: 1.41,
+      boxShadow: `0px 1px 1.41px rgba(${shadowRgb}, ${shadowOpacity})`,
       elevation: 2,
     };
   }, [elevated, colorScheme]);
@@ -192,13 +197,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       paddingHorizontal: POST_PADDING_HORIZONTAL,
       textAlign: "left" as const,
       color: greyText,
-      fontSize: 16,
     }),
     [greyText],
   );
   const categoryTextStyle: TextStyle[] = [
     globalStyles.whiteText,
-    { textAlign: "right", fontSize: 14 },
+    { textAlign: "right" },
   ];
 
   const content = (
@@ -209,31 +213,40 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       onLongPress={handleLongPress}
     >
       <View style={containerStyle}>
-        <Image
-          style={imageStyle}
-          source={{ uri: imageUrl }}
-          placeholder={AppImages.loadingAnimation}
-          contentFit="cover"
-        />
-        {!imageUrl && !AppImages.loadingAnimation && (
-          <UiSpinner
-            containerStyle={{
-              position: "absolute",
-              height,
-              top: 0,
-              left: 0,
-            }}
+        {/* Relative wrapper so the credit badge anchors to the thumbnail
+            rather than the bottom of the whole card. */}
+        <View style={{ position: "relative" }}>
+          <Image
+            style={imageStyle}
+            source={{ uri: imageUrl }}
+            placeholder={AppImages.loadingAnimation}
+            contentFit="cover"
           />
-        )}
+          {!imageUrl && !AppImages.loadingAnimation && (
+            <UiSpinner
+              containerStyle={{
+                position: "absolute",
+                height,
+                top: 0,
+                left: 0,
+              }}
+            />
+          )}
+          <ImageCreditBadge credit={imageCredit} position="bottomRight" />
+        </View>
         <View style={progressBarStyle} />
         <UiSpace size={10} />
-        <UiText style={titleStyle}>{article.title}</UiText>
+        <UiText size="xl" style={titleStyle}>
+          {article.title}
+        </UiText>
         <UiSpace size={10} />
-        <UiText style={authorDateStyle}>{authorDateText}</UiText>
+        <UiText size="base" style={authorDateStyle}>
+          {authorDateText}
+        </UiText>
         <UiSpace size={10} />
         {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>
-            <UiText style={categoryTextStyle}>
+            <UiText size="sm" style={categoryTextStyle}>
               {article.sourceName || categoryText}
             </UiText>
           </Badge>
@@ -246,9 +259,9 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         {excerpt ? (
           <>
             <UiText
+              size="base"
               style={{
                 paddingHorizontal: POST_PADDING_HORIZONTAL,
-                fontSize: 16,
               }}
             >
               {excerpt}

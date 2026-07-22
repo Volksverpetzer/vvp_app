@@ -1,7 +1,8 @@
-import { type ComponentProps, useEffect, useState } from "react";
+import { type ComponentProps, useState } from "react";
 import type { ColorValue } from "react-native";
 import { Switch, View } from "react-native";
 
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -17,11 +18,16 @@ interface SettingsListProperties {
     value: boolean,
     key: string,
     setting: SettingType,
-    setUpdate?: (arg0: boolean) => void,
-  ) => void;
+  ) => void | Promise<void>;
   settings: {
     [id: string]: SettingType;
   };
+  // Used when every switch in this list is gated behind a single external
+  // permission (e.g. OS notification permission) that's been denied — the
+  // switches can't do anything until the user re-enables it in Settings.
+  disabled?: boolean;
+  disabledMessage?: string;
+  onDisabledPress?: () => void;
 }
 
 // Extend native Switch props locally to allow `activeThumbColor` which
@@ -33,25 +39,43 @@ type ExtendedSwitchProps = ComponentProps<typeof Switch> & {
 };
 
 const SettingsList = (properties: SettingsListProperties) => {
-  const [disabled, setDisabled] = useState(false);
-  const [update, setUpdate] = useState(false);
-  useEffect(() => {
-    setDisabled(false);
-  }, [properties.settings, update]);
+  // Tracks in-flight saves per key, not globally, so toggling one switch
+  // doesn't disable/grey out its siblings while its save is pending.
+  const [pendingKeys, setPendingKeys] = useState<Set<string>>(new Set());
   const colorScheme = useAppColorScheme();
   const {
     primary: corporate,
-    primaryTint,
+    primaryMuted,
     textMuted,
-    iconMuted,
     surface,
-    inputBackground,
-    iconOnPrimary,
+    surfaceDisabled,
+    surfaceInput,
+    onPrimary,
   } = Colors[colorScheme];
   const activeSettings = getEnabledFeeds(Config.feeds);
+  const { disabled, disabledMessage, onDisabledPress } = properties;
 
   return (
     <View style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
+      {disabled &&
+        disabledMessage &&
+        (onDisabledPress ? (
+          <UiPressable
+            accessibilityRole="button"
+            onPress={onDisabledPress}
+            style={{ paddingBottom: 10 }}
+          >
+            <UiText size="base" style={{ color: textMuted }}>
+              {disabledMessage}
+            </UiText>
+          </UiPressable>
+        ) : (
+          <View style={{ paddingBottom: 10 }}>
+            <UiText size="base" style={{ color: textMuted }}>
+              {disabledMessage}
+            </UiText>
+          </View>
+        ))}
       {Object.keys(properties.settings)
         .sort((keyA, keyB) => {
           return properties.settings[keyA].name.localeCompare(
@@ -70,23 +94,35 @@ const SettingsList = (properties: SettingsListProperties) => {
           // (like `activeThumbColor`) without TypeScript complaining about them.
           const switchProps: ExtendedSwitchProps = {
             testID: "settingSwitch",
-            activeTrackColor: primaryTint,
+            activeTrackColor: primaryMuted,
             activeThumbColor: corporate,
             ios_backgroundColor: isDarkMode(colorScheme) // ios only
               ? surface
-              : iconOnPrimary,
-            thumbColor: setting.value ? corporate : iconMuted,
+              : onPrimary,
+            thumbColor: setting.value && !disabled ? corporate : textMuted,
             trackColor: {
-              false: isDarkMode(colorScheme) ? textMuted : inputBackground,
-              true: primaryTint,
+              // Dark track under the light grey thumb — the thumb itself is
+              // textMuted, so the off-track must not use the same grey
+              false: isDarkMode(colorScheme) ? surfaceDisabled : surfaceInput,
+              true: primaryMuted,
             },
-            disabled,
+            disabled: disabled || pendingKeys.has(key),
             onValueChange: (value: boolean) => {
-              setDisabled(true);
-              properties.saveSettings(value, key, setting, setUpdate);
-              setUpdate(false);
+              setPendingKeys((prev) => new Set(prev).add(key));
+              Promise.resolve()
+                .then(() => properties.saveSettings(value, key, setting))
+                .catch((error) => {
+                  console.error("Error saving setting:", error);
+                })
+                .finally(() => {
+                  setPendingKeys((prev) => {
+                    const next = new Set(prev);
+                    next.delete(key);
+                    return next;
+                  });
+                });
             },
-            value: setting.value,
+            value: disabled ? false : setting.value,
           };
 
           return (
@@ -94,7 +130,7 @@ const SettingsList = (properties: SettingsListProperties) => {
               key={key}
               style={[globalStyles.row, { paddingTop: 20, maxHeight: 45 }]}
             >
-              <UiText style={{ fontSize: 16 }}>{setting.name}</UiText>
+              <UiText size="base">{setting.name}</UiText>
               {/* cast to native Switch props to satisfy TypeScript while keeping runtime props */}
               <Switch {...(switchProps as ComponentProps<typeof Switch>)} />
             </View>

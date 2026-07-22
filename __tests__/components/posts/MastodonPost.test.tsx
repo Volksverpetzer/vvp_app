@@ -16,10 +16,6 @@ jest.mock("react-native-hyperlink", () => {
   const { View } = require("react-native");
   return { Hyperlink: jest.fn(({ children }: any) => <View>{children}</View>) };
 });
-jest.mock("#/components/typography/Heading", () => {
-  const { Text } = require("react-native");
-  return jest.fn(({ children }: any) => <Text>{children}</Text>);
-});
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children }: any) => <Text>{children}</Text>);

@@ -18,7 +18,10 @@ const Parallelogram = (properties: Properties) => {
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={{ ...styles.parallelogram, backgroundColor }}>
-        <UiText style={{ ...styles.parallelogramText, color, ...textStyle }}>
+        <UiText
+          size="base"
+          style={{ ...styles.parallelogramText, color, ...textStyle }}
+        >
           {children}
         </UiText>
       </View>
@@ -38,7 +41,6 @@ const styles = StyleSheet.create({
     transform: [{ skewX: "-10deg" }],
   },
   parallelogramText: {
-    fontSize: 16,
     transform: [{ skewX: "10deg" }],
   },
 });

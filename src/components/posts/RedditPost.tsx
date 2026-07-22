@@ -5,7 +5,10 @@ import { View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
-import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
+import {
+  DEFAULT_IMAGE_ASPECT_RATIO,
+  POST_PADDING_HORIZONTAL,
+} from "#/constants/GlobalStyles";
 import { onShare as _onShare } from "#/helpers/Sharing";
 
 interface RedditImageSource {
@@ -44,7 +47,7 @@ const RedditPost = (properties: RedditProperties) => {
   };
   const height_relation = properties.is_reddit_media_domain
     ? img_dim.height / img_dim.width
-    : 0.5125;
+    : DEFAULT_IMAGE_ASPECT_RATIO;
   const size = properties.title.length > 100 ? 16 : 18;
   const author =
     properties.crosspost_parent_list?.[0]?.author ?? properties.author;
@@ -100,9 +103,9 @@ const RedditPost = (properties: RedditProperties) => {
             source={{ uri: imageUri }}
           />
           <UiText
+            size={size === 16 ? "base" : "lg"}
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
-              fontSize: size,
               lineHeight: size === 16 ? 22 : 24,
               fontFamily: "SourceSansProBold",
               textAlign: "left",
@@ -112,9 +115,9 @@ const RedditPost = (properties: RedditProperties) => {
             {properties.title}
           </UiText>
           <UiText
+            size="base"
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
-              fontSize: 16,
               paddingBottom: 10,
               color: "#999",
             }}

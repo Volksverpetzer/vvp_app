@@ -4,8 +4,8 @@ import type { ColorValue } from "react-native";
 import { Animated, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
-import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -49,10 +49,10 @@ const UiCollapsable = ({
   return (
     <View style={{ paddingHorizontal: 20, borderRadius, overflow: "hidden" }}>
       <Animated.View
-        pointerEvents="none"
         style={[
           StyleSheet.absoluteFill,
           { backgroundColor: resolvedCardBg, opacity: fadeAnim },
+          { pointerEvents: "none" },
         ]}
       />
       <UiPressable
@@ -62,7 +62,9 @@ const UiCollapsable = ({
       >
         <View style={styles.title}>
           {icon}
-          <Heading style={[{ color: textColor }]}>{title}</Heading>
+          <UiText bold size="lg">
+            {title}
+          </UiText>
         </View>
         <ChevronIcon
           direction={open ? "up" : "down"}

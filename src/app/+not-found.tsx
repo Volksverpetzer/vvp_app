@@ -3,7 +3,7 @@ import { ScrollView, View } from "react-native";
 
 import { ErrorIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
-import Heading from "#/components/typography/Heading";
+import UiText from "#/components/ui/UiText";
 import EmptyComponent from "#/components/views/EmptyComponent";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -26,7 +26,9 @@ const NotFoundScreen = () => {
           },
         ]}
       >
-        <Heading>404 Whoops!</Heading>
+        <UiText bold size="lg">
+          404 Whoops!
+        </UiText>
         <EmptyComponent
           text="Die angeforderte Seite konnte nicht gefunden werden."
           icon={<ErrorIcon size={60} />}

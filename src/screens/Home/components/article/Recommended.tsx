@@ -45,9 +45,9 @@ const Recommended = (properties: RecommendedProperties) => {
     <>
       {matches.length > 0 && (
         <UiText
+          size="xl"
           style={{
             padding: 10,
-            fontSize: 20,
             fontFamily: "SourceSansProBold",
           }}
         >

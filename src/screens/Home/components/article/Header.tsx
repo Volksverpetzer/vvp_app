@@ -14,6 +14,7 @@ import {
 import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
+import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -117,22 +118,25 @@ const Header = (properties: HeaderProperties) => {
 
   return (
     <>
-      <UiPressable
-        accessibilityRole="button"
-        onLongPress={() => setVisible(true)}
-        onLayout={onLayout}
-      >
-        <Image
-          style={{ margin: "auto", height, width: "100%" }}
-          source={{ uri: article_image }}
-          placeholder={LoadingImage}
-        />
-      </UiPressable>
+      <View style={{ position: "relative" }}>
+        <UiPressable
+          accessibilityRole="button"
+          onLongPress={() => setVisible(true)}
+          onLayout={onLayout}
+        >
+          <Image
+            style={{ margin: "auto", height, width: "100%" }}
+            source={{ uri: article_image }}
+            placeholder={LoadingImage}
+          />
+        </UiPressable>
+        <ImageCreditBadge credit={article.imageCredit} position="bottomRight" />
+      </View>
       <UiSpace size={30} />
       <UiText
+        size="xxl"
         style={{
           paddingHorizontal: 20,
-          fontSize: 26,
           textAlign: "left",
           fontFamily: "SourceSansProBold",
         }}
@@ -140,8 +144,8 @@ const Header = (properties: HeaderProperties) => {
         {article_title}
       </UiText>
       <UiText
+        size="lg"
         style={{
-          fontSize: 18,
           textAlign: "left",
           paddingVertical: 10,
           paddingHorizontal: 20,
@@ -225,10 +229,10 @@ const Header = (properties: HeaderProperties) => {
             />
             <UiSpace size={20} />
             <UiText
+              size="xxl"
               style={{
                 color: Colors.dark.text,
                 paddingHorizontal: 20,
-                fontSize: 26,
                 textAlign: "left",
                 fontFamily: "SourceSansProBold",
               }}
@@ -237,10 +241,10 @@ const Header = (properties: HeaderProperties) => {
             </UiText>
             <UiSpace size={20} />
             <UiText
+              size="lg"
               style={{
                 color: Colors.dark.text,
                 paddingHorizontal: 20,
-                fontSize: 18,
                 textAlign: "left",
               }}
             >

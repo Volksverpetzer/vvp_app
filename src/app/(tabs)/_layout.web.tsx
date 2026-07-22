@@ -2,7 +2,7 @@ import { Tabs } from "expo-router";
 
 import {
   HomeIcon,
-  ReportIcon,
+  MailIcon,
   SettingsIcon,
   StarIcon,
   TrophyIcon,
@@ -28,7 +28,7 @@ const TabLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: Colors[colorScheme].text,
-        tabBarInactiveTintColor: Colors[colorScheme].iconMuted,
+        tabBarInactiveTintColor: Colors[colorScheme].textMuted,
         tabBarStyle: {
           backgroundColor: Colors[colorScheme].background,
         },
@@ -71,12 +71,14 @@ const TabLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="report"
+        name="contact"
         options={{
-          title: "Fake melden",
+          title: "Kontakt",
           tabBarShowLabel: false,
+          tabBarBadge: badgeState.contact ? " " : undefined,
+          tabBarBadgeStyle: { backgroundColor: corporate },
           tabBarIcon: ({ color, size }) => (
-            <ReportIcon color={color} size={size} />
+            <MailIcon color={color} size={size} />
           ),
         }}
       />

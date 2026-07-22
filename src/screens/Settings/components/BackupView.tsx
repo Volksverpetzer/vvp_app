@@ -22,7 +22,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 const BackupView = () => {
   const [busy, setBusy] = useState<"export" | "import" | null>(null);
   const colorScheme = useAppColorScheme();
-  const { primary, iconMuted } = Colors[colorScheme];
+  const { primary, textMuted } = Colors[colorScheme];
 
   const handleExport = async () => {
     setBusy("export");
@@ -129,13 +129,13 @@ const BackupView = () => {
         disabled={!!busy}
         style={rowStyle}
       >
-        <UiText style={{ fontSize: 16, opacity: busy === "import" ? 0.4 : 1 }}>
+        <UiText size="base" style={{ opacity: busy === "import" ? 0.4 : 1 }}>
           Sammlung exportieren
         </UiText>
         {busy === "export" ? (
           <ActivityIndicator color={primary} size="small" />
         ) : (
-          <UploadIcon size={18} color={busy ? iconMuted : primary} />
+          <UploadIcon size={18} color={busy ? textMuted : primary} />
         )}
       </UiPressable>
       <UiPressable
@@ -144,13 +144,13 @@ const BackupView = () => {
         disabled={!!busy}
         style={rowStyle}
       >
-        <UiText style={{ fontSize: 16, opacity: busy === "export" ? 0.4 : 1 }}>
+        <UiText size="base" style={{ opacity: busy === "export" ? 0.4 : 1 }}>
           Sammlung importieren
         </UiText>
         {busy === "import" ? (
           <ActivityIndicator color={primary} size="small" />
         ) : (
-          <DownloadIcon size={18} color={busy ? iconMuted : primary} />
+          <DownloadIcon size={18} color={busy ? textMuted : primary} />
         )}
       </UiPressable>
     </View>

@@ -10,10 +10,12 @@ import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
+import ContactCard from "./ContactCard";
 import Support from "./Support";
 
 interface FooterProperties {
   article_link: HttpsUrl;
+  article_title?: string;
   onShare: (article_link: string, properties: Record<string, unknown>) => void;
 }
 
@@ -30,10 +32,10 @@ const Footer = (properties: FooterProperties) => {
     <>
       <View style={{ paddingBottom: 30, alignItems: "center" }}>
         <UiText
+          size="lg"
           style={{
             textAlign: "center",
             paddingVertical: 30,
-            fontSize: 18,
             color: corporate,
           }}
         >
@@ -69,6 +71,18 @@ const Footer = (properties: FooterProperties) => {
         }}
       >
         <Support article_link={properties.article_link} />
+      </UiCard>
+      <UiSpace size={20} />
+      <UiCard
+        style={{
+          marginHorizontal: 12,
+          backgroundColor: Colors[colorScheme].surface,
+        }}
+      >
+        <ContactCard
+          article_link={properties.article_link}
+          article_title={properties.article_title}
+        />
       </UiCard>
       <UiSpace size={100} />
     </>

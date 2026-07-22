@@ -37,7 +37,7 @@ const AnnouncementCard = ({
   const corporate = Colors[colorScheme].primary;
   const surface = Colors[colorScheme].surface;
   const text = Colors[colorScheme].text;
-  const iconOnPrimary = Colors[colorScheme].iconOnPrimary;
+  const onPrimary = Colors[colorScheme].onPrimary;
 
   const handleAction = () => {
     onDismiss(announcement.id);
@@ -63,7 +63,7 @@ const AnnouncementCard = ({
         />
       )}
       <UiCard>
-        <UiText style={{ fontSize: 16, lineHeight: 22 }}>
+        <UiText size="base" style={{ lineHeight: 22 }}>
           {parseInlineMarkdown(announcement.message).map((token, index) => {
             const key = String(index);
             switch (token.type) {
@@ -122,10 +122,10 @@ const AnnouncementCard = ({
             }}
           >
             <UiText
+              size="base"
               style={{
                 color: text,
                 fontFamily: "SourceSansProBold",
-                fontSize: 15,
               }}
             >
               Alles klar!
@@ -143,10 +143,10 @@ const AnnouncementCard = ({
             }}
           >
             <UiText
+              size="base"
               style={{
-                color: iconOnPrimary,
+                color: onPrimary,
                 fontFamily: "SourceSansProBold",
-                fontSize: 15,
               }}
             >
               {announcement.actionLabel}

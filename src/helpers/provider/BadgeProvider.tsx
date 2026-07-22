@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { ReactNode } from "react";
 
 import BadgeStore from "#/helpers/Stores/BadgeStore";
@@ -6,6 +12,7 @@ import BadgeStore from "#/helpers/Stores/BadgeStore";
 export interface BadgeState {
   action: boolean;
   personal: boolean;
+  contact: boolean;
 }
 
 type SetBadgeState = React.Dispatch<React.SetStateAction<BadgeState>>;
@@ -14,7 +21,7 @@ const BadgeContext = createContext<{
   badgeState: BadgeState;
   setBadgeState: SetBadgeState;
 }>({
-  badgeState: { action: false, personal: false },
+  badgeState: { action: false, personal: false, contact: true },
   setBadgeState: () => {
     throw new Error("setBadgeState function must be overridden by a provider");
   },
@@ -22,6 +29,12 @@ const BadgeContext = createContext<{
 
 // Module-level variable to hold the external reference to setBadgeState
 let externalSetBadgeState: SetBadgeState;
+
+// Keys explicitly updated before the stored state finished loading; they
+// must win over the stored values when the async load resolves (comparing
+// against defaults would miss idempotent dismissals like "personal: false")
+let storeLoaded = false;
+const touchedBeforeLoad = new Set<keyof BadgeState>();
 
 /**
  * A React context that provides badge state and its setter.
@@ -31,13 +44,35 @@ let externalSetBadgeState: SetBadgeState;
  */
 export const BadgeProvider = ({ children }: { children: ReactNode }) => {
   const [badgeState, setBadgeState] = useState(BadgeStore.defaultState);
+  const loaded = useRef(false);
 
   useEffect(() => {
     externalSetBadgeState = setBadgeState;
+    storeLoaded = false;
+    touchedBeforeLoad.clear();
     BadgeStore.getBadgeStore().then((storedState) => {
-      setBadgeState(storedState);
+      // Stored values override the defaults, but keys already updated
+      // before the async load resolved (e.g. a badge dismissed on first
+      // focus) must not be reverted by the stored state
+      setBadgeState((currentState) => {
+        const merged = { ...storedState };
+        for (const key of touchedBeforeLoad) {
+          merged[key] = currentState[key];
+        }
+        return merged;
+      });
+      storeLoaded = true;
+      loaded.current = true;
     });
   }, [setBadgeState]);
+
+  // Persist changes so dismissed badges stay dismissed across restarts;
+  // only after the stored state has loaded, or the defaults would clobber it
+  useEffect(() => {
+    if (loaded.current) {
+      BadgeStore.setBadgeStore(badgeState);
+    }
+  }, [badgeState]);
 
   return (
     <BadgeContext.Provider value={{ badgeState, setBadgeState }}>
@@ -70,6 +105,11 @@ export const useBadge = () => useContext(BadgeContext);
  */
 export const updateBadgeState = (newState: Partial<BadgeState>): void => {
   if (externalSetBadgeState) {
+    if (!storeLoaded) {
+      for (const key of Object.keys(newState) as (keyof BadgeState)[]) {
+        touchedBeforeLoad.add(key);
+      }
+    }
     // Merge new state with previous badge state
     externalSetBadgeState((previousState: BadgeState) => ({
       ...previousState,

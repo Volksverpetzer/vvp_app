@@ -64,7 +64,9 @@ const TiktokPost = (properties: TiktokPostProperties) => {
             accessibilityHint="Thumbnail for the TikTok video"
             importantForAccessibility="yes"
           />
-          <View style={globalStyles.centeredAbsolute} pointerEvents="none">
+          <View
+            style={[globalStyles.centeredAbsolute, { pointerEvents: "none" }]}
+          >
             <PlayIcon
               size={56}
               color={TIKTOK_BRAND_COLOR}

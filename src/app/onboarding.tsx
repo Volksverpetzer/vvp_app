@@ -1,13 +1,13 @@
 import Constants from "expo-constants";
 import * as Haptics from "expo-haptics";
+import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
-import { useContext, useState } from "react";
-import { View } from "react-native";
+import { useContext, useEffect, useRef, useState } from "react";
+import { AppState, Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
-import Heading from "#/components/typography/Heading";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
@@ -21,9 +21,12 @@ import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
+import type { OnBoardingData } from "#/screens/Onboarding/components/Flatboard";
 import type { NotificationSettingType, SettingType } from "#/types";
 
 import WelcomeVVP from "#assets/images/welcome.webp";
+
+const NOTIFICATION_STEP_ID = 7;
 
 const Onboarding = () => {
   const [notificationSettings, setNotificationSettings] =
@@ -39,6 +42,63 @@ const Onboarding = () => {
   const router = useRouter();
 
   const isFoss = Config.isFoss ?? false;
+  const hasRequestedNotificationPermission = useRef(false);
+  const isOnNotificationStepRef = useRef(false);
+  // Monotonic id for settings syncs: a sync only applies its full-object
+  // result to state if no newer sync (toggle or permission request) started
+  // in the meantime — otherwise a slow, stale sync would visibly revert a
+  // newer optimistic toggle of a *different* switch.
+  const settingsSyncSeqRef = useRef(0);
+  const [notificationPermissionDenied, setNotificationPermissionDenied] =
+    useState(false);
+
+  const onStepChange = (item: OnBoardingData) => {
+    isOnNotificationStepRef.current = item.id === NOTIFICATION_STEP_ID;
+    if (item.id !== NOTIFICATION_STEP_ID) return;
+    if (hasRequestedNotificationPermission.current) return;
+    hasRequestedNotificationPermission.current = true;
+
+    const syncId = ++settingsSyncSeqRef.current;
+    Notifications.requestPermissionAndApplyDefaults()
+      .then(({ status, notificationSettings: updatedNotificationSettings }) => {
+        if (syncId === settingsSyncSeqRef.current) {
+          setNotificationSettings(updatedNotificationSettings);
+        }
+        setNotificationPermissionDenied(status === "denied");
+      })
+      .catch((error) => {
+        // Allow a retry when the user revisits this step — otherwise a
+        // transient failure would leave the switches un-initialized for
+        // the rest of the session.
+        hasRequestedNotificationPermission.current = false;
+        console.error("Failed to request notification permission:", error);
+      });
+  };
+
+  // If the user backgrounds the app to flip the OS permission in system
+  // Settings (via the disabled-message deep link) and comes back while still
+  // on the notification step, re-check the outcome so the switches unlock
+  // without waiting for a remount. Only re-checks, never re-prompts.
+  // Skipped on web: there is no notification module there, getPermissions
+  // reports a stub "denied", and reacting to it would falsely lock the
+  // switches whenever the browser tab loses and regains visibility.
+  useEffect(() => {
+    if (isFoss || Platform.OS === "web") return;
+    const subscription = AppState.addEventListener("change", (nextState) => {
+      if (nextState !== "active") return;
+      if (!hasRequestedNotificationPermission.current) return;
+      if (!isOnNotificationStepRef.current) return;
+
+      Notifications.getPermissions()
+        .then((permissions) => {
+          setNotificationPermissionDenied(permissions.status === "denied");
+        })
+        .catch((error) => {
+          console.error("Failed to re-check notification permission:", error);
+        });
+    });
+    return () => subscription.remove();
+  }, [isFoss]);
 
   const agreeToTerms = async () => {
     await PersonalStore.setOnboardingDone();
@@ -46,11 +106,21 @@ const Onboarding = () => {
     router.replace("/");
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-    // Fire-and-forget so the permission dialog doesn't block the home screen.
+    // Permission was already requested on the notification step; if granted,
+    // make sure the token/server registration is in sync (fire-and-forget so
+    // it doesn't block the home screen). Skipped when not granted, because
+    // registerForPushNotifications would re-request permission and show a
+    // second OS dialog on Android right after the user just denied.
     if (!isFoss) {
-      Notifications.registerForPushNotifications().catch((error) => {
-        console.error("Failed to register for push notifications:", error);
-      });
+      Notifications.getPermissions()
+        .then((permissions) =>
+          permissions.granted
+            ? Notifications.registerForPushNotifications()
+            : undefined,
+        )
+        .catch((error) => {
+          console.error("Failed to register for push notifications:", error);
+        });
     }
   };
 
@@ -70,10 +140,22 @@ const Onboarding = () => {
     setting: SettingType,
   ): Promise<void> => {
     const newSetting = { ...setting, value };
-    const { notificationSettings: updatedNotificationSettings } =
-      await Notifications.registerForPushNotifications({ [key]: newSetting });
-    setNotificationSettings(updatedNotificationSettings);
+    // Flip the switch immediately — the token fetch and server registration
+    // below can take seconds on a real device and must not block the UI.
+    // The sync's merged full-settings result is applied afterwards, but only
+    // if no newer sync started meanwhile (see settingsSyncSeqRef).
+    setNotificationSettings((previous) => ({ ...previous, [key]: newSetting }));
     Haptics.selectionAsync();
+    const syncId = ++settingsSyncSeqRef.current;
+    try {
+      const { notificationSettings: updatedNotificationSettings } =
+        await Notifications.registerForPushNotifications({ [key]: newSetting });
+      if (syncId === settingsSyncSeqRef.current) {
+        setNotificationSettings(updatedNotificationSettings);
+      }
+    } catch (error) {
+      console.error("Failed to sync notification setting:", error);
+    }
   };
 
   const data = [
@@ -98,7 +180,9 @@ const Onboarding = () => {
             }}
           >
             <FeedIcon color={corporate} size={20} />
-            <Heading style={{ textAlign: "left" }}>Feed-Einstellungen</Heading>
+            <UiText bold size="lg" style={{ textAlign: "left" }}>
+              Feed-Einstellungen
+            </UiText>
           </View>
           <SettingsList
             saveSettings={saveContentSetting}
@@ -110,9 +194,9 @@ const Onboarding = () => {
     ...(!isFoss
       ? [
           {
-            id: 7,
-            title: "Push Benachrichtigungen",
-            description: `Faktenchecks hinken naturgemäß immer hinterher. Um schnellstmöglich Faktenchecks zu erhalten und zu teilen, kannst du dir Push-Benachrichtigungen aktivieren. Das kann wichtig sein, damit die Fakten deine Freunde oder Familie erreichen, bevor der Fake sie aufs Glatteis führt.`,
+            id: NOTIFICATION_STEP_ID,
+            title: "Push-Benachrichtigungen",
+            description: `Benachrichtigungen halten dich auf dem Laufenden, können dich aber auch ablenken. Wähle die aus, die dich wirklich interessieren.`,
             Component: () => (
               <View>
                 <View
@@ -124,17 +208,22 @@ const Onboarding = () => {
                   }}
                 >
                   <NotificationIcon color={corporate} size={20} />
-                  <Heading
+                  <UiText
+                    bold
+                    size="lg"
                     style={{
                       textAlign: "left",
                     }}
                   >
                     Benachrichtigungen
-                  </Heading>
+                  </UiText>
                 </View>
                 <SettingsList
                   saveSettings={saveNotificationSetting}
                   settings={notificationSettings}
+                  disabled={notificationPermissionDenied}
+                  disabledMessage="Benachrichtigungen sind deaktiviert. Tippe hier, um sie in den Einstellungen zu aktivieren."
+                  onDisabledPress={() => Linking.openSettings()}
                 />
               </View>
             ),
@@ -145,7 +234,7 @@ const Onboarding = () => {
       id: 8,
       title: "Prio: Datenschutz",
       description: `Unser Versprechen: Wir geben uns alle Mühe, den Datenkraken so wenig zu überliefern wie möglich. Du braucht keine Accounts, wir tracken dich nicht. Mit der Nutzung stimmst du unserer Datenschutzerklärung zu.`,
-      TopComponent: () => <SafetyIcon color={corporate} size={80} />,
+      TopComponent: () => <SafetyIcon color={corporate} size={60} />,
       Component: () => (
         <UiPressable
           accessibilityRole="button"
@@ -154,11 +243,11 @@ const Onboarding = () => {
           }}
         >
           <UiText
+            size="xl"
             style={{
               color: corporate,
               textAlign: "center",
               padding: 40,
-              fontSize: 20,
             }}
           >
             Datenschutzerklärung
@@ -179,6 +268,7 @@ const Onboarding = () => {
       <FlatBoard
         data={data}
         onFinish={agreeToTerms}
+        onStepChange={onStepChange}
         accentColor={corporate}
         buttonTitle="Los geht's"
         hideIndicator

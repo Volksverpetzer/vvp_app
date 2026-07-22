@@ -1,5 +1,7 @@
 import { StyleSheet } from "react-native";
 
+import { fontSizes } from "#/constants/FontSizes";
+
 export const SOURCE_SANS_FONTS = [
   "SourceSansPro",
   "SourceSansProItalic",
@@ -11,6 +13,17 @@ export const CONTENT_MAX_WIDTH = 700;
 export const CONTENT_HORIZONTAL_PADDING = 10;
 export const POST_PADDING_HORIZONTAL = 30;
 export const CARD_PADDING = 20;
+
+// Height/width ratio of WordPress's default featured-image crop (e.g. 1200x615),
+// used as the fallback aspect ratio for post thumbnails whose real image
+// dimensions aren't known ahead of layout.
+export const DEFAULT_IMAGE_ASPECT_RATIO = 0.5125;
+
+// Shared font size for text inputs (search field, contact form). Kept as a
+// standalone constant rather than living on `globalStyles.input`, because that
+// style is also spread onto container Views (e.g. the search input row), where
+// a text-only prop like fontSize doesn't belong.
+export const INPUT_FONT_SIZE = fontSizes.lg;
 
 export const globalStyles = StyleSheet.create({
   centered: {
@@ -49,5 +62,11 @@ export const globalStyles = StyleSheet.create({
   },
   whiteText: {
     color: "white",
+  },
+  /** Bold label for pill/tab selectors (category pills, UiTabIconLabel) */
+  pillLabel: {
+    fontFamily: "SourceSansProBold",
+    fontSize: fontSizes.sm,
+    lineHeight: 19,
   },
 });
