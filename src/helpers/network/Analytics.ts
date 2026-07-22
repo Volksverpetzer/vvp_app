@@ -25,7 +25,10 @@ export type AnalyticsEvent =
   | "Report Submitted"
   | "Contact Submitted"
   | "Pruefpunkt View"
-  | "Post Interaction";
+  | "Post Interaction"
+  | "Onboarding Started"
+  | "Onboarding Step"
+  | "Onboarding Completed";
 
 /**
  * Props that registerEvent always sets on every event. Callers must not pass
