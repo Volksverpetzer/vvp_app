@@ -176,7 +176,7 @@ const Onboarding = () => {
           {
             id: NOTIFICATION_STEP_ID,
             title: "Push Benachrichtigungen",
-            description: `Faktenchecks hinken naturgemäß immer hinterher. Um schnellstmöglich Faktenchecks zu erhalten und zu teilen, kannst du dir Push-Benachrichtigungen aktivieren. Das kann wichtig sein, damit die Fakten deine Freunde oder Familie erreichen, bevor der Fake sie aufs Glatteis führt.`,
+            description: `Benachrichtigungen, sie halten dich auf dem Laufenden, können dich aber auch ablenken. Wähle die aus, die dich wirklich interessieren.`,
             Component: () => (
               <View>
                 <View
