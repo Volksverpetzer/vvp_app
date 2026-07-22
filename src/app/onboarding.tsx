@@ -214,7 +214,7 @@ const Onboarding = () => {
       id: 8,
       title: "Prio: Datenschutz",
       description: `Unser Versprechen: Wir geben uns alle Mühe, den Datenkraken so wenig zu überliefern wie möglich. Du braucht keine Accounts, wir tracken dich nicht. Mit der Nutzung stimmst du unserer Datenschutzerklärung zu.`,
-      TopComponent: () => <SafetyIcon color={corporate} size={80} />,
+      TopComponent: () => <SafetyIcon color={corporate} size={60} />,
       Component: () => (
         <UiPressable
           accessibilityRole="button"
