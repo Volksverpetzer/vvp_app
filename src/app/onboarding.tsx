@@ -132,10 +132,19 @@ const Onboarding = () => {
     setting: SettingType,
   ): Promise<void> => {
     const newSetting = { ...setting, value };
-    const { notificationSettings: updatedNotificationSettings } =
-      await Notifications.registerForPushNotifications({ [key]: newSetting });
-    setNotificationSettings(updatedNotificationSettings);
+    // Flip the switch immediately — the token fetch and server registration
+    // below can take seconds on a real device and must not block the UI.
+    // The synced result still wins afterwards (it can differ, e.g. when
+    // permission is missing and the registration bails out).
+    setNotificationSettings((previous) => ({ ...previous, [key]: newSetting }));
     Haptics.selectionAsync();
+    try {
+      const { notificationSettings: updatedNotificationSettings } =
+        await Notifications.registerForPushNotifications({ [key]: newSetting });
+      setNotificationSettings(updatedNotificationSettings);
+    } catch (error) {
+      console.error("Failed to sync notification setting:", error);
+    }
   };
 
   const data = [
