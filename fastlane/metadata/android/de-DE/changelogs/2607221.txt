@@ -1,0 +1,5 @@
+- Neu: Beim Onboarding wird die Berechtigung für Push-Benachrichtigungen direkt abgefragt
+- Onboarding aufpoliert: Logo, Layout und Texte überarbeitet
+- Benachrichtigungs-Schalter reagieren jetzt sofort und deine Auswahl wird zuverlässig gespeichert
+- Einheitliche Schriftgrößen und viele kleine Design-Verbesserungen
+- Fehlerbehebungen und Performance-Verbesserungen

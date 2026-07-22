@@ -1,0 +1,5 @@
+- New: Onboarding now asks for the push notification permission directly
+- Polished onboarding: reworked logo, layout and texts
+- Notification switches now respond instantly and your selection is saved reliably
+- Unified font sizes and many small design improvements
+- Bug fixes and performance improvements
