@@ -52,6 +52,9 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const scrollProgress = useRef(new Animated.Value(0)).current;
   const scrollReference = useRef<ScrollView>(null);
+  // Ref to the ScrollView's inner content view; anchor positions are
+  // measured against it (see scrollToAnchor).
+  const innerViewReference = useRef<View>(null);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backToTop = useBackToTop();
@@ -118,8 +121,12 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const scrollToAnchor = (id: string) => {
     const headerNode = headerReferences.current[id]?.current;
     const scrollView = scrollReference.current;
-    if (!headerNode || !scrollView) return;
-    headerNode.measureLayout(scrollView.getInnerViewNode(), (_x, y) => {
+    // On the new architecture measureLayout must receive the host component
+    // ref itself — the node handle from getInnerViewNode() is rejected with
+    // "must be called with a ref to a native component".
+    const innerView = innerViewReference.current;
+    if (!headerNode || !scrollView || !innerView) return;
+    headerNode.measureLayout(innerView, (_x, y) => {
       scrollView.scrollTo({ y, animated: false });
     });
   };
@@ -194,6 +201,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             { useNativeDriver: false, listener: scrollListener },
           )}
           ref={scrollReference}
+          innerViewRef={innerViewReference}
           scrollEventThrottle={16}
           onContentSizeChange={() => {
             // Re-align the pending anchor whenever async content (images,
