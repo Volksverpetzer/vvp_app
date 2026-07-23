@@ -126,12 +126,15 @@ describe("LoadArticle article fallback (slug not found)", () => {
     );
   });
 
-  it("re-encodes a percent-encoded anchor exactly once", async () => {
+  it("re-encodes the already-decoded anchor param for the webview URL", async () => {
     const { useLocalSearchParams } = jest.requireMock("expo-router");
+    // Contract: useLocalSearchParams has already decodeURIComponent'd every
+    // param, so the route receives the raw id (here with a trailing space,
+    // as on the live site) and must re-encode it exactly once.
     useLocalSearchParams.mockReturnValue({
       category: "project",
       slug: "10fakten",
-      "#": "die-quellen%20",
+      "#": "die-quellen ",
     });
 
     await render(<LoadArticle />);

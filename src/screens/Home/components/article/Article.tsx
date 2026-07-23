@@ -94,6 +94,16 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   }, []);
 
   useEffect(() => {
+    // A deep link to the already-open article updates the params on the
+    // existing screen instance instead of remounting it — re-arm the pending
+    // anchor and jump right away (no-op if the headers aren't laid out yet;
+    // onRender/onContentSizeChange pick it up then).
+    if (!anchor) return;
+    pendingAnchor.current = anchor;
+    scrollToAnchor(anchor);
+  }, [anchor]);
+
+  useEffect(() => {
     registerViews(article_link);
     Statistics.countArticleRead();
     // Adoption signal for secondary WordPress feeds (currently only Prüfpunkt):
@@ -144,8 +154,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     heightCaptured.current = true;
     const height = event.nativeEvent.layout.height;
     if (pendingAnchor.current) {
-      scrollToAnchor(pendingAnchor.current);
-      return;
+      if (headerReferences.current[pendingAnchor.current]) {
+        scrollToAnchor(pendingAnchor.current);
+        return;
+      }
+      // The anchor matches no rendered header (not an h2/h3, or a typo'd
+      // fragment) — drop it and restore the reading position as usual.
+      pendingAnchor.current = undefined;
     }
     PersonalStore.getScrollPosition(slug).then((progress) => {
       if (!mounted.current || progress > 0.8) return;
@@ -168,6 +183,10 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     const progress =
       event.nativeEvent.contentOffset.y / event.nativeEvent.contentSize.height;
     scrollProgress.setValue(progress * 1.1 * width);
+    // While the view is still auto-aligned on a deep-link anchor the scroll
+    // events are programmatic, not reading: don't count a FullRead, don't
+    // grant achievements, and don't clobber the saved reading position.
+    if (pendingAnchor.current) return;
     if (progress > 0.7 && !fullRead.current) {
       fullRead.current = true;
       registerEvent(article_link, "FullRead");
@@ -230,7 +249,12 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
               maxWidth={maxWidth}
               width={width}
               headerRefs={headerReferences}
-              onAnchorPress={scrollToAnchor}
+              onAnchorPress={(id) => {
+                // A tapped in-article anchor supersedes a deep-link anchor;
+                // otherwise the next content resize would snap back to it.
+                pendingAnchor.current = undefined;
+                scrollToAnchor(id);
+              }}
               onLinkPress={(event, href: HttpsUrl) =>
                 onLinkPress(href, router, article_link)
               }
@@ -245,9 +269,12 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
         </ScrollView>
         <BackToTopButton
           visible={backToTop.visible}
-          onPress={() =>
-            scrollReference.current?.scrollTo({ y: 0, animated: true })
-          }
+          onPress={() => {
+            // Back-to-top is explicit user navigation — it must win over a
+            // still-pending deep-link anchor.
+            pendingAnchor.current = undefined;
+            scrollReference.current?.scrollTo({ y: 0, animated: true });
+          }}
         />
       </View>
       <NavBar

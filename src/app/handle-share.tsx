@@ -91,15 +91,14 @@ const HandleShare = () => {
         }
 
         // Secondary-site articles need originalUrl so the article route fetches
-        // from the right WordPress API.
+        // from the right WordPress API. Build a string href (query before the
+        // fragment, like +native-intent does) — the object form must not be
+        // used here: expo-router's resolveHref does not encode a `#` param
+        // key, so `params: { "#": … }` corrupts both the anchor and any
+        // params serialized after it.
         if (secondary && href !== "/search") {
-          router.replace({
-            pathname: href,
-            params: {
-              originalUrl: sharedUrl,
-              ...(fragment && { "#": fragment.slice(1) }),
-            },
-          } as unknown as Href);
+          const search = `?originalUrl=${encodeURIComponent(sharedUrl)}`;
+          router.replace(`${href}${search}${fragment}` as Href);
         } else {
           const anchoredHref = href === "/search" ? href : `${href}${fragment}`;
           router.replace(anchoredHref as Href);

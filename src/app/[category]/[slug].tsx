@@ -5,7 +5,6 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
-import { decodeAnchor } from "#/helpers/utils/anchors";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { normalizedHostOf } from "#/helpers/utils/host";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
@@ -27,11 +26,10 @@ type LoadArticleParameters = {
 const LoadArticle = () => {
   const parameters = useLocalSearchParams<LoadArticleParameters>();
   const wpUrl = Config.wpUrl;
-  const { slug, category, originalUrl, "#": rawAnchor } = parameters;
-
-  // Normalize once: decode potential percent-encoding, then re-encode when
-  // rebuilding a webview URL so the fragment stays valid either way.
-  const anchor = rawAnchor ? decodeAnchor(rawAnchor) : undefined;
+  // useLocalSearchParams already ran decodeURIComponent on every param, so
+  // `anchor` is the decoded fragment — decoding again here would corrupt ids
+  // that legitimately contain `%`. Re-encode only when rebuilding a URL.
+  const { slug, category, originalUrl, "#": anchor } = parameters;
   const anchorSuffix = anchor ? `#${encodeURIComponent(anchor)}` : "";
 
   // A WordPress feed entry from a different site than the primary one whose
