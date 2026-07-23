@@ -91,6 +91,9 @@ const Body = (properties: BodyProperties) => {
       FigcaptionRenderer({ ...renderProperties, url: article_link }),
     h2: (renderProperties) =>
       HeaderRenderer({ ...renderProperties, componentRefs: headerRefs }),
+    // h3 anchors are common table-of-contents targets (wp-block-heading ids).
+    h3: (renderProperties) =>
+      HeaderRenderer({ ...renderProperties, componentRefs: headerRefs }),
     blockquote: (renderProperties) =>
       BlockRenderer({ renderProps: renderProperties, url: article_link }),
     em: (renderProperties) => EmRenderer(renderProperties),
