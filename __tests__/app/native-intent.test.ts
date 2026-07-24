@@ -56,6 +56,22 @@ describe("redirectSystemPath", () => {
     );
   });
 
+  it("keeps the #fragment so anchored links can jump to their section", () => {
+    expect(
+      redirectSystemPath({
+        path: "https://www.volksverpetzer.de/project/10fakten/#quellen",
+      }),
+    ).toBe("/project/10fakten/#quellen");
+  });
+
+  it("keeps query string and fragment together", () => {
+    expect(
+      redirectSystemPath({
+        path: "https://volksverpetzer.de/cat/slug/?utm_source=x#quellen",
+      }),
+    ).toBe("/cat/slug/?utm_source=x#quellen");
+  });
+
   it("passes through unrelated/relative paths unchanged", () => {
     expect(redirectSystemPath({ path: "/home" })).toBe("/home");
     expect(redirectSystemPath({ path: "https://example.com/x" })).toBe(

@@ -8,7 +8,7 @@
       "exclude": []
     }
   },
-  "packageManager": "pnpm@11.15.1",
+  "packageManager": "pnpm@11.16.0",
   "engines": {
     "node": "24.x"
   },
@@ -50,13 +50,13 @@
   },
   "dependencies": {
     "@algolia/client-search": "5.56.0",
-    "@atproto/api": "0.20.31",
+    "@atproto/api": "0.20.32",
     "@babel/runtime": "7.29.7",
     "@expo-google-fonts/source-sans-3": "0.4.1",
-    "@expo/config": "57.0.5",
+    "@expo/config": "57.0.6",
     "@expo/dom-webview": "57.0.1",
     "@expo/metro-runtime": "57.0.7",
-    "@expo/require-utils": "57.0.3",
+    "@expo/require-utils": "57.0.4",
     "@likashefqet/react-native-image-zoom": "4.3.0",
     "@native-html/iframe-plugin": "2.6.1",
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -76,7 +76,7 @@
     "expo-config": "1.0.0",
     "expo-constants": "57.0.7",
     "expo-custom-assets": "1.5.0",
-    "expo-dev-client": "57.0.8",
+    "expo-dev-client": "57.0.9",
     "expo-device": "57.0.1",
     "expo-document-picker": "57.0.1",
     "expo-file-system": "57.0.1",
@@ -93,7 +93,7 @@
     "expo-splash-screen": "57.0.5",
     "expo-status-bar": "57.0.1",
     "expo-system-ui": "57.0.1",
-    "expo-updates": "57.0.9",
+    "expo-updates": "57.0.10",
     "expo-web-browser": "57.0.2",
     "html-entities": "2.6.0",
     "lodash": "4.18.1",
@@ -132,7 +132,7 @@
     "@typescript-eslint/parser": "8.65.0",
     "babel-jest": "29.7.0",
     "babel-plugin-module-resolver": "5.0.3",
-    "babel-preset-expo": "57.0.3",
+    "babel-preset-expo": "57.0.4",
     "cspell": "10.0.1",
     "eslint": "9.39.4",
     "eslint-config-expo": "57.0.0",

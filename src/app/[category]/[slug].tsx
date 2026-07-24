@@ -16,6 +16,8 @@ type LoadArticleParameters = {
   slug: string;
   category?: string;
   originalUrl?: string;
+  // Expo Router exposes the URL fragment (…/#quellen) as the `#` param.
+  "#"?: string;
 };
 
 /**
@@ -24,7 +26,11 @@ type LoadArticleParameters = {
 const LoadArticle = () => {
   const parameters = useLocalSearchParams<LoadArticleParameters>();
   const wpUrl = Config.wpUrl;
-  const { slug, category, originalUrl } = parameters;
+  // useLocalSearchParams already ran decodeURIComponent on every param, so
+  // `anchor` is the decoded fragment — decoding again here would corrupt ids
+  // that legitimately contain `%`. Re-encode only when rebuilding a URL.
+  const { slug, category, originalUrl, "#": anchor } = parameters;
+  const anchorSuffix = anchor ? `#${encodeURIComponent(anchor)}` : "";
 
   // A WordPress feed entry from a different site than the primary one whose
   // host matches the original URL; articles from there need their own API.
@@ -119,11 +125,12 @@ const LoadArticle = () => {
     // deep link had one, but expo-router strips it when parsing the param.
     const trimmedBase = baseUrl.replace(/\/+$/, "");
     const trimmedCategory = (category || "").replaceAll(/^\/+|\/+$/g, "");
+    // originalUrl is the full deep link and already carries its own fragment.
     const url =
       originalUrl ??
       (trimmedCategory
-        ? `${trimmedBase}/${trimmedCategory}/`
-        : `${trimmedBase}/`);
+        ? `${trimmedBase}/${trimmedCategory}/${anchorSuffix}`
+        : `${trimmedBase}/${anchorSuffix}`);
     return <EdgelessWebview uri={url as HttpsUrl} />;
   }
 
@@ -140,7 +147,7 @@ const LoadArticle = () => {
       imageUrl: imageUrl || article.imageUrl || "",
       imageCredit: imageCredit ?? article.imageCredit,
     };
-    return <ArticleScreen article={articleWithImage} />;
+    return <ArticleScreen article={articleWithImage} anchor={anchor} />;
   }
 
   // If fetching failed, fall back to the webview for compatibility
@@ -164,7 +171,7 @@ const LoadArticle = () => {
       return path ? `${trimmedBase}/${path}/` : trimmedBase;
     };
 
-    const cleanPath = buildFallbackUrl(wpUrl, category, slug);
+    const cleanPath = buildFallbackUrl(wpUrl, category, slug) + anchorSuffix;
     return <EdgelessWebview uri={cleanPath} />;
   }
 

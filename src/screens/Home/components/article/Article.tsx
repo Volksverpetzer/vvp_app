@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import type { RefObject } from "react";
 import { useEffect, useRef } from "react";
 import type {
   LayoutChangeEvent,
@@ -30,8 +31,15 @@ import Body from "./Body";
 import Header from "./Header";
 import Recommended from "./Recommended";
 
+// How long a deep-link anchor keeps re-aligning the view as async content
+// (images, embeds) resizes the article above it. Ends early on the first user
+// scroll; this is the hard cap for platforms/inputs that don't signal that.
+const ANCHOR_ALIGN_WINDOW_MS = 4000;
+
 interface ArticleScreenProperties {
   article: ArticleProperties;
+  /** Decoded URL fragment of the deep link (e.g. "quellen") to scroll to. */
+  anchor?: string;
 }
 
 /**
@@ -45,10 +53,13 @@ interface ArticleScreenProperties {
  * @returns
  */
 const ArticleScreen = (properties: ArticleScreenProperties) => {
-  const { article } = properties;
+  const { article, anchor } = properties;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const scrollProgress = useRef(new Animated.Value(0)).current;
   const scrollReference = useRef<ScrollView>(null);
+  // Ref to the ScrollView's inner content view; anchor positions are
+  // measured against it (see scrollToAnchor).
+  const innerViewReference = useRef<View>(null);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backToTop = useBackToTop();
@@ -58,6 +69,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const fullRead = useRef(false);
   const savedPosition = useRef(0);
   const heightCaptured = useRef(false);
+  // Refs to rendered headers by their HTML id, registered by HeaderRenderer.
+  // Used both for in-article anchor links and for deep links with a fragment.
+  const headerReferences = useRef<Record<string, RefObject<View>>>({});
+  // The anchor still waiting to be aligned. Content height keeps changing
+  // while images load in, so we re-align on every content size change until
+  // the user takes over scrolling (a one-shot scroll would land wrong).
+  const pendingAnchor = useRef(anchor);
   const mounted = useRef(true);
   const slug = article.slug;
   const article_image = article.imageUrl;
@@ -81,6 +99,25 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   }, []);
 
   useEffect(() => {
+    // A deep link to the already-open article updates the params on the
+    // existing screen instance instead of remounting it — re-arm the pending
+    // anchor and jump right away (no-op if the headers aren't laid out yet;
+    // onRender/onContentSizeChange pick it up then).
+    if (!anchor) return;
+    pendingAnchor.current = anchor;
+    scrollToAnchor(anchor);
+    // Bound the auto-align window. It normally ends when the user starts
+    // scrolling, but react-native-web never fires onScrollBeginDrag for
+    // wheel scrolling, so without this the anchor would stay pending forever
+    // on web — permanently suppressing read tracking and snapping the view
+    // back on every late image load. Images settle well within this window.
+    const timeout = setTimeout(() => {
+      pendingAnchor.current = undefined;
+    }, ANCHOR_ALIGN_WINDOW_MS);
+    return () => clearTimeout(timeout);
+  }, [anchor]);
+
+  useEffect(() => {
     registerViews(article_link);
     Statistics.countArticleRead();
     // Adoption signal for secondary WordPress feeds (currently only Prüfpunkt):
@@ -100,8 +137,29 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   }, [article_link]);
 
   /**
+   * Scrolls to the header element registered under the given anchor id.
+   * No-op when the id doesn't match a rendered header (e.g. the target
+   * element isn't an h2), matching the behavior of in-article anchor links.
+   * @param id The decoded HTML id of the target header
+   */
+  const scrollToAnchor = (id: string) => {
+    const headerNode = headerReferences.current[id]?.current;
+    const scrollView = scrollReference.current;
+    // On the new architecture measureLayout must receive the host component
+    // ref itself — the node handle from getInnerViewNode() is rejected with
+    // "must be called with a ref to a native component".
+    const innerView = innerViewReference.current;
+    if (!headerNode || !scrollView || !innerView) return;
+    headerNode.measureLayout(innerView, (_x, y) => {
+      scrollView.scrollTo({ y, animated: false });
+    });
+  };
+
+  /**
    * Called once when the article layout is rendered.
    * Captures the content height and restores the scroll position saved in storage.
+   * When the article was opened via an anchored deep link, jumps to the anchor
+   * instead of restoring the saved reading position.
    * Prevents re-running after the first layout via heightCaptured flag.
    * @param event LayoutChangeEvent containing nativeEvent.layout.height
    */
@@ -109,6 +167,16 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     if (heightCaptured.current) return;
     heightCaptured.current = true;
     const height = event.nativeEvent.layout.height;
+    if (pendingAnchor.current) {
+      // Try to align now; this is a no-op if the header refs aren't registered
+      // yet (HeaderRenderer registers them in a passive effect whose flush
+      // order vs. this native onLayout isn't guaranteed) — onContentSizeChange
+      // retries once they are, and the align window eventually clears a
+      // fragment that never matches. Skip the saved-position restore either
+      // way: a deep-linked anchor takes precedence over resuming.
+      scrollToAnchor(pendingAnchor.current);
+      return;
+    }
     PersonalStore.getScrollPosition(slug).then((progress) => {
       if (!mounted.current || progress > 0.8) return;
       savedPosition.current = progress;
@@ -130,6 +198,10 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     const progress =
       event.nativeEvent.contentOffset.y / event.nativeEvent.contentSize.height;
     scrollProgress.setValue(progress * 1.1 * width);
+    // While the view is still auto-aligned on a deep-link anchor the scroll
+    // events are programmatic, not reading: don't count a FullRead, don't
+    // grant achievements, and don't clobber the saved reading position.
+    if (pendingAnchor.current) return;
     if (progress > 0.7 && !fullRead.current) {
       fullRead.current = true;
       registerEvent(article_link, "FullRead");
@@ -154,6 +226,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
       ></Animated.View>
       <View style={globalStyles.container}>
         <ScrollView
+          testID="article-scroll"
           style={{
             backgroundColor,
           }}
@@ -163,7 +236,17 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             { useNativeDriver: false, listener: scrollListener },
           )}
           ref={scrollReference}
+          innerViewRef={innerViewReference}
           scrollEventThrottle={16}
+          onContentSizeChange={() => {
+            // Re-align the pending anchor whenever async content (images,
+            // embeds) resizes the article above it.
+            if (pendingAnchor.current) scrollToAnchor(pendingAnchor.current);
+          }}
+          onScrollBeginDrag={() => {
+            // The user took over — stop snapping back to the anchor.
+            pendingAnchor.current = undefined;
+          }}
         >
           <View onLayout={onRender}>
             <Header
@@ -181,7 +264,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
               article_link={article_link}
               maxWidth={maxWidth}
               width={width}
-              scrollRef={scrollReference}
+              headerRefs={headerReferences}
+              onAnchorPress={(id) => {
+                // A tapped in-article anchor supersedes a deep-link anchor;
+                // otherwise the next content resize would snap back to it.
+                pendingAnchor.current = undefined;
+                scrollToAnchor(id);
+              }}
               onLinkPress={(event, href: HttpsUrl) =>
                 onLinkPress(href, router, article_link)
               }
@@ -196,9 +285,12 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
         </ScrollView>
         <BackToTopButton
           visible={backToTop.visible}
-          onPress={() =>
-            scrollReference.current?.scrollTo({ y: 0, animated: true })
-          }
+          onPress={() => {
+            // Back-to-top is explicit user navigation — it must win over a
+            // still-pending deep-link anchor.
+            pendingAnchor.current = undefined;
+            scrollReference.current?.scrollTo({ y: 0, animated: true });
+          }}
         />
       </View>
       <NavBar
