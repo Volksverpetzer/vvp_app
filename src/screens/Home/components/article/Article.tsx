@@ -226,6 +226,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
       ></Animated.View>
       <View style={globalStyles.container}>
         <ScrollView
+          testID="article-scroll"
           style={{
             backgroundColor,
           }}
