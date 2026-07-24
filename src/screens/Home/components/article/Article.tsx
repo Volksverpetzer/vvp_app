@@ -31,6 +31,11 @@ import Body from "./Body";
 import Header from "./Header";
 import Recommended from "./Recommended";
 
+// How long a deep-link anchor keeps re-aligning the view as async content
+// (images, embeds) resizes the article above it. Ends early on the first user
+// scroll; this is the hard cap for platforms/inputs that don't signal that.
+const ANCHOR_ALIGN_WINDOW_MS = 4000;
+
 interface ArticleScreenProperties {
   article: ArticleProperties;
   /** Decoded URL fragment of the deep link (e.g. "quellen") to scroll to. */
@@ -101,6 +106,15 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     if (!anchor) return;
     pendingAnchor.current = anchor;
     scrollToAnchor(anchor);
+    // Bound the auto-align window. It normally ends when the user starts
+    // scrolling, but react-native-web never fires onScrollBeginDrag for
+    // wheel scrolling, so without this the anchor would stay pending forever
+    // on web — permanently suppressing read tracking and snapping the view
+    // back on every late image load. Images settle well within this window.
+    const timeout = setTimeout(() => {
+      pendingAnchor.current = undefined;
+    }, ANCHOR_ALIGN_WINDOW_MS);
+    return () => clearTimeout(timeout);
   }, [anchor]);
 
   useEffect(() => {
@@ -154,13 +168,14 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     heightCaptured.current = true;
     const height = event.nativeEvent.layout.height;
     if (pendingAnchor.current) {
-      if (headerReferences.current[pendingAnchor.current]) {
-        scrollToAnchor(pendingAnchor.current);
-        return;
-      }
-      // The anchor matches no rendered header (not an h2/h3, or a typo'd
-      // fragment) — drop it and restore the reading position as usual.
-      pendingAnchor.current = undefined;
+      // Try to align now; this is a no-op if the header refs aren't registered
+      // yet (HeaderRenderer registers them in a passive effect whose flush
+      // order vs. this native onLayout isn't guaranteed) — onContentSizeChange
+      // retries once they are, and the align window eventually clears a
+      // fragment that never matches. Skip the saved-position restore either
+      // way: a deep-linked anchor takes precedence over resuming.
+      scrollToAnchor(pendingAnchor.current);
+      return;
     }
     PersonalStore.getScrollPosition(slug).then((progress) => {
       if (!mounted.current || progress > 0.8) return;
