@@ -8,7 +8,7 @@
       "exclude": []
     }
   },
-  "packageManager": "pnpm@11.16.0",
+  "packageManager": "pnpm@11.17.0",
   "engines": {
     "node": "24.x"
   },
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@algolia/client-search": "5.56.0",
-    "@atproto/api": "0.20.32",
+    "@atproto/api": "0.20.34",
     "@babel/runtime": "7.29.7",
     "@expo-google-fonts/source-sans-3": "0.4.1",
     "@expo/config": "57.0.6",
@@ -147,7 +147,7 @@
     "jest-expo": "57.0.2",
     "jest-react-native": "18.0.0",
     "license-checker-rseidelsohn": "5.0.1",
-    "lint-staged": "17.1.1",
+    "lint-staged": "17.2.0",
     "prettier": "3.9.6",
     "ts-node": "10.9.2",
     "typedoc": "0.28.20",

@@ -158,7 +158,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     () => ({
       paddingBottom: 0,
       backgroundColor: Colors[colorScheme].background,
-      ...(elevated && { borderRadius: 15, overflow: "hidden" as const }),
+      ...(elevated && {
+        borderRadius: 15,
+        overflow: "hidden" as const,
+        borderWidth: 1,
+        borderColor: Colors[colorScheme].surface,
+      }),
     }),
     [colorScheme, elevated],
   );

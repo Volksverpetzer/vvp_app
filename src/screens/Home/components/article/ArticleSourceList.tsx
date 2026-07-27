@@ -98,7 +98,7 @@ export const ArticleSourceList = ({
             </View>
           ))
         ) : (
-          <UiText>Keine Daten</UiText>
+          <UiText style={{ paddingVertical: 8 }}>Keine Daten</UiText>
         )}
       </View>
     </UiCollapsable>
