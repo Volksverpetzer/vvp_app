@@ -9,8 +9,3 @@ allowBuilds:
 nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 packages:
   - .
-minimumReleaseAgeExclude:
-  - expo-dev-client@57.0.9
-  - expo-dev-launcher@57.0.9
-  - expo-dev-menu@57.0.9
-  - expo-updates@57.0.10
