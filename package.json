@@ -105,7 +105,7 @@
     "react-native-modal": "14.0.0-rc.1",
     "react-native-nitro-modules": "0.36.1",
     "react-native-reanimated": "4.5.0",
-    "react-native-reanimated-carousel": "4.0.3",
+    "react-native-reanimated-carousel": "5.0.0",
     "react-native-render-html": "6.3.4",
     "react-native-safe-area-context": "5.7.0",
     "react-native-screens": "4.26.2",
