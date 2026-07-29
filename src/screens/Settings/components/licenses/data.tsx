@@ -268,7 +268,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-modal/react-native-modal/raw/HEAD/LICENSE.md",
   },
-  "react-native-nitro-modules@0.36.1": {
+  "react-native-nitro-modules@0.36.3": {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
   },
