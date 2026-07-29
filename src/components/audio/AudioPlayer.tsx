@@ -30,6 +30,25 @@ const formatTime = (seconds: number) => {
   return `${m}:${s.toString().padStart(2, "0")}`;
 };
 
+// `shouldPlayInBackground` is a single, module-wide native flag shared by
+// every AudioPlayer instance (not scoped per player) — it must only be on
+// while a player is actually playing, and there must only ever be one
+// playing at a time so backgrounding the app can still pause the rest of
+// the app's audio. This module-level state (shared across all mounted
+// AudioPlayer instances, since they all import the same module) tracks
+// which player currently "owns" background playback.
+let activePlayer: { id: string; pause: () => void } | null = null;
+
+const applyBackgroundPlaybackMode = (enabled: boolean) => {
+  // The native side rebuilds AudioMode from defaults on every call rather
+  // than merging, so all fields must be passed together every time.
+  void setAudioModeAsync({
+    playsInSilentMode: true,
+    interruptionMode: "doNotMix",
+    shouldPlayInBackground: enabled,
+  });
+};
+
 const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
   const player = useAudioPlayer(audioUrl, { updateInterval: 250 });
   const status = useAudioPlayerStatus(player);
@@ -38,14 +57,41 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
   const barWidth = useRef(0);
   const [wasLoaded, setWasLoaded] = useState(false);
   const stableTime = useRef({ currentTime: 0, duration: 0 });
+  const playerId = player.id;
 
   useEffect(() => {
-    void setAudioModeAsync({
-      playsInSilentMode: true,
-      shouldPlayInBackground: true,
-      interruptionMode: "doNotMix",
+    if (!status.playing) {
+      if (activePlayer?.id === playerId) {
+        activePlayer = null;
+        applyBackgroundPlaybackMode(false);
+      }
+      return;
+    }
+
+    if (activePlayer && activePlayer.id !== playerId) {
+      activePlayer.pause();
+    }
+    activePlayer = { id: playerId, pause: () => player.pause() };
+    applyBackgroundPlaybackMode(true);
+    void player.setActiveForLockScreen(true, {
+      title: title ?? "Artikel anhören",
+      artist: Constants.expoConfig?.name ?? "",
+      artworkUrl,
     });
-  }, []);
+  }, [status.playing, player, playerId, title, artworkUrl]);
+
+  // Guards against a player being torn down (e.g. by navigating away) while
+  // it's still the active background player — reads only the id captured
+  // during render, never touches the (possibly already-released) player
+  // object itself.
+  useEffect(() => {
+    return () => {
+      if (activePlayer?.id === playerId) {
+        activePlayer = null;
+        applyBackgroundPlaybackMode(false);
+      }
+    };
+  }, [playerId]);
 
   useEffect(() => {
     setWasLoaded(false);
@@ -106,18 +152,7 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel={status.playing ? "Pause" : "Abspielen"}
-        onPress={() => {
-          if (status.playing) {
-            player.pause();
-            return;
-          }
-          void player.setActiveForLockScreen(true, {
-            title: title ?? "Artikel anhören",
-            artist: Constants.expoConfig?.name ?? "",
-            artworkUrl,
-          });
-          player.play();
-        }}
+        onPress={() => void (status.playing ? player.pause() : player.play())}
         hitSlop={10}
       >
         {status.playing ? (

@@ -34,11 +34,15 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
   useCorporateColor: () => "#1B7194",
 }));
 
+// `setActiveForLockScreen` is a synchronous native `Function` (not
+// `AsyncFunction`) despite expo-audio's `void`-typed signature — mocking it
+// as async would hide bugs tied to it actually being synchronous.
 const mockPlayer = {
+  id: "player-1",
   play: jest.fn().mockResolvedValue(undefined),
   pause: jest.fn().mockResolvedValue(undefined),
   seekTo: jest.fn().mockResolvedValue(undefined),
-  setActiveForLockScreen: jest.fn().mockResolvedValue(undefined),
+  setActiveForLockScreen: jest.fn(),
 };
 
 const loadedStatus: Partial<AudioStatus> = {
@@ -93,24 +97,14 @@ describe("AudioPlayer — playback controls", () => {
       .mockReturnValue(loadedStatus as AudioStatus);
   });
 
-  it("calls setAudioModeAsync with background playback options on mount", async () => {
+  it("does not enable background playback on mount while paused", async () => {
     await render(<AudioPlayer audioUrl={TEST_URL} />);
-    expect(setAudioModeAsync).toHaveBeenCalledWith({
-      playsInSilentMode: true,
-      shouldPlayInBackground: true,
-      interruptionMode: "doNotMix",
-    });
+    expect(setAudioModeAsync).not.toHaveBeenCalled();
   });
 
-  it("calls player.play() and activates lock screen controls when button is pressed while paused", async () => {
-    const { getByRole } = await render(
-      <AudioPlayer audioUrl={TEST_URL} title="Titel" artworkUrl="art.jpg" />,
-    );
+  it("calls player.play() when button is pressed while paused", async () => {
+    const { getByRole } = await render(<AudioPlayer audioUrl={TEST_URL} />);
     await fireEvent.press(getByRole("button"));
-    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
-      true,
-      expect.objectContaining({ title: "Titel", artworkUrl: "art.jpg" }),
-    );
     expect(mockPlayer.play).toHaveBeenCalledTimes(1);
     expect(mockPlayer.pause).not.toHaveBeenCalled();
   });
@@ -123,6 +117,46 @@ describe("AudioPlayer — playback controls", () => {
     await fireEvent.press(getByRole("button"));
     expect(mockPlayer.pause).toHaveBeenCalledTimes(1);
     expect(mockPlayer.play).not.toHaveBeenCalled();
+  });
+
+  it("enables background playback and lock screen controls once status reports playing", async () => {
+    const { rerender } = await render(
+      <AudioPlayer audioUrl={TEST_URL} title="Titel" artworkUrl="art.jpg" />,
+    );
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue({ ...loadedStatus, playing: true } as AudioStatus);
+    await rerender(
+      <AudioPlayer audioUrl={TEST_URL} title="Titel" artworkUrl="art.jpg" />,
+    );
+
+    expect(setAudioModeAsync).toHaveBeenCalledWith({
+      playsInSilentMode: true,
+      interruptionMode: "doNotMix",
+      shouldPlayInBackground: true,
+    });
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
+      true,
+      expect.objectContaining({ title: "Titel", artworkUrl: "art.jpg" }),
+    );
+  });
+
+  it("disables background playback once status reports paused again", async () => {
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue({ ...loadedStatus, playing: true } as AudioStatus);
+    const { rerender } = await render(<AudioPlayer audioUrl={TEST_URL} />);
+
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue({ ...loadedStatus, playing: false } as AudioStatus);
+    await rerender(<AudioPlayer audioUrl={TEST_URL} />);
+
+    expect(setAudioModeAsync).toHaveBeenLastCalledWith({
+      playsInSilentMode: true,
+      interruptionMode: "doNotMix",
+      shouldPlayInBackground: false,
+    });
   });
 
   it("calls seekTo(0) when the audio finishes", async () => {
@@ -142,6 +176,71 @@ describe("AudioPlayer — playback controls", () => {
     } as AudioStatus);
     await render(<AudioPlayer audioUrl={TEST_URL} />);
     expect(mockPlayer.seekTo).not.toHaveBeenCalled();
+  });
+});
+
+describe("AudioPlayer — exclusive background playback across instances", () => {
+  const URL_A = "https://vvpaudio.b-cdn.net/audio/article-a.mp3";
+  const URL_B = "https://vvpaudio.b-cdn.net/audio/article-b.mp3";
+
+  const playerA = {
+    id: "player-a",
+    play: jest.fn().mockResolvedValue(undefined),
+    pause: jest.fn().mockResolvedValue(undefined),
+    seekTo: jest.fn().mockResolvedValue(undefined),
+    setActiveForLockScreen: jest.fn(),
+  };
+  const playerB = {
+    id: "player-b",
+    play: jest.fn().mockResolvedValue(undefined),
+    pause: jest.fn().mockResolvedValue(undefined),
+    seekTo: jest.fn().mockResolvedValue(undefined),
+    setActiveForLockScreen: jest.fn(),
+  };
+
+  let statusA: AudioStatus;
+  let statusB: AudioStatus;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    statusA = { ...loadedStatus, playing: false } as AudioStatus;
+    statusB = { ...loadedStatus, playing: false } as AudioStatus;
+    jest
+      .mocked(useAudioPlayer)
+      .mockImplementation((url) => (url === URL_A ? playerA : playerB) as any);
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockImplementation((player: any) =>
+        player === playerA ? statusA : statusB,
+      );
+  });
+
+  it("pauses the currently active player when a different player starts playing", async () => {
+    const { rerender } = await render(
+      <>
+        <AudioPlayer audioUrl={URL_A} />
+        <AudioPlayer audioUrl={URL_B} />
+      </>,
+    );
+
+    statusA = { ...statusA, playing: true };
+    await rerender(
+      <>
+        <AudioPlayer audioUrl={URL_A} />
+        <AudioPlayer audioUrl={URL_B} />
+      </>,
+    );
+    expect(playerA.pause).not.toHaveBeenCalled();
+
+    statusB = { ...statusB, playing: true };
+    await rerender(
+      <>
+        <AudioPlayer audioUrl={URL_A} />
+        <AudioPlayer audioUrl={URL_B} />
+      </>,
+    );
+
+    expect(playerA.pause).toHaveBeenCalledTimes(1);
   });
 });
 
