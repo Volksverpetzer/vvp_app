@@ -48,17 +48,6 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
   }, []);
 
   useEffect(() => {
-    return () => {
-      // useAudioPlayer releases the native player on unmount, and that
-      // teardown can run before this cleanup — in which case the player is
-      // already gone and this call is redundant. The native call is
-      // actually promise-based despite the `void` return type, so wrap it
-      // to swallow that race instead of surfacing an unhandled rejection.
-      Promise.resolve(player.setActiveForLockScreen(false)).catch(() => {});
-    };
-  }, [player]);
-
-  useEffect(() => {
     setWasLoaded(false);
     stableTime.current = { currentTime: 0, duration: 0 };
     barWidth.current = 0;
