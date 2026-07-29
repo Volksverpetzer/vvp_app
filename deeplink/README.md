@@ -9,7 +9,7 @@ the source of truth for what each domain must serve.
 | --------------------------------------------------------- | ------------------------------------------------------------------ | ------------------ | ---------------------------------------- |
 | `well-known/pruefpunkt.org/apple-app-site-association`    | `https://pruefpunkt.org/.well-known/apple-app-site-association`    | `application/json` | **deploy** (404 today)                   |
 | `well-known/pruefpunkt.org/assetlinks.json`               | `https://pruefpunkt.org/.well-known/assetlinks.json`               | `application/json` | **deploy** (404 today)                   |
-| `well-known/volksverpetzer.de/apple-app-site-association` | `https://volksverpetzer.de/.well-known/apple-app-site-association` | `application/json` | **update** (add uploads exclude)         |
+| `well-known/volksverpetzer.de/apple-app-site-association` | `https://volksverpetzer.de/.well-known/apple-app-site-association` | `application/json` | **update** (add feed exclude)            |
 | `well-known/volksverpetzer.de/assetlinks.json`            | `https://volksverpetzer.de/.well-known/assetlinks.json`            | `application/json` | already live — reference copy, no change |
 
 Requirements:
@@ -28,8 +28,14 @@ Requirements:
   `apple-app-site-association` here is an **update**: it adds
   `"NOT /wp-content/uploads/*"` ahead of `"/*/*"` so iOS stops opening the app for
   upload/download links (PDFs, images) — those should download in Safari instead.
-  iOS evaluates `paths` top-down (first match wins), so the `NOT` rule must come
-  first. `volksverpetzer.de/.well-known/assetlinks.json` needs **no change**.
+  It now also adds `"NOT /feed"`, `"NOT /feed/*"`, `"NOT /*/feed"` and
+  `"NOT /*/feed/*"` so RSS feed URLs (e.g. `volksverpetzer.de/feed`,
+  `/category/x/feed/`, `/comments/feed/`) open in Safari/a feed reader instead of
+  the app. iOS evaluates `paths` top-down (first match wins), so the `NOT` rules
+  must come before `"/*/*"`. `volksverpetzer.de/.well-known/assetlinks.json`
+  needs **no change** (Android App Links / Digital Asset Links only verify at
+  host level, not path level — the in-app `+native-intent.tsx` /
+  `DeepLinkFilter.ts` check is what excludes feed paths on Android).
 
 ## Identifiers
 
