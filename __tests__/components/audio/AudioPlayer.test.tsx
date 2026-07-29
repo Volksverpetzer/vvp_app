@@ -141,6 +141,36 @@ describe("AudioPlayer — playback controls", () => {
     );
   });
 
+  it("refreshes lock screen metadata when title/artwork change while still playing", async () => {
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue({ ...loadedStatus, playing: true } as AudioStatus);
+    const { rerender } = await render(
+      <AudioPlayer
+        audioUrl={TEST_URL}
+        title="Alter Titel"
+        artworkUrl="old.jpg"
+      />,
+    );
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
+      true,
+      expect.objectContaining({ title: "Alter Titel", artworkUrl: "old.jpg" }),
+    );
+
+    await rerender(
+      <AudioPlayer
+        audioUrl={TEST_URL}
+        title="Neuer Titel"
+        artworkUrl="new.jpg"
+      />,
+    );
+
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenLastCalledWith(
+      true,
+      expect.objectContaining({ title: "Neuer Titel", artworkUrl: "new.jpg" }),
+    );
+  });
+
   it("disables background playback once status reports paused again", async () => {
     jest
       .mocked(useAudioPlayerStatus)

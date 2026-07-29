@@ -51,6 +51,12 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       ["expo-asset"],
       [
         "expo-audio",
+        // `enableBackgroundPlayback` already defaults to true in expo-audio
+        // (adds the Android media foreground service + `UIBackgroundModes:
+        // audio` on iOS). Kept explicit as a guard against that default
+        // changing in a future SDK bump — actual background playback is
+        // still gated at runtime by AudioPlayer's setAudioModeAsync calls,
+        // not by this flag alone.
         { microphonePermission: false, enableBackgroundPlayback: true },
       ],
       [
