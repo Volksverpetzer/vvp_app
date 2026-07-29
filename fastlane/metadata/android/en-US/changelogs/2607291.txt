@@ -1,0 +1,3 @@
+- New: Listen to articles with the screen locked – playback keeps going in the background, with lock screen controls
+- Links to article sections (anchors) now work reliably
+- Bug fixes and performance improvements

@@ -1,0 +1,3 @@
+- Neu: Artikel vorlesen lassen und dabei den Bildschirm sperren – die Wiedergabe läuft im Hintergrund weiter, mit Steuerung über den Sperrbildschirm
+- Verlinkungen zu Artikelabschnitten (Anker) funktionieren jetzt zuverlässig
+- Fehlerbehebungen und Performance-Verbesserungen
