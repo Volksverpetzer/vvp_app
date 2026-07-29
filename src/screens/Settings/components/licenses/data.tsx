@@ -272,7 +272,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
   },
-  "react-native-reanimated-carousel@4.0.3": {
+  "react-native-reanimated-carousel@5.0.0": {
     licenses: "MIT",
     repository: "https://github.com/dohooo/react-native-reanimated-carousel",
     licenseUrl:
