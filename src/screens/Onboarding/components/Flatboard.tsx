@@ -196,7 +196,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   if (!width) return null;
 
   return (
-    <View style={{ flex: 1 }} onLayout={onLayout}>
+    <View style={{ flex: 1 }} onLayout={onLayout} testID="flatboard-container">
       {Platform.OS === "web" ? (
         // The reanimated carousel doesn't paint its items reliably on web;
         // the stepper drives navigation via the step state anyway, so web
