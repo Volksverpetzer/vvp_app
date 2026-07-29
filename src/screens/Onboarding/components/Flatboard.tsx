@@ -9,8 +9,8 @@ import type {
   TextStyle,
 } from "react-native";
 import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
-import type { ICarouselInstance } from "react-native-reanimated-carousel";
+import { Carousel } from "react-native-reanimated-carousel";
+import type { CarouselRef } from "react-native-reanimated-carousel";
 
 import { Logo } from "#/components/SvgIcons";
 import UiText from "#/components/ui/UiText";
@@ -151,7 +151,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
     headingStyle,
     descriptionStyle,
   } = properties;
-  const carouselRef = useRef<ICarouselInstance>(null);
+  const carouselRef = useRef<CarouselRef>(null);
 
   // Keep the latest data/callback in refs so the step effect below always
   // sees fresh values without re-firing when the parent re-renders with new
@@ -196,7 +196,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
   if (!width) return null;
 
   return (
-    <View style={{ flex: 1 }} onLayout={onLayout}>
+    <View style={{ flex: 1 }} onLayout={onLayout} testID="flatboard-container">
       {Platform.OS === "web" ? (
         // The reanimated carousel doesn't paint its items reliably on web;
         // the stepper drives navigation via the step state anyway, so web
@@ -213,8 +213,7 @@ const FlatBoard = (properties: FlatBoardProperties) => {
       ) : (
         <Carousel
           ref={carouselRef}
-          width={width}
-          height={containerHeight}
+          style={{ width, height: containerHeight }}
           data={data}
           loop={false}
           onSnapToItem={onSnapToItem}

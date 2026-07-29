@@ -1,0 +1,11 @@
+diff --git a/src/hooks/useLayoutConfig.ts b/src/hooks/useLayoutConfig.ts
+index d421de9e5fc8f7b12a6e6a4fbb9ee712be197567..3f2dd9a1f13136bf7fa36710bd8a262f7dbf9678 100644
+--- a/src/hooks/useLayoutConfig.ts
++++ b/src/hooks/useLayoutConfig.ts
+@@ -31,5 +31,5 @@ export function useLayoutConfig<Item>(options: LayoutConfigOptions<Item>): Carou
+       default:
+         return Layouts.normal(baseConfig);
+     }
+-  }, [dataLength, directionSign, isVertical, layout, size]);
++  }, [dataLength, directionSign, isVertical, layout, size]) as CarouselItemAnimation;
+ }
