@@ -4,7 +4,14 @@
     "details": [
       {
         "appID": "LGZ66Q83U6.de.volksverpetzer.app",
-        "paths": ["NOT /wp-content/uploads/*", "/*/*"]
+        "paths": [
+          "NOT /wp-content/uploads/*",
+          "NOT /feed",
+          "NOT /feed/*",
+          "NOT /*/feed",
+          "NOT /*/feed/*",
+          "/*/*"
+        ]
       }
     ]
   }

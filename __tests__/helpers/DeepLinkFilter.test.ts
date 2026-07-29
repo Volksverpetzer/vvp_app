@@ -52,5 +52,23 @@ describe("DeepLinkFilter", () => {
     it("should handle empty strings", () => {
       expect(shouldExcludeFromDeepLink("")).toBe(false);
     });
+
+    it("should exclude RSS feed paths", () => {
+      expect(shouldExcludeFromDeepLink("/feed")).toBe(true);
+      expect(shouldExcludeFromDeepLink("/feed/")).toBe(true);
+      expect(shouldExcludeFromDeepLink("/feed/rss2/")).toBe(true);
+      expect(shouldExcludeFromDeepLink("/comments/feed/")).toBe(true);
+      expect(shouldExcludeFromDeepLink("/category/politik/feed/")).toBe(true);
+    });
+
+    it("should ignore query string/fragment when checking feed paths", () => {
+      expect(shouldExcludeFromDeepLink("/feed?utm_source=x")).toBe(true);
+      expect(shouldExcludeFromDeepLink("/feed/#top")).toBe(true);
+    });
+
+    it("should not exclude slugs that merely contain 'feed'", () => {
+      expect(shouldExcludeFromDeepLink("/politik/feed-my-family")).toBe(false);
+      expect(shouldExcludeFromDeepLink("/politik/newsfeed")).toBe(false);
+    });
   });
 });
