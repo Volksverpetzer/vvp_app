@@ -4,6 +4,7 @@ import {
   useAudioPlayer,
   useAudioPlayerStatus,
 } from "expo-audio";
+import Constants from "expo-constants";
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
@@ -19,6 +20,8 @@ import {
 
 interface AudioPlayerProps {
   audioUrl: string;
+  title?: string;
+  artworkUrl?: string;
 }
 
 const formatTime = (seconds: number) => {
@@ -27,7 +30,7 @@ const formatTime = (seconds: number) => {
   return `${m}:${s.toString().padStart(2, "0")}`;
 };
 
-const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
+const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
   const player = useAudioPlayer(audioUrl, { updateInterval: 250 });
   const status = useAudioPlayerStatus(player);
   const corporate = useCorporateColor();
@@ -37,8 +40,18 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
   const stableTime = useRef({ currentTime: 0, duration: 0 });
 
   useEffect(() => {
-    void setAudioModeAsync({ playsInSilentMode: true });
+    void setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+      interruptionMode: "doNotMix",
+    });
   }, []);
+
+  useEffect(() => {
+    return () => {
+      void player.setActiveForLockScreen(false);
+    };
+  }, [player]);
 
   useEffect(() => {
     setWasLoaded(false);
@@ -99,7 +112,18 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps) => {
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel={status.playing ? "Pause" : "Abspielen"}
-        onPress={() => void (status.playing ? player.pause() : player.play())}
+        onPress={() => {
+          if (status.playing) {
+            player.pause();
+            return;
+          }
+          void player.setActiveForLockScreen(true, {
+            title: title ?? "Artikel anhören",
+            artist: Constants.expoConfig?.name ?? "",
+            artworkUrl,
+          });
+          player.play();
+        }}
         hitSlop={10}
       >
         {status.playing ? (
