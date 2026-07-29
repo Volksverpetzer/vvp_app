@@ -46,6 +46,12 @@ const webviewUri = () => {
   return props.uri as string;
 };
 
+const articleAnchorProp = () => {
+  const Article = jest.requireMock("#/screens/Home/components/article/Article");
+  const [props] = Article.mock.calls.at(-1);
+  return props.anchor as string | undefined;
+};
+
 describe("LoadArticle single-segment page (no slug)", () => {
   beforeEach(() => jest.clearAllMocks());
 
@@ -100,5 +106,87 @@ describe("LoadArticle article fallback (slug not found)", () => {
     });
 
     expect(webviewUri()).toBe("https://volksverpetzer.de/klima/some-slug/");
+  });
+
+  it("keeps the deep-link anchor on the fallback URL so the webview jumps to it", async () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    // Custom post types (e.g. /project/…) are not served by the posts API,
+    // so anchored deep links to them always land on this fallback.
+    useLocalSearchParams.mockReturnValue({
+      category: "project",
+      slug: "10fakten",
+      "#": "quellen",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => {
+      const EdgelessWebview = jest.requireMock(
+        "#/screens/Home/components/EdgelessWebview",
+      );
+      expect(EdgelessWebview).toHaveBeenCalled();
+    });
+
+    expect(webviewUri()).toBe(
+      "https://volksverpetzer.de/project/10fakten/#quellen",
+    );
+  });
+
+  it("re-encodes the already-decoded anchor param for the webview URL", async () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    // Contract: useLocalSearchParams has already decodeURIComponent'd every
+    // param, so the route receives the raw id (here with a trailing space,
+    // as on the live site) and must re-encode it exactly once.
+    useLocalSearchParams.mockReturnValue({
+      category: "project",
+      slug: "10fakten",
+      "#": "die-quellen ",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => {
+      const EdgelessWebview = jest.requireMock(
+        "#/screens/Home/components/EdgelessWebview",
+      );
+      expect(EdgelessWebview).toHaveBeenCalled();
+    });
+
+    expect(webviewUri()).toBe(
+      "https://volksverpetzer.de/project/10fakten/#die-quellen%20",
+    );
+  });
+});
+
+describe("LoadArticle native article anchor", () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it("passes the anchor param through to ArticleScreen", async () => {
+    // A cached article renders natively (ArticleScreen), which handles the
+    // anchor scroll itself — so the fragment must reach it as a prop.
+    const ContentStore = jest.requireMock(
+      "#/helpers/Stores/ContentStore",
+    ).default;
+    ContentStore.getStoredArticle.mockResolvedValueOnce({
+      slug: "afd-fraktion-extrem",
+      imageUrl: "",
+    });
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "analyse",
+      slug: "afd-fraktion-extrem",
+      "#": "Erfurter-Resolution",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => {
+      const Article = jest.requireMock(
+        "#/screens/Home/components/article/Article",
+      );
+      expect(Article).toHaveBeenCalled();
+    });
+
+    expect(articleAnchorProp()).toBe("Erfurter-Resolution");
   });
 });

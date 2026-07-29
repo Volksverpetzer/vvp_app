@@ -188,6 +188,8 @@ const Header = (properties: HeaderProperties) => {
       {Config.audioCdnUrl && (
         <AudioPlayer
           audioUrl={`${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`}
+          title={article_title}
+          artworkUrl={article_image}
         />
       )}
       <UiSpace size={10} />
