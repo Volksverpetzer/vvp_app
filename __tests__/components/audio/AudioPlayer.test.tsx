@@ -38,6 +38,7 @@ const mockPlayer = {
   play: jest.fn().mockResolvedValue(undefined),
   pause: jest.fn().mockResolvedValue(undefined),
   seekTo: jest.fn().mockResolvedValue(undefined),
+  setActiveForLockScreen: jest.fn().mockResolvedValue(undefined),
 };
 
 const loadedStatus: Partial<AudioStatus> = {
@@ -92,14 +93,24 @@ describe("AudioPlayer — playback controls", () => {
       .mockReturnValue(loadedStatus as AudioStatus);
   });
 
-  it("calls setAudioModeAsync with playsInSilentMode on mount", async () => {
+  it("calls setAudioModeAsync with background playback options on mount", async () => {
     await render(<AudioPlayer audioUrl={TEST_URL} />);
-    expect(setAudioModeAsync).toHaveBeenCalledWith({ playsInSilentMode: true });
+    expect(setAudioModeAsync).toHaveBeenCalledWith({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+      interruptionMode: "doNotMix",
+    });
   });
 
-  it("calls player.play() when button is pressed while paused", async () => {
-    const { getByRole } = await render(<AudioPlayer audioUrl={TEST_URL} />);
+  it("calls player.play() and activates lock screen controls when button is pressed while paused", async () => {
+    const { getByRole } = await render(
+      <AudioPlayer audioUrl={TEST_URL} title="Titel" artworkUrl="art.jpg" />,
+    );
     await fireEvent.press(getByRole("button"));
+    expect(mockPlayer.setActiveForLockScreen).toHaveBeenCalledWith(
+      true,
+      expect.objectContaining({ title: "Titel", artworkUrl: "art.jpg" }),
+    );
     expect(mockPlayer.play).toHaveBeenCalledTimes(1);
     expect(mockPlayer.pause).not.toHaveBeenCalled();
   });
