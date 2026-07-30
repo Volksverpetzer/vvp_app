@@ -22,6 +22,7 @@ import {
   useCorporateColor,
 } from "#/hooks/useAppColorScheme";
 import type { PodcastEpisodeProperties } from "#/types";
+import { FAV_TYPE_PODCAST } from "#/types";
 
 // The square cover sits a little narrower than the text column (design), so
 // it's inset a bit more than POST_PADDING_HORIZONTAL.
@@ -162,6 +163,9 @@ const PodcastScreen = () => {
             ? [{ url: episode.link, title: "Podcast Folge teilen" }]
             : undefined
         }
+        contentType={episode.link ? FAV_TYPE_PODCAST : undefined}
+        contentFavIdentifier={episode.link ? episode.id : undefined}
+        favPayload={episode.link ? episode : undefined}
       />
     </View>
   );

@@ -1,10 +1,5 @@
 import BaseStore from "#/helpers/Storage";
-import type {
-  FaveableType,
-  HttpsUrl,
-  InstaPostProperties,
-  StoredFavs,
-} from "#/types";
+import type { FavPayload, FaveableType, HttpsUrl, StoredFavs } from "#/types";
 
 const FavoritesStore = {
   favKey: "favs",
@@ -48,7 +43,7 @@ const FavoritesStore = {
     contentFavIdentifier: string,
     contentType: FaveableType,
     originalUrl?: HttpsUrl,
-    payload?: InstaPostProperties,
+    payload?: FavPayload,
   ): Promise<void> {
     const storedFavs = await this.getStoredFavs();
     const newStoredFavs = {

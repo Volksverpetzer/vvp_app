@@ -13,9 +13,9 @@ import { onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type {
+  FavPayload,
   FaveableType,
   HttpsUrl,
-  InstaPostProperties,
   ShareableType,
 } from "#/types";
 
@@ -24,7 +24,7 @@ interface NavBarProperties {
   shareable?: ShareableType[];
   contentFavIdentifier?: string;
   contentType?: FaveableType;
-  favPayload?: InstaPostProperties;
+  favPayload?: FavPayload;
 }
 /**
  * NavBar component renders a top navigation bar with a customizable
