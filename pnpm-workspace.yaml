@@ -11,3 +11,27 @@ packages:
   - .
 patchedDependencies:
   react-native-reanimated-carousel@5.0.0: patches/react-native-reanimated-carousel@5.0.0.patch
+minimumReleaseAgeExclude:
+  - "@expo/cli@57.0.11"
+  - "@expo/inline-modules@0.1.4"
+  - "@expo/local-build-cache-provider@57.0.5"
+  - "@expo/log-box@57.0.2"
+  - "@expo/prebuild-config@57.0.10"
+  - babel-preset-expo@57.0.5
+  - expo-asset@57.0.8
+  - expo-constants@57.0.8
+  - expo-modules-core@57.0.8
+  - expo@57.0.9
+  - "@expo/metro-runtime@57.0.8"
+  - "@expo/ui@57.0.8"
+  - expo-dev-client@57.0.10
+  - expo-dev-launcher@57.0.10
+  - expo-dev-menu@57.0.10
+  - expo-notifications@57.0.8
+  - expo-router@57.0.9
+  - expo-sharing@57.0.8
+  - expo-system-ui@57.0.2
+  - expo-updates@57.0.11
+  - eslint-config-expo@57.0.1
+  - expo-build-properties@57.0.8
+  - jest-expo@57.0.3
