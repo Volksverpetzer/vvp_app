@@ -8,7 +8,7 @@ import Constants from "expo-constants";
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 
-import { PauseIcon, UnmuteIcon } from "#/components/Icons";
+import { PauseIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
@@ -46,6 +46,11 @@ interface AudioPlayerProps {
    * refreshes and app restarts. Off when omitted.
    */
   resumeKey?: string;
+  /**
+   * Horizontal padding of the player row. Defaults to 20; the podcast card
+   * passes the text padding so the row lines up with the episode text.
+   */
+  horizontalPadding?: number;
 }
 
 // `shouldPlayInBackground` is a single, module-wide native flag shared by
@@ -74,6 +79,7 @@ const AudioPlayer = ({
   autoPlay = false,
   showFeedback = false,
   resumeKey,
+  horizontalPadding = 20,
 }: AudioPlayerProps) => {
   const player = useAudioPlayer(audioUrl, { updateInterval: 250 });
   const status = useAudioPlayerStatus(player);
@@ -218,7 +224,7 @@ const AudioPlayer = ({
     return (
       <View
         style={{
-          paddingHorizontal: 20,
+          paddingHorizontal: horizontalPadding,
           paddingVertical: 12,
           minHeight: 50,
           justifyContent: "center",
@@ -255,19 +261,13 @@ const AudioPlayer = ({
   return (
     <View
       style={{
-        paddingHorizontal: 20,
+        paddingHorizontal: horizontalPadding,
         paddingVertical: 12,
         flexDirection: "row",
         alignItems: "center",
         gap: 12,
       }}
     >
-      <UnmuteIcon
-        size={16}
-        color={Colors[colorScheme].textMuted}
-        accessible={false}
-        importantForAccessibility="no"
-      />
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel={status.playing ? "Pause" : "Abspielen"}

@@ -117,6 +117,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
             resumeKey={audio_url}
             title={title}
             artworkUrl={image_url ?? undefined}
+            horizontalPadding={POST_PADDING_HORIZONTAL}
           />
         ) : (
           <UiPressable
@@ -130,7 +131,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
               flexDirection: "row",
               alignItems: "center",
               gap: 12,
-              paddingHorizontal: 20,
+              paddingHorizontal: POST_PADDING_HORIZONTAL,
               paddingVertical: 12,
             }}
           >
