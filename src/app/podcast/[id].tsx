@@ -23,8 +23,12 @@ import {
 } from "#/hooks/useAppColorScheme";
 import type { PodcastEpisodeProperties } from "#/types";
 
+// The square cover sits a little narrower than the text column (design), so
+// it's inset a bit more than POST_PADDING_HORIZONTAL.
+const COVER_PADDING_HORIZONTAL = POST_PADDING_HORIZONTAL + 16;
+
 /**
- * Full podcast episode screen: cover, title, date/duration, the full
+ * Full podcast episode screen: a square cover, title, date/duration, the full
  * description and the audio player. Reached from the podcast feed card.
  *
  * Podigee has no per-episode endpoint, so the episode is located by id in the
@@ -87,12 +91,22 @@ const PodcastScreen = () => {
     <View style={[globalStyles.container, { backgroundColor }]}>
       <ScrollView>
         {episode.image_url && (
-          <Image
-            style={{ width: "100%", height: 240, backgroundColor: corporate }}
-            source={{ uri: episode.image_url }}
-            contentFit="cover"
-            accessibilityIgnoresInvertColors
-          />
+          <>
+            <UiSpace size={16} />
+            <View style={{ paddingHorizontal: COVER_PADDING_HORIZONTAL }}>
+              <Image
+                style={{
+                  width: "100%",
+                  aspectRatio: 1,
+                  borderRadius: 12,
+                  backgroundColor: corporate,
+                }}
+                source={{ uri: episode.image_url }}
+                contentFit="cover"
+                accessibilityIgnoresInvertColors
+              />
+            </View>
+          </>
         )}
         <UiSpace size={16} />
         <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
