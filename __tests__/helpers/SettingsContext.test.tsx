@@ -76,6 +76,7 @@ describe("SettingsContext Logic", () => {
         yt: { value: false, name: "Videos" },
         bsky: { value: true, name: "Tweets" },
         bot: { value: false, name: "Fact" },
+        podcast: { value: true, name: "Podcast Folgen" },
         "wp:pruefpunkt.org": { value: true, name: "Prüfpunkt Artikel" },
       };
 

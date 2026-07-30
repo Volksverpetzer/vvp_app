@@ -10,9 +10,17 @@ import { View } from "react-native";
 
 import { PauseIcon, UnmuteIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import PersonalStore from "#/helpers/Stores/PersonalStore";
+import {
+  RESUME_END_MARGIN_SECONDS,
+  RESUME_MIN_SECONDS,
+  RESUME_SAVE_INTERVAL_SECONDS,
+  formatTime,
+} from "#/helpers/utils/audio";
 import {
   useAppColorScheme,
   useCorporateColor,
@@ -20,15 +28,25 @@ import {
 
 interface AudioPlayerProps {
   audioUrl: string;
+  /** Title shown on the lock-screen / notification now-playing controls. */
   title?: string;
+  /** Artwork shown on the lock-screen / notification now-playing controls. */
   artworkUrl?: string;
+  /** Start playback once the audio is loaded (used by lazily mounted players). */
+  autoPlay?: boolean;
+  /**
+   * Render a spinner while loading and an error message on failure instead of
+   * rendering nothing. Used where the player appears on user interaction and
+   * silence would look like a dead control.
+   */
+  showFeedback?: boolean;
+  /**
+   * Persist and restore the playback position under this key (e.g. the
+   * episode's audio URL) via PersonalStore, so long audio survives unmounts,
+   * refreshes and app restarts. Off when omitted.
+   */
+  resumeKey?: string;
 }
-
-const formatTime = (seconds: number) => {
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
-};
 
 // `shouldPlayInBackground` is a single, module-wide native flag shared by
 // every AudioPlayer instance (not scoped per player) — it must only be on
@@ -49,7 +67,14 @@ const applyBackgroundPlaybackMode = (enabled: boolean) => {
   });
 };
 
-const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
+const AudioPlayer = ({
+  audioUrl,
+  title,
+  artworkUrl,
+  autoPlay = false,
+  showFeedback = false,
+  resumeKey,
+}: AudioPlayerProps) => {
   const player = useAudioPlayer(audioUrl, { updateInterval: 250 });
   const status = useAudioPlayerStatus(player);
   const corporate = useCorporateColor();
@@ -58,7 +83,16 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
   const [wasLoaded, setWasLoaded] = useState(false);
   const stableTime = useRef({ currentTime: 0, duration: 0 });
   const playerId = player.id;
+  const hasAutoPlayed = useRef(false);
+  const hasRestored = useRef(false);
+  const lastSavedTime = useRef(0);
+  // Autoplay must wait for the position restore, otherwise playback starts at
+  // 0:00 for a moment before jumping to the resumed position.
+  const [restoreDone, setRestoreDone] = useState(!resumeKey);
 
+  // Single active player across the app: starting one pauses the previously
+  // active one, toggles the module-wide background-playback mode, and drives
+  // the lock-screen / notification now-playing controls.
   useEffect(() => {
     if (!status.playing) {
       if (activePlayer?.id === playerId) {
@@ -97,13 +131,74 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
     setWasLoaded(false);
     stableTime.current = { currentTime: 0, duration: 0 };
     barWidth.current = 0;
-  }, [audioUrl]);
+    hasAutoPlayed.current = false;
+    hasRestored.current = false;
+    lastSavedTime.current = 0;
+    setRestoreDone(!resumeKey);
+  }, [audioUrl, resumeKey]);
+
+  // Restore the stored playback position once the audio is loaded.
+  useEffect(() => {
+    if (!resumeKey || hasRestored.current || !status.isLoaded) return;
+    hasRestored.current = true;
+    const { duration } = status;
+    PersonalStore.getAudioPosition(resumeKey)
+      .then((position) => {
+        if (
+          position > RESUME_MIN_SECONDS &&
+          (duration === 0 || position < duration - RESUME_END_MARGIN_SECONDS)
+        ) {
+          lastSavedTime.current = position;
+          return player.seekTo(position);
+        }
+      })
+      .finally(() => setRestoreDone(true));
+  }, [resumeKey, status, player]);
+
+  // Persist the position every few seconds of playback so it survives
+  // unmounts (list virtualization, refresh) and app restarts.
+  useEffect(() => {
+    if (!resumeKey || !status.isLoaded || !status.playing) return;
+    if (
+      Math.abs(status.currentTime - lastSavedTime.current) >=
+      RESUME_SAVE_INTERVAL_SECONDS
+    ) {
+      lastSavedTime.current = status.currentTime;
+      void PersonalStore.setAudioPosition(resumeKey, status.currentTime);
+    }
+  }, [resumeKey, status.isLoaded, status.playing, status.currentTime]);
+
+  // Save the last known position on unmount (or clear it when the audio ended
+  // near the end margin, so the next mount starts fresh).
+  useEffect(() => {
+    if (!resumeKey) return;
+    return () => {
+      const { currentTime, duration } = stableTime.current;
+      if (duration > 0 && currentTime >= duration - RESUME_END_MARGIN_SECONDS) {
+        void PersonalStore.clearAudioPosition(resumeKey);
+      } else if (currentTime > RESUME_MIN_SECONDS) {
+        void PersonalStore.setAudioPosition(resumeKey, currentTime);
+      }
+    };
+  }, [resumeKey]);
+
+  useEffect(() => {
+    if (autoPlay && restoreDone && status.isLoaded && !hasAutoPlayed.current) {
+      hasAutoPlayed.current = true;
+      player.play();
+    }
+  }, [autoPlay, restoreDone, status.isLoaded, player]);
 
   useEffect(() => {
     if (status.didJustFinish) {
       void player.seekTo(0);
+      if (resumeKey) {
+        lastSavedTime.current = 0;
+        stableTime.current.currentTime = 0;
+        void PersonalStore.clearAudioPosition(resumeKey);
+      }
     }
-  }, [status.didJustFinish, player]);
+  }, [status.didJustFinish, player, resumeKey]);
 
   // Latch loaded state and keep a snapshot of the last good position so a
   // transient isLoaded=false during seek doesn't unmount the player or reset
@@ -118,7 +213,31 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
     }
   }, [status.isLoaded, status.error, status.currentTime, status.duration]);
 
-  if (status.error || (!wasLoaded && !status.isLoaded)) return null;
+  if (status.error || (!wasLoaded && !status.isLoaded)) {
+    if (!showFeedback) return null;
+    return (
+      <View
+        style={{
+          paddingHorizontal: 20,
+          paddingVertical: 12,
+          minHeight: 50,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {status.error ? (
+          <UiText
+            size="sm"
+            style={{ color: Colors[colorScheme].error, textAlign: "center" }}
+          >
+            Audio konnte nicht geladen werden.
+          </UiText>
+        ) : (
+          <UiSpinner size="small" />
+        )}
+      </View>
+    );
+  }
 
   const { currentTime, duration } =
     status.isLoaded && !status.error ? status : stableTime.current;

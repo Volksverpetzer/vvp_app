@@ -1,4 +1,4 @@
-import { fireEvent, render } from "@testing-library/react-native";
+import { fireEvent, render, waitFor } from "@testing-library/react-native";
 import {
   setAudioModeAsync,
   useAudioPlayer,
@@ -37,6 +37,19 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 // `setActiveForLockScreen` is a synchronous native `Function` (not
 // `AsyncFunction`) despite expo-audio's `void`-typed signature — mocking it
 // as async would hide bugs tied to it actually being synchronous.
+
+const mockGetAudioPosition = jest.fn().mockResolvedValue(0);
+const mockSetAudioPosition = jest.fn().mockResolvedValue(undefined);
+const mockClearAudioPosition = jest.fn().mockResolvedValue(undefined);
+jest.mock("#/helpers/Stores/PersonalStore", () => ({
+  __esModule: true,
+  default: {
+    getAudioPosition: (...args: unknown[]) => mockGetAudioPosition(...args),
+    setAudioPosition: (...args: unknown[]) => mockSetAudioPosition(...args),
+    clearAudioPosition: (...args: unknown[]) => mockClearAudioPosition(...args),
+  },
+}));
+
 const mockPlayer = {
   id: "player-1",
   play: jest.fn().mockResolvedValue(undefined),
@@ -314,6 +327,71 @@ describe("AudioPlayer — clamping", () => {
   });
 });
 
+describe("AudioPlayer — autoPlay", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as any);
+  });
+
+  it("plays once automatically after load when autoPlay is set", async () => {
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue(loadedStatus as AudioStatus);
+    const { rerender } = await render(
+      <AudioPlayer audioUrl={TEST_URL} autoPlay />,
+    );
+    expect(mockPlayer.play).toHaveBeenCalledTimes(1);
+    // Status updates must not re-trigger autoplay
+    await rerender(<AudioPlayer audioUrl={TEST_URL} autoPlay />);
+    expect(mockPlayer.play).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not autoplay before the audio is loaded", async () => {
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue({ ...loadedStatus, isLoaded: false } as AudioStatus);
+    await render(<AudioPlayer audioUrl={TEST_URL} autoPlay />);
+    expect(mockPlayer.play).not.toHaveBeenCalled();
+  });
+
+  it("does not autoplay without the prop (article usage)", async () => {
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue(loadedStatus as AudioStatus);
+    await render(<AudioPlayer audioUrl={TEST_URL} />);
+    expect(mockPlayer.play).not.toHaveBeenCalled();
+  });
+});
+
+describe("AudioPlayer — showFeedback", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as any);
+  });
+
+  it("renders a spinner while loading instead of nothing", async () => {
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue({ ...loadedStatus, isLoaded: false } as AudioStatus);
+    const { toJSON } = await render(
+      <AudioPlayer audioUrl={TEST_URL} showFeedback />,
+    );
+    expect(toJSON()).not.toBeNull();
+  });
+
+  it("renders an error message when loading fails", async () => {
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      isLoaded: false,
+      error: "404 Not Found",
+    } as AudioStatus);
+    const { getByText } = await render(
+      <AudioPlayer audioUrl={TEST_URL} showFeedback />,
+    );
+    expect(getByText("Audio konnte nicht geladen werden.")).toBeTruthy();
+  });
+});
+
 describe("AudioPlayer — remaining time display", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -338,4 +416,107 @@ describe("AudioPlayer — remaining time display", () => {
       expect(getByText(expected)).toBeTruthy();
     },
   );
+});
+
+describe("AudioPlayer — resume playback", () => {
+  const RESUME_URL = "https://audio.example.com/episode.mp3";
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as any);
+    mockGetAudioPosition.mockResolvedValue(0);
+  });
+
+  it("seeks to the stored position once loaded", async () => {
+    mockGetAudioPosition.mockResolvedValue(100);
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue(loadedStatus as AudioStatus);
+
+    await render(<AudioPlayer audioUrl={RESUME_URL} resumeKey={RESUME_URL} />);
+
+    await waitFor(() => {
+      expect(mockGetAudioPosition).toHaveBeenCalledWith(RESUME_URL);
+      expect(mockPlayer.seekTo).toHaveBeenCalledWith(100);
+    });
+  });
+
+  it("ignores stored positions near the start", async () => {
+    mockGetAudioPosition.mockResolvedValue(5);
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue(loadedStatus as AudioStatus);
+
+    await render(<AudioPlayer audioUrl={RESUME_URL} resumeKey={RESUME_URL} />);
+
+    await waitFor(() => expect(mockGetAudioPosition).toHaveBeenCalled());
+    expect(mockPlayer.seekTo).not.toHaveBeenCalled();
+  });
+
+  it("ignores stored positions near the end", async () => {
+    // duration is 120 in loadedStatus; 115 is within the end margin
+    mockGetAudioPosition.mockResolvedValue(115);
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue(loadedStatus as AudioStatus);
+
+    await render(<AudioPlayer audioUrl={RESUME_URL} resumeKey={RESUME_URL} />);
+
+    await waitFor(() => expect(mockGetAudioPosition).toHaveBeenCalled());
+    expect(mockPlayer.seekTo).not.toHaveBeenCalled();
+  });
+
+  it("delays autoplay until the restore finished, then plays", async () => {
+    mockGetAudioPosition.mockResolvedValue(100);
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue(loadedStatus as AudioStatus);
+
+    await render(
+      <AudioPlayer audioUrl={RESUME_URL} resumeKey={RESUME_URL} autoPlay />,
+    );
+
+    await waitFor(() => {
+      expect(mockPlayer.seekTo).toHaveBeenCalledWith(100);
+      expect(mockPlayer.play).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it("does not touch the store without a resumeKey", async () => {
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue(loadedStatus as AudioStatus);
+
+    await render(<AudioPlayer audioUrl={RESUME_URL} />);
+
+    expect(mockGetAudioPosition).not.toHaveBeenCalled();
+    expect(mockSetAudioPosition).not.toHaveBeenCalled();
+  });
+
+  it("clears the stored position when the audio finishes", async () => {
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      didJustFinish: true,
+    } as AudioStatus);
+
+    await render(<AudioPlayer audioUrl={RESUME_URL} resumeKey={RESUME_URL} />);
+
+    await waitFor(() =>
+      expect(mockClearAudioPosition).toHaveBeenCalledWith(RESUME_URL),
+    );
+  });
+
+  it("persists progress during playback", async () => {
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 42,
+    } as AudioStatus);
+
+    await render(<AudioPlayer audioUrl={RESUME_URL} resumeKey={RESUME_URL} />);
+
+    await waitFor(() =>
+      expect(mockSetAudioPosition).toHaveBeenCalledWith(RESUME_URL, 42),
+    );
+  });
 });

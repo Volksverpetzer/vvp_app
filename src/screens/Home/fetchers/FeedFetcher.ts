@@ -6,6 +6,7 @@ import type { FeedFetcherType, FeedType } from "#/types";
 import { BlueskyFetcher } from "./BlueskyFetcher";
 import { BotFetcher } from "./BotFetcher";
 import { InstagramFetcher } from "./InstagramFetcher";
+import { PodcastFetcher } from "./PodcastFetcher";
 import { TikTokFetcher } from "./TikTokFetcher";
 import { WordPressFetcher } from "./WordPressFetcher";
 import { YouTubeFetcher } from "./YouTubeFetcher";
@@ -47,6 +48,7 @@ export class FeedFetcher {
     tiktok: TikTokFetcher.feedFetcher,
     bsky: BlueskyFetcher.feedFetcher,
     bot: BotFetcher.feedFetcher,
+    podcast: PodcastFetcher.feedFetcher,
     ...perFeedFetcherMap,
   };
 }

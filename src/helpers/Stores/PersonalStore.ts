@@ -9,6 +9,7 @@ const PersonalStore = {
   keys: {
     onboardingDone: "onboarded",
     scrollPosition: "scrollPosition",
+    audioPosition: "audioPosition",
     longPressTip: "longPressTip",
     lastSeenChangelog: "lastSeenChangelog",
     dismissedAnnouncements: "dismissedAnnouncements",
@@ -21,6 +22,14 @@ const PersonalStore = {
    */
   getScrollKey(slug: string): string {
     return `${this.keys.scrollPosition}_${slug}`;
+  },
+
+  /**
+   * Constructs the key for audio position storage for a given resume key
+   * (e.g. a podcast episode's audio URL).
+   */
+  getAudioKey(resumeKey: string): string {
+    return `${this.keys.audioPosition}_${resumeKey}`;
   },
 
   /**
@@ -134,6 +143,49 @@ const PersonalStore = {
     } catch (error) {
       console.error("Error retrieving scroll position:", error);
       return 0;
+    }
+  },
+
+  /**
+   * Stores the playback position (in seconds) for a resumable audio.
+   * @param {string} resumeKey - Identifies the audio, e.g. its URL.
+   * @param {number} position - The playback position in seconds.
+   */
+  async setAudioPosition(resumeKey: string, position: number): Promise<void> {
+    try {
+      await BaseStore.setItem(
+        this.getAudioKey(resumeKey),
+        JSON.stringify(position),
+      );
+    } catch (error) {
+      console.error("Error setting audio position:", error);
+    }
+  },
+
+  /**
+   * Retrieves the stored playback position (in seconds) for a resumable audio.
+   * @param {string} resumeKey - Identifies the audio, e.g. its URL.
+   * @returns {Promise<number>} The stored position, 0 if none.
+   */
+  async getAudioPosition(resumeKey: string): Promise<number> {
+    try {
+      const jsonValue = await BaseStore.getItem(this.getAudioKey(resumeKey));
+      return BaseStore.parseJSON<number>(jsonValue, 0);
+    } catch (error) {
+      console.error("Error retrieving audio position:", error);
+      return 0;
+    }
+  },
+
+  /**
+   * Clears the stored playback position, e.g. once the audio finished.
+   * @param {string} resumeKey - Identifies the audio, e.g. its URL.
+   */
+  async clearAudioPosition(resumeKey: string): Promise<void> {
+    try {
+      await BaseStore.removeItem(this.getAudioKey(resumeKey));
+    } catch (error) {
+      console.error("Error clearing audio position:", error);
     }
   },
 };

@@ -7,6 +7,7 @@ import defaultExport, {
   FeedFetcher,
 } from "#/screens/Home/fetchers/FeedFetcher";
 import { InstagramFetcher } from "#/screens/Home/fetchers/InstagramFetcher";
+import { PodcastFetcher } from "#/screens/Home/fetchers/PodcastFetcher";
 import { TikTokFetcher } from "#/screens/Home/fetchers/TikTokFetcher";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import { YouTubeFetcher } from "#/screens/Home/fetchers/YouTubeFetcher";
@@ -57,6 +58,10 @@ jest.mock("#/screens/Home/fetchers/BotFetcher", () => ({
   BotFetcher: { feedFetcher: jest.fn() },
 }));
 
+jest.mock("#/screens/Home/fetchers/PodcastFetcher", () => ({
+  PodcastFetcher: { feedFetcher: jest.fn() },
+}));
+
 // createFetchers is called once per configured wp feed at module load time —
 // capture both results (primary site first, Prüfpunkt second).
 const createFetchersMock = WordPressFetcher.createFetchers as jest.Mock;
@@ -80,6 +85,7 @@ describe("FeedFetcher", () => {
     expect(FeedFetcher.fetchers.tiktok).toBeDefined();
     expect(FeedFetcher.fetchers.bsky).toBeDefined();
     expect(FeedFetcher.fetchers.bot).toBeDefined();
+    expect(FeedFetcher.fetchers.podcast).toBeDefined();
     expect(FeedFetcher.fetchers["wp:pruefpunkt.org"]).toBeDefined();
     expect(FeedFetcher.fetchers["wp:pruefpunkt.org:search"]).toBeDefined();
   });
@@ -104,6 +110,7 @@ describe("FeedFetcher", () => {
     expect(FeedFetcher.fetchers.tiktok).toBe(TikTokFetcher.feedFetcher);
     expect(FeedFetcher.fetchers.bsky).toBe(BlueskyFetcher.feedFetcher);
     expect(FeedFetcher.fetchers.bot).toBe(BotFetcher.feedFetcher);
+    expect(FeedFetcher.fetchers.podcast).toBe(PodcastFetcher.feedFetcher);
     expect(FeedFetcher.fetchers["wp:pruefpunkt.org"]).toBe(
       pruefpunktCreated.feedFetcher,
     );
