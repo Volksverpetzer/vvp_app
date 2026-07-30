@@ -9,7 +9,10 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
+import {
+  DEFAULT_IMAGE_ASPECT_RATIO,
+  POST_PADDING_HORIZONTAL,
+} from "#/constants/GlobalStyles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useAudio } from "#/helpers/provider/AudioProvider";
@@ -20,13 +23,12 @@ import {
 } from "#/hooks/useAppColorScheme";
 import type { PodcastEpisodeProperties } from "#/types";
 
-const COVER_SIZE = 84;
-
 /**
- * Renders a podcast episode (Podigee) card: cover, title, date/duration and a
- * play control. Tapping the body opens the full episode screen; the play button
- * drives the app-wide player (AudioProvider), and once this episode is the
- * active track the card shows live controls instead of the button.
+ * Renders a podcast episode (Podigee) card: full-width cover on top, then title,
+ * date/duration, a short description and a play control. Tapping the body opens
+ * the full episode screen; the play button drives the app-wide player
+ * (AudioProvider), and once this episode is the active track the card shows live
+ * controls instead of the button.
  */
 const PodcastPost = (properties: PodcastEpisodeProperties) => {
   const { id, title, description, published_at, link, audio_url, image_url } =
@@ -80,50 +82,41 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
   const dateDurationText = [date, duration].filter(Boolean).join(" | ");
 
   return (
-    <View style={{ paddingTop: 20 }}>
+    <View>
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel={`Podcast Folge öffnen: ${title}`}
         onPress={openEpisode}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            gap: 12,
-            alignItems: "flex-start",
-            paddingHorizontal: POST_PADDING_HORIZONTAL,
-          }}
-        >
-          {image_url && (
-            <Image
-              style={{
-                width: COVER_SIZE,
-                height: COVER_SIZE,
-                borderRadius: 8,
-                backgroundColor: corporate,
-              }}
-              source={{ uri: image_url }}
-              contentFit="cover"
-              accessibilityIgnoresInvertColors
-            />
+        {image_url && (
+          <Image
+            style={{
+              width: "100%",
+              aspectRatio: 1 / DEFAULT_IMAGE_ASPECT_RATIO,
+              backgroundColor: corporate,
+            }}
+            source={{ uri: image_url }}
+            contentFit="cover"
+            accessibilityIgnoresInvertColors
+          />
+        )}
+        <UiSpace size={image_url ? 12 : 20} />
+        <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
+          <UiText size="sm" style={{ color: corporate, textAlign: "left" }}>
+            Podcast
+          </UiText>
+          <UiText
+            size="lg"
+            numberOfLines={2}
+            style={{ fontFamily: "SourceSansProBold", textAlign: "left" }}
+          >
+            {title}
+          </UiText>
+          {!!dateDurationText && (
+            <UiText size="sm" style={{ color: greyText, textAlign: "left" }}>
+              {dateDurationText}
+            </UiText>
           )}
-          <View style={{ flex: 1 }}>
-            <UiText size="sm" style={{ color: corporate, textAlign: "left" }}>
-              Podcast
-            </UiText>
-            <UiText
-              size="lg"
-              numberOfLines={2}
-              style={{ fontFamily: "SourceSansProBold", textAlign: "left" }}
-            >
-              {title}
-            </UiText>
-            {!!dateDurationText && (
-              <UiText size="sm" style={{ color: greyText, textAlign: "left" }}>
-                {dateDurationText}
-              </UiText>
-            )}
-          </View>
         </View>
         {!!description && (
           <>
