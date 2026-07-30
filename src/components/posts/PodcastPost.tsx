@@ -12,6 +12,7 @@ import Colors from "#/constants/Colors";
 import {
   DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
+  globalStyles,
 } from "#/constants/GlobalStyles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
@@ -22,6 +23,8 @@ import {
   useCorporateColor,
 } from "#/hooks/useAppColorScheme";
 import type { PodcastEpisodeProperties } from "#/types";
+
+import Badge from "./Badge";
 
 /**
  * Renders a podcast episode (Podigee) card: full-width cover on top, then title,
@@ -89,22 +92,31 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
         onPress={openEpisode}
       >
         {image_url && (
-          <Image
-            style={{
-              width: "100%",
-              aspectRatio: 1 / DEFAULT_IMAGE_ASPECT_RATIO,
-              backgroundColor: corporate,
-            }}
-            source={{ uri: image_url }}
-            contentFit="cover"
-            accessibilityIgnoresInvertColors
-          />
+          <View style={{ position: "relative" }}>
+            <Image
+              style={{
+                width: "100%",
+                aspectRatio: 1 / DEFAULT_IMAGE_ASPECT_RATIO,
+                backgroundColor: corporate,
+              }}
+              source={{ uri: image_url }}
+              contentFit="cover"
+              accessibilityIgnoresInvertColors
+            />
+            <Badge position="topLeft" color={corporate}>
+              <UiText size="sm" style={globalStyles.whiteText}>
+                Podcast
+              </UiText>
+            </Badge>
+          </View>
         )}
         <UiSpace size={image_url ? 12 : 20} />
         <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
-          <UiText size="sm" style={{ color: corporate, textAlign: "left" }}>
-            Podcast
-          </UiText>
+          {!image_url && (
+            <UiText size="sm" style={{ color: corporate, textAlign: "left" }}>
+              Podcast
+            </UiText>
+          )}
           <UiText
             size="lg"
             numberOfLines={2}
@@ -113,7 +125,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
             {title}
           </UiText>
           {!!dateDurationText && (
-            <UiText size="sm" style={{ color: greyText, textAlign: "left" }}>
+            <UiText size="base" style={{ color: greyText, textAlign: "left" }}>
               {dateDurationText}
             </UiText>
           )}
