@@ -20,6 +20,7 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { CONTENT_HORIZONTAL_PADDING } from "#/constants/GlobalStyles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -118,7 +119,15 @@ const Header = (properties: HeaderProperties) => {
 
   return (
     <>
-      <View style={{ position: "relative" }}>
+      {/* Pull the hero image edge-to-edge: the article ScrollView pads its
+          content by CONTENT_HORIZONTAL_PADDING, which would otherwise leave a
+          horizontal gutter around the image. */}
+      <View
+        style={{
+          position: "relative",
+          marginHorizontal: -CONTENT_HORIZONTAL_PADDING,
+        }}
+      >
         <UiPressable
           accessibilityRole="button"
           onLongPress={() => setVisible(true)}
