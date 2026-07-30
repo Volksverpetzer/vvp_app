@@ -173,6 +173,50 @@ describe("ServerAPI", () => {
     });
   });
 
+  describe("getPodcastFeed", () => {
+    it("should call get with correct path and return the episodes", async () => {
+      // Setup
+      const responseData = {
+        episodes: [{ id: "ep1", title: "Folge 1", audio_url: "a.mp3" }],
+      };
+      getSpy.mockResolvedValue(responseData);
+
+      // Execute
+      const result = await API.getPodcastFeed();
+
+      // Assert
+      expect(getSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        "/proxy/podcastFeed",
+        undefined,
+        undefined,
+      );
+      expect(result).toEqual(responseData.episodes);
+    });
+
+    it("should return an empty array when the response has no episodes", async () => {
+      getSpy.mockResolvedValue({});
+
+      const result = await API.getPodcastFeed();
+
+      expect(result).toEqual([]);
+    });
+
+    it("should forward the abort signal", async () => {
+      const controller = new AbortController();
+      getSpy.mockResolvedValue({ episodes: [] });
+
+      await API.getPodcastFeed(controller.signal);
+
+      expect(getSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        "/proxy/podcastFeed",
+        { signal: controller.signal },
+        undefined,
+      );
+    });
+  });
+
   describe("getFactFeed", () => {
     it("should call get with keywords joined by comma", async () => {
       // Setup

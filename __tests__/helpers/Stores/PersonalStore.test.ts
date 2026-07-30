@@ -495,5 +495,33 @@ describe("PersonalStore", () => {
         "audioPosition_https://a.example/ep.mp3",
       );
     });
+
+    it("should swallow set errors and log them", async () => {
+      jest
+        .spyOn(BaseStore, "setItem")
+        .mockRejectedValue(new Error("Storage error"));
+
+      await expect(
+        PersonalStore.setAudioPosition("https://a.example/ep.mp3", 42),
+      ).resolves.toBeUndefined();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error setting audio position:",
+        expect.any(Error),
+      );
+    });
+
+    it("should swallow clear errors and log them", async () => {
+      jest
+        .spyOn(BaseStore, "removeItem")
+        .mockRejectedValue(new Error("Storage error"));
+
+      await expect(
+        PersonalStore.clearAudioPosition("https://a.example/ep.mp3"),
+      ).resolves.toBeUndefined();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error clearing audio position:",
+        expect.any(Error),
+      );
+    });
   });
 });
