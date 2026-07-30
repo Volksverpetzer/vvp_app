@@ -120,6 +120,7 @@ const PodcastScreen = () => {
           title={episode.title}
           artworkUrl={episode.image_url ?? undefined}
           horizontalPadding={POST_PADDING_HORIZONTAL}
+          durationSeconds={episode.duration ?? undefined}
         />
         <UiSpace size={12} />
 

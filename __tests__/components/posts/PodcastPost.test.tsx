@@ -42,6 +42,12 @@ jest.mock("expo-router", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
+const mockPlayTrack = jest.fn();
+const mockIsCurrent = jest.fn<(url: string) => boolean>();
+jest.mock("#/helpers/provider/AudioProvider", () => ({
+  useAudio: () => ({ isCurrent: mockIsCurrent, playTrack: mockPlayTrack }),
+}));
+
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => "light",
   useCorporateColor: () => "#1B7194",
@@ -62,6 +68,7 @@ describe("PodcastPost", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetAudioPosition.mockResolvedValue(0);
+    mockIsCurrent.mockReturnValue(false);
   });
 
   it("renders title, date and duration", async () => {
@@ -85,7 +92,7 @@ describe("PodcastPost", () => {
     expect(queryByText(/Min\./)).toBeNull();
   });
 
-  it("does not mount the audio player before the play tap", async () => {
+  it("shows the play button (not live controls) when not the active track", async () => {
     const { queryByTestId, getByText } = await render(
       <PodcastPost {...episode} />,
     );
@@ -93,18 +100,29 @@ describe("PodcastPost", () => {
     expect(getByText("Folge abspielen")).toBeTruthy();
   });
 
-  it("mounts the audio player and tracks the interaction on play tap", async () => {
-    const { getByText, getByTestId, queryByText } = await render(
-      <PodcastPost {...episode} />,
-    );
+  it("starts the episode and tracks the interaction on play tap", async () => {
+    const { getByText } = await render(<PodcastPost {...episode} />);
     await fireEvent.press(getByText("Folge abspielen"));
-    expect(getByTestId("audio-player").props.children).toBe(episode.audio_url);
-    expect(queryByText("Folge abspielen")).toBeNull();
+    expect(mockPlayTrack).toHaveBeenCalledWith({
+      audioUrl: episode.audio_url,
+      title: episode.title,
+      artworkUrl: episode.image_url,
+      resumeKey: episode.audio_url,
+    });
     expect(mockRegisterPostInteraction).toHaveBeenCalledWith(
       episode.link,
       "podcast",
       "play",
     );
+  });
+
+  it("shows live controls when this episode is the active track", async () => {
+    mockIsCurrent.mockReturnValue(true);
+    const { getByTestId, queryByText } = await render(
+      <PodcastPost {...episode} />,
+    );
+    expect(getByTestId("audio-player").props.children).toBe(episode.audio_url);
+    expect(queryByText("Folge abspielen")).toBeNull();
   });
 
   it("offers to resume when a playback position is stored", async () => {

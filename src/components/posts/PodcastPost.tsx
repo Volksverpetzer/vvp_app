@@ -12,6 +12,7 @@ import Colors from "#/constants/Colors";
 import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
+import { useAudio } from "#/helpers/provider/AudioProvider";
 import { RESUME_MIN_SECONDS, formatTime } from "#/helpers/utils/audio";
 import {
   useAppColorScheme,
@@ -22,19 +23,24 @@ import type { PodcastEpisodeProperties } from "#/types";
 const COVER_SIZE = 84;
 
 /**
- * Renders a podcast episode (Podigee) with cover, title, date/duration and a
- * lazily mounted audio player. The player is only created after the user taps
- * play so a feed full of episodes doesn't spawn one native player per card.
+ * Renders a podcast episode (Podigee) card: cover, title, date/duration and a
+ * play control. Tapping the body opens the full episode screen; the play button
+ * drives the app-wide player (AudioProvider), and once this episode is the
+ * active track the card shows live controls instead of the button.
  */
 const PodcastPost = (properties: PodcastEpisodeProperties) => {
   const { id, title, description, published_at, link, audio_url, image_url } =
     properties;
-  const [playerMounted, setPlayerMounted] = useState(false);
   const [resumePosition, setResumePosition] = useState(0);
   const colorScheme = useAppColorScheme();
   const corporate = useCorporateColor();
   const greyText = Colors[colorScheme].textMuted;
   const router = useRouter();
+  const audio = useAudio();
+
+  // This episode is "active" once it's the track loaded in the global player;
+  // then the card shows live controls instead of the play button.
+  const isCurrent = audio.isCurrent(audio_url);
 
   // Tapping the card body opens the full episode screen (like articles/Insta);
   // the play control below stays on the card for quick inline playback.
@@ -43,9 +49,20 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
     router.push(`/podcast/${encodeURIComponent(id)}`);
   };
 
-  // Show "Fortsetzen bei …" when a stored playback position exists.
+  const playEpisode = () => {
+    registerPostInteraction(link ?? audio_url, "podcast", "play");
+    audio.playTrack({
+      audioUrl: audio_url,
+      title,
+      artworkUrl: image_url ?? undefined,
+      resumeKey: audio_url,
+    });
+  };
+
+  // Show "Fortsetzen bei …" when a stored playback position exists (until this
+  // episode becomes the active track and shows live controls).
   useEffect(() => {
-    if (playerMounted) return;
+    if (isCurrent) return;
     let cancelled = false;
     PersonalStore.getAudioPosition(audio_url).then((position) => {
       if (!cancelled) setResumePosition(position);
@@ -53,7 +70,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
     return () => {
       cancelled = true;
     };
-  }, [audio_url, playerMounted]);
+  }, [audio_url, isCurrent]);
 
   const d = published_at ? new Date(published_at) : undefined;
   const date = d ? `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}` : "";
@@ -125,24 +142,21 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
         )}
       </UiPressable>
       <View style={{ minHeight: 68, justifyContent: "center" }}>
-        {playerMounted ? (
+        {isCurrent ? (
           <AudioPlayer
             audioUrl={audio_url}
-            autoPlay
             showFeedback
             resumeKey={audio_url}
             title={title}
             artworkUrl={image_url ?? undefined}
             horizontalPadding={POST_PADDING_HORIZONTAL}
+            durationSeconds={properties.duration ?? undefined}
           />
         ) : (
           <UiPressable
             accessibilityRole="button"
             accessibilityLabel={`Podcast Folge abspielen: ${title}`}
-            onPress={() => {
-              registerPostInteraction(link ?? audio_url, "podcast", "play");
-              setPlayerMounted(true);
-            }}
+            onPress={playEpisode}
             style={{
               flexDirection: "row",
               alignItems: "center",
