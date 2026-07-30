@@ -1,5 +1,6 @@
 import Octicons from "@react-native-vector-icons/octicons/static";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
@@ -26,13 +27,21 @@ const COVER_SIZE = 84;
  * play so a feed full of episodes doesn't spawn one native player per card.
  */
 const PodcastPost = (properties: PodcastEpisodeProperties) => {
-  const { title, description, published_at, link, audio_url, image_url } =
+  const { id, title, description, published_at, link, audio_url, image_url } =
     properties;
   const [playerMounted, setPlayerMounted] = useState(false);
   const [resumePosition, setResumePosition] = useState(0);
   const colorScheme = useAppColorScheme();
   const corporate = useCorporateColor();
   const greyText = Colors[colorScheme].textMuted;
+  const router = useRouter();
+
+  // Tapping the card body opens the full episode screen (like articles/Insta);
+  // the play control below stays on the card for quick inline playback.
+  const openEpisode = () => {
+    registerPostInteraction(link ?? audio_url, "podcast", "open");
+    router.push(`/podcast/${encodeURIComponent(id)}`);
+  };
 
   // Show "Fortsetzen bei …" when a stored playback position exists.
   useEffect(() => {
@@ -55,59 +64,66 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
 
   return (
     <View style={{ paddingTop: 20 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          gap: 12,
-          paddingHorizontal: POST_PADDING_HORIZONTAL,
-        }}
+      <UiPressable
+        accessibilityRole="button"
+        accessibilityLabel={`Podcast Folge öffnen: ${title}`}
+        onPress={openEpisode}
       >
-        {image_url && (
-          <Image
-            style={{
-              width: COVER_SIZE,
-              height: COVER_SIZE,
-              borderRadius: 8,
-              backgroundColor: corporate,
-            }}
-            source={{ uri: image_url }}
-            contentFit="cover"
-            accessibilityIgnoresInvertColors
-          />
-        )}
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <UiText size="sm" style={{ color: corporate, textAlign: "left" }}>
-            Podcast
-          </UiText>
-          <UiText
-            size="lg"
-            numberOfLines={3}
-            style={{ fontFamily: "SourceSansProBold", textAlign: "left" }}
-          >
-            {title}
-          </UiText>
-          {!!dateDurationText && (
-            <UiText size="sm" style={{ color: greyText, textAlign: "left" }}>
-              {dateDurationText}
-            </UiText>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 12,
+            alignItems: "flex-start",
+            paddingHorizontal: POST_PADDING_HORIZONTAL,
+          }}
+        >
+          {image_url && (
+            <Image
+              style={{
+                width: COVER_SIZE,
+                height: COVER_SIZE,
+                borderRadius: 8,
+                backgroundColor: corporate,
+              }}
+              source={{ uri: image_url }}
+              contentFit="cover"
+              accessibilityIgnoresInvertColors
+            />
           )}
+          <View style={{ flex: 1 }}>
+            <UiText size="sm" style={{ color: corporate, textAlign: "left" }}>
+              Podcast
+            </UiText>
+            <UiText
+              size="lg"
+              numberOfLines={2}
+              style={{ fontFamily: "SourceSansProBold", textAlign: "left" }}
+            >
+              {title}
+            </UiText>
+            {!!dateDurationText && (
+              <UiText size="sm" style={{ color: greyText, textAlign: "left" }}>
+                {dateDurationText}
+              </UiText>
+            )}
+          </View>
         </View>
-      </View>
-      {!!description && (
-        <>
-          <UiSpace size={10} />
-          <UiText
-            size="base"
-            numberOfLines={3}
-            style={{
-              paddingHorizontal: POST_PADDING_HORIZONTAL,
-              textAlign: "left",
-            }}
-          >
-            {description}
-          </UiText>
-        </>
-      )}
+        {!!description && (
+          <>
+            <UiSpace size={10} />
+            <UiText
+              size="base"
+              numberOfLines={2}
+              style={{
+                paddingHorizontal: POST_PADDING_HORIZONTAL,
+                textAlign: "left",
+              }}
+            >
+              {description}
+            </UiText>
+          </>
+        )}
+      </UiPressable>
       <View style={{ minHeight: 68, justifyContent: "center" }}>
         {playerMounted ? (
           <AudioPlayer

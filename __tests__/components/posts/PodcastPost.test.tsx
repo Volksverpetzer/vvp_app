@@ -36,6 +36,12 @@ jest.mock("#/helpers/Stores/PersonalStore", () => ({
   },
 }));
 
+const mockPush = jest.fn();
+jest.mock("expo-router", () => ({
+  __esModule: true,
+  useRouter: () => ({ push: mockPush }),
+}));
+
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => "light",
   useCorporateColor: () => "#1B7194",
@@ -123,5 +129,28 @@ describe("PodcastPost", () => {
       "podcast",
       "play",
     );
+  });
+
+  it("opens the episode screen and tracks the open when the card is tapped", async () => {
+    const { getByLabelText } = await render(<PodcastPost {...episode} />);
+    await fireEvent.press(
+      getByLabelText(`Podcast Folge öffnen: ${episode.title}`),
+    );
+    expect(mockPush).toHaveBeenCalledWith("/podcast/abc123");
+    expect(mockRegisterPostInteraction).toHaveBeenCalledWith(
+      episode.link,
+      "podcast",
+      "open",
+    );
+  });
+
+  it("url-encodes the id when navigating", async () => {
+    const { getByLabelText } = await render(
+      <PodcastPost {...episode} id="a/b c" />,
+    );
+    await fireEvent.press(
+      getByLabelText(`Podcast Folge öffnen: ${episode.title}`),
+    );
+    expect(mockPush).toHaveBeenCalledWith("/podcast/a%2Fb%20c");
   });
 });
