@@ -7,8 +7,8 @@ import { Hyperlink } from "react-native-hyperlink";
 import { ExternalLinkIcon } from "#/components/Icons";
 import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
 import { PostText } from "#/components/posts/bsky/PostText";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
-import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
@@ -64,9 +64,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
         style={{ flex: 1 }}
         onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
       >
-        <UiText size="lg" style={{ lineHeight: 24 }}>
-          {fulltext}
-        </UiText>
+        <Typography type="body">{fulltext}</Typography>
       </Hyperlink>
 
       {replies &&

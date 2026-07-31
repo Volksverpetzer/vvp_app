@@ -8,6 +8,7 @@ import Typography from "#/components/ui/Typography";
 import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
+import { CONTENT_LINE_HEIGHT } from "#/constants/FontSizes";
 import {
   CARD_PADDING,
   CONTENT_HORIZONTAL_PADDING,
@@ -47,7 +48,7 @@ const SearchResultItem = ({
   const baseStyle = useMemo(
     () => ({
       fontFamily: "SourceSansPro",
-      lineHeight: 24,
+      lineHeight: CONTENT_LINE_HEIGHT,
       color: textColor,
     }),
     [textColor],

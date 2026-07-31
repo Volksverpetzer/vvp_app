@@ -1,4 +1,4 @@
-import type { FontSizeToken } from "#/constants/FontSizes";
+import { CONTENT_LINE_HEIGHT, type FontSizeToken } from "#/constants/FontSizes";
 
 /** Shape of one entry in {@link textVariants}. */
 export type TextVariantSpec = {
@@ -33,6 +33,17 @@ export const textVariants = {
   heading: { size: "lg", bold: true, tone: "default" },
   /** Info line under a title: author, date, duration, reading time. */
   meta: { size: "sm", bold: false, tone: "muted" },
+  /**
+   * Readable body copy: social-post fulltext and the like. Mirrors the article
+   * body (see {@link CONTENT_LINE_HEIGHT}) so long-form text reads the same
+   * everywhere.
+   */
+  body: {
+    size: "lg",
+    bold: false,
+    tone: "default",
+    lineHeight: CONTENT_LINE_HEIGHT,
+  },
 } as const satisfies Record<string, TextVariantSpec>;
 
 export type TextVariant = keyof typeof textVariants;

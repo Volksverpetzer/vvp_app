@@ -27,3 +27,10 @@ export const fontSizes = {
 } as const;
 
 export type FontSizeToken = keyof typeof fontSizes;
+
+/**
+ * Line height for readable body copy — article body, social-post fulltext.
+ * The article body is the reference; keep other long-form content in sync
+ * with it via this constant (and the `body` text variant).
+ */
+export const CONTENT_LINE_HEIGHT = 27;

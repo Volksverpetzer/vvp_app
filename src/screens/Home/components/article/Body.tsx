@@ -13,6 +13,7 @@ import RenderHtml, { defaultHTMLElementModels } from "react-native-render-html";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { CONTENT_LINE_HEIGHT } from "#/constants/FontSizes";
 import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
@@ -164,7 +165,7 @@ const Body = (properties: BodyProperties) => {
       domVisitors={{ onElement }}
       baseStyle={{
         fontFamily: "SourceSansPro",
-        lineHeight: 27,
+        lineHeight: CONTENT_LINE_HEIGHT,
         maxWidth: maxWidth,
         color: Colors[colorScheme].text,
       }}

@@ -90,9 +90,9 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
           </View>
           <UiSpace size={20} />
           {displayText !== DISPLAY_TEXT_NONE && (
-            <UiText size="lg" style={{ lineHeight: 24 }}>
+            <Typography type="body">
               {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
-            </UiText>
+            </Typography>
           )}
           {displayText === DISPLAY_TEXT_EXCERPT &&
             excerpt.length < fulltext.length && (
@@ -134,13 +134,9 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
                   .replaceAll(htmlPattern, ""),
               );
               return (
-                <UiText
-                  key={String(index)}
-                  size="lg"
-                  style={{ lineHeight: 24 }}
-                >
+                <Typography key={String(index)} type="body">
                   {fullText}
-                </UiText>
+                </Typography>
               );
             })}
         </View>
