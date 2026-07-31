@@ -163,8 +163,13 @@ describe("PodcastPost", () => {
   });
 
   it("url-encodes the id when navigating", async () => {
+    // Episode ids are opaque strings from the feed, so they can contain
+    // characters that must not go into a route path raw. Kept in a variable
+    // rather than an inline `id="..."` so HTML-oriented linters don't read it
+    // as a DOM id attribute (this is a component prop, not markup).
+    const episodeIdWithSpecialCharacters = "a/b c";
     const { getByLabelText } = await render(
-      <PodcastPost {...episode} id="a/b c" />,
+      <PodcastPost {...episode} id={episodeIdWithSpecialCharacters} />,
     );
     await fireEvent.press(
       getByLabelText(`Podcast Folge öffnen: ${episode.title}`),
