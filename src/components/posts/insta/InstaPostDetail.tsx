@@ -6,6 +6,7 @@ import { Hyperlink } from "react-native-hyperlink";
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { CARD_CONTENT_GAP } from "#/constants/GlobalStyles";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -43,7 +44,7 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
   }, []);
 
   return (
-    <View>
+    <View style={{ gap: CARD_CONTENT_GAP }}>
       <InstaPostImage
         photos={photos}
         width={width}

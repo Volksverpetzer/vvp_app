@@ -52,7 +52,7 @@ const Dot = ({
           width: 5,
           backgroundColor: color,
           marginHorizontal: 3,
-          marginVertical: 10,
+          marginTop: 10,
           borderRadius: 5,
         },
         style,
