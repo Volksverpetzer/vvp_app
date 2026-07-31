@@ -2,7 +2,7 @@ import { render } from "@testing-library/react-native";
 
 import Typography from "#/components/ui/Typography";
 import Colors from "#/constants/Colors";
-import { fontSizes } from "#/constants/FontSizes";
+import { LINE_HEIGHTS, fontSizes } from "#/constants/FontSizes";
 
 type RenderedNode = {
   props: Record<string, unknown>;
@@ -37,7 +37,7 @@ describe("Typography", () => {
     );
 
     expect(style.fontSize).toBe(fontSizes.xl);
-    expect(style.lineHeight).toBe(26);
+    expect(style.lineHeight).toBe(LINE_HEIGHTS.xl);
   });
 
   it("renders a muted meta line", async () => {

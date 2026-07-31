@@ -1,4 +1,8 @@
-import { CONTENT_LINE_HEIGHT, type FontSizeToken } from "#/constants/FontSizes";
+import {
+  CONTENT_LINE_HEIGHT,
+  type FontSizeToken,
+  LINE_HEIGHTS,
+} from "#/constants/FontSizes";
 
 /** Shape of one entry in {@link textVariants}. */
 export type TextVariantSpec = {
@@ -25,7 +29,12 @@ export const textVariants = {
   /** Headline of a detail screen (article, podcast episode …). */
   title: { size: "xxl", bold: true, tone: "default" },
   /** Headline of a feed card. */
-  cardTitle: { size: "xl", bold: true, tone: "default", lineHeight: 26 },
+  cardTitle: {
+    size: "xl",
+    bold: true,
+    tone: "default",
+    lineHeight: LINE_HEIGHTS.xl,
+  },
   /**
    * Prominent bold label a step below a title: section headings, form-field
    * labels, social-post author names, link labels.
