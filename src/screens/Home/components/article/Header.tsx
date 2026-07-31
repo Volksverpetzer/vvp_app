@@ -143,19 +143,12 @@ const Header = (properties: HeaderProperties) => {
         <ImageCreditBadge credit={article.imageCredit} position="bottomRight" />
       </View>
       <UiSpace size={30} />
-      <Typography
-        type="title"
-        style={{
-          paddingHorizontal: 20,
-          textAlign: "left",
-        }}
-      >
+      <Typography type="title" style={{ paddingHorizontal: 20 }}>
         {article_title}
       </Typography>
       <Typography
         type="meta"
         style={{
-          textAlign: "left",
           paddingVertical: 10,
           paddingHorizontal: 20,
         }}
@@ -241,11 +234,7 @@ const Header = (properties: HeaderProperties) => {
             <UiSpace size={20} />
             <Typography
               type="title"
-              style={{
-                color: Colors.dark.text,
-                paddingHorizontal: 20,
-                textAlign: "left",
-              }}
+              style={{ color: Colors.dark.text, paddingHorizontal: 20 }}
             >
               {article_title}
             </Typography>
@@ -254,11 +243,7 @@ const Header = (properties: HeaderProperties) => {
                 pins the light-on-dark colors instead of following the theme. */}
             <Typography
               type="meta"
-              style={{
-                color: Colors.dark.textMuted,
-                paddingHorizontal: 20,
-                textAlign: "left",
-              }}
+              style={{ color: Colors.dark.textMuted, paddingHorizontal: 20 }}
             >
               {article.authors?.length ? (
                 <>

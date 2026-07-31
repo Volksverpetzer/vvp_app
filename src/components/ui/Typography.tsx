@@ -1,6 +1,10 @@
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { type TextVariant, textVariants } from "#/constants/TextVariants";
+import {
+  type TextVariant,
+  type TextVariantSpec,
+  textVariants,
+} from "#/constants/TextVariants";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 type TypographyProperties = React.ComponentProps<typeof UiText> & {
@@ -15,9 +19,10 @@ type TypographyProperties = React.ComponentProps<typeof UiText> & {
 /**
  * Semantic text component. Prefer this over `UiText` for anything with a role
  * (titles, meta lines): `<Typography type="title">` instead of hand-tuning
- * `size` / `bold` / `color` per screen. It resolves the role into concrete
- * `UiText` props; `size`, `bold` and an explicit `color` in `style` still
- * override the role for one-offs.
+ * `size` / `bold` / `color` / `lineHeight` / alignment per screen. It resolves
+ * the role into concrete `UiText` props and defaults to left alignment; `size`,
+ * `bold` and an explicit `color`/`textAlign` in `style` still override the role
+ * for one-offs. Layout (padding, margins) stays with the caller.
  */
 const Typography = ({
   type,
@@ -27,7 +32,7 @@ const Typography = ({
   ...properties
 }: TypographyProperties) => {
   const colorScheme = useAppColorScheme();
-  const preset = textVariants[type];
+  const preset: TextVariantSpec = textVariants[type];
   const toneColor =
     preset.tone === "muted" ? Colors[colorScheme].textMuted : undefined;
 
@@ -35,7 +40,12 @@ const Typography = ({
     <UiText
       size={size ?? preset.size}
       bold={bold ?? preset.bold}
-      style={toneColor ? [{ color: toneColor }, style] : style}
+      style={[
+        { textAlign: "left" },
+        toneColor ? { color: toneColor } : null,
+        preset.lineHeight ? { lineHeight: preset.lineHeight } : null,
+        style,
+      ]}
       {...properties}
     />
   );

@@ -112,13 +112,9 @@ const PodcastScreen = () => {
         )}
         <UiSpace size={16} />
         <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
-          <Typography type="title" style={{ textAlign: "left" }}>
-            {episode.title}
-          </Typography>
+          <Typography type="title">{episode.title}</Typography>
           {!!dateDurationText && (
-            <Typography type="meta" style={{ textAlign: "left" }}>
-              {dateDurationText}
-            </Typography>
+            <Typography type="meta">{dateDurationText}</Typography>
           )}
         </View>
 

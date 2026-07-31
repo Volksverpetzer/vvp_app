@@ -28,6 +28,16 @@ describe("Typography", () => {
     expect(style.fontSize).toBe(fontSizes.xxl);
     expect(style.fontFamily).toBe("SourceSansProBold");
     expect(style.color).toBe(Colors.light.text);
+    expect(style.textAlign).toBe("left");
+  });
+
+  it("applies the card-title role's line height", async () => {
+    const style = await styleOf(
+      <Typography type="cardTitle">Titel</Typography>,
+    );
+
+    expect(style.fontSize).toBe(fontSizes.xl);
+    expect(style.lineHeight).toBe(26);
   });
 
   it("renders a muted meta line", async () => {

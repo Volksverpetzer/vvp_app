@@ -32,12 +32,6 @@ import type { ArticleProperties, ImageCredit } from "#/types";
 import Badge from "./Badge";
 import ImageCreditBadge from "./ImageCreditBadge";
 
-const titleStyle: TextStyle = {
-  paddingHorizontal: POST_PADDING_HORIZONTAL,
-  lineHeight: 26,
-  textAlign: "left",
-};
-
 // Define the component props type.
 interface ArticlePostScreenProperties {
   article: ArticleProperties;
@@ -198,13 +192,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }),
     [scrollProgress, corporate],
   );
-  const authorDateStyle = useMemo(
-    () => ({
-      paddingHorizontal: POST_PADDING_HORIZONTAL,
-      textAlign: "left" as const,
-    }),
-    [],
-  );
   const categoryTextStyle: TextStyle[] = [
     globalStyles.whiteText,
     { textAlign: "right" },
@@ -241,13 +228,14 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         </View>
         <View style={progressBarStyle} />
         <UiSpace size={10} />
-        <View style={{ gap: CARD_CONTENT_GAP }}>
-          <Typography type="cardTitle" style={titleStyle}>
-            {article.title}
-          </Typography>
-          <Typography type="meta" style={authorDateStyle}>
-            {authorDateText}
-          </Typography>
+        <View
+          style={{
+            gap: CARD_CONTENT_GAP,
+            paddingHorizontal: POST_PADDING_HORIZONTAL,
+          }}
+        >
+          <Typography type="cardTitle">{article.title}</Typography>
+          <Typography type="meta">{authorDateText}</Typography>
         </View>
         <UiSpace size={10} />
         {(article.sourceName || categoryText) && (

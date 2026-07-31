@@ -109,13 +109,9 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
         <UiSpace size={image_url ? 12 : 20} />
         <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
           <View style={{ gap: CARD_CONTENT_GAP }}>
-            <Typography type="cardTitle" style={{ textAlign: "left" }}>
-              {title}
-            </Typography>
+            <Typography type="cardTitle">{title}</Typography>
             {!!dateDurationText && (
-              <Typography type="meta" style={{ textAlign: "left" }}>
-                {dateDurationText}
-              </Typography>
+              <Typography type="meta">{dateDurationText}</Typography>
             )}
           </View>
         </View>
