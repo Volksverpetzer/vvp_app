@@ -3,6 +3,7 @@ import type { ColorValue, ViewStyle } from "react-native";
 import { View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
+import { radii } from "#/constants/BorderRadius";
 
 export type BadgePosition =
   "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
@@ -37,11 +38,12 @@ const Badge = ({
     ...(isLeft
       ? {
           left: 0,
-          [isTop ? "borderBottomRightRadius" : "borderTopRightRadius"]: 5,
+          [isTop ? "borderBottomRightRadius" : "borderTopRightRadius"]:
+            radii.xs,
         }
       : {
           right: 0,
-          [isTop ? "borderBottomLeftRadius" : "borderTopLeftRadius"]: 5,
+          [isTop ? "borderBottomLeftRadius" : "borderTopLeftRadius"]: radii.xs,
         }),
   };
 

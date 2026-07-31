@@ -1,5 +1,6 @@
 import { View } from "react-native";
 
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { CARD_PADDING } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -13,7 +14,7 @@ const UiCard = ({ style, ...otherProperties }: UiCardProperties) => {
   return (
     <View
       style={[
-        { backgroundColor, borderRadius: 20, padding: CARD_PADDING },
+        { backgroundColor, borderRadius: radii.xl, padding: CARD_PADDING },
         style,
       ]}
       {...otherProperties}

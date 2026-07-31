@@ -2,6 +2,7 @@ import { StyleSheet, View } from "react-native";
 import type { StyleProp, ViewStyle } from "react-native";
 
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
@@ -41,7 +42,7 @@ const boxStyles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     paddingVertical: 10,
-    borderRadius: 10,
+    borderRadius: radii.md,
   },
   valueText: {
     color: "white",

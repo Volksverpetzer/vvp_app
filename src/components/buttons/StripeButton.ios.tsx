@@ -10,6 +10,7 @@ import { StyleSheet, View } from "react-native";
 
 import type { StripeButtonProperties } from "#/components/buttons/StripeButton";
 import UiSpinner from "#/components/ui/UiSpinner";
+import { radii } from "#/constants/BorderRadius";
 import Config from "#/constants/Config";
 import API from "#/helpers/network/ServerAPI";
 
@@ -123,7 +124,7 @@ const StripeButton = (props: StripeButtonProperties) => {
       onPress={pay}
       type={PlatformPay?.ButtonType?.Donate}
       appearance={PlatformPay?.ButtonStyle?.Black}
-      borderRadius={4}
+      borderRadius={radii.xs}
       style={{ width: 220, height: 40 }}
       disabled={isProcessing}
     />

@@ -19,6 +19,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import UiTextInput from "#/components/ui/UiTextInput";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
@@ -138,7 +139,7 @@ const ContactScreen = () => {
           backgroundColor: surfaceInput,
           // Transparent by default so the error border causes no layout shift
           borderColor: "transparent",
-          borderRadius: 5,
+          borderRadius: radii.xs,
           borderWidth: 2,
           // Explicit vertical + horizontal padding (overriding the shared
           // input's paddingHorizontal: 25) so the intent is unambiguous:

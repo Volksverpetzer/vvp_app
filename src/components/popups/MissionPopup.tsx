@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { SuccessIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -49,7 +50,7 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
 
 const missionStyles = StyleSheet.create({
   rectanglePressable: {
-    borderRadius: 20,
+    borderRadius: radii.xl,
     flex: 1,
     gap: 10,
     margin: 20,

@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -123,7 +124,7 @@ const GameScreen = () => {
 const styles = StyleSheet.create({
   backButton: {
     backgroundColor: "#007bff",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     marginTop: 20,
     padding: 10,
   },
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
   },
   levelButton: {
     backgroundColor: "#007bff",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     marginHorizontal: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,

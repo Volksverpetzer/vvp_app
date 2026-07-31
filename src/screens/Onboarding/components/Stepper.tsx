@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
@@ -100,7 +101,7 @@ const stepperStyles = StyleSheet.create({
   },
   skipButton: {
     alignItems: "center",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     justifyContent: "center",
     minWidth: 90,
     padding: 10,

@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 
 import { CheckboxIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -42,7 +43,7 @@ const UiCheckbox = (properties: UiCheckboxProperties) => {
 const styles = StyleSheet.create({
   checkboxBase: {
     backgroundColor: "transparent",
-    borderRadius: 4,
+    borderRadius: radii.xs,
     borderWidth: 2,
     height: 28,
     width: 28,

@@ -9,6 +9,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import {
@@ -159,7 +160,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       paddingBottom: 0,
       backgroundColor: Colors[colorScheme].background,
       ...(elevated && {
-        borderRadius: 15,
+        borderRadius: radii.lg,
         overflow: "hidden" as const,
         borderWidth: 1,
         borderColor: Colors[colorScheme].surface,
@@ -174,7 +175,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     const shadowRgb = isDark ? "255, 255, 255" : "0, 0, 0";
     const shadowOpacity = isDark ? 0.12 : 0.2;
     return {
-      borderRadius: 15,
+      borderRadius: radii.lg,
       boxShadow: `0px 1px 1.41px rgba(${shadowRgb}, ${shadowOpacity})`,
       elevation: 2,
     };

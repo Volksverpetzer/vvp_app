@@ -7,6 +7,7 @@ import { CloseIcon, HeartIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -78,7 +79,7 @@ const Support = ({ article_link }: SupportProperties) => {
             padding: 20,
             alignItems: "center",
             backgroundColor,
-            borderRadius: 16,
+            borderRadius: radii.lg,
           }}
         >
           <View

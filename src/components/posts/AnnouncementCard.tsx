@@ -7,6 +7,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import type { AnnouncementEntry } from "#/constants/Announcements";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
@@ -116,7 +117,7 @@ const AnnouncementCard = ({
             style={{
               alignItems: "center",
               backgroundColor: surface,
-              borderRadius: 12,
+              borderRadius: radii.md,
               flex: 1,
               paddingVertical: 12,
             }}
@@ -137,7 +138,7 @@ const AnnouncementCard = ({
             style={{
               alignItems: "center",
               backgroundColor: corporate,
-              borderRadius: 12,
+              borderRadius: radii.md,
               flex: 1,
               paddingVertical: 12,
             }}
