@@ -22,45 +22,30 @@ const styleOf = async (element: React.ReactElement) => {
 };
 
 describe("UiText", () => {
-  it("applies size and weight from a variant", async () => {
-    const style = await styleOf(<UiText variant="title">Titel</UiText>);
-
-    expect(style.fontSize).toBe(fontSizes.xxl);
-    expect(style.fontFamily).toBe("SourceSansProBold");
-    expect(style.color).toBe(Colors.light.text);
-  });
-
-  it("applies the muted tone for meta text", async () => {
-    const style = await styleOf(
-      <UiText variant="meta">Autor | 1.1.2026</UiText>,
-    );
-
-    expect(style.fontSize).toBe(fontSizes.sm);
-    expect(style.fontFamily).toBe("SourceSansPro");
-    expect(style.color).toBe(Colors.light.textMuted);
-  });
-
-  it("lets explicit props and styles override the variant", async () => {
-    const style = await styleOf(
-      <UiText
-        variant="title"
-        size="sm"
-        bold={false}
-        style={{ color: "#ff0000" }}
-      >
-        Titel
-      </UiText>,
-    );
-
-    expect(style.fontSize).toBe(fontSizes.sm);
-    expect(style.fontFamily).toBe("SourceSansPro");
-    expect(style.color).toBe("#ff0000");
-  });
-
-  it("falls back to the default text color without a variant", async () => {
+  it("applies the font-scale size and default text color", async () => {
     const style = await styleOf(<UiText size="base">Text</UiText>);
 
     expect(style.fontSize).toBe(fontSizes.base);
+    expect(style.fontFamily).toBe("SourceSansPro");
     expect(style.color).toBe(Colors.light.text);
+  });
+
+  it("renders bold in the bold font family", async () => {
+    const style = await styleOf(
+      <UiText bold size="xl">
+        Text
+      </UiText>,
+    );
+
+    expect(style.fontFamily).toBe("SourceSansProBold");
+    expect(style.fontSize).toBe(fontSizes.xl);
+  });
+
+  it("lets an explicit style color override the default", async () => {
+    const style = await styleOf(
+      <UiText style={{ color: "#ff0000" }}>Text</UiText>,
+    );
+
+    expect(style.color).toBe("#ff0000");
   });
 });
