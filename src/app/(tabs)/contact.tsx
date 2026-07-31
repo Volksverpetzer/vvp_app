@@ -130,7 +130,6 @@ const ContactScreen = () => {
         },
         errorText: {
           color: errorColor,
-          fontFamily: "SourceSansProBold",
           marginBottom: 20,
           paddingHorizontal: 12,
           textAlign: "center",
@@ -423,7 +422,7 @@ const ContactScreen = () => {
           </View>
           <UiSpace size={20} />
           {error ? (
-            <UiText size="lg" style={styles.errorText}>
+            <UiText size="lg" bold style={styles.errorText}>
               {error}
             </UiText>
           ) : undefined}

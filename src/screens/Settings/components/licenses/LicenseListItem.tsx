@@ -89,7 +89,7 @@ const LicensesListItem = (
           <Link style={[styles.text, { color: textColor }]} url={licenseUrl}>
             {licenses}
           </Link>
-          <UiText size="base" style={[styles.name, { color: textColor }]}>
+          <UiText size="base" bold style={[styles.name, { color: textColor }]}>
             {packageVersion}
           </UiText>
         </View>
@@ -150,7 +150,6 @@ const getStyles = (cardBackground: string) =>
       marginLeft: 8,
     },
     name: {
-      fontFamily: "SourceSansProBold",
       flexShrink: 1, // ensure the title can shrink instead of overflowing
     },
     text: {

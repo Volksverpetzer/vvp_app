@@ -42,7 +42,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
         onPress={onClose}
         style={[styles.button, { backgroundColor: corporate }]}
       >
-        <UiText size="base" style={[styles.buttonText, { color: onPrimary }]}>
+        <UiText size="base" bold style={{ color: onPrimary }}>
           Alles klar
         </UiText>
       </UiPressable>
@@ -67,9 +67,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: radii.md,
     paddingVertical: 14,
-  },
-  buttonText: {
-    fontFamily: "SourceSansProBold",
   },
 });
 

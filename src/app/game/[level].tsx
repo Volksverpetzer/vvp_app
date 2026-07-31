@@ -83,7 +83,7 @@ const GameScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText size="xl" style={styles.title}>
+      <UiText size="xl" bold style={styles.title}>
         Memory-Spiel: {gameId}
       </UiText>
       <View style={styles.levelContainer}>
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   levelText: { marginRight: 10 },
-  title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
+  title: { marginBottom: 20 },
 });
 
 export default GameScreen;
