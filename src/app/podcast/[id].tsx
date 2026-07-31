@@ -6,6 +6,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
 import NavBar from "#/components/bars/NavBar";
+import Typography from "#/components/ui/Typography";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
@@ -47,7 +48,6 @@ const PodcastScreen = () => {
   const colorScheme = useAppColorScheme();
   const corporate = useCorporateColor();
   const backgroundColor = Colors[colorScheme].background;
-  const greyText = Colors[colorScheme].textMuted;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -112,19 +112,13 @@ const PodcastScreen = () => {
         )}
         <UiSpace size={16} />
         <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
-          <UiText size="sm" style={{ color: corporate, textAlign: "left" }}>
-            Podcast
-          </UiText>
-          <UiText
-            size="xl"
-            style={{ fontFamily: "SourceSansProBold", textAlign: "left" }}
-          >
+          <Typography type="title" style={{ textAlign: "left" }}>
             {episode.title}
-          </UiText>
+          </Typography>
           {!!dateDurationText && (
-            <UiText size="sm" style={{ color: greyText, textAlign: "left" }}>
+            <Typography type="meta" style={{ textAlign: "left" }}>
               {dateDurationText}
-            </UiText>
+            </Typography>
           )}
         </View>
 
