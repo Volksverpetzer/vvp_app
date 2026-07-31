@@ -8,7 +8,7 @@ import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import MyFavs from "#/screens/PersonalTab/components/MyFavs";
-import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
+import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA, FAV_TYPE_PODCAST } from "#/types";
 
 const mockUseIsFocused = jest.fn(() => true);
 
@@ -104,6 +104,19 @@ jest.mock("#/screens/Home/fetchers/WordPressFetcher", () => ({
   WordPressFetcher: {
     mapArticleToPost: jest.fn(),
   },
+}));
+
+// Mock PodcastFetcher so MyFavs doesn't pull in the audio player / expo-audio
+// through PodcastPost during the test.
+const mockMapPodcastEpisode = jest.fn((episode) => ({
+  id: episode.id,
+  component: jest.fn(),
+  data: episode,
+  contentFavIdentifier: episode.id,
+  contentType: "podcast",
+}));
+jest.mock("#/screens/Home/fetchers/PodcastFetcher", () => ({
+  mapPodcastEpisode: (episode: unknown) => mockMapPodcastEpisode(episode),
 }));
 
 describe("MyFavs", () => {
@@ -303,6 +316,44 @@ describe("MyFavs", () => {
             url: "https://www.instagram.com/p/ppShortcode/",
           },
         ],
+      }),
+    );
+  });
+
+  it("rebuilds a podcast favorite from its stored snapshot", async () => {
+    const episode = {
+      id: "ep-guid-1",
+      title: "Folge 24",
+      description: "Beschreibung",
+      published_at: "2026-01-05T12:00:00Z",
+      link: "https://volksverpetzer.podigee.io/25-folge-24",
+      audio_url: "https://audio.example.com/ep24.mp3",
+      image_url: "https://example.com/cover.png",
+      duration: 3539,
+    };
+
+    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+      "ep-guid-1": { contentType: FAV_TYPE_PODCAST, payload: episode },
+    });
+
+    await render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+
+    // Rebuilt from the snapshot via the shared mapper; the feed is not fetched
+    // and the favorite is not purged.
+    expect(mockMapPodcastEpisode).toHaveBeenCalledWith(episode);
+    expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+
+    const genericPostCalls = (
+      GenericPost as unknown as jest.Mock
+    ).mock.calls.map(([properties]) => properties);
+    expect(genericPostCalls[0]).toEqual(
+      expect.objectContaining({
+        contentFavIdentifier: "ep-guid-1",
+        contentType: FAV_TYPE_PODCAST,
       }),
     );
   });

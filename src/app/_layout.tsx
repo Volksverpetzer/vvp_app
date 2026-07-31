@@ -30,6 +30,7 @@ import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
+import { AudioProvider } from "#/helpers/provider/AudioProvider";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import { isDarkMode } from "#/helpers/utils/color";
@@ -165,39 +166,48 @@ const RootLayout = () => {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SettingsProvider>
           <BadgeProvider>
-            <AppFrame>
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  gestureEnabled: true,
-                }}
-              >
-                <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
-                <Stack.Screen
-                  name="[category]/[slug]"
-                  options={{ title: "Artikel" }}
+            <AudioProvider>
+              <AppFrame>
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                    gestureEnabled: true,
+                  }}
+                >
+                  <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
+                  <Stack.Screen
+                    name="[category]/[slug]"
+                    options={{ title: "Artikel" }}
+                  />
+                  <Stack.Screen
+                    name="insta/[post_id]"
+                    options={{ title: "Artikel" }}
+                  />
+                  <Stack.Screen
+                    name="podcast/[id]"
+                    options={{ title: "Podcast" }}
+                  />
+                  <Stack.Screen name="search" options={{ title: "Suche" }} />
+                  <Stack.Screen
+                    name="+not-found"
+                    options={{ title: "Nicht gefunden" }}
+                  />
+                  <Stack.Screen
+                    name="support"
+                    options={{ title: "Unterstutzen" }}
+                  />
+                  <Stack.Screen
+                    name="licenses"
+                    options={{ title: "Lizenzen" }}
+                  />
+                </Stack>
+                <AppToast config={toastConfig} />
+                <ChangelogModal
+                  isVisible={showChangelog}
+                  onClose={dismissChangelog}
                 />
-                <Stack.Screen
-                  name="insta/[post_id]"
-                  options={{ title: "Artikel" }}
-                />
-                <Stack.Screen name="search" options={{ title: "Suche" }} />
-                <Stack.Screen
-                  name="+not-found"
-                  options={{ title: "Nicht gefunden" }}
-                />
-                <Stack.Screen
-                  name="support"
-                  options={{ title: "Unterstutzen" }}
-                />
-                <Stack.Screen name="licenses" options={{ title: "Lizenzen" }} />
-              </Stack>
-              <AppToast config={toastConfig} />
-              <ChangelogModal
-                isVisible={showChangelog}
-                onClose={dismissChangelog}
-              />
-            </AppFrame>
+              </AppFrame>
+            </AudioProvider>
           </BadgeProvider>
         </SettingsProvider>
       </GestureHandlerRootView>

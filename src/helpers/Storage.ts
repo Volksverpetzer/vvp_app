@@ -48,6 +48,18 @@ const BaseStore = {
   },
 
   /**
+   * Removes a single item from AsyncStorage.
+   * @param {string} key - The key of the item to remove.
+   */
+  async removeItem(key: string) {
+    try {
+      await AsyncStorage.removeItem(key);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  /**
    * Removes all items from AsyncStorage that start with the given prefix.
    * @param {string} prefix - The prefix to remove items with.
    */

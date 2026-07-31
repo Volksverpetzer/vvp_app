@@ -9,7 +9,7 @@ import { getFavs } from "#/helpers/network/Engagement";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useEngagementCount } from "#/hooks/useEngagementCount";
 import { useFavorite } from "#/hooks/useFavorite";
-import type { FaveableType, InstaPostProperties, ShareableType } from "#/types";
+import type { FavPayload, FaveableType, ShareableType } from "#/types";
 
 interface FavCounterProperties {
   shareable: ShareableType[];
@@ -17,7 +17,7 @@ interface FavCounterProperties {
   style: TextStyle;
   contentFavIdentifier?: string;
   contentType?: FaveableType;
-  favPayload?: InstaPostProperties;
+  favPayload?: FavPayload;
 }
 
 const FavCounter = (properties: FavCounterProperties) => {
