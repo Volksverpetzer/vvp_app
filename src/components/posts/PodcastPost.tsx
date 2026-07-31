@@ -10,6 +10,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import {
+  CARD_TITLE_META_GAP,
   DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
   globalStyles,
@@ -112,18 +113,20 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
               Podcast
             </UiText>
           )}
-          <Typography
-            type="cardTitle"
-            numberOfLines={2}
-            style={{ textAlign: "left" }}
-          >
-            {title}
-          </Typography>
-          {!!dateDurationText && (
-            <Typography type="meta" style={{ textAlign: "left" }}>
-              {dateDurationText}
+          <View style={{ gap: CARD_TITLE_META_GAP }}>
+            <Typography
+              type="cardTitle"
+              numberOfLines={2}
+              style={{ textAlign: "left" }}
+            >
+              {title}
             </Typography>
-          )}
+            {!!dateDurationText && (
+              <Typography type="meta" style={{ textAlign: "left" }}>
+                {dateDurationText}
+              </Typography>
+            )}
+          </View>
         </View>
         {!!description && (
           <>

@@ -14,6 +14,10 @@ export const CONTENT_HORIZONTAL_PADDING = 10;
 export const POST_PADDING_HORIZONTAL = 30;
 export const CARD_PADDING = 20;
 
+// Vertical gap between a feed card's title and its meta line (author/date/
+// duration). Shared so the article and podcast cards space them identically.
+export const CARD_TITLE_META_GAP = 10;
+
 // Height/width ratio of WordPress's default featured-image crop (e.g. 1200x615),
 // used as the fallback aspect ratio for post thumbnails whose real image
 // dimensions aren't known ahead of layout.

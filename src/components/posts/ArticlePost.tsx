@@ -14,6 +14,7 @@ import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import {
+  CARD_TITLE_META_GAP,
   DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
   globalStyles,
@@ -240,13 +241,14 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         </View>
         <View style={progressBarStyle} />
         <UiSpace size={10} />
-        <Typography type="cardTitle" style={titleStyle}>
-          {article.title}
-        </Typography>
-        <UiSpace size={10} />
-        <Typography type="meta" style={authorDateStyle}>
-          {authorDateText}
-        </Typography>
+        <View style={{ gap: CARD_TITLE_META_GAP }}>
+          <Typography type="cardTitle" style={titleStyle}>
+            {article.title}
+          </Typography>
+          <Typography type="meta" style={authorDateStyle}>
+            {authorDateText}
+          </Typography>
+        </View>
         <UiSpace size={10} />
         {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>
