@@ -10,6 +10,7 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Footer from "#/components/views/Footer";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import {
   POST_PADDING_HORIZONTAL,
@@ -99,7 +100,7 @@ const PodcastScreen = () => {
                 style={{
                   width: "100%",
                   aspectRatio: 1,
-                  borderRadius: 12,
+                  borderRadius: radii.md,
                   backgroundColor: corporate,
                 }}
                 source={{ uri: episode.image_url }}

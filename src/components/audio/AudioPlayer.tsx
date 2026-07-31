@@ -15,6 +15,8 @@ import {
   useCorporateColor,
 } from "#/hooks/useAppColorScheme";
 
+const PROGRESS_BAR_HEIGHT = 4;
+
 interface AudioPlayerProps {
   audioUrl: string;
   /** Title shown on the lock-screen / notification now-playing controls. */
@@ -172,11 +174,14 @@ const AudioPlayer = ({
         onResponderGrant={(e) => handleSeek(e.nativeEvent.locationX)}
         onResponderMove={(e) => handleSeek(e.nativeEvent.locationX)}
       >
+        {/* The track and its fill are capsules: the radius is half the bar's
+            own height, so it stays off the shared radii scale on purpose (see
+            the note in constants/BorderRadius). */}
         <View
           style={{
-            height: 4,
+            height: PROGRESS_BAR_HEIGHT,
             backgroundColor: Colors[colorScheme].surfaceDisabled,
-            borderRadius: 2,
+            borderRadius: PROGRESS_BAR_HEIGHT / 2,
             overflow: "hidden",
           }}
         >
@@ -185,7 +190,7 @@ const AudioPlayer = ({
               width: `${progress * 100}%`,
               height: "100%",
               backgroundColor: corporate,
-              borderRadius: 2,
+              borderRadius: PROGRESS_BAR_HEIGHT / 2,
             }}
           />
         </View>
