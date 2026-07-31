@@ -5,6 +5,7 @@ import { View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import {
   DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
@@ -107,7 +108,7 @@ const RedditPost = (properties: RedditProperties) => {
             bold
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
-              lineHeight: size === 16 ? 22 : 24,
+              lineHeight: size === 16 ? LINE_HEIGHTS.base : LINE_HEIGHTS.lg,
               textAlign: "left",
               paddingTop: 20,
             }}

@@ -9,6 +9,7 @@ import UiText from "#/components/ui/UiText";
 import type { AnnouncementEntry } from "#/constants/Announcements";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { parseInlineMarkdown } from "#/helpers/utils/inlineMarkdown";
@@ -64,7 +65,7 @@ const AnnouncementCard = ({
         />
       )}
       <UiCard>
-        <UiText size="base" style={{ lineHeight: 22 }}>
+        <UiText size="base" style={{ lineHeight: LINE_HEIGHTS.base }}>
           {parseInlineMarkdown(announcement.message).map((token, index) => {
             const key = String(index);
             switch (token.type) {

@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 import { radii } from "#/constants/BorderRadius";
-import { fontSizes } from "#/constants/FontSizes";
+import { LINE_HEIGHTS, fontSizes } from "#/constants/FontSizes";
 
 export const SOURCE_SANS_FONTS = [
   "SourceSansPro",
@@ -74,6 +74,6 @@ export const globalStyles = StyleSheet.create({
   pillLabel: {
     fontFamily: "SourceSansProBold",
     fontSize: fontSizes.sm,
-    lineHeight: 19,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 });

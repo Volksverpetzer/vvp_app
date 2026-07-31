@@ -7,6 +7,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
+import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface ChangelogModalProperties {
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   notes: {
-    lineHeight: 22,
+    lineHeight: LINE_HEIGHTS.base,
   },
   button: {
     alignItems: "center",

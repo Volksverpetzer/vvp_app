@@ -9,6 +9,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
@@ -98,14 +99,21 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
             excerpt.length < fulltext.length && (
               <UiText
                 size="lg"
-                style={{ lineHeight: 24, color: corporate, marginBottom: 20 }}
+                style={{
+                  lineHeight: LINE_HEIGHTS.lg,
+                  color: corporate,
+                  marginBottom: 20,
+                }}
               >
                 Mehr Lesen
               </UiText>
             )}
           {displayText !== DISPLAY_TEXT_FULL && (
             <View style={globalStyles.row}>
-              <UiText size="lg" style={{ lineHeight: 24, color: grey }}>
+              <UiText
+                size="lg"
+                style={{ lineHeight: LINE_HEIGHTS.lg, color: grey }}
+              >
                 {new Date(created_at).toLocaleTimeString("de-DE", {
                   year: "numeric",
                   month: "numeric",
@@ -115,7 +123,10 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
                 })}
               </UiText>
               {answers && answers.length > 0 && (
-                <UiText size="lg" style={{ lineHeight: 24, color: corporate }}>
+                <UiText
+                  size="lg"
+                  style={{ lineHeight: LINE_HEIGHTS.lg, color: corporate }}
+                >
                   Thread 1 von {answers.length + 1}
                 </UiText>
               )}
