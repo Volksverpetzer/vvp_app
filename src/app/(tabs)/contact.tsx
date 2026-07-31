@@ -118,7 +118,7 @@ const ContactScreen = () => {
         },
         categoryPill: {
           backgroundColor: surfaceInput,
-          borderRadius: 20,
+          borderRadius: radii.full,
           paddingHorizontal: 14,
           paddingVertical: 8,
         },
@@ -157,7 +157,7 @@ const ContactScreen = () => {
           alignItems: "center",
           alignSelf: "center",
           backgroundColor: accent,
-          borderRadius: 40,
+          borderRadius: radii.full,
           justifyContent: "center",
           margin: 20,
           paddingVertical: 10,

@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 
+import { radii } from "#/constants/BorderRadius";
 import { fontSizes } from "#/constants/FontSizes";
 
 export const SOURCE_SANS_FONTS = [
@@ -47,7 +48,7 @@ export const globalStyles = StyleSheet.create({
     width: "100%",
   },
   input: {
-    borderRadius: 40,
+    borderRadius: radii.full,
     minHeight: 40,
     paddingHorizontal: 25,
   },

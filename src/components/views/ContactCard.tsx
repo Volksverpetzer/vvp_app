@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -62,7 +63,7 @@ const ContactCard = ({
         style={{
           alignItems: "center",
           backgroundColor: accent,
-          borderRadius: 40,
+          borderRadius: radii.full,
           justifyContent: "center",
           paddingVertical: 10,
           width: 160,
