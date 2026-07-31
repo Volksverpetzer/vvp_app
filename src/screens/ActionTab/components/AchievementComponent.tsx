@@ -5,6 +5,7 @@ import { View } from "react-native";
 import { CheckboxIcon, CircleIcon } from "#/components/Icons";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -48,7 +49,7 @@ const AchievementComponent = () => {
         backgroundColor: corporate,
         marginHorizontal: 20,
         marginTop: 30,
-        borderRadius: 10,
+        borderRadius: radii.md,
         padding: 20,
       }}
     >

@@ -11,6 +11,7 @@ import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
@@ -169,14 +170,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   reportButton: {
-    borderRadius: 10,
+    borderRadius: radii.md,
     justifyContent: "center",
     margin: 10,
     padding: 10,
     width: "50%",
   },
   urlButton: {
-    borderRadius: 10,
+    borderRadius: radii.md,
     justifyContent: "center",
     margin: 10,
     padding: 10,

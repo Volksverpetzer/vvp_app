@@ -6,6 +6,7 @@ import { Animated, StyleSheet, View } from "react-native";
 import { ChevronIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -26,7 +27,7 @@ const UiCollapsable = ({
   children,
   icon,
   cardBackground,
-  borderRadius = 20,
+  borderRadius = radii.xl,
 }: UiCollapsableProps) => {
   const [open, setOpen] = useState(defaultOpen);
   const fadeAnim = useRef(new Animated.Value(defaultOpen ? 1 : 0)).current;

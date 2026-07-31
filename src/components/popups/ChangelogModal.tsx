@@ -4,6 +4,7 @@ import BottomSheetModal from "#/components/popups/BottomSheetModal";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    borderRadius: 12,
+    borderRadius: radii.md,
     paddingVertical: 14,
   },
   buttonText: {

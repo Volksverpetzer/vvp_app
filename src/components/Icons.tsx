@@ -5,6 +5,8 @@ import type { ComponentProps } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
 import { Platform, View } from "react-native";
 
+import { radii } from "#/constants/BorderRadius";
+
 type OcticonsProps = Omit<ComponentProps<typeof Octicons>, "name">;
 
 export type { OcticonsIconName };
@@ -108,7 +110,7 @@ export const PlayIcon = ({
     style={[
       {
         backgroundColor: "rgba(0,0,0,0.85)",
-        borderRadius: 999,
+        borderRadius: radii.full,
         justifyContent: "center",
         alignItems: "center",
       },

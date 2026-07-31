@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     backgroundColor: "#f0f0f0",
-    borderRadius: 8,
+    borderRadius: radii.sm,
     marginVertical: 4,
     padding: 12,
     width: "100%",
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
-    borderRadius: 12,
+    borderRadius: radii.md,
     minWidth: 250,
     padding: 16,
   },

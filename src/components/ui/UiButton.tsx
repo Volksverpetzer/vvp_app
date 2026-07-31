@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import type { ImageSource } from "expo-image";
 
 import UiPressable from "#/components/ui/UiPressable";
+import { radii } from "#/constants/BorderRadius";
 
 interface UiButtonProps {
   source: ImageSource;
@@ -24,7 +25,7 @@ const UiButton = ({
   >
     <Image
       source={source}
-      style={{ width: 220, height: 40, borderRadius: 4 }}
+      style={{ width: 220, height: 40, borderRadius: radii.xs }}
     />
   </UiPressable>
 );

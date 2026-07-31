@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -37,7 +38,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: "#007bff",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     marginBottom: 10,
     paddingHorizontal: 20,
     paddingVertical: 10,

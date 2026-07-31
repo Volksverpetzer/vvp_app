@@ -10,6 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import AnimatedPageDots from "#/components/animations/AnimatedPageDots";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import Statistics from "#/helpers/Statistics";
@@ -69,7 +70,7 @@ const StatisticsView = () => {
         {
           zIndex: 99,
           backgroundColor: corporate,
-          borderRadius: 30,
+          borderRadius: radii.xxl,
           paddingVertical: 20,
           marginHorizontal: 10,
         },
