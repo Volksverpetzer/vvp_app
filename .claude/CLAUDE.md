@@ -101,13 +101,13 @@ When bumping the app version for a new release, update **both** fields in `packa
 ```json
 {
   "version": "X.Y.Z",
-  "versionCode": 2026041701
+  "versionCode": 2607311
 }
 ```
 
 **`versionCode`** must be a unique integer that is strictly greater than the previous one. The fdroid bot reads both fields from `package.json` via the `UpdateCheckData` directive in the metadata file. If `versionCode` is missing or not incremented, fdroid will not detect the new release.
 
-A good convention is a date-based code like `YYYYMMDDNN` (e.g. `2026041701` for the first release on 2026-04-17).
+The convention is the date-based `YYMMDDN` — e.g. `2607311` for the first release on 2026-07-31. **Always use the current date**: when preparing the changelog for a merge onto `prerelease`, bump `versionCode` to today even if an unreleased, older-dated code is already committed (rename the fastlane changelog files to match, then re-run `pnpm prepare:changelog`).
 
 After updating `package.json`, write the release notes and regenerate the in-app changelog:
 
@@ -117,10 +117,9 @@ After updating `package.json`, write the release notes and regenerate the in-app
 
 > Note: EAS uses `appVersionSource: "remote"` with `autoIncrement`, so the actual APK versionCode is managed by EAS independently of `package.json`. The `Changelog.versionCode` in `Changelog.ts` uses the `package.json` value as a monotonic release marker for the in-app "what's new" check — this is intentional and correct.
 
-After updating `package.json`, also update the fdroid metadata file (`metadata/de.volksverpetzer.app.yml`) in the **separate `fdroiddata` repository**:
+**F-Droid requires no manual step.** The bot reads `version`/`versionCode` from `package.json` and updates `metadata/de.volksverpetzer.app.yml` in the separate `fdroiddata` repository on its own. Only edit that repository if a bot build **fails** (then add a `Builds:` entry and update `CurrentVersion`/`CurrentVersionCode` by hand).
 
-- Add a new entry under `Builds:` with the matching `versionName` and `versionCode`
-- Update `CurrentVersion` and `CurrentVersionCode` at the bottom
+> Note: F-Droid build failures are not reported to us. If a release doesn't appear on F-Droid after a few days, check https://monitor.f-droid.org/builds.
 
 ### Code Style
 

@@ -67,8 +67,8 @@ Path aliases (defined in `babel.config.cts` and `tsconfig.json`)
 
 Creating a new release
 
-- Update **both** `version` (SemVer) and `versionCode` (integer) in `package.json`. `versionCode` must be strictly greater than the previous value — use `YYYYMMDDNN` convention (e.g. `2026041701`).
-- The F-Droid bot reads both fields from `package.json`. The metadata file (`metadata/de.volksverpetzer.app.yml`) lives in a **separate `fdroiddata` repository** — update it there: add a new `Builds:` entry and update `CurrentVersion` / `CurrentVersionCode` at the bottom.
+- Update **both** `version` (SemVer) and `versionCode` (integer) in `package.json`. `versionCode` uses the date-based `YYMMDDN` convention (e.g. `2607311` for the first release on 2026-07-31), must be strictly greater than the previous value, and should **always carry the current date** — bump it even if an unreleased, older-dated code is already committed, renaming the fastlane changelog files to match.
+- The F-Droid bot reads both fields from `package.json` and updates the metadata file (`metadata/de.volksverpetzer.app.yml`, in a **separate `fdroiddata` repository**) itself — **do not edit it as part of a normal release**. It only needs a manual `Builds:` entry plus `CurrentVersion`/`CurrentVersionCode` when a bot build fails, which is not reported to us (check https://monitor.f-droid.org/builds if a release doesn't appear).
 
 Agent best practices (project-specific)
 

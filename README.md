@@ -174,10 +174,12 @@ Feature branches are merged into `prerelease` via GitHub PRs as soon as they are
 
 When enough features have accumulated to warrant a beta:
 
-1. **Bump the version** in `package.json` — both `version` (e.g. `1.2.3-beta.1`) and `versionCode` (use `YYYYMMDDNN`, must be strictly greater than the previous value):
+1. **Bump the version** in `package.json` — both `version` (e.g. `1.2.3-beta.1`) and `versionCode`
+   (date-based `YYMMDDN`, **always the current date**, must be strictly greater than the previous
+   value — bump it even if an unreleased, older-dated code is already committed):
 
    ```json
-   { "version": "1.2.3-beta.1", "versionCode": 2026051201 }
+   { "version": "1.2.3-beta.1", "versionCode": 2607311 }
    ```
 
 2. **Refresh license data** if any dependencies were added, removed, or updated since the last release. Skip this step if `package.json` dependencies are unchanged.
@@ -222,9 +224,17 @@ Stable releases target the public Play Store and App Store tracks and produce a 
    git push origin v1.2.3
    ```
 
-3. **Update the F-Droid metadata** in the separate `fdroiddata` repository:
-   - Add a new entry under `Builds:` in `metadata/de.volksverpetzer.app.yml` with the matching `versionName` and `versionCode`.
-   - Update `CurrentVersion` and `CurrentVersionCode` at the bottom of that file.
+3. **F-Droid needs no manual step.** Its bot reads `version` and `versionCode` from
+   `package.json` (via the `UpdateCheckData` directive in its metadata) and updates
+   `metadata/de.volksverpetzer.app.yml` in the separate `fdroiddata` repository itself.
+
+   Only touch that repository when a bot build **fails** — then add a `Builds:` entry with the
+   matching `versionName`/`versionCode` and update `CurrentVersion`/`CurrentVersionCode` by hand.
+
+   > ⚠️ There is no notification when an F-Droid build fails. If a release does not show up on
+   > F-Droid after a few days, check the build status at
+   > <https://monitor.f-droid.org/builds> and the app's page at
+   > <https://f-droid.org/packages/de.volksverpetzer.app/>.
 
 ---
 
