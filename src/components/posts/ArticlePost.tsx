@@ -5,6 +5,7 @@ import type { DimensionValue, TextStyle } from "react-native";
 import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -31,7 +32,6 @@ import Badge from "./Badge";
 import ImageCreditBadge from "./ImageCreditBadge";
 
 const titleStyle: TextStyle = {
-  fontFamily: "SourceSansProBold",
   paddingHorizontal: POST_PADDING_HORIZONTAL,
   lineHeight: 26,
   textAlign: "left",
@@ -65,7 +65,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  const greyText = Colors[colorScheme].textMuted;
   const { width } = useFeedDimensions();
   const router = useRouter();
   const height = useMemo(() => DEFAULT_IMAGE_ASPECT_RATIO * width, [width]);
@@ -202,9 +201,8 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     () => ({
       paddingHorizontal: POST_PADDING_HORIZONTAL,
       textAlign: "left" as const,
-      color: greyText,
     }),
-    [greyText],
+    [],
   );
   const categoryTextStyle: TextStyle[] = [
     globalStyles.whiteText,
@@ -242,13 +240,13 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         </View>
         <View style={progressBarStyle} />
         <UiSpace size={10} />
-        <UiText size="xl" style={titleStyle}>
+        <Typography type="cardTitle" style={titleStyle}>
           {article.title}
-        </UiText>
+        </Typography>
         <UiSpace size={10} />
-        <UiText size="base" style={authorDateStyle}>
+        <Typography type="meta" style={authorDateStyle}>
           {authorDateText}
-        </UiText>
+        </Typography>
         <UiSpace size={10} />
         {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>

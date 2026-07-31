@@ -5,10 +5,10 @@ import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
-import Colors from "#/constants/Colors";
 import {
   DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
@@ -18,10 +18,7 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useAudio } from "#/helpers/provider/AudioProvider";
 import { RESUME_MIN_SECONDS, formatTime } from "#/helpers/utils/audio";
-import {
-  useAppColorScheme,
-  useCorporateColor,
-} from "#/hooks/useAppColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { PodcastEpisodeProperties } from "#/types";
 
 import Badge from "./Badge";
@@ -37,9 +34,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
   const { id, title, description, published_at, link, audio_url, image_url } =
     properties;
   const [resumePosition, setResumePosition] = useState(0);
-  const colorScheme = useAppColorScheme();
   const corporate = useCorporateColor();
-  const greyText = Colors[colorScheme].textMuted;
   const router = useRouter();
   const audio = useAudio();
 
@@ -117,17 +112,17 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
               Podcast
             </UiText>
           )}
-          <UiText
-            size="lg"
+          <Typography
+            type="cardTitle"
             numberOfLines={2}
-            style={{ fontFamily: "SourceSansProBold", textAlign: "left" }}
+            style={{ textAlign: "left" }}
           >
             {title}
-          </UiText>
+          </Typography>
           {!!dateDurationText && (
-            <UiText size="base" style={{ color: greyText, textAlign: "left" }}>
+            <Typography type="meta" style={{ textAlign: "left" }}>
               {dateDurationText}
-            </UiText>
+            </Typography>
           )}
         </View>
         {!!description && (
