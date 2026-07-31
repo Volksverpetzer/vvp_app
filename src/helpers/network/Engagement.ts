@@ -30,7 +30,7 @@ const siteQuery = (permalink?: HttpsUrl): string =>
  * shape keeps write and read consistent for any URL. WordPress permalinks
  * already end in a slash, so article counts are unaffected.
  */
-export const analyticsPath = (url: string): string =>
+const analyticsPath = (url: string): string =>
   (Linking.parse(url).path ?? "").replace(/^\/+/, "");
 
 /**
