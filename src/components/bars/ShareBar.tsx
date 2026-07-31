@@ -6,13 +6,13 @@ import ShareCounter from "#/components/counter/ShareCounter";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { multishare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
-import type { FaveableType, InstaPostProperties, ShareableType } from "#/types";
+import type { FavPayload, FaveableType, ShareableType } from "#/types";
 
 interface ShareBarProperties {
   shareable: ShareableType[];
   contentFavIdentifier?: string;
   contentType?: FaveableType;
-  favPayload?: InstaPostProperties;
+  favPayload?: FavPayload;
   hideShareCount?: boolean;
 }
 

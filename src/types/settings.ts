@@ -11,6 +11,7 @@ export type ContentSettingType = {
   tiktok: SettingType;
   bsky: SettingType;
   bot: SettingType;
+  podcast: SettingType;
 } & {
   // One entry per configured WordPress feed, keyed by getWpFeedKey()
   [key: WpFeedKey]: SettingType;

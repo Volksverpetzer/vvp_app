@@ -14,6 +14,7 @@ import type {
   InstaPostProperties,
   MastodonPostProperties,
   NotificationSettingType,
+  PodcastEpisodeProperties,
   TiktokPostProperties,
   YouTubePostProperties,
 } from "#/types";
@@ -175,6 +176,20 @@ class API {
       signal,
     );
     return response.items ?? [];
+  }
+
+  /**
+   * Fetches the podcast feed (Podigee episodes, proxied by the server).
+   */
+  static async getPodcastFeed(
+    signal?: AbortSignal,
+  ): Promise<PodcastEpisodeProperties[]> {
+    const response = await API.get<{ episodes: PodcastEpisodeProperties[] }>(
+      "/proxy/podcastFeed",
+      undefined,
+      signal,
+    );
+    return response.episodes ?? [];
   }
 
   /**

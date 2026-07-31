@@ -1,161 +1,129 @@
 import Octicons from "@react-native-vector-icons/octicons/static";
-import {
-  setAudioModeAsync,
-  useAudioPlayer,
-  useAudioPlayerStatus,
-} from "expo-audio";
-import Constants from "expo-constants";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { View } from "react-native";
 
-import { PauseIcon, UnmuteIcon } from "#/components/Icons";
+import { PauseIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
+import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { useAudio } from "#/helpers/provider/AudioProvider";
+import { formatTime } from "#/helpers/utils/audio";
 import {
   useAppColorScheme,
   useCorporateColor,
 } from "#/hooks/useAppColorScheme";
 
+const PROGRESS_BAR_HEIGHT = 4;
+
 interface AudioPlayerProps {
   audioUrl: string;
+  /** Title shown on the lock-screen / notification now-playing controls. */
   title?: string;
+  /** Artwork shown on the lock-screen / notification now-playing controls. */
   artworkUrl?: string;
+  /**
+   * Persist and restore the playback position under this key (e.g. the
+   * episode's audio URL) via PersonalStore. Off when omitted.
+   */
+  resumeKey?: string;
+  /**
+   * Render a spinner while the (current) track is loading and an error message
+   * on failure, instead of the plain control row.
+   */
+  showFeedback?: boolean;
+  /** Horizontal padding of the player row. Defaults to 20. */
+  horizontalPadding?: number;
+  /** Known total length in seconds, shown before playback starts (podcast). */
+  durationSeconds?: number;
 }
 
-const formatTime = (seconds: number) => {
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
-};
-
-// `shouldPlayInBackground` is a single, module-wide native flag shared by
-// every AudioPlayer instance (not scoped per player) — it must only be on
-// while a player is actually playing, and there must only ever be one
-// playing at a time so backgrounding the app can still pause the rest of
-// the app's audio. This module-level state (shared across all mounted
-// AudioPlayer instances, since they all import the same module) tracks
-// which player currently "owns" background playback.
-let activePlayer: { id: string; pause: () => void } | null = null;
-
-const applyBackgroundPlaybackMode = (enabled: boolean) => {
-  // The native side rebuilds AudioMode from defaults on every call rather
-  // than merging, so all fields must be passed together every time.
-  void setAudioModeAsync({
-    playsInSilentMode: true,
-    interruptionMode: "doNotMix",
-    shouldPlayInBackground: enabled,
-  });
-};
-
-const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
-  const player = useAudioPlayer(audioUrl, { updateInterval: 250 });
-  const status = useAudioPlayerStatus(player);
+/**
+ * Controls view for the app-wide audio player (see AudioProvider). When this
+ * track is the one currently loaded, the row reflects and drives live playback;
+ * otherwise the play button loads and starts it. The native player lives in the
+ * provider, so playback continues when this view unmounts (e.g. on navigation).
+ */
+const AudioPlayer = ({
+  audioUrl,
+  title,
+  artworkUrl,
+  resumeKey,
+  showFeedback = false,
+  horizontalPadding = 20,
+  durationSeconds,
+}: AudioPlayerProps) => {
+  const audio = useAudio();
   const corporate = useCorporateColor();
   const colorScheme = useAppColorScheme();
   const barWidth = useRef(0);
-  const [wasLoaded, setWasLoaded] = useState(false);
-  const stableTime = useRef({ currentTime: 0, duration: 0 });
-  const playerId = player.id;
 
-  useEffect(() => {
-    if (!status.playing) {
-      if (activePlayer?.id === playerId) {
-        activePlayer = null;
-        applyBackgroundPlaybackMode(false);
-      }
-      return;
-    }
+  const isCurrent = audio.isCurrent(audioUrl);
+  const playing = isCurrent && audio.playing;
+  const loaded = isCurrent && audio.isLoaded;
+  const errored = isCurrent && audio.error;
 
-    if (activePlayer && activePlayer.id !== playerId) {
-      activePlayer.pause();
-    }
-    activePlayer = { id: playerId, pause: () => player.pause() };
-    applyBackgroundPlaybackMode(true);
-    void player.setActiveForLockScreen(true, {
-      title: title ?? "Artikel anhören",
-      artist: Constants.expoConfig?.name ?? "",
-      artworkUrl,
-    });
-  }, [status.playing, player, playerId, title, artworkUrl]);
-
-  // Guards against a player being torn down (e.g. by navigating away) while
-  // it's still the active background player — reads only the id captured
-  // during render, never touches the (possibly already-released) player
-  // object itself.
-  useEffect(() => {
-    return () => {
-      if (activePlayer?.id === playerId) {
-        activePlayer = null;
-        applyBackgroundPlaybackMode(false);
-      }
-    };
-  }, [playerId]);
-
-  useEffect(() => {
-    setWasLoaded(false);
-    stableTime.current = { currentTime: 0, duration: 0 };
-    barWidth.current = 0;
-  }, [audioUrl]);
-
-  useEffect(() => {
-    if (status.didJustFinish) {
-      void player.seekTo(0);
-    }
-  }, [status.didJustFinish, player]);
-
-  // Latch loaded state and keep a snapshot of the last good position so a
-  // transient isLoaded=false during seek doesn't unmount the player or reset
-  // the progress bar.
-  useEffect(() => {
-    if (status.isLoaded && !status.error) {
-      setWasLoaded(true);
-      stableTime.current = {
-        currentTime: status.currentTime,
-        duration: status.duration,
-      };
-    }
-  }, [status.isLoaded, status.error, status.currentTime, status.duration]);
-
-  if (status.error || (!wasLoaded && !status.isLoaded)) return null;
-
-  const { currentTime, duration } =
-    status.isLoaded && !status.error ? status : stableTime.current;
-
+  const currentTime = isCurrent ? audio.currentTime : 0;
+  const duration = isCurrent ? audio.duration : (durationSeconds ?? 0);
   const progress =
     duration > 0 ? Math.min(1, Math.max(0, currentTime / duration)) : 0;
   const remaining = Math.max(0, duration - currentTime);
 
+  const play = () =>
+    audio.playTrack({ audioUrl, title, artworkUrl, resumeKey });
+
+  const onToggle = () => (isCurrent ? audio.toggle() : play());
+
   const handleSeek = (x: number) => {
-    if (barWidth.current === 0 || duration === 0) return;
+    if (!isCurrent || barWidth.current === 0 || duration === 0) return;
     const ratio = Math.max(0, Math.min(1, x / barWidth.current));
-    void player.seekTo(ratio * duration);
+    audio.seekTo(ratio * duration);
   };
+
+  // Loading / error feedback only applies while this track is the active one.
+  if (showFeedback && isCurrent && (errored || !loaded)) {
+    return (
+      <View
+        style={{
+          paddingHorizontal: horizontalPadding,
+          paddingVertical: 12,
+          minHeight: 50,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {errored ? (
+          <UiText
+            size="sm"
+            style={{ color: Colors[colorScheme].error, textAlign: "center" }}
+          >
+            Audio konnte nicht geladen werden.
+          </UiText>
+        ) : (
+          <UiSpinner size="small" />
+        )}
+      </View>
+    );
+  }
 
   return (
     <View
       style={{
-        paddingHorizontal: 20,
+        paddingHorizontal: horizontalPadding,
         paddingVertical: 12,
         flexDirection: "row",
         alignItems: "center",
         gap: 12,
       }}
     >
-      <UnmuteIcon
-        size={16}
-        color={Colors[colorScheme].textMuted}
-        accessible={false}
-        importantForAccessibility="no"
-      />
       <UiPressable
         accessibilityRole="button"
-        accessibilityLabel={status.playing ? "Pause" : "Abspielen"}
-        onPress={() => void (status.playing ? player.pause() : player.play())}
+        accessibilityLabel={playing ? "Pause" : "Abspielen"}
+        onPress={onToggle}
         hitSlop={10}
       >
-        {status.playing ? (
+        {playing ? (
           <PauseIcon
             size={26}
             color={corporate}
@@ -188,9 +156,9 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
         onAccessibilityAction={(e) => {
           const step = 15;
           if (e.nativeEvent.actionName === "increment") {
-            void player.seekTo(Math.min(duration, currentTime + step));
+            audio.seekTo(Math.min(duration, currentTime + step));
           } else if (e.nativeEvent.actionName === "decrement") {
-            void player.seekTo(Math.max(0, currentTime - step));
+            audio.seekTo(Math.max(0, currentTime - step));
           }
         }}
         style={{
@@ -206,11 +174,14 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
         onResponderGrant={(e) => handleSeek(e.nativeEvent.locationX)}
         onResponderMove={(e) => handleSeek(e.nativeEvent.locationX)}
       >
+        {/* The track and its fill are capsules: the radius is half the bar's
+            own height, so it stays off the shared radii scale on purpose (see
+            the note in constants/BorderRadius). */}
         <View
           style={{
-            height: 4,
+            height: PROGRESS_BAR_HEIGHT,
             backgroundColor: Colors[colorScheme].surfaceDisabled,
-            borderRadius: 2,
+            borderRadius: PROGRESS_BAR_HEIGHT / 2,
             overflow: "hidden",
           }}
         >
@@ -219,7 +190,7 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
               width: `${progress * 100}%`,
               height: "100%",
               backgroundColor: corporate,
-              borderRadius: 2,
+              borderRadius: PROGRESS_BAR_HEIGHT / 2,
             }}
           />
         </View>
@@ -234,7 +205,7 @@ const AudioPlayer = ({ audioUrl, title, artworkUrl }: AudioPlayerProps) => {
           textAlign: "right",
         }}
       >
-        {formatTime(remaining)}
+        {duration > 0 ? formatTime(remaining) : ""}
       </UiText>
     </View>
   );
