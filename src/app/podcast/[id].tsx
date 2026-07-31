@@ -9,7 +9,6 @@ import NavBar from "#/components/bars/NavBar";
 import Typography from "#/components/ui/Typography";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
-import UiText from "#/components/ui/UiText";
 import Footer from "#/components/views/Footer";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
@@ -131,15 +130,12 @@ const PodcastScreen = () => {
         <UiSpace size={12} />
 
         {!!episode.description && (
-          <UiText
-            size="base"
-            style={{
-              paddingHorizontal: POST_PADDING_HORIZONTAL,
-              textAlign: "left",
-            }}
+          <Typography
+            type="body"
+            style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}
           >
             {episode.description}
-          </UiText>
+          </Typography>
         )}
 
         {episode.link && (
