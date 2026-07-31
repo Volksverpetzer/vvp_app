@@ -104,10 +104,10 @@ const RedditPost = (properties: RedditProperties) => {
           />
           <UiText
             size={size === 16 ? "base" : "lg"}
+            bold
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
               lineHeight: size === 16 ? 22 : 24,
-              fontFamily: "SourceSansProBold",
               textAlign: "left",
               paddingTop: 20,
             }}

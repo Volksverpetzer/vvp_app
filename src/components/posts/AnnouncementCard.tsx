@@ -70,7 +70,7 @@ const AnnouncementCard = ({
             switch (token.type) {
               case "bold":
                 return (
-                  <UiText key={key} style={{ fontFamily: "SourceSansProBold" }}>
+                  <UiText key={key} bold>
                     {token.content}
                   </UiText>
                 );
@@ -122,13 +122,7 @@ const AnnouncementCard = ({
               paddingVertical: 12,
             }}
           >
-            <UiText
-              size="base"
-              style={{
-                color: text,
-                fontFamily: "SourceSansProBold",
-              }}
-            >
+            <UiText size="base" bold style={{ color: text }}>
               Alles klar!
             </UiText>
           </UiPressable>
@@ -143,13 +137,7 @@ const AnnouncementCard = ({
               paddingVertical: 12,
             }}
           >
-            <UiText
-              size="base"
-              style={{
-                color: onPrimary,
-                fontFamily: "SourceSansProBold",
-              }}
-            >
+            <UiText size="base" bold style={{ color: onPrimary }}>
               {announcement.actionLabel}
             </UiText>
           </UiPressable>

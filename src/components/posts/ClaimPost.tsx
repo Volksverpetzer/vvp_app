@@ -24,8 +24,8 @@ const ClaimPost = (properties: ClaimProperties) => {
       <View style={{ paddingBottom: 0, flex: 1 }}>
         <UiText
           size="xl"
+          bold
           style={{
-            fontFamily: "SourceSansProBold",
             paddingHorizontal: POST_PADDING_HORIZONTAL,
             lineHeight: 26,
             textAlign: "left",

@@ -52,13 +52,7 @@ const AISearch = ({
           onPress={() => onLinkPress(item.url, router)}
           text={item.text}
           subtitle={
-            <UiText
-              size="base"
-              style={{
-                fontFamily: "SourceSansProBold",
-                color: textColor,
-              }}
-            >
+            <UiText size="base" bold style={{ color: textColor }}>
               {hostname ?? item.url}
             </UiText>
           }
