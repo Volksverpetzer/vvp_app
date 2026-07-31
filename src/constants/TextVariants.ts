@@ -26,6 +26,11 @@ export const textVariants = {
   title: { size: "xxl", bold: true, tone: "default" },
   /** Headline of a feed card. */
   cardTitle: { size: "xl", bold: true, tone: "default", lineHeight: 26 },
+  /**
+   * Prominent bold label a step below a title: section headings, form-field
+   * labels, social-post author names, link labels.
+   */
+  heading: { size: "lg", bold: true, tone: "default" },
   /** Info line under a title: author, date, duration, reading time. */
   meta: { size: "sm", bold: false, tone: "muted" },
 } as const satisfies Record<string, TextVariantSpec>;

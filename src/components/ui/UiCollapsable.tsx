@@ -4,8 +4,8 @@ import type { ColorValue } from "react-native";
 import { Animated, StyleSheet, View } from "react-native";
 
 import { ChevronIcon } from "#/components/Icons";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
-import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -63,9 +63,7 @@ const UiCollapsable = ({
       >
         <View style={styles.title}>
           {icon}
-          <UiText bold size="lg">
-            {title}
-          </UiText>
+          <Typography type="heading">{title}</Typography>
         </View>
         <ChevronIcon
           direction={open ? "up" : "down"}

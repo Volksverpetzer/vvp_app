@@ -4,6 +4,7 @@ import { decode } from "html-entities";
 import { View } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -79,9 +80,9 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
             <View style={{ marginLeft: 10 }}>
-              <UiText bold size="lg">
+              <Typography type="heading">
                 &nbsp;{account.display_name}&nbsp;
-              </UiText>
+              </Typography>
               <UiText size="sm" style={{ color: grey }}>
                 &nbsp;@{account.acct}&nbsp;
               </UiText>
