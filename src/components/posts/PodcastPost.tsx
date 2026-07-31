@@ -108,11 +108,6 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
         )}
         <UiSpace size={image_url ? 12 : 20} />
         <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
-          {!image_url && (
-            <UiText size="sm" style={{ color: corporate, textAlign: "left" }}>
-              Podcast
-            </UiText>
-          )}
           <View style={{ gap: CARD_CONTENT_GAP }}>
             <Typography type="cardTitle" style={{ textAlign: "left" }}>
               {title}
