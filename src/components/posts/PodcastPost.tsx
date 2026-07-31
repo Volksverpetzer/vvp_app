@@ -114,11 +114,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
             </UiText>
           )}
           <View style={{ gap: CARD_TITLE_META_GAP }}>
-            <Typography
-              type="cardTitle"
-              numberOfLines={2}
-              style={{ textAlign: "left" }}
-            >
+            <Typography type="cardTitle" style={{ textAlign: "left" }}>
               {title}
             </Typography>
             {!!dateDurationText && (
