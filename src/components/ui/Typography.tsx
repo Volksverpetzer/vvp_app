@@ -1,3 +1,5 @@
+import type { ComponentProps } from "react";
+
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import {
@@ -7,7 +9,7 @@ import {
 } from "#/constants/TextVariants";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-type TypographyProperties = React.ComponentProps<typeof UiText> & {
+type TypographyProperties = ComponentProps<typeof UiText> & {
   /**
    * Semantic role of this text (see {@link textVariants}). Sets size, weight
    * and color tone at once so the same kind of text — a screen title, a

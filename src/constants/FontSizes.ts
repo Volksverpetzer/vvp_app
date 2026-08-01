@@ -40,7 +40,7 @@ export const CONTENT_LINE_HEIGHT = 27;
  * Use these for multi-line text that doesn't fit a semantic `Typography` role
  * (e.g. social-post metadata, changelog notes, announcement text).
  *
- * Formula: size × 1.35–1.4 for comfortable linespacing without looking loose.
+ * Formula: size × ~1.33–1.4 for comfortable linespacing without looking loose.
  */
 export const LINE_HEIGHTS = {
   xs: 16, // 12 × 1.33
