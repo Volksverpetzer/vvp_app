@@ -102,10 +102,7 @@ const RegionMap = () => {
           flex: 1,
         }}
       >
-        <UiText
-          size="xl"
-          style={[globalStyles.whiteText, { fontFamily: "SourceSansProBold" }]}
-        >
+        <UiText size="xl" bold style={globalStyles.whiteText}>
           Bundesländer Ranking
         </UiText>
         <UiSpace size={10} />

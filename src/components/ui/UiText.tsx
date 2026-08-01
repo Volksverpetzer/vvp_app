@@ -17,6 +17,11 @@ type TextProperties = TextProps & {
   bold?: boolean;
 };
 
+/**
+ * Low-level styled text primitive: applies the theme text color, a font-scale
+ * size and the regular/bold family. For text with a semantic role (titles,
+ * meta lines) prefer {@link Typography}, which layers those roles on top.
+ */
 const UiText = (properties: TextProperties) => {
   const { style, size, bold, ...otherProperties } = properties;
   const colorScheme = useAppColorScheme();

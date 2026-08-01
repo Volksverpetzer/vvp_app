@@ -4,6 +4,7 @@ import { View } from "react-native";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ClaimProperties } from "#/types";
@@ -24,10 +25,10 @@ const ClaimPost = (properties: ClaimProperties) => {
       <View style={{ paddingBottom: 0, flex: 1 }}>
         <UiText
           size="xl"
+          bold
           style={{
-            fontFamily: "SourceSansProBold",
             paddingHorizontal: POST_PADDING_HORIZONTAL,
-            lineHeight: 26,
+            lineHeight: LINE_HEIGHTS.xl,
             textAlign: "left",
             paddingTop: 20,
           }}

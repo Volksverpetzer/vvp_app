@@ -4,10 +4,11 @@ import { useMemo } from "react";
 import { View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
+import Typography from "#/components/ui/Typography";
 import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
-import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { CONTENT_LINE_HEIGHT } from "#/constants/FontSizes";
 import {
   CARD_PADDING,
   CONTENT_HORIZONTAL_PADDING,
@@ -47,7 +48,7 @@ const SearchResultItem = ({
   const baseStyle = useMemo(
     () => ({
       fontFamily: "SourceSansPro",
-      lineHeight: 24,
+      lineHeight: CONTENT_LINE_HEIGHT,
       color: textColor,
     }),
     [textColor],
@@ -55,20 +56,18 @@ const SearchResultItem = ({
 
   const content = (
     <UiCard>
-      {title ? (
-        <UiText bold size="lg" style={{ marginBottom: 10 }}>
-          {decode(title)}
-        </UiText>
-      ) : null}
+      <View style={{ gap: 10 }}>
+        {title ? <Typography type="heading">{decode(title)}</Typography> : null}
 
-      <RenderHtml
-        source={{ html: text }}
-        tagsStyles={styles}
-        ignoredDomTags={IGNORED_DOM_TAGS}
-        systemFonts={SOURCE_SANS_FONTS}
-        contentWidth={contentWidth}
-        baseStyle={baseStyle}
-      />
+        <RenderHtml
+          source={{ html: text }}
+          tagsStyles={styles}
+          ignoredDomTags={IGNORED_DOM_TAGS}
+          systemFonts={SOURCE_SANS_FONTS}
+          contentWidth={contentWidth}
+          baseStyle={baseStyle}
+        />
+      </View>
 
       {subtitle}
     </UiCard>

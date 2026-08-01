@@ -8,6 +8,7 @@ import { AppState, Platform, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FeedIcon, NotificationIcon, SafetyIcon } from "#/components/Icons";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
@@ -180,9 +181,7 @@ const Onboarding = () => {
             }}
           >
             <FeedIcon color={corporate} size={20} />
-            <UiText bold size="lg" style={{ textAlign: "left" }}>
-              Feed-Einstellungen
-            </UiText>
+            <Typography type="heading">Feed-Einstellungen</Typography>
           </View>
           <SettingsList
             saveSettings={saveContentSetting}

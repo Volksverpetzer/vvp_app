@@ -61,10 +61,8 @@ const StatisticsPanel = ({
         <StatisticsIcon name={icon} size={32} color="white" />
         <UiText
           size="xl"
-          style={[
-            globalStyles.whiteText,
-            { fontFamily: "SourceSansProBold", marginLeft: 10 },
-          ]}
+          bold
+          style={[globalStyles.whiteText, { marginLeft: 10 }]}
         >
           {title}
         </UiText>

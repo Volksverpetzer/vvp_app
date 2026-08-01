@@ -4,8 +4,9 @@ import { View, useWindowDimensions } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
-import UiText from "#/components/ui/UiText";
+import Typography from "#/components/ui/Typography";
 import Config from "#/constants/Config";
+import { CARD_CONTENT_GAP } from "#/constants/GlobalStyles";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -43,7 +44,7 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
   }, []);
 
   return (
-    <View>
+    <View style={{ gap: CARD_CONTENT_GAP }}>
       <InstaPostImage
         photos={photos}
         width={width}
@@ -53,12 +54,12 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
         onLongPress={handleLongPress}
       />
       <Hyperlink linkStyle={{ color: corporate }} onPress={handleLinkPress}>
-        <UiText
-          size="lg"
-          style={{ paddingHorizontal: 10, paddingBottom: 50, lineHeight: 24 }}
+        <Typography
+          type="body"
+          style={{ paddingHorizontal: 10, paddingBottom: 50 }}
         >
           {caption}
-        </UiText>
+        </Typography>
       </Hyperlink>
     </View>
   );

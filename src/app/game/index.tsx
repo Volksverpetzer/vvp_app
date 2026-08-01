@@ -17,7 +17,7 @@ const HomeScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText size="xxl" style={styles.title}>
+      <UiText size="xxl" bold style={styles.title}>
         Willkommen zum Memory-Spiel
       </UiText>
       <UiText size="base" style={styles.description}>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     fontFamily: "SourceSansPro",
     fontSize: fontSizes.base,
   },
-  title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
+  title: { marginBottom: 20 },
 });
 
 export default HomeScreen;
