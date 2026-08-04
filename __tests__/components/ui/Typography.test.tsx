@@ -45,7 +45,7 @@ describe("Typography", () => {
       <Typography type="meta">Autor | 1.1.2026 | 5 Min.</Typography>,
     );
 
-    expect(style.fontSize).toBe(fontSizes.sm);
+    expect(style.fontSize).toBe(fontSizes.base);
     expect(style.fontFamily).toBe("SourceSansPro");
     expect(style.color).toBe(Colors.light.textMuted);
   });
