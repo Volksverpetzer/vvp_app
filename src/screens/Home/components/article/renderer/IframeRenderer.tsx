@@ -227,7 +227,9 @@ const IframeRenderer = ({
             borderRadius: radii.sm,
           }}
         >
-          <UiText>Debug: Empty slug extracted from src: {source}</UiText>
+          <UiText style={{ color: Colors[colorScheme].onError }}>
+            Debug: Empty slug extracted from src: {source}
+          </UiText>
         </View>
       );
     }

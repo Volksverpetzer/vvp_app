@@ -45,7 +45,11 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
           ]}
           onPress={onCancel}
         >
-          <UiText size="base" bold style={{ color: Colors[colorScheme].error }}>
+          <UiText
+            size="base"
+            bold
+            style={{ color: Colors[colorScheme].onError }}
+          >
             Abbrechen
           </UiText>
         </UiPressable>
