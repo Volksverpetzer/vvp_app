@@ -11,8 +11,8 @@ jest.mock("html-entities", () => ({
 
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
-  return jest.fn(({ children }: any) => (
-    <Text testID="heading">{children}</Text>
+  return jest.fn(({ children, testID }: any) => (
+    <Text testID={testID ?? "heading"}>{children}</Text>
   ));
 });
 
@@ -25,9 +25,9 @@ jest.mock("#/components/ui/UiCard", () => {
 
 jest.mock("#/components/ui/UiPressable", () => {
   const { Pressable } = require("react-native");
-  return jest.fn(({ children, onPress, accessibilityRole }: any) => (
+  return jest.fn(({ children, onPress, accessibilityRole, testID }: any) => (
     <Pressable
-      testID="pressable"
+      testID={testID ?? "pressable"}
       onPress={onPress}
       accessibilityRole={accessibilityRole}
     >
@@ -100,5 +100,40 @@ describe("SearchResultItem", () => {
       <SearchResultItem title="" text="<p>content</p>" />,
     );
     expect(queryByTestId("heading")).toBeNull();
+  });
+
+  describe("collapsible", () => {
+    it("does not show a toggle when the excerpt fits in the collapsed height", async () => {
+      const { queryByTestId } = await render(
+        <SearchResultItem title="Title" text="<p>short</p>" collapsible />,
+      );
+      await fireEvent(queryByTestId("excerpt-measurer")!, "layout", {
+        nativeEvent: { layout: { height: 40 } },
+      });
+      expect(queryByTestId("excerpt-toggle")).toBeNull();
+    });
+
+    it("shows a 'Mehr lesen' toggle once the excerpt overflows, and expands on tap", async () => {
+      const { queryByTestId, getByTestId, getByText } = await render(
+        <SearchResultItem title="Title" text="<p>long</p>" collapsible />,
+      );
+      await fireEvent(getByTestId("excerpt-measurer"), "layout", {
+        nativeEvent: { layout: { height: 500 } },
+      });
+      expect(getByText("Mehr lesen")).toBeTruthy();
+
+      await fireEvent.press(getByTestId("excerpt-toggle"));
+      expect(getByText("Weniger anzeigen")).toBeTruthy();
+      // The measurer is only needed while collapsed.
+      expect(queryByTestId("excerpt-measurer")).toBeNull();
+    });
+
+    it("does not render a toggle when collapsible is not set", async () => {
+      const { queryByTestId } = await render(
+        <SearchResultItem title="Title" text="<p>content</p>" />,
+      );
+      expect(queryByTestId("excerpt-measurer")).toBeNull();
+      expect(queryByTestId("excerpt-toggle")).toBeNull();
+    });
   });
 });
