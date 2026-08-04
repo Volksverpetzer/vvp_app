@@ -41,9 +41,9 @@ const Support = ({ article_link }: SupportProperties) => {
       }}
     >
       <UiText
+        size="xxl"
         style={{
           color: Colors[colorScheme].text,
-          fontSize: 30,
           textAlign: "center",
         }}
       >

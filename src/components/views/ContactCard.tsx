@@ -35,9 +35,9 @@ const ContactCard = ({
       }}
     >
       <UiText
+        size="xxl"
         style={{
           color: text,
-          fontSize: 30,
           textAlign: "center",
         }}
       >
