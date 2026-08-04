@@ -14,6 +14,7 @@ import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
+import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { isDarkMode } from "#/helpers/utils/color";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
@@ -222,7 +223,7 @@ const IframeRenderer = ({
           style={{
             maxWidth: 500,
             padding: 16,
-            backgroundColor: "#ffeeee",
+            backgroundColor: Colors[colorScheme].surfaceError,
             borderRadius: radii.sm,
           }}
         >

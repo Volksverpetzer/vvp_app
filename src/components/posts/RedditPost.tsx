@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { LINE_HEIGHTS } from "#/constants/FontSizes";
@@ -115,16 +116,15 @@ const RedditPost = (properties: RedditProperties) => {
           >
             {properties.title}
           </UiText>
-          <UiText
-            size="base"
+          <Typography
+            type="meta"
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
               paddingBottom: 10,
-              color: "#999",
             }}
           >
             von {author} | {date}
-          </UiText>
+          </Typography>
         </View>
       </UiPressable>
     </>

@@ -28,24 +28,24 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
           <UiPressable
             accessibilityRole="button"
             key={item.title + index}
-            style={styles.button}
+            style={[
+              styles.button,
+              { backgroundColor: Colors[colorScheme].surface },
+            ]}
             onPress={item.onPress}
           >
-            <UiText size="base" style={styles.buttonText}>
-              {item.title}
-            </UiText>
+            <UiText size="base">{item.title}</UiText>
           </UiPressable>
         ))}
         <UiPressable
           accessibilityRole="button"
-          style={[styles.button, styles.cancelButton]}
+          style={[
+            styles.button,
+            { backgroundColor: Colors[colorScheme].surfaceError },
+          ]}
           onPress={onCancel}
         >
-          <UiText
-            size="base"
-            bold
-            style={[styles.buttonText, styles.cancelText]}
-          >
+          <UiText size="base" bold style={{ color: Colors[colorScheme].error }}>
             Abbrechen
           </UiText>
         </UiPressable>
@@ -57,20 +57,10 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
     borderRadius: radii.sm,
     marginVertical: 4,
     padding: 12,
     width: "100%",
-  },
-  buttonText: {
-    color: "#222",
-  },
-  cancelButton: {
-    backgroundColor: "#ffeaea",
-  },
-  cancelText: {
-    color: "#b00",
   },
   container: {
     alignItems: "center",
@@ -83,7 +73,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   title: {
-    color: "#333",
     marginBottom: 12,
   },
 });
