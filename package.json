@@ -8,7 +8,7 @@
       "exclude": []
     }
   },
-  "packageManager": "pnpm@11.18.0",
+  "packageManager": "pnpm@11.19.0",
   "engines": {
     "node": "24.x"
   },
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@algolia/client-search": "5.56.0",
-    "@atproto/api": "0.20.34",
+    "@atproto/api": "0.20.36",
     "@babel/runtime": "7.29.7",
     "@expo-google-fonts/source-sans-3": "0.4.1",
     "@expo/config": "57.0.6",
@@ -103,7 +103,7 @@
     "react-native-gesture-handler": "2.32.0",
     "react-native-hyperlink": "0.1.2",
     "react-native-modal": "14.0.0-rc.1",
-    "react-native-nitro-modules": "0.36.3",
+    "react-native-nitro-modules": "0.36.5",
     "react-native-reanimated": "4.5.1",
     "react-native-reanimated-carousel": "5.0.0",
     "react-native-render-html": "6.3.4",
@@ -125,9 +125,9 @@
     "@testing-library/react-native": "14.0.1",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "@types/jest": "29.5.14",
-    "@types/lodash": "4.17.24",
+    "@types/lodash": "4.17.25",
     "@types/node": "24.13.2",
-    "@types/react": "19.2.17",
+    "@types/react": "19.2.18",
     "@typescript-eslint/eslint-plugin": "8.65.0",
     "@typescript-eslint/parser": "8.65.0",
     "babel-jest": "29.7.0",
@@ -147,7 +147,7 @@
     "jest-expo": "57.0.3",
     "jest-react-native": "18.0.0",
     "license-checker-rseidelsohn": "5.0.1",
-    "lint-staged": "17.2.0",
+    "lint-staged": "17.3.0",
     "prettier": "3.9.6",
     "ts-node": "10.9.2",
     "typedoc": "0.28.20",
