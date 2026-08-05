@@ -127,6 +127,23 @@ const extractSlug = (source: string): string => {
 };
 
 /**
+ * True when `hostname` is `base` itself or a subdomain of it. Plain
+ * `hostname.includes(base)` (the previous check here and in
+ * prepareWebViewSource below) also matches unrelated hosts that merely
+ * contain `base` as a substring, e.g. "notyoutube.com".includes("youtube.com")
+ * is true — which would wrongly force 16:9 video sizing (or Datawrapper's
+ * autoplay/dark-mode query params) onto an unrelated embed.
+ */
+const hostMatches = (hostname: string, base: string): boolean =>
+  hostname === base || hostname.endsWith(`.${base}`);
+
+const hostMatchesAny = (hostname: string, bases: string[]): boolean =>
+  bases.some((base) => hostMatches(hostname, base));
+
+const YOUTUBE_HOSTS = ["youtube.com", "youtube-nocookie.com", "youtu.be"];
+const VIMEO_HOSTS = ["vimeo.com"];
+
+/**
  * True when `hostname` is a video-embed provider with a fixed 16:9 aspect
  * ratio. Used to size the embed from the article width instead of trusting
  * the WebView's self-reported content height, which for a video player is
@@ -135,10 +152,7 @@ const extractSlug = (source: string): string => {
  * (often WebView-viewport-dependent) DOM content height.
  */
 const isVideoEmbedHost = (hostname: string): boolean =>
-  hostname.includes("youtube.com") ||
-  hostname.includes("youtube-nocookie.com") ||
-  hostname.includes("youtu.be") ||
-  hostname.includes("vimeo.com");
+  hostMatchesAny(hostname, [...YOUTUBE_HOSTS, ...VIMEO_HOSTS]);
 
 interface WebViewRequest {
   url?: string;
@@ -172,12 +186,9 @@ const prepareWebViewSource = (
     return null;
   }
 
-  const isYouTube =
-    hostname.includes("youtube.com") ||
-    hostname.includes("youtube-nocookie.com") ||
-    hostname.includes("youtu.be");
+  const isYouTube = hostMatchesAny(hostname, YOUTUBE_HOSTS);
 
-  const isDatawrapper = hostname.includes("datawrapper.dwcdn.net");
+  const isDatawrapper = hostMatches(hostname, "datawrapper.dwcdn.net");
 
   if (!isYouTube && !isDatawrapper) return { uri: url };
 
@@ -261,10 +272,15 @@ const IframeRenderer = ({
       const parsedHeight = Number.parseInt(event.nativeEvent.data, 10);
       if (Number.isNaN(parsedHeight) || parsedHeight <= 0) return;
       // Safety net against any remaining resize/measure feedback loop (see
-      // the injected JS comments above): no legitimate non-video embed
-      // needs to be taller than the screen, so cap it there instead of
-      // letting a loop grow it without bounds.
-      const maxHeight = Dimensions.get("window").height;
+      // the injected JS comments above), not a bound on legitimate content:
+      // this WebView renders with scrollEnabled={false}, so anything beyond
+      // the cap becomes permanently inaccessible rather than just requiring
+      // a scroll. A genuinely tall embed (e.g. a detailed Datawrapper map)
+      // can reasonably exceed one screen's height, so the cap is several
+      // screens tall — generous enough for real content, while still
+      // bounding runaway growth, which historically reached far more than
+      // that within a few iterations.
+      const maxHeight = Dimensions.get("window").height * 4;
       setWebViewHeight(Math.min(parsedHeight, maxHeight));
     },
     [isVideo],

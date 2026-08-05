@@ -1,5 +1,6 @@
 import { act, render } from "@testing-library/react-native";
 import * as Linking from "expo-linking";
+import { Dimensions } from "react-native";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
 
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -722,5 +723,144 @@ describe("IframeRenderer prepareWebViewSource", () => {
       expect(mockLastWebViewProps.source.uri).toContain("youtube.com");
       expect(mockLastWebViewProps.source.uri).toContain("autoplay=0");
     });
+  });
+});
+
+describe("IframeRenderer video embed sizing", () => {
+  beforeEach(() => {
+    mockUseHtmlIframeProps.mockClear();
+    mockUseAppColorScheme.mockClear();
+    mockLastWebViewProps = null;
+    mockUseAppColorScheme.mockReturnValue(ColorScheme.light);
+  });
+
+  const getHeight = (props: any): number | undefined => {
+    const style = props?.style;
+    if (Array.isArray(style)) {
+      for (const s of style) {
+        if (s && typeof s.height === "number") return s.height;
+      }
+      return undefined;
+    }
+    return style && typeof style.height === "number" ? style.height : undefined;
+  };
+
+  it("sizes a YouTube embed to a fixed 16:9 height derived from width and ignores postMessage height", async () => {
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://www.youtube.com/embed/abc123" },
+    });
+
+    await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    const expectedHeight = Math.round(360 * (9 / 16));
+    expect(getHeight(mockLastWebViewProps)).toBe(expectedHeight);
+
+    // A postMessage height (e.g. from the injected script, or a runaway
+    // measurement) must not override the fixed 16:9 height for video.
+    await act(async () => {
+      mockLastWebViewProps.onMessage({ nativeEvent: { data: "9000" } });
+      await Promise.resolve();
+    });
+
+    expect(getHeight(mockLastWebViewProps)).toBe(expectedHeight);
+  });
+
+  it("sizes a Vimeo embed to a fixed 16:9 height derived from width", async () => {
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://player.vimeo.com/video/123456" },
+    });
+
+    await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={400}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    expect(getHeight(mockLastWebViewProps)).toBe(Math.round(400 * (9 / 16)));
+  });
+
+  it("does not treat a lookalike hostname as a video embed", async () => {
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+    // "notyoutube.com" contains "youtube.com" as a substring, which a naive
+    // hostname.includes() check would wrongly match.
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://notyoutube.com/embed/abc123" },
+    });
+
+    await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    // Falls back to the generic fallback height, not the 16:9 video height.
+    expect(getHeight(mockLastWebViewProps)).toBe(360);
+
+    await act(async () => {
+      mockLastWebViewProps.onMessage({ nativeEvent: { data: "500" } });
+      await Promise.resolve();
+    });
+
+    // Unlike video embeds, a postMessage height does update the size here.
+    expect(getHeight(mockLastWebViewProps)).toBe(500);
+  });
+});
+
+describe("IframeRenderer non-video height cap", () => {
+  beforeEach(() => {
+    mockUseHtmlIframeProps.mockClear();
+    mockUseAppColorScheme.mockClear();
+    mockLastWebViewProps = null;
+    mockUseAppColorScheme.mockReturnValue(ColorScheme.light);
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://example.com/embed" },
+    });
+  });
+
+  it("caps an oversized postMessage height instead of growing without bound", async () => {
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+    await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    const maxHeight = Dimensions.get("window").height * 4;
+
+    await act(async () => {
+      mockLastWebViewProps.onMessage({
+        nativeEvent: { data: String(maxHeight + 5000) },
+      });
+      await Promise.resolve();
+    });
+
+    const style = mockLastWebViewProps.style;
+    const height = Array.isArray(style)
+      ? style.find((s: any) => s && typeof s.height === "number")?.height
+      : style?.height;
+    expect(height).toBe(maxHeight);
   });
 });
