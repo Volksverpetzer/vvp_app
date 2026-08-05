@@ -42,34 +42,68 @@ const INJECT_BEFORE = `
   if (document.body) { document.body.style.margin = "0"; document.body.style.height = "auto"; }
 `;
 const INJECT_AFTER = `
-  const postHeight = () => {
-    const bodyHeight = document.body ? document.body.scrollHeight : 0;
-    const docHeight = document.documentElement ? document.documentElement.scrollHeight : 0;
-    window.ReactNativeWebView.postMessage(String(Math.max(bodyHeight, docHeight)));
+  const postHeight = (height) => {
+    if (typeof height === "number" && height > 0) {
+      window.ReactNativeWebView.postMessage(String(Math.round(height)));
+    }
   };
-  postHeight();
-  window.addEventListener("load", postHeight);
-  // Deliberately not listening for "resize" here: resizing the WebView's
-  // native view (which is exactly what happens every time we report a new
-  // height to RN) fires this event inside the document too, so a resize
-  // listener re-measures on the very change it caused — the other half of
-  // the feedback loop described above. The MutationObserver below still
-  // catches genuine content growth (e.g. a player injecting elements after
-  // load) without re-triggering on our own height updates.
-  if (window.MutationObserver) {
-    const setupObserver = () => {
-      if (!document.body) {
-        return;
-      }
-      const observer = new MutationObserver(postHeight);
-      observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+
+  if (/(^|\\.)dwcdn\\.net$/.test(window.location.hostname)) {
+    // Datawrapper posts its own authoritative height via postMessage
+    // whenever its chart layout actually changes (see its vendor bundle:
+    // window.parent.postMessage({"datawrapper-height": {[chartId]: height}}, "*")).
+    // Since this WebView has no real parent frame, window.parent === window,
+    // so a plain "message" listener on this same window catches the self-post.
+    // Relaying that value straight through is both more accurate than
+    // guessing from scrollHeight and structurally immune to the resize
+    // feedback loop below, since Datawrapper only sends it in response to
+    // genuine content changes, never in response to us resizing the WebView.
+    window.addEventListener("message", (event) => {
+      const heights = event && event.data && event.data["datawrapper-height"];
+      if (!heights) return;
+      const values = Object.values(heights);
+      if (values.length) postHeight(Number(values[0]));
+    });
+  } else {
+    const measure = () => {
+      const bodyHeight = document.body ? document.body.scrollHeight : 0;
+      const docHeight = document.documentElement ? document.documentElement.scrollHeight : 0;
+      postHeight(Math.max(bodyHeight, docHeight));
     };
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", setupObserver);
-    } else {
-      setupObserver();
+    let debounceTimer = null;
+    const scheduleMeasure = () => {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(measure, 50);
+    };
+    measure();
+    window.addEventListener("load", scheduleMeasure);
+    // Deliberately not listening for window "resize" here: resizing the
+    // WebView's native view (which is exactly what happens every time we
+    // report a new height to RN) fires this event inside the document too,
+    // so a resize listener re-measures on the very change it caused — a
+    // feedback loop. ResizeObserver on the body's own content box sidesteps
+    // this: it fires on genuine content-driven size changes (e.g. a player
+    // injecting elements after load), not on us changing the WebView's
+    // height, since that alone doesn't alter the body's content box.
+    if (window.ResizeObserver && document.body) {
+      new ResizeObserver(scheduleMeasure).observe(document.body);
+    } else if (window.MutationObserver) {
+      const setupObserver = () => {
+        if (!document.body) return;
+        new MutationObserver(scheduleMeasure).observe(document.body, {
+          attributes: true,
+          childList: true,
+          subtree: true,
+        });
+      };
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setupObserver);
+      } else {
+        setupObserver();
+      }
     }
   }
+
   if (document.head) {
     const meta = document.createElement('meta');
     meta.name = 'viewport';
