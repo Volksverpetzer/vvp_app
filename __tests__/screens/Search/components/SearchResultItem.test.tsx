@@ -25,15 +25,24 @@ jest.mock("#/components/ui/UiCard", () => {
 
 jest.mock("#/components/ui/UiPressable", () => {
   const { Pressable } = require("react-native");
-  return jest.fn(({ children, onPress, accessibilityRole, testID }: any) => (
-    <Pressable
-      testID={testID ?? "pressable"}
-      onPress={onPress}
-      accessibilityRole={accessibilityRole}
-    >
-      {children}
-    </Pressable>
-  ));
+  return jest.fn(
+    ({
+      children,
+      onPress,
+      accessibilityRole,
+      accessibilityState,
+      testID,
+    }: any) => (
+      <Pressable
+        testID={testID ?? "pressable"}
+        onPress={onPress}
+        accessibilityRole={accessibilityRole}
+        accessibilityState={accessibilityState}
+      >
+        {children}
+      </Pressable>
+    ),
+  );
 });
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
@@ -103,7 +112,7 @@ describe("SearchResultItem", () => {
   });
 
   describe("collapsible", () => {
-    it("does not show a toggle when the excerpt fits in the collapsed height", async () => {
+    it("does not show a toggle when the excerpt fits in the collapsed height, and unmounts the measurer", async () => {
       const { queryByTestId } = await render(
         <SearchResultItem title="Title" text="<p>short</p>" collapsible />,
       );
@@ -111,9 +120,11 @@ describe("SearchResultItem", () => {
         nativeEvent: { layout: { height: 40 } },
       });
       expect(queryByTestId("excerpt-toggle")).toBeNull();
+      // The measurer only needs to run once, not for the card's lifetime.
+      expect(queryByTestId("excerpt-measurer")).toBeNull();
     });
 
-    it("shows a 'Mehr lesen' toggle once the excerpt overflows, and expands on tap", async () => {
+    it("shows a 'Mehr lesen' toggle once the excerpt overflows, exposes accessibilityState, and expands on tap", async () => {
       const { queryByTestId, getByTestId, getByText } = await render(
         <SearchResultItem title="Title" text="<p>long</p>" collapsible />,
       );
@@ -121,10 +132,16 @@ describe("SearchResultItem", () => {
         nativeEvent: { layout: { height: 500 } },
       });
       expect(getByText("Mehr lesen")).toBeTruthy();
+      expect(getByTestId("excerpt-toggle").props.accessibilityState).toEqual({
+        expanded: false,
+      });
 
       await fireEvent.press(getByTestId("excerpt-toggle"));
       expect(getByText("Weniger anzeigen")).toBeTruthy();
-      // The measurer is only needed while collapsed.
+      expect(getByTestId("excerpt-toggle").props.accessibilityState).toEqual({
+        expanded: true,
+      });
+      // The measurer is only needed until the first measurement lands.
       expect(queryByTestId("excerpt-measurer")).toBeNull();
     });
 

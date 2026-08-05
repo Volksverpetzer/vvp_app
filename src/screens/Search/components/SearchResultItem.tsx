@@ -50,12 +50,12 @@ const SearchResultItem = ({
   const { width } = useWindowDimensions();
   const [expanded, setExpanded] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
+  const [hasMeasured, setHasMeasured] = useState(false);
 
   const handleMeasure = useCallback(
     (event: { nativeEvent: { layout: { height: number } } }) => {
-      if (event.nativeEvent.layout.height > COLLAPSED_HEIGHT) {
-        setIsTruncated(true);
-      }
+      setIsTruncated(event.nativeEvent.layout.height > COLLAPSED_HEIGHT);
+      setHasMeasured(true);
     },
     [],
   );
@@ -72,6 +72,7 @@ const SearchResultItem = ({
   useEffect(() => {
     setExpanded(false);
     setIsTruncated(false);
+    setHasMeasured(false);
   }, [text, contentWidth]);
 
   const baseStyle = useMemo(
@@ -113,10 +114,10 @@ const SearchResultItem = ({
             >
               {html}
             </View>
-            {!expanded && !isTruncated && (
+            {!expanded && !hasMeasured && (
               // Invisible measurer: lays out the full text off-screen so we
-              // only show the toggle when it's actually truncated. Once we
-              // know it's truncated there's nothing left to measure.
+              // only show the toggle when it's actually truncated. Only
+              // needed until the first measurement lands.
               <View
                 testID="excerpt-measurer"
                 style={{ position: "absolute", opacity: 0, zIndex: -1 }}
@@ -130,6 +131,7 @@ const SearchResultItem = ({
               <UiPressable
                 testID="excerpt-toggle"
                 accessibilityRole="button"
+                accessibilityState={{ expanded }}
                 onPress={() => setExpanded((value) => !value)}
               >
                 <UiText bold style={{ color: corporate }}>
