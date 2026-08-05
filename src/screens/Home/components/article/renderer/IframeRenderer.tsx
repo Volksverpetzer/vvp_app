@@ -1,7 +1,7 @@
 import { useHtmlIframeProps } from "@native-html/iframe-plugin";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
-import { View } from "react-native";
+import { Dimensions, View } from "react-native";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
 import { WebView } from "react-native-webview";
 import type {
@@ -33,6 +33,13 @@ export interface IframeRendererProperties {
 // Injected JS constants for WebView
 const INJECT_BEFORE = `
   document.querySelectorAll("video").forEach(video => video.removeAttribute("autoplay"));
+  // The default UA stylesheet gives body an 8px margin, which inflates
+  // scrollHeight beyond the actual content. Left in place, that inflated
+  // height gets reported to RN, which resizes the WebView, which resizes
+  // this document, which reports an inflated height again — an unbounded
+  // growth loop (visible as an embed that keeps growing while in view).
+  if (document.documentElement) document.documentElement.style.height = "auto";
+  if (document.body) { document.body.style.margin = "0"; document.body.style.height = "auto"; }
 `;
 const INJECT_AFTER = `
   const postHeight = () => {
@@ -42,7 +49,13 @@ const INJECT_AFTER = `
   };
   postHeight();
   window.addEventListener("load", postHeight);
-  window.addEventListener("resize", postHeight);
+  // Deliberately not listening for "resize" here: resizing the WebView's
+  // native view (which is exactly what happens every time we report a new
+  // height to RN) fires this event inside the document too, so a resize
+  // listener re-measures on the very change it caused — the other half of
+  // the feedback loop described above. The MutationObserver below still
+  // catches genuine content growth (e.g. a player injecting elements after
+  // load) without re-triggering on our own height updates.
   if (window.MutationObserver) {
     const setupObserver = () => {
       if (!document.body) {
@@ -193,7 +206,12 @@ const IframeRenderer = ({
   const onMessage = useCallback((event: WebViewMessageEvent) => {
     const parsedHeight = Number.parseInt(event.nativeEvent.data, 10);
     if (Number.isNaN(parsedHeight) || parsedHeight <= 0) return;
-    setWebViewHeight(parsedHeight);
+    // Safety net against any remaining resize/measure feedback loop (see the
+    // injected JS comments above): no legitimate embed needs to be taller
+    // than the screen, so cap it there instead of letting a loop grow it
+    // without bounds.
+    const maxHeight = Dimensions.get("window").height;
+    setWebViewHeight(Math.min(parsedHeight, maxHeight));
   }, []);
 
   if (!webViewSource)

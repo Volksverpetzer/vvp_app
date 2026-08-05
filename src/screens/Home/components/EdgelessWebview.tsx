@@ -120,6 +120,13 @@ const EdgelessWebview = ({
 }: EdgelessWebviewProperties) => {
   const insets = useSafeAreaInsets();
   const webViewReference = useRef<WebView>(null);
+  // Guards the cookie injection below to a single run per mount. Without
+  // this, re-injecting the same consent cookies on every onLoadStart
+  // (including a page-triggered reload) makes Complianz see a fresh
+  // deny→allow marketing-consent transition on each reload and call its own
+  // location.reload() again — an infinite reload loop (visible as repeated
+  // FOUC/font flicker) on pages like /project/stell-dir-vor/.
+  const hasInjectedCookies = useRef(false);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
@@ -165,9 +172,10 @@ const EdgelessWebview = ({
         }}
         style={[styles.webview, { backgroundColor }]}
         onLoadStart={(syntheticEvent) => {
-          // Set cookies when the WebView starts loading
+          // Set cookies once, on the first load only (see hasInjectedCookies).
           const { nativeEvent } = syntheticEvent;
-          if (nativeEvent.url === uri) {
+          if (nativeEvent.url === uri && !hasInjectedCookies.current) {
+            hasInjectedCookies.current = true;
             for (const cookie of cookies) {
               const cookieString = getCookieString(cookie);
               webViewReference.current?.injectJavaScript(

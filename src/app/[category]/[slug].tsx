@@ -120,17 +120,19 @@ const LoadArticle = () => {
 
   if (!slug) {
     const baseUrl = secondaryWp?.handle ?? wpUrl;
-    // WordPress permalinks are trailing-slash canonical and 404 (no redirect)
-    // on the slashless form, so rebuild with a trailing slash. The incoming
-    // deep link had one, but expo-router strips it when parsing the param.
+    // Deliberately not adding a trailing slash here: real WP pages 301
+    // redirect fine from the slashless form (and EdgelessWebview treats a
+    // same-path redirect that only adds a slash as the same page), but
+    // Redirection-plugin shortlinks (e.g. /ltw-lsa) are exact-path matches
+    // that 404 when a slash is appended, so we must send the path as-is.
     const trimmedBase = baseUrl.replace(/\/+$/, "");
     const trimmedCategory = (category || "").replaceAll(/^\/+|\/+$/g, "");
     // originalUrl is the full deep link and already carries its own fragment.
     const url =
       originalUrl ??
       (trimmedCategory
-        ? `${trimmedBase}/${trimmedCategory}/${anchorSuffix}`
-        : `${trimmedBase}/${anchorSuffix}`);
+        ? `${trimmedBase}/${trimmedCategory}${anchorSuffix}`
+        : `${trimmedBase}${anchorSuffix}`);
     return <EdgelessWebview uri={url as HttpsUrl} />;
   }
 
