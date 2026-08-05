@@ -47,7 +47,7 @@ const SearchResultItem = ({
   const textColor = Colors[colorScheme].text;
   const corporate = Colors[colorScheme].primary;
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
-  const { width } = useWindowDimensions();
+  const { width, fontScale } = useWindowDimensions();
   const [expanded, setExpanded] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
   const [hasMeasured, setHasMeasured] = useState(false);
@@ -81,7 +81,7 @@ const SearchResultItem = ({
     setExpanded(false);
     setIsTruncated(false);
     setHasMeasured(false);
-  }, [text, contentWidth]);
+  }, [text, contentWidth, fontScale]);
 
   const baseStyle = useMemo(
     () => ({
