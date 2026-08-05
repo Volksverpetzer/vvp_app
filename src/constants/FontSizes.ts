@@ -24,6 +24,8 @@ export const fontSizes = {
   xl: 20,
   /** Largest step: screen/article titles and article sub-headings (h2–h5). */
   xxl: 24,
+  /** Above the regular hierarchy: standalone statement headlines (e.g. Support). */
+  xxxl: 30,
 } as const;
 
 export type FontSizeToken = keyof typeof fontSizes;
@@ -49,4 +51,5 @@ export const LINE_HEIGHTS = {
   lg: 24, // 18 × 1.33
   xl: 27, // 20 × 1.35
   xxl: 32, // 24 × 1.33
+  xxxl: 40, // 30 × 1.33
 } as const;

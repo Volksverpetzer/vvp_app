@@ -41,7 +41,7 @@ export const textVariants = {
    */
   heading: { size: "lg", bold: true, tone: "default" },
   /** Info line under a title: author, date, duration, reading time. */
-  meta: { size: "sm", bold: false, tone: "muted" },
+  meta: { size: "base", bold: false, tone: "muted" },
   /**
    * Readable body copy: social-post fulltext and the like. Mirrors the article
    * body (see {@link CONTENT_LINE_HEIGHT}) so long-form text reads the same
