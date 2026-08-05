@@ -116,21 +116,29 @@ describe("SearchResultItem", () => {
       const { queryByTestId } = await render(
         <SearchResultItem title="Title" text="<p>short</p>" collapsible />,
       );
-      await fireEvent(queryByTestId("excerpt-measurer")!, "layout", {
-        nativeEvent: { layout: { height: 40 } },
-      });
+      await fireEvent(
+        queryByTestId("excerpt-measurer", { includeHiddenElements: true })!,
+        "layout",
+        { nativeEvent: { layout: { height: 40 } } },
+      );
       expect(queryByTestId("excerpt-toggle")).toBeNull();
       // The measurer only needs to run once, not for the card's lifetime.
-      expect(queryByTestId("excerpt-measurer")).toBeNull();
+      expect(
+        queryByTestId("excerpt-measurer", { includeHiddenElements: true }),
+      ).toBeNull();
     });
 
     it("shows a 'Mehr lesen' toggle once the excerpt overflows, exposes accessibilityState, and expands on tap", async () => {
       const { queryByTestId, getByTestId, getByText } = await render(
         <SearchResultItem title="Title" text="<p>long</p>" collapsible />,
       );
-      await fireEvent(getByTestId("excerpt-measurer"), "layout", {
-        nativeEvent: { layout: { height: 500 } },
-      });
+      await fireEvent(
+        getByTestId("excerpt-measurer", { includeHiddenElements: true }),
+        "layout",
+        {
+          nativeEvent: { layout: { height: 500 } },
+        },
+      );
       expect(getByText("Mehr lesen")).toBeTruthy();
       expect(getByTestId("excerpt-toggle").props.accessibilityState).toEqual({
         expanded: false,
@@ -155,9 +163,13 @@ describe("SearchResultItem", () => {
           onPress={onPress}
         />,
       );
-      await fireEvent(getByTestId("excerpt-measurer"), "layout", {
-        nativeEvent: { layout: { height: 500 } },
-      });
+      await fireEvent(
+        getByTestId("excerpt-measurer", { includeHiddenElements: true }),
+        "layout",
+        {
+          nativeEvent: { layout: { height: 500 } },
+        },
+      );
 
       await fireEvent.press(getByTestId("excerpt-toggle"));
 
@@ -168,9 +180,13 @@ describe("SearchResultItem", () => {
       const { getByTestId, queryByTestId, getByText, rerender } = await render(
         <SearchResultItem title="Title" text="<p>long</p>" collapsible />,
       );
-      await fireEvent(getByTestId("excerpt-measurer"), "layout", {
-        nativeEvent: { layout: { height: 500 } },
-      });
+      await fireEvent(
+        getByTestId("excerpt-measurer", { includeHiddenElements: true }),
+        "layout",
+        {
+          nativeEvent: { layout: { height: 500 } },
+        },
+      );
       await fireEvent.press(getByTestId("excerpt-toggle"));
       expect(getByText("Weniger anzeigen")).toBeTruthy();
 
@@ -180,7 +196,9 @@ describe("SearchResultItem", () => {
       );
 
       expect(queryByTestId("excerpt-toggle")).toBeNull();
-      expect(getByTestId("excerpt-measurer")).toBeTruthy();
+      expect(
+        getByTestId("excerpt-measurer", { includeHiddenElements: true }),
+      ).toBeTruthy();
     });
 
     it("does not render a toggle when collapsible is not set", async () => {

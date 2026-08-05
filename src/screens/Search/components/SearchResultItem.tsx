@@ -1,6 +1,7 @@
 import { decode } from "html-entities";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import type { LayoutChangeEvent } from "react-native";
 import { View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
@@ -25,7 +26,6 @@ const IGNORED_DOM_TAGS = ["img", "script", "iframe", "style"];
 // How many lines of excerpt to show before offering "Mehr lesen" when
 // `collapsible` is set.
 const COLLAPSED_LINES = 4;
-const COLLAPSED_HEIGHT = COLLAPSED_LINES * CONTENT_LINE_HEIGHT;
 
 interface SearchResultItemProps {
   title: string;
@@ -52,12 +52,20 @@ const SearchResultItem = ({
   const [isTruncated, setIsTruncated] = useState(false);
   const [hasMeasured, setHasMeasured] = useState(false);
 
+  // The excerpt's <p> tag carries its own vertical padding (see
+  // getTagStyles), which counts toward both the clamped box and the
+  // measured height — fold it in so the line-count math stays accurate.
+  const collapsedHeight = useMemo(() => {
+    const pPadding = (styles.p as { padding?: number } | undefined)?.padding;
+    return COLLAPSED_LINES * CONTENT_LINE_HEIGHT + 2 * (pPadding ?? 0);
+  }, [styles]);
+
   const handleMeasure = useCallback(
-    (event: { nativeEvent: { layout: { height: number } } }) => {
-      setIsTruncated(event.nativeEvent.layout.height > COLLAPSED_HEIGHT);
+    (event: LayoutChangeEvent) => {
+      setIsTruncated(event.nativeEvent.layout.height > collapsedHeight);
       setHasMeasured(true);
     },
-    [],
+    [collapsedHeight],
   );
 
   // The card sits inside globalStyles.content (capped at CONTENT_MAX_WIDTH),
@@ -109,7 +117,7 @@ const SearchResultItem = ({
               style={
                 expanded
                   ? undefined
-                  : { maxHeight: COLLAPSED_HEIGHT, overflow: "hidden" }
+                  : { maxHeight: collapsedHeight, overflow: "hidden" }
               }
             >
               {html}
@@ -117,11 +125,14 @@ const SearchResultItem = ({
             {!expanded && !hasMeasured && (
               // Invisible measurer: lays out the full text off-screen so we
               // only show the toggle when it's actually truncated. Only
-              // needed until the first measurement lands.
+              // needed until the first measurement lands. Hidden from
+              // screen readers so they don't see the excerpt twice.
               <View
                 testID="excerpt-measurer"
                 style={{ position: "absolute", opacity: 0, zIndex: -1 }}
                 pointerEvents="none"
+                importantForAccessibility="no-hide-descendants"
+                accessibilityElementsHidden
                 onLayout={handleMeasure}
               >
                 {html}
