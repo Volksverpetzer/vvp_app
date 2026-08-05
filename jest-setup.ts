@@ -21,6 +21,16 @@ jest.mock("@react-native-vector-icons/octicons/static", () => ({
   __esModule: true,
 }));
 
+// expo-image wires an ExpoObserve native-module integration at import time.
+// jest-expo's native-module auto-mock resolves the module to a stub without
+// getIntegrations(), so any test that imports expo-image throws "not a
+// function". expo-image ships no jest mock for it (yet), so stub the whole
+// integration out here instead.
+jest.mock("expo-image/src/observe", () => ({
+  initObserveIntegrationIfNeeded: jest.fn(),
+  initObserveIntegrationIfNeededImpl: jest.fn(),
+}));
+
 jest.mock("expo-constants", () => ({
   __esModule: true,
   default: {

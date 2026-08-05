@@ -7,6 +7,7 @@ import { FlatList, StyleSheet, View } from "react-native";
 import { SafetyIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
 import BackToTopButton from "#/components/buttons/BackToTopButton";
+import Typography from "#/components/ui/Typography";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -39,7 +40,6 @@ const AISearch = ({
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  const textColor = Colors[colorScheme].text;
   const listReference = useRef<FlatList>(null);
   const backToTop = useBackToTop();
 
@@ -51,15 +51,12 @@ const AISearch = ({
           title={decode(item.title)}
           onPress={() => onLinkPress(item.url, router)}
           text={item.text}
-          subtitle={
-            <UiText size="base" bold style={{ color: textColor }}>
-              {hostname ?? item.url}
-            </UiText>
-          }
+          collapsible
+          subtitle={<Typography type="meta">{hostname ?? item.url}</Typography>}
         />
       );
     },
-    [textColor, router],
+    [router],
   );
 
   if (results.length === 0 && !error && !noResults) {
