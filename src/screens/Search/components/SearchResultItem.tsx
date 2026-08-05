@@ -1,6 +1,6 @@
 import { decode } from "html-entities";
 import type { ReactNode } from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
@@ -65,6 +65,14 @@ const SearchResultItem = ({
   const contentWidth =
     Math.min(width, CONTENT_MAX_WIDTH) -
     2 * (CARD_PADDING + CONTENT_HORIZONTAL_PADDING);
+
+  // A list item can be recycled for different `text` (e.g. a new search),
+  // or reflow on rotation/font-scaling — re-measure instead of keeping a
+  // stale expanded/truncated state from the previous content.
+  useEffect(() => {
+    setExpanded(false);
+    setIsTruncated(false);
+  }, [text, contentWidth]);
 
   const baseStyle = useMemo(
     () => ({

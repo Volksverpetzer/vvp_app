@@ -128,6 +128,44 @@ describe("SearchResultItem", () => {
       expect(queryByTestId("excerpt-measurer")).toBeNull();
     });
 
+    it("does not trigger the card's onPress when the toggle is tapped", async () => {
+      const onPress = jest.fn();
+      const { getByTestId } = await render(
+        <SearchResultItem
+          title="Title"
+          text="<p>long</p>"
+          collapsible
+          onPress={onPress}
+        />,
+      );
+      await fireEvent(getByTestId("excerpt-measurer"), "layout", {
+        nativeEvent: { layout: { height: 500 } },
+      });
+
+      await fireEvent.press(getByTestId("excerpt-toggle"));
+
+      expect(onPress).not.toHaveBeenCalled();
+    });
+
+    it("resets the expanded/truncated state when the text changes", async () => {
+      const { getByTestId, queryByTestId, getByText, rerender } = await render(
+        <SearchResultItem title="Title" text="<p>long</p>" collapsible />,
+      );
+      await fireEvent(getByTestId("excerpt-measurer"), "layout", {
+        nativeEvent: { layout: { height: 500 } },
+      });
+      await fireEvent.press(getByTestId("excerpt-toggle"));
+      expect(getByText("Weniger anzeigen")).toBeTruthy();
+
+      // Simulate the list item being recycled for a different result.
+      await rerender(
+        <SearchResultItem title="Title" text="<p>new text</p>" collapsible />,
+      );
+
+      expect(queryByTestId("excerpt-toggle")).toBeNull();
+      expect(getByTestId("excerpt-measurer")).toBeTruthy();
+    });
+
     it("does not render a toggle when collapsible is not set", async () => {
       const { queryByTestId } = await render(
         <SearchResultItem title="Title" text="<p>content</p>" />,
