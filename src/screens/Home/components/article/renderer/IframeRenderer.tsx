@@ -92,6 +92,20 @@ const extractSlug = (source: string): string => {
   }
 };
 
+/**
+ * True when `hostname` is a video-embed provider with a fixed 16:9 aspect
+ * ratio. Used to size the embed from the article width instead of trusting
+ * the WebView's self-reported content height, which for a video player is
+ * fragile (see the height-measurement feedback-loop notes above) and not
+ * actually meaningful — a video's height should track its width, not its
+ * (often WebView-viewport-dependent) DOM content height.
+ */
+const isVideoEmbedHost = (hostname: string): boolean =>
+  hostname.includes("youtube.com") ||
+  hostname.includes("youtube-nocookie.com") ||
+  hostname.includes("youtu.be") ||
+  hostname.includes("vimeo.com");
+
 interface WebViewRequest {
   url?: string;
   isTopFrame?: boolean;
@@ -202,17 +216,25 @@ const IframeRenderer = ({
   const { htmlAttribs } = useHtmlIframeProps(renderProps);
   const source = htmlAttribs.src;
   const webViewSource = prepareWebViewSource(source, colorScheme);
+  const isVideo = isVideoEmbedHost(Linking.parse(source).hostname ?? "");
+  // Video players get a fixed 16:9 height derived from the article width
+  // instead of the WebView's self-reported content height.
+  const videoHeight = Math.round(width * (9 / 16));
 
-  const onMessage = useCallback((event: WebViewMessageEvent) => {
-    const parsedHeight = Number.parseInt(event.nativeEvent.data, 10);
-    if (Number.isNaN(parsedHeight) || parsedHeight <= 0) return;
-    // Safety net against any remaining resize/measure feedback loop (see the
-    // injected JS comments above): no legitimate embed needs to be taller
-    // than the screen, so cap it there instead of letting a loop grow it
-    // without bounds.
-    const maxHeight = Dimensions.get("window").height;
-    setWebViewHeight(Math.min(parsedHeight, maxHeight));
-  }, []);
+  const onMessage = useCallback(
+    (event: WebViewMessageEvent) => {
+      if (isVideo) return;
+      const parsedHeight = Number.parseInt(event.nativeEvent.data, 10);
+      if (Number.isNaN(parsedHeight) || parsedHeight <= 0) return;
+      // Safety net against any remaining resize/measure feedback loop (see
+      // the injected JS comments above): no legitimate non-video embed
+      // needs to be taller than the screen, so cap it there instead of
+      // letting a loop grow it without bounds.
+      const maxHeight = Dimensions.get("window").height;
+      setWebViewHeight(Math.min(parsedHeight, maxHeight));
+    },
+    [isVideo],
+  );
 
   if (!webViewSource)
     return (
@@ -275,7 +297,7 @@ const IframeRenderer = ({
         style={{
           width,
           maxWidth: maxWidth + 40,
-          height: webViewHeight,
+          height: isVideo ? videoHeight : webViewHeight,
           backgroundColor: "transparent",
         }}
         nestedScrollEnabled={false}
