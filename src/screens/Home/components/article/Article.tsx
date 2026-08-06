@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import type { RefObject } from "react";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import type {
   GestureResponderEvent,
   LayoutChangeEvent,
@@ -92,6 +92,49 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const date =
     _date.getDate() + "." + (_date.getMonth() + 1) + "." + _date.getFullYear();
 
+  /**
+   * Scrolls to the header element registered under the given anchor id.
+   * No-op when the id doesn't match a rendered header (e.g. the target
+   * element isn't an h2), matching the behavior of in-article anchor links.
+   * @param id The decoded HTML id of the target header
+   */
+  // useCallback (not just an extracted binding) is load-bearing here: this
+  // project doesn't run the React Compiler (no "reactCompiler" experiment in
+  // app.config.ts), so nothing else gives these a stable identity across
+  // renders. Body's `renderers` prop is rebuilt from handleAnchorPress /
+  // handleLinkPress on every render, and react-native-render-html can
+  // remount custom-rendered elements (like the WebView inside an embedded
+  // iframe) when that prop's identity changes — visible as a reload/
+  // black-frame flash on an embedded video every time Article re-renders.
+  const scrollToAnchor = useCallback((id: string) => {
+    const headerNode = headerReferences.current[id]?.current;
+    const scrollView = scrollReference.current;
+    // On the new architecture measureLayout must receive the host component
+    // ref itself — the node handle from getInnerViewNode() is rejected with
+    // "must be called with a ref to a native component".
+    const innerView = innerViewReference.current;
+    if (!headerNode || !scrollView || !innerView) return;
+    headerNode.measureLayout(innerView, (_x, y) => {
+      scrollView.scrollTo({ y, animated: false });
+    });
+  }, []);
+
+  const handleAnchorPress = useCallback(
+    (id: string) => {
+      // A tapped in-article anchor supersedes a deep-link anchor; otherwise
+      // the next content resize would snap back to it.
+      pendingAnchor.current = undefined;
+      scrollToAnchor(id);
+    },
+    [scrollToAnchor],
+  );
+
+  const handleLinkPress = useCallback(
+    (_event: GestureResponderEvent, href: HttpsUrl) =>
+      onLinkPress(href, router, article_link),
+    [router, article_link],
+  );
+
   useEffect(() => {
     mounted.current = true;
     return () => {
@@ -116,7 +159,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
       pendingAnchor.current = undefined;
     }, ANCHOR_ALIGN_WINDOW_MS);
     return () => clearTimeout(timeout);
-  }, [anchor]);
+  }, [anchor, scrollToAnchor]);
 
   useEffect(() => {
     registerViews(article_link);
@@ -136,42 +179,6 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
       });
     }
   }, [article_link]);
-
-  /**
-   * Scrolls to the header element registered under the given anchor id.
-   * No-op when the id doesn't match a rendered header (e.g. the target
-   * element isn't an h2), matching the behavior of in-article anchor links.
-   * @param id The decoded HTML id of the target header
-   */
-  const scrollToAnchor = (id: string) => {
-    const headerNode = headerReferences.current[id]?.current;
-    const scrollView = scrollReference.current;
-    // On the new architecture measureLayout must receive the host component
-    // ref itself — the node handle from getInnerViewNode() is rejected with
-    // "must be called with a ref to a native component".
-    const innerView = innerViewReference.current;
-    if (!headerNode || !scrollView || !innerView) return;
-    headerNode.measureLayout(innerView, (_x, y) => {
-      scrollView.scrollTo({ y, animated: false });
-    });
-  };
-
-  // Extracted (rather than inlined in Body's JSX props below) purely so the
-  // React Compiler can memoize them by reference — it can't do that for a
-  // function literal written directly as a JSX prop. Stable identity here
-  // matters: Body's `renderers` prop is rebuilt from these on every render,
-  // and react-native-render-html can remount custom-rendered elements (like
-  // the WebView inside an embedded iframe) when that prop's identity
-  // changes — visible as a reload/black-frame flash on an embedded video.
-  const handleAnchorPress = (id: string) => {
-    // A tapped in-article anchor supersedes a deep-link anchor; otherwise
-    // the next content resize would snap back to it.
-    pendingAnchor.current = undefined;
-    scrollToAnchor(id);
-  };
-
-  const handleLinkPress = (_event: GestureResponderEvent, href: HttpsUrl) =>
-    onLinkPress(href, router, article_link);
 
   /**
    * Called once when the article layout is rendered.

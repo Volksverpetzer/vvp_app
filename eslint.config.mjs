@@ -77,6 +77,14 @@ export default defineConfig([
       "react-hooks/refs": "off",
       "react-hooks/set-state-in-effect": "off",
       "react-hooks/immutability": "off",
+      // Validates that manual useCallback/useMemo would survive the React
+      // Compiler's own memoization pass — meaningless here since this
+      // project doesn't run that compiler (no "reactCompiler" experiment in
+      // app.config.ts, no babel-plugin-react-compiler). Without it, manual
+      // memoization is the only way hooks stay referentially stable, so
+      // this rule would otherwise push toward removing useCallback/useMemo
+      // that's actually load-bearing.
+      "react-hooks/preserve-manual-memoization": "off",
     },
   },
   {
