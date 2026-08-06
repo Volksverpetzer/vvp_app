@@ -16,6 +16,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { safeParseHostname } from "#/helpers/Linking";
 import { isDarkMode } from "#/helpers/utils/color";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { isHttpsUrl } from "#/helpers/utils/networking";
@@ -151,24 +152,6 @@ const hostMatches = (hostname: string, base: string): boolean => {
 
 const hostMatchesAny = (hostname: string, bases: string[]): boolean =>
   bases.some((base) => hostMatches(hostname, base));
-
-/**
- * `Linking.parse` throws for values it can't treat as a URL — including an
- * empty string, not just malformed input. `htmlAttribs` from
- * @native-html/iframe-plugin is typed as `Record<string, string>`, but a
- * `<iframe>` with no `src` attribute at all genuinely yields `undefined` at
- * runtime despite that type. Wrapping here means a missing/empty/malformed
- * src falls through to the "no hostname" error-card path below instead of
- * crashing the renderer.
- */
-const safeParseHostname = (url: string | undefined): string => {
-  if (!url) return "";
-  try {
-    return Linking.parse(url).hostname ?? "";
-  } catch {
-    return "";
-  }
-};
 
 const YOUTUBE_HOSTS = ["youtube.com", "youtube-nocookie.com", "youtu.be"];
 const VIMEO_HOSTS = ["vimeo.com"];
