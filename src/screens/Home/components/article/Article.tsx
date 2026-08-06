@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import type { RefObject } from "react";
 import { useEffect, useRef } from "react";
 import type {
+  GestureResponderEvent,
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -155,6 +156,23 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     });
   };
 
+  // Extracted (rather than inlined in Body's JSX props below) purely so the
+  // React Compiler can memoize them by reference — it can't do that for a
+  // function literal written directly as a JSX prop. Stable identity here
+  // matters: Body's `renderers` prop is rebuilt from these on every render,
+  // and react-native-render-html can remount custom-rendered elements (like
+  // the WebView inside an embedded iframe) when that prop's identity
+  // changes — visible as a reload/black-frame flash on an embedded video.
+  const handleAnchorPress = (id: string) => {
+    // A tapped in-article anchor supersedes a deep-link anchor; otherwise
+    // the next content resize would snap back to it.
+    pendingAnchor.current = undefined;
+    scrollToAnchor(id);
+  };
+
+  const handleLinkPress = (_event: GestureResponderEvent, href: HttpsUrl) =>
+    onLinkPress(href, router, article_link);
+
   /**
    * Called once when the article layout is rendered.
    * Captures the content height and restores the scroll position saved in storage.
@@ -265,15 +283,8 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
               maxWidth={maxWidth}
               width={width}
               headerRefs={headerReferences}
-              onAnchorPress={(id) => {
-                // A tapped in-article anchor supersedes a deep-link anchor;
-                // otherwise the next content resize would snap back to it.
-                pendingAnchor.current = undefined;
-                scrollToAnchor(id);
-              }}
-              onLinkPress={(event, href: HttpsUrl) =>
-                onLinkPress(href, router, article_link)
-              }
+              onAnchorPress={handleAnchorPress}
+              onLinkPress={handleLinkPress}
             />
             <Recommended article_link={article_link}></Recommended>
             <Footer
