@@ -48,7 +48,12 @@ const INJECT_AFTER = `
     }
   };
 
-  if (/(^|\\.)dwcdn\\.net$/.test(window.location.hostname)) {
+  if (/(^|\\.)(youtube\\.com|youtube-nocookie\\.com|youtu\\.be|vimeo\\.com)$/i.test(window.location.hostname)) {
+    // Video embeds are sized directly from the article width on the RN side
+    // (fixed 16:9, see isVideoEmbedHost) and RN ignores any postMessage
+    // height for them, so skip the measurement/observer setup entirely
+    // instead of doing pointless work on every DOM mutation.
+  } else if (/(^|\\.)dwcdn\\.net$/i.test(window.location.hostname)) {
     // Datawrapper posts its own authoritative height via postMessage
     // whenever its chart layout actually changes (see its vendor bundle:
     // window.parent.postMessage({"datawrapper-height": {[chartId]: height}}, "*")).
@@ -132,10 +137,17 @@ const extractSlug = (source: string): string => {
  * prepareWebViewSource below) also matches unrelated hosts that merely
  * contain `base` as a substring, e.g. "notyoutube.com".includes("youtube.com")
  * is true — which would wrongly force 16:9 video sizing (or Datawrapper's
- * autoplay/dark-mode query params) onto an unrelated embed.
+ * autoplay/dark-mode query params) onto an unrelated embed. Hostnames are
+ * case-insensitive, so both sides are lowercased before comparing.
  */
-const hostMatches = (hostname: string, base: string): boolean =>
-  hostname === base || hostname.endsWith(`.${base}`);
+const hostMatches = (hostname: string, base: string): boolean => {
+  const normalizedHost = hostname.toLowerCase();
+  const normalizedBase = base.toLowerCase();
+  return (
+    normalizedHost === normalizedBase ||
+    normalizedHost.endsWith(`.${normalizedBase}`)
+  );
+};
 
 const hostMatchesAny = (hostname: string, bases: string[]): boolean =>
   bases.some((base) => hostMatches(hostname, base));
