@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.20.36": {
+  "@atproto/api@0.20.37": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -272,7 +272,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
   },
-  "react-native-reanimated-carousel@5.0.0": {
+  "react-native-reanimated-carousel@5.1.0": {
     licenses: "MIT",
     repository: "https://github.com/dohooo/react-native-reanimated-carousel",
     licenseUrl:

@@ -1,7 +1,7 @@
 import { useHtmlIframeProps } from "@native-html/iframe-plugin";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
-import { View } from "react-native";
+import { Dimensions, View } from "react-native";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
 import { WebView } from "react-native-webview";
 import type {
@@ -16,6 +16,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { safeParseHostname } from "#/helpers/Linking";
 import { isDarkMode } from "#/helpers/utils/color";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { isHttpsUrl } from "#/helpers/utils/networking";
@@ -33,30 +34,82 @@ export interface IframeRendererProperties {
 // Injected JS constants for WebView
 const INJECT_BEFORE = `
   document.querySelectorAll("video").forEach(video => video.removeAttribute("autoplay"));
+  // The default UA stylesheet gives body an 8px margin, which inflates
+  // scrollHeight beyond the actual content. Left in place, that inflated
+  // height gets reported to RN, which resizes the WebView, which resizes
+  // this document, which reports an inflated height again — an unbounded
+  // growth loop (visible as an embed that keeps growing while in view).
+  if (document.documentElement) document.documentElement.style.height = "auto";
+  if (document.body) { document.body.style.margin = "0"; document.body.style.height = "auto"; }
 `;
 const INJECT_AFTER = `
-  const postHeight = () => {
-    const bodyHeight = document.body ? document.body.scrollHeight : 0;
-    const docHeight = document.documentElement ? document.documentElement.scrollHeight : 0;
-    window.ReactNativeWebView.postMessage(String(Math.max(bodyHeight, docHeight)));
+  const postHeight = (height) => {
+    if (typeof height === "number" && height > 0) {
+      window.ReactNativeWebView.postMessage(String(Math.round(height)));
+    }
   };
-  postHeight();
-  window.addEventListener("load", postHeight);
-  window.addEventListener("resize", postHeight);
-  if (window.MutationObserver) {
-    const setupObserver = () => {
-      if (!document.body) {
-        return;
-      }
-      const observer = new MutationObserver(postHeight);
-      observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+
+  if (/(^|\\.)(youtube\\.com|youtube-nocookie\\.com|youtu\\.be|vimeo\\.com)$/i.test(window.location.hostname)) {
+    // Video embeds are sized directly from the article width on the RN side
+    // (fixed 16:9, see isVideoEmbedHost) and RN ignores any postMessage
+    // height for them, so skip the measurement/observer setup entirely
+    // instead of doing pointless work on every DOM mutation.
+  } else if (/(^|\\.)dwcdn\\.net$/i.test(window.location.hostname)) {
+    // Datawrapper posts its own authoritative height via postMessage
+    // whenever its chart layout actually changes (see its vendor bundle:
+    // window.parent.postMessage({"datawrapper-height": {[chartId]: height}}, "*")).
+    // Since this WebView has no real parent frame, window.parent === window,
+    // so a plain "message" listener on this same window catches the self-post.
+    // Relaying that value straight through is both more accurate than
+    // guessing from scrollHeight and structurally immune to the resize
+    // feedback loop below, since Datawrapper only sends it in response to
+    // genuine content changes, never in response to us resizing the WebView.
+    window.addEventListener("message", (event) => {
+      const heights = event && event.data && event.data["datawrapper-height"];
+      if (!heights) return;
+      const values = Object.values(heights);
+      if (values.length) postHeight(Number(values[0]));
+    });
+  } else {
+    const measure = () => {
+      const bodyHeight = document.body ? document.body.scrollHeight : 0;
+      const docHeight = document.documentElement ? document.documentElement.scrollHeight : 0;
+      postHeight(Math.max(bodyHeight, docHeight));
     };
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", setupObserver);
-    } else {
-      setupObserver();
+    let debounceTimer = null;
+    const scheduleMeasure = () => {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(measure, 50);
+    };
+    measure();
+    window.addEventListener("load", scheduleMeasure);
+    // Deliberately not listening for window "resize" here: resizing the
+    // WebView's native view (which is exactly what happens every time we
+    // report a new height to RN) fires this event inside the document too,
+    // so a resize listener re-measures on the very change it caused — a
+    // feedback loop. ResizeObserver on the body's own content box sidesteps
+    // this: it fires on genuine content-driven size changes (e.g. a player
+    // injecting elements after load), not on us changing the WebView's
+    // height, since that alone doesn't alter the body's content box.
+    if (window.ResizeObserver && document.body) {
+      new ResizeObserver(scheduleMeasure).observe(document.body);
+    } else if (window.MutationObserver) {
+      const setupObserver = () => {
+        if (!document.body) return;
+        new MutationObserver(scheduleMeasure).observe(document.body, {
+          attributes: true,
+          childList: true,
+          subtree: true,
+        });
+      };
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setupObserver);
+      } else {
+        setupObserver();
+      }
     }
   }
+
   if (document.head) {
     const meta = document.createElement('meta');
     meta.name = 'viewport';
@@ -79,6 +132,41 @@ const extractSlug = (source: string): string => {
   }
 };
 
+/**
+ * True when `hostname` is `base` itself or a subdomain of it. Plain
+ * `hostname.includes(base)` (the previous check here and in
+ * prepareWebViewSource below) also matches unrelated hosts that merely
+ * contain `base` as a substring, e.g. "notyoutube.com".includes("youtube.com")
+ * is true — which would wrongly force 16:9 video sizing (or Datawrapper's
+ * autoplay/dark-mode query params) onto an unrelated embed. Hostnames are
+ * case-insensitive, so both sides are lowercased before comparing.
+ */
+const hostMatches = (hostname: string, base: string): boolean => {
+  const normalizedHost = hostname.toLowerCase();
+  const normalizedBase = base.toLowerCase();
+  return (
+    normalizedHost === normalizedBase ||
+    normalizedHost.endsWith(`.${normalizedBase}`)
+  );
+};
+
+const hostMatchesAny = (hostname: string, bases: string[]): boolean =>
+  bases.some((base) => hostMatches(hostname, base));
+
+const YOUTUBE_HOSTS = ["youtube.com", "youtube-nocookie.com", "youtu.be"];
+const VIMEO_HOSTS = ["vimeo.com"];
+
+/**
+ * True when `hostname` is a video-embed provider with a fixed 16:9 aspect
+ * ratio. Used to size the embed from the article width instead of trusting
+ * the WebView's self-reported content height, which for a video player is
+ * fragile (see the height-measurement feedback-loop notes above) and not
+ * actually meaningful — a video's height should track its width, not its
+ * (often WebView-viewport-dependent) DOM content height.
+ */
+const isVideoEmbedHost = (hostname: string): boolean =>
+  hostMatchesAny(hostname, [...YOUTUBE_HOSTS, ...VIMEO_HOSTS]);
+
 interface WebViewRequest {
   url?: string;
   isTopFrame?: boolean;
@@ -99,24 +187,21 @@ interface WebViewRequest {
  * `headers` to be passed to the WebView `source` prop.
  */
 const prepareWebViewSource = (
-  url: string,
+  url: string | undefined,
   colorScheme: AppColorScheme,
 ): { uri: string; headers?: { Referer: string } } | null => {
-  // Linking.parse is tolerant, but it doesn't give us a URL object we can mutate.
-  // We'll use it to detect the host, then rebuild the URL with the standard URL API.
-  const parsed = Linking.parse(url);
-
-  const hostname = parsed.hostname ?? "";
-  if (!hostname) {
+  // safeParseHostname tolerates a missing/empty/unparseable url; we still
+  // detect the host via Linking.parse, then rebuild the URL with the
+  // standard URL API below since Linking.parse doesn't give us a mutable
+  // URL object.
+  const hostname = safeParseHostname(url);
+  if (!hostname || !url) {
     return null;
   }
 
-  const isYouTube =
-    hostname.includes("youtube.com") ||
-    hostname.includes("youtube-nocookie.com") ||
-    hostname.includes("youtu.be");
+  const isYouTube = hostMatchesAny(hostname, YOUTUBE_HOSTS);
 
-  const isDatawrapper = hostname.includes("datawrapper.dwcdn.net");
+  const isDatawrapper = hostMatches(hostname, "datawrapper.dwcdn.net");
 
   if (!isYouTube && !isDatawrapper) return { uri: url };
 
@@ -187,14 +272,39 @@ const IframeRenderer = ({
   const colorScheme = useAppColorScheme();
   const [webViewHeight, setWebViewHeight] = useState(fallbackHeight);
   const { htmlAttribs } = useHtmlIframeProps(renderProps);
-  const source = htmlAttribs.src;
+  // htmlAttribs is typed as Record<string, string>, but a malformed
+  // <iframe> with no src attribute genuinely yields undefined at runtime.
+  const source = htmlAttribs.src as string | undefined;
   const webViewSource = prepareWebViewSource(source, colorScheme);
+  const isVideo = isVideoEmbedHost(safeParseHostname(source));
+  // Video players get a fixed 16:9 height derived from the WebView's actual
+  // rendered width instead of the WebView's self-reported content height.
+  // The WebView's own style caps its width at maxWidth + 40 (see below), so
+  // on wide screens where width exceeds that cap, deriving the height from
+  // the uncapped `width` would make the video too tall for its actual
+  // (capped) rendered width.
+  const renderedWidth = Math.min(width, maxWidth + 40);
+  const videoHeight = Math.round(renderedWidth * (9 / 16));
 
-  const onMessage = useCallback((event: WebViewMessageEvent) => {
-    const parsedHeight = Number.parseInt(event.nativeEvent.data, 10);
-    if (Number.isNaN(parsedHeight) || parsedHeight <= 0) return;
-    setWebViewHeight(parsedHeight);
-  }, []);
+  const onMessage = useCallback(
+    (event: WebViewMessageEvent) => {
+      if (isVideo) return;
+      const parsedHeight = Number.parseInt(event.nativeEvent.data, 10);
+      if (Number.isNaN(parsedHeight) || parsedHeight <= 0) return;
+      // Safety net against any remaining resize/measure feedback loop (see
+      // the injected JS comments above), not a bound on legitimate content:
+      // this WebView renders with scrollEnabled={false}, so anything beyond
+      // the cap becomes permanently inaccessible rather than just requiring
+      // a scroll. A genuinely tall embed (e.g. a detailed Datawrapper map)
+      // can reasonably exceed one screen's height, so the cap is several
+      // screens tall — generous enough for real content, while still
+      // bounding runaway growth, which historically reached far more than
+      // that within a few iterations.
+      const maxHeight = Dimensions.get("window").height * 4;
+      setWebViewHeight(Math.min(parsedHeight, maxHeight));
+    },
+    [isVideo],
+  );
 
   if (!webViewSource)
     return (
@@ -257,7 +367,7 @@ const IframeRenderer = ({
         style={{
           width,
           maxWidth: maxWidth + 40,
-          height: webViewHeight,
+          height: isVideo ? videoHeight : webViewHeight,
           backgroundColor: "transparent",
         }}
         nestedScrollEnabled={false}

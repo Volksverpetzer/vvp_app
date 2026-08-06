@@ -10,11 +10,33 @@ import type { HttpsUrl } from "#/types";
 
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 
+/**
+ * Linking.parse throws for empty/unparseable input (confirmed against the
+ * real expo-linking implementation, not just a test mock) rather than
+ * returning a tolerant fallback. Callers include WebView event handlers
+ * (e.g. EdgelessWebview's onHttpError, fired for every failed request
+ * including sub-resources, or IframeRenderer's video-host detection) where
+ * an unexpected url value shouldn't be able to crash the screen.
+ */
+const safeParse = (
+  url: string | undefined,
+): ReturnType<typeof Linking.parse> | null => {
+  if (!url) return null;
+  try {
+    return Linking.parse(url);
+  } catch {
+    return null;
+  }
+};
+
 const parsePath = (url: string): string => {
-  const path = (Linking.parse(url).path ?? "").replace(/^\/+/, "");
+  const path = (safeParse(url)?.path ?? "").replace(/^\/+/, "");
   if (!path) return "";
   return path.endsWith("/") ? path : `${path}/`;
 };
+
+const safeParseHostname = (url: string | undefined): string =>
+  safeParse(url)?.hostname ?? "";
 
 /**
  * Handles in-app navigation for links. Internal links (same hostname)
@@ -139,4 +161,5 @@ export {
   openExternalDownload,
   outBoundLinkPress,
   parsePath,
+  safeParseHostname,
 };
