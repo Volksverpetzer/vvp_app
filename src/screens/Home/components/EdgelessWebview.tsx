@@ -1,9 +1,12 @@
 import { useRouter } from "expo-router";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
-import type { WebViewErrorEvent } from "react-native-webview/lib/WebViewTypes";
+import type {
+  WebViewErrorEvent,
+  WebViewHttpErrorEvent,
+} from "react-native-webview/lib/WebViewTypes";
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
@@ -127,10 +130,25 @@ const EdgelessWebview = ({
   // location.reload() again — an infinite reload loop (visible as repeated
   // FOUC/font flicker) on pages like /project/stell-dir-vor/.
   const hasInjectedCookies = useRef(false);
+  // Whether WordPress a given path 404s or redirects on its slashless form
+  // is inconsistent site-wide: some pages hard-404 without a trailing slash
+  // and redirect fine with one (e.g. /stellenausschreibung-redaktion/), while
+  // some Redirection-plugin shortlinks are exact-path matches that redirect
+  // correctly without a slash but 404 when one is appended (e.g. /ltw-lsa).
+  // Callers can't know in advance which case a given URL is, so rather than
+  // guessing, retry once with the trailing slash toggled if the very first
+  // request 404s.
+  const hasRetriedSlash = useRef(false);
+  const [effectiveUri, setEffectiveUri] = useState(uri);
+  useEffect(() => {
+    setEffectiveUri(uri);
+    hasInjectedCookies.current = false;
+    hasRetriedSlash.current = false;
+  }, [uri]);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
-  const navLink = isHttpsUrl(uri) ? uri : undefined;
+  const navLink = isHttpsUrl(effectiveUri) ? effectiveUri : undefined;
   // Function to convert cookies to cookie string
   const getCookieString = useCallback((cookie: Cookie) => {
     const parts = [
@@ -159,7 +177,7 @@ const EdgelessWebview = ({
       <WebView
         ref={webViewReference}
         source={{
-          uri,
+          uri: effectiveUri,
           headers: {
             // Set cookies in the headers
             Cookie: cookies
@@ -174,7 +192,7 @@ const EdgelessWebview = ({
         onLoadStart={(syntheticEvent) => {
           // Set cookies once, on the first load only (see hasInjectedCookies).
           const { nativeEvent } = syntheticEvent;
-          if (nativeEvent.url === uri && !hasInjectedCookies.current) {
+          if (nativeEvent.url === effectiveUri && !hasInjectedCookies.current) {
             hasInjectedCookies.current = true;
             for (const cookie of cookies) {
               const cookieString = getCookieString(cookie);
@@ -187,6 +205,25 @@ const EdgelessWebview = ({
         }}
         onLoadEnd={onLoadEnd}
         onError={onError}
+        onHttpError={(syntheticEvent: WebViewHttpErrorEvent) => {
+          // See hasRetriedSlash above. onHttpError also fires for failed
+          // sub-resources (images, scripts, …), not just the top document,
+          // so only react when the failing URL's path matches the page
+          // we're actually trying to load.
+          const { nativeEvent } = syntheticEvent;
+          if (
+            nativeEvent.statusCode === 404 &&
+            !hasRetriedSlash.current &&
+            parsePath(nativeEvent.url) === parsePath(effectiveUri)
+          ) {
+            hasRetriedSlash.current = true;
+            setEffectiveUri(
+              effectiveUri.endsWith("/")
+                ? effectiveUri.replace(/\/+$/, "")
+                : `${effectiveUri}/`,
+            );
+          }
+        }}
         onShouldStartLoadWithRequest={({ url, isTopFrame }) => {
           // Allow the first load of the provided URI. parsePath normalizes
           // leading/trailing slashes so a WordPress canonical redirect that
@@ -196,11 +233,11 @@ const EdgelessWebview = ({
             !isHttpsUrl(url) ||
             !isTopFrame ||
             !url ||
-            parsePath(url) === parsePath(uri)
+            parsePath(url) === parsePath(effectiveUri)
           )
             return true;
           // Route natively instead
-          onLinkPress(url, router, uri);
+          onLinkPress(url, router, effectiveUri);
           return false;
         }}
         allowsBackForwardNavigationGestures={true}
