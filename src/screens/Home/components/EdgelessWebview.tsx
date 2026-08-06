@@ -150,7 +150,7 @@ const EdgelessWebview = ({
   // location.reload() again — an infinite reload loop (visible as repeated
   // FOUC/font flicker) on pages like /project/stell-dir-vor/.
   const hasInjectedCookies = useRef(false);
-  // Whether WordPress a given path 404s or redirects on its slashless form
+  // Whether a given WordPress path 404s or redirects on its slashless form
   // is inconsistent site-wide: some pages hard-404 without a trailing slash
   // and redirect fine with one (e.g. /stellenausschreibung-redaktion/), while
   // some Redirection-plugin shortlinks are exact-path matches that redirect
