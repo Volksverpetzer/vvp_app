@@ -307,6 +307,18 @@ describe("Linking helpers", () => {
       parseSpy.mockReturnValue({ path: null });
       expect(parsePath("https://www.volksverpetzer.de")).toBe("");
     });
+
+    it("returns empty string instead of throwing for unparseable input", () => {
+      // Regression: the real expo-linking Linking.parse throws for
+      // empty/malformed input rather than returning a tolerant fallback.
+      // Callers include WebView event handlers (e.g. EdgelessWebview's
+      // onHttpError, which fires for every failed request including
+      // sub-resources) where an unexpected url shouldn't crash the screen.
+      parseSpy.mockImplementation(() => {
+        throw new Error("Invalid URL: cannot be empty");
+      });
+      expect(parsePath("")).toBe("");
+    });
   });
 
   describe("outBoundLinkPress", () => {

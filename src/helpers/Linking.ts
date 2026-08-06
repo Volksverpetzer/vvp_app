@@ -11,7 +11,18 @@ import type { HttpsUrl } from "#/types";
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 
 const parsePath = (url: string): string => {
-  const path = (Linking.parse(url).path ?? "").replace(/^\/+/, "");
+  // Linking.parse throws for empty/unparseable input (confirmed against the
+  // real expo-linking implementation, not just a test mock) rather than
+  // returning a tolerant fallback. Callers include WebView event handlers
+  // (e.g. EdgelessWebview's onHttpError, fired for every failed request
+  // including sub-resources) where an unexpected url value shouldn't be
+  // able to crash the screen.
+  let path: string;
+  try {
+    path = (Linking.parse(url).path ?? "").replace(/^\/+/, "");
+  } catch {
+    return "";
+  }
   if (!path) return "";
   return path.endsWith("/") ? path : `${path}/`;
 };
