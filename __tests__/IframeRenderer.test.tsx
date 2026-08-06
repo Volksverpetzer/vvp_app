@@ -667,6 +667,37 @@ describe("IframeRenderer prepareWebViewSource", () => {
 
       parseSpy.mockRestore();
     });
+
+    it("should render ErrorCard instead of crashing when src is missing and Linking.parse throws", async () => {
+      const onLinkPress = jest.fn();
+      const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+      // htmlAttribs is typed as Record<string, string>, but a malformed
+      // <iframe> with no src attribute at all genuinely yields undefined at
+      // runtime. The real expo-linking Linking.parse throws for such
+      // "cannot be empty"/unparseable input rather than returning a tolerant
+      // fallback (unlike this test file's own mock), so simulate that here.
+      const parseSpy = jest.spyOn(Linking, "parse").mockImplementation(() => {
+        throw new Error("Invalid URL: cannot be empty");
+      });
+
+      mockUseHtmlIframeProps.mockReturnValue({
+        htmlAttribs: {} as { src: string },
+      });
+
+      const { getByText } = await render(
+        <IframeRenderer
+          renderProps={renderProps}
+          width={360}
+          maxWidth={700}
+          onLinkPress={onLinkPress}
+        />,
+      );
+
+      expect(getByText("Error rendering iframe")).toBeTruthy();
+
+      parseSpy.mockRestore();
+    });
   });
 
   describe("URL constructor failure handling", () => {

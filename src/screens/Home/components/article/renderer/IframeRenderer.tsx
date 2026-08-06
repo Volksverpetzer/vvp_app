@@ -152,6 +152,24 @@ const hostMatches = (hostname: string, base: string): boolean => {
 const hostMatchesAny = (hostname: string, bases: string[]): boolean =>
   bases.some((base) => hostMatches(hostname, base));
 
+/**
+ * `Linking.parse` throws for values it can't treat as a URL — including an
+ * empty string, not just malformed input. `htmlAttribs` from
+ * @native-html/iframe-plugin is typed as `Record<string, string>`, but a
+ * `<iframe>` with no `src` attribute at all genuinely yields `undefined` at
+ * runtime despite that type. Wrapping here means a missing/empty/malformed
+ * src falls through to the "no hostname" error-card path below instead of
+ * crashing the renderer.
+ */
+const safeParseHostname = (url: string | undefined): string => {
+  if (!url) return "";
+  try {
+    return Linking.parse(url).hostname ?? "";
+  } catch {
+    return "";
+  }
+};
+
 const YOUTUBE_HOSTS = ["youtube.com", "youtube-nocookie.com", "youtu.be"];
 const VIMEO_HOSTS = ["vimeo.com"];
 
@@ -186,15 +204,15 @@ interface WebViewRequest {
  * `headers` to be passed to the WebView `source` prop.
  */
 const prepareWebViewSource = (
-  url: string,
+  url: string | undefined,
   colorScheme: AppColorScheme,
 ): { uri: string; headers?: { Referer: string } } | null => {
-  // Linking.parse is tolerant, but it doesn't give us a URL object we can mutate.
-  // We'll use it to detect the host, then rebuild the URL with the standard URL API.
-  const parsed = Linking.parse(url);
-
-  const hostname = parsed.hostname ?? "";
-  if (!hostname) {
+  // safeParseHostname tolerates a missing/empty/unparseable url; we still
+  // detect the host via Linking.parse, then rebuild the URL with the
+  // standard URL API below since Linking.parse doesn't give us a mutable
+  // URL object.
+  const hostname = safeParseHostname(url);
+  if (!hostname || !url) {
     return null;
   }
 
@@ -271,9 +289,11 @@ const IframeRenderer = ({
   const colorScheme = useAppColorScheme();
   const [webViewHeight, setWebViewHeight] = useState(fallbackHeight);
   const { htmlAttribs } = useHtmlIframeProps(renderProps);
-  const source = htmlAttribs.src;
+  // htmlAttribs is typed as Record<string, string>, but a malformed
+  // <iframe> with no src attribute genuinely yields undefined at runtime.
+  const source = htmlAttribs.src as string | undefined;
   const webViewSource = prepareWebViewSource(source, colorScheme);
-  const isVideo = isVideoEmbedHost(Linking.parse(source).hostname ?? "");
+  const isVideo = isVideoEmbedHost(safeParseHostname(source));
   // Video players get a fixed 16:9 height derived from the article width
   // instead of the WebView's self-reported content height.
   const videoHeight = Math.round(width * (9 / 16));
