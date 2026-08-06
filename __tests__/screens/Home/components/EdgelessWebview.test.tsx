@@ -164,4 +164,30 @@ describe("EdgelessWebview 404 slash retry", () => {
       "https://volksverpetzer.de/another-shortlink",
     );
   });
+
+  it("toggles the slash on the pathname only, preserving a URL fragment", async () => {
+    // Regression: anchored deep links (e.g. /project/10fakten/#quellen, built
+    // in [category]/[slug].tsx) must not have "/" appended after the
+    // fragment — that would produce an invalid "#quellen/" URL that never
+    // matches the intended path.
+    const uri = "https://volksverpetzer.de/project/10fakten/#quellen";
+    await render(<EdgelessWebview uri={uri} />);
+
+    await fireHttpError(uri, 404);
+
+    expect(mockLastWebViewProps.source.uri).toBe(
+      "https://volksverpetzer.de/project/10fakten#quellen",
+    );
+  });
+
+  it("toggles the slash on the pathname only, preserving a query string", async () => {
+    const uri = "https://volksverpetzer.de/ltw-lsa?utm_source=app_share";
+    await render(<EdgelessWebview uri={uri} />);
+
+    await fireHttpError(uri, 404);
+
+    expect(mockLastWebViewProps.source.uri).toBe(
+      "https://volksverpetzer.de/ltw-lsa/?utm_source=app_share",
+    );
+  });
 });

@@ -14,6 +14,26 @@ import { onLinkPress, parsePath } from "#/helpers/Linking";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
+/**
+ * Toggles the trailing slash on `url`'s pathname only, preserving any query
+ * string or fragment. Deep links can carry a fragment (e.g. the anchored
+ * /project/10fakten/#quellen form built in [category]/[slug].tsx), and
+ * naively appending/stripping "/" on the full URL string would corrupt it
+ * (e.g. produce "…#quellen/" instead of "…/#quellen"). Falls back to the
+ * unmodified url if it isn't a parseable absolute URL.
+ */
+const toggleTrailingSlash = (url: string): string => {
+  try {
+    const parsed = new URL(url);
+    parsed.pathname = parsed.pathname.endsWith("/")
+      ? parsed.pathname.replace(/\/+$/, "")
+      : `${parsed.pathname}/`;
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+};
+
 interface Cookie {
   name: string;
   value: string;
@@ -217,11 +237,7 @@ const EdgelessWebview = ({
             parsePath(nativeEvent.url) === parsePath(effectiveUri)
           ) {
             hasRetriedSlash.current = true;
-            setEffectiveUri(
-              effectiveUri.endsWith("/")
-                ? effectiveUri.replace(/\/+$/, "")
-                : `${effectiveUri}/`,
-            );
+            setEffectiveUri(toggleTrailingSlash(effectiveUri));
           }
         }}
         onShouldStartLoadWithRequest={({ url, isTopFrame }) => {

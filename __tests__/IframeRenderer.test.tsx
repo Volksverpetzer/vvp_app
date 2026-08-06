@@ -824,6 +824,29 @@ describe("IframeRenderer video embed sizing", () => {
     expect(getHeight(mockLastWebViewProps)).toBe(Math.round(400 * (9 / 16)));
   });
 
+  it("derives the 16:9 height from the capped rendered width, not the raw width, on wide screens", async () => {
+    // Regression: the WebView's own style caps its width at maxWidth + 40.
+    // On a wide screen where width exceeds that cap, the height must be
+    // derived from the capped width the WebView actually renders at, or the
+    // video ends up taller than a correct 16:9 box for its real width.
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://www.youtube.com/embed/abc123" },
+    });
+
+    await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={1200}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    expect(getHeight(mockLastWebViewProps)).toBe(Math.round(740 * (9 / 16)));
+  });
+
   it("does not treat a lookalike hostname as a video embed", async () => {
     const onLinkPress = jest.fn();
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;

@@ -294,9 +294,14 @@ const IframeRenderer = ({
   const source = htmlAttribs.src as string | undefined;
   const webViewSource = prepareWebViewSource(source, colorScheme);
   const isVideo = isVideoEmbedHost(safeParseHostname(source));
-  // Video players get a fixed 16:9 height derived from the article width
-  // instead of the WebView's self-reported content height.
-  const videoHeight = Math.round(width * (9 / 16));
+  // Video players get a fixed 16:9 height derived from the WebView's actual
+  // rendered width instead of the WebView's self-reported content height.
+  // The WebView's own style caps its width at maxWidth + 40 (see below), so
+  // on wide screens where width exceeds that cap, deriving the height from
+  // the uncapped `width` would make the video too tall for its actual
+  // (capped) rendered width.
+  const renderedWidth = Math.min(width, maxWidth + 40);
+  const videoHeight = Math.round(renderedWidth * (9 / 16));
 
   const onMessage = useCallback(
     (event: WebViewMessageEvent) => {
