@@ -25,9 +25,9 @@ export interface AnnouncementEntry {
  */
 const Announcements: AnnouncementEntry[] = [
   {
-    id: "pruefpunkt-feed-2026-07",
+    id: "podcast-pruefpunkt-2026-08",
     message:
-      "**Neu**: Unsere Wissenschafts-Plattform Prüfpunkt ist jetzt auch in der App!\nWas du in deinem Feed siehst, kannst du selbst bestimmen:",
+      "**Neu**: Der Volksverpetzer-Podcast ist jetzt in deinem Feed – und unsere Wissenschafts-Plattform Prüfpunkt ist ebenfalls mit dabei!\nWas du in deinem Feed siehst, kannst du selbst bestimmen:",
     actionLabel: "Feed-Einstellungen",
     route: "/settings",
   },

@@ -1,6 +1,0 @@
-- New: The Volksverpetzer podcast is now in your feed – listen to episodes right in the app and pick up where you left off
-- New: Open, share and favourite podcast episodes
-- Playback now continues while you keep browsing the app
-- Article images now span the full width
-- The share counter counts correctly again
-- Bug fixes and performance improvements

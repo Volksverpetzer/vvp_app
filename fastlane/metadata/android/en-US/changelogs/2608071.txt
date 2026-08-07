@@ -1,0 +1,2 @@
+- New: The Volksverpetzer podcast is now in your feed – listen to episodes right in the app and pick up where you left off, share episodes and add them to your favourites
+- Performance improvements and bug fixes
