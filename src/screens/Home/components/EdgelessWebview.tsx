@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
@@ -13,6 +13,11 @@ import Colors from "#/constants/Colors";
 import { onLinkPress, parsePath } from "#/helpers/Linking";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+
+// Static — hoisted so it isn't a fresh array (and thus a changed prop) on
+// every render. Unlike `source`, this specific prop doesn't itself trigger
+// a reload, but it's the same footgun so it's fixed alongside it.
+const ORIGIN_WHITELIST = ["*"];
 
 /**
  * Toggles the trailing slash on `url`'s pathname only, preserving any query
@@ -95,6 +100,16 @@ const EdgelessWebview = ({
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
   const navLink = isHttpsUrl(effectiveUri) ? effectiveUri : undefined;
+  // react-native-webview treats a new `source` object as a signal to
+  // reload, even when its `uri` value is unchanged — an inline object
+  // literal here would recreate `source` (and reload the page) on every
+  // re-render of this component for any reason at all (a theme change, a
+  // parent re-render, anything), independent of the actual URI. On pages
+  // where the site's own script crashes and reloads on its own (see
+  // toggleTrailingSlash/hasRetriedSlash above for one such case), every one
+  // of those unrelated re-renders was its own extra, unnecessary reload —
+  // compounding rather than recovering from the underlying page issue.
+  const source = useMemo(() => ({ uri: effectiveUri }), [effectiveUri]);
 
   return (
     <View
@@ -107,7 +122,7 @@ const EdgelessWebview = ({
     >
       <WebView
         ref={webViewReference}
-        source={{ uri: effectiveUri }}
+        source={source}
         style={[styles.webview, { backgroundColor }]}
         onLoadStart={onLoadStart}
         onLoadEnd={onLoadEnd}
@@ -149,7 +164,7 @@ const EdgelessWebview = ({
         domStorageEnabled={true}
         sharedCookiesEnabled={true}
         decelerationRate={0.998} // Normal scroll deceleration rate
-        originWhitelist={["*"]}
+        originWhitelist={ORIGIN_WHITELIST}
         allowsInlineMediaPlayback={true}
         mediaPlaybackRequiresUserAction={Platform.OS !== "android"}
         allowsFullscreenVideo={true}
