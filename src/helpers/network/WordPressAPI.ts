@@ -1,7 +1,11 @@
 import { decode } from "html-entities";
 
 import Config from "#/constants/Config";
-import { createClient, get as netGet } from "#/helpers/utils/networking";
+import {
+  CACHE_BUSTER_HEADERS,
+  createClient,
+  get as netGet,
+} from "#/helpers/utils/networking";
 import type {
   ArticleProperties,
   HttpsUrl,
@@ -37,11 +41,7 @@ export default class WordPressAPI {
           _: timestamp, // Cache-busting parameter
           _embed: "author",
         },
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
-        },
+        headers: CACHE_BUSTER_HEADERS,
         signal,
       },
     );
@@ -182,11 +182,7 @@ export default class WordPressAPI {
               _: Date.now(),
               _embed: "author",
             },
-            headers: {
-              "Cache-Control": "no-cache, no-store, must-revalidate",
-              Pragma: "no-cache",
-              Expires: "0",
-            },
+            headers: CACHE_BUSTER_HEADERS,
             signal,
           },
         );
