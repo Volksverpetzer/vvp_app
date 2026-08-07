@@ -1,6 +1,2 @@
-- Neu: Der Volksverpetzer-Podcast ist jetzt im Feed – Folgen direkt in der App anhören und später an der gehörten Stelle fortsetzen
-- Neu: Podcast-Folgen lassen sich öffnen, teilen und zu den Favoriten hinzufügen
-- Die Wiedergabe läuft jetzt weiter, während du in der App weiterliest
-- Artikelbilder werden jetzt über die volle Breite angezeigt
-- Der Teilen-Zähler zählt wieder korrekt
-- Fehlerbehebungen und Performance-Verbesserungen
+- Neu: Der Volksverpetzer-Podcast ist jetzt im Feed – Folgen direkt in der App anhören und später an der gehörten Stelle fortsetzen, Podcast-Folgen lassen sich teilen und zu den Favoriten hinzufügen
+- Performance-Verbesserungen und Fehlerbehebungen
