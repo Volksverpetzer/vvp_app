@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
@@ -34,17 +34,6 @@ const toggleTrailingSlash = (url: string): string => {
   }
 };
 
-interface Cookie {
-  name: string;
-  value: string;
-  domain: string;
-  path?: string;
-  expires?: string;
-  secure?: boolean;
-  httpOnly?: boolean;
-  sameSite?: "Strict" | "Lax" | "None";
-}
-
 interface EdgelessWebviewProperties {
   /**
    * The URI to load in the WebView
@@ -71,10 +60,6 @@ interface EdgelessWebviewProperties {
    * @default true
    */
   showNavBar?: boolean;
-  /**
-   * Array of cookies to set in the WebView
-   */
-  cookies?: Cookie[];
 }
 
 /**
@@ -89,67 +74,9 @@ const EdgelessWebview = ({
   onError,
   style,
   showNavBar = true,
-  cookies = [
-    {
-      name: "cmplz_banner-status",
-      value: "dismissed",
-      domain: "volksverpetzer.de",
-      path: "/",
-      sameSite: "Lax",
-    },
-    {
-      name: "cmplz_consented_services",
-      value: "",
-      domain: "volksverpetzer.de",
-      path: "/",
-      sameSite: "Lax",
-    },
-    {
-      name: "cmplz_functional",
-      value: "allow",
-      domain: "volksverpetzer.de",
-      path: "/",
-      sameSite: "Lax",
-    },
-    {
-      name: "cmplz_marketing",
-      value: "allow",
-      domain: "volksverpetzer.de",
-      path: "/",
-      sameSite: "Lax",
-    },
-    {
-      name: "cmplz_policy_id",
-      value: "24",
-      domain: "volksverpetzer.de",
-      path: "/",
-      sameSite: "Lax",
-    },
-    {
-      name: "cmplz_preferences",
-      value: "allow",
-      domain: "volksverpetzer.de",
-      path: "/",
-      sameSite: "Lax",
-    },
-    {
-      name: "cmplz_statistics",
-      value: "allow",
-      domain: "volksverpetzer.de",
-      path: "/",
-      sameSite: "Lax",
-    },
-  ],
 }: EdgelessWebviewProperties) => {
   const insets = useSafeAreaInsets();
   const webViewReference = useRef<WebView>(null);
-  // Guards the cookie injection below to a single run per mount. Without
-  // this, re-injecting the same consent cookies on every onLoadStart
-  // (including a page-triggered reload) makes Complianz see a fresh
-  // deny→allow marketing-consent transition on each reload and call its own
-  // location.reload() again — an infinite reload loop (visible as repeated
-  // FOUC/font flicker) on pages like /project/stell-dir-vor/.
-  const hasInjectedCookies = useRef(false);
   // Whether a given WordPress path 404s or redirects on its slashless form
   // is inconsistent site-wide: some pages hard-404 without a trailing slash
   // and redirect fine with one (e.g. /stellenausschreibung-redaktion/), while
@@ -162,28 +89,12 @@ const EdgelessWebview = ({
   const [effectiveUri, setEffectiveUri] = useState(uri);
   useEffect(() => {
     setEffectiveUri(uri);
-    hasInjectedCookies.current = false;
     hasRetriedSlash.current = false;
   }, [uri]);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
   const navLink = isHttpsUrl(effectiveUri) ? effectiveUri : undefined;
-  // Function to convert cookies to cookie string
-  const getCookieString = useCallback((cookie: Cookie) => {
-    const parts = [
-      `${cookie.name}=${encodeURIComponent(cookie.value)}`,
-      `Domain=${cookie.domain}`,
-      `Path=${cookie.path || "/"}`,
-    ];
-
-    if (cookie.expires) parts.push(`Expires=${cookie.expires}`);
-    if (cookie.secure) parts.push("Secure");
-    if (cookie.httpOnly) parts.push("HttpOnly");
-    if (cookie.sameSite) parts.push(`SameSite=${cookie.sameSite}`);
-
-    return parts.join("; ");
-  }, []);
 
   return (
     <View
@@ -196,33 +107,9 @@ const EdgelessWebview = ({
     >
       <WebView
         ref={webViewReference}
-        source={{
-          uri: effectiveUri,
-          headers: {
-            // Set cookies in the headers
-            Cookie: cookies
-              .map(
-                (cookie) =>
-                  `${cookie.name}=${encodeURIComponent(cookie.value)}`,
-              )
-              .join("; "),
-          },
-        }}
+        source={{ uri: effectiveUri }}
         style={[styles.webview, { backgroundColor }]}
-        onLoadStart={(syntheticEvent) => {
-          // Set cookies once, on the first load only (see hasInjectedCookies).
-          const { nativeEvent } = syntheticEvent;
-          if (nativeEvent.url === effectiveUri && !hasInjectedCookies.current) {
-            hasInjectedCookies.current = true;
-            for (const cookie of cookies) {
-              const cookieString = getCookieString(cookie);
-              webViewReference.current?.injectJavaScript(
-                `document.cookie = '${cookieString}'; true;`,
-              );
-            }
-          }
-          onLoadStart?.();
-        }}
+        onLoadStart={onLoadStart}
         onLoadEnd={onLoadEnd}
         onError={onError}
         onHttpError={(syntheticEvent: WebViewHttpErrorEvent) => {

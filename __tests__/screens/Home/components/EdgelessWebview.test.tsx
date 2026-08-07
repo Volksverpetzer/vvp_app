@@ -62,6 +62,29 @@ const fireHttpError = async (url: string, statusCode: number) => {
   });
 };
 
+describe("EdgelessWebview cookies", () => {
+  beforeEach(() => {
+    mockLastWebViewProps = null;
+  });
+
+  it("does not send a synthetic Cookie header or inject consent cookies", async () => {
+    // Regression: EdgelessWebview used to send a Cookie header (and inject
+    // matching document.cookie values) claiming the visitor had already
+    // consented to Complianz's cookie categories. That "consent already
+    // granted on the very first request" state is a scenario Complianz's
+    // own banner-restoration code doesn't handle correctly on some pages,
+    // crashing and reloading indefinitely (see EdgelessWebview.tsx history).
+    // No synthetic cookie state at all sidesteps that entirely.
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    expect(mockLastWebViewProps.source).toEqual({
+      uri: "https://volksverpetzer.de/impressum-volksverpetzer/",
+    });
+  });
+});
+
 describe("EdgelessWebview 404 slash retry", () => {
   beforeEach(() => {
     mockLastWebViewProps = null;
