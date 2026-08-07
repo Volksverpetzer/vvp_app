@@ -85,6 +85,27 @@ describe("EdgelessWebview cookies", () => {
   });
 });
 
+describe("EdgelessWebview Complianz blocking", () => {
+  beforeEach(() => {
+    mockLastWebViewProps = null;
+  });
+
+  it("injects a script before content loads that strips the complianz banner script", async () => {
+    // Complianz's own banner-restoration script crashes (an unguarded
+    // cmplz_banner.querySelector(...) call) and self-"recovers" via
+    // location.reload() on some pages, looping forever. The in-app WebView
+    // never shows the banner UI anyway, so the fix is to keep the script
+    // from ever running rather than to work around its crash.
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    expect(mockLastWebViewProps.injectedJavaScriptBeforeContentLoaded).toEqual(
+      expect.stringContaining("complianz-gdpr/cookiebanner/js/complianz"),
+    );
+  });
+});
+
 describe("EdgelessWebview source stability", () => {
   beforeEach(() => {
     mockLastWebViewProps = null;

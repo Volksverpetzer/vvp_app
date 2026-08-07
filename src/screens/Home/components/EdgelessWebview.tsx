@@ -19,6 +19,53 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 // a reload, but it's the same footgun so it's fixed alongside it.
 const ORIGIN_WHITELIST = ["*"];
 
+// The in-app WebView never shows a cookie-consent UI of its own, so
+// Complianz's banner script serves no purpose here — and on some pages its
+// own init code crashes (an unguarded cmplz_banner.querySelector(...) call)
+// when it defaults to "show" the banner for a fresh, cookie-less visitor,
+// which it then "recovers" from via its own location.reload(), forever,
+// since the crash means the reload never establishes any different state
+// either. That crash is confirmed to live entirely inside
+// complianz.min.js's own execution (its sibling inline config/helper
+// scripts on the page don't reference the crashing code path), so removing
+// just that one script tag before it can run avoids the crash without
+// touching anything else WordPress renders on the page. Runs via
+// injectedJavaScriptBeforeContentLoaded (before any of the page's own
+// scripts execute) so it's in place before the deferred complianz.min.js
+// tag — already present in the initial HTML, not inserted later — reaches
+// its execution point at the end of parsing.
+const BLOCK_COMPLIANZ_SCRIPT = `
+  (function () {
+    var isComplianzScript = function (node) {
+      return (
+        node &&
+        node.tagName === "SCRIPT" &&
+        typeof node.src === "string" &&
+        node.src.indexOf("complianz-gdpr/cookiebanner/js/complianz") !== -1
+      );
+    };
+    var removeComplianzScripts = function (root) {
+      if (!root || !root.querySelectorAll) return;
+      var scripts = root.querySelectorAll(
+        'script[src*="complianz-gdpr/cookiebanner/js/complianz"]',
+      );
+      for (var i = 0; i < scripts.length; i++) scripts[i].remove();
+    };
+    removeComplianzScripts(document);
+    if (window.MutationObserver) {
+      new MutationObserver(function (mutations) {
+        for (var i = 0; i < mutations.length; i++) {
+          var added = mutations[i].addedNodes;
+          for (var j = 0; j < added.length; j++) {
+            if (isComplianzScript(added[j])) added[j].remove();
+          }
+        }
+      }).observe(document, { childList: true, subtree: true });
+    }
+  })();
+  true;
+`;
+
 /**
  * Toggles the trailing slash on `url`'s pathname only, preserving any query
  * string or fragment. Deep links can carry a fragment (e.g. the anchored
@@ -158,6 +205,7 @@ const EdgelessWebview = ({
           onLinkPress(url, router, effectiveUri);
           return false;
         }}
+        injectedJavaScriptBeforeContentLoaded={BLOCK_COMPLIANZ_SCRIPT}
         allowsBackForwardNavigationGestures={true}
         startInLoadingState={true}
         javaScriptEnabled={true}
