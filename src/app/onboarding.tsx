@@ -17,6 +17,7 @@ import Config from "#/constants/Config";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
+import { registerEvent } from "#/helpers/network/Analytics";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
@@ -44,6 +45,14 @@ const Onboarding = () => {
 
   const isFoss = Config.isFoss ?? false;
   const hasRequestedNotificationPermission = useRef(false);
+  // Furthest step the user has reached, so "Onboarding Step" fires once per
+  // step on forward progress only — swiping back and forth doesn't re-count.
+  const furthestStepRef = useRef(0);
+
+  useEffect(() => {
+    registerEvent(Config.wpUrl, "Onboarding Started");
+  }, []);
+
   const isOnNotificationStepRef = useRef(false);
   // Monotonic id for settings syncs: a sync only applies its full-object
   // result to state if no newer sync (toggle or permission request) started
@@ -53,7 +62,14 @@ const Onboarding = () => {
   const [notificationPermissionDenied, setNotificationPermissionDenied] =
     useState(false);
 
-  const onStepChange = (item: OnBoardingData) => {
+  const onStepChange = (item: OnBoardingData, step: number) => {
+    if (step > furthestStepRef.current) {
+      furthestStepRef.current = step;
+      registerEvent(Config.wpUrl, "Onboarding Step", {
+        step,
+        stepId: item.id,
+      });
+    }
     isOnNotificationStepRef.current = item.id === NOTIFICATION_STEP_ID;
     if (item.id !== NOTIFICATION_STEP_ID) return;
     if (hasRequestedNotificationPermission.current) return;
@@ -102,6 +118,7 @@ const Onboarding = () => {
   }, [isFoss]);
 
   const agreeToTerms = async () => {
+    registerEvent(Config.wpUrl, "Onboarding Completed");
     await PersonalStore.setOnboardingDone();
     updateBadgeState({ personal: false, action: true });
     router.replace("/");
