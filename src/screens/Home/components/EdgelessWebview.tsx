@@ -47,7 +47,7 @@ const BLOCK_COMPLIANZ_SCRIPT = `
     var removeComplianzScripts = function (root) {
       if (!root || !root.querySelectorAll) return;
       var scripts = root.querySelectorAll(
-        'script[src*="complianz-gdpr/cookiebanner/js/complianz"]',
+        'script[src*="complianz-gdpr/cookiebanner/js/complianz"]'
       );
       for (var i = 0; i < scripts.length; i++) scripts[i].remove();
     };
@@ -57,7 +57,15 @@ const BLOCK_COMPLIANZ_SCRIPT = `
         for (var i = 0; i < mutations.length; i++) {
           var added = mutations[i].addedNodes;
           for (var j = 0; j < added.length; j++) {
-            if (isComplianzScript(added[j])) added[j].remove();
+            var node = added[j];
+            if (isComplianzScript(node)) {
+              node.remove();
+            } else {
+              // The script may arrive nested inside an added subtree (e.g.
+              // via an innerHTML assignment) rather than as the added node
+              // itself, so scan its descendants too.
+              removeComplianzScripts(node);
+            }
           }
         }
       }).observe(document, { childList: true, subtree: true });
