@@ -150,9 +150,9 @@ const PodcastScreen = () => {
             ? [{ url: episode.link, title: "Podcast Folge teilen" }]
             : undefined
         }
-        contentType={episode.link ? FAV_TYPE_PODCAST : undefined}
-        contentFavIdentifier={episode.link ? episode.id : undefined}
-        favPayload={episode.link ? episode : undefined}
+        contentType={FAV_TYPE_PODCAST}
+        contentFavIdentifier={episode.id}
+        favPayload={episode}
       />
     </View>
   );
