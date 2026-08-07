@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -16,7 +17,7 @@ const HomeScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText size="xxl" style={styles.title}>
+      <UiText size="xxl" bold style={styles.title}>
         Willkommen zum Memory-Spiel
       </UiText>
       <UiText size="base" style={styles.description}>
@@ -37,7 +38,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: "#007bff",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     marginBottom: 10,
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     fontFamily: "SourceSansPro",
     fontSize: fontSizes.base,
   },
-  title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
+  title: { marginBottom: 20 },
 });
 
 export default HomeScreen;

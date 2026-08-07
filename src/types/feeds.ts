@@ -1,7 +1,7 @@
 import type { HttpsUrl } from "./config";
 
 export type FeedType =
-  "reddit" | "wp" | "insta" | "yt" | "tiktok" | "bsky" | "bot";
+  "reddit" | "wp" | "insta" | "yt" | "tiktok" | "bsky" | "bot" | "podcast";
 
 export type FeedEntry = {
   handle?: string;

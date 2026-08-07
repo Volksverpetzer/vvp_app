@@ -6,6 +6,7 @@ import { Hyperlink } from "react-native-hyperlink";
 
 import { ExternalLinkIcon } from "#/components/Icons";
 import { BlueskyPostHeader } from "#/components/posts/bsky/BlueskyPostHeader";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -98,9 +99,9 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
           linkStyle={{ color: corporate }}
           onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
         >
-          <UiText size="lg" style={{ lineHeight: 24 }}>
+          <Typography type="body">
             {isTruncated ? `${excerpt}…` : excerpt}
-          </UiText>
+          </Typography>
         </Hyperlink>
 
         <View style={globalStyles.row}>

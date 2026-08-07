@@ -3,6 +3,7 @@ import { Dimensions, StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import type { MemoryCard } from "#/types";
 
 interface CardComponentProperties {
@@ -42,7 +43,7 @@ const cardSize = screenWidth / 3;
 const cardStyles = StyleSheet.create({
   card: {
     alignItems: "center",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     borderWidth: 2,
     height: cardSize - 10,
     justifyContent: "center",

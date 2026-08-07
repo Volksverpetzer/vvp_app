@@ -7,6 +7,7 @@ jest.mock("@react-native-async-storage/async-storage", () => {
   return {
     setItem: jest.fn().mockResolvedValue(undefined as never),
     getItem: jest.fn().mockResolvedValue(undefined as never),
+    removeItem: jest.fn().mockResolvedValue(undefined as never),
     getAllKeys: jest.fn().mockResolvedValue([] as never),
     multiRemove: jest.fn().mockResolvedValue(undefined as never),
     // Add other mocked methods as needed
@@ -119,6 +120,33 @@ describe("BaseStore", () => {
       const result = BaseStore.parseJSON(json, defaultValue);
 
       expect(result).toBe(defaultValue);
+    });
+  });
+
+  describe("removeItem", () => {
+    it("should remove a single item from AsyncStorage", async () => {
+      const key = "testKey";
+      const mockRemoveItem = jest.fn().mockResolvedValue(undefined as never);
+      AsyncStorage.removeItem = mockRemoveItem as never;
+
+      await BaseStore.removeItem(key);
+
+      expect(mockRemoveItem).toHaveBeenCalledWith(key);
+    });
+
+    it("should swallow errors instead of throwing", async () => {
+      const consoleSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      const mockRemoveItem = jest
+        .fn()
+        .mockRejectedValue(new Error("Storage error") as never);
+      AsyncStorage.removeItem = mockRemoveItem as never;
+
+      await expect(BaseStore.removeItem("testKey")).resolves.toBeUndefined();
+      expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error));
+
+      consoleSpy.mockRestore();
     });
   });
 

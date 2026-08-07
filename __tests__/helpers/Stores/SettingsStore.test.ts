@@ -150,6 +150,7 @@ describe("SettingsStore", () => {
         tiktok: { value: true, name: "TikTok Videos" },
         bsky: { value: false, name: "Bluesky Posts" },
         bot: { value: true, name: "Bot Feed" },
+        podcast: { value: true, name: "Podcast Folgen" },
         "wp:pruefpunkt.org": { value: true, name: "Prüfpunkt Artikel" },
       };
 

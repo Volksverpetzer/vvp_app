@@ -13,6 +13,7 @@ import RenderHtml, { defaultHTMLElementModels } from "react-native-render-html";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { CONTENT_LINE_HEIGHT } from "#/constants/FontSizes";
 import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
@@ -75,35 +76,47 @@ const Body = (properties: BodyProperties) => {
     [colorScheme],
   );
 
-  const renderers: CustomTagRendererRecord = {
-    iframe: (renderProperties) =>
-      IframeRenderer({
-        renderProps: renderProperties,
-        width,
-        maxWidth,
-        onLinkPress: onLinkPress,
-      }),
-    p: (renderProperties) =>
-      BlockRenderer({ renderProps: renderProperties, url: article_link }),
-    img: (renderProperties: InternalRendererProps<TBlock>) =>
-      ImageRenderer({ ...renderProperties, url: article_link }),
-    figcaption: (renderProperties: InternalRendererProps<TBlock>) =>
-      FigcaptionRenderer({ ...renderProperties, url: article_link }),
-    h2: (renderProperties) =>
-      HeaderRenderer({ ...renderProperties, componentRefs: headerRefs }),
-    // h3 anchors are common table-of-contents targets (wp-block-heading ids).
-    h3: (renderProperties) =>
-      HeaderRenderer({ ...renderProperties, componentRefs: headerRefs }),
-    blockquote: (renderProperties) =>
-      BlockRenderer({ renderProps: renderProperties, url: article_link }),
-    em: (renderProperties) => EmRenderer(renderProperties),
-  };
+  // Memoized like renderersProperties below: react-native-render-html can
+  // remount custom-rendered elements when this prop's identity changes,
+  // which for the iframe renderer means remounting the embedded WebView —
+  // visible as a reload/black-frame flash on an embedded YouTube video
+  // every time Body re-renders for any reason (e.g. an unrelated ancestor
+  // state update during scroll).
+  const renderers: CustomTagRendererRecord = useMemo(
+    () => ({
+      iframe: (renderProperties) =>
+        IframeRenderer({
+          renderProps: renderProperties,
+          width,
+          maxWidth,
+          onLinkPress: onLinkPress,
+        }),
+      p: (renderProperties) =>
+        BlockRenderer({ renderProps: renderProperties, url: article_link }),
+      img: (renderProperties: InternalRendererProps<TBlock>) =>
+        ImageRenderer({ ...renderProperties, url: article_link }),
+      figcaption: (renderProperties: InternalRendererProps<TBlock>) =>
+        FigcaptionRenderer({ ...renderProperties, url: article_link }),
+      h2: (renderProperties) =>
+        HeaderRenderer({ ...renderProperties, componentRefs: headerRefs }),
+      // h3 anchors are common table-of-contents targets (wp-block-heading ids).
+      h3: (renderProperties) =>
+        HeaderRenderer({ ...renderProperties, componentRefs: headerRefs }),
+      blockquote: (renderProperties) =>
+        BlockRenderer({ renderProps: renderProperties, url: article_link }),
+      em: (renderProperties) => EmRenderer(renderProperties),
+    }),
+    [width, maxWidth, onLinkPress, article_link, headerRefs],
+  );
 
-  const customHTMLElementModels = {
-    iframe: iframeModel,
-    figcaption: defaultHTMLElementModels.p,
-    figure: defaultHTMLElementModels.div,
-  };
+  const customHTMLElementModels = useMemo(
+    () => ({
+      iframe: iframeModel,
+      figcaption: defaultHTMLElementModels.p,
+      figure: defaultHTMLElementModels.div,
+    }),
+    [],
+  );
 
   const renderersProperties = useMemo(
     () => ({
@@ -164,7 +177,7 @@ const Body = (properties: BodyProperties) => {
       domVisitors={{ onElement }}
       baseStyle={{
         fontFamily: "SourceSansPro",
-        lineHeight: 27,
+        lineHeight: CONTENT_LINE_HEIGHT,
         maxWidth: maxWidth,
         color: Colors[colorScheme].text,
       }}

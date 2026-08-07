@@ -4,6 +4,7 @@ import { StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -82,7 +83,7 @@ const GameScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText size="xl" style={styles.title}>
+      <UiText size="xl" bold style={styles.title}>
         Memory-Spiel: {gameId}
       </UiText>
       <View style={styles.levelContainer}>
@@ -123,7 +124,7 @@ const GameScreen = () => {
 const styles = StyleSheet.create({
   backButton: {
     backgroundColor: "#007bff",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     marginTop: 20,
     padding: 10,
   },
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
   },
   levelButton: {
     backgroundColor: "#007bff",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     marginHorizontal: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -148,7 +149,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   levelText: { marginRight: 10 },
-  title: { fontFamily: "SourceSansProBold", marginBottom: 20 },
+  title: { marginBottom: 20 },
 });
 
 export default GameScreen;

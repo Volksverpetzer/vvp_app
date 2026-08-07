@@ -112,11 +112,50 @@ describe("Engagement", () => {
       expect(parseSpy).toHaveBeenCalledWith(
         "https://www.volksverpetzer.de/article",
       );
+      // The path is queried exactly as Plausible recorded it — no slash is
+      // appended, or the "Share" event for this page would never match.
       expect(getSpy).toHaveBeenCalledWith(
         expect.anything(),
-        "/proxy/shares/article/?site=volksverpetzer.de",
+        "/proxy/shares/article?site=volksverpetzer.de",
       );
       expect(result).toBe(42);
+    });
+
+    it("keeps the trailing slash of a WordPress permalink", async () => {
+      parseSpy.mockReturnValue({
+        path: "/faktencheck/slug/",
+        hostname: "www.volksverpetzer.de",
+      });
+      getSpy.mockResolvedValue({ events: 7 });
+
+      await getShares("https://www.volksverpetzer.de/faktencheck/slug/");
+
+      expect(getSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        "/proxy/shares/faktencheck/slug/?site=volksverpetzer.de",
+      );
+    });
+
+    it("queries a slash-less URL without adding one", async () => {
+      // Regression: podcast episode URLs have no trailing slash, so Plausible
+      // records "/25-folge-24". Querying "/25-folge-24/" matched nothing and
+      // the share count stayed at 0 no matter how often it was shared.
+      // URL-aware mock: the site lookup parses Config.wpUrl separately, and an
+      // unknown host falls back to that primary site.
+      parseSpy.mockImplementation((url: string) =>
+        url.includes("episode")
+          ? { path: "/25-folge-24", hostname: "podcast.example.com" }
+          : { path: "/", hostname: "www.volksverpetzer.de" },
+      );
+      getSpy.mockResolvedValue({ events: 3 });
+
+      const result = await getShares("https://podcast.example.com/episode");
+
+      expect(getSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        "/proxy/shares/25-folge-24?site=volksverpetzer.de",
+      );
+      expect(result).toBe(3);
     });
 
     it("should handle missing permalink by using default wpUrl", async () => {

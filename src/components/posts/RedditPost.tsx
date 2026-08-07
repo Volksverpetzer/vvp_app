@@ -3,8 +3,10 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import {
   DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
@@ -104,26 +106,25 @@ const RedditPost = (properties: RedditProperties) => {
           />
           <UiText
             size={size === 16 ? "base" : "lg"}
+            bold
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
-              lineHeight: size === 16 ? 22 : 24,
-              fontFamily: "SourceSansProBold",
+              lineHeight: size === 16 ? LINE_HEIGHTS.base : LINE_HEIGHTS.lg,
               textAlign: "left",
               paddingTop: 20,
             }}
           >
             {properties.title}
           </UiText>
-          <UiText
-            size="base"
+          <Typography
+            type="meta"
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
               paddingBottom: 10,
-              color: "#999",
             }}
           >
             von {author} | {date}
-          </UiText>
+          </Typography>
         </View>
       </UiPressable>
     </>

@@ -103,7 +103,7 @@ const registerEvent = async <T extends Record<string, unknown>>(
   }
 };
 
-type PostPlatform = "youtube" | "tiktok" | "instagram" | "bluesky";
+type PostPlatform = "youtube" | "tiktok" | "instagram" | "bluesky" | "podcast";
 type PostAction = "play" | "open";
 
 /**

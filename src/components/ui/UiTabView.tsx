@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { Animated, View } from "react-native";
 import type { StyleProp, ViewStyle } from "react-native";
 
+import { radii } from "#/constants/BorderRadius";
+
 interface UiTabViewProps {
   children: ReactNode;
   width: number;
@@ -10,7 +12,7 @@ interface UiTabViewProps {
 }
 
 const pillStyle: ViewStyle = {
-  borderRadius: 20,
+  borderRadius: radii.xl,
   overflow: "hidden",
   flexDirection: "row",
 };

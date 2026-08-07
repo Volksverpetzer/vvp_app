@@ -15,11 +15,13 @@ import ViewShot, { type ViewShotRef } from "react-native-view-shot";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
 import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { CONTENT_HORIZONTAL_PADDING } from "#/constants/GlobalStyles";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -118,7 +120,15 @@ const Header = (properties: HeaderProperties) => {
 
   return (
     <>
-      <View style={{ position: "relative" }}>
+      {/* Pull the hero image edge-to-edge: the article ScrollView pads its
+          content by CONTENT_HORIZONTAL_PADDING, which would otherwise leave a
+          horizontal gutter around the image. */}
+      <View
+        style={{
+          position: "relative",
+          marginHorizontal: -CONTENT_HORIZONTAL_PADDING,
+        }}
+      >
         <UiPressable
           accessibilityRole="button"
           onLongPress={() => setVisible(true)}
@@ -133,20 +143,12 @@ const Header = (properties: HeaderProperties) => {
         <ImageCreditBadge credit={article.imageCredit} position="bottomRight" />
       </View>
       <UiSpace size={30} />
-      <UiText
-        size="xxl"
-        style={{
-          paddingHorizontal: 20,
-          textAlign: "left",
-          fontFamily: "SourceSansProBold",
-        }}
-      >
+      <Typography type="title" style={{ paddingHorizontal: 20 }}>
         {article_title}
-      </UiText>
-      <UiText
-        size="lg"
+      </Typography>
+      <Typography
+        type="meta"
         style={{
-          textAlign: "left",
           paddingVertical: 10,
           paddingHorizontal: 20,
         }}
@@ -180,7 +182,7 @@ const Header = (properties: HeaderProperties) => {
               : "";
           })[0]
         }
-      </UiText>
+      </Typography>
       <ArticleStats
         article_link={article_link}
         reading_time={article.reading_time}
@@ -230,25 +232,18 @@ const Header = (properties: HeaderProperties) => {
               onLoad={() => setImageLoaded(true)}
             />
             <UiSpace size={20} />
-            <UiText
-              size="xxl"
-              style={{
-                color: Colors.dark.text,
-                paddingHorizontal: 20,
-                textAlign: "left",
-                fontFamily: "SourceSansProBold",
-              }}
+            <Typography
+              type="title"
+              style={{ color: Colors.dark.text, paddingHorizontal: 20 }}
             >
               {article_title}
-            </UiText>
+            </Typography>
             <UiSpace size={20} />
-            <UiText
-              size="lg"
-              style={{
-                color: Colors.dark.text,
-                paddingHorizontal: 20,
-                textAlign: "left",
-              }}
+            {/* The share card is always rendered on the dark background, so it
+                pins the light-on-dark colors instead of following the theme. */}
+            <Typography
+              type="meta"
+              style={{ color: Colors.dark.textMuted, paddingHorizontal: 20 }}
             >
               {article.authors?.length ? (
                 <>
@@ -276,7 +271,7 @@ const Header = (properties: HeaderProperties) => {
                     : "";
                 })[0]
               }
-            </UiText>
+            </Typography>
           </View>
         </ViewShot>
       </Modal>

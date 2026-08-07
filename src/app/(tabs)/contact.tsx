@@ -15,10 +15,12 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import UiTextInput from "#/components/ui/UiTextInput";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
@@ -116,7 +118,7 @@ const ContactScreen = () => {
         },
         categoryPill: {
           backgroundColor: surfaceInput,
-          borderRadius: 20,
+          borderRadius: radii.full,
           paddingHorizontal: 14,
           paddingVertical: 8,
         },
@@ -128,7 +130,6 @@ const ContactScreen = () => {
         },
         errorText: {
           color: errorColor,
-          fontFamily: "SourceSansProBold",
           marginBottom: 20,
           paddingHorizontal: 12,
           textAlign: "center",
@@ -138,7 +139,7 @@ const ContactScreen = () => {
           backgroundColor: surfaceInput,
           // Transparent by default so the error border causes no layout shift
           borderColor: "transparent",
-          borderRadius: 5,
+          borderRadius: radii.xs,
           borderWidth: 2,
           // Explicit vertical + horizontal padding (overriding the shared
           // input's paddingHorizontal: 25) so the intent is unambiguous:
@@ -156,7 +157,7 @@ const ContactScreen = () => {
           alignItems: "center",
           alignSelf: "center",
           backgroundColor: accent,
-          borderRadius: 40,
+          borderRadius: radii.full,
           justifyContent: "center",
           margin: 20,
           paddingVertical: 10,
@@ -324,96 +325,104 @@ const ContactScreen = () => {
           )}
           scrollEventThrottle={16}
         >
-          <UiText bold size="lg" style={{ marginBottom: 10 }}>
-            Thema wählen:
-          </UiText>
-          <View style={styles.categoryContainer}>
-            {CATEGORIES.map(({ key, label }) => (
-              <UiPressable
-                key={key}
-                accessibilityRole="button"
-                accessibilityState={{ selected: category === key }}
-                onPress={() => {
-                  setCategory(key);
-                  clearError();
-                }}
-                style={[
-                  styles.categoryPill,
-                  category === key && styles.categoryPillActive,
-                ]}
-              >
-                <UiText
+          <View style={{ gap: 10 }}>
+            <Typography type="heading">Thema wählen:</Typography>
+            <View style={styles.categoryContainer}>
+              {CATEGORIES.map(({ key, label }) => (
+                <UiPressable
+                  key={key}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: category === key }}
+                  onPress={() => {
+                    setCategory(key);
+                    clearError();
+                  }}
                   style={[
-                    globalStyles.pillLabel,
-                    category === key
-                      ? globalStyles.whiteText
-                      : styles.categoryPillLabelInactive,
+                    styles.categoryPill,
+                    category === key && styles.categoryPillActive,
                   ]}
                 >
-                  {label}
-                </UiText>
-              </UiPressable>
-            ))}
+                  <UiText
+                    style={[
+                      globalStyles.pillLabel,
+                      category === key
+                        ? globalStyles.whiteText
+                        : styles.categoryPillLabelInactive,
+                    ]}
+                  >
+                    {label}
+                  </UiText>
+                </UiPressable>
+              ))}
+            </View>
           </View>
           <UiSpace size={20} />
-          <UiText bold size="lg" style={{ marginBottom: 10 }}>
-            {texts.titleLabel}
-          </UiText>
-          <UiTextInput
-            accessibilityLabel="Text input field"
-            accessibilityHint={texts.titleHint}
-            placeholder="..."
-            placeholderTextColor={textColor}
-            value={title}
-            onChangeText={(value) => {
-              setTitle(value);
-              if (errorField === "title") clearError();
-            }}
-            style={[styles.input, errorField === "title" && styles.inputError]}
-          />
+          <View style={{ gap: 10 }}>
+            <Typography type="heading">{texts.titleLabel}</Typography>
+            <UiTextInput
+              accessibilityLabel="Text input field"
+              accessibilityHint={texts.titleHint}
+              placeholder="..."
+              placeholderTextColor={textColor}
+              value={title}
+              onChangeText={(value) => {
+                setTitle(value);
+                if (errorField === "title") clearError();
+              }}
+              style={[
+                styles.input,
+                errorField === "title" && styles.inputError,
+              ]}
+            />
+          </View>
           <UiSpace size={20} />
-          <UiText bold size="lg" style={{ marginBottom: 10 }}>
-            {texts.messageLabel}
-          </UiText>
-          <UiTextInput
-            accessibilityLabel="Text input field"
-            accessibilityHint="Gib deine Nachricht ein"
-            placeholder="..."
-            placeholderTextColor={textColor}
-            value={message}
-            onChangeText={(value) => {
-              setMessage(value);
-              if (errorField === "message") clearError();
-            }}
-            multiline
-            style={[
-              styles.input,
-              { height: 120 },
-              errorField === "message" && styles.inputError,
-            ]}
-          />
+          <View style={{ gap: 10 }}>
+            <Typography type="heading">{texts.messageLabel}</Typography>
+            <UiTextInput
+              accessibilityLabel="Text input field"
+              accessibilityHint="Gib deine Nachricht ein"
+              placeholder="..."
+              placeholderTextColor={textColor}
+              value={message}
+              onChangeText={(value) => {
+                setMessage(value);
+                if (errorField === "message") clearError();
+              }}
+              multiline
+              style={[
+                styles.input,
+                { height: 120 },
+                errorField === "message" && styles.inputError,
+              ]}
+            />
+          </View>
           <UiSpace size={20} />
-          <UiText bold size="lg" style={{ marginBottom: 10 }}>
-            E-Mail für Rückfragen (optional)
-          </UiText>
-          <UiTextInput
-            accessibilityLabel="Text input field"
-            accessibilityHint="Gib deine E-Mail-Adresse ein"
-            placeholder="..."
-            placeholderTextColor={textColor}
-            value={email}
-            onChangeText={(value) => {
-              setEmail(value);
-              if (errorField === "email") clearError();
-            }}
-            autoCapitalize="none"
-            autoComplete="email"
-            keyboardType="email-address"
-            style={[styles.input, errorField === "email" && styles.inputError]}
-          />
+          <View style={{ gap: 10 }}>
+            <Typography type="heading">
+              E-Mail für Rückfragen (optional)
+            </Typography>
+            <UiTextInput
+              accessibilityLabel="Text input field"
+              accessibilityHint="Gib deine E-Mail-Adresse ein"
+              placeholder="..."
+              placeholderTextColor={textColor}
+              value={email}
+              onChangeText={(value) => {
+                setEmail(value);
+                if (errorField === "email") clearError();
+              }}
+              autoCapitalize="none"
+              autoComplete="email"
+              keyboardType="email-address"
+              style={[
+                styles.input,
+                errorField === "email" && styles.inputError,
+              ]}
+            />
+          </View>
           <UiSpace size={20} />
           {error ? (
-            <UiText size="lg" style={styles.errorText}>
+            <UiText size="lg" bold style={styles.errorText}>
               {error}
             </UiText>
           ) : undefined}

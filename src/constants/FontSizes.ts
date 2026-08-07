@@ -24,6 +24,32 @@ export const fontSizes = {
   xl: 20,
   /** Largest step: screen/article titles and article sub-headings (h2–h5). */
   xxl: 24,
+  /** Above the regular hierarchy: standalone statement headlines (e.g. Support). */
+  xxxl: 30,
 } as const;
 
 export type FontSizeToken = keyof typeof fontSizes;
+
+/**
+ * Line height for readable body copy — article body, social-post fulltext.
+ * The article body is the reference; keep other long-form content in sync
+ * with it via this constant (and the `body` text variant).
+ */
+export const CONTENT_LINE_HEIGHT = 27;
+
+/**
+ * Recommended line heights per font size for optimal text readability.
+ * Use these for multi-line text that doesn't fit a semantic `Typography` role
+ * (e.g. social-post metadata, changelog notes, announcement text).
+ *
+ * Formula: size × ~1.33–1.4 for comfortable linespacing without looking loose.
+ */
+export const LINE_HEIGHTS = {
+  xs: 16, // 12 × 1.33
+  sm: 19, // 14 × 1.36
+  base: 22, // 16 × 1.38
+  lg: 24, // 18 × 1.33
+  xl: 27, // 20 × 1.35
+  xxl: 32, // 24 × 1.33
+  xxxl: 40, // 30 × 1.33
+} as const;

@@ -7,6 +7,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import {
+  CARD_CONTENT_GAP,
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
@@ -63,7 +64,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
   }, [inView, loaded, registered, computedPermalink]);
 
   return (
-    <View>
+    <View style={{ gap: CARD_CONTENT_GAP }}>
       <InstaPostImage
         photos={photos}
         width={width}
@@ -80,7 +81,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         style={{
           paddingHorizontal: POST_PADDING_HORIZONTAL,
-          paddingVertical: 10,
+          paddingBottom: 10,
           opacity: 1,
         }}
       >

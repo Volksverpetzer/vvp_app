@@ -7,10 +7,12 @@ import { FlatList, StyleSheet, View } from "react-native";
 import { SafetyIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
 import BackToTopButton from "#/components/buttons/BackToTopButton";
+import Typography from "#/components/ui/Typography";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { onLinkPress } from "#/helpers/Linking";
@@ -38,7 +40,6 @@ const AISearch = ({
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  const textColor = Colors[colorScheme].text;
   const listReference = useRef<FlatList>(null);
   const backToTop = useBackToTop();
 
@@ -50,21 +51,12 @@ const AISearch = ({
           title={decode(item.title)}
           onPress={() => onLinkPress(item.url, router)}
           text={item.text}
-          subtitle={
-            <UiText
-              size="base"
-              style={{
-                fontFamily: "SourceSansProBold",
-                color: textColor,
-              }}
-            >
-              {hostname ?? item.url}
-            </UiText>
-          }
+          collapsible
+          subtitle={<Typography type="meta">{hostname ?? item.url}</Typography>}
         />
       );
     },
-    [textColor, router],
+    [router],
   );
 
   if (results.length === 0 && !error && !noResults) {
@@ -169,14 +161,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   reportButton: {
-    borderRadius: 10,
+    borderRadius: radii.md,
     justifyContent: "center",
     margin: 10,
     padding: 10,
     width: "50%",
   },
   urlButton: {
-    borderRadius: 10,
+    borderRadius: radii.md,
     justifyContent: "center",
     margin: 10,
     padding: 10,

@@ -4,9 +4,11 @@ import { View } from "react-native";
 import Modal from "react-native-modal";
 
 import { CloseIcon, HeartIcon } from "#/components/Icons";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -39,9 +41,9 @@ const Support = ({ article_link }: SupportProperties) => {
       }}
     >
       <UiText
+        size="xxxl"
         style={{
           color: Colors[colorScheme].text,
-          fontSize: 30,
           textAlign: "center",
         }}
       >
@@ -61,9 +63,9 @@ const Support = ({ article_link }: SupportProperties) => {
         onPress={banktransfer}
         style={{ padding: 10 }}
       >
-        <UiText bold size="lg" style={{ color: corporate }}>
+        <Typography type="heading" style={{ color: corporate }}>
           Dauerauftrag
-        </UiText>
+        </Typography>
       </UiPressable>
       <UiText size="base" style={{ textAlign: "center" }}>
         direkt bei der Bank einrichten.
@@ -78,7 +80,7 @@ const Support = ({ article_link }: SupportProperties) => {
             padding: 20,
             alignItems: "center",
             backgroundColor,
-            borderRadius: 16,
+            borderRadius: radii.lg,
           }}
         >
           <View

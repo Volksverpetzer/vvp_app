@@ -9,6 +9,7 @@ import {
 } from "#/components/SvgIcons";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -58,8 +59,8 @@ const RegionMap = () => {
         marginTop: -80,
         paddingTop: 80,
         backgroundColor: primaryMuted,
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
+        borderTopLeftRadius: radii.xxl,
+        borderTopRightRadius: radii.xxl,
         gap: 20,
         overflow: "hidden",
         paddingHorizontal: 20,
@@ -101,10 +102,7 @@ const RegionMap = () => {
           flex: 1,
         }}
       >
-        <UiText
-          size="xl"
-          style={[globalStyles.whiteText, { fontFamily: "SourceSansProBold" }]}
-        >
+        <UiText size="xl" bold style={globalStyles.whiteText}>
           Bundesländer Ranking
         </UiText>
         <UiSpace size={10} />

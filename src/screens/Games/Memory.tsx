@@ -4,7 +4,9 @@ import { Dimensions, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { fontSizes } from "#/constants/FontSizes";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { DisinfoPair, MemoryCard } from "#/types";
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#eee",
     borderColor: "#eee",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     borderWidth: 2,
     height: cardSize - 10,
     justifyContent: "center",
@@ -152,7 +154,7 @@ const styles = StyleSheet.create({
     width: cardSize - 10,
   },
   cardInner: { alignItems: "center", justifyContent: "center" },
-  cardText: { fontSize: 16, textAlign: "center" },
+  cardText: { fontSize: fontSizes.base, textAlign: "center" },
   gameContainer: { alignItems: "center", flex: 1 },
   grid: {
     flexDirection: "row",
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
   },
   headerCard: {
     borderColor: "#999",
-    borderRadius: 5,
+    borderRadius: radii.xs,
     borderWidth: 1,
     flex: 1,
     marginHorizontal: 5,

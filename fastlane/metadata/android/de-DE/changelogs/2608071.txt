@@ -1,0 +1,2 @@
+- Neu: Der Volksverpetzer-Podcast ist jetzt im Feed – Folgen direkt in der App anhören und später an der gehörten Stelle fortsetzen, Podcast-Folgen lassen sich teilen und zu den Favoriten hinzufügen
+- Performance-Verbesserungen und Fehlerbehebungen

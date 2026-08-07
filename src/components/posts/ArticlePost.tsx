@@ -5,13 +5,16 @@ import type { DimensionValue, TextStyle } from "react-native";
 import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import {
+  CARD_CONTENT_GAP,
   DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
   globalStyles,
@@ -28,13 +31,6 @@ import type { ArticleProperties, ImageCredit } from "#/types";
 
 import Badge from "./Badge";
 import ImageCreditBadge from "./ImageCreditBadge";
-
-const titleStyle: TextStyle = {
-  fontFamily: "SourceSansProBold",
-  paddingHorizontal: POST_PADDING_HORIZONTAL,
-  lineHeight: 26,
-  textAlign: "left",
-};
 
 // Define the component props type.
 interface ArticlePostScreenProperties {
@@ -64,7 +60,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  const greyText = Colors[colorScheme].textMuted;
   const { width } = useFeedDimensions();
   const router = useRouter();
   const height = useMemo(() => DEFAULT_IMAGE_ASPECT_RATIO * width, [width]);
@@ -159,7 +154,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       paddingBottom: 0,
       backgroundColor: Colors[colorScheme].background,
       ...(elevated && {
-        borderRadius: 15,
+        borderRadius: radii.lg,
         overflow: "hidden" as const,
         borderWidth: 1,
         borderColor: Colors[colorScheme].surface,
@@ -174,7 +169,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     const shadowRgb = isDark ? "255, 255, 255" : "0, 0, 0";
     const shadowOpacity = isDark ? 0.12 : 0.2;
     return {
-      borderRadius: 15,
+      borderRadius: radii.lg,
       boxShadow: `0px 1px 1.41px rgba(${shadowRgb}, ${shadowOpacity})`,
       elevation: 2,
     };
@@ -196,14 +191,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       backgroundColor: corporate,
     }),
     [scrollProgress, corporate],
-  );
-  const authorDateStyle = useMemo(
-    () => ({
-      paddingHorizontal: POST_PADDING_HORIZONTAL,
-      textAlign: "left" as const,
-      color: greyText,
-    }),
-    [greyText],
   );
   const categoryTextStyle: TextStyle[] = [
     globalStyles.whiteText,
@@ -241,13 +228,15 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         </View>
         <View style={progressBarStyle} />
         <UiSpace size={10} />
-        <UiText size="xl" style={titleStyle}>
-          {article.title}
-        </UiText>
-        <UiSpace size={10} />
-        <UiText size="base" style={authorDateStyle}>
-          {authorDateText}
-        </UiText>
+        <View
+          style={{
+            gap: CARD_CONTENT_GAP,
+            paddingHorizontal: POST_PADDING_HORIZONTAL,
+          }}
+        >
+          <Typography type="cardTitle">{article.title}</Typography>
+          <Typography type="meta">{authorDateText}</Typography>
+        </View>
         <UiSpace size={10} />
         {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>

@@ -5,8 +5,8 @@ import type { ReactElement } from "react";
 import { View } from "react-native";
 
 import { ExternalLinkIcon } from "#/components/Icons";
+import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
-import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -50,9 +50,7 @@ const UiLink = (properties: UiLinkProperties) => {
       ]}
     >
       {properties.icon && <View style={{ width: 24 }}>{properties.icon}</View>}
-      <UiText bold size="lg">
-        {properties.text}
-      </UiText>
+      <Typography type="heading">{properties.text}</Typography>
       <ExternalLinkIcon
         color={Colors[colorScheme].textMuted}
         style={{ marginLeft: "auto" }}

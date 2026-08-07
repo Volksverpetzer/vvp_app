@@ -145,6 +145,18 @@ export interface TiktokPostProperties {
   id: string;
 }
 
+export interface PodcastEpisodeProperties {
+  id: string;
+  title: string;
+  description: string;
+  published_at: string | null;
+  link: HttpsUrl | null;
+  audio_url: string;
+  image_url: string | null;
+  duration: number | null;
+  inView?: boolean;
+}
+
 export interface YouTubePostProperties {
   id: string;
   player: {

@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -19,7 +20,7 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText size="lg" style={styles.title}>
+      <UiText size="lg" bold style={styles.title}>
         Teilen
       </UiText>
       <ScrollView style={styles.list}>
@@ -27,20 +28,28 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
           <UiPressable
             accessibilityRole="button"
             key={item.title + index}
-            style={styles.button}
+            style={[
+              styles.button,
+              { backgroundColor: Colors[colorScheme].surface },
+            ]}
             onPress={item.onPress}
           >
-            <UiText size="base" style={styles.buttonText}>
-              {item.title}
-            </UiText>
+            <UiText size="base">{item.title}</UiText>
           </UiPressable>
         ))}
         <UiPressable
           accessibilityRole="button"
-          style={[styles.button, styles.cancelButton]}
+          style={[
+            styles.button,
+            { backgroundColor: Colors[colorScheme].surfaceError },
+          ]}
           onPress={onCancel}
         >
-          <UiText size="base" style={[styles.buttonText, styles.cancelText]}>
+          <UiText
+            size="base"
+            bold
+            style={{ color: Colors[colorScheme].onError }}
+          >
             Abbrechen
           </UiText>
         </UiPressable>
@@ -52,25 +61,14 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
+    borderRadius: radii.sm,
     marginVertical: 4,
     padding: 12,
     width: "100%",
   },
-  buttonText: {
-    color: "#222",
-  },
-  cancelButton: {
-    backgroundColor: "#ffeaea",
-  },
-  cancelText: {
-    color: "#b00",
-    fontFamily: "SourceSansProBold",
-  },
   container: {
     alignItems: "center",
-    borderRadius: 12,
+    borderRadius: radii.md,
     minWidth: 250,
     padding: 16,
   },
@@ -79,8 +77,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   title: {
-    color: "#333",
-    fontFamily: "SourceSansProBold",
     marginBottom: 12,
   },
 });

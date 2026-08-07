@@ -16,12 +16,20 @@ import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
+import { mapPodcastEpisode } from "#/screens/Home/fetchers/PodcastFetcher";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
-import type { ArticleProperties, HttpsUrl, InstaPostProperties } from "#/types";
-import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
+import type {
+  ArticleProperties,
+  HttpsUrl,
+  InstaPostProperties,
+  PodcastEpisodeProperties,
+} from "#/types";
+import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA, FAV_TYPE_PODCAST } from "#/types";
 
 type FavoritePost =
-  Post<{ article: ArticleProperties }> | Post<InstaPostProperties>;
+  | Post<{ article: ArticleProperties }>
+  | Post<InstaPostProperties>
+  | Post<PodcastEpisodeProperties>;
 
 // Reuse one API client per secondary site instead of rebuilding it for every
 // favorite on every load.
@@ -96,6 +104,26 @@ const loadFavoriteInstaPost = async (
   }
 };
 
+const loadFavoritePodcast = async (
+  id: string,
+  payload?: PodcastEpisodeProperties,
+): Promise<Post<PodcastEpisodeProperties> | undefined> => {
+  try {
+    // Prefer the snapshot stored with the favorite; Podigee has no by-id
+    // endpoint, so otherwise search the (server-cached) feed for the episode.
+    const episode =
+      payload ?? (await API.getPodcastFeed()).find((e) => e.id === id);
+    if (!episode) {
+      await FavoritesStore.removeFavorite(id);
+      return undefined;
+    }
+    return mapPodcastEpisode(episode) ?? undefined;
+  } catch (error) {
+    console.error(`Failed to load podcast favorite ${id}:`, error);
+    return undefined;
+  }
+};
+
 const MyFavs = () => {
   const [posts, setPosts] = useState<FavoritePost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -118,7 +146,15 @@ const MyFavs = () => {
                 case FAV_TYPE_ARTICLE:
                   return await loadFavoriteArticlePost(fav, originalUrl);
                 case FAV_TYPE_INSTA:
-                  return await loadFavoriteInstaPost(fav, payload);
+                  return await loadFavoriteInstaPost(
+                    fav,
+                    payload as InstaPostProperties | undefined,
+                  );
+                case FAV_TYPE_PODCAST:
+                  return await loadFavoritePodcast(
+                    fav,
+                    payload as PodcastEpisodeProperties | undefined,
+                  );
               }
             } catch (error) {
               console.error(

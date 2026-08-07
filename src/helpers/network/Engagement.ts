@@ -1,3 +1,5 @@
+import * as Linking from "expo-linking";
+
 import Config from "#/constants/Config";
 import { parsePath } from "#/helpers/Linking";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -15,6 +17,21 @@ const client = createClient(apiUrl);
  */
 const siteQuery = (permalink?: HttpsUrl): string =>
   `?site=${encodeURIComponent(resolveAnalyticsSite(permalink ?? wpUrl))}`;
+
+/**
+ * Path of a resource as Plausible records it, i.e. exactly the path of the URL
+ * the event was reported for — including whether it ends in a slash.
+ *
+ * `parsePath` deliberately forces a trailing slash (it normalizes WordPress
+ * canonical-redirect variants for the in-app WebView), but Plausible stores
+ * `event:page` verbatim: a share of ".../25-folge-24" is recorded under
+ * "/25-folge-24", so querying "/25-folge-24/" matches nothing. Since the same
+ * permalink feeds both registerEvent and this lookup, preserving the URL's own
+ * shape keeps write and read consistent for any URL. WordPress permalinks
+ * already end in a slash, so article counts are unaffected.
+ */
+const analyticsPath = (url: string): string =>
+  (Linking.parse(url).path ?? "").replace(/^\/+/, "");
 
 /**
  * Returns the page views for the current permalink
@@ -42,7 +59,9 @@ const getShares = async (permalink?: HttpsUrl): Promise<number> => {
   try {
     const data = await get<{ events: number }>(
       client,
-      `/proxy/shares/${parsePath(permalink ?? wpUrl)}${siteQuery(permalink)}`,
+      // Uses analyticsPath (not parsePath): the shares route preserves the
+      // path it's given, so a slash-less permalink is queried as recorded.
+      `/proxy/shares/${analyticsPath(permalink ?? wpUrl)}${siteQuery(permalink)}`,
     );
     return data.events;
   } catch (error) {

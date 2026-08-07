@@ -4,8 +4,10 @@ import BottomSheetModal from "#/components/popups/BottomSheetModal";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
+import { radii } from "#/constants/BorderRadius";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
+import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface ChangelogModalProperties {
@@ -41,7 +43,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
         onPress={onClose}
         style={[styles.button, { backgroundColor: corporate }]}
       >
-        <UiText size="base" style={[styles.buttonText, { color: onPrimary }]}>
+        <UiText size="base" bold style={{ color: onPrimary }}>
           Alles klar
         </UiText>
       </UiPressable>
@@ -60,15 +62,12 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   notes: {
-    lineHeight: 22,
+    lineHeight: LINE_HEIGHTS.base,
   },
   button: {
     alignItems: "center",
-    borderRadius: 12,
+    borderRadius: radii.md,
     paddingVertical: 14,
-  },
-  buttonText: {
-    fontFamily: "SourceSansProBold",
   },
 });
 

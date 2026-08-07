@@ -4,8 +4,8 @@ import { Achievements } from "#/helpers/Achievements";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerFav } from "#/helpers/network/Engagement";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
-import type { FaveableType, HttpsUrl, InstaPostProperties } from "#/types";
-import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA } from "#/types";
+import type { FavPayload, FaveableType, HttpsUrl } from "#/types";
+import { FAV_TYPE_ARTICLE, FAV_TYPE_INSTA, FAV_TYPE_PODCAST } from "#/types";
 
 /**
  * Encapsulates the "is this content saved as a favorite" state and the toggle behavior
@@ -21,7 +21,7 @@ export const useFavorite = (
   contentFavIdentifier?: string,
   contentType?: FaveableType,
   registerUrl?: HttpsUrl,
-  favPayload?: InstaPostProperties,
+  favPayload?: FavPayload,
 ) => {
   const [isFav, setIsFav] = useState(false);
 
@@ -52,7 +52,9 @@ export const useFavorite = (
         contentFavIdentifier,
         contentType,
         contentType === FAV_TYPE_ARTICLE ? registerUrl : undefined,
-        contentType === FAV_TYPE_INSTA ? favPayload : undefined,
+        contentType === FAV_TYPE_INSTA || contentType === FAV_TYPE_PODCAST
+          ? favPayload
+          : undefined,
       );
       updateBadgeState({ personal: true });
       if (registerUrl) await registerFav(registerUrl);

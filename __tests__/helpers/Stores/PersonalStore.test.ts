@@ -9,6 +9,7 @@ jest.mock("#/helpers/Storage", () => ({
   default: {
     getItem: jest.fn(),
     setItem: jest.fn(),
+    removeItem: jest.fn(),
     parseJSON: jest.fn(),
   },
 }));
@@ -435,6 +436,92 @@ describe("PersonalStore", () => {
 
       // Cleanup
       consoleErrorSpy.mockRestore();
+    });
+  });
+
+  describe("audio positions", () => {
+    it("should construct the audio key from the resume key", () => {
+      expect(PersonalStore.getAudioKey("https://a.example/ep.mp3")).toBe(
+        "audioPosition_https://a.example/ep.mp3",
+      );
+    });
+
+    it("should store the audio position under the audio key", async () => {
+      const setItemSpy = jest.spyOn(BaseStore, "setItem");
+
+      await PersonalStore.setAudioPosition("https://a.example/ep.mp3", 123.4);
+
+      expect(setItemSpy).toHaveBeenCalledWith(
+        "audioPosition_https://a.example/ep.mp3",
+        "123.4",
+      );
+    });
+
+    it("should return the parsed audio position", async () => {
+      getItemSpy.mockResolvedValue("123.4");
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(123.4);
+
+      const result = await PersonalStore.getAudioPosition(
+        "https://a.example/ep.mp3",
+      );
+
+      expect(getItemSpy).toHaveBeenCalledWith(
+        "audioPosition_https://a.example/ep.mp3",
+      );
+      expect(BaseStore.parseJSON).toHaveBeenCalledWith("123.4", 0);
+      expect(result).toBe(123.4);
+    });
+
+    it("should return 0 on storage errors", async () => {
+      getItemSpy.mockRejectedValue(new Error("Storage error"));
+
+      const result = await PersonalStore.getAudioPosition(
+        "https://a.example/ep.mp3",
+      );
+
+      expect(result).toBe(0);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error retrieving audio position:",
+        expect.any(Error),
+      );
+    });
+
+    it("should remove the stored position on clear", async () => {
+      const removeItemSpy = jest.spyOn(BaseStore, "removeItem");
+
+      await PersonalStore.clearAudioPosition("https://a.example/ep.mp3");
+
+      expect(removeItemSpy).toHaveBeenCalledWith(
+        "audioPosition_https://a.example/ep.mp3",
+      );
+    });
+
+    it("should swallow set errors and log them", async () => {
+      jest
+        .spyOn(BaseStore, "setItem")
+        .mockRejectedValue(new Error("Storage error"));
+
+      await expect(
+        PersonalStore.setAudioPosition("https://a.example/ep.mp3", 42),
+      ).resolves.toBeUndefined();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error setting audio position:",
+        expect.any(Error),
+      );
+    });
+
+    it("should swallow clear errors and log them", async () => {
+      jest
+        .spyOn(BaseStore, "removeItem")
+        .mockRejectedValue(new Error("Storage error"));
+
+      await expect(
+        PersonalStore.clearAudioPosition("https://a.example/ep.mp3"),
+      ).resolves.toBeUndefined();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error clearing audio position:",
+        expect.any(Error),
+      );
     });
   });
 });

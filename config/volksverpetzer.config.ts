@@ -124,6 +124,7 @@ const extraConfig: ExtraConfigType = {
     ],
     yt: { enabled: true },
     bsky: { handle: "volksverpetzer.de", enabled: true },
+    podcast: { enabled: true },
   },
   colorScheme: colorScheme,
   themeColor: "#1b7194",
