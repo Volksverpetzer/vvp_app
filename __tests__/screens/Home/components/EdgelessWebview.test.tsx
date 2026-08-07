@@ -62,6 +62,102 @@ const fireHttpError = async (url: string, statusCode: number) => {
   });
 };
 
+describe("EdgelessWebview cookies", () => {
+  beforeEach(() => {
+    mockLastWebViewProps = null;
+  });
+
+  it("does not send a synthetic Cookie header or inject consent cookies", async () => {
+    // Regression: EdgelessWebview used to send a Cookie header (and inject
+    // matching document.cookie values) claiming the visitor had already
+    // consented to Complianz's cookie categories. That "consent already
+    // granted on the very first request" state is a scenario Complianz's
+    // own banner-restoration code doesn't handle correctly on some pages,
+    // crashing and reloading indefinitely (see EdgelessWebview.tsx history).
+    // No synthetic cookie state at all sidesteps that entirely.
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    expect(mockLastWebViewProps.source).toEqual({
+      uri: "https://volksverpetzer.de/impressum-volksverpetzer/",
+    });
+  });
+});
+
+describe("EdgelessWebview Complianz blocking", () => {
+  beforeEach(() => {
+    mockLastWebViewProps = null;
+  });
+
+  it("injects a script before content loads that strips the complianz banner script", async () => {
+    // Complianz's own banner-restoration script crashes (an unguarded
+    // cmplz_banner.querySelector(...) call) and self-"recovers" via
+    // location.reload() on some pages, looping forever. The in-app WebView
+    // never shows the banner UI anyway, so the fix is to keep the script
+    // from ever running rather than to work around its crash.
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    expect(mockLastWebViewProps.injectedJavaScriptBeforeContentLoaded).toEqual(
+      expect.stringContaining("complianz-gdpr/cookiebanner/js/complianz"),
+    );
+  });
+});
+
+describe("EdgelessWebview source stability", () => {
+  beforeEach(() => {
+    mockLastWebViewProps = null;
+  });
+
+  it("keeps the same source object reference across a re-render with an unchanged uri", async () => {
+    // Regression: react-native-webview treats a *new* source object as a
+    // signal to reload, even when its uri string is unchanged. An inline
+    // `source={{ uri }}` literal would reload the page on every re-render
+    // of this component for any reason at all — unrelated to the actual
+    // URL — which on a page whose own script crashes and reloads itself
+    // compounds into far more reloads than the page's own bug alone causes.
+    const { rerender } = await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+    const firstSource = mockLastWebViewProps.source;
+
+    await act(async () => {
+      // Same uri, but a prop that isn't uri changes — this must not be
+      // treated as "load a new page".
+      rerender(
+        <EdgelessWebview
+          uri="https://volksverpetzer.de/impressum-volksverpetzer/"
+          showNavBar={false}
+        />,
+      );
+      await Promise.resolve();
+    });
+
+    expect(mockLastWebViewProps.source).toBe(firstSource);
+  });
+
+  it("creates a new source object when the uri actually changes", async () => {
+    const { rerender } = await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+    const firstSource = mockLastWebViewProps.source;
+
+    await act(async () => {
+      rerender(
+        <EdgelessWebview uri="https://volksverpetzer.de/another-page/" />,
+      );
+      await Promise.resolve();
+    });
+
+    expect(mockLastWebViewProps.source).not.toBe(firstSource);
+    expect(mockLastWebViewProps.source).toEqual({
+      uri: "https://volksverpetzer.de/another-page/",
+    });
+  });
+});
+
 describe("EdgelessWebview 404 slash retry", () => {
   beforeEach(() => {
     mockLastWebViewProps = null;
