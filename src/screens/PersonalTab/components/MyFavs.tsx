@@ -1,6 +1,7 @@
 import { useIsFocused } from "expo-router/react-navigation";
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StarIcon } from "#/components/Icons";
 import GenericPost from "#/components/posts/GenericPost";
@@ -130,6 +131,10 @@ const MyFavs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const focused = useIsFocused();
   const requestIdRef = useRef(0);
+  // insets.bottom already includes the native tab bar's height (it's a real
+  // TabView, not a JS-rendered overlay, so iOS/Android propagate it as part
+  // of the safe area) — no separate tab-bar-height constant needed.
+  const { bottom: tabBarClearance } = useSafeAreaInsets();
 
   useEffect(() => {
     let isMounted = true;
@@ -199,7 +204,13 @@ const MyFavs = () => {
   }, [focused]);
 
   return (
-    <View style={{ flex: 1, gap: spacing.xl, paddingBottom: 100 }}>
+    <View
+      style={{
+        flex: 1,
+        gap: spacing.xl,
+        paddingBottom: tabBarClearance + spacing.xl,
+      }}
+    >
       {isLoading ? (
         <UiSpinner text="Lade Favoriten..." />
       ) : (

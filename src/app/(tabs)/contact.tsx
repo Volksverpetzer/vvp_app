@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import type { View as ViewType } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
@@ -65,6 +66,11 @@ const isValidCategory = (value?: string): value is ContactCategory =>
   value === "report_fake" || value === "app_feedback" || value === "other";
 
 const ContactScreen = () => {
+  // insets.bottom already includes the native tab bar's height (it's a real
+  // TabView, not a JS-rendered overlay, so iOS/Android propagate it as part
+  // of the safe area) — no separate tab-bar-height constant needed.
+  const { bottom: tabBarClearance } = useSafeAreaInsets();
+
   // Local state variables
   const [buttonEnabled, setButtonEnabled] = useState(true);
   const [animation, setAnimation] = useState(false);
@@ -316,7 +322,11 @@ const ContactScreen = () => {
           }}
           contentContainerStyle={[
             globalStyles.content,
-            { paddingTop: HEADER_HEIGHT, paddingBottom: 100, gap: spacing.xl },
+            {
+              paddingTop: HEADER_HEIGHT,
+              paddingBottom: tabBarClearance + spacing.xl,
+              gap: spacing.xl,
+            },
           ]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],

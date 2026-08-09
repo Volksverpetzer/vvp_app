@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   FirstPlaceIcon,
@@ -42,6 +43,10 @@ const parseRegionsData = async (): Promise<Region[]> => {
 
 const RegionMap = () => {
   const [regionData, setRegionData] = useState<Region[] | undefined>();
+  // insets.bottom already includes the native tab bar's height (it's a real
+  // TabView, not a JS-rendered overlay, so iOS/Android propagate it as part
+  // of the safe area) — no separate tab-bar-height constant needed.
+  const { bottom: tabBarClearance } = useSafeAreaInsets();
 
   useEffect(() => {
     parseRegionsData().then(setRegionData);
@@ -105,7 +110,7 @@ const RegionMap = () => {
         style={{
           flex: 1,
           gap: spacing.md,
-          paddingBottom: spacing.huge,
+          paddingBottom: tabBarClearance + spacing.xl,
         }}
       >
         <UiText size="xl" bold style={globalStyles.whiteText}>
