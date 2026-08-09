@@ -28,6 +28,7 @@ import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -179,7 +180,7 @@ const SettingsScreen = () => {
           globalStyles.content,
           {
             paddingTop: HEADER_HEIGHT,
-            gap: 20,
+            gap: spacing.xl,
             paddingHorizontal: 0,
           },
         ]}
@@ -331,15 +332,15 @@ const SettingsScreen = () => {
 
 const styles = StyleSheet.create({
   linksContainer: {
-    paddingHorizontal: 20,
-    gap: 20,
+    paddingHorizontal: spacing.xl,
+    gap: spacing.xl,
   },
   infoContainer: {
-    paddingHorizontal: 20,
-    gap: 20,
+    paddingHorizontal: spacing.xl,
+    gap: spacing.xl,
   },
   sectionText: {
-    paddingHorizontal: 20,
+    paddingHorizontal: spacing.xl,
   },
 });
 

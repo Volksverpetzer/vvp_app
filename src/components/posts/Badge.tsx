@@ -4,6 +4,7 @@ import { View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import { radii } from "#/constants/BorderRadius";
+import { spacing } from "#/constants/Spacing";
 
 export type BadgePosition =
   "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
@@ -31,8 +32,8 @@ const Badge = ({
 
   const style: ViewStyle = {
     backgroundColor: color,
-    paddingVertical: 3,
-    paddingHorizontal: 10,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
     position: "absolute",
     ...(isTop ? { top: 0 } : { bottom: 0 }),
     ...(isLeft

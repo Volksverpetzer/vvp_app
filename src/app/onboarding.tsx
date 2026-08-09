@@ -14,6 +14,7 @@ import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
@@ -177,7 +178,7 @@ const Onboarding = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              gap: 30,
+              gap: spacing.xxxl,
             }}
           >
             <FeedIcon color={corporate} size={20} />
@@ -203,7 +204,7 @@ const Onboarding = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    gap: 30,
+                    gap: spacing.xxxl,
                   }}
                 >
                   <NotificationIcon color={corporate} size={20} />
@@ -246,7 +247,7 @@ const Onboarding = () => {
             style={{
               color: corporate,
               textAlign: "center",
-              padding: 40,
+              padding: spacing.huge,
             }}
           >
             Datenschutzerklärung

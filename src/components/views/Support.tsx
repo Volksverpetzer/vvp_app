@@ -11,6 +11,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -35,7 +36,7 @@ const Support = ({ article_link }: SupportProperties) => {
     <View
       style={{
         backgroundColor: "transparent",
-        gap: 20,
+        gap: spacing.xl,
         alignItems: "center",
         overflow: "hidden",
       }}
@@ -61,7 +62,7 @@ const Support = ({ article_link }: SupportProperties) => {
       <UiPressable
         accessibilityRole="button"
         onPress={banktransfer}
-        style={{ padding: 10 }}
+        style={{ padding: spacing.md }}
       >
         <Typography type="heading" style={{ color: corporate }}>
           Dauerauftrag
@@ -77,7 +78,7 @@ const Support = ({ article_link }: SupportProperties) => {
       >
         <View
           style={{
-            padding: 20,
+            padding: spacing.xl,
             alignItems: "center",
             backgroundColor,
             borderRadius: radii.lg,
@@ -88,7 +89,7 @@ const Support = ({ article_link }: SupportProperties) => {
               width: "100%",
               justifyContent: "flex-end",
               alignItems: "flex-end",
-              padding: 5,
+              padding: spacing.xs,
             }}
           >
             <UiPressable

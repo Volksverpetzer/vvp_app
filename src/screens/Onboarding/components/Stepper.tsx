@@ -6,6 +6,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 import type { OnBoardingData } from "./Flatboard";
@@ -52,8 +53,8 @@ const StandardStepper = (properties: StandardStepperProperties) => {
                 height: 5,
                 width: 5,
                 backgroundColor: accentColor,
-                marginHorizontal: 3,
-                marginVertical: 10,
+                marginHorizontal: spacing.xs,
+                marginVertical: spacing.md,
                 borderRadius: 5,
               }}
             />
@@ -96,7 +97,7 @@ const stepperStyles = StyleSheet.create({
   nextButton: {
     borderRadius: 24,
     minWidth: 90,
-    padding: 10,
+    padding: spacing.md,
     textAlign: "center",
   },
   skipButton: {
@@ -104,14 +105,14 @@ const stepperStyles = StyleSheet.create({
     borderRadius: radii.xs,
     justifyContent: "center",
     minWidth: 90,
-    padding: 10,
+    padding: spacing.md,
   },
   stepper: {
     alignItems: "center",
     bottom: 30,
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 50,
+    paddingHorizontal: spacing.huge,
     position: "absolute",
     width: "100%",
     zIndex: 100,

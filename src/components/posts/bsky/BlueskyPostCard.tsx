@@ -14,6 +14,7 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
@@ -79,9 +80,9 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
       <View
         style={{
           position: "relative",
-          gap: 20,
+          gap: spacing.xl,
           paddingHorizontal: POST_PADDING_HORIZONTAL,
-          paddingVertical: 20,
+          paddingVertical: spacing.xl,
         }}
       >
         <UiPressable

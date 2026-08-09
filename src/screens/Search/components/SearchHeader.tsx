@@ -9,6 +9,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -66,7 +67,7 @@ const SearchHeader = ({
           {
             height: 100,
             justifyContent: "flex-end",
-            paddingRight: 20,
+            paddingRight: spacing.xl,
           },
         ]}
       >
@@ -74,7 +75,7 @@ const SearchHeader = ({
           bold
           size="xxl"
           style={{
-            paddingTop: 20,
+            paddingTop: spacing.xl,
             color: corporate,
             flex: 1,
             textAlign: "center",
@@ -102,9 +103,9 @@ const SearchHeader = ({
           globalStyles.input,
           {
             height: 50,
-            paddingRight: 40,
+            paddingRight: spacing.huge,
             backgroundColor: corporate,
-            marginBottom: 40,
+            marginBottom: spacing.huge,
           },
         ]}
       >

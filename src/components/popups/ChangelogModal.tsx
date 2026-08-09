@@ -8,6 +8,7 @@ import { radii } from "#/constants/BorderRadius";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
 import { LINE_HEIGHTS } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface ChangelogModalProperties {
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     maxHeight: "80%",
   },
   version: {
-    marginTop: 2,
+    marginTop: spacing.xs,
   },
   scroll: {
     flexShrink: 1,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     borderRadius: radii.md,
-    paddingVertical: 14,
+    paddingVertical: spacing.md,
   },
 });
 

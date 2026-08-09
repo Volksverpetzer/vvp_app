@@ -14,6 +14,7 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import {
@@ -80,7 +81,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               source={{ uri: account.avatar }}
               style={{ width: 40, height: 40, borderRadius: 20 }}
             />
-            <View style={{ marginLeft: 10 }}>
+            <View style={{ marginLeft: spacing.md }}>
               <Typography type="heading">
                 &nbsp;{account.display_name}&nbsp;
               </Typography>
@@ -102,7 +103,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
                 style={{
                   lineHeight: LINE_HEIGHTS.lg,
                   color: corporate,
-                  marginBottom: 20,
+                  marginBottom: spacing.xl,
                 }}
               >
                 Mehr Lesen

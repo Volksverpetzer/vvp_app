@@ -12,6 +12,7 @@ import type {
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -200,7 +201,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
           {
             alignItems: "center",
             left: 0,
-            padding: 20,
+            padding: spacing.xl,
             position: "absolute",
             right: 0,
             top: screenHeight * 1.33,

@@ -9,6 +9,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { toast } from "#/helpers/toast";
@@ -119,10 +120,13 @@ const BackupView = () => {
     }
   };
 
-  const rowStyle = [globalStyles.row, { paddingBottom: 20, maxHeight: 45 }];
+  const rowStyle = [
+    globalStyles.row,
+    { paddingBottom: spacing.xl, maxHeight: 45 },
+  ];
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: spacing.xl }}>
       <UiPressable
         accessibilityRole="button"
         onPress={handleExport}

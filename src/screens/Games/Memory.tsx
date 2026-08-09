@@ -7,6 +7,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { DisinfoPair, MemoryCard } from "#/types";
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     height: cardSize - 10,
     justifyContent: "center",
-    margin: 5,
+    margin: spacing.xs,
     width: cardSize - 10,
   },
   cardInner: { alignItems: "center", justifyContent: "center" },
@@ -159,8 +160,9 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
+    gap: spacing.xs,
     justifyContent: "center",
-    marginTop: 10,
+    marginTop: spacing.md,
     width: screenWidth,
   },
   headerCard: {
@@ -168,8 +170,8 @@ const styles = StyleSheet.create({
     borderRadius: radii.xs,
     borderWidth: 1,
     flex: 1,
-    marginHorizontal: 5,
-    padding: 5,
+    marginHorizontal: spacing.xs,
+    padding: spacing.xs,
   },
   headerCardText: { textAlign: "center" },
   headerCardsContainer: {
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 10,
+    paddingHorizontal: spacing.md,
   },
   headerError: { backgroundColor: "#f8d7da" },
   headerSuccess: { backgroundColor: "#d4edda" },

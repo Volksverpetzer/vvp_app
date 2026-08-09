@@ -8,6 +8,7 @@ import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface UiCollapsableProps {
@@ -48,7 +49,13 @@ const UiCollapsable = ({
   };
 
   return (
-    <View style={{ paddingHorizontal: 20, borderRadius, overflow: "hidden" }}>
+    <View
+      style={{
+        paddingHorizontal: spacing.xl,
+        borderRadius,
+        overflow: "hidden",
+      }}
+    >
       <Animated.View
         style={[
           StyleSheet.absoluteFill,
@@ -81,16 +88,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingTop: 20,
-    paddingBottom: 15,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.lg,
   },
   title: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: spacing.md,
   },
   content: {
-    paddingTop: 5,
+    paddingTop: spacing.xs,
   },
 });
 

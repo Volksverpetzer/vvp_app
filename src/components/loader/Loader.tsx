@@ -4,6 +4,7 @@ import type { ActivityIndicatorProps } from "react-native";
 
 import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
+import { spacing } from "#/constants/Spacing";
 
 type LoaderProps<TData> = {
   keyValue: string;
@@ -70,7 +71,7 @@ const Loader = <TData,>({
       <UiSpinner
         {...spinnerProps}
         text={loadingText}
-        containerStyle={{ minHeight: 280, paddingVertical: 24 }}
+        containerStyle={{ minHeight: 280, paddingVertical: spacing.xxl }}
       />
     );
   }

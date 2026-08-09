@@ -13,6 +13,7 @@ import AnimatedPageDots from "#/components/animations/AnimatedPageDots";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import Statistics from "#/helpers/Statistics";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { StatisticsType } from "#/types";
@@ -71,8 +72,8 @@ const StatisticsView = () => {
           zIndex: 99,
           backgroundColor: corporate,
           borderRadius: radii.xxl,
-          paddingVertical: 20,
-          marginHorizontal: 10,
+          paddingVertical: spacing.xl,
+          marginHorizontal: spacing.md,
         },
       ]}
       onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}

@@ -2,6 +2,7 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import AchievementComponent from "#/screens/ActionTab/components/AchievementComponent";
 import RegionMap from "#/screens/ActionTab/components/RegionMap";
@@ -15,7 +16,7 @@ const ActionTab = () => {
       style={{ flex: 1, backgroundColor }}
       contentContainerStyle={[
         globalStyles.content,
-        { paddingHorizontal: 0, gap: 20 },
+        { paddingHorizontal: 0, gap: spacing.xl },
       ]}
     >
       <AchievementComponent />

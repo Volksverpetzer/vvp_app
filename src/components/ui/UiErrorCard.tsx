@@ -3,6 +3,7 @@ import type { UiCardProperties } from "#/components/ui/UiCard";
 import UiCard from "#/components/ui/UiCard";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 type UiErrorCardProperties = UiCardProperties & { text?: string };
@@ -15,7 +16,10 @@ const UiErrorCard = (properties: UiErrorCardProperties) => {
 
   return (
     <UiCard
-      style={[{ backgroundColor, alignItems: "center", gap: 5 }, style]}
+      style={[
+        { backgroundColor, alignItems: "center", gap: spacing.xs },
+        style,
+      ]}
       {...otherProperties}
     >
       <ErrorIcon color={onError} />

@@ -5,6 +5,7 @@ import { StarIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import { getFavs } from "#/helpers/network/Engagement";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useEngagementCount } from "#/hooks/useEngagementCount";
@@ -48,7 +49,7 @@ const FavCounter = (properties: FavCounterProperties) => {
         flexDirection: "row",
         justifyContent: "space-evenly",
         alignItems: "center",
-        gap: 5,
+        gap: spacing.xs,
       }}
     >
       <StarIcon filled={isFav} color={color} size={size} />

@@ -8,6 +8,7 @@ import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { fontSizes } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -29,11 +30,21 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
     <View
       style={[
         globalStyles.row,
-        { paddingHorizontal: 20, justifyContent: "flex-start", gap: 20 },
+        {
+          paddingHorizontal: spacing.xl,
+          justifyContent: "flex-start",
+          gap: spacing.xl,
+        },
       ]}
     >
       {!!reading_time && (
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: spacing.xs,
+          }}
+        >
           <ClockIcon size={16} color={color} />
           <UiText size="base" style={{ color }}>
             {reading_time} Min.

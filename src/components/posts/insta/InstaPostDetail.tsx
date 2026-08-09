@@ -7,6 +7,7 @@ import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import Typography from "#/components/ui/Typography";
 import Config from "#/constants/Config";
 import { CARD_CONTENT_GAP } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -56,7 +57,7 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
       <Hyperlink linkStyle={{ color: corporate }} onPress={handleLinkPress}>
         <Typography
           type="body"
-          style={{ paddingHorizontal: 10, paddingBottom: 50 }}
+          style={{ paddingHorizontal: spacing.md, paddingBottom: spacing.huge }}
         >
           {caption}
         </Typography>

@@ -6,6 +6,7 @@ import { CheckboxIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface UiCheckboxProperties {
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
   row: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 20,
+    gap: spacing.xl,
   },
 });
 

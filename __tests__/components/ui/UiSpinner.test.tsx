@@ -59,10 +59,10 @@ describe("UiSpinner", () => {
       });
     });
 
-    it("applies gap:12 to the container", async () => {
+    it("applies gap:10 to the container", async () => {
       const { toJSON } = await render(<Spinner />);
       const flatStyle = ((toJSON() as any).props.style as any[]).flat();
-      expect(flatStyle).toContainEqual(expect.objectContaining({ gap: 12 }));
+      expect(flatStyle).toContainEqual(expect.objectContaining({ gap: 10 }));
     });
   });
 

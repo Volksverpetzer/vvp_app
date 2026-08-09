@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 
 interface LegendProperties {
   text: string;
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
   legend: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: spacing.sm,
   },
   dot: {
     borderColor: "white",

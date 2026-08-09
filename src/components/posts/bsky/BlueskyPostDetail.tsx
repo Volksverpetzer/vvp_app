@@ -12,6 +12,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -41,9 +42,9 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
     <ScrollView
       contentContainerStyle={{
         position: "relative",
-        gap: 20,
+        gap: spacing.xl,
         paddingHorizontal: POST_PADDING_HORIZONTAL,
-        paddingVertical: 20,
+        paddingVertical: spacing.xl,
       }}
     >
       <UiPressable

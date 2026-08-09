@@ -17,6 +17,7 @@ import {
   CONTENT_MAX_WIDTH,
   SOURCE_SANS_FONTS,
 } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { getTagStyles } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -105,7 +106,7 @@ const SearchResultItem = ({
 
   const content = (
     <UiCard>
-      <View style={{ gap: 10 }}>
+      <View style={{ gap: spacing.md }}>
         {title ? <Typography type="heading">{decode(title)}</Typography> : null}
 
         {/* Source/date stays outside the clamped area so it's always visible. */}

@@ -15,6 +15,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -113,7 +114,7 @@ const AISearch = ({
           style={[
             globalStyles.row,
             styles.reportButton,
-            { backgroundColor: corporate, marginTop: 10 },
+            { backgroundColor: corporate, marginTop: spacing.md },
           ]}
         >
           <UiText style={globalStyles.whiteText}>Neu Laden</UiText>
@@ -128,7 +129,7 @@ const AISearch = ({
   }
 
   return (
-    <View style={{ flex: 1, height: "100%", paddingTop: 20 }}>
+    <View style={{ flex: 1, height: "100%", paddingTop: spacing.xl }}>
       {showFaktenBot && (
         <View style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}>
           <FaktenBot search={false} reaction={reactionValue} />
@@ -140,7 +141,7 @@ const AISearch = ({
         keyExtractor={(_, index) => index.toString()}
         contentContainerStyle={{
           paddingBottom: 100,
-          gap: 20,
+          gap: spacing.xl,
         }}
         renderItem={renderItem}
         onScroll={backToTop.onScroll}
@@ -163,15 +164,15 @@ const styles = StyleSheet.create({
   reportButton: {
     borderRadius: radii.md,
     justifyContent: "center",
-    margin: 10,
-    padding: 10,
+    margin: spacing.md,
+    padding: spacing.md,
     width: "50%",
   },
   urlButton: {
     borderRadius: radii.md,
     justifyContent: "center",
-    margin: 10,
-    padding: 10,
+    margin: spacing.md,
+    padding: spacing.md,
   },
 });
 

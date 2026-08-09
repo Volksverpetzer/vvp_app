@@ -15,6 +15,7 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -75,12 +76,12 @@ const MySources = () => {
   }, [sources]);
 
   return (
-    <View style={{ flex: 1, gap: 20 }}>
+    <View style={{ flex: 1, gap: spacing.xl }}>
       {slugGroups.map((group) => {
         const title = group.entries.find((e) => e.text)?.text;
         return (
           <UiCard key={group.slug} style={{ padding: 0 }}>
-            <View style={{ padding: 30, gap: 10 }}>
+            <View style={{ padding: spacing.xxxl, gap: spacing.md }}>
               {title && <Typography type="heading">{title}</Typography>}
               {group.entries.map((entry) => (
                 <Swipeable

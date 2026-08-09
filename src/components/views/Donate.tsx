@@ -11,6 +11,7 @@ import StripeButton from "#/components/buttons/StripeButton";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import NotificationManager from "#/helpers/Notifications";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
@@ -85,14 +86,14 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
         style={{
           alignItems: "center",
           backgroundColor: "transparent",
-          gap: 20,
+          gap: spacing.xl,
         }}
       >
         {(properties?.showPicker ?? true) && (
           <View
             style={{
               height: 50,
-              marginBottom: 10,
+              marginBottom: spacing.md,
               backgroundColor: "transparent",
             }}
             onLayout={(e) => setPickerWidth(e.nativeEvent.layout.width)}

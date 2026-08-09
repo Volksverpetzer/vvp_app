@@ -9,6 +9,7 @@ import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 /**
@@ -107,7 +108,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
 
   const titleTextStyle = useMemo(
     () => ({
-      paddingBottom: 10,
+      paddingBottom: spacing.md,
       fontFamily: "SourceSansProBold",
       zIndex: 100,
       fontSize: headerFontSize,
@@ -147,7 +148,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
           ))}
         <View
           style={{
-            marginHorizontal: 12,
+            marginHorizontal: spacing.md,
           }}
         >
           {children}

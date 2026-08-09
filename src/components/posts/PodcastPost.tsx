@@ -15,6 +15,7 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useAudio } from "#/helpers/provider/AudioProvider";
@@ -150,9 +151,9 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              gap: 12,
+              gap: spacing.md,
               paddingHorizontal: POST_PADDING_HORIZONTAL,
-              paddingVertical: 12,
+              paddingVertical: spacing.md,
             }}
           >
             <Octicons name="play" size={26} color={corporate} />

@@ -8,6 +8,7 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAudio } from "#/helpers/provider/AudioProvider";
 import { formatTime } from "#/helpers/utils/audio";
 import {
@@ -87,7 +88,7 @@ const AudioPlayer = ({
       <View
         style={{
           paddingHorizontal: horizontalPadding,
-          paddingVertical: 12,
+          paddingVertical: spacing.md,
           minHeight: 50,
           justifyContent: "center",
           alignItems: "center",
@@ -111,10 +112,10 @@ const AudioPlayer = ({
     <View
       style={{
         paddingHorizontal: horizontalPadding,
-        paddingVertical: 12,
+        paddingVertical: spacing.md,
         flexDirection: "row",
         alignItems: "center",
-        gap: 12,
+        gap: spacing.md,
       }}
     >
       <UiPressable

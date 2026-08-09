@@ -4,6 +4,7 @@ import { View } from "react-native";
 import FavCounter from "#/components/counter/FavCounter";
 import ShareCounter from "#/components/counter/ShareCounter";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { multishare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { FavPayload, FaveableType, ShareableType } from "#/types";
@@ -38,10 +39,10 @@ const ShareBar = (properties: ShareBarProperties) => {
       style={[
         globalStyles.row,
         {
-          paddingHorizontal: 26,
-          paddingVertical: 10,
+          paddingHorizontal: spacing.xxl,
+          paddingVertical: spacing.md,
           justifyContent: "flex-start",
-          gap: 30,
+          gap: spacing.xxxl,
         },
       ]}
     >

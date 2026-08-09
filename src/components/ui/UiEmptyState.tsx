@@ -4,6 +4,7 @@ import type { ViewStyle } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { spacing } from "#/constants/Spacing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 interface UiEmptyStateProps {
@@ -13,7 +14,7 @@ interface UiEmptyStateProps {
   testID?: string;
 }
 
-const style: ViewStyle = { alignItems: "center", gap: 12 };
+const style: ViewStyle = { alignItems: "center", gap: spacing.md };
 
 const UiEmptyState = ({
   icon,

@@ -7,6 +7,7 @@ import Typography from "#/components/ui/Typography";
 import EmptyComponent from "#/components/views/EmptyComponent";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import NotFoundImage from "#assets/images/404.webp";
@@ -22,7 +23,7 @@ const NotFoundScreen = () => {
           globalStyles.content,
           {
             alignItems: "center",
-            paddingVertical: 40,
+            paddingVertical: spacing.huge,
           },
         ]}
       >

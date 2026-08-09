@@ -10,6 +10,7 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface BottomSheetModalProperties {
@@ -56,7 +57,10 @@ const BottomSheetModal = ({
           // maxHeight), but the trailing object still wins over containerStyle,
           // keeping the safe-area padding/background authoritative.
           containerStyle,
-          { backgroundColor: surface, paddingBottom: 28 + insets.bottom },
+          {
+            backgroundColor: surface,
+            paddingBottom: spacing.xxl + insets.bottom,
+          },
         ]}
       >
         <View style={[styles.handle, { backgroundColor: textMuted }]} />
@@ -88,8 +92,8 @@ const styles = StyleSheet.create({
   container: {
     borderTopLeftRadius: radii.xl,
     borderTopRightRadius: radii.xl,
-    paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.md,
   },
   handle: {
     alignSelf: "center",

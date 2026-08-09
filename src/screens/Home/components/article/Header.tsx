@@ -22,6 +22,7 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { CONTENT_HORIZONTAL_PADDING } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
@@ -143,14 +144,14 @@ const Header = (properties: HeaderProperties) => {
         <ImageCreditBadge credit={article.imageCredit} position="bottomRight" />
       </View>
       <UiSpace size={30} />
-      <Typography type="title" style={{ paddingHorizontal: 20 }}>
+      <Typography type="title" style={{ paddingHorizontal: spacing.xl }}>
         {article_title}
       </Typography>
       <Typography
         type="meta"
         style={{
-          paddingVertical: 10,
-          paddingHorizontal: 20,
+          paddingVertical: spacing.md,
+          paddingHorizontal: spacing.xl,
         }}
       >
         {article.authors?.length ? (
@@ -234,7 +235,7 @@ const Header = (properties: HeaderProperties) => {
             <UiSpace size={20} />
             <Typography
               type="title"
-              style={{ color: Colors.dark.text, paddingHorizontal: 20 }}
+              style={{ color: Colors.dark.text, paddingHorizontal: spacing.xl }}
             >
               {article_title}
             </Typography>
@@ -243,7 +244,10 @@ const Header = (properties: HeaderProperties) => {
                 pins the light-on-dark colors instead of following the theme. */}
             <Typography
               type="meta"
-              style={{ color: Colors.dark.textMuted, paddingHorizontal: 20 }}
+              style={{
+                color: Colors.dark.textMuted,
+                paddingHorizontal: spacing.xl,
+              }}
             >
               {article.authors?.length ? (
                 <>

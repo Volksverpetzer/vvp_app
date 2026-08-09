@@ -9,6 +9,7 @@ import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import type { LevelType, TaskType } from "#/helpers/Achievements";
 import { AchievementConfig, Achievements } from "#/helpers/Achievements";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
@@ -47,10 +48,10 @@ const AchievementComponent = () => {
     <View
       style={{
         backgroundColor: corporate,
-        marginHorizontal: 20,
-        marginTop: 30,
+        marginHorizontal: spacing.xl,
+        marginTop: spacing.xxxl,
         borderRadius: radii.md,
-        padding: 20,
+        padding: spacing.xl,
       }}
     >
       <View style={[globalStyles.row, { justifyContent: "flex-start" }]}>
@@ -58,7 +59,7 @@ const AchievementComponent = () => {
           style={{
             marginTop: -60,
             marginLeft: -25,
-            marginRight: 10,
+            marginRight: spacing.md,
             width: 60,
             height: 60,
             borderRadius: 40,
@@ -94,34 +95,35 @@ const AchievementComponent = () => {
         </View>
       </View>
       <UiSpace size={10} />
-      {tasks &&
-        tasks.map((task, key) => {
-          return (
-            <View
-              key={key}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 5,
-              }}
-            >
-              {!!task.value ? (
-                <CheckboxIcon size={16} color="white" />
-              ) : (
-                <CircleIcon size={16} color="white" />
-              )}
-              <UiText
-                size="base"
-                style={[
-                  globalStyles.whiteText,
-                  { padding: 5, paddingLeft: 20 },
-                ]}
+      <View style={{ gap: spacing.xs }}>
+        {tasks &&
+          tasks.map((task, key) => {
+            return (
+              <View
+                key={key}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
               >
-                {task.verbose}
-              </UiText>
-            </View>
-          );
-        })}
+                {!!task.value ? (
+                  <CheckboxIcon size={16} color="white" />
+                ) : (
+                  <CircleIcon size={16} color="white" />
+                )}
+                <UiText
+                  size="base"
+                  style={[
+                    globalStyles.whiteText,
+                    { padding: spacing.xs, paddingLeft: spacing.xl },
+                  ]}
+                >
+                  {task.verbose}
+                </UiText>
+              </View>
+            );
+          })}
+      </View>
     </View>
   );
 };

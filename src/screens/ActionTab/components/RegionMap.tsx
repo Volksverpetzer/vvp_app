@@ -13,6 +13,7 @@ import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { getRegions } from "#/helpers/network/Action";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -61,9 +62,9 @@ const RegionMap = () => {
         backgroundColor: primaryMuted,
         borderTopLeftRadius: radii.xxl,
         borderTopRightRadius: radii.xxl,
-        gap: 20,
+        gap: spacing.xl,
         overflow: "hidden",
-        paddingHorizontal: 20,
+        paddingHorizontal: spacing.xl,
       }}
     >
       <View style={{ backgroundColor: primaryMuted, flex: 1 }}>
@@ -91,7 +92,10 @@ const RegionMap = () => {
         <Legend text="Schlusslicht" color={corporate} />
         <UiSpace size={8} />
         <View>
-          <UiText size="xs" style={[globalStyles.whiteText, { marginTop: 20 }]}>
+          <UiText
+            size="xs"
+            style={[globalStyles.whiteText, { marginTop: spacing.xl }]}
+          >
             Shares aus der Volksverpetzer-App pro Kopf im Bundesland
           </UiText>
         </View>
@@ -121,7 +125,7 @@ const RegionMap = () => {
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
                 width: 120,
-                margin: 3,
+                margin: spacing.xs,
                 borderRadius: 10,
                 height: 18,
                 backgroundColor: "white",
@@ -139,7 +143,7 @@ const RegionMap = () => {
           <UiText
             key={region.region}
             size="sm"
-            style={[globalStyles.whiteText, { paddingVertical: 2 }]}
+            style={[globalStyles.whiteText, { paddingVertical: spacing.xs }]}
           >
             {`${idx + 4}. ${region.name}`}
           </UiText>

@@ -9,6 +9,7 @@ import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 import UiTabView from "#/components/ui/UiTabView";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MyFavs from "#/screens/PersonalTab/components/MyFavs";
@@ -69,7 +70,7 @@ const PersonalTab = () => {
               label="Favoriten"
               isActive={activeTab === "favs"}
               onPress={() => setActiveTab("favs")}
-              style={{ paddingVertical: 10 }}
+              style={{ paddingVertical: spacing.md }}
               animatedLabelHeight={labelHeight}
               animatedLabelOpacity={labelOpacity}
             />
@@ -78,7 +79,7 @@ const PersonalTab = () => {
               label="Quellen"
               isActive={activeTab === "sources"}
               onPress={() => setActiveTab("sources")}
-              style={{ paddingVertical: 10 }}
+              style={{ paddingVertical: spacing.md }}
               animatedLabelHeight={labelHeight}
               animatedLabelOpacity={labelOpacity}
             />

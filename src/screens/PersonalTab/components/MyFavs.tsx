@@ -9,6 +9,7 @@ import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import Post from "#/helpers/Post";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
@@ -198,7 +199,7 @@ const MyFavs = () => {
   }, [focused]);
 
   return (
-    <View style={{ flex: 1, gap: 20 }}>
+    <View style={{ flex: 1, gap: spacing.xl }}>
       {isLoading ? (
         <UiSpinner text="Lade Favoriten..." />
       ) : (

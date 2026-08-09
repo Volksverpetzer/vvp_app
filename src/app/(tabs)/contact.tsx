@@ -24,6 +24,7 @@ import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
@@ -114,13 +115,13 @@ const ContactScreen = () => {
         categoryContainer: {
           flexDirection: "row",
           flexWrap: "wrap",
-          gap: 8,
+          gap: spacing.sm,
         },
         categoryPill: {
           backgroundColor: surfaceInput,
           borderRadius: radii.full,
-          paddingHorizontal: 14,
-          paddingVertical: 8,
+          paddingHorizontal: spacing.md,
+          paddingVertical: spacing.sm,
         },
         categoryPillActive: {
           backgroundColor: primary,
@@ -130,8 +131,8 @@ const ContactScreen = () => {
         },
         errorText: {
           color: errorColor,
-          marginBottom: 20,
-          paddingHorizontal: 12,
+          marginBottom: spacing.xl,
+          paddingHorizontal: spacing.md,
           textAlign: "center",
         },
         input: {
@@ -142,10 +143,10 @@ const ContactScreen = () => {
           borderRadius: radii.xs,
           borderWidth: 2,
           // Explicit vertical + horizontal padding (overriding the shared
-          // input's paddingHorizontal: 25) so the intent is unambiguous:
+          // input's paddingHorizontal: spacing.xxl) so the intent is unambiguous:
           // tighter sides than the shared input.
-          paddingVertical: 10,
-          paddingHorizontal: 14,
+          paddingVertical: spacing.md,
+          paddingHorizontal: spacing.md,
           // Shared text size, applied to the actual TextInput (the shared
           // input style is layout-only, since it's also used on container Views).
           fontSize: INPUT_FONT_SIZE,
@@ -159,8 +160,8 @@ const ContactScreen = () => {
           backgroundColor: accent,
           borderRadius: radii.full,
           justifyContent: "center",
-          margin: 20,
-          paddingVertical: 10,
+          margin: spacing.xl,
+          paddingVertical: spacing.md,
           width: 120,
         },
         submitButtonDisabled: {
@@ -325,7 +326,7 @@ const ContactScreen = () => {
           )}
           scrollEventThrottle={16}
         >
-          <View style={{ gap: 10 }}>
+          <View style={{ gap: spacing.md }}>
             <Typography type="heading">Thema wählen:</Typography>
             <View style={styles.categoryContainer}>
               {CATEGORIES.map(({ key, label }) => (
@@ -357,7 +358,7 @@ const ContactScreen = () => {
             </View>
           </View>
           <UiSpace size={20} />
-          <View style={{ gap: 10 }}>
+          <View style={{ gap: spacing.md }}>
             <Typography type="heading">{texts.titleLabel}</Typography>
             <UiTextInput
               accessibilityLabel="Text input field"
@@ -376,7 +377,7 @@ const ContactScreen = () => {
             />
           </View>
           <UiSpace size={20} />
-          <View style={{ gap: 10 }}>
+          <View style={{ gap: spacing.md }}>
             <Typography type="heading">{texts.messageLabel}</Typography>
             <UiTextInput
               accessibilityLabel="Text input field"
@@ -397,7 +398,7 @@ const ContactScreen = () => {
             />
           </View>
           <UiSpace size={20} />
-          <View style={{ gap: 10 }}>
+          <View style={{ gap: spacing.md }}>
             <Typography type="heading">
               E-Mail für Rückfragen (optional)
             </Typography>

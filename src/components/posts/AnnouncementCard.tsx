@@ -10,6 +10,7 @@ import type { AnnouncementEntry } from "#/constants/Announcements";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { LINE_HEIGHTS } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { parseInlineMarkdown } from "#/helpers/utils/inlineMarkdown";
@@ -111,7 +112,7 @@ const AnnouncementCard = ({
           })}
         </UiText>
         <UiSpace size={16} />
-        <View style={{ flexDirection: "row", gap: 12 }}>
+        <View style={{ flexDirection: "row", gap: spacing.md }}>
           <UiPressable
             accessibilityRole="button"
             onPress={() => onDismiss(announcement.id)}
@@ -120,7 +121,7 @@ const AnnouncementCard = ({
               backgroundColor: surface,
               borderRadius: radii.md,
               flex: 1,
-              paddingVertical: 12,
+              paddingVertical: spacing.md,
             }}
           >
             <UiText size="base" bold style={{ color: text }}>
@@ -135,7 +136,7 @@ const AnnouncementCard = ({
               backgroundColor: corporate,
               borderRadius: radii.md,
               flex: 1,
-              paddingVertical: 12,
+              paddingVertical: spacing.md,
             }}
           >
             <UiText size="base" bold style={{ color: onPrimary }}>
