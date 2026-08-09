@@ -1,7 +1,6 @@
 import { useIsFocused } from "expo-router/react-navigation";
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StarIcon } from "#/components/Icons";
 import GenericPost from "#/components/posts/GenericPost";
@@ -18,6 +17,7 @@ import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import { mapPodcastEpisode } from "#/screens/Home/fetchers/PodcastFetcher";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type {
@@ -131,10 +131,7 @@ const MyFavs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const focused = useIsFocused();
   const requestIdRef = useRef(0);
-  // insets.bottom already includes the native tab bar's height (it's a real
-  // TabView, not a JS-rendered overlay, so iOS/Android propagate it as part
-  // of the safe area) — no separate tab-bar-height constant needed.
-  const { bottom: tabBarClearance } = useSafeAreaInsets();
+  const tabBarClearance = useTabBarClearance();
 
   useEffect(() => {
     let isMounted = true;

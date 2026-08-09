@@ -4,7 +4,6 @@ import { View } from "react-native";
 import Swipeable, {
   SwipeDirection,
 } from "react-native-gesture-handler/ReanimatedSwipeable";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DeleteIcon, LinkIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
@@ -20,6 +19,7 @@ import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import type { HttpsUrl, StoredSources } from "#/types";
 
 interface SourceEntry {
@@ -39,10 +39,7 @@ const MySources = () => {
 
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  // insets.bottom already includes the native tab bar's height (it's a real
-  // TabView, not a JS-rendered overlay, so iOS/Android propagate it as part
-  // of the safe area) — no separate tab-bar-height constant needed.
-  const { bottom: tabBarClearance } = useSafeAreaInsets();
+  const tabBarClearance = useTabBarClearance();
   useFocusEffect(
     useCallback(() => {
       SourcesStore.getAllSources().then(setSources);

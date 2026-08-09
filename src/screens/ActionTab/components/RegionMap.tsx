@@ -1,7 +1,6 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   FirstPlaceIcon,
@@ -18,6 +17,7 @@ import { spacing } from "#/constants/Spacing";
 import { getRegions } from "#/helpers/network/Action";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import type { Region, RegionsByCode } from "#/types";
 
 import Legend from "./Legend";
@@ -43,10 +43,7 @@ const parseRegionsData = async (): Promise<Region[]> => {
 
 const RegionMap = () => {
   const [regionData, setRegionData] = useState<Region[] | undefined>();
-  // insets.bottom already includes the native tab bar's height (it's a real
-  // TabView, not a JS-rendered overlay, so iOS/Android propagate it as part
-  // of the safe area) — no separate tab-bar-height constant needed.
-  const { bottom: tabBarClearance } = useSafeAreaInsets();
+  const tabBarClearance = useTabBarClearance();
 
   useEffect(() => {
     parseRegionsData().then(setRegionData);

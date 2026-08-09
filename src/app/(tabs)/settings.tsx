@@ -5,7 +5,6 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Animated, Platform, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   CodeIcon,
@@ -36,6 +35,7 @@ import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import BackupView from "#/screens/Settings/components/BackupView";
 import type { NotificationSettingType, SettingType } from "#/types";
 
@@ -43,10 +43,7 @@ const SettingsScreen = () => {
   const [token, setToken] = useState<string | undefined>();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const router = useRouter();
-  // insets.bottom already includes the native tab bar's height (it's a real
-  // TabView, not a JS-rendered overlay, so iOS/Android propagate it as part
-  // of the safe area) — no separate tab-bar-height constant needed.
-  const { bottom: tabBarClearance } = useSafeAreaInsets();
+  const tabBarClearance = useTabBarClearance();
 
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettingType>(

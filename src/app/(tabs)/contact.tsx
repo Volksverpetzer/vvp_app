@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import type { View as ViewType } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
@@ -31,6 +30,7 @@ import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { FetchError } from "#/helpers/utils/networking";
 import { appName } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import type { ContactCategory } from "#/types";
 
 const MIN_MESSAGE_LENGTH = 10;
@@ -66,10 +66,7 @@ const isValidCategory = (value?: string): value is ContactCategory =>
   value === "report_fake" || value === "app_feedback" || value === "other";
 
 const ContactScreen = () => {
-  // insets.bottom already includes the native tab bar's height (it's a real
-  // TabView, not a JS-rendered overlay, so iOS/Android propagate it as part
-  // of the safe area) — no separate tab-bar-height constant needed.
-  const { bottom: tabBarClearance } = useSafeAreaInsets();
+  const tabBarClearance = useTabBarClearance();
 
   // Local state variables
   const [buttonEnabled, setButtonEnabled] = useState(true);
