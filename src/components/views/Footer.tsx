@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { ShareIcon } from "#/components/Icons";
 import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
-import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -65,11 +64,10 @@ const Footer = (properties: FooterProperties) => {
           <ShareIcon color="white" size={32} />
         </UiPressable>
       </View>
-      <View style={{ paddingHorizontal: spacing.md }}>
+      <View style={{ paddingHorizontal: spacing.md, gap: spacing.xl }}>
         <UiCard style={{ backgroundColor: Colors[colorScheme].surface }}>
           <Support article_link={properties.article_link} />
         </UiCard>
-        <UiSpace size={20} />
         <UiCard style={{ backgroundColor: Colors[colorScheme].surface }}>
           <ContactCard
             article_link={properties.article_link}
@@ -77,7 +75,6 @@ const Footer = (properties: FooterProperties) => {
           />
         </UiCard>
       </View>
-      <UiSpace size={100} />
     </>
   );
 };

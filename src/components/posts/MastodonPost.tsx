@@ -67,8 +67,13 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
           onLinkPress(url, router, uri);
         }}
       >
-        <View style={{ flex: 1, paddingHorizontal: POST_PADDING_HORIZONTAL }}>
-          <UiSpace size={20} />
+        <View
+          style={{
+            flex: 1,
+            paddingHorizontal: POST_PADDING_HORIZONTAL,
+            paddingTop: spacing.xl,
+          }}
+        >
           <View
             style={{
               flexDirection: "row",

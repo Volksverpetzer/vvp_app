@@ -76,7 +76,7 @@ const MySources = () => {
   }, [sources]);
 
   return (
-    <View style={{ flex: 1, gap: spacing.xl }}>
+    <View style={{ flex: 1, gap: spacing.xl, paddingBottom: 100 }}>
       {slugGroups.map((group) => {
         const title = group.entries.find((e) => e.text)?.text;
         return (
@@ -124,7 +124,6 @@ const MySources = () => {
       <UiEmptyState icon={<LinkIcon />}>
         Klicke auf Links in Artikeln, dann tauchen sie hier auf
       </UiEmptyState>
-      <UiSpace size={100} />
     </View>
   );
 };

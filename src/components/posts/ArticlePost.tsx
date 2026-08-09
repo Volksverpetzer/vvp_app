@@ -19,6 +19,7 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -151,7 +152,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Memoized style objects.
   const containerStyle = useMemo(
     () => ({
-      paddingBottom: 0,
+      paddingBottom: excerpt ? spacing.xl : spacing.md,
       backgroundColor: Colors[colorScheme].background,
       ...(elevated && {
         borderRadius: radii.lg,
@@ -160,7 +161,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         borderColor: Colors[colorScheme].surface,
       }),
     }),
-    [colorScheme, elevated],
+    [colorScheme, elevated, excerpt],
   );
 
   const elevatedWrapperStyle = useMemo(() => {
@@ -250,20 +251,15 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
             <ViewCounter url={article.link} size={16} onLoad={setViewCount} />
           </Badge>
         )}
-        {excerpt ? (
-          <>
-            <UiText
-              size="base"
-              style={{
-                paddingHorizontal: POST_PADDING_HORIZONTAL,
-              }}
-            >
-              {excerpt}
-            </UiText>
-            <UiSpace size={20} />
-          </>
-        ) : (
-          <UiSpace size={10} />
+        {excerpt && (
+          <UiText
+            size="base"
+            style={{
+              paddingHorizontal: POST_PADDING_HORIZONTAL,
+            }}
+          >
+            {excerpt}
+          </UiText>
         )}
       </View>
     </UiPressable>

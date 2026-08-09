@@ -16,6 +16,7 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { onShare } from "#/helpers/Sharing";
 import API from "#/helpers/network/ServerAPI";
 import {
@@ -92,22 +93,24 @@ const PodcastScreen = () => {
     <View style={[globalStyles.container, { backgroundColor }]}>
       <ScrollView>
         {episode.image_url && (
-          <>
-            <UiSpace size={16} />
-            <View style={{ paddingHorizontal: COVER_PADDING_HORIZONTAL }}>
-              <Image
-                style={{
-                  width: "100%",
-                  aspectRatio: 1,
-                  borderRadius: radii.md,
-                  backgroundColor: corporate,
-                }}
-                source={{ uri: episode.image_url }}
-                contentFit="cover"
-                accessibilityIgnoresInvertColors
-              />
-            </View>
-          </>
+          <View
+            style={{
+              paddingTop: spacing.lg,
+              paddingHorizontal: COVER_PADDING_HORIZONTAL,
+            }}
+          >
+            <Image
+              style={{
+                width: "100%",
+                aspectRatio: 1,
+                borderRadius: radii.md,
+                backgroundColor: corporate,
+              }}
+              source={{ uri: episode.image_url }}
+              contentFit="cover"
+              accessibilityIgnoresInvertColors
+            />
+          </View>
         )}
         <UiSpace size={16} />
         <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>

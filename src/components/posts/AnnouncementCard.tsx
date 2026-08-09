@@ -4,7 +4,6 @@ import { View } from "react-native";
 
 import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
-import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import type { AnnouncementEntry } from "#/constants/Announcements";
 import { radii } from "#/constants/BorderRadius";
@@ -65,7 +64,7 @@ const AnnouncementCard = ({
           }}
         />
       )}
-      <UiCard>
+      <UiCard style={{ gap: spacing.lg }}>
         <UiText size="base" style={{ lineHeight: LINE_HEIGHTS.base }}>
           {parseInlineMarkdown(announcement.message).map((token, index) => {
             const key = String(index);
@@ -111,7 +110,6 @@ const AnnouncementCard = ({
             }
           })}
         </UiText>
-        <UiSpace size={16} />
         <View style={{ flexDirection: "row", gap: spacing.md }}>
           <UiPressable
             accessibilityRole="button"

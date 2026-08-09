@@ -273,7 +273,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             pendingAnchor.current = undefined;
           }}
         >
-          <View onLayout={onRender}>
+          <View onLayout={onRender} style={{ paddingBottom: 100 }}>
             <Header
               article={article}
               article_image={article_image}

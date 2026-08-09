@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { CheckboxIcon, CircleIcon } from "#/components/Icons";
-import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
@@ -52,6 +51,7 @@ const AchievementComponent = () => {
         marginTop: spacing.xxxl,
         borderRadius: radii.md,
         padding: spacing.xl,
+        gap: spacing.md,
       }}
     >
       <View style={[globalStyles.row, { justifyContent: "flex-start" }]}>
@@ -94,7 +94,6 @@ const AchievementComponent = () => {
           </Parallelogram>
         </View>
       </View>
-      <UiSpace size={10} />
       <View style={{ gap: spacing.xs }}>
         {tasks &&
           tasks.map((task, key) => {

@@ -199,7 +199,7 @@ const MyFavs = () => {
   }, [focused]);
 
   return (
-    <View style={{ flex: 1, gap: spacing.xl }}>
+    <View style={{ flex: 1, gap: spacing.xl, paddingBottom: 100 }}>
       {isLoading ? (
         <UiSpinner text="Lade Favoriten..." />
       ) : (
@@ -220,7 +220,6 @@ const MyFavs = () => {
         Klicke auf den Stern bei Artikeln und Posts, um sie zu den Favoriten
         hinzuzufügen
       </UiEmptyState>
-      <UiSpace size={100} />
     </View>
   );
 };

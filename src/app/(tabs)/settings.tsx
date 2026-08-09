@@ -21,7 +21,6 @@ import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiDivider from "#/components/ui/UiDivider";
 import UiLink from "#/components/ui/UiLink";
 import UiPressable from "#/components/ui/UiPressable";
-import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
@@ -180,6 +179,7 @@ const SettingsScreen = () => {
           globalStyles.content,
           {
             paddingTop: HEADER_HEIGHT,
+            paddingBottom: 100,
             gap: spacing.xl,
             paddingHorizontal: 0,
           },
@@ -324,7 +324,6 @@ const SettingsScreen = () => {
             {!Config.isFoss && `\nToken: ${token}`}
           </UiText>
         </View>
-        <UiSpace size={100} />
       </ScrollView>
     </>
   );

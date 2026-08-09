@@ -104,51 +104,53 @@ const RegionMap = () => {
       <View
         style={{
           flex: 1,
+          gap: spacing.md,
+          paddingBottom: spacing.huge,
         }}
       >
         <UiText size="xl" bold style={globalStyles.whiteText}>
           Bundesländer Ranking
         </UiText>
-        <UiSpace size={10} />
-        {regionData?.slice(0, 3).map((region, index) => {
-          const Icon =
-            index === 0
-              ? FirstPlaceIcon
-              : index === 1
-                ? SecondPlaceIcon
-                : ThirdPlaceIcon;
-          return (
-            <View
+        <View style={{ gap: spacing.xs, paddingLeft: spacing.sm }}>
+          {regionData?.slice(0, 3).map((region, index) => {
+            const Icon =
+              index === 0
+                ? FirstPlaceIcon
+                : index === 1
+                  ? SecondPlaceIcon
+                  : ThirdPlaceIcon;
+            return (
+              <View
+                key={region.region}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  width: 120,
+                  borderRadius: 10,
+                  height: 18,
+                  backgroundColor: "white",
+                }}
+              >
+                <Icon style={{ left: -8 }} />
+                <UiText size="xs" style={{ color: corporate }}>
+                  {` ${region.name}`}
+                </UiText>
+              </View>
+            );
+          })}
+        </View>
+        <View>
+          {regionData?.slice(3).map((region, idx) => (
+            <UiText
               key={region.region}
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                width: 120,
-                margin: spacing.xs,
-                borderRadius: 10,
-                height: 18,
-                backgroundColor: "white",
-              }}
+              size="sm"
+              style={[globalStyles.whiteText, { paddingVertical: spacing.xs }]}
             >
-              <Icon style={{ left: -8 }} />
-              <UiText size="xs" style={{ color: corporate }}>
-                {` ${region.name}`}
-              </UiText>
-            </View>
-          );
-        })}
-        <UiSpace size={10} />
-        {regionData?.slice(3).map((region, idx) => (
-          <UiText
-            key={region.region}
-            size="sm"
-            style={[globalStyles.whiteText, { paddingVertical: spacing.xs }]}
-          >
-            {`${idx + 4}. ${region.name}`}
-          </UiText>
-        ))}
-        <UiSpace size={100} />
+              {`${idx + 4}. ${region.name}`}
+            </UiText>
+          ))}
+        </View>
       </View>
     </View>
   );

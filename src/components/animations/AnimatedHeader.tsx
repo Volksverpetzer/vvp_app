@@ -7,7 +7,6 @@ import type { ViewStyle } from "react-native";
 import { HeartIcon } from "#/components/Icons";
 import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
-import UiSpace from "#/components/ui/UiSpace";
 import Colors from "#/constants/Colors";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -33,6 +32,7 @@ const gradientContainerStyle: ViewStyle = {
   flex: 1,
   alignItems: "center",
   justifyContent: "flex-end",
+  paddingBottom: 45,
 };
 
 /**
@@ -153,7 +153,6 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
         >
           {children}
         </View>
-        <UiSpace size={45} />
       </UiHeaderGradient>
     </Animated.View>
   );

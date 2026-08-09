@@ -210,6 +210,7 @@ const Header = (properties: HeaderProperties) => {
               height: (16 / 9) * width,
               backgroundColor: Colors.dark.background,
               paddingTop: ((width * 16) / 9) * 0.2,
+              gap: spacing.xl,
             }}
           >
             <Image
@@ -232,14 +233,12 @@ const Header = (properties: HeaderProperties) => {
               source={{ uri: article_image }}
               onLoad={() => setImageLoaded(true)}
             />
-            <UiSpace size={20} />
             <Typography
               type="title"
               style={{ color: Colors.dark.text, paddingHorizontal: spacing.xl }}
             >
               {article_title}
             </Typography>
-            <UiSpace size={20} />
             {/* The share card is always rendered on the dark background, so it
                 pins the light-on-dark colors instead of following the theme. */}
             <Typography

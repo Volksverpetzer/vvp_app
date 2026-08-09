@@ -17,7 +17,6 @@ import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
-import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import UiTextInput from "#/components/ui/UiTextInput";
 import { radii } from "#/constants/BorderRadius";
@@ -160,7 +159,6 @@ const ContactScreen = () => {
           backgroundColor: accent,
           borderRadius: radii.full,
           justifyContent: "center",
-          margin: spacing.xl,
           paddingVertical: spacing.md,
           width: 120,
         },
@@ -318,7 +316,7 @@ const ContactScreen = () => {
           }}
           contentContainerStyle={[
             globalStyles.content,
-            { paddingTop: HEADER_HEIGHT },
+            { paddingTop: HEADER_HEIGHT, paddingBottom: 100, gap: spacing.xl },
           ]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
@@ -357,7 +355,6 @@ const ContactScreen = () => {
               ))}
             </View>
           </View>
-          <UiSpace size={20} />
           <View style={{ gap: spacing.md }}>
             <Typography type="heading">{texts.titleLabel}</Typography>
             <UiTextInput
@@ -376,7 +373,6 @@ const ContactScreen = () => {
               ]}
             />
           </View>
-          <UiSpace size={20} />
           <View style={{ gap: spacing.md }}>
             <Typography type="heading">{texts.messageLabel}</Typography>
             <UiTextInput
@@ -397,7 +393,6 @@ const ContactScreen = () => {
               ]}
             />
           </View>
-          <UiSpace size={20} />
           <View style={{ gap: spacing.md }}>
             <Typography type="heading">
               E-Mail für Rückfragen (optional)
@@ -421,7 +416,6 @@ const ContactScreen = () => {
               ]}
             />
           </View>
-          <UiSpace size={20} />
           {error ? (
             <UiText size="lg" bold style={styles.errorText}>
               {error}
@@ -443,7 +437,6 @@ const ContactScreen = () => {
               Senden
             </UiText>
           </UiPressable>
-          <UiSpace size={100} />
         </ScrollView>
       </KeyboardAvoidingView>
     </BlurTargetView>
