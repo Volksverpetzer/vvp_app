@@ -8,6 +8,7 @@ import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import type { LevelType, TaskType } from "#/helpers/Achievements";
 import { AchievementConfig, Achievements } from "#/helpers/Achievements";
@@ -106,9 +107,9 @@ const AchievementComponent = () => {
                 }}
               >
                 {!!task.value ? (
-                  <CheckboxIcon size={16} color="white" />
+                  <CheckboxIcon size={iconSizes.xs} color="white" />
                 ) : (
-                  <CircleIcon size={16} color="white" />
+                  <CircleIcon size={iconSizes.xs} color="white" />
                 )}
                 <UiText
                   size="base"

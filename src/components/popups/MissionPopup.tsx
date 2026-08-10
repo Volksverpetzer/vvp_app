@@ -6,6 +6,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -33,7 +34,7 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
       style={[missionStyles.rectanglePressable, { backgroundColor }]}
     >
       <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
-        <SuccessIcon size={24} color={corporate} />
+        <SuccessIcon size={iconSizes.md} color={corporate} />
         <UiText bold style={{ paddingLeft: spacing.md, color: corporate }}>
           {text1}
         </UiText>

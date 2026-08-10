@@ -27,6 +27,7 @@ import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
@@ -194,7 +195,7 @@ const SettingsScreen = () => {
       >
         <View>
           <UiCollapsable
-            icon={<FeedIcon color={primary} size={24} />}
+            icon={<FeedIcon color={primary} size={iconSizes.md} />}
             title="Feed"
             borderRadius={0}
           >
@@ -208,7 +209,7 @@ const SettingsScreen = () => {
           </UiCollapsable>
           {!Config.isFoss && (
             <UiCollapsable
-              icon={<NotificationIcon color={primary} size={24} />}
+              icon={<NotificationIcon color={primary} size={iconSizes.md} />}
               title="Benachrichtigungen"
               borderRadius={0}
             >
@@ -222,7 +223,7 @@ const SettingsScreen = () => {
             </UiCollapsable>
           )}
           <UiCollapsable
-            icon={<SettingsIcon color={primary} size={24} />}
+            icon={<SettingsIcon color={primary} size={iconSizes.md} />}
             title="Erweitert"
             borderRadius={0}
           >
@@ -237,27 +238,27 @@ const SettingsScreen = () => {
         <View style={styles.linksContainer}>
           <UiLink
             url={Config.aboutUrl}
-            icon={<SearchIcon color={primary} size={24} />}
+            icon={<SearchIcon color={primary} size={iconSizes.md} />}
             text="Über uns"
           />
           <UiLink
             url={Config.donations.support}
-            icon={<GiveIcon color={primary} size={24} />}
+            icon={<GiveIcon color={primary} size={iconSizes.md} />}
             text="Unterstützen"
           />
           <UiLink
             url={Config.dataProtectionUrl}
-            icon={<LockIcon color={primary} size={24} />}
+            icon={<LockIcon color={primary} size={iconSizes.md} />}
             text="Datenschutz"
           />
           <UiLink
             url={Config.imprintUrl}
-            icon={<ImprintIcon color={primary} size={24} />}
+            icon={<ImprintIcon color={primary} size={iconSizes.md} />}
             text="Impressum"
           />
           <UiLink
             url={Config.sourceUrl}
-            icon={<CodeIcon color={primary} size={24} />}
+            icon={<CodeIcon color={primary} size={iconSizes.md} />}
             text="Quellcode"
           />
         </View>

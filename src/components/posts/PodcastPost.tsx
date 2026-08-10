@@ -15,6 +15,7 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
@@ -156,7 +157,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
               paddingVertical: spacing.md,
             }}
           >
-            <Octicons name="play" size={26} color={corporate} />
+            <Octicons name="play" size={iconSizes.md} color={corporate} />
             <UiText size="base" style={{ color: corporate }}>
               {resumePosition > RESUME_MIN_SECONDS
                 ? `Fortsetzen bei ${formatTime(resumePosition)}`

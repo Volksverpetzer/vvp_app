@@ -8,6 +8,7 @@ import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -74,7 +75,7 @@ const UiCollapsable = ({
         </View>
         <ChevronIcon
           direction={open ? "up" : "down"}
-          size={24}
+          size={iconSizes.md}
           color={textColor}
         />
       </UiPressable>

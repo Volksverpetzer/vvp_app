@@ -8,6 +8,7 @@ import { HeartIcon } from "#/components/Icons";
 import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -128,7 +129,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
             }}
             style={{ position: "absolute", top: 20, right: "10%" }}
           >
-            <HeartIcon color={corporate} size={32} />
+            <HeartIcon color={corporate} size={iconSizes.lg} />
           </UiPressable>
         )}
         {title &&

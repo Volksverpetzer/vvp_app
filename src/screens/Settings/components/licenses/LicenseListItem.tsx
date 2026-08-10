@@ -8,6 +8,7 @@ import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -95,7 +96,11 @@ const LicensesListItem = (
           </UiText>
         </View>
         <View style={styles.icon}>
-          <ChevronIcon direction="right" color={iconColor} size={32} />
+          <ChevronIcon
+            direction="right"
+            color={iconColor}
+            size={iconSizes.lg}
+          />
         </View>
       </UiPressable>
     </UiCard>

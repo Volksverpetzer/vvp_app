@@ -11,6 +11,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
@@ -96,7 +97,7 @@ const Support = ({ article_link }: SupportProperties) => {
               accessibilityRole="button"
               onPress={() => setShowBank(false)}
             >
-              <CloseIcon size={48} color={corporate} />
+              <CloseIcon size={iconSizes.xl} color={corporate} />
             </UiPressable>
           </View>
           <UiText size="xxl">Banküberweisung</UiText>
@@ -116,7 +117,7 @@ const Support = ({ article_link }: SupportProperties) => {
             IBAN: {Config.donations.account.IBAN} {`\n`}
             Verwendungszweck: {Config.donations.account.note} {`\n`}
           </UiText>
-          <HeartIcon color={corporate} size={32} />
+          <HeartIcon color={corporate} size={iconSizes.lg} />
         </View>
       </Modal>
     </View>

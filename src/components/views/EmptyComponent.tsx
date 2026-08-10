@@ -7,6 +7,7 @@ import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
@@ -45,7 +46,7 @@ const EmptyComponent = ({
           },
         ]}
       >
-        <HeartIcon color={corporate} size={56} />
+        <HeartIcon color={corporate} size={iconSizes.xl} />
         <UiText size="lg">
           Unterstütze uns im unermüdlichen Kampf gegen Fake News und verzerrte
           Narrative

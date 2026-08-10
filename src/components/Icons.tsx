@@ -6,6 +6,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { Platform, View } from "react-native";
 
 import { radii } from "#/constants/BorderRadius";
+import { iconSizes } from "#/constants/IconSizes";
 
 type OcticonsProps = Omit<ComponentProps<typeof Octicons>, "name">;
 
@@ -34,7 +35,13 @@ export const ChevronIcon = ({
   size,
   ...rest
 }: OcticonsProps & { direction: ChevronDirection }) => {
-  return <Octicons {...rest} name={`chevron-${direction}`} size={size ?? 32} />;
+  return (
+    <Octicons
+      {...rest}
+      name={`chevron-${direction}`}
+      size={size ?? iconSizes.lg}
+    />
+  );
 };
 
 export const CircleIcon = ({ ...rest }: OcticonsProps) => (
@@ -42,7 +49,7 @@ export const CircleIcon = ({ ...rest }: OcticonsProps) => (
 );
 
 export const CloseIcon = ({ size, ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="x" size={size ?? 32} />
+  <Octicons {...rest} name="x" size={size ?? iconSizes.lg} />
 );
 
 export const DeleteIcon = ({ ...rest }: OcticonsProps) => (
@@ -58,7 +65,7 @@ export const ErrorIcon = ({ ...rest }: OcticonsProps) => (
 );
 
 export const ExternalLinkIcon = ({ size, ...rest }: OcticonsProps) => (
-  <Octicons size={size ?? 16} {...rest} name="link-external" />
+  <Octicons size={size ?? iconSizes.xs} {...rest} name="link-external" />
 );
 
 export const FeedbackIcon = ({ ...rest }: OcticonsProps) => (
@@ -90,7 +97,7 @@ export const ImprintIcon = ({ ...rest }: OcticonsProps) => (
 );
 
 export const LinkIcon = ({ size, ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="link" size={size ?? 32} />
+  <Octicons {...rest} name="link" size={size ?? iconSizes.lg} />
 );
 
 export const LockIcon = ({ ...rest }: OcticonsProps) => (
@@ -103,7 +110,7 @@ export const NotificationIcon = ({ ...rest }: OcticonsProps) => (
 
 export const PlayIcon = ({
   style,
-  size = 30,
+  size = iconSizes.lg,
   ...rest
 }: Omit<OcticonsProps, "style"> & { style?: StyleProp<ViewStyle> }) => (
   <View
@@ -130,22 +137,22 @@ export const ReportIcon = ({ ...rest }: OcticonsProps) => (
 );
 
 export const SafetyIcon = ({ size, ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="shield-check" size={size ?? 32} />
+  <Octicons {...rest} name="shield-check" size={size ?? iconSizes.lg} />
 );
 
 export const SearchIcon = ({ size, ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="search" size={size ?? 32} />
+  <Octicons {...rest} name="search" size={size ?? iconSizes.lg} />
 );
 
 export const SettingsIcon = ({ size, ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="gear" size={size ?? 32} />
+  <Octicons {...rest} name="gear" size={size ?? iconSizes.lg} />
 );
 
 export const ShareIcon = ({ size, ...rest }: OcticonsProps) => (
   <Octicons
     {...rest}
     name={Platform.OS === "ios" ? "share" : "share-android"}
-    size={size ?? 32}
+    size={size ?? iconSizes.lg}
   />
 );
 
@@ -154,7 +161,11 @@ export const StarIcon = ({
   size,
   ...rest
 }: OcticonsProps & { filled?: boolean }) => (
-  <Octicons {...rest} name={filled ? "star-fill" : "star"} size={size ?? 32} />
+  <Octicons
+    {...rest}
+    name={filled ? "star-fill" : "star"}
+    size={size ?? iconSizes.lg}
+  />
 );
 
 export const StatisticsIcon = (

@@ -19,6 +19,7 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
@@ -248,7 +249,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         )}
         {inView && Config.enableEngagement && viewCount !== 0 && (
           <Badge position="topRight" color={Colors[colorScheme].accent}>
-            <ViewCounter url={article.link} size={16} onLoad={setViewCount} />
+            <ViewCounter
+              url={article.link}
+              size={iconSizes.xs}
+              onLoad={setViewCount}
+            />
           </Badge>
         )}
         {excerpt && (

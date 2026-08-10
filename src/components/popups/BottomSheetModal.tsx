@@ -10,6 +10,7 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -75,7 +76,7 @@ const BottomSheetModal = ({
             onPress={onClose}
             hitSlop={8}
           >
-            <CloseIcon size={28} color={corporate} />
+            <CloseIcon size={iconSizes.lg} color={corporate} />
           </UiPressable>
         </View>
         {children}

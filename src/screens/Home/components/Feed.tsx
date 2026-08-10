@@ -20,6 +20,7 @@ import EmptyComponent from "#/components/views/EmptyComponent";
 import Announcements from "#/constants/Announcements";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -300,7 +301,7 @@ const Feed = (properties: FeedProperties) => {
                   Nicht gefunden, wonach du gesucht hast? Probiere die Suche
                   aus!
                 </UiText>
-                <SearchIcon color={corporate} size={24} />
+                <SearchIcon color={corporate} size={iconSizes.md} />
               </UiPressable>
             </View>
           ))
@@ -309,7 +310,7 @@ const Feed = (properties: FeedProperties) => {
         ListEmptyComponent={
           <EmptyComponent
             text="Keine Ergebnisse. Versuche es später erneut oder erweitere deine Feeds in den Einstellungen."
-            icon={<WorldIcon size={60} />}
+            icon={<WorldIcon size={iconSizes.xl} />}
             onPress={onRefresh}
           />
         }

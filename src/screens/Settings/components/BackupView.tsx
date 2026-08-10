@@ -9,6 +9,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
@@ -139,7 +140,7 @@ const BackupView = () => {
         {busy === "export" ? (
           <ActivityIndicator color={primary} size="small" />
         ) : (
-          <UploadIcon size={18} color={busy ? textMuted : primary} />
+          <UploadIcon size={iconSizes.sm} color={busy ? textMuted : primary} />
         )}
       </UiPressable>
       <UiPressable
@@ -154,7 +155,10 @@ const BackupView = () => {
         {busy === "import" ? (
           <ActivityIndicator color={primary} size="small" />
         ) : (
-          <DownloadIcon size={18} color={busy ? textMuted : primary} />
+          <DownloadIcon
+            size={iconSizes.sm}
+            color={busy ? textMuted : primary}
+          />
         )}
       </UiPressable>
     </View>

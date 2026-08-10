@@ -6,6 +6,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
@@ -61,7 +62,7 @@ const Footer = (properties: FooterProperties) => {
             })
           }
         >
-          <ShareIcon color="white" size={32} />
+          <ShareIcon color="white" size={iconSizes.lg} />
         </UiPressable>
       </View>
       <View style={{ paddingHorizontal: spacing.md, gap: spacing.xl }}>

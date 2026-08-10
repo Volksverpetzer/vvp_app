@@ -11,6 +11,7 @@ import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 import UiTabView from "#/components/ui/UiTabView";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import AISearch from "#/screens/Search/components/AISearch";
@@ -103,14 +104,14 @@ const SearchContent = ({
         >
           <UiTabView width={240}>
             <UiTabIconLabel
-              icon={(color) => <SearchIcon color={color} size={24} />}
+              icon={(color) => <SearchIcon color={color} size={iconSizes.md} />}
               label="Artikel"
               isActive={effectiveTab === "artikel"}
               onPress={() => handleTabChange("artikel")}
               style={{ paddingVertical: spacing.md }}
             />
             <UiTabIconLabel
-              icon={(color) => <SafetyIcon color={color} size={24} />}
+              icon={(color) => <SafetyIcon color={color} size={iconSizes.md} />}
               label="KI-Faktenbot"
               isActive={effectiveTab === "ai"}
               onPress={() => handleTabChange("ai")}

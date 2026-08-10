@@ -7,6 +7,7 @@ import Support from "#/components/views/Support";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -35,7 +36,7 @@ const SupportScreen = () => {
           },
         ]}
       >
-        <HeartIcon color={corporate} size={56} />
+        <HeartIcon color={corporate} size={iconSizes.xl} />
         <Support article_link={supportUrl} />
       </ScrollView>
       <NavBar link={supportUrl} />

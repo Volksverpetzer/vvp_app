@@ -4,6 +4,7 @@ import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 import { ChevronIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface BackToTopButtonProperties {
@@ -42,7 +43,7 @@ const BackToTopButton = ({ visible, onPress }: BackToTopButtonProperties) => {
       >
         <ChevronIcon
           direction="up"
-          size={26}
+          size={iconSizes.md}
           color={Colors[colorScheme].background}
         />
       </UiPressable>

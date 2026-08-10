@@ -9,6 +9,7 @@ import ShareCounter from "#/components/counter/ShareCounter";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
@@ -87,7 +88,7 @@ const NavBar = (properties: NavBarProperties) => {
           onPress={() => router.back()}
           hitSlop={20}
         >
-          <ChevronIcon direction="left" size={32} color={corporate} />
+          <ChevronIcon direction="left" size={iconSizes.lg} color={corporate} />
         </UiPressable>
       </View>
 

@@ -15,6 +15,7 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
@@ -105,7 +106,7 @@ const MySources = () => {
                       progress={p}
                       drag={d}
                       swipeable={s}
-                      icon={<DeleteIcon size={24} color="white" />}
+                      icon={<DeleteIcon size={iconSizes.md} color="white" />}
                       label="Löschen"
                       hint="Lösche diese Quelle"
                       onAction={async () => {

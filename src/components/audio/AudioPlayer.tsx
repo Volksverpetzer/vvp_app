@@ -8,6 +8,7 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAudio } from "#/helpers/provider/AudioProvider";
 import { formatTime } from "#/helpers/utils/audio";
@@ -126,7 +127,7 @@ const AudioPlayer = ({
       >
         {playing ? (
           <PauseIcon
-            size={26}
+            size={iconSizes.md}
             color={corporate}
             accessible={false}
             importantForAccessibility="no"
@@ -134,7 +135,7 @@ const AudioPlayer = ({
         ) : (
           <Octicons
             name="play"
-            size={26}
+            size={iconSizes.md}
             color={corporate}
             accessible={false}
             importantForAccessibility="no"
