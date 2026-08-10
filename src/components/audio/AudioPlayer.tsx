@@ -123,7 +123,9 @@ const AudioPlayer = ({
         accessibilityRole="button"
         accessibilityLabel={playing ? "Pause" : "Abspielen"}
         onPress={onToggle}
-        hitSlop={10}
+        // iconSizes.md (24) + 2*12 = 48, meeting MIN_TOUCH_TARGET with margin
+        // instead of landing exactly on the 44pt floor.
+        hitSlop={12}
       >
         {playing ? (
           <PauseIcon

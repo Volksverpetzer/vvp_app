@@ -24,3 +24,13 @@ export const iconSizes = {
 } as const;
 
 export type IconSizeToken = keyof typeof iconSizes;
+
+/**
+ * Minimum touch target per Apple HIG (44pt) / Material (48dp) guidance.
+ * Use this to guarantee a pressable's hit area, whether via explicit
+ * `minWidth`/`minHeight` (for a small visual element like a corner badge) or
+ * to size `hitSlop` relative to an icon's actual `iconSizes.*` value —
+ * hitSlop should make up the rest of the distance to this target, not be a
+ * hand-picked number disconnected from the icon it pads.
+ */
+export const MIN_TOUCH_TARGET = 44;

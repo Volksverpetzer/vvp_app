@@ -4,13 +4,11 @@ import { View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import { radii } from "#/constants/BorderRadius";
+import { MIN_TOUCH_TARGET } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 
 export type BadgePosition =
   "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
-
-// Minimum touch target per Apple HIG (44pt) / Material (48dp) guidance.
-export const MIN_TOUCH_TARGET = 44;
 
 interface BadgeProperties {
   children: ReactNode;
