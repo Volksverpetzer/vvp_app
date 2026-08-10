@@ -66,7 +66,7 @@ jobs:
 
       - name: Get prepared commit SHA
         id: get_sha
-        run: echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_STATE
+        run: echo "commit_sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
 
   release-build:
     needs: release-prepare
