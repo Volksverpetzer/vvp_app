@@ -9,6 +9,7 @@ import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
+import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import type { LevelType, TaskType } from "#/helpers/Achievements";
 import { AchievementConfig, Achievements } from "#/helpers/Achievements";
@@ -67,7 +68,7 @@ const AchievementComponent = () => {
             backgroundColor,
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 4,
+            zIndex: layers.raised,
           }}
         >
           <UiText style={{ fontSize: 30 }}>

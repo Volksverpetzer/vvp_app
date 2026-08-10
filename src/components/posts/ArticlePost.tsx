@@ -20,6 +20,7 @@ import {
   globalStyles,
 } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
+import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
@@ -187,7 +188,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   );
   const progressBarStyle = useMemo(
     () => ({
-      zIndex: 30,
+      zIndex: layers.raised,
       height: 3,
       width: scrollProgress,
       backgroundColor: corporate,

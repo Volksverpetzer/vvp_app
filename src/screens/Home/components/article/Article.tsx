@@ -15,6 +15,7 @@ import Footer from "#/components/views/Footer";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { layers } from "#/constants/Layers";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -243,7 +244,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
       <Animated.View
         style={{
           position: "absolute",
-          zIndex: 30,
+          zIndex: layers.raised,
           height: 5,
           width: scrollProgress,
           backgroundColor: corporate,

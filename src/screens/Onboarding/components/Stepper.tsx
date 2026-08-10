@@ -6,6 +6,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
@@ -115,7 +116,7 @@ const stepperStyles = StyleSheet.create({
     paddingHorizontal: spacing.huge,
     position: "absolute",
     width: "100%",
-    zIndex: 100,
+    zIndex: layers.sticky,
   },
 });
 

@@ -9,6 +9,7 @@ import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { iconSizes } from "#/constants/IconSizes";
+import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -102,7 +103,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
       backgroundColor: "transparent" as const,
       height: headerScrollHeight,
       width: "100%" as const,
-      zIndex: 999,
+      zIndex: layers.sticky,
     }),
     [headerScrollHeight],
   );
@@ -111,7 +112,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
     () => ({
       paddingBottom: spacing.md,
       fontFamily: "SourceSansProBold",
-      zIndex: 100,
+      zIndex: layers.raised,
       fontSize: headerFontSize,
       color: corporate,
     }),

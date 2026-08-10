@@ -14,6 +14,7 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -87,7 +88,12 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
       >
         <UiPressable
           accessibilityRole="button"
-          style={{ position: "absolute", top: 20, right: 20, zIndex: 100 }}
+          style={{
+            position: "absolute",
+            top: 20,
+            right: 20,
+            zIndex: layers.raised,
+          }}
           onPress={() => onLinkPress(url, router)}
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >

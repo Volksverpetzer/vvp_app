@@ -143,7 +143,11 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
 
   return (
     // A transparent modal escapes any parent clipping (the donation card
-    // renders this deep inside a scroll view), covering the whole screen
+    // renders this deep inside a scroll view), covering the whole screen.
+    // The zIndex values below are a self-contained internal sequence
+    // (blur < dome < text/image) — intentionally not on the shared `layers`
+    // scale, since Modal is its own isolated stacking context and these
+    // never compete against anything outside it.
     <Modal
       animationType="none"
       navigationBarTranslucent

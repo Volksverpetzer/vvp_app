@@ -15,6 +15,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { useAISearch } from "#/hooks/useAISearch";
@@ -131,7 +132,14 @@ const AISearch = ({
   return (
     <View style={{ flex: 1, height: "100%", paddingTop: spacing.xl }}>
       {showFaktenBot && (
-        <View style={{ position: "absolute", top: 20, right: 20, zIndex: 10 }}>
+        <View
+          style={{
+            position: "absolute",
+            top: 20,
+            right: 20,
+            zIndex: layers.raised,
+          }}
+        >
           <FaktenBot search={false} reaction={reactionValue} />
         </View>
       )}
