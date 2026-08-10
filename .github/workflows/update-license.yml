@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   update-licenses:
+    name: 📄 Update License Data
     runs-on: ubuntu-slim
     steps:
       - name: ⬇️ Checkout repo
