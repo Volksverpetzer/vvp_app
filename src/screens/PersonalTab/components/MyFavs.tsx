@@ -223,7 +223,7 @@ const MyFavs = () => {
           />
         ))
       )}
-      <UiSpace size={50} />
+      <UiSpace size={spacing.huge} />
       <UiEmptyState icon={<StarIcon />}>
         Klicke auf den Stern bei Artikeln und Posts, um sie zu den Favoriten
         hinzuzufügen

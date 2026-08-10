@@ -230,7 +230,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           <ImageCreditBadge credit={imageCredit} position="bottomRight" />
         </View>
         <View style={progressBarStyle} />
-        <UiSpace size={10} />
+        <UiSpace size={spacing.md} />
         <View
           style={{
             gap: CARD_CONTENT_GAP,
@@ -240,7 +240,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           <Typography type="cardTitle">{article.title}</Typography>
           <Typography type="meta">{authorDateText}</Typography>
         </View>
-        <UiSpace size={10} />
+        <UiSpace size={spacing.md} />
         {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>
             <UiText size="sm" style={categoryTextStyle}>

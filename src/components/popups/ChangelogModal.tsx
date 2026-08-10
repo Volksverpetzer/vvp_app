@@ -32,13 +32,13 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
       <UiText size="sm" style={[styles.version, { color: textMuted }]}>
         Version {Changelog.version}
       </UiText>
-      <UiSpace size={12} />
+      <UiSpace size={spacing.md} />
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
         <UiText size="base" style={styles.notes}>
           {Changelog.notes}
         </UiText>
       </ScrollView>
-      <UiSpace size={20} />
+      <UiSpace size={spacing.xl} />
       <UiPressable
         accessibilityRole="button"
         onPress={onClose}

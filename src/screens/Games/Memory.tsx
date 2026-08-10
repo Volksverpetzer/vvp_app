@@ -6,7 +6,6 @@ import Toast from "react-native-toast-message";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
-import { fontSizes } from "#/constants/FontSizes";
 import { spacing } from "#/constants/Spacing";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -140,22 +139,8 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
 };
 
 const screenWidth = Dimensions.get("window").width;
-const cardSize = screenWidth / 3;
 
 const styles = StyleSheet.create({
-  card: {
-    alignItems: "center",
-    backgroundColor: "#eee",
-    borderColor: "#eee",
-    borderRadius: radii.xs,
-    borderWidth: 2,
-    height: cardSize - 10,
-    justifyContent: "center",
-    margin: spacing.xs,
-    width: cardSize - 10,
-  },
-  cardInner: { alignItems: "center", justifyContent: "center" },
-  cardText: { fontSize: fontSizes.base, textAlign: "center" },
   gameContainer: { alignItems: "center", flex: 1 },
   grid: {
     flexDirection: "row",
@@ -193,8 +178,6 @@ const styles = StyleSheet.create({
   headerError: { backgroundColor: "#f8d7da" },
   headerSuccess: { backgroundColor: "#d4edda" },
   headerText: { textAlign: "center" },
-  matchedCard: { borderColor: "#28a745" },
-  selectedCard: { borderColor: "#ffa500" },
 });
 
 export default MemoryGame;

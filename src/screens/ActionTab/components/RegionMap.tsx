@@ -86,13 +86,13 @@ const RegionMap = () => {
             backgroundColor: primaryMuted,
           }}
         />
-        <UiSpace size={20} />
+        <UiSpace size={spacing.xl} />
         <Legend text="Vorreiter" color={highlight} />
-        <UiSpace size={8} />
+        <UiSpace size={spacing.sm} />
         <Legend text="Durchschnitt" color={corporateColor} />
-        <UiSpace size={8} />
+        <UiSpace size={spacing.sm} />
         <Legend text="Schlusslicht" color={corporate} />
-        <UiSpace size={8} />
+        <UiSpace size={spacing.sm} />
         <View>
           <UiText
             size="xs"

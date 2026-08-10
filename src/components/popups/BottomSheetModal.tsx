@@ -65,7 +65,7 @@ const BottomSheetModal = ({
         ]}
       >
         <View style={[styles.handle, { backgroundColor: textMuted }]} />
-        <UiSpace size={16} />
+        <UiSpace size={spacing.lg} />
         <View style={styles.header}>
           <UiText bold size="xl">
             {title}

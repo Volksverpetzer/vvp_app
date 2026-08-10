@@ -50,7 +50,7 @@ export const globalStyles = StyleSheet.create({
   },
   input: {
     borderRadius: radii.full,
-    minHeight: 40,
+    minHeight: spacing.huge,
     paddingHorizontal: spacing.xxl,
   },
   row: {

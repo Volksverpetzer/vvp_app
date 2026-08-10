@@ -101,16 +101,16 @@ const Support = ({ article_link }: SupportProperties) => {
             </UiPressable>
           </View>
           <UiText size="xxl">Banküberweisung</UiText>
-          <UiSpace size={20} />
+          <UiSpace size={spacing.xl} />
           <UiText size="base" style={{ textAlign: "center" }}>
             Wow! Du bist der Hammer! Danke für deine Mühe, wir wissen das echt
             zu schätzen
           </UiText>
-          <UiSpace size={20} />
+          <UiSpace size={spacing.xl} />
           <UiText size="base" style={{ textAlign: "center" }}>
             IBAN ist in die Zwischenablage kopiert, hier nochmal zur Sicherheit:
           </UiText>
-          <UiSpace size={20} />
+          <UiSpace size={spacing.xl} />
           <UiText selectable size="base" style={{ textAlign: "center" }}>
             Name: {Config.donations.account.holder} {`\n`}
             Bank: {Config.donations.account.bank} {`\n`}

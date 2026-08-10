@@ -8,7 +8,7 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
-import { iconSizes } from "#/constants/IconSizes";
+import { MIN_TOUCH_TARGET, iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAudio } from "#/helpers/provider/AudioProvider";
 import { formatTime } from "#/helpers/utils/audio";
@@ -167,7 +167,7 @@ const AudioPlayer = ({
         }}
         style={{
           flex: 1,
-          height: 44,
+          height: MIN_TOUCH_TARGET,
           justifyContent: "center",
           backgroundColor: "transparent",
         }}

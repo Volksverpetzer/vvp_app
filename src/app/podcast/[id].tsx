@@ -112,7 +112,7 @@ const PodcastScreen = () => {
             />
           </View>
         )}
-        <UiSpace size={16} />
+        <UiSpace size={spacing.lg} />
         <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
           <Typography type="title">{episode.title}</Typography>
           {!!dateDurationText && (
@@ -120,7 +120,7 @@ const PodcastScreen = () => {
           )}
         </View>
 
-        <UiSpace size={12} />
+        <UiSpace size={spacing.md} />
         <AudioPlayer
           audioUrl={episode.audio_url}
           showFeedback
@@ -130,7 +130,7 @@ const PodcastScreen = () => {
           horizontalPadding={POST_PADDING_HORIZONTAL}
           durationSeconds={episode.duration ?? undefined}
         />
-        <UiSpace size={12} />
+        <UiSpace size={spacing.md} />
 
         {!!episode.description && (
           <Typography

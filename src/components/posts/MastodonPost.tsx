@@ -95,7 +95,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               </UiText>
             </View>
           </View>
-          <UiSpace size={20} />
+          <UiSpace size={spacing.xl} />
           {displayText !== DISPLAY_TEXT_NONE && (
             <Typography type="body">
               {displayText === DISPLAY_TEXT_FULL ? fulltext : excerpt}
@@ -140,7 +140,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
           )}
           {displayText === DISPLAY_TEXT_FULL &&
             answers &&
-            answers.length > 0 && <UiSpace size={10} />}
+            answers.length > 0 && <UiSpace size={spacing.md} />}
           {displayText === DISPLAY_TEXT_FULL &&
             answers &&
             answers.length > 0 &&

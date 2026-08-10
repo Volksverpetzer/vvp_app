@@ -129,7 +129,7 @@ const MySources = () => {
           </UiCard>
         );
       })}
-      <UiSpace size={50} />
+      <UiSpace size={spacing.huge} />
       <UiEmptyState icon={<LinkIcon />}>
         Klicke auf Links in Artikeln, dann tauchen sie hier auf
       </UiEmptyState>

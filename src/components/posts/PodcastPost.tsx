@@ -119,7 +119,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
         </View>
         {!!description && (
           <>
-            <UiSpace size={10} />
+            <UiSpace size={spacing.md} />
             <UiText
               size="base"
               numberOfLines={2}
