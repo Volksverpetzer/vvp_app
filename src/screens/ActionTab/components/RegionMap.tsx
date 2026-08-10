@@ -142,12 +142,12 @@ const RegionMap = () => {
             );
           })}
         </View>
-        <View>
+        <View style={{ gap: spacing.xs }}>
           {regionData?.slice(3).map((region, idx) => (
             <UiText
               key={region.region}
               size="sm"
-              style={[globalStyles.whiteText, { paddingVertical: spacing.xs }]}
+              style={[globalStyles.whiteText]}
             >
               {`${idx + 4}. ${region.name}`}
             </UiText>

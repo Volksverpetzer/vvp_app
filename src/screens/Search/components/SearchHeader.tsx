@@ -106,7 +106,7 @@ const SearchHeader = ({
             height: 50,
             // Reserves room for the trailing SearchIcon button so the
             // TextInput's width: "100%" doesn't run underneath it.
-            paddingRight: iconSizes.md + spacing.md,
+            paddingRight: iconSizes.md + spacing.xl,
             backgroundColor: corporate,
             marginBottom: spacing.huge,
           },
