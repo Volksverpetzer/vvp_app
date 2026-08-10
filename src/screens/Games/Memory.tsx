@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: spacing.xs,
+    gap: spacing.md,
     justifyContent: "center",
     marginTop: spacing.md,
     width: screenWidth,

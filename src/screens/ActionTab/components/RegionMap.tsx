@@ -113,7 +113,7 @@ const RegionMap = () => {
         <UiText size="xl" bold style={globalStyles.whiteText}>
           Bundesländer Ranking
         </UiText>
-        <View style={{ gap: spacing.xs, paddingLeft: spacing.sm }}>
+        <View style={{ gap: spacing.sm, paddingLeft: spacing.xs }}>
           {regionData?.slice(0, 3).map((region, index) => {
             const Icon =
               index === 0

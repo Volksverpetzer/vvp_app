@@ -133,7 +133,6 @@ const ContactScreen = () => {
         },
         errorText: {
           color: errorColor,
-          marginBottom: spacing.xl,
           paddingHorizontal: spacing.md,
           textAlign: "center",
         },

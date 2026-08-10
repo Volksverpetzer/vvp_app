@@ -26,7 +26,7 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
       </UiText>
       <ScrollView
         style={styles.list}
-        contentContainerStyle={{ gap: spacing.xs }}
+        contentContainerStyle={{ gap: spacing.sm }}
       >
         {items.map((item, index) => (
           <UiPressable

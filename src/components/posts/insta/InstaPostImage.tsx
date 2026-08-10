@@ -159,7 +159,7 @@ const InstaPostImage = ({
         <View
           style={[
             globalStyles.centered,
-            { flexDirection: "row", gap: spacing.xs, marginTop: spacing.md },
+            { flexDirection: "row", gap: spacing.sm, marginTop: spacing.md },
           ]}
         >
           {photos.map((_, index) => (

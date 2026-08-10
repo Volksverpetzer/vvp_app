@@ -42,21 +42,21 @@ const Recommended = (properties: RecommendedProperties) => {
     };
   }, [article_link]);
 
+  if (matches.length === 0) return null;
+
   return (
     <>
-      {matches.length > 0 && (
-        <UiText
-          size="xl"
-          bold
-          style={{
-            padding: spacing.md,
-          }}
-        >
-          Passend dazu:
-        </UiText>
-      )}
+      <UiText
+        size="xl"
+        bold
+        style={{
+          padding: spacing.md,
+        }}
+      >
+        Passend dazu:
+      </UiText>
       <View style={{ gap: spacing.md, padding: spacing.md }}>
-        {matches?.map((match, index) => {
+        {matches.map((match, index) => {
           if (!isSameHost(match.url, Config.wpUrl)) {
             return null;
           }
