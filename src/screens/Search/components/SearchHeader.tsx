@@ -9,14 +9,10 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-
-// Size of the trailing search-submit icon button. The input row's
-// paddingRight reserves exactly this much room (plus breathing space) so the
-// TextInput's width: "100%" doesn't run underneath the icon.
-const SEARCH_ICON_SIZE = 24;
 
 interface SearchHeaderProperties {
   search: string;
@@ -108,7 +104,9 @@ const SearchHeader = ({
           globalStyles.input,
           {
             height: 50,
-            paddingRight: SEARCH_ICON_SIZE + spacing.md,
+            // Reserves room for the trailing SearchIcon button so the
+            // TextInput's width: "100%" doesn't run underneath it.
+            paddingRight: iconSizes.md + spacing.md,
             backgroundColor: corporate,
             marginBottom: spacing.huge,
           },
@@ -135,7 +133,7 @@ const SearchHeader = ({
           returnKeyType="search"
         />
         <UiPressable accessibilityRole="button" onPress={handleSubmit}>
-          <SearchIcon color="white" size={SEARCH_ICON_SIZE} />
+          <SearchIcon color="white" size={iconSizes.md} />
         </UiPressable>
       </View>
     </>
