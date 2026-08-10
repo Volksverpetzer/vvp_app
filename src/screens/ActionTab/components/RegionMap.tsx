@@ -107,7 +107,7 @@ const RegionMap = () => {
         style={{
           flex: 1,
           gap: spacing.md,
-          paddingBottom: tabBarClearance + spacing.xl,
+          paddingBottom: tabBarClearance,
         }}
       >
         <UiText size="xl" bold style={globalStyles.whiteText}>

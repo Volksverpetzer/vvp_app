@@ -181,7 +181,7 @@ const SettingsScreen = () => {
           globalStyles.content,
           {
             paddingTop: HEADER_HEIGHT,
-            paddingBottom: tabBarClearance + spacing.xl,
+            paddingBottom: tabBarClearance,
             gap: spacing.xl,
             paddingHorizontal: 0,
           },

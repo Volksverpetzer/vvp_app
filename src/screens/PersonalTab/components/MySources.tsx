@@ -82,7 +82,7 @@ const MySources = () => {
       style={{
         flex: 1,
         gap: spacing.xl,
-        paddingBottom: tabBarClearance + spacing.xl,
+        paddingBottom: tabBarClearance,
       }}
     >
       {slugGroups.map((group) => {
