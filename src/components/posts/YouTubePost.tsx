@@ -4,15 +4,9 @@ import { View, useWindowDimensions } from "react-native";
 import { WebView } from "react-native-webview";
 
 import { PlayIcon } from "#/components/Icons";
-import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
-import UiSpace from "#/components/ui/UiSpace";
 import Config from "#/constants/Config";
-import {
-  CARD_CONTENT_GAP,
-  POST_PADDING_HORIZONTAL,
-  globalStyles,
-} from "#/constants/GlobalStyles";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { YouTubePostProperties } from "#/types";
@@ -37,57 +31,37 @@ const YouTubePost = (properties: YouTubePostProperties) => {
   const preview = inView
     ? snippet.thumbnails.high.url
     : snippet.thumbnails.default.url;
-  const published = new Date(snippet.publishedAt);
-  const date = `${published.getDate()}.${published.getMonth() + 1}.${published.getFullYear()}`;
-
-  const info = (
-    <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
-      <UiSpace size={12} />
-      <View style={{ gap: CARD_CONTENT_GAP }}>
-        <Typography type="cardTitle">{snippet.title}</Typography>
-        <Typography type="meta">{date}</Typography>
-      </View>
-    </View>
-  );
 
   if (!loaded)
     return (
-      <View>
-        <View style={{ flex: 1, overflow: "hidden", width: "100%", height }}>
-          <UiPressable
-            accessibilityRole="button"
-            accessibilityLabel={`YouTube Video abspielen: ${snippet.title}`}
-            onPress={() => {
-              registerPostInteraction(
-                `https://youtu.be/${id}`,
-                "youtube",
-                "play",
-              );
-              setLoaded(true);
-            }}
-            style={{ width: "100%", height, backgroundColor: corporate }}
+      <View style={{ flex: 1, overflow: "hidden", width: "100%", height }}>
+        <UiPressable
+          accessibilityRole="button"
+          onPress={() => {
+            registerPostInteraction(
+              `https://youtu.be/${id}`,
+              "youtube",
+              "play",
+            );
+            setLoaded(true);
+          }}
+          style={{ width: "100%", height, backgroundColor: corporate }}
+        >
+          <Image
+            style={{ flex: 1, width: width - 24, backgroundColor: corporate }}
+            source={{ uri: preview }}
+          />
+          <View
+            style={[globalStyles.centeredAbsolute, { pointerEvents: "none" }]}
           >
-            <Image
-              style={{
-                flex: 1,
-                width: width - 24,
-                backgroundColor: corporate,
-              }}
-              source={{ uri: preview }}
-            />
-            <View
-              style={[globalStyles.centeredAbsolute, { pointerEvents: "none" }]}
-            >
-              <PlayIcon size={56} color={YOUTUBE_BRAND_COLOR} />
-            </View>
-          </UiPressable>
-        </View>
-        {info}
+            <PlayIcon size={56} color={YOUTUBE_BRAND_COLOR} />
+          </View>
+        </UiPressable>
       </View>
     );
 
   return (
-    <View>
+    <>
       <View
         renderToHardwareTextureAndroid={true}
         style={{ flex: 1, overflow: "hidden", width: "100%", height }}
@@ -106,8 +80,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
           scrollEnabled={false}
         />
       </View>
-      {info}
-    </View>
+    </>
   );
 };
 
