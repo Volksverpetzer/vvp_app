@@ -97,7 +97,7 @@ const Support = ({ article_link }: SupportProperties) => {
               accessibilityRole="button"
               onPress={() => setShowBank(false)}
             >
-              <CloseIcon size={iconSizes.xl} color={corporate} />
+              <CloseIcon size={iconSizes.lg} color={corporate} />
             </UiPressable>
           </View>
           <UiText size="xxl">Banküberweisung</UiText>
