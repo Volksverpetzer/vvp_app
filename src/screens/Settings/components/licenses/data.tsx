@@ -21,7 +21,7 @@ export default {
     repository: "https://github.com/expo/google-fonts",
     licenseUrl: "https://github.com/expo/google-fonts/raw/HEAD/LICENSE",
   },
-  "@expo/config@57.0.6": {
+  "@expo/config@57.0.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -31,7 +31,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "@expo/metro-runtime@57.0.8": {
+  "@expo/metro-runtime@57.0.9": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -101,7 +101,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-asset@57.0.9": {
+  "expo-asset@57.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -125,7 +125,7 @@ export default {
     licenses: "ISC",
     repository: "https://gitlab.com/breadboxio/expo-config",
   },
-  "expo-constants@57.0.9": {
+  "expo-constants@57.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -136,7 +136,7 @@ export default {
     licenseUrl:
       "https://github.com/malaa-tech/expo-custom-assets/raw/HEAD/LICENSE",
   },
-  "expo-dev-client@57.0.10": {
+  "expo-dev-client@57.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -191,21 +191,21 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-notifications@57.0.9": {
+  "expo-notifications@57.0.10": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-router@57.0.11": {
+  "expo-router@57.0.12": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-sharing@57.0.10": {
+  "expo-sharing@57.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-splash-screen@57.0.5": {
+  "expo-splash-screen@57.0.6": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -220,7 +220,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-updates@57.0.12": {
+  "expo-updates@57.0.13": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -229,7 +229,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@57.0.11": {
+  "expo@57.0.12": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -272,7 +272,7 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
   },
-  "react-native-reanimated-carousel@5.1.0": {
+  "react-native-reanimated-carousel@5.1.1": {
     licenses: "MIT",
     repository: "https://github.com/dohooo/react-native-reanimated-carousel",
     licenseUrl:

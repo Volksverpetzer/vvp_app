@@ -4,6 +4,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 export type ToastShareSheetProperties = {
@@ -23,7 +24,10 @@ const ToastShareSheet = ({ items, onCancel }: ToastShareSheetProperties) => {
       <UiText size="lg" bold style={styles.title}>
         Teilen
       </UiText>
-      <ScrollView style={styles.list}>
+      <ScrollView
+        style={styles.list}
+        contentContainerStyle={{ gap: spacing.sm }}
+      >
         {items.map((item, index) => (
           <UiPressable
             accessibilityRole="button"
@@ -62,22 +66,21 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     borderRadius: radii.sm,
-    marginVertical: 4,
-    padding: 12,
+    padding: spacing.md,
     width: "100%",
   },
   container: {
     alignItems: "center",
     borderRadius: radii.md,
     minWidth: 250,
-    padding: 16,
+    padding: spacing.lg,
   },
   list: {
     maxHeight: 300,
     width: "100%",
   },
   title: {
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
 });
 

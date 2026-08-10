@@ -6,6 +6,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -30,7 +31,7 @@ const ContactCard = ({
     <View
       style={{
         backgroundColor: "transparent",
-        gap: 20,
+        gap: spacing.xl,
         alignItems: "center",
       }}
     >
@@ -65,7 +66,7 @@ const ContactCard = ({
           backgroundColor: accent,
           borderRadius: radii.full,
           justifyContent: "center",
-          paddingVertical: 10,
+          paddingVertical: spacing.md,
           width: 160,
         }}
       >

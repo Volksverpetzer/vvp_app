@@ -3,11 +3,11 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import { HeartIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
-import UiSpace from "#/components/ui/UiSpace";
 import Support from "#/components/views/Support";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -29,12 +29,15 @@ const SupportScreen = () => {
         }}
         contentContainerStyle={[
           globalStyles.content,
-          { paddingTop: HEADER_HEIGHT, alignItems: "center" },
+          {
+            paddingTop: HEADER_HEIGHT,
+            paddingBottom: 100,
+            alignItems: "center",
+          },
         ]}
       >
-        <HeartIcon color={corporate} size={56} />
+        <HeartIcon color={corporate} size={iconSizes.xl} />
         <Support article_link={supportUrl} />
-        <UiSpace size={100} />
       </ScrollView>
       <NavBar link={supportUrl} />
     </View>

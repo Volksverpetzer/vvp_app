@@ -9,6 +9,7 @@ import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface UiLinkProperties {
@@ -42,10 +43,10 @@ const UiLink = (properties: UiLinkProperties) => {
       style={[
         globalStyles.row,
         {
-          paddingVertical: 10,
+          paddingVertical: spacing.md,
           justifyContent: "flex-start",
           alignItems: "flex-start",
-          gap: 10,
+          gap: spacing.md,
         },
       ]}
     >

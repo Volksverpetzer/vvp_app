@@ -11,6 +11,8 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -35,7 +37,7 @@ const Support = ({ article_link }: SupportProperties) => {
     <View
       style={{
         backgroundColor: "transparent",
-        gap: 20,
+        gap: spacing.xl,
         alignItems: "center",
         overflow: "hidden",
       }}
@@ -61,7 +63,7 @@ const Support = ({ article_link }: SupportProperties) => {
       <UiPressable
         accessibilityRole="button"
         onPress={banktransfer}
-        style={{ padding: 10 }}
+        style={{ padding: spacing.md }}
       >
         <Typography type="heading" style={{ color: corporate }}>
           Dauerauftrag
@@ -77,7 +79,7 @@ const Support = ({ article_link }: SupportProperties) => {
       >
         <View
           style={{
-            padding: 20,
+            padding: spacing.xl,
             alignItems: "center",
             backgroundColor,
             borderRadius: radii.lg,
@@ -88,34 +90,34 @@ const Support = ({ article_link }: SupportProperties) => {
               width: "100%",
               justifyContent: "flex-end",
               alignItems: "flex-end",
-              padding: 5,
+              padding: spacing.xs,
             }}
           >
             <UiPressable
               accessibilityRole="button"
               onPress={() => setShowBank(false)}
             >
-              <CloseIcon size={48} color={corporate} />
+              <CloseIcon size={iconSizes.lg} color={corporate} />
             </UiPressable>
           </View>
           <UiText size="xxl">Banküberweisung</UiText>
-          <UiSpace size={20} />
+          <UiSpace size={spacing.xl} />
           <UiText size="base" style={{ textAlign: "center" }}>
             Wow! Du bist der Hammer! Danke für deine Mühe, wir wissen das echt
             zu schätzen
           </UiText>
-          <UiSpace size={20} />
+          <UiSpace size={spacing.xl} />
           <UiText size="base" style={{ textAlign: "center" }}>
             IBAN ist in die Zwischenablage kopiert, hier nochmal zur Sicherheit:
           </UiText>
-          <UiSpace size={20} />
+          <UiSpace size={spacing.xl} />
           <UiText selectable size="base" style={{ textAlign: "center" }}>
             Name: {Config.donations.account.holder} {`\n`}
             Bank: {Config.donations.account.bank} {`\n`}
             IBAN: {Config.donations.account.IBAN} {`\n`}
             Verwendungszweck: {Config.donations.account.note} {`\n`}
           </UiText>
-          <HeartIcon color={corporate} size={32} />
+          <HeartIcon color={corporate} size={iconSizes.lg} />
         </View>
       </Modal>
     </View>

@@ -12,6 +12,7 @@ import Animated, {
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface RightActionProps {
@@ -73,9 +74,9 @@ const RightAction: FC<RightActionProps> = ({
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: bg,
-              paddingHorizontal: 20,
+              paddingHorizontal: spacing.xl,
               height: "100%",
-              gap: 5,
+              gap: spacing.xs,
             },
             actionStyle,
           ]}

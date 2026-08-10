@@ -6,7 +6,7 @@ import Toast from "react-native-toast-message";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
-import { fontSizes } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { DisinfoPair, MemoryCard } from "#/types";
@@ -139,28 +139,15 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
 };
 
 const screenWidth = Dimensions.get("window").width;
-const cardSize = screenWidth / 3;
 
 const styles = StyleSheet.create({
-  card: {
-    alignItems: "center",
-    backgroundColor: "#eee",
-    borderColor: "#eee",
-    borderRadius: radii.xs,
-    borderWidth: 2,
-    height: cardSize - 10,
-    justifyContent: "center",
-    margin: 5,
-    width: cardSize - 10,
-  },
-  cardInner: { alignItems: "center", justifyContent: "center" },
-  cardText: { fontSize: fontSizes.base, textAlign: "center" },
   gameContainer: { alignItems: "center", flex: 1 },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
+    gap: spacing.md,
     justifyContent: "center",
-    marginTop: 10,
+    marginTop: spacing.md,
     width: screenWidth,
   },
   headerCard: {
@@ -168,8 +155,8 @@ const styles = StyleSheet.create({
     borderRadius: radii.xs,
     borderWidth: 1,
     flex: 1,
-    marginHorizontal: 5,
-    padding: 5,
+    marginHorizontal: spacing.xs,
+    padding: spacing.xs,
   },
   headerCardText: { textAlign: "center" },
   headerCardsContainer: {
@@ -186,13 +173,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 10,
+    paddingHorizontal: spacing.md,
   },
   headerError: { backgroundColor: "#f8d7da" },
   headerSuccess: { backgroundColor: "#d4edda" },
   headerText: { textAlign: "center" },
-  matchedCard: { borderColor: "#28a745" },
-  selectedCard: { borderColor: "#ffa500" },
 });
 
 export default MemoryGame;

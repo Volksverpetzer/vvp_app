@@ -8,6 +8,8 @@ import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
@@ -94,7 +96,11 @@ const LicensesListItem = (
           </UiText>
         </View>
         <View style={styles.icon}>
-          <ChevronIcon direction="right" color={iconColor} size={32} />
+          <ChevronIcon
+            direction="right"
+            color={iconColor}
+            size={iconSizes.lg}
+          />
         </View>
       </UiPressable>
     </UiCard>
@@ -137,8 +143,8 @@ const getStyles = (cardBackground: string) =>
       justifyContent: "space-between",
       alignItems: "center",
       maxWidth: "100%",
-      paddingHorizontal: 12,
-      paddingVertical: 16,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.lg,
     },
     content: {
       flex: 1,
@@ -147,13 +153,13 @@ const getStyles = (cardBackground: string) =>
     icon: {
       alignSelf: "center",
       flexShrink: 0, // ensure the icon isn't shrunk or pushed away
-      marginLeft: 8,
+      marginLeft: spacing.sm,
     },
     name: {
       flexShrink: 1, // ensure the title can shrink instead of overflowing
     },
     text: {
-      marginTop: 3,
+      marginTop: spacing.xs,
     },
   });
 

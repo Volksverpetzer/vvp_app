@@ -8,6 +8,7 @@ import { ActivityIndicator, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
@@ -32,7 +33,7 @@ const UiSpinner = (props: UiSpinnerProperties) => {
     <View
       style={[
         globalStyles.centered,
-        { width: "100%", gap: 12 },
+        { width: "100%", gap: spacing.md },
         containerStyle,
       ]}
     >

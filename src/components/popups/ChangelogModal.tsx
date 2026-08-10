@@ -8,6 +8,7 @@ import { radii } from "#/constants/BorderRadius";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
 import { LINE_HEIGHTS } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface ChangelogModalProperties {
@@ -31,13 +32,13 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
       <UiText size="sm" style={[styles.version, { color: textMuted }]}>
         Version {Changelog.version}
       </UiText>
-      <UiSpace size={12} />
+      <UiSpace size={spacing.md} />
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
         <UiText size="base" style={styles.notes}>
           {Changelog.notes}
         </UiText>
       </ScrollView>
-      <UiSpace size={20} />
+      <UiSpace size={spacing.xl} />
       <UiPressable
         accessibilityRole="button"
         onPress={onClose}
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     maxHeight: "80%",
   },
   version: {
-    marginTop: 2,
+    marginTop: spacing.xs,
   },
   scroll: {
     flexShrink: 1,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     borderRadius: radii.md,
-    paddingVertical: 14,
+    paddingVertical: spacing.md,
   },
 });
 

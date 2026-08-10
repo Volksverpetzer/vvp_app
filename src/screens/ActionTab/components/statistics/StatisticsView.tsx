@@ -13,6 +13,8 @@ import AnimatedPageDots from "#/components/animations/AnimatedPageDots";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { layers } from "#/constants/Layers";
+import { spacing } from "#/constants/Spacing";
 import Statistics from "#/helpers/Statistics";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { StatisticsType } from "#/types";
@@ -68,11 +70,11 @@ const StatisticsView = () => {
       style={[
         globalStyles.centered,
         {
-          zIndex: 99,
+          zIndex: layers.raised,
           backgroundColor: corporate,
           borderRadius: radii.xxl,
-          paddingVertical: 20,
-          marginHorizontal: 10,
+          paddingVertical: spacing.xl,
+          marginHorizontal: spacing.md,
         },
       ]}
       onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
@@ -113,7 +115,7 @@ const StatisticsView = () => {
         />
       </Animated.ScrollView>
 
-      <View style={{ height: 20, zIndex: 99 }}>
+      <View style={{ height: 20, zIndex: layers.raised }}>
         <AnimatedPageDots progress={progressValue} length={2} color="white" />
       </View>
     </View>

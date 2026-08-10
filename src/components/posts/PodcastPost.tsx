@@ -15,6 +15,8 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useAudio } from "#/helpers/provider/AudioProvider";
@@ -117,7 +119,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
         </View>
         {!!description && (
           <>
-            <UiSpace size={10} />
+            <UiSpace size={spacing.md} />
             <UiText
               size="base"
               numberOfLines={2}
@@ -150,12 +152,12 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              gap: 12,
+              gap: spacing.md,
               paddingHorizontal: POST_PADDING_HORIZONTAL,
-              paddingVertical: 12,
+              paddingVertical: spacing.md,
             }}
           >
-            <Octicons name="play" size={26} color={corporate} />
+            <Octicons name="play" size={iconSizes.md} color={corporate} />
             <UiText size="base" style={{ color: corporate }}>
               {resumePosition > RESUME_MIN_SECONDS
                 ? `Fortsetzen bei ${formatTime(resumePosition)}`

@@ -12,6 +12,8 @@ import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
+import { layers } from "#/constants/Layers";
+import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -41,16 +43,21 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
     <ScrollView
       contentContainerStyle={{
         position: "relative",
-        gap: 20,
+        gap: spacing.xl,
         paddingHorizontal: POST_PADDING_HORIZONTAL,
-        paddingVertical: 20,
+        paddingVertical: spacing.xl,
       }}
     >
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel="In Bluesky öffnen"
         accessibilityHint="Öffnet diesen Beitrag in der Bluesky-App oder im Browser"
-        style={{ position: "absolute", top: 20, right: 20, zIndex: 100 }}
+        style={{
+          position: "absolute",
+          top: 20,
+          right: 20,
+          zIndex: layers.raised,
+        }}
         onPress={() => onLinkPress(url, router, wpUrl)}
         hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
       >

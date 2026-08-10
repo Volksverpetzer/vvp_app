@@ -12,6 +12,7 @@ import type {
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -142,7 +143,11 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
 
   return (
     // A transparent modal escapes any parent clipping (the donation card
-    // renders this deep inside a scroll view), covering the whole screen
+    // renders this deep inside a scroll view), covering the whole screen.
+    // The zIndex values below are a self-contained internal sequence
+    // (blur < dome < text/image) — intentionally not on the shared `layers`
+    // scale, since Modal is its own isolated stacking context and these
+    // never compete against anything outside it.
     <Modal
       animationType="none"
       navigationBarTranslucent
@@ -200,7 +205,7 @@ const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {
           {
             alignItems: "center",
             left: 0,
-            padding: 20,
+            padding: spacing.xl,
             position: "absolute",
             right: 0,
             top: screenHeight * 1.33,

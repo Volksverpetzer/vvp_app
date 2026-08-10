@@ -7,6 +7,7 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { getLinks } from "#/helpers/network/Engagement";
@@ -71,7 +72,10 @@ export const ArticleSourceList = ({
     >
       <View>
         {links === undefined ? (
-          <UiSpinner size="small" containerStyle={{ paddingVertical: 8 }} />
+          <UiSpinner
+            size="small"
+            containerStyle={{ paddingVertical: spacing.sm }}
+          />
         ) : visibleLinks.length > 0 ? (
           visibleLinks.map((link, idx) => (
             <View
@@ -82,7 +86,7 @@ export const ArticleSourceList = ({
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                paddingVertical: 8,
+                paddingVertical: spacing.sm,
               }}
             >
               <UiPressable
@@ -98,7 +102,7 @@ export const ArticleSourceList = ({
             </View>
           ))
         ) : (
-          <UiText style={{ paddingVertical: 8 }}>Keine Daten</UiText>
+          <UiText style={{ paddingVertical: spacing.sm }}>Keine Daten</UiText>
         )}
       </View>
     </UiCollapsable>

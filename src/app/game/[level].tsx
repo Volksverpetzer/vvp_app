@@ -7,6 +7,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MemoryGame from "#/screens/Games/Memory";
 import type { DisinfoPair } from "#/types";
@@ -125,31 +126,31 @@ const styles = StyleSheet.create({
   backButton: {
     backgroundColor: "#007bff",
     borderRadius: radii.xs,
-    marginTop: 20,
-    padding: 10,
+    marginTop: spacing.xl,
+    padding: spacing.md,
   },
   backLink: { color: "#fff", fontSize: fontSizes.base },
   container: {
     alignItems: "center",
     flex: 1,
-    padding: 10,
+    padding: spacing.md,
   },
   levelButton: {
     backgroundColor: "#007bff",
     borderRadius: radii.xs,
-    marginHorizontal: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    marginHorizontal: spacing.xs,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
   },
   levelButtonSelected: { backgroundColor: "#0056b3" },
   levelButtonText: { color: "#fff" },
   levelContainer: {
     alignItems: "center",
     flexDirection: "row",
-    marginBottom: 20,
+    marginBottom: spacing.xl,
   },
-  levelText: { marginRight: 10 },
-  title: { marginBottom: 20 },
+  levelText: { marginRight: spacing.md },
+  title: { marginBottom: spacing.xl },
 });
 
 export default GameScreen;

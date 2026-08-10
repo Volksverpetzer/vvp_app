@@ -15,6 +15,7 @@ import type { CarouselRef } from "react-native-reanimated-carousel";
 import { Logo } from "#/components/SvgIcons";
 import UiText from "#/components/ui/UiText";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
@@ -81,7 +82,7 @@ const Slide = ({
           width,
           marginTop: isVolksverpetzer ? 0 : height / 20,
           ...headingStyle,
-          paddingVertical: 10,
+          paddingVertical: spacing.md,
           color: corporate,
         }}
       >
@@ -107,7 +108,7 @@ const Slide = ({
             <View
               style={[
                 globalStyles.centered,
-                { height: "auto", paddingVertical: 20, width: 200 },
+                { height: "auto", paddingVertical: spacing.xl, width: 200 },
               ]}
             >
               <TopComponent />
@@ -116,10 +117,10 @@ const Slide = ({
           <UiText
             size="lg"
             style={{
-              paddingVertical: 10,
+              paddingVertical: spacing.md,
               ...descriptionStyle,
               textAlign: "center",
-              paddingHorizontal: 30,
+              paddingHorizontal: spacing.xxxl,
             }}
           >
             {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}

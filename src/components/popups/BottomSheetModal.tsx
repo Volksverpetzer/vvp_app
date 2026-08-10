@@ -10,6 +10,8 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface BottomSheetModalProperties {
@@ -56,11 +58,14 @@ const BottomSheetModal = ({
           // maxHeight), but the trailing object still wins over containerStyle,
           // keeping the safe-area padding/background authoritative.
           containerStyle,
-          { backgroundColor: surface, paddingBottom: 28 + insets.bottom },
+          {
+            backgroundColor: surface,
+            paddingBottom: spacing.xxl + insets.bottom,
+          },
         ]}
       >
         <View style={[styles.handle, { backgroundColor: textMuted }]} />
-        <UiSpace size={16} />
+        <UiSpace size={spacing.lg} />
         <View style={styles.header}>
           <UiText bold size="xl">
             {title}
@@ -71,7 +76,7 @@ const BottomSheetModal = ({
             onPress={onClose}
             hitSlop={8}
           >
-            <CloseIcon size={28} color={corporate} />
+            <CloseIcon size={iconSizes.lg} color={corporate} />
           </UiPressable>
         </View>
         {children}
@@ -88,8 +93,8 @@ const styles = StyleSheet.create({
   container: {
     borderTopLeftRadius: radii.xl,
     borderTopRightRadius: radii.xl,
-    paddingHorizontal: 20,
-    paddingTop: 12,
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.md,
   },
   handle: {
     alignSelf: "center",

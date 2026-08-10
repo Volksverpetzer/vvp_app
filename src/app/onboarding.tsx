@@ -14,6 +14,8 @@ import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
@@ -177,10 +179,10 @@ const Onboarding = () => {
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              gap: 30,
+              gap: spacing.xxxl,
             }}
           >
-            <FeedIcon color={corporate} size={20} />
+            <FeedIcon color={corporate} size={iconSizes.sm} />
             <Typography type="heading">Feed-Einstellungen</Typography>
           </View>
           <SettingsList
@@ -203,10 +205,10 @@ const Onboarding = () => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    gap: 30,
+                    gap: spacing.xxxl,
                   }}
                 >
-                  <NotificationIcon color={corporate} size={20} />
+                  <NotificationIcon color={corporate} size={iconSizes.sm} />
                   <UiText
                     bold
                     size="lg"
@@ -233,7 +235,7 @@ const Onboarding = () => {
       id: 8,
       title: "Prio: Datenschutz",
       description: `Unser Versprechen: Wir geben uns alle Mühe, den Datenkraken so wenig zu überliefern wie möglich. Du braucht keine Accounts, wir tracken dich nicht. Mit der Nutzung stimmst du unserer Datenschutzerklärung zu.`,
-      TopComponent: () => <SafetyIcon color={corporate} size={60} />,
+      TopComponent: () => <SafetyIcon color={corporate} size={iconSizes.xl} />,
       Component: () => (
         <UiPressable
           accessibilityRole="button"
@@ -246,7 +248,7 @@ const Onboarding = () => {
             style={{
               color: corporate,
               textAlign: "center",
-              padding: 40,
+              padding: spacing.huge,
             }}
           >
             Datenschutzerklärung

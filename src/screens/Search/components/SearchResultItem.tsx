@@ -17,6 +17,8 @@ import {
   CONTENT_MAX_WIDTH,
   SOURCE_SANS_FONTS,
 } from "#/constants/GlobalStyles";
+import { layers } from "#/constants/Layers";
+import { spacing } from "#/constants/Spacing";
 import { getTagStyles } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -105,7 +107,7 @@ const SearchResultItem = ({
 
   const content = (
     <UiCard>
-      <View style={{ gap: 10 }}>
+      <View style={{ gap: spacing.md }}>
         {title ? <Typography type="heading">{decode(title)}</Typography> : null}
 
         {/* Source/date stays outside the clamped area so it's always visible. */}
@@ -129,7 +131,11 @@ const SearchResultItem = ({
               // screen readers so they don't see the excerpt twice.
               <View
                 testID="excerpt-measurer"
-                style={{ position: "absolute", opacity: 0, zIndex: -1 }}
+                style={{
+                  position: "absolute",
+                  opacity: 0,
+                  zIndex: layers.hidden,
+                }}
                 pointerEvents="none"
                 importantForAccessibility="no-hide-descendants"
                 accessibilityElementsHidden

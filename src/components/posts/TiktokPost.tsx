@@ -7,6 +7,7 @@ import { PlayIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 import type { TiktokPostProperties } from "#/types";
 
@@ -68,7 +69,7 @@ const TiktokPost = (properties: TiktokPostProperties) => {
             style={[globalStyles.centeredAbsolute, { pointerEvents: "none" }]}
           >
             <PlayIcon
-              size={56}
+              size={iconSizes.xl}
               color={TIKTOK_BRAND_COLOR}
               accessibilityElementsHidden
             />

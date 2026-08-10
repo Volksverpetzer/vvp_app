@@ -14,6 +14,7 @@ import type { SharedValue } from "react-native-reanimated";
 
 import UiPressable from "#/components/ui/UiPressable";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 
 interface InstaPostImageProps {
   photos: string[];
@@ -51,8 +52,6 @@ const Dot = ({
           height: 5,
           width: 5,
           backgroundColor: color,
-          marginHorizontal: 3,
-          marginTop: 10,
           borderRadius: 5,
         },
         style,
@@ -157,7 +156,12 @@ const InstaPostImage = ({
       </View>
 
       {photos.length > 1 && (
-        <View style={[globalStyles.centered, { flexDirection: "row" }]}>
+        <View
+          style={[
+            globalStyles.centered,
+            { flexDirection: "row", gap: spacing.sm, marginTop: spacing.md },
+          ]}
+        >
           {photos.map((_, index) => (
             <Dot
               key={index}

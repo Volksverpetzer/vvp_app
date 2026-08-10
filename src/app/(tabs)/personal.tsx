@@ -9,6 +9,8 @@ import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 import UiTabView from "#/components/ui/UiTabView";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MyFavs from "#/screens/PersonalTab/components/MyFavs";
@@ -65,20 +67,20 @@ const PersonalTab = () => {
         <View style={{ width: "100%" }}>
           <UiTabView width={200} style={{ alignSelf: "center" }}>
             <UiTabIconLabel
-              icon={(color) => <StarIcon size={24} color={color} />}
+              icon={(color) => <StarIcon size={iconSizes.md} color={color} />}
               label="Favoriten"
               isActive={activeTab === "favs"}
               onPress={() => setActiveTab("favs")}
-              style={{ paddingVertical: 10 }}
+              style={{ paddingVertical: spacing.md }}
               animatedLabelHeight={labelHeight}
               animatedLabelOpacity={labelOpacity}
             />
             <UiTabIconLabel
-              icon={(color) => <LinkIcon size={24} color={color} />}
+              icon={(color) => <LinkIcon size={iconSizes.md} color={color} />}
               label="Quellen"
               isActive={activeTab === "sources"}
               onPress={() => setActiveTab("sources")}
-              style={{ paddingVertical: 10 }}
+              style={{ paddingVertical: spacing.md }}
               animatedLabelHeight={labelHeight}
               animatedLabelOpacity={labelOpacity}
             />

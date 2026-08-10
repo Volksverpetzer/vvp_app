@@ -5,6 +5,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl, ImageCredit } from "#/types";
@@ -40,7 +41,7 @@ const ImageCreditModal = ({
       <UiText size="base">{credit.source}</UiText>
       {credit.licence ? (
         <>
-          <UiSpace size={8} />
+          <UiSpace size={spacing.sm} />
           <UiText size="sm" style={{ color: textMuted }}>
             {credit.licence}
           </UiText>
@@ -48,7 +49,7 @@ const ImageCreditModal = ({
       ) : null}
       {sourceUrl ? (
         <>
-          <UiSpace size={12} />
+          <UiSpace size={spacing.md} />
           <UiPressable
             accessibilityRole="link"
             onPress={() => outBoundLinkPress(sourceUrl)}

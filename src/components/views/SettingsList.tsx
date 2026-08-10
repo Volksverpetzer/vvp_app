@@ -7,6 +7,7 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { isDarkMode } from "#/helpers/utils/color";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
@@ -56,21 +57,23 @@ const SettingsList = (properties: SettingsListProperties) => {
   const { disabled, disabledMessage, onDisabledPress } = properties;
 
   return (
-    <View style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
+    <View
+      style={{ paddingVertical: spacing.xl, paddingHorizontal: spacing.xl }}
+    >
       {disabled &&
         disabledMessage &&
         (onDisabledPress ? (
           <UiPressable
             accessibilityRole="button"
             onPress={onDisabledPress}
-            style={{ paddingBottom: 10 }}
+            style={{ paddingBottom: spacing.md }}
           >
             <UiText size="base" style={{ color: textMuted }}>
               {disabledMessage}
             </UiText>
           </UiPressable>
         ) : (
-          <View style={{ paddingBottom: 10 }}>
+          <View style={{ paddingBottom: spacing.md }}>
             <UiText size="base" style={{ color: textMuted }}>
               {disabledMessage}
             </UiText>
@@ -128,7 +131,10 @@ const SettingsList = (properties: SettingsListProperties) => {
           return (
             <View
               key={key}
-              style={[globalStyles.row, { paddingTop: 20, maxHeight: 45 }]}
+              style={[
+                globalStyles.row,
+                { paddingTop: spacing.xl, maxHeight: 45 },
+              ]}
             >
               <UiText size="base">{setting.name}</UiText>
               {/* cast to native Switch props to satisfy TypeScript while keeping runtime props */}
