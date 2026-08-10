@@ -7,6 +7,7 @@ on:
 
 jobs:
   test-and-lint:
+    name: 🧪 Test and Lint
     runs-on: ubuntu-slim
     steps:
       - name: ⬇️ Checkout repo
@@ -23,6 +24,7 @@ jobs:
         uses: ./.github/actions/test-and-lint
 
   release-prepare:
+    name: 📄 Prepare Release
     needs: test-and-lint
     runs-on: ubuntu-slim
     outputs:
@@ -46,13 +48,13 @@ jobs:
             --onlyDirectDependencies \
             --onlyProdDependencies
 
-      - name: Build license data.tsx
+      - name: 📄 Build license data.tsx
         run: |
           echo "export default " > src/screens/Settings/components/licenses/data.tsx
           cat src/screens/Settings/components/licenses/licenseData.json >> src/screens/Settings/components/licenses/data.tsx
           echo ";" >> src/screens/Settings/components/licenses/data.tsx
 
-      - name: Pushing license data changes
+      - name: 🫸 Push license data changes
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "actions@github.com"
@@ -64,11 +66,12 @@ jobs:
             git push --force-with-lease
           fi
 
-      - name: Get prepared commit SHA
+      - name: 🔗 Get prepared commit SHA
         id: get_sha
         run: echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   release-build:
+    name: 🚀 Release Build
     needs: release-prepare
     runs-on: ubuntu-slim
     strategy:

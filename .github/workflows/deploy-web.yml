@@ -9,6 +9,7 @@ concurrency:
 
 jobs:
   deploy:
+    name: 🚀 Deploy Web to Bunny
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout repo
