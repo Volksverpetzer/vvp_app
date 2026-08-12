@@ -18,8 +18,8 @@ importers:
         specifier: 5.56.0
         version: 5.56.0
       '@atproto/api':
-        specifier: 0.20.38
-        version: 0.20.38
+        specifier: 0.20.39
+        version: 0.20.39
       '@babel/runtime':
         specifier: 7.29.7
         version: 7.29.7
@@ -344,8 +344,8 @@ packages:
     resolution: {integrity: sha512-PIOUXlSnrqM0S+WOgDRb4RzotydJH7ZoT6tOyL7tAO7qJOfvX5wsEW8Pe+PMKMwvuI4/gIyK9cg2H7lJXqnc4Q==}
     engines: {node: '>= 14.0.0'}
 
-  '@atproto/api@0.20.38':
-    resolution: {integrity: sha512-bKDVNr1uW2MW9ZSXdQoyEoQO3ieX3Id35KuVNpEmgjOmeOS20sx94dav98MQ7hUUaFok31jYSgAildJ/lA27NA==}
+  '@atproto/api@0.20.39':
+    resolution: {integrity: sha512-FRjwAmYe0kKlWsAe8IvfbmAAKyjpXnl2NV67vWEEjux0FwIEIG6JbOo6YkD5tjK2xjL0Daa429R0E8phmxRrrQ==}
     engines: {node: '>=22'}
 
   '@atproto/common-web@0.5.9':
@@ -2369,10 +2369,12 @@ packages:
   '@xmldom/xmldom@0.8.13':
     resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version has critical issues, please update to the latest version
 
   '@xmldom/xmldom@0.9.10':
     resolution: {integrity: sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==}
     engines: {node: '>=14.6'}
+    deprecated: this version has critical issues, please update to the latest version
 
   abab@2.0.6:
     resolution: {integrity: sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==}
@@ -6734,7 +6736,7 @@ snapshots:
     dependencies:
       '@algolia/client-common': 5.56.0
 
-  '@atproto/api@0.20.38':
+  '@atproto/api@0.20.39':
     dependencies:
       '@atproto/common-web': 0.5.9
       '@atproto/lexicon': 0.7.11
