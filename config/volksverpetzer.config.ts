@@ -1,39 +1,7 @@
 import type { ExpoConfig } from "@expo/config";
+import { colorScheme } from "@volksverpetzer/design-tokens/rn/volksverpetzer";
 
-import type { ExtraConfigType, colorSchemeType } from "#/types";
-
-const colorScheme: colorSchemeType = {
-  light: {
-    background: "#FFF",
-    surface: "#E2F0F5",
-    surfaceInput: "#BADDE8",
-    surfaceDisabled: "#DDD",
-    surfaceError: "#C62828",
-    text: "#111",
-    textMuted: "#666",
-    onPrimary: "#FFF",
-    onError: "#FFF",
-    primary: "#1B7194",
-    primaryMuted: "#3893C0",
-    accent: "#DB2685",
-    error: "#C62828",
-  },
-  dark: {
-    background: "#050D0f",
-    surface: "#142228",
-    surfaceInput: "#555",
-    surfaceDisabled: "#333",
-    surfaceError: "#7F1D1D",
-    text: "#F7F7F7",
-    textMuted: "#AAA",
-    onPrimary: "#FFF",
-    onError: "#FEE2E2",
-    primary: "#3893C0",
-    primaryMuted: "#1B7194",
-    accent: "#D31C74",
-    error: "#EF5350",
-  },
-};
+import type { ExtraConfigType } from "#/types";
 
 const assets = {
   icon: "./assets/images/volksverpetzer/adaptive-icon.png",
