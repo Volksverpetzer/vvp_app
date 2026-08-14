@@ -25,7 +25,11 @@ import { CONTENT_HORIZONTAL_PADDING } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import {
+  useAppColorScheme,
+  useCorporateColor,
+} from "#/hooks/useAppColorScheme";
+import { useAudioAvailability } from "#/hooks/useAudioAvailability";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
@@ -61,6 +65,12 @@ const Header = (properties: HeaderProperties) => {
   const reference = useRef<ViewShotRef>(null);
   const router = useRouter();
   const corporate = useCorporateColor();
+  const colorScheme = useAppColorScheme();
+
+  const audioUrl = Config.audioCdnUrl
+    ? `${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`
+    : undefined;
+  const audioAvailability = useAudioAvailability(audioUrl);
 
   const appState = useRef(AppState.currentState);
 
@@ -188,12 +198,24 @@ const Header = (properties: HeaderProperties) => {
         article_link={article_link}
         reading_time={article.reading_time}
       />
-      {Config.audioCdnUrl && (
+      {audioUrl && audioAvailability === "available" && (
         <AudioPlayer
-          audioUrl={`${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`}
+          audioUrl={audioUrl}
           title={article_title}
           artworkUrl={article_image}
         />
+      )}
+      {audioUrl && audioAvailability === "unavailable" && (
+        <UiText
+          size="sm"
+          style={{
+            color: Colors[colorScheme].textMuted,
+            paddingHorizontal: spacing.xl,
+            paddingVertical: spacing.md,
+          }}
+        >
+          Für diesen Artikel ist noch keine Audioversion verfügbar.
+        </UiText>
       )}
       <UiSpace size={spacing.md} />
       <ArticleSourceList
