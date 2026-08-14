@@ -34,3 +34,4 @@ minimumReleaseAgeExclude:
   - expo-updates@57.0.13
   - expo-build-properties@57.0.10
   - jest-expo@57.0.4
+  - "@volksverpetzer/design-tokens@0.1.0"
