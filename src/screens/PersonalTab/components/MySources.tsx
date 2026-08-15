@@ -89,8 +89,8 @@ const MySources = () => {
       {slugGroups.map((group) => {
         const title = group.entries.find((e) => e.text)?.text;
         return (
-          <UiCard key={group.slug} style={{ padding: 0 }}>
-            <View style={{ padding: spacing.xxxl, gap: spacing.md }}>
+          <UiCard key={group.slug}>
+            <View style={{ gap: spacing.md }}>
               {title && <Typography type="heading">{title}</Typography>}
               {group.entries.map((entry) => (
                 <Swipeable
