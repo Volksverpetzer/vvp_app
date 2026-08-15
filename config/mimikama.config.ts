@@ -1,39 +1,7 @@
 import type { ExpoConfig } from "@expo/config";
+import { colorScheme } from "@volksverpetzer/design-tokens/rn/mimikama";
 
-import type { ExtraConfigType, colorSchemeType } from "#/types";
-
-const colorScheme: colorSchemeType = {
-  light: {
-    background: "#FFF",
-    surface: "#EEE",
-    surfaceInput: "#CCC",
-    surfaceDisabled: "#BBB",
-    surfaceError: "#B71C1C",
-    text: "#000",
-    textMuted: "#666",
-    onPrimary: "#FFF",
-    onError: "#FFF",
-    primary: "#DB0301",
-    primaryMuted: "#313131",
-    accent: "#414141",
-    error: "#B71C1C",
-  },
-  dark: {
-    background: "#212121",
-    surface: "#333",
-    surfaceInput: "#15202B",
-    surfaceDisabled: "#444",
-    surfaceError: "#6E1111",
-    text: "#E1C9E1",
-    textMuted: "#AAA",
-    onPrimary: "#E1C9E1",
-    onError: "#FEE2E2",
-    primary: "#DB0301",
-    primaryMuted: "#E1C9E1",
-    accent: "#757575",
-    error: "#FF8A80",
-  },
-};
+import type { ExtraConfigType } from "#/types";
 
 const assets = {
   icon: "./assets/images/mimikama/adaptive-icon.png",
