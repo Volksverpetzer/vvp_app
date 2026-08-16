@@ -149,7 +149,7 @@ const Header = (properties: HeaderProperties) => {
         </UiPressable>
         <ImageCreditBadge credit={article.imageCredit} position="bottomRight" />
       </View>
-      <UiSpace size={spacing.xxxl} />
+      <UiSpace size={spacing.lg} />
       <Typography type="title" style={{ paddingHorizontal: spacing.xl }}>
         {article_title}
       </Typography>
@@ -217,13 +217,12 @@ const Header = (properties: HeaderProperties) => {
           }}
         />
       )}
-      <UiSpace size={spacing.md} />
       <ArticleSourceList
         article_link={article_link}
         article_title={article_title}
         slug={slug}
       />
-      <UiSpace size={spacing.xl} />
+      <UiSpace size={spacing.sm} />
       <Modal visible={visible}>
         <ViewShot ref={reference} options={{ fileName: article_title }}>
           <View
