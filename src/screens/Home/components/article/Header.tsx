@@ -25,10 +25,7 @@ import { CONTENT_HORIZONTAL_PADDING } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
-import {
-  useAppColorScheme,
-  useCorporateColor,
-} from "#/hooks/useAppColorScheme";
+import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useAudioAvailability } from "#/hooks/useAudioAvailability";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
@@ -65,7 +62,6 @@ const Header = (properties: HeaderProperties) => {
   const reference = useRef<ViewShotRef>(null);
   const router = useRouter();
   const corporate = useCorporateColor();
-  const colorScheme = useAppColorScheme();
 
   const audioUrl = Config.audioCdnUrl
     ? `${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`
@@ -206,16 +202,20 @@ const Header = (properties: HeaderProperties) => {
         />
       )}
       {audioUrl && audioAvailability === "unavailable" && (
-        <UiText
-          size="sm"
+        // Visually hidden: sighted users see nothing where the player would
+        // have been, but screen readers still announce that there's no
+        // audio here rather than silently skipping past it.
+        <View
+          accessible
+          accessibilityRole="text"
+          accessibilityLabel="Für diesen Artikel ist noch keine Audioversion verfügbar."
           style={{
-            color: Colors[colorScheme].textMuted,
-            paddingHorizontal: spacing.xl,
-            paddingVertical: spacing.md,
+            position: "absolute",
+            width: 1,
+            height: 1,
+            overflow: "hidden",
           }}
-        >
-          Für diesen Artikel ist noch keine Audioversion verfügbar.
-        </UiText>
+        />
       )}
       <UiSpace size={spacing.md} />
       <ArticleSourceList

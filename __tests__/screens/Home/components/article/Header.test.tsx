@@ -205,11 +205,16 @@ describe("Header — AudioPlayer integration", () => {
     });
   });
 
-  it("does not render AudioPlayer and shows a note when the article has no audio file", async () => {
+  it("does not render AudioPlayer and exposes a screen-reader-only hint when the article has no audio file", async () => {
     mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
     fetchMock.mockResolvedValue({ ok: false, status: 404 });
-    const { findByText } = await render(<Header {...defaultProps} />);
-    await findByText(/keine Audioversion verfügbar/);
+    const { findByLabelText, queryByText } = await render(
+      <Header {...defaultProps} />,
+    );
+    // Announced to screen readers via accessibilityLabel...
+    await findByLabelText(/keine Audioversion verfügbar/);
+    // ...but not rendered as visible text for sighted users.
+    expect(queryByText(/keine Audioversion verfügbar/)).toBeNull();
     expect(MockAudioPlayer).not.toHaveBeenCalled();
   });
 
