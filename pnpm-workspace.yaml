@@ -19,7 +19,7 @@ minimumReleaseAgeExclude:
   - "@expo/prebuild-config@57.0.12"
   - "@expo/router-server@57.0.6"
   - "@expo/ui@57.0.11"
-  - "@volksverpetzer/design-tokens@0.3.0"
+  - "@volksverpetzer/design-tokens@0.4.0"
   - babel-preset-expo@57.0.7
   - expo-asset@57.0.11
   - expo-build-properties@57.0.11

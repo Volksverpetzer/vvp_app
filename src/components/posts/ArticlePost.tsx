@@ -13,6 +13,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { elevation } from "#/constants/Elevation";
 import {
   CARD_CONTENT_GAP,
   DEFAULT_IMAGE_ASPECT_RATIO,
@@ -170,11 +171,11 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     if (!elevated) return;
     const isDark = colorScheme === "dark";
     const shadowRgb = isDark ? "255, 255, 255" : "0, 0, 0";
-    const shadowOpacity = isDark ? 0.12 : 0.2;
+    const shadowOpacity = isDark ? 0.12 : elevation.xs.opacity;
     return {
       borderRadius: radii.lg,
-      boxShadow: `0px 1px 1.41px rgba(${shadowRgb}, ${shadowOpacity})`,
-      elevation: 2,
+      boxShadow: `0px ${elevation.xs.offsetY}px ${elevation.xs.blur}px rgba(${shadowRgb}, ${shadowOpacity})`,
+      elevation: elevation.xs.android,
     };
   }, [elevated, colorScheme]);
   const imageStyle = useMemo(
