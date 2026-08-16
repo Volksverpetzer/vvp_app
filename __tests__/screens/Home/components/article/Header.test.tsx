@@ -167,11 +167,20 @@ describe("Header — author byline", () => {
 describe("Header — AudioPlayer integration", () => {
   const MockAudioPlayer = jest.mocked(AudioPlayer);
   const fetchMock = jest.fn();
+  const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // clearAllMocks resets calls but not a mockResolvedValue/mockRejectedValue
+    // implementation, so reset explicitly to avoid a later test silently
+    // inheriting an earlier test's fetch behavior.
+    fetchMock.mockReset();
     mockConfig.audioCdnUrl = undefined;
     globalThis.fetch = fetchMock;
+  });
+
+  afterAll(() => {
+    globalThis.fetch = originalFetch;
   });
 
   it("does not render AudioPlayer when audioCdnUrl is not configured", async () => {

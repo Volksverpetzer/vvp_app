@@ -11,7 +11,9 @@ export type AudioAvailability = "checking" | "available" | "unavailable";
 export const useAudioAvailability = (
   audioUrl: string | undefined,
 ): AudioAvailability => {
-  const [status, setStatus] = useState<AudioAvailability>("checking");
+  const [status, setStatus] = useState<AudioAvailability>(() =>
+    audioUrl ? "checking" : "unavailable",
+  );
 
   useEffect(() => {
     if (!audioUrl) {

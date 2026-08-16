@@ -5,10 +5,19 @@ import { useAudioAvailability } from "#/hooks/useAudioAvailability";
 
 describe("useAudioAvailability", () => {
   const fetchMock = jest.fn();
+  const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // clearAllMocks resets calls but not a mockResolvedValue/mockRejectedValue
+    // implementation, so reset explicitly to avoid a later test silently
+    // inheriting an earlier test's fetch behavior.
+    fetchMock.mockReset();
     globalThis.fetch = fetchMock;
+  });
+
+  afterAll(() => {
+    globalThis.fetch = originalFetch;
   });
 
   it("is unavailable without checking when no URL is given", async () => {
