@@ -26,6 +26,7 @@ import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useAudioAvailability } from "#/hooks/useAudioAvailability";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
@@ -61,6 +62,11 @@ const Header = (properties: HeaderProperties) => {
   const reference = useRef<ViewShotRef>(null);
   const router = useRouter();
   const corporate = useCorporateColor();
+
+  const audioUrl = Config.audioCdnUrl
+    ? `${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`
+    : undefined;
+  const audioAvailability = useAudioAvailability(audioUrl);
 
   const appState = useRef(AppState.currentState);
 
@@ -188,11 +194,28 @@ const Header = (properties: HeaderProperties) => {
         article_link={article_link}
         reading_time={article.reading_time}
       />
-      {Config.audioCdnUrl && (
+      {audioUrl && audioAvailability === "available" && (
         <AudioPlayer
-          audioUrl={`${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`}
+          audioUrl={audioUrl}
           title={article_title}
           artworkUrl={article_image}
+        />
+      )}
+      {audioUrl && audioAvailability === "unavailable" && (
+        // Visually hidden: sighted users see nothing where the player would
+        // have been, but screen readers still announce that there's no
+        // audio here rather than silently skipping past it.
+        <View
+          accessible
+          accessibilityRole="text"
+          accessibilityLabel="Für diesen Artikel ist noch keine Audioversion verfügbar."
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            width: 1,
+            height: 1,
+            overflow: "hidden",
+          }}
         />
       )}
       <ArticleSourceList
