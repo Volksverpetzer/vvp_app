@@ -14,11 +14,11 @@ export const useAudioAvailability = (
   const [status, setStatus] = useState<AudioAvailability>("checking");
 
   useEffect(() => {
-    setStatus("checking");
     if (!audioUrl) {
       setStatus("unavailable");
       return;
     }
+    setStatus("checking");
     const controller = new AbortController();
 
     fetch(audioUrl, { method: "HEAD", signal: controller.signal })
