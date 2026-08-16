@@ -4,6 +4,7 @@ import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 import { ChevronIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
+import { elevation } from "#/constants/Elevation";
 import { iconSizes } from "#/constants/IconSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     borderRadius: 24,
-    elevation: 4,
+    elevation: elevation.sm.android,
     height: 48,
     justifyContent: "center",
     overflow: "hidden",
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 24,
     bottom: 20,
-    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+    boxShadow: elevation.sm.boxShadow,
     position: "absolute",
     right: 20,
   },
