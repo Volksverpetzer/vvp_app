@@ -2,6 +2,7 @@ import type { TextProps } from "react-native";
 import { Text } from "react-native";
 
 import Colors from "#/constants/Colors";
+import { fontFamily } from "#/constants/FontFamily";
 import { type FontSizeToken, fontSizes } from "#/constants/FontSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -32,7 +33,7 @@ const UiText = (properties: TextProperties) => {
       style={[
         { color },
         {
-          fontFamily: bold ? "SourceSansProBold" : "SourceSansPro",
+          fontFamily: bold ? fontFamily.bold : fontFamily.regular,
           includeFontPadding: false,
         },
         size ? { fontSize: fontSizes[size] } : null,

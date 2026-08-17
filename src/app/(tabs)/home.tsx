@@ -10,6 +10,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { fontFamily } from "#/constants/FontFamily";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
@@ -82,7 +83,7 @@ const HomeScreen = () => {
           <UiText
             style={[
               globalStyles.whiteText,
-              { fontFamily: "SourceSansPro", fontSize: INPUT_FONT_SIZE },
+              { fontFamily: fontFamily.regular, fontSize: INPUT_FONT_SIZE },
             ]}
           >
             Suche ...

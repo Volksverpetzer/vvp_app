@@ -8,6 +8,7 @@ import { HeartIcon } from "#/components/Icons";
 import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
+import { fontFamily } from "#/constants/FontFamily";
 import { iconSizes } from "#/constants/IconSizes";
 import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
@@ -111,7 +112,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
   const titleTextStyle = useMemo(
     () => ({
       paddingBottom: spacing.md,
-      fontFamily: "SourceSansProBold",
+      fontFamily: fontFamily.bold,
       zIndex: layers.raised,
       fontSize: headerFontSize,
       color: corporate,
