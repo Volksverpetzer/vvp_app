@@ -2,8 +2,6 @@ import { Buffer } from "buffer";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { FaktenBotReaction } from "#/components/animations/FaktenBot";
-import Config from "#/constants/Config";
-import { registerEvent } from "#/helpers/network/Analytics";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import type { AISearchResponse } from "#/types";
 
@@ -49,7 +47,6 @@ export const useAISearch = ({
       setIsLoading(true);
       setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
       let queryText = search;
-      registerEvent(Config.wpUrl, "search", { query: search });
       if (search.includes("x.com")) {
         setLoadingMessage("Lade Vorschau von x.com...");
         try {
