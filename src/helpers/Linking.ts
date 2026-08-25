@@ -11,6 +11,15 @@ import type { HttpsUrl } from "#/types";
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 
 /**
+ * A URL accepted by {@link onLinkPress}: either already `https://`, or
+ * `http://` for callers relaying auto-linkified text (see onLinkPress) that
+ * defaults schema-less matches to that scheme. onLinkPress upgrades the
+ * latter to https before use, so this only widens the *input* contract —
+ * everything downstream still deals exclusively in `HttpsUrl`.
+ */
+type LinkHref = HttpsUrl | `http://${string}`;
+
+/**
  * Linking.parse throws for empty/unparseable input (confirmed against the
  * real expo-linking implementation, not just a test mock) rather than
  * returning a tolerant fallback. Callers include WebView event handlers
@@ -43,16 +52,26 @@ const safeParseHostname = (url: string | undefined): string =>
  * are pushed to the router; external links open in the browser.
  * Links under /wp-content/uploads/ are treated as external and opened
  * with the OS default handler.
- * @param href - The URL to handle.
+ *
+ * `href` may arrive as `http://`: auto-linkified text (e.g.
+ * react-native-hyperlink parsing an Instagram caption's bare
+ * "volksverpetzer.de/..." mention) defaults to that scheme for schema-less
+ * matches. An `http://` URL reaching the WebView trips Android's
+ * cleartext-traffic block in release builds (debug builds allow it via
+ * usesCleartextTraffic, masking the bug there and on iOS, which has no such
+ * restriction) - so upgrade the scheme here, the single chokepoint shared by
+ * every in-app link tap.
+ * @param href - The URL to handle; `http://` is upgraded to `https://`.
  * @param router - Expo Router instance for navigation.
  * @param article_link - Optional article URL for analytics context.
  */
 const onLinkPress = (
-  href: HttpsUrl,
+  href: LinkHref,
   router: ImperativeRouter,
   article_link?: string,
 ) => {
-  const { hostname, path } = Linking.parse(href);
+  const normalizedHref = href.replace(/^http:\/\//, "https://") as HttpsUrl;
+  const { hostname, path } = Linking.parse(normalizedHref);
   const internalHostnames = getInternalWpHosts(Config.wpUrl, Config.feeds?.wp);
   const normalizedHostname = normalizeHost(hostname);
 
@@ -60,7 +79,7 @@ const onLinkPress = (
     internalHostnames.includes(normalizedHostname) &&
     shouldExcludeFromDeepLink(path)
   ) {
-    openExternalDownload(href, article_link);
+    openExternalDownload(normalizedHref, article_link);
     return;
   }
 
@@ -69,7 +88,7 @@ const onLinkPress = (
       const cleanPath = path.replace(/^\//, "").replace(/\/$/, "");
       router.push({
         pathname: `/${cleanPath}`,
-        params: { originalUrl: href },
+        params: { originalUrl: normalizedHref },
       } as unknown as Href);
       return;
     }
@@ -78,7 +97,7 @@ const onLinkPress = (
     router.push("/");
     return;
   }
-  outBoundLinkPress(href, article_link);
+  outBoundLinkPress(normalizedHref, article_link);
 };
 
 /**
@@ -155,6 +174,7 @@ const isInternalUploadUrl = (href: string): href is HttpsUrl => {
   }
 };
 
+export type { LinkHref };
 export {
   isInternalUploadUrl,
   onLinkPress,
