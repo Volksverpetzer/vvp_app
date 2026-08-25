@@ -71,7 +71,12 @@ const onLinkPress = (
   article_link?: string,
 ) => {
   const normalizedHref = href.replace(/^http:\/\//, "https://") as HttpsUrl;
-  const { hostname, path } = Linking.parse(normalizedHref);
+  const parsed = safeParse(normalizedHref);
+  if (!parsed) {
+    outBoundLinkPress(normalizedHref, article_link);
+    return;
+  }
+  const { hostname, path } = parsed;
   const internalHostnames = getInternalWpHosts(Config.wpUrl, Config.feeds?.wp);
   const normalizedHostname = normalizeHost(hostname);
 

@@ -233,6 +233,21 @@ describe("Linking helpers", () => {
       expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(externalUrl);
     });
 
+    it("opens the link externally instead of crashing when Linking.parse throws", () => {
+      // Linking.parse throws for unparseable input; onLinkPress must use the
+      // module's own safeParse rather than calling it directly, or a
+      // malformed href (e.g. from auto-linkified text) crashes the screen.
+      const malformedUrl = "https://" as any;
+      parseSpy.mockImplementation(() => {
+        throw new Error("Malformed URL");
+      });
+
+      onLinkPress(malformedUrl, router);
+
+      expect(pushSpy).not.toHaveBeenCalled();
+      expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(malformedUrl);
+    });
+
     it("should handle paths with trailing slashes", () => {
       // Setup
       const internalUrl = "https://www.volksverpetzer.de/politik/";

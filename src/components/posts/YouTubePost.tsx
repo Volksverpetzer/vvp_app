@@ -42,7 +42,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
 
   const info = (
     <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
-      <UiSpace size={12} />
+      <UiSpace size={CARD_CONTENT_GAP} />
       <View style={{ gap: CARD_CONTENT_GAP }}>
         <Typography type="cardTitle">{snippet.title}</Typography>
         <Typography type="meta">{date}</Typography>
