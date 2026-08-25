@@ -11,6 +11,15 @@ import type { HttpsUrl } from "#/types";
 import { shouldExcludeFromDeepLink } from "./DeepLinkFilter";
 
 /**
+ * A URL accepted by {@link onLinkPress}: either already `https://`, or
+ * `http://` for callers relaying auto-linkified text (see onLinkPress) that
+ * defaults schema-less matches to that scheme. onLinkPress upgrades the
+ * latter to https before use, so this only widens the *input* contract —
+ * everything downstream still deals exclusively in `HttpsUrl`.
+ */
+type LinkHref = HttpsUrl | `http://${string}`;
+
+/**
  * Linking.parse throws for empty/unparseable input (confirmed against the
  * real expo-linking implementation, not just a test mock) rather than
  * returning a tolerant fallback. Callers include WebView event handlers
@@ -44,17 +53,17 @@ const safeParseHostname = (url: string | undefined): string =>
  * Links under /wp-content/uploads/ are treated as external and opened
  * with the OS default handler.
  *
- * `href` is typed as `HttpsUrl` but that's a compile-time-only guarantee:
- * auto-linkified text (e.g. react-native-hyperlink parsing an Instagram
- * caption's bare "volksverpetzer.de/..." mention) defaults to an `http://`
- * scheme for schema-less matches. An `http://` URL reaching the WebView
- * trips Android's cleartext-traffic block in release builds (debug builds
- * allow it via usesCleartextTraffic, masking the bug there and on iOS,
- * which has no such restriction) - so upgrade the scheme here, the single
- * chokepoint shared by every in-app link tap.
+ * `href` may arrive as `http://`: auto-linkified text (e.g.
+ * react-native-hyperlink parsing an Instagram caption's bare
+ * "volksverpetzer.de/..." mention) defaults to that scheme for schema-less
+ * matches. An `http://` URL reaching the WebView trips Android's
+ * cleartext-traffic block in release builds (debug builds allow it via
+ * usesCleartextTraffic, masking the bug there and on iOS, which has no such
+ * restriction) - so upgrade the scheme here, the single chokepoint shared by
+ * every in-app link tap.
  */
 const onLinkPress = (
-  href: HttpsUrl,
+  href: LinkHref,
   router: ImperativeRouter,
   article_link?: string,
 ) => {
@@ -162,6 +171,7 @@ const isInternalUploadUrl = (href: string): href is HttpsUrl => {
   }
 };
 
+export type { LinkHref };
 export {
   isInternalUploadUrl,
   onLinkPress,
