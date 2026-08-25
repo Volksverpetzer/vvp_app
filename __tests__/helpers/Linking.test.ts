@@ -3,7 +3,6 @@ import * as Linking from "expo-linking";
 import type { ImperativeRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 
-import type { LinkHref } from "#/helpers/Linking";
 import {
   isInternalUploadUrl,
   onLinkPress,
@@ -117,7 +116,7 @@ describe("Linking helpers", () => {
         return { hostname: "www.volksverpetzer.de", path: "" };
       });
 
-      onLinkPress(httpUrl as LinkHref, router);
+      onLinkPress(httpUrl, router);
 
       expect(Linking.parse).toHaveBeenCalledWith(httpsUrl);
       expect(pushSpy).toHaveBeenCalledWith({
