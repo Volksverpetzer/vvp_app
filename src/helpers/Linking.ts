@@ -61,6 +61,9 @@ const safeParseHostname = (url: string | undefined): string =>
  * usesCleartextTraffic, masking the bug there and on iOS, which has no such
  * restriction) - so upgrade the scheme here, the single chokepoint shared by
  * every in-app link tap.
+ * @param href - The URL to handle; `http://` is upgraded to `https://`.
+ * @param router - Expo Router instance for navigation.
+ * @param article_link - Optional article URL for analytics context.
  */
 const onLinkPress = (
   href: LinkHref,
