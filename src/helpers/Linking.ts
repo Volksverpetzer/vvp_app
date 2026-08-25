@@ -43,16 +43,23 @@ const safeParseHostname = (url: string | undefined): string =>
  * are pushed to the router; external links open in the browser.
  * Links under /wp-content/uploads/ are treated as external and opened
  * with the OS default handler.
- * @param href - The URL to handle.
- * @param router - Expo Router instance for navigation.
- * @param article_link - Optional article URL for analytics context.
+ *
+ * `href` is typed as `HttpsUrl` but that's a compile-time-only guarantee:
+ * auto-linkified text (e.g. react-native-hyperlink parsing an Instagram
+ * caption's bare "volksverpetzer.de/..." mention) defaults to an `http://`
+ * scheme for schema-less matches. An `http://` URL reaching the WebView
+ * trips Android's cleartext-traffic block in release builds (debug builds
+ * allow it via usesCleartextTraffic, masking the bug there and on iOS,
+ * which has no such restriction) - so upgrade the scheme here, the single
+ * chokepoint shared by every in-app link tap.
  */
 const onLinkPress = (
   href: HttpsUrl,
   router: ImperativeRouter,
   article_link?: string,
 ) => {
-  const { hostname, path } = Linking.parse(href);
+  const normalizedHref = href.replace(/^http:\/\//, "https://") as HttpsUrl;
+  const { hostname, path } = Linking.parse(normalizedHref);
   const internalHostnames = getInternalWpHosts(Config.wpUrl, Config.feeds?.wp);
   const normalizedHostname = normalizeHost(hostname);
 
@@ -60,7 +67,7 @@ const onLinkPress = (
     internalHostnames.includes(normalizedHostname) &&
     shouldExcludeFromDeepLink(path)
   ) {
-    openExternalDownload(href, article_link);
+    openExternalDownload(normalizedHref, article_link);
     return;
   }
 
@@ -69,7 +76,7 @@ const onLinkPress = (
       const cleanPath = path.replace(/^\//, "").replace(/\/$/, "");
       router.push({
         pathname: `/${cleanPath}`,
-        params: { originalUrl: href },
+        params: { originalUrl: normalizedHref },
       } as unknown as Href);
       return;
     }
@@ -78,7 +85,7 @@ const onLinkPress = (
     router.push("/");
     return;
   }
-  outBoundLinkPress(href, article_link);
+  outBoundLinkPress(normalizedHref, article_link);
 };
 
 /**
