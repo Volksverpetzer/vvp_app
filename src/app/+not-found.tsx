@@ -7,6 +7,8 @@ import Typography from "#/components/ui/Typography";
 import EmptyComponent from "#/components/views/EmptyComponent";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import NotFoundImage from "#assets/images/404.webp";
@@ -22,14 +24,14 @@ const NotFoundScreen = () => {
           globalStyles.content,
           {
             alignItems: "center",
-            paddingVertical: 40,
+            paddingVertical: spacing.huge,
           },
         ]}
       >
         <Typography type="heading">404 Whoops!</Typography>
         <EmptyComponent
           text="Die angeforderte Seite konnte nicht gefunden werden."
-          icon={<ErrorIcon size={60} />}
+          icon={<ErrorIcon size={iconSizes.xl} />}
         >
           <Image
             source={NotFoundImage}

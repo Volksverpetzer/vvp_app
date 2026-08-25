@@ -8,6 +8,8 @@ import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import { fontSizes } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -29,12 +31,22 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
     <View
       style={[
         globalStyles.row,
-        { paddingHorizontal: 20, justifyContent: "flex-start", gap: 20 },
+        {
+          paddingHorizontal: spacing.xl,
+          justifyContent: "flex-start",
+          gap: spacing.xl,
+        },
       ]}
     >
       {!!reading_time && (
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-          <ClockIcon size={16} color={color} />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: spacing.xs,
+          }}
+        >
+          <ClockIcon size={iconSizes.xs} color={color} />
           <UiText size="base" style={{ color }}>
             {reading_time} Min.
           </UiText>
@@ -46,13 +58,13 @@ const ArticleStats = (properties: ArticleStatsProperties) => {
             {...{ url: article_link }}
             color={color}
             style={{ fontSize: fontSizes.base }}
-            size={16}
+            size={iconSizes.xs}
           />
           <ShareCounter
             style={{ fontSize: fontSizes.base, color }}
             shareable={[{ title: "Link teilen", url: article_link }]}
             color={color}
-            size={16}
+            size={iconSizes.xs}
           />
         </>
       )}

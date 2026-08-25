@@ -9,6 +9,7 @@ import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import Post from "#/helpers/Post";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import { registerViews } from "#/helpers/network/Engagement";
@@ -16,6 +17,7 @@ import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import { mapPodcastEpisode } from "#/screens/Home/fetchers/PodcastFetcher";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type {
@@ -129,6 +131,7 @@ const MyFavs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const focused = useIsFocused();
   const requestIdRef = useRef(0);
+  const tabBarClearance = useTabBarClearance();
 
   useEffect(() => {
     let isMounted = true;
@@ -198,7 +201,13 @@ const MyFavs = () => {
   }, [focused]);
 
   return (
-    <View style={{ flex: 1, gap: 20 }}>
+    <View
+      style={{
+        flex: 1,
+        gap: spacing.xl,
+        paddingBottom: tabBarClearance,
+      }}
+    >
       {isLoading ? (
         <UiSpinner text="Lade Favoriten..." />
       ) : (
@@ -214,12 +223,11 @@ const MyFavs = () => {
           />
         ))
       )}
-      <UiSpace size={50} />
+      <UiSpace size={spacing.huge} />
       <UiEmptyState icon={<StarIcon />}>
         Klicke auf den Stern bei Artikeln und Posts, um sie zu den Favoriten
         hinzuzufügen
       </UiEmptyState>
-      <UiSpace size={100} />
     </View>
   );
 };

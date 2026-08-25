@@ -9,6 +9,8 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -66,7 +68,7 @@ const SearchHeader = ({
           {
             height: 100,
             justifyContent: "flex-end",
-            paddingRight: 20,
+            paddingRight: spacing.xl,
           },
         ]}
       >
@@ -74,7 +76,7 @@ const SearchHeader = ({
           bold
           size="xxl"
           style={{
-            paddingTop: 20,
+            paddingTop: spacing.xl,
             color: corporate,
             flex: 1,
             textAlign: "center",
@@ -102,9 +104,11 @@ const SearchHeader = ({
           globalStyles.input,
           {
             height: 50,
-            paddingRight: 40,
+            // Reserves room for the trailing SearchIcon button so the
+            // TextInput's width: "100%" doesn't run underneath it.
+            paddingRight: iconSizes.md + spacing.xl,
             backgroundColor: corporate,
-            marginBottom: 40,
+            marginBottom: spacing.huge,
           },
         ]}
       >
@@ -129,7 +133,7 @@ const SearchHeader = ({
           returnKeyType="search"
         />
         <UiPressable accessibilityRole="button" onPress={handleSubmit}>
-          <SearchIcon color="white" size={24} />
+          <SearchIcon color="white" size={iconSizes.md} />
         </UiPressable>
       </View>
     </>

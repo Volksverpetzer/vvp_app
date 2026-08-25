@@ -7,6 +7,7 @@ on:
 
 jobs:
   expo-preview:
+    name: 🚀 Expo Preview
     # Dependabot-triggered runs can't read Actions secrets, so EXPO_TOKEN is empty,
     # the EAS setup step is skipped, and `eas --version` fails. A per-PR QR preview
     # isn't useful for a dependency bump anyway, so skip the job for Dependabot.

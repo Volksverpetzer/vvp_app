@@ -6,6 +6,8 @@ import { CheckboxIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 interface UiCheckboxProperties {
@@ -33,7 +35,7 @@ const UiCheckbox = (properties: UiCheckboxProperties) => {
       onPress={() => onChange(!checked)}
     >
       <View style={[styles.checkboxBase, style, checkedStyle]}>
-        {checked && <CheckboxIcon size={24} color="white" />}
+        {checked && <CheckboxIcon size={iconSizes.md} color="white" />}
       </View>
       {children}
     </UiPressable>
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
   row: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 20,
+    gap: spacing.xl,
   },
 });
 

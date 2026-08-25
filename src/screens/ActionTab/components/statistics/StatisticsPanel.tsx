@@ -6,6 +6,8 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
@@ -50,19 +52,22 @@ const StatisticsPanel = ({
 
   return (
     <View
-      style={[globalStyles.centered, { width, gap: 10, paddingBottom: 10 }]}
+      style={[
+        globalStyles.centered,
+        { width, gap: spacing.md, paddingBottom: spacing.md },
+      ]}
     >
       <View
         style={[
           globalStyles.row,
-          { justifyContent: "flex-start", paddingLeft: 30 },
+          { justifyContent: "flex-start", paddingLeft: spacing.xxxl },
         ]}
       >
-        <StatisticsIcon name={icon} size={32} color="white" />
+        <StatisticsIcon name={icon} size={iconSizes.lg} color="white" />
         <UiText
           size="xl"
           bold
-          style={[globalStyles.whiteText, { marginLeft: 10 }]}
+          style={[globalStyles.whiteText, { marginLeft: spacing.md }]}
         >
           {title}
         </UiText>
@@ -71,8 +76,8 @@ const StatisticsPanel = ({
             size="xs"
             style={{
               color: textMuted,
-              paddingLeft: 10,
-              paddingBottom: 3,
+              paddingLeft: spacing.md,
+              paddingBottom: spacing.xs,
               alignSelf: "flex-end",
             }}
           >
@@ -89,7 +94,7 @@ const StatisticsPanel = ({
             onPress={onLeftPress}
             style={panelStyles.chevronButton}
           >
-            <ChevronIcon direction="left" size={24} color="white" />
+            <ChevronIcon direction="left" size={iconSizes.md} color="white" />
           </UiPressable>
         ) : (
           <View style={panelStyles.chevronSlot} />
@@ -117,7 +122,7 @@ const StatisticsPanel = ({
             onPress={onRightPress}
             style={panelStyles.chevronButton}
           >
-            <ChevronIcon direction="right" size={24} color="white" />
+            <ChevronIcon direction="right" size={iconSizes.md} color="white" />
           </UiPressable>
         ) : (
           <View style={panelStyles.chevronSlot} />
@@ -136,7 +141,7 @@ const panelStyles = StyleSheet.create({
   chevronButton: {
     width: 40,
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: spacing.md,
   },
   chevronSlot: {
     width: 32,
@@ -144,7 +149,7 @@ const panelStyles = StyleSheet.create({
   statisticsRow: {
     flex: 1,
     flexDirection: "row",
-    gap: 5,
+    gap: spacing.xs,
   },
   statisticsBox: {
     flex: 1,

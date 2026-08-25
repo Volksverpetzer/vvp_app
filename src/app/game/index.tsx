@@ -6,6 +6,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const HomeScreen = () => {
@@ -39,23 +40,23 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#007bff",
     borderRadius: radii.xs,
-    marginBottom: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    marginBottom: spacing.md,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
   },
   container: {
     alignItems: "center",
     flex: 1,
     justifyContent: "center",
-    padding: 20,
+    padding: spacing.xl,
   },
-  description: { marginBottom: 30, textAlign: "center" },
+  description: { marginBottom: spacing.xxxl, textAlign: "center" },
   link: {
     color: "#fff",
     fontFamily: "SourceSansPro",
     fontSize: fontSizes.base,
   },
-  title: { marginBottom: 20 },
+  title: { marginBottom: spacing.xl },
 });
 
 export default HomeScreen;

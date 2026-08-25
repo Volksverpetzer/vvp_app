@@ -4,6 +4,7 @@ import { ShareIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import { getShares } from "#/helpers/network/Engagement";
 import { useEngagementCount } from "#/hooks/useEngagementCount";
 import type { ShareableType } from "#/types";
@@ -34,7 +35,7 @@ const ShareCounter = (properties: ShareCounterProperties) => {
         flexDirection: "row",
         justifyContent: "space-evenly",
         alignItems: "center",
-        gap: 5,
+        gap: spacing.xs,
       }}
     >
       <ShareIcon size={size} color={color} />

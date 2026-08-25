@@ -6,6 +6,7 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ClaimProperties } from "#/types";
 
@@ -30,7 +31,7 @@ const ClaimPost = (properties: ClaimProperties) => {
             paddingHorizontal: POST_PADDING_HORIZONTAL,
             lineHeight: LINE_HEIGHTS.xl,
             textAlign: "left",
-            paddingTop: 20,
+            paddingTop: spacing.xl,
           }}
         >
           {review.publisher.name}: {review.title}
@@ -38,7 +39,7 @@ const ClaimPost = (properties: ClaimProperties) => {
         <UiText
           style={{
             paddingHorizontal: POST_PADDING_HORIZONTAL,
-            paddingVertical: 5,
+            paddingVertical: spacing.xs,
             color,
           }}
         >

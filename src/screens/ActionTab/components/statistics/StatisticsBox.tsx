@@ -4,6 +4,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
 interface StatsBoxProperties {
@@ -41,7 +42,7 @@ const boxStyles = StyleSheet.create({
   container: {
     flexDirection: "column",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: spacing.md,
     borderRadius: radii.md,
   },
   valueText: {

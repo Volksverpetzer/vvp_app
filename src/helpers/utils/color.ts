@@ -1,5 +1,6 @@
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 
 export const isDarkMode = (mode: AppColorScheme) => mode === "dark";
@@ -36,7 +37,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     em: {
       fontFamily: "SourceSansProItalic",
     },
-    p: { color: textColor, padding: 10, fontSize: fontSizes.lg },
+    p: { color: textColor, padding: spacing.md, fontSize: fontSizes.lg },
     strong: {
       color: textColor,
       fontFamily: "SourceSansProBold",
@@ -44,32 +45,32 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     h1: {
       textTransform: "uppercase" as const,
       color: textColor,
-      padding: 10,
+      padding: spacing.md,
     },
     h2: {
       textTransform: "uppercase" as const,
       color: textColor,
-      padding: 10,
+      padding: spacing.md,
       fontSize: fontSizes.xxl,
     },
     h3: {
       textTransform: "uppercase" as const,
       color: textColor,
-      padding: 10,
+      padding: spacing.md,
       fontSize: fontSizes.xxl,
     },
     h4: {
       textTransform: "uppercase" as const,
       color: textColor,
-      padding: 10,
+      padding: spacing.md,
       fontSize: fontSizes.xxl,
     },
-    h5: { color: textColor, padding: 10, fontSize: fontSizes.xxl },
+    h5: { color: textColor, padding: spacing.md, fontSize: fontSizes.xxl },
     li: {
       color: textColor,
-      paddingHorizontal: 10,
+      paddingHorizontal: spacing.md,
       fontSize: fontSizes.lg,
-      marginBottom: 10,
+      marginBottom: spacing.md,
     },
     img: { minHeight: 200 },
     figure: {
@@ -80,17 +81,17 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     figcaption: {
       color: textColor,
       fontSize: fontSizes.sm,
-      padding: 10,
+      padding: spacing.md,
       textAlign: "center" as const,
     },
     blockquote: {
       color: textColor,
       fontSize: fontSizes.lg,
       fontFamily: "SourceSansProItalic",
-      paddingLeft: 20,
-      paddingRight: 10,
-      paddingVertical: 15,
-      marginVertical: 10,
+      paddingLeft: spacing.xl,
+      paddingRight: spacing.md,
+      paddingVertical: spacing.lg,
+      marginVertical: spacing.md,
       borderLeftWidth: 4,
       borderLeftColor: corporate,
       backgroundColor: `${corporate}10`, // 10% opacity
@@ -100,7 +101,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       fontSize: fontSizes.sm,
       fontFamily: "SourceSansProItalic",
       textAlign: "right" as const,
-      paddingTop: 5,
+      paddingTop: spacing.xs,
     },
   };
 };

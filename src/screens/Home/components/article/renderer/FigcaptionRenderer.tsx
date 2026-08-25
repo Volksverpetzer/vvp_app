@@ -1,8 +1,8 @@
 import { View } from "react-native";
 import type { InternalRendererProps, TBlock } from "react-native-render-html";
 
-import { MIN_TOUCH_TARGET } from "#/components/posts/Badge";
 import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
+import { MIN_TOUCH_TARGET } from "#/constants/IconSizes";
 import { useImageCredit } from "#/hooks/useImageCredit";
 import type { HttpsUrl } from "#/types";
 

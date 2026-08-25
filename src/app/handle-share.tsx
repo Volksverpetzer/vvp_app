@@ -9,6 +9,7 @@ import { Button, View } from "react-native";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import { openExternalDownload } from "#/helpers/Linking";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
@@ -133,7 +134,7 @@ const HandleShare = () => {
       <UiSpinner
         size="large"
         text="Share wird verarbeitet..."
-        containerStyle={{ padding: 24 }}
+        containerStyle={{ padding: spacing.xxl }}
       />
     );
   }
@@ -144,8 +145,8 @@ const HandleShare = () => {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        padding: 24,
-        gap: 12,
+        padding: spacing.xxl,
+        gap: spacing.md,
       }}
     >
       {!hasShareIntent ? (

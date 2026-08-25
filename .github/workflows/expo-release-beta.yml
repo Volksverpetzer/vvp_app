@@ -10,6 +10,7 @@ on:
 
 jobs:
   test-and-lint:
+    name: 🧪 Test and Lint
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-slim
     steps:
@@ -27,6 +28,7 @@ jobs:
         uses: ./.github/actions/test-and-lint
 
   build-and-release-stores:
+    name: 🚀 Build and Release to Stores
     needs: test-and-lint
     runs-on: ubuntu-slim
     steps:
@@ -47,6 +49,7 @@ jobs:
         run: APP=volksverpetzer eas build --profile internal --platform ios --clear-cache --non-interactive --auto-submit --no-wait
 
   build-and-release-apk:
+    name: 🎂 Build and Release APK
     needs: build-and-release-stores
     runs-on: ubuntu-latest
     env:

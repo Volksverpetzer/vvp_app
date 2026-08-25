@@ -5,6 +5,7 @@ import { ActivityIndicator, View } from "react-native";
 import { ArticleViewIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import { getViews } from "#/helpers/network/Engagement";
 import type { HttpsUrl } from "#/types";
 
@@ -61,7 +62,9 @@ const ViewCounter = (properties: ViewCounterProperties) => {
 
   // TODO replace ActivityIndicator with UiSpinner and adjust styling
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+    <View
+      style={{ flexDirection: "row", alignItems: "center", gap: spacing.xs }}
+    >
       <ArticleViewIcon size={size} color={color} />
       {isLoading ? (
         <ActivityIndicator color={color} />

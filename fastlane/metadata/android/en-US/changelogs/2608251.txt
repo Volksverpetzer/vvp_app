@@ -1,0 +1,3 @@
+- New: The YouTube feed now shows the video title and publish date
+- The audio player is now only shown for articles that have an audio file
+- Bug fixes and performance improvements

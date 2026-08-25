@@ -11,6 +11,8 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
@@ -59,7 +61,7 @@ const HomeScreen = () => {
       <AnimatedHeader
         title={
           isVolksverpetzer ? (
-            <LogoBig color={color} style={{ marginLeft: 20 }} />
+            <LogoBig color={color} style={{ marginLeft: spacing.xl }} />
           ) : (
             Constants.expoConfig.name
           )
@@ -85,7 +87,7 @@ const HomeScreen = () => {
           >
             Suche ...
           </UiText>
-          <SearchIcon color="white" size={24} />
+          <SearchIcon color="white" size={iconSizes.md} />
         </UiPressable>
       </AnimatedHeader>
       <View style={[globalStyles.container, { backgroundColor }]}>
@@ -93,7 +95,7 @@ const HomeScreen = () => {
           {...feedprops}
           key={0}
           showAnnouncements
-          style={{ paddingTop: HEADER_HEIGHT, gap: 20 }}
+          style={{ paddingTop: HEADER_HEIGHT, gap: spacing.xl }}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
             {

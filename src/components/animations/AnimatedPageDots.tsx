@@ -7,6 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import type { SharedValue } from "react-native-reanimated";
 
+import { spacing } from "#/constants/Spacing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 
 interface DotItemProps {
@@ -31,8 +32,8 @@ const DotItem = ({ index, progress, color }: DotItemProps) => {
           height: 5,
           width: 5,
           backgroundColor: color,
-          marginHorizontal: 3,
-          marginVertical: 10,
+          marginHorizontal: spacing.xs,
+          marginVertical: spacing.md,
           borderRadius: 5,
         },
         style,

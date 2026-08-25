@@ -77,8 +77,9 @@ const SearchManager = ({
     if (resultsLength !== undefined) {
       registerEvent(Config.wpUrl, "search", {
         search: searchParameters,
-        results: resultsLength,
-        type: isAISearch ? "ai" : "standard",
+        search_source: "app",
+        search_type: isAISearch ? "ai" : "standard",
+        result_count: resultsLength,
       });
     }
   }, [resultsLength, searchParameters, isAISearch]);

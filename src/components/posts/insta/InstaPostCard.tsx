@@ -11,6 +11,7 @@ import {
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { Achievements } from "#/helpers/Achievements";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -81,7 +82,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         style={{
           paddingHorizontal: POST_PADDING_HORIZONTAL,
-          paddingBottom: 10,
+          paddingBottom: spacing.md,
           opacity: 1,
         }}
       >

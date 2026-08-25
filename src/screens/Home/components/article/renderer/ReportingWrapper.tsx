@@ -5,6 +5,7 @@ import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { ReportIcon } from "#/components/Icons";
 import RightAction from "#/components/actions/RightAction";
 import Colors from "#/constants/Colors";
+import { iconSizes } from "#/constants/IconSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -43,7 +44,7 @@ const ReportingWrapper = ({
           progress={p}
           drag={d}
           swipeable={s}
-          icon={<ReportIcon color="white" size={24} />}
+          icon={<ReportIcon color="white" size={iconSizes.md} />}
           label="Fehler melden"
           backgroundColor={Colors[colorScheme].surfaceError}
           onAction={errorReport}

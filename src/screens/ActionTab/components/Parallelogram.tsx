@@ -3,6 +3,7 @@ import type { TextStyle, ViewStyle } from "react-native";
 import { StyleSheet, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
+import { spacing } from "#/constants/Spacing";
 
 interface Properties {
   children: ReactNode;
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "100%",
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: spacing.xl,
     transform: [{ skewX: "-10deg" }],
   },
   parallelogramText: {

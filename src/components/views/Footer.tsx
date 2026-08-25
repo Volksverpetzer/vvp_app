@@ -3,10 +3,11 @@ import { View } from "react-native";
 import { ShareIcon } from "#/components/Icons";
 import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
-import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
 
@@ -30,12 +31,12 @@ const Footer = (properties: FooterProperties) => {
 
   return (
     <>
-      <View style={{ paddingBottom: 30, alignItems: "center" }}>
+      <View style={{ paddingBottom: spacing.xxxl, alignItems: "center" }}>
         <UiText
           size="lg"
           style={{
             textAlign: "center",
-            paddingVertical: 30,
+            paddingVertical: spacing.xxxl,
             color: corporate,
           }}
         >
@@ -61,30 +62,20 @@ const Footer = (properties: FooterProperties) => {
             })
           }
         >
-          <ShareIcon color="white" size={32} />
+          <ShareIcon color="white" size={iconSizes.lg} />
         </UiPressable>
       </View>
-      <UiCard
-        style={{
-          marginHorizontal: 12,
-          backgroundColor: Colors[colorScheme].surface,
-        }}
-      >
-        <Support article_link={properties.article_link} />
-      </UiCard>
-      <UiSpace size={20} />
-      <UiCard
-        style={{
-          marginHorizontal: 12,
-          backgroundColor: Colors[colorScheme].surface,
-        }}
-      >
-        <ContactCard
-          article_link={properties.article_link}
-          article_title={properties.article_title}
-        />
-      </UiCard>
-      <UiSpace size={100} />
+      <View style={{ paddingHorizontal: spacing.md, gap: spacing.xl }}>
+        <UiCard style={{ backgroundColor: Colors[colorScheme].surface }}>
+          <Support article_link={properties.article_link} />
+        </UiCard>
+        <UiCard style={{ backgroundColor: Colors[colorScheme].surface }}>
+          <ContactCard
+            article_link={properties.article_link}
+            article_title={properties.article_title}
+          />
+        </UiCard>
+      </View>
     </>
   );
 };

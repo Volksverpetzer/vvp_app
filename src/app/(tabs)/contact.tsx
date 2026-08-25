@@ -17,19 +17,20 @@ import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
-import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import UiTextInput from "#/components/ui/UiTextInput";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { INPUT_FONT_SIZE, globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { registerEvent } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { FetchError } from "#/helpers/utils/networking";
 import { appName } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import type { ContactCategory } from "#/types";
 
 const MIN_MESSAGE_LENGTH = 10;
@@ -65,6 +66,8 @@ const isValidCategory = (value?: string): value is ContactCategory =>
   value === "report_fake" || value === "app_feedback" || value === "other";
 
 const ContactScreen = () => {
+  const tabBarClearance = useTabBarClearance();
+
   // Local state variables
   const [buttonEnabled, setButtonEnabled] = useState(true);
   const [animation, setAnimation] = useState(false);
@@ -114,13 +117,13 @@ const ContactScreen = () => {
         categoryContainer: {
           flexDirection: "row",
           flexWrap: "wrap",
-          gap: 8,
+          gap: spacing.sm,
         },
         categoryPill: {
           backgroundColor: surfaceInput,
           borderRadius: radii.full,
-          paddingHorizontal: 14,
-          paddingVertical: 8,
+          paddingHorizontal: spacing.md,
+          paddingVertical: spacing.sm,
         },
         categoryPillActive: {
           backgroundColor: primary,
@@ -130,8 +133,7 @@ const ContactScreen = () => {
         },
         errorText: {
           color: errorColor,
-          marginBottom: 20,
-          paddingHorizontal: 12,
+          paddingHorizontal: spacing.md,
           textAlign: "center",
         },
         input: {
@@ -142,10 +144,10 @@ const ContactScreen = () => {
           borderRadius: radii.xs,
           borderWidth: 2,
           // Explicit vertical + horizontal padding (overriding the shared
-          // input's paddingHorizontal: 25) so the intent is unambiguous:
+          // input's paddingHorizontal: spacing.xxl) so the intent is unambiguous:
           // tighter sides than the shared input.
-          paddingVertical: 10,
-          paddingHorizontal: 14,
+          paddingVertical: spacing.md,
+          paddingHorizontal: spacing.md,
           // Shared text size, applied to the actual TextInput (the shared
           // input style is layout-only, since it's also used on container Views).
           fontSize: INPUT_FONT_SIZE,
@@ -159,8 +161,7 @@ const ContactScreen = () => {
           backgroundColor: accent,
           borderRadius: radii.full,
           justifyContent: "center",
-          margin: 20,
-          paddingVertical: 10,
+          paddingVertical: spacing.md,
           width: 120,
         },
         submitButtonDisabled: {
@@ -317,7 +318,11 @@ const ContactScreen = () => {
           }}
           contentContainerStyle={[
             globalStyles.content,
-            { paddingTop: HEADER_HEIGHT },
+            {
+              paddingTop: HEADER_HEIGHT,
+              paddingBottom: tabBarClearance,
+              gap: spacing.xl,
+            },
           ]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
@@ -325,7 +330,7 @@ const ContactScreen = () => {
           )}
           scrollEventThrottle={16}
         >
-          <View style={{ gap: 10 }}>
+          <View style={{ gap: spacing.md }}>
             <Typography type="heading">Thema wählen:</Typography>
             <View style={styles.categoryContainer}>
               {CATEGORIES.map(({ key, label }) => (
@@ -356,8 +361,7 @@ const ContactScreen = () => {
               ))}
             </View>
           </View>
-          <UiSpace size={20} />
-          <View style={{ gap: 10 }}>
+          <View style={{ gap: spacing.md }}>
             <Typography type="heading">{texts.titleLabel}</Typography>
             <UiTextInput
               accessibilityLabel="Text input field"
@@ -375,8 +379,7 @@ const ContactScreen = () => {
               ]}
             />
           </View>
-          <UiSpace size={20} />
-          <View style={{ gap: 10 }}>
+          <View style={{ gap: spacing.md }}>
             <Typography type="heading">{texts.messageLabel}</Typography>
             <UiTextInput
               accessibilityLabel="Text input field"
@@ -396,8 +399,7 @@ const ContactScreen = () => {
               ]}
             />
           </View>
-          <UiSpace size={20} />
-          <View style={{ gap: 10 }}>
+          <View style={{ gap: spacing.md }}>
             <Typography type="heading">
               E-Mail für Rückfragen (optional)
             </Typography>
@@ -420,7 +422,6 @@ const ContactScreen = () => {
               ]}
             />
           </View>
-          <UiSpace size={20} />
           {error ? (
             <UiText size="lg" bold style={styles.errorText}>
               {error}
@@ -442,7 +443,6 @@ const ContactScreen = () => {
               Senden
             </UiText>
           </UiPressable>
-          <UiSpace size={100} />
         </ScrollView>
       </KeyboardAvoidingView>
     </BlurTargetView>

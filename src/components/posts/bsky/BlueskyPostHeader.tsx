@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import { View } from "react-native";
 
 import Typography from "#/components/ui/Typography";
+import { spacing } from "#/constants/Spacing";
 import type { PostAuthor } from "#/types";
 
 interface BlueskyPostHeaderProps {
@@ -17,7 +18,7 @@ export const BlueskyPostHeader = ({ author }: BlueskyPostHeaderProps) => {
         justifyContent: "flex-start",
         alignItems: "center",
         width: "100%",
-        gap: 10,
+        gap: spacing.md,
       }}
     >
       <Image

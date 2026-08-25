@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render } from "@testing-library/react-native";
+import { fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import SearchScreen from "#/app/search";
+import { registerEvent } from "#/helpers/network/Analytics";
 
 // ── expo-router ──────────────────────────────────────────────────────────────
 jest.mock("expo-router", () => ({
@@ -84,18 +85,28 @@ jest.mock("#/components/ui/UiEmptyState", () =>
   }),
 );
 
-// AlgoliaSearchResults: expose testID + the search string being passed.
+// AlgoliaSearchResults: expose testID + the search string being passed, and
+// resolve a fixed result count so SearchManager's analytics effect fires.
 jest.mock("#/screens/Search/components/AlgoliaSearch", () =>
-  jest.fn(({ searchString }: any) => {
+  jest.fn(({ searchString, onResultsLength }: any) => {
+    const { useEffect } = require("react");
     const { Text } = require("react-native");
+    useEffect(() => {
+      onResultsLength(3);
+    }, [searchString, onResultsLength]);
     return <Text testID="algolia-results">{searchString}</Text>;
   }),
 );
 
-// AISearch: expose testID + the search string being passed.
+// AISearch: expose testID + the search string being passed, and resolve a
+// fixed result count so SearchManager's analytics effect fires.
 jest.mock("#/screens/Search/components/AISearch", () =>
-  jest.fn(({ search }: any) => {
+  jest.fn(({ search, setResultsLength }: any) => {
+    const { useEffect } = require("react");
     const { Text } = require("react-native");
+    useEffect(() => {
+      setResultsLength(3);
+    }, [search, setResultsLength]);
     return <Text testID="ai-results">{search}</Text>;
   }),
 );
@@ -190,6 +201,47 @@ describe("SearchScreen", () => {
       await fireEvent.changeText(getByTestId("search-input"), "corona");
       await fireEvent(getByTestId("search-input"), "submitEditing");
       expect(getByTestId("ai-results").props.children).toBe("corona");
+    });
+  });
+
+  describe("analytics", () => {
+    it("registers a search event once Algolia results resolve", async () => {
+      const { getByTestId } = await render(<SearchScreen />);
+      await fireEvent.changeText(getByTestId("search-input"), "corona");
+      await fireEvent(getByTestId("search-input"), "submitEditing");
+
+      await waitFor(() =>
+        expect(registerEvent).toHaveBeenCalledWith(
+          "https://example.com",
+          "search",
+          {
+            search: "corona",
+            search_source: "app",
+            search_type: "standard",
+            result_count: 3,
+          },
+        ),
+      );
+    });
+
+    it("registers a search event once AI results resolve", async () => {
+      const { getByTestId, getByRole } = await render(<SearchScreen />);
+      await fireEvent.press(getByRole("tab", { name: "KI-Faktenbot" }));
+      await fireEvent.changeText(getByTestId("search-input"), "corona");
+      await fireEvent(getByTestId("search-input"), "submitEditing");
+
+      await waitFor(() =>
+        expect(registerEvent).toHaveBeenCalledWith(
+          "https://example.com",
+          "search",
+          {
+            search: "corona",
+            search_source: "app",
+            search_type: "ai",
+            result_count: 3,
+          },
+        ),
+      );
     });
   });
 });

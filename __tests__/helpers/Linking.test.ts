@@ -100,6 +100,31 @@ describe("Linking helpers", () => {
       expect(Linking.openURL).not.toHaveBeenCalled();
     });
 
+    it("upgrades an http:// href to https:// before routing", () => {
+      // Regression: react-native-hyperlink (via linkify-it) prepends
+      // "http://" — not "https://" — to schema-less link matches, e.g. a
+      // bare "volksverpetzer.de/ltw-lsa" mention in an Instagram caption.
+      // That http:// URL reaching EdgelessWebview trips Android's
+      // cleartext-traffic block in release builds
+      // (net::ERR_CLEARTEXT_NOT_PERMITTED).
+      const httpUrl = "http://www.volksverpetzer.de/ltw-lsa";
+      const httpsUrl = "https://www.volksverpetzer.de/ltw-lsa";
+      parseSpy.mockImplementation((url: string) => {
+        if (url === httpsUrl) {
+          return { hostname: "www.volksverpetzer.de", path: "/ltw-lsa" };
+        }
+        return { hostname: "www.volksverpetzer.de", path: "" };
+      });
+
+      onLinkPress(httpUrl, router);
+
+      expect(Linking.parse).toHaveBeenCalledWith(httpsUrl);
+      expect(pushSpy).toHaveBeenCalledWith({
+        pathname: "/ltw-lsa",
+        params: { originalUrl: httpsUrl },
+      });
+    });
+
     it("should open wp-content/uploads paths externally (browser tab, not the app)", () => {
       // Setup
       const uploadUrl =

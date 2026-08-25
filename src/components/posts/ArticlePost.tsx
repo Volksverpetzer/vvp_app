@@ -13,12 +13,16 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { elevation } from "#/constants/Elevation";
 import {
   CARD_CONTENT_GAP,
   DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { layers } from "#/constants/Layers";
+import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -151,7 +155,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   // Memoized style objects.
   const containerStyle = useMemo(
     () => ({
-      paddingBottom: 0,
+      paddingBottom: excerpt ? spacing.xl : spacing.md,
       backgroundColor: Colors[colorScheme].background,
       ...(elevated && {
         borderRadius: radii.lg,
@@ -160,18 +164,18 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         borderColor: Colors[colorScheme].surface,
       }),
     }),
-    [colorScheme, elevated],
+    [colorScheme, elevated, excerpt],
   );
 
   const elevatedWrapperStyle = useMemo(() => {
     if (!elevated) return;
     const isDark = colorScheme === "dark";
     const shadowRgb = isDark ? "255, 255, 255" : "0, 0, 0";
-    const shadowOpacity = isDark ? 0.12 : 0.2;
+    const shadowOpacity = isDark ? 0.12 : elevation.xs.opacity;
     return {
       borderRadius: radii.lg,
-      boxShadow: `0px 1px 1.41px rgba(${shadowRgb}, ${shadowOpacity})`,
-      elevation: 2,
+      boxShadow: `0px ${elevation.xs.offsetY}px ${elevation.xs.blur}px rgba(${shadowRgb}, ${shadowOpacity})`,
+      elevation: elevation.xs.android,
     };
   }, [elevated, colorScheme]);
   const imageStyle = useMemo(
@@ -185,7 +189,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   );
   const progressBarStyle = useMemo(
     () => ({
-      zIndex: 30,
+      zIndex: layers.raised,
       height: 3,
       width: scrollProgress,
       backgroundColor: corporate,
@@ -227,7 +231,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           <ImageCreditBadge credit={imageCredit} position="bottomRight" />
         </View>
         <View style={progressBarStyle} />
-        <UiSpace size={10} />
+        <UiSpace size={spacing.md} />
         <View
           style={{
             gap: CARD_CONTENT_GAP,
@@ -237,7 +241,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           <Typography type="cardTitle">{article.title}</Typography>
           <Typography type="meta">{authorDateText}</Typography>
         </View>
-        <UiSpace size={10} />
+        <UiSpace size={spacing.md} />
         {(article.sourceName || categoryText) && (
           <Badge position="topLeft" color={corporate}>
             <UiText size="sm" style={categoryTextStyle}>
@@ -247,23 +251,22 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         )}
         {inView && Config.enableEngagement && viewCount !== 0 && (
           <Badge position="topRight" color={Colors[colorScheme].accent}>
-            <ViewCounter url={article.link} size={16} onLoad={setViewCount} />
+            <ViewCounter
+              url={article.link}
+              size={iconSizes.xs}
+              onLoad={setViewCount}
+            />
           </Badge>
         )}
-        {excerpt ? (
-          <>
-            <UiText
-              size="base"
-              style={{
-                paddingHorizontal: POST_PADDING_HORIZONTAL,
-              }}
-            >
-              {excerpt}
-            </UiText>
-            <UiSpace size={20} />
-          </>
-        ) : (
-          <UiSpace size={10} />
+        {excerpt && (
+          <UiText
+            size="base"
+            style={{
+              paddingHorizontal: POST_PADDING_HORIZONTAL,
+            }}
+          >
+            {excerpt}
+          </UiText>
         )}
       </View>
     </UiPressable>

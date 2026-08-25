@@ -15,6 +15,7 @@ import {
   ALGOLIA_INDEX_NAME,
   ALGOLIA_SEARCH_KEY,
 } from "#/constants/Search";
+import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { useBackToTop } from "#/hooks/useBackToTop";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
@@ -135,7 +136,7 @@ const AlgoliaSearchResults = ({
         data={results}
         contentContainerStyle={{
           paddingBottom: 100,
-          gap: 20,
+          gap: spacing.xl,
         }}
         keyExtractor={(item) => item.objectID}
         renderItem={renderItem}
@@ -161,7 +162,7 @@ const itemStyles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
+    padding: spacing.xl,
   },
 });
 

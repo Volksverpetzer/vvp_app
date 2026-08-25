@@ -15,9 +15,12 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import type { HttpsUrl, StoredSources } from "#/types";
 
 interface SourceEntry {
@@ -37,6 +40,7 @@ const MySources = () => {
 
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
+  const tabBarClearance = useTabBarClearance();
   useFocusEffect(
     useCallback(() => {
       SourcesStore.getAllSources().then(setSources);
@@ -75,12 +79,18 @@ const MySources = () => {
   }, [sources]);
 
   return (
-    <View style={{ flex: 1, gap: 20 }}>
+    <View
+      style={{
+        flex: 1,
+        gap: spacing.xl,
+        paddingBottom: tabBarClearance,
+      }}
+    >
       {slugGroups.map((group) => {
         const title = group.entries.find((e) => e.text)?.text;
         return (
-          <UiCard key={group.slug} style={{ padding: 0 }}>
-            <View style={{ padding: 30, gap: 10 }}>
+          <UiCard key={group.slug}>
+            <View style={{ gap: spacing.md }}>
               {title && <Typography type="heading">{title}</Typography>}
               {group.entries.map((entry) => (
                 <Swipeable
@@ -96,7 +106,7 @@ const MySources = () => {
                       progress={p}
                       drag={d}
                       swipeable={s}
-                      icon={<DeleteIcon size={24} color="white" />}
+                      icon={<DeleteIcon size={iconSizes.md} color="white" />}
                       label="Löschen"
                       hint="Lösche diese Quelle"
                       onAction={async () => {
@@ -119,11 +129,10 @@ const MySources = () => {
           </UiCard>
         );
       })}
-      <UiSpace size={50} />
+      <UiSpace size={spacing.huge} />
       <UiEmptyState icon={<LinkIcon />}>
         Klicke auf Links in Artikeln, dann tauchen sie hier auf
       </UiEmptyState>
-      <UiSpace size={100} />
     </View>
   );
 };

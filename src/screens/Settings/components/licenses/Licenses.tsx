@@ -3,6 +3,7 @@ import { FlatList, View } from "react-native";
 
 import BackToTopButton from "#/components/buttons/BackToTopButton";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { useBackToTop } from "#/hooks/useBackToTop";
 
 import LicensesListItem from "./LicenseListItem";
@@ -76,7 +77,7 @@ const Licenses = () => {
         keyExtractor={(item) => item.id}
         data={licenses}
         renderItem={renderItem}
-        contentContainerStyle={[globalStyles.content, { gap: 10 }]}
+        contentContainerStyle={[globalStyles.content, { gap: spacing.md }]}
         onScroll={backToTop.onScroll}
         scrollEventThrottle={16}
       />

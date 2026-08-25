@@ -47,7 +47,6 @@ const cardStyles = StyleSheet.create({
     borderWidth: 2,
     height: cardSize - 10,
     justifyContent: "center",
-    margin: 5,
     width: cardSize - 10,
   },
   cardInner: { alignItems: "center", justifyContent: "center" },

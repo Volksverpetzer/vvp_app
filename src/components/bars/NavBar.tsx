@@ -9,6 +9,8 @@ import ShareCounter from "#/components/counter/ShareCounter";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { onShare } from "#/helpers/Sharing";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -63,8 +65,8 @@ const NavBar = (properties: NavBarProperties) => {
         flexDirection: "row",
         alignItems: "center",
         paddingBottom: insets.bottom + 10,
-        paddingTop: 15,
-        paddingHorizontal: 25,
+        paddingTop: spacing.lg,
+        paddingHorizontal: spacing.xxl,
       }}
     >
       <LinearGradient
@@ -86,7 +88,7 @@ const NavBar = (properties: NavBarProperties) => {
           onPress={() => router.back()}
           hitSlop={20}
         >
-          <ChevronIcon direction="left" size={32} color={corporate} />
+          <ChevronIcon direction="left" size={iconSizes.lg} color={corporate} />
         </UiPressable>
       </View>
 

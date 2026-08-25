@@ -11,6 +11,7 @@ import {
   DEFAULT_IMAGE_ASPECT_RATIO,
   POST_PADDING_HORIZONTAL,
 } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { onShare as _onShare } from "#/helpers/Sharing";
 
 interface RedditImageSource {
@@ -111,7 +112,7 @@ const RedditPost = (properties: RedditProperties) => {
               paddingHorizontal: POST_PADDING_HORIZONTAL,
               lineHeight: size === 16 ? LINE_HEIGHTS.base : LINE_HEIGHTS.lg,
               textAlign: "left",
-              paddingTop: 20,
+              paddingTop: spacing.xl,
             }}
           >
             {properties.title}
@@ -120,7 +121,7 @@ const RedditPost = (properties: RedditProperties) => {
             type="meta"
             style={{
               paddingHorizontal: POST_PADDING_HORIZONTAL,
-              paddingBottom: 10,
+              paddingBottom: spacing.md,
             }}
           >
             von {author} | {date}

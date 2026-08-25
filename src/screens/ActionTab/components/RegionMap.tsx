@@ -13,9 +13,11 @@ import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { getRegions } from "#/helpers/network/Action";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import type { Region, RegionsByCode } from "#/types";
 
 import Legend from "./Legend";
@@ -41,6 +43,7 @@ const parseRegionsData = async (): Promise<Region[]> => {
 
 const RegionMap = () => {
   const [regionData, setRegionData] = useState<Region[] | undefined>();
+  const tabBarClearance = useTabBarClearance();
 
   useEffect(() => {
     parseRegionsData().then(setRegionData);
@@ -61,9 +64,9 @@ const RegionMap = () => {
         backgroundColor: primaryMuted,
         borderTopLeftRadius: radii.xxl,
         borderTopRightRadius: radii.xxl,
-        gap: 20,
+        gap: spacing.xl,
         overflow: "hidden",
-        paddingHorizontal: 20,
+        paddingHorizontal: spacing.xl,
       }}
     >
       <View style={{ backgroundColor: primaryMuted, flex: 1 }}>
@@ -83,15 +86,18 @@ const RegionMap = () => {
             backgroundColor: primaryMuted,
           }}
         />
-        <UiSpace size={20} />
+        <UiSpace size={spacing.xl} />
         <Legend text="Vorreiter" color={highlight} />
-        <UiSpace size={8} />
+        <UiSpace size={spacing.sm} />
         <Legend text="Durchschnitt" color={corporateColor} />
-        <UiSpace size={8} />
+        <UiSpace size={spacing.sm} />
         <Legend text="Schlusslicht" color={corporate} />
-        <UiSpace size={8} />
+        <UiSpace size={spacing.sm} />
         <View>
-          <UiText size="xs" style={[globalStyles.whiteText, { marginTop: 20 }]}>
+          <UiText
+            size="xs"
+            style={[globalStyles.whiteText, { marginTop: spacing.xl }]}
+          >
             Shares aus der Volksverpetzer-App pro Kopf im Bundesland
           </UiText>
         </View>
@@ -100,51 +106,53 @@ const RegionMap = () => {
       <View
         style={{
           flex: 1,
+          gap: spacing.md,
+          paddingBottom: tabBarClearance,
         }}
       >
         <UiText size="xl" bold style={globalStyles.whiteText}>
           Bundesländer Ranking
         </UiText>
-        <UiSpace size={10} />
-        {regionData?.slice(0, 3).map((region, index) => {
-          const Icon =
-            index === 0
-              ? FirstPlaceIcon
-              : index === 1
-                ? SecondPlaceIcon
-                : ThirdPlaceIcon;
-          return (
-            <View
+        <View style={{ gap: spacing.sm, paddingLeft: spacing.xs }}>
+          {regionData?.slice(0, 3).map((region, index) => {
+            const Icon =
+              index === 0
+                ? FirstPlaceIcon
+                : index === 1
+                  ? SecondPlaceIcon
+                  : ThirdPlaceIcon;
+            return (
+              <View
+                key={region.region}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start",
+                  width: 120,
+                  borderRadius: 10,
+                  height: 18,
+                  backgroundColor: "white",
+                }}
+              >
+                <Icon style={{ left: -8 }} />
+                <UiText size="xs" style={{ color: corporate }}>
+                  {` ${region.name}`}
+                </UiText>
+              </View>
+            );
+          })}
+        </View>
+        <View style={{ gap: spacing.xs }}>
+          {regionData?.slice(3).map((region, idx) => (
+            <UiText
               key={region.region}
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                width: 120,
-                margin: 3,
-                borderRadius: 10,
-                height: 18,
-                backgroundColor: "white",
-              }}
+              size="sm"
+              style={[globalStyles.whiteText]}
             >
-              <Icon style={{ left: -8 }} />
-              <UiText size="xs" style={{ color: corporate }}>
-                {` ${region.name}`}
-              </UiText>
-            </View>
-          );
-        })}
-        <UiSpace size={10} />
-        {regionData?.slice(3).map((region, idx) => (
-          <UiText
-            key={region.region}
-            size="sm"
-            style={[globalStyles.whiteText, { paddingVertical: 2 }]}
-          >
-            {`${idx + 4}. ${region.name}`}
-          </UiText>
-        ))}
-        <UiSpace size={100} />
+              {`${idx + 4}. ${region.name}`}
+            </UiText>
+          ))}
+        </View>
       </View>
     </View>
   );

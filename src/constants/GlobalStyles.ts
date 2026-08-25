@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 
 import { radii } from "#/constants/BorderRadius";
 import { LINE_HEIGHTS, fontSizes } from "#/constants/FontSizes";
+import { spacing } from "#/constants/Spacing";
 
 export const SOURCE_SANS_FONTS = [
   "SourceSansPro",
@@ -11,15 +12,15 @@ export const SOURCE_SANS_FONTS = [
 ];
 
 export const CONTENT_MAX_WIDTH = 700;
-export const CONTENT_HORIZONTAL_PADDING = 10;
-export const POST_PADDING_HORIZONTAL = 30;
-export const CARD_PADDING = 20;
+export const CONTENT_HORIZONTAL_PADDING = spacing.md;
+export const POST_PADDING_HORIZONTAL = spacing.xxxl;
+export const CARD_PADDING = spacing.xl;
 
 // Vertical gap between a feed post's stacked content blocks — image, title,
 // meta line (author/date/duration), caption. Shared so every post type spaces
 // its content identically (and independent of variable elements like the
 // Instagram image-carousel dots).
-export const CARD_CONTENT_GAP = 10;
+export const CARD_CONTENT_GAP = spacing.md;
 
 // Height/width ratio of WordPress's default featured-image crop (e.g. 1200x615),
 // used as the fallback aspect ratio for post thumbnails whose real image
@@ -49,8 +50,8 @@ export const globalStyles = StyleSheet.create({
   },
   input: {
     borderRadius: radii.full,
-    minHeight: 40,
-    paddingHorizontal: 25,
+    minHeight: spacing.huge,
+    paddingHorizontal: spacing.xxl,
   },
   row: {
     alignItems: "center",

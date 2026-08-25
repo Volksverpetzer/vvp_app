@@ -16,6 +16,7 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import { safeParseHostname } from "#/helpers/Linking";
 import { isDarkMode } from "#/helpers/utils/color";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
@@ -309,7 +310,7 @@ const IframeRenderer = ({
   if (!webViewSource)
     return (
       <UiErrorCard
-        style={{ marginHorizontal: 10 }}
+        style={{ marginHorizontal: spacing.md }}
         text="Error rendering iframe"
       />
     );
@@ -332,7 +333,7 @@ const IframeRenderer = ({
         <View
           style={{
             maxWidth: 500,
-            padding: 16,
+            padding: spacing.lg,
             backgroundColor: Colors[colorScheme].surfaceError,
             borderRadius: radii.sm,
           }}
@@ -353,7 +354,7 @@ const IframeRenderer = ({
           overflow: "visible",
         }}
       >
-        <View style={{ margin: 12 }}>
+        <View style={{ margin: spacing.md }}>
           <LoadArticlePost slug={slug} baseUrl={secondaryWp?.handle} elevated />
         </View>
       </View>

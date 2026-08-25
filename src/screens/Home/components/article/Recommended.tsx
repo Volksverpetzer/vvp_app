@@ -4,6 +4,7 @@ import { View } from "react-native";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
+import { spacing } from "#/constants/Spacing";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import { isSameHost } from "#/helpers/utils/host";
 import type { HttpsUrl } from "#/types";
@@ -41,32 +42,30 @@ const Recommended = (properties: RecommendedProperties) => {
     };
   }, [article_link]);
 
+  if (matches.length === 0) return null;
+
   return (
     <>
-      {matches.length > 0 && (
-        <UiText
-          size="xl"
-          bold
-          style={{
-            padding: 10,
-          }}
-        >
-          Passend dazu:
-        </UiText>
-      )}
-      {matches?.map((match, index) => {
-        if (!isSameHost(match.url, Config.wpUrl)) {
-          return null;
-        }
-        const url = new URL(match.url);
-        const path = url.pathname;
-        const slug = path.replace(/\/+$/, "").split("/").pop();
-        return (
-          <View key={String(index)} style={{ margin: 12 }}>
-            <LoadArticlePost slug={slug} elevated />
-          </View>
-        );
-      })}
+      <UiText
+        size="xl"
+        bold
+        style={{
+          padding: spacing.md,
+        }}
+      >
+        Passend dazu:
+      </UiText>
+      <View style={{ gap: spacing.md, padding: spacing.md }}>
+        {matches.map((match, index) => {
+          if (!isSameHost(match.url, Config.wpUrl)) {
+            return null;
+          }
+          const url = new URL(match.url);
+          const path = url.pathname;
+          const slug = path.replace(/\/+$/, "").split("/").pop();
+          return <LoadArticlePost key={String(index)} slug={slug} elevated />;
+        })}
+      </View>
     </>
   );
 };

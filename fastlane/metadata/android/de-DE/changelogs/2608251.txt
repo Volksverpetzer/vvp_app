@@ -1,0 +1,3 @@
+- Neu: YouTube-Feed zeigt jetzt Videotitel und Veröffentlichungsdatum
+- Der Audio-Player wird nur noch bei Artikeln mit Audiodatei angezeigt
+- Fehlerbehebungen und Performance-Verbesserungen

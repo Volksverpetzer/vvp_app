@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { InfoIcon } from "#/components/Icons";
 import ImageCreditModal from "#/components/popups/ImageCreditModal";
+import { iconSizes } from "#/constants/IconSizes";
 import type { ImageCredit } from "#/types";
 
 import Badge, { type BadgePosition } from "./Badge";
@@ -29,7 +30,7 @@ const ImageCreditBadge = ({ credit, position }: ImageCreditBadgeProperties) => {
         accessibilityLabel="Bildquelle anzeigen"
         onPress={() => setIsVisible(true)}
       >
-        <InfoIcon size={14} color="#999" />
+        <InfoIcon size={iconSizes.xs} color="#999" />
       </Badge>
       <ImageCreditModal
         isVisible={isVisible}

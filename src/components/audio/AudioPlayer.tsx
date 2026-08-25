@@ -8,6 +8,8 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { fontSizes } from "#/constants/FontSizes";
+import { MIN_TOUCH_TARGET, iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { useAudio } from "#/helpers/provider/AudioProvider";
 import { formatTime } from "#/helpers/utils/audio";
 import {
@@ -87,7 +89,7 @@ const AudioPlayer = ({
       <View
         style={{
           paddingHorizontal: horizontalPadding,
-          paddingVertical: 12,
+          paddingVertical: spacing.md,
           minHeight: 50,
           justifyContent: "center",
           alignItems: "center",
@@ -111,21 +113,23 @@ const AudioPlayer = ({
     <View
       style={{
         paddingHorizontal: horizontalPadding,
-        paddingVertical: 12,
+        paddingVertical: spacing.md,
         flexDirection: "row",
         alignItems: "center",
-        gap: 12,
+        gap: spacing.md,
       }}
     >
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel={playing ? "Pause" : "Abspielen"}
         onPress={onToggle}
-        hitSlop={10}
+        // iconSizes.md (24) + 2*12 = 48, meeting MIN_TOUCH_TARGET with margin
+        // instead of landing exactly on the 44pt floor.
+        hitSlop={12}
       >
         {playing ? (
           <PauseIcon
-            size={26}
+            size={iconSizes.md}
             color={corporate}
             accessible={false}
             importantForAccessibility="no"
@@ -133,7 +137,7 @@ const AudioPlayer = ({
         ) : (
           <Octicons
             name="play"
-            size={26}
+            size={iconSizes.md}
             color={corporate}
             accessible={false}
             importantForAccessibility="no"
@@ -163,7 +167,7 @@ const AudioPlayer = ({
         }}
         style={{
           flex: 1,
-          height: 44,
+          height: MIN_TOUCH_TARGET,
           justifyContent: "center",
           backgroundColor: "transparent",
         }}

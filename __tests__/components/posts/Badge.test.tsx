@@ -3,8 +3,9 @@ import { fireEvent, render } from "@testing-library/react-native";
 import { Text } from "react-native";
 
 import type { BadgePosition } from "#/components/posts/Badge";
-import Badge, { MIN_TOUCH_TARGET } from "#/components/posts/Badge";
+import Badge from "#/components/posts/Badge";
 import { radii } from "#/constants/BorderRadius";
+import { MIN_TOUCH_TARGET } from "#/constants/IconSizes";
 
 const flatten = (style: unknown): Record<string, unknown> => {
   const parts = Array.isArray(style) ? style.flat(Infinity) : [style];

@@ -22,9 +22,11 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { CONTENT_HORIZONTAL_PADDING } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useAudioAvailability } from "#/hooks/useAudioAvailability";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
 import LoadingImage from "#assets/images/logo_animated.gif";
@@ -60,6 +62,11 @@ const Header = (properties: HeaderProperties) => {
   const reference = useRef<ViewShotRef>(null);
   const router = useRouter();
   const corporate = useCorporateColor();
+
+  const audioUrl = Config.audioCdnUrl
+    ? `${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`
+    : undefined;
+  const audioAvailability = useAudioAvailability(audioUrl);
 
   const appState = useRef(AppState.currentState);
 
@@ -142,15 +149,15 @@ const Header = (properties: HeaderProperties) => {
         </UiPressable>
         <ImageCreditBadge credit={article.imageCredit} position="bottomRight" />
       </View>
-      <UiSpace size={30} />
-      <Typography type="title" style={{ paddingHorizontal: 20 }}>
+      <UiSpace size={spacing.lg} />
+      <Typography type="title" style={{ paddingHorizontal: spacing.xl }}>
         {article_title}
       </Typography>
       <Typography
         type="meta"
         style={{
-          paddingVertical: 10,
-          paddingHorizontal: 20,
+          paddingVertical: spacing.md,
+          paddingHorizontal: spacing.xl,
         }}
       >
         {article.authors?.length ? (
@@ -187,20 +194,36 @@ const Header = (properties: HeaderProperties) => {
         article_link={article_link}
         reading_time={article.reading_time}
       />
-      {Config.audioCdnUrl && (
+      {audioUrl && audioAvailability === "available" && (
         <AudioPlayer
-          audioUrl={`${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`}
+          audioUrl={audioUrl}
           title={article_title}
           artworkUrl={article_image}
         />
       )}
-      <UiSpace size={10} />
+      {audioUrl && audioAvailability === "unavailable" && (
+        // Visually hidden: sighted users see nothing where the player would
+        // have been, but screen readers still announce that there's no
+        // audio here rather than silently skipping past it.
+        <View
+          accessible
+          accessibilityRole="text"
+          accessibilityLabel="Für diesen Artikel ist noch keine Audioversion verfügbar."
+          pointerEvents="none"
+          style={{
+            position: "absolute",
+            width: 1,
+            height: 1,
+            overflow: "hidden",
+          }}
+        />
+      )}
       <ArticleSourceList
         article_link={article_link}
         article_title={article_title}
         slug={slug}
       />
-      <UiSpace size={20} />
+      <UiSpace size={spacing.sm} />
       <Modal visible={visible}>
         <ViewShot ref={reference} options={{ fileName: article_title }}>
           <View
@@ -209,6 +232,7 @@ const Header = (properties: HeaderProperties) => {
               height: (16 / 9) * width,
               backgroundColor: Colors.dark.background,
               paddingTop: ((width * 16) / 9) * 0.2,
+              gap: spacing.xl,
             }}
           >
             <Image
@@ -231,19 +255,20 @@ const Header = (properties: HeaderProperties) => {
               source={{ uri: article_image }}
               onLoad={() => setImageLoaded(true)}
             />
-            <UiSpace size={20} />
             <Typography
               type="title"
-              style={{ color: Colors.dark.text, paddingHorizontal: 20 }}
+              style={{ color: Colors.dark.text, paddingHorizontal: spacing.xl }}
             >
               {article_title}
             </Typography>
-            <UiSpace size={20} />
             {/* The share card is always rendered on the dark background, so it
                 pins the light-on-dark colors instead of following the theme. */}
             <Typography
               type="meta"
-              style={{ color: Colors.dark.textMuted, paddingHorizontal: 20 }}
+              style={{
+                color: Colors.dark.textMuted,
+                paddingHorizontal: spacing.xl,
+              }}
             >
               {article.authors?.length ? (
                 <>

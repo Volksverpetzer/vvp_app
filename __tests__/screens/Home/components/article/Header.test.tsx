@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react-native";
+import { render, waitFor } from "@testing-library/react-native";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
 import Header from "#/screens/Home/components/article/Header";
@@ -166,30 +166,71 @@ describe("Header — author byline", () => {
 
 describe("Header — AudioPlayer integration", () => {
   const MockAudioPlayer = jest.mocked(AudioPlayer);
+  const fetchMock = jest.fn();
+  const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // clearAllMocks resets calls but not a mockResolvedValue/mockRejectedValue
+    // implementation, so reset explicitly to avoid a later test silently
+    // inheriting an earlier test's fetch behavior.
+    fetchMock.mockReset();
     mockConfig.audioCdnUrl = undefined;
+    globalThis.fetch = fetchMock;
+  });
+
+  afterAll(() => {
+    globalThis.fetch = originalFetch;
   });
 
   it("does not render AudioPlayer when audioCdnUrl is not configured", async () => {
     await render(<Header {...defaultProps} />);
     expect(MockAudioPlayer).not.toHaveBeenCalled();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("renders AudioPlayer with the correct URL when audioCdnUrl is set", async () => {
+  it("renders AudioPlayer with the correct URL when the audio file exists", async () => {
     mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
-    await render(<Header {...defaultProps} />);
+    fetchMock.mockResolvedValue({ ok: true });
+    const { queryByText } = await render(<Header {...defaultProps} />);
+    await waitFor(() => expect(MockAudioPlayer).toHaveBeenCalled());
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://vvpaudio.b-cdn.net/audio/test-article.mp3",
+      expect.objectContaining({ method: "HEAD" }),
+    );
     expect(MockAudioPlayer.mock.calls[0][0]).toMatchObject({
       audioUrl: "https://vvpaudio.b-cdn.net/audio/test-article.mp3",
     });
+    expect(queryByText(/keine Audioversion verfügbar/)).toBeNull();
   });
 
   it("strips a trailing slash from audioCdnUrl before building the URL", async () => {
     mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio/";
+    fetchMock.mockResolvedValue({ ok: true });
     await render(<Header {...defaultProps} />);
+    await waitFor(() => expect(MockAudioPlayer).toHaveBeenCalled());
     expect(MockAudioPlayer.mock.calls[0][0]).toMatchObject({
       audioUrl: "https://vvpaudio.b-cdn.net/audio/test-article.mp3",
     });
+  });
+
+  it("does not render AudioPlayer and exposes a screen-reader-only hint when the article has no audio file", async () => {
+    mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
+    fetchMock.mockResolvedValue({ ok: false, status: 404 });
+    const { findByLabelText, queryByText } = await render(
+      <Header {...defaultProps} />,
+    );
+    // Announced to screen readers via accessibilityLabel...
+    await findByLabelText(/keine Audioversion verfügbar/);
+    // ...but not rendered as visible text for sighted users.
+    expect(queryByText(/keine Audioversion verfügbar/)).toBeNull();
+    expect(MockAudioPlayer).not.toHaveBeenCalled();
+  });
+
+  it("renders AudioPlayer when the availability check itself fails (fails open)", async () => {
+    mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
+    fetchMock.mockRejectedValue(new Error("network error"));
+    await render(<Header {...defaultProps} />);
+    await waitFor(() => expect(MockAudioPlayer).toHaveBeenCalled());
   });
 });
