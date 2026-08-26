@@ -14,7 +14,7 @@ type TextProperties = TextProps & {
    * explicit `fontSize` in `style` still wins if you need to override.
    */
   size?: FontSizeToken;
-  /** Render in SourceSansProBold instead of the regular weight. */
+  /** Render in {@link fontFamily}.bold instead of the regular weight. */
   bold?: boolean;
 };
 

@@ -19,7 +19,7 @@ export type TextVariantSpec = {
  * A variant bundles what makes a piece of text "the same kind of text"
  * everywhere: size, weight, color tone and (where it matters) line height.
  * Prefer `<Typography type="title">` over repeating `size` +
- * `fontFamily: "SourceSansProBold"` + `color: textMuted` per screen, so e.g.
+ * `fontFamily: fontFamily.bold` + `color: textMuted` per screen, so e.g.
  * an article detail header and a podcast detail header can't drift apart again.
  *
  * `size` / `bold` / an explicit `color` in `style` still override the variant
