@@ -8,6 +8,7 @@ import UiText from "#/components/ui/UiText";
 import type { AnnouncementEntry } from "#/constants/Announcements";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { fontFamily } from "#/constants/FontFamily";
 import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
@@ -77,10 +78,7 @@ const AnnouncementCard = ({
                 );
               case "italic":
                 return (
-                  <UiText
-                    key={key}
-                    style={{ fontFamily: "SourceSansProItalic" }}
-                  >
+                  <UiText key={key} style={{ fontFamily: fontFamily.italic }}>
                     {token.content}
                   </UiText>
                 );

@@ -10,6 +10,7 @@ import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { fontFamily } from "#/constants/FontFamily";
 import { CONTENT_LINE_HEIGHT } from "#/constants/FontSizes";
 import {
   CARD_PADDING,
@@ -87,7 +88,7 @@ const SearchResultItem = ({
 
   const baseStyle = useMemo(
     () => ({
-      fontFamily: "SourceSansPro",
+      fontFamily: fontFamily.regular,
       lineHeight: CONTENT_LINE_HEIGHT,
       color: textColor,
     }),

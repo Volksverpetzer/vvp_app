@@ -5,6 +5,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { fontFamily } from "#/constants/FontFamily";
 import { fontSizes } from "#/constants/FontSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   description: { marginBottom: spacing.xxxl, textAlign: "center" },
   link: {
     color: "#fff",
-    fontFamily: "SourceSansPro",
+    fontFamily: fontFamily.regular,
     fontSize: fontSizes.base,
   },
   title: { marginBottom: spacing.xl },
