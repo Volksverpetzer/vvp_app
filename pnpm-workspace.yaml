@@ -1,5 +1,6 @@
 overrides:
   react-test-renderer: 19.2.3 # must match react version; @testing-library/react-native enforces exact match at runtime
+  uuid@<11.1.1: ^11.1.1 # GHSA buffer bounds check fix; transitive via xcode -> @expo/config-plugins, build-time only
 
 allowBuilds:
   dtrace-provider: true # required by eas-cli; pnpm v11 blocks its build scripts otherwise
