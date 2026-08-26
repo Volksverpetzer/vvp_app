@@ -1,15 +1,11 @@
 import { StyleSheet } from "react-native";
 
 import { radii } from "#/constants/BorderRadius";
+import { fontFamily } from "#/constants/FontFamily";
 import { LINE_HEIGHTS, fontSizes } from "#/constants/FontSizes";
 import { spacing } from "#/constants/Spacing";
 
-export const SOURCE_SANS_FONTS = [
-  "SourceSansPro",
-  "SourceSansProItalic",
-  "SourceSansProBold",
-  "SourceSansProBoldItalic",
-];
+export const SOURCE_SANS_FONTS = Object.values(fontFamily);
 
 export const CONTENT_MAX_WIDTH = 700;
 export const CONTENT_HORIZONTAL_PADDING = spacing.md;
@@ -73,7 +69,7 @@ export const globalStyles = StyleSheet.create({
   },
   /** Bold label for pill/tab selectors (category pills, UiTabIconLabel) */
   pillLabel: {
-    fontFamily: "SourceSansProBold",
+    fontFamily: fontFamily.bold,
     fontSize: fontSizes.sm,
     lineHeight: LINE_HEIGHTS.sm,
   },

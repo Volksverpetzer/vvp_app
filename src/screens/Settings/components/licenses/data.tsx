@@ -75,7 +75,7 @@ export default {
     licenseUrl:
       "https://github.com/stripe/stripe-react-native/raw/HEAD/LICENSE",
   },
-  "@volksverpetzer/design-tokens@0.4.1": {
+  "@volksverpetzer/design-tokens@0.5.0": {
     licenses: "MIT",
     repository: "https://github.com/Volksverpetzer/vvp_design_system",
     licenseUrl:
@@ -268,7 +268,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-modal/react-native-modal/raw/HEAD/LICENSE.md",
   },
-  "react-native-nitro-modules@0.36.5": {
+  "react-native-nitro-modules@0.37.0": {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
   },

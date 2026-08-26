@@ -6,6 +6,7 @@ import { CheckboxIcon, CircleIcon } from "#/components/Icons";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { fontFamily } from "#/constants/FontFamily";
 import { fontSizes } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
@@ -81,7 +82,7 @@ const AchievementComponent = () => {
             color="white"
             textStyle={{
               fontSize: fontSizes.xxl,
-              fontFamily: "SourceSansProBoldItalic",
+              fontFamily: fontFamily.boldItalic,
             }}
             containerStyle={{ height: 45, marginTop: -30 }}
           >

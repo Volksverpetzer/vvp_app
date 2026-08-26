@@ -27,6 +27,7 @@ import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
+import { fontFamily } from "#/constants/FontFamily";
 import { fontSizes } from "#/constants/FontSizes";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -99,10 +100,10 @@ const RootLayout = () => {
   useNotificationObserver();
 
   const [loaded] = useFonts({
-    SourceSansPro: SourceSans3_400Regular,
-    SourceSansProItalic: SourceSans3_400Regular_Italic,
-    SourceSansProBold: SourceSans3_700Bold,
-    SourceSansProBoldItalic: SourceSans3_700Bold_Italic,
+    [fontFamily.regular]: SourceSans3_400Regular,
+    [fontFamily.italic]: SourceSans3_400Regular_Italic,
+    [fontFamily.bold]: SourceSans3_700Bold,
+    [fontFamily.boldItalic]: SourceSans3_700Bold_Italic,
     // The icon font is bundled natively by the vector-icons config plugin,
     // but on web it has to be registered explicitly
     ...(Platform.OS === "web" && { Octicons: OcticonsFont }),
