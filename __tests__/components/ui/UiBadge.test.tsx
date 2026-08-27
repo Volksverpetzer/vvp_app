@@ -2,9 +2,10 @@ import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
 import { Text } from "react-native";
 
-import type { BadgePosition } from "#/components/posts/Badge";
-import Badge from "#/components/posts/Badge";
+import type { BadgePosition, UiBadgeVariant } from "#/components/ui/UiBadge";
+import UiBadge from "#/components/ui/UiBadge";
 import { radii } from "#/constants/BorderRadius";
+import Colors from "#/constants/Colors";
 import { MIN_TOUCH_TARGET } from "#/constants/IconSizes";
 
 const flatten = (style: unknown): Record<string, unknown> => {
@@ -14,23 +15,40 @@ const flatten = (style: unknown): Record<string, unknown> => {
 
 const styleOf = (tree: any) => flatten(tree.props.style);
 
-describe("Badge", () => {
+describe("UiBadge", () => {
   it("renders children", async () => {
     const { getByText } = await render(
-      <Badge position="topLeft" color="red">
+      <UiBadge position="topLeft">
         <Text>NEU</Text>
-      </Badge>,
+      </UiBadge>,
     );
     expect(getByText("NEU")).toBeTruthy();
   });
 
-  it("applies the badge colour", async () => {
+  it.each([
+    ["primary", Colors.light.primary],
+    ["accent", Colors.light.accent],
+    ["pruefpunkt", Colors.light.pruefpunkt],
+    ["transparent", "transparent"],
+  ] as [UiBadgeVariant, string][])(
+    "applies the %s variant's background colour",
+    async (variant, expectedColor) => {
+      const { toJSON } = await render(
+        <UiBadge position="topLeft" variant={variant}>
+          <Text>x</Text>
+        </UiBadge>,
+      );
+      expect(styleOf(toJSON()).backgroundColor).toBe(expectedColor);
+    },
+  );
+
+  it("defaults to the primary variant", async () => {
     const { toJSON } = await render(
-      <Badge position="topLeft" color="rebeccapurple">
+      <UiBadge position="topLeft">
         <Text>x</Text>
-      </Badge>,
+      </UiBadge>,
     );
-    expect(styleOf(toJSON()).backgroundColor).toBe("rebeccapurple");
+    expect(styleOf(toJSON()).backgroundColor).toBe(Colors.light.primary);
   });
 
   // The badge sits flush in a corner of its parent image: the two edges that
@@ -46,9 +64,9 @@ describe("Badge", () => {
     (position, anchor, roundedCorner) => {
       it("anchors to its corner and rounds only the inward corner", async () => {
         const { toJSON } = await render(
-          <Badge position={position} color="red">
+          <UiBadge position={position}>
             <Text>x</Text>
-          </Badge>,
+          </UiBadge>,
         );
         const style = styleOf(toJSON());
 
@@ -75,14 +93,13 @@ describe("Badge", () => {
     it("exposes a labelled button and calls onPress", async () => {
       const onPress = jest.fn();
       const { getByRole } = await render(
-        <Badge
+        <UiBadge
           position="topRight"
-          color="red"
           onPress={onPress}
           accessibilityLabel="Merken"
         >
           <Text>x</Text>
-        </Badge>,
+        </UiBadge>,
       );
       const button = getByRole("button", { name: "Merken" });
       await fireEvent.press(button);
@@ -91,9 +108,9 @@ describe("Badge", () => {
 
     it("grows to the minimum touch target without moving the glyph off its corner", async () => {
       const { getByRole } = await render(
-        <Badge position="bottomLeft" color="red" onPress={jest.fn()}>
+        <UiBadge position="bottomLeft" onPress={jest.fn()}>
           <Text>x</Text>
-        </Badge>,
+        </UiBadge>,
       );
       const style = flatten(getByRole("button").props.style);
       expect(style.minWidth).toBe(MIN_TOUCH_TARGET);
@@ -106,9 +123,9 @@ describe("Badge", () => {
 
     it("keeps the corner rounding of the static badge", async () => {
       const { getByRole } = await render(
-        <Badge position="topLeft" color="red" onPress={jest.fn()}>
+        <UiBadge position="topLeft" onPress={jest.fn()}>
           <Text>x</Text>
-        </Badge>,
+        </UiBadge>,
       );
       const style = flatten(getByRole("button").props.style);
       expect(style.borderBottomRightRadius).toBe(radii.xs);
@@ -117,9 +134,9 @@ describe("Badge", () => {
 
   it("renders a plain View with no button role when onPress is omitted", async () => {
     const { queryByRole } = await render(
-      <Badge position="topLeft" color="red">
+      <UiBadge position="topLeft">
         <Text>x</Text>
-      </Badge>,
+      </UiBadge>,
     );
     expect(queryByRole("button")).toBeNull();
   });

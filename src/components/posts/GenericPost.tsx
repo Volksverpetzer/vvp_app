@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import React, { useMemo } from "react";
-import type { ViewStyle } from "react-native";
+import type { StyleProp, ViewStyle } from "react-native";
 import { View } from "react-native";
 
 import ShareBar from "#/components/bars/ShareBar";
@@ -29,7 +29,7 @@ const favPayloadFor = (
 interface ComponentProperty<T> {
   component: FC<{ inView: boolean } & T>;
   data: T;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   shareable?: ShareableType[];
   contentFavIdentifier?: string;
   contentType?: FaveableType;
@@ -49,8 +49,8 @@ const GenericPost = (properties: ComponentProperty<object>) => {
     shareable,
     style,
   } = properties;
-  const combinedStyle: ViewStyle = useMemo(
-    () => ({ minHeight: 200, overflow: "hidden", padding: 0, ...style }),
+  const combinedStyle: StyleProp<ViewStyle> = useMemo(
+    () => [{ minHeight: 200, overflow: "hidden", padding: 0 }, style],
     [style],
   );
 

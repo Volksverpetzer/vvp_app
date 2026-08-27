@@ -1,11 +1,9 @@
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 
-import UiPressable from "#/components/ui/UiPressable";
+import UiButton from "#/components/ui/UiButton";
 import UiText from "#/components/ui/UiText";
-import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
-import { globalStyles } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
@@ -25,7 +23,7 @@ const ContactCard = ({
 }: ContactCardProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const { accent, text } = Colors[colorScheme];
+  const { text } = Colors[colorScheme];
 
   return (
     <View
@@ -48,8 +46,10 @@ const ContactCard = ({
         Du hast einen Fehler in diesem Artikel gefunden oder möchtest uns etwas
         dazu mitteilen?
       </UiText>
-      <UiPressable
-        accessibilityRole="button"
+      <UiButton
+        label="Schreib uns"
+        variant="accent"
+        shape="pill"
         accessibilityHint="Öffnet das Kontaktformular mit dem Artikel-Link"
         onPress={() =>
           router.push({
@@ -61,22 +61,8 @@ const ContactCard = ({
             },
           })
         }
-        style={{
-          alignItems: "center",
-          backgroundColor: accent,
-          borderRadius: radii.full,
-          justifyContent: "center",
-          paddingVertical: spacing.md,
-          width: 160,
-        }}
-      >
-        <UiText
-          size="lg"
-          style={[globalStyles.whiteText, { textAlign: "center" }]}
-        >
-          Schreib uns
-        </UiText>
-      </UiPressable>
+        style={{ width: 160 }}
+      />
     </View>
   );
 };

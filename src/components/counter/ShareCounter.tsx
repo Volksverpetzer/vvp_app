@@ -1,4 +1,4 @@
-import { type TextStyle, View } from "react-native";
+import { type StyleProp, type TextStyle, View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
@@ -11,7 +11,7 @@ import type { ShareableType } from "#/types";
 
 interface ShareCounterProperties {
   shareable: ShareableType[];
-  style: TextStyle;
+  style: StyleProp<TextStyle>;
   shares?: number;
   color?: string;
   size?: number;

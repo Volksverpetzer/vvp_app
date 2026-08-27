@@ -1,35 +1,62 @@
 import type { ReactNode } from "react";
-import type { ColorValue, ViewStyle } from "react-native";
+import type { ViewStyle } from "react-native";
 import { View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import { radii } from "#/constants/BorderRadius";
+import Colors from "#/constants/Colors";
 import { MIN_TOUCH_TARGET } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 export type BadgePosition =
   "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
 
-interface BadgeProperties {
+export type UiBadgeVariant =
+  "primary" | "accent" | "pruefpunkt" | "transparent";
+
+interface UiBadgeProperties {
   children: ReactNode;
   position: BadgePosition;
-  color: ColorValue;
+  /**
+   * `primary` (default) — corporate color, for a category/type tag.
+   * `accent` — brand accent color, for a highlighted stat or callout.
+   * `pruefpunkt` — the Prüfpunkt fact-check sub-brand purple.
+   * `transparent` — no background, for a badge whose content (e.g. an
+   * icon) provides its own contrast.
+   */
+  variant?: UiBadgeVariant;
   onPress?: () => void;
   accessibilityLabel?: string;
 }
 
-const Badge = ({
+/**
+ * Small tag overlaid on a corner of an image or card (category label,
+ * "Podcast" tag, view counter, image-credit info icon).
+ */
+const UiBadge = ({
   children,
   position,
-  color,
+  variant = "primary",
   onPress,
   accessibilityLabel,
-}: BadgeProperties) => {
+}: UiBadgeProperties) => {
+  const colorScheme = useAppColorScheme();
+  const { accent, primary, pruefpunkt } = Colors[colorScheme];
+  const backgroundColor =
+    variant === "transparent"
+      ? "transparent"
+      : variant === "accent"
+        ? accent
+        : variant === "pruefpunkt"
+          ? pruefpunkt
+          : primary;
+
   const isTop = position === "topLeft" || position === "topRight";
   const isLeft = position === "topLeft" || position === "bottomLeft";
 
   const style: ViewStyle = {
-    backgroundColor: color,
+    backgroundColor,
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.md,
     position: "absolute",
@@ -75,4 +102,4 @@ const Badge = ({
   return <View style={style}>{children}</View>;
 };
 
-export default Badge;
+export default UiBadge;

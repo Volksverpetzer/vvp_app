@@ -1,6 +1,6 @@
 import { Linking } from "react-native";
 
-import UiButton from "#/components/ui/UiButton";
+import UiImageButton from "#/components/ui/UiImageButton";
 import Config from "#/constants/Config";
 import { AppImages } from "#/helpers/AppImages";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -16,7 +16,7 @@ const ShopButton = ({ article_link }: ShopButtonProperties) => {
   if (!shopUrl) return null;
 
   return (
-    <UiButton
+    <UiImageButton
       source={AppImages.shopButton}
       accessibilityLabel="Unseren Shop besuchen"
       accessibilityHint="Öffnet den Shop im Browser"

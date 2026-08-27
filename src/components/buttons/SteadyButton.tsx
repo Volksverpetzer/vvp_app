@@ -1,6 +1,6 @@
 import { Linking } from "react-native";
 
-import UiButton from "#/components/ui/UiButton";
+import UiImageButton from "#/components/ui/UiImageButton";
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
 import type { HttpsUrl } from "#/types";
@@ -14,7 +14,7 @@ interface SteadyButtonProperties {
 const SteadyButton = ({ article_link }: SteadyButtonProperties) => {
   const link = article_link ?? Config.wpUrl;
   return (
-    <UiButton
+    <UiImageButton
       source={ButtonSteady}
       accessibilityLabel="Steady-Mitglied werden"
       accessibilityHint="Öffnet Steady im Browser"

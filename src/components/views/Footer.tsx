@@ -2,10 +2,9 @@ import { View } from "react-native";
 
 import { ShareIcon } from "#/components/Icons";
 import UiCard from "#/components/ui/UiCard";
-import UiPressable from "#/components/ui/UiPressable";
+import UiFab from "#/components/ui/UiFab";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
-import { globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -43,19 +42,9 @@ const Footer = (properties: FooterProperties) => {
           Überlass es nicht dem Algorithmus,{"\n"}ob deine Freunde{"\n"}von
           diesem Post erfahren:
         </UiText>
-        <UiPressable
-          accessibilityRole="button"
-          style={[
-            globalStyles.centered,
-            {
-              flex: 0,
-              width: 80,
-              height: 80,
-              borderRadius: 40,
-              backgroundColor: corporate,
-              alignSelf: "center",
-            },
-          ]}
+        <UiFab
+          size={80}
+          style={{ alignSelf: "center" }}
           onPress={() =>
             properties.onShare(properties.article_link, {
               location: "ArticleBottom",
@@ -63,7 +52,7 @@ const Footer = (properties: FooterProperties) => {
           }
         >
           <ShareIcon color="white" size={iconSizes.lg} />
-        </UiPressable>
+        </UiFab>
       </View>
       <View style={{ paddingHorizontal: spacing.md, gap: spacing.xl }}>
         <UiCard style={{ backgroundColor: Colors[colorScheme].surface }}>

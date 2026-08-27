@@ -2,11 +2,10 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { View } from "react-native";
 
+import UiButton from "#/components/ui/UiButton";
 import UiCard from "#/components/ui/UiCard";
-import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import type { AnnouncementEntry } from "#/constants/Announcements";
-import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { fontFamily } from "#/constants/FontFamily";
 import { LINE_HEIGHTS } from "#/constants/FontSizes";
@@ -38,9 +37,6 @@ const AnnouncementCard = ({
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
-  const surface = Colors[colorScheme].surface;
-  const text = Colors[colorScheme].text;
-  const onPrimary = Colors[colorScheme].onPrimary;
 
   const handleAction = () => {
     onDismiss(announcement.id);
@@ -109,36 +105,18 @@ const AnnouncementCard = ({
           })}
         </UiText>
         <View style={{ flexDirection: "row", gap: spacing.md }}>
-          <UiPressable
-            accessibilityRole="button"
+          <UiButton
+            label="Alles klar!"
+            variant="secondary"
             onPress={() => onDismiss(announcement.id)}
-            style={{
-              alignItems: "center",
-              backgroundColor: surface,
-              borderRadius: radii.md,
-              flex: 1,
-              paddingVertical: spacing.md,
-            }}
-          >
-            <UiText size="base" bold style={{ color: text }}>
-              Alles klar!
-            </UiText>
-          </UiPressable>
-          <UiPressable
-            accessibilityRole="button"
+            style={{ flex: 1 }}
+          />
+          <UiButton
+            label={announcement.actionLabel}
+            variant="primary"
             onPress={handleAction}
-            style={{
-              alignItems: "center",
-              backgroundColor: corporate,
-              borderRadius: radii.md,
-              flex: 1,
-              paddingVertical: spacing.md,
-            }}
-          >
-            <UiText size="base" bold style={{ color: onPrimary }}>
-              {announcement.actionLabel}
-            </UiText>
-          </UiPressable>
+            style={{ flex: 1 }}
+          />
         </View>
       </UiCard>
     </View>
