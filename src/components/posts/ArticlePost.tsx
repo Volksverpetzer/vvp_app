@@ -197,6 +197,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     [scrollProgress, corporate],
   );
   const categoryTextStyle: TextStyle[] = [
+    globalStyles.pillLabel,
     globalStyles.whiteText,
     { textAlign: "right" },
   ];
@@ -244,7 +245,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         <UiSpace size={spacing.md} />
         {(article.sourceName || categoryText) && (
           <UiBadge position="topLeft" variant="primary">
-            <UiText size="sm" style={categoryTextStyle}>
+            <UiText style={categoryTextStyle}>
               {article.sourceName || categoryText}
             </UiText>
           </UiBadge>
