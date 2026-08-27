@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { DimensionValue, TextStyle } from "react-native";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
 import Typography from "#/components/ui/Typography";
@@ -201,12 +201,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     globalStyles.whiteText,
     { textAlign: "right" },
   ];
-  // ViewCounter's `style` prop is a single flat TextStyle, not an array, so
-  // pillLabel has to be flattened before being passed through — otherwise
-  // the view-count badge reads in a different weight than the category one.
-  const viewCountTextStyle: TextStyle = StyleSheet.flatten(
-    globalStyles.pillLabel,
-  );
 
   const content = (
     <UiPressable
@@ -267,7 +261,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
               url={article.link}
               size={iconSizes.xs}
               onLoad={setViewCount}
-              style={viewCountTextStyle}
+              style={globalStyles.pillLabel}
             />
           </UiBadge>
         )}
