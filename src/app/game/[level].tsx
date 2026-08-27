@@ -1,12 +1,12 @@
-import { Link, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import UiButton from "#/components/ui/UiButton";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
-import { fontSizes } from "#/constants/FontSizes";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MemoryGame from "#/screens/Games/Memory";
@@ -18,6 +18,7 @@ type GameParameters = {
 
 const GameScreen = () => {
   const colorScheme = useAppColorScheme();
+  const router = useRouter();
   const { gameId } = useLocalSearchParams<GameParameters>();
   const [level, setLevel] = useState<number>(1);
 
@@ -113,23 +114,19 @@ const GameScreen = () => {
         </UiPressable>
       </View>
       <MemoryGame pairs={memoryPairs} />
-      <UiPressable accessibilityRole="button" style={styles.backButton}>
-        <Link href="/" style={styles.backLink}>
-          Zurück zur Übersicht
-        </Link>
-      </UiPressable>
+      <UiButton
+        label="Zurück zur Übersicht"
+        onPress={() => router.push("/")}
+        style={styles.backButton}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   backButton: {
-    backgroundColor: "#007bff",
-    borderRadius: radii.xs,
     marginTop: spacing.xl,
-    padding: spacing.md,
   },
-  backLink: { color: "#fff", fontSize: fontSizes.base },
   container: {
     alignItems: "center",
     flex: 1,

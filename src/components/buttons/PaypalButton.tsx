@@ -1,6 +1,6 @@
 import { Linking } from "react-native";
 
-import UiButton from "#/components/ui/UiButton";
+import UiImageButton from "#/components/ui/UiImageButton";
 import Config from "#/constants/Config";
 
 import Paypal from "#assets/images/button_paypal.webp";
@@ -29,7 +29,7 @@ const PaypalButton = ({ amount, onSuccess }: PaypalButtonProperties) => {
   };
 
   return (
-    <UiButton
+    <UiImageButton
       source={Paypal}
       accessibilityLabel="Mit PayPal spenden"
       accessibilityHint="Öffnet PayPal im Browser"
