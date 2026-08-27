@@ -3,6 +3,7 @@ import { fireEvent, render } from "@testing-library/react-native";
 import { Text } from "react-native";
 
 import UiFab from "#/components/ui/UiFab";
+import { elevation } from "#/constants/Elevation";
 
 const flatten = (style: unknown): Record<string, unknown> => {
   const parts = Array.isArray(style) ? style.flat(Infinity) : [style];
@@ -62,5 +63,24 @@ describe("UiFab", () => {
       </UiFab>,
     );
     expect(getByLabelText("Zurück nach oben")).toBeTruthy();
+  });
+
+  it("applies the default elevation.sm shadow", async () => {
+    const { getByRole } = await render(
+      <UiFab onPress={jest.fn()}>
+        <Text>x</Text>
+      </UiFab>,
+    );
+    const button = getByRole("button");
+    const pressableStyle = flatten(button.props.style);
+    // Android's `elevation` shadow sits on the pressable itself; the iOS/web
+    // `boxShadow` moves to the non-clipping outer wrapper, since it would
+    // otherwise be cut off by the pressable's own overflow: hidden (needed
+    // to keep the ripple circular).
+    expect(pressableStyle.elevation).toBe(elevation.sm.android);
+    expect(pressableStyle.overflow).toBe("hidden");
+
+    const wrapperStyle = flatten(button.parent?.props.style);
+    expect(wrapperStyle.boxShadow).toBe(elevation.sm.boxShadow);
   });
 });
