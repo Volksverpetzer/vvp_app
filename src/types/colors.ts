@@ -18,6 +18,8 @@ type styleColors = {
   primary: CSSProperties["color"];
   primaryMuted: CSSProperties["color"];
   accent: CSSProperties["color"];
+  // Prüfpunkt fact-check sub-brand
+  pruefpunkt: CSSProperties["color"];
   // Feedback: error color readable as text/border on background and surface
   error: CSSProperties["color"];
 };

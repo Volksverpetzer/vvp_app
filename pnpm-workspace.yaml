@@ -12,7 +12,7 @@ packages:
 patchedDependencies:
   react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
 minimumReleaseAgeExclude:
-  - "@volksverpetzer/design-tokens@0.5.0"
+  - "@volksverpetzer/design-tokens@0.6.0"
   - "@expo/cli@57.0.19"
   - "@expo/inline-modules@0.1.7"
   - "@expo/local-build-cache-provider@57.0.8"

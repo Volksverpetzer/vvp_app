@@ -81,6 +81,7 @@ jest.mock("expo-constants", () => ({
             accent: "#DB2685",
             primary: "#1b7194",
             primaryMuted: "#3893C0",
+            pruefpunkt: "#442674",
           },
           dark: {
             text: "#111",
@@ -93,6 +94,7 @@ jest.mock("expo-constants", () => ({
             accent: "#DB2685",
             primary: "#1b7194",
             primaryMuted: "#3893C0",
+            pruefpunkt: "#8B5CF6",
           },
         },
       },
