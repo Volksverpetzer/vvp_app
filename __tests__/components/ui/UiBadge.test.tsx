@@ -28,6 +28,7 @@ describe("UiBadge", () => {
   it.each([
     ["primary", Colors.light.primary],
     ["accent", Colors.light.accent],
+    ["pruefpunkt", Colors.light.pruefpunkt],
     ["transparent", "transparent"],
   ] as [UiBadgeVariant, string][])(
     "applies the %s variant's background colour",

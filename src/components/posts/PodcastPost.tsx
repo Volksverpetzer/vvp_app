@@ -100,7 +100,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
               contentFit="cover"
               accessibilityIgnoresInvertColors
             />
-            <UiBadge position="topLeft" variant="primary">
+            <UiBadge position="topLeft" variant="pruefpunkt">
               <UiText style={[globalStyles.pillLabel, globalStyles.whiteText]}>
                 Podcast
               </UiText>

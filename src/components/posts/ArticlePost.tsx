@@ -244,7 +244,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         </View>
         <UiSpace size={spacing.md} />
         {(article.sourceName || categoryText) && (
-          <UiBadge position="topLeft" variant="primary">
+          <UiBadge
+            position="topLeft"
+            variant={
+              article.sourceName === "Prüfpunkt" ? "pruefpunkt" : "primary"
+            }
+          >
             <UiText style={categoryTextStyle}>
               {article.sourceName || categoryText}
             </UiText>

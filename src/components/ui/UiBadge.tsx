@@ -12,7 +12,8 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 export type BadgePosition =
   "topLeft" | "topRight" | "bottomLeft" | "bottomRight";
 
-export type UiBadgeVariant = "primary" | "accent" | "transparent";
+export type UiBadgeVariant =
+  "primary" | "accent" | "pruefpunkt" | "transparent";
 
 interface UiBadgeProperties {
   children: ReactNode;
@@ -20,6 +21,7 @@ interface UiBadgeProperties {
   /**
    * `primary` (default) — corporate color, for a category/type tag.
    * `accent` — brand accent color, for a highlighted stat or callout.
+   * `pruefpunkt` — the Prüfpunkt fact-check sub-brand purple.
    * `transparent` — no background, for a badge whose content (e.g. an
    * icon) provides its own contrast.
    */
@@ -40,13 +42,15 @@ const UiBadge = ({
   accessibilityLabel,
 }: UiBadgeProperties) => {
   const colorScheme = useAppColorScheme();
-  const { accent, primary } = Colors[colorScheme];
+  const { accent, primary, pruefpunkt } = Colors[colorScheme];
   const backgroundColor =
     variant === "transparent"
       ? "transparent"
       : variant === "accent"
         ? accent
-        : primary;
+        : variant === "pruefpunkt"
+          ? pruefpunkt
+          : primary;
 
   const isTop = position === "topLeft" || position === "topRight";
   const isLeft = position === "topLeft" || position === "bottomLeft";
