@@ -6,6 +6,7 @@ import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
 import Typography from "#/components/ui/Typography";
+import UiBadge from "#/components/ui/UiBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -33,7 +34,6 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { ArticleProperties, ImageCredit } from "#/types";
 
-import Badge from "./Badge";
 import ImageCreditBadge from "./ImageCreditBadge";
 
 // Define the component props type.
@@ -243,20 +243,20 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         </View>
         <UiSpace size={spacing.md} />
         {(article.sourceName || categoryText) && (
-          <Badge position="topLeft" color={corporate}>
+          <UiBadge position="topLeft" variant="primary">
             <UiText size="sm" style={categoryTextStyle}>
               {article.sourceName || categoryText}
             </UiText>
-          </Badge>
+          </UiBadge>
         )}
         {inView && Config.enableEngagement && viewCount !== 0 && (
-          <Badge position="topRight" color={Colors[colorScheme].accent}>
+          <UiBadge position="topRight" variant="accent">
             <ViewCounter
               url={article.link}
               size={iconSizes.xs}
               onLoad={setViewCount}
             />
-          </Badge>
+          </UiBadge>
         )}
         {excerpt && (
           <UiText

@@ -22,7 +22,7 @@ jest.mock("#/components/ui/UiSpinner", () => ({
   default: () => null,
 }));
 
-jest.mock("#/components/posts/Badge", () => ({
+jest.mock("#/components/ui/UiBadge", () => ({
   __esModule: true,
   default: () => null,
 }));

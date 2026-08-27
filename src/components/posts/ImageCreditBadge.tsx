@@ -2,10 +2,9 @@ import { useState } from "react";
 
 import { InfoIcon } from "#/components/Icons";
 import ImageCreditModal from "#/components/popups/ImageCreditModal";
+import UiBadge, { type BadgePosition } from "#/components/ui/UiBadge";
 import { iconSizes } from "#/constants/IconSizes";
 import type { ImageCredit } from "#/types";
-
-import Badge, { type BadgePosition } from "./Badge";
 
 interface ImageCreditBadgeProperties {
   credit?: ImageCredit;
@@ -24,14 +23,14 @@ const ImageCreditBadge = ({ credit, position }: ImageCreditBadgeProperties) => {
 
   return (
     <>
-      <Badge
+      <UiBadge
         position={position}
-        color="transparent"
+        variant="transparent"
         accessibilityLabel="Bildquelle anzeigen"
         onPress={() => setIsVisible(true)}
       >
         <InfoIcon size={iconSizes.xs} color="#999" />
-      </Badge>
+      </UiBadge>
       <ImageCreditModal
         isVisible={isVisible}
         onClose={() => setIsVisible(false)}
