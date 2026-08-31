@@ -57,8 +57,8 @@ importers:
         specifier: 0.64.0
         version: 0.64.0(expo@57.0.18)(react-native-webview@13.16.1(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/jest-preset@0.86.2(@babel/core@7.29.7(supports-color@8.1.1))(react@19.2.3)(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3))(react-native@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/jest-preset@0.86.2(@babel/core@7.29.7(supports-color@8.1.1))(react@19.2.3)(supports-color@8.1.1))(@react-native/metro-config@0.86.3(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.3)(supports-color@8.1.1))(react@19.2.3)
       '@volksverpetzer/design-tokens':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.8.0
+        version: 0.8.0
       buffer:
         specifier: 6.0.3
         version: 6.0.3
@@ -2364,8 +2364,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@volksverpetzer/design-tokens@0.6.0':
-    resolution: {integrity: sha512-h1Ko2gJx4MN3Xg7K6Z7p/SjSpOMSxTRhtvV7tExeMZpk1FkJfpxIdX9blsLfIDLMciCbTXBjj3IpJ/sZIuOPTw==}
+  '@volksverpetzer/design-tokens@0.8.0':
+    resolution: {integrity: sha512-EeS9p5W6MKB8aGlHzZi5NzH30XCzj8UweIZ706sft9nNTc7yM0DoIbVUiPDuo8NrKtmr7lsDa7uZheXlbrkhdA==}
 
   '@xmldom/xmldom@0.8.15':
     resolution: {integrity: sha512-/5NV/vDALVFDXgLmfsy9TRCBlKwO2LNBFzpzvb9iIj+jR+eSc6DLYYvVOdivT/jm7MtU6TebYuRmzEOI7w40UA==}
@@ -9255,7 +9255,7 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
     optional: true
 
-  '@volksverpetzer/design-tokens@0.6.0': {}
+  '@volksverpetzer/design-tokens@0.8.0': {}
 
   '@xmldom/xmldom@0.8.15': {}
 
