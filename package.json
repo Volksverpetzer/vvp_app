@@ -130,7 +130,7 @@
     "@types/react": "19.2.18",
     "@typescript-eslint/eslint-plugin": "8.68.0",
     "@typescript-eslint/parser": "8.68.0",
-    "babel-jest": "29.7.0",
+    "babel-jest": "30.5.0",
     "babel-plugin-module-resolver": "5.0.3",
     "babel-preset-expo": "57.0.9",
     "cspell": "10.1.1",
