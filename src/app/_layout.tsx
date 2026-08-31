@@ -18,22 +18,20 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import type { ToastConfig } from "react-native-toast-message";
-import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 
 import ChangelogModal from "#/components/popups/ChangelogModal";
-import MissionPopup from "#/components/popups/MissionPopup";
-import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
 import { fontFamily } from "#/constants/FontFamily";
-import { fontSizes } from "#/constants/FontSizes";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { AudioProvider } from "#/helpers/provider/AudioProvider";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
+import { toastConfig } from "#/helpers/toastConfig";
 import { isDarkMode } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
@@ -45,11 +43,6 @@ LogBox.ignoreLogs(["new NativeEventEmitter"]);
 SplashScreen.preventAutoHideAsync();
 
 const SECONDARY_BG_SCREENS = new Set(["action", "support"]);
-
-const TOAST_TEXT_STYLES = {
-  text1Style: { fontSize: fontSizes.base },
-  text2Style: { fontSize: fontSizes.sm },
-};
 
 /**
  * Manages the background color for the app shell — including the notch/status bar
@@ -148,18 +141,6 @@ const RootLayout = () => {
   if (!loaded) {
     return <UiSpinner size="large" />;
   }
-
-  const toastConfig: ToastConfig = {
-    success: (props) => <BaseToast {...props} {...TOAST_TEXT_STYLES} />,
-    info: (props) => <BaseToast {...props} {...TOAST_TEXT_STYLES} />,
-    error: (props) => <ErrorToast {...props} {...TOAST_TEXT_STYLES} />,
-    achievement: ({ text1, text2 }) => (
-      <MissionPopup text1={text1} text2={text2} />
-    ),
-    share: ({ props }) => (
-      <ToastShareSheet items={props.items} onCancel={props.onCancel} />
-    ),
-  };
 
   // Create the main app content
   const appContent = (

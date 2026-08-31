@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.20.41": {
+  "@atproto/api@0.20.42": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -75,7 +75,7 @@ export default {
     licenseUrl:
       "https://github.com/stripe/stripe-react-native/raw/HEAD/LICENSE",
   },
-  "@volksverpetzer/design-tokens@0.5.0": {
+  "@volksverpetzer/design-tokens@0.8.0": {
     licenses: "MIT",
     repository: "https://github.com/Volksverpetzer/vvp_design_system",
     licenseUrl:
@@ -125,7 +125,7 @@ export default {
     licenses: "ISC",
     repository: "https://gitlab.com/breadboxio/expo-config",
   },
-  "expo-constants@57.0.15": {
+  "expo-constants@57.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -156,7 +156,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-font@57.0.1": {
+  "expo-font@57.0.2": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -220,7 +220,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-updates@57.0.18": {
+  "expo-updates@57.0.19": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -229,7 +229,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@57.0.17": {
+  "expo@57.0.18": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -268,7 +268,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-modal/react-native-modal/raw/HEAD/LICENSE.md",
   },
-  "react-native-nitro-modules@0.37.0": {
+  "react-native-nitro-modules@0.37.1": {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
   },
@@ -306,7 +306,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-community/react-native-svg/raw/HEAD/LICENSE",
   },
-  "react-native-toast-message@2.4.0": {
+  "react-native-toast-message@2.5.0": {
     licenses: "MIT",
     repository: "https://github.com/calintamas/react-native-toast-message",
     licenseUrl:
