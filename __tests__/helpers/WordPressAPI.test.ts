@@ -101,6 +101,22 @@ describe("WordPressAPI", () => {
       expect(result).toBeUndefined();
       spy.mockRestore();
     });
+
+    it("queries a custom post type's own REST base when given", async () => {
+      const spy = jest.spyOn(Networking, "get").mockResolvedValue([] as any);
+      await WordPressAPI.getPost("orgakarten", undefined, "project");
+      expect(spy).toHaveBeenCalledWith(
+        WordPressAPI["client"],
+        `/wp-json/wp/v2/project`,
+        {
+          params: {
+            slug: "orgakarten",
+            _embed: "author",
+          },
+        },
+      );
+      spy.mockRestore();
+    });
   });
 
   describe("getFeatureImage", () => {
@@ -377,6 +393,24 @@ describe("WordPressAPI", () => {
         ...baseData,
       } as any);
       expect(article.reading_time).toBeUndefined();
+    });
+
+    it("preserves categories when present in raw data", () => {
+      const article = WordPressAPI.convertLoadProps({
+        ...baseData,
+        categories: [123],
+      } as any);
+      expect(article.categories).toEqual([123]);
+    });
+
+    it("defaults categories to an empty array when absent from raw data", () => {
+      // Custom post types (e.g. "project") aren't necessarily registered
+      // with the category taxonomy, so the field may be missing entirely.
+      const { categories: _categories, ...dataWithoutCategories } = baseData;
+      const article = WordPressAPI.convertLoadProps({
+        ...dataWithoutCategories,
+      } as any);
+      expect(article.categories).toEqual([]);
     });
   });
 });

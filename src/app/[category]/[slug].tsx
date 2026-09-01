@@ -20,6 +20,13 @@ type LoadArticleParameters = {
   "#"?: string;
 };
 
+// WordPress post types whose REST base differs from the default "posts" —
+// for these, the URL's category segment is the post type's own rewrite
+// slug rather than a category taxonomy term.
+const CUSTOM_POST_TYPES: Record<string, string> = {
+  project: "project",
+};
+
 /**
  * Loads an article based on the provided slug.
  */
@@ -73,9 +80,16 @@ const LoadArticle = () => {
           return;
         }
 
+        // Secondary WP sites (e.g. Prüfpunkt) are only ever fed the "posts"
+        // type today, so the custom-post-type mapping only applies to the
+        // primary site's lookup.
         const _article = secondaryApi
           ? await secondaryApi.getPost(slug, signal)
-          : await WordPressAPI.getPost(slug, signal);
+          : await WordPressAPI.getPost(
+              slug,
+              signal,
+              CUSTOM_POST_TYPES[category ?? ""] ?? "posts",
+            );
         if (signal.aborted) return;
         // No post for this slug — fall back to the webview instead of letting
         // convertLoadProps throw on undefined for control flow.
@@ -87,10 +101,14 @@ const LoadArticle = () => {
         const loadedArticle: ArticleProperties =
           WordPressAPI.convertLoadProps(_article);
 
-        const { image, credit } = await WordPressAPI.getFeatureImage(
-          loadedArticle._links["wp:featuredmedia"][0].href,
-          signal,
-        );
+        // Not every post type supports a featured image (e.g. "project"
+        // entries may not set one), so there's no "wp:featuredmedia" link
+        // to follow in that case.
+        const featuredMediaHref =
+          loadedArticle._links["wp:featuredmedia"]?.[0]?.href;
+        const { image, credit } = featuredMediaHref
+          ? await WordPressAPI.getFeatureImage(featuredMediaHref, signal)
+          : { image: undefined, credit: undefined };
 
         if (signal.aborted) return;
         setArticle(loadedArticle);
@@ -104,7 +122,7 @@ const LoadArticle = () => {
         setIsLoading(false);
       }
     },
-    [slug, secondaryApi, originalUrl, wpUrl],
+    [slug, category, secondaryApi, originalUrl, wpUrl],
   );
 
   useEffect(() => {

@@ -72,14 +72,18 @@ export default class WordPressAPI {
 
   /**
    * Get a single post by slug.
+   * @param postType - REST base of the post type to query. Defaults to the
+   *   standard "posts", but some content (e.g. the "project" post type) is
+   *   registered under its own REST base instead.
    */
   static async getPost(
     slug: string,
     signal?: AbortSignal,
+    postType: string = "posts",
   ): Promise<LoadArticlePostProperties | undefined> {
     const posts = await netGet<LoadArticlePostProperties[]>(
       WordPressAPI.client,
-      `/wp-json/wp/v2/posts`,
+      `/wp-json/wp/v2/${postType}`,
       {
         params: {
           slug,
@@ -231,6 +235,9 @@ export default class WordPressAPI {
             display_name: a.name,
             slug: a.slug,
           }));
-    return { ...data, title, description, authors };
+    // Custom post types (e.g. "project") aren't necessarily registered with
+    // the category taxonomy, so the field may be absent entirely.
+    const categories = data.categories ?? [];
+    return { ...data, title, description, authors, categories };
   }
 }

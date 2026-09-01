@@ -35,6 +35,14 @@ jest.mock("#/helpers/network/WordPressAPI", () => ({
   default: {
     getPost: jest.fn(() => Promise.resolve(null)),
     create: jest.fn(() => null),
+    convertLoadProps: jest.fn((data) => data),
+    getFeatureImage: jest.fn(() =>
+      Promise.resolve({
+        image: undefined,
+        thumb: undefined,
+        credit: undefined,
+      }),
+    ),
   },
 }));
 
@@ -110,8 +118,9 @@ describe("LoadArticle article fallback (slug not found)", () => {
 
   it("keeps the deep-link anchor on the fallback URL so the webview jumps to it", async () => {
     const { useLocalSearchParams } = jest.requireMock("expo-router");
-    // Custom post types (e.g. /project/…) are not served by the posts API,
-    // so anchored deep links to them always land on this fallback.
+    // The mocked API still resolves no post here, so this exercises the same
+    // not-found fallback as any other category — see the "project post type"
+    // describe block below for the mapping itself.
     useLocalSearchParams.mockReturnValue({
       category: "project",
       slug: "10fakten",
@@ -155,6 +164,92 @@ describe("LoadArticle article fallback (slug not found)", () => {
     expect(webviewUri()).toBe(
       "https://volksverpetzer.de/project/10fakten/#die-quellen%20",
     );
+  });
+});
+
+describe("LoadArticle project post type", () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it("queries the 'project' REST base instead of 'posts' for the project category", async () => {
+    const WordPressAPI = jest.requireMock(
+      "#/helpers/network/WordPressAPI",
+    ).default;
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "project",
+      slug: "orgakarten",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => expect(WordPressAPI.getPost).toHaveBeenCalled());
+    expect(WordPressAPI.getPost).toHaveBeenCalledWith(
+      "orgakarten",
+      expect.anything(),
+      "project",
+    );
+  });
+
+  it("queries the default 'posts' REST base for a regular category", async () => {
+    const WordPressAPI = jest.requireMock(
+      "#/helpers/network/WordPressAPI",
+    ).default;
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "faktencheck",
+      slug: "some-article",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => expect(WordPressAPI.getPost).toHaveBeenCalled());
+    expect(WordPressAPI.getPost).toHaveBeenCalledWith(
+      "some-article",
+      expect.anything(),
+      "posts",
+    );
+  });
+
+  it("renders natively on success, without fetching a feature image when the post has none", async () => {
+    const WordPressAPI = jest.requireMock(
+      "#/helpers/network/WordPressAPI",
+    ).default;
+    // "project" entries aren't guaranteed to set a featured image, so
+    // "wp:featuredmedia" may be entirely absent from the response.
+    const projectPost = {
+      id: 1,
+      date: "2024-01-01T00:00:00",
+      date_gmt: "2024-01-01T00:00:00",
+      link: "https://volksverpetzer.de/project/orgakarten/",
+      slug: "orgakarten",
+      title: { rendered: "Orgakarten" },
+      content: { rendered: "<p>Hi</p>" },
+      _links: {},
+    };
+    WordPressAPI.getPost.mockResolvedValueOnce(projectPost);
+    WordPressAPI.convertLoadProps.mockImplementationOnce((data: any) => ({
+      ...data,
+      title: data.title.rendered,
+      description: "",
+      authors: [],
+      categories: [],
+    }));
+
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "project",
+      slug: "orgakarten",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => {
+      const Article = jest.requireMock(
+        "#/screens/Home/components/article/Article",
+      );
+      expect(Article).toHaveBeenCalled();
+    });
+    expect(WordPressAPI.getFeatureImage).not.toHaveBeenCalled();
   });
 });
 
