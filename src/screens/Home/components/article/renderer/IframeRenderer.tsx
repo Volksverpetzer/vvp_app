@@ -355,7 +355,15 @@ const IframeRenderer = ({
         }}
       >
         <View style={{ margin: spacing.md }}>
-          <LoadArticlePost slug={slug} baseUrl={secondaryWp?.handle} elevated />
+          <LoadArticlePost
+            slug={slug}
+            baseUrl={secondaryWp?.handle}
+            elevated
+            // The embedded article can have been renamed or deleted since
+            // this article's body was written; drop it silently rather than
+            // showing a broken "couldn't load" card inline in the content.
+            renderError={() => <></>}
+          />
         </View>
       </View>
     );
