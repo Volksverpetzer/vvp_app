@@ -1,4 +1,4 @@
-import { act, render } from "@testing-library/react-native";
+import { act, fireEvent, render } from "@testing-library/react-native";
 import * as Linking from "expo-linking";
 import { Dimensions } from "react-native";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
@@ -14,15 +14,36 @@ jest.mock("#/constants/Config", () => ({
   },
 }));
 
-// Mock expo-linking parse used in the component
+// Mock expo-linking parse used in the component. `path` mirrors the real
+// expo-linking behavior of omitting the leading slash (extractSlug below
+// relies on that: path.split("/")[1] is the slug for a "/category/slug/..."
+// permalink).
 jest.mock("expo-linking", () => ({
   parse: (url: string) => {
     try {
       const parsed = new URL(url);
-      return { hostname: parsed.hostname, path: parsed.pathname };
+      return {
+        hostname: parsed.hostname,
+        path: parsed.pathname.replace(/^\/+/, ""),
+      };
     } catch {
       return {};
     }
+  },
+}));
+
+// Mock WordPressAPI.getPost so the wp-embedded-content fallback-card tests
+// can simulate a slug LoadArticlePost can't resolve (deleted/renamed, or a
+// non-"post" content type such as a WordPress "project" page).
+const mockGetPost = jest.fn();
+jest.mock("#/helpers/network/WordPressAPI", () => ({
+  __esModule: true,
+  default: {
+    getPost: (...args: unknown[]) => mockGetPost(...args),
+    create: jest.fn(() => ({
+      getPost: (...args: unknown[]) => mockGetPost(...args),
+    })),
+    convertLoadProps: jest.fn((data) => data),
   },
 }));
 
@@ -916,5 +937,47 @@ describe("IframeRenderer non-video height cap", () => {
       ? style.find((s: any) => s && typeof s.height === "number")?.height
       : style?.height;
     expect(height).toBe(maxHeight);
+  });
+});
+
+describe("IframeRenderer wp-embedded-content fallback", () => {
+  beforeEach(() => {
+    mockUseHtmlIframeProps.mockClear();
+    mockUseAppColorScheme.mockClear();
+    mockUseAppColorScheme.mockReturnValue(ColorScheme.light);
+    mockGetPost.mockClear();
+  });
+
+  it("links out to the real page instead of showing an error card when the embedded slug can't be loaded as a post", async () => {
+    // e.g. a WordPress "project" page linked via "Sonst schau auch hier
+    // vorbei:" — its REST endpoint isn't public, so getPost never resolves it.
+    mockGetPost.mockResolvedValue(null);
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: {
+        src: "https://www.volksverpetzer.de/project/landtagswahl-sachsen-anhalt/embed/#?secret=abc",
+        class: "wp-embedded-content",
+      },
+    } as unknown as ReturnType<typeof mockUseHtmlIframeProps>);
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+    const { findByText } = await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    const card = await findByText("Landtagswahl Sachsen Anhalt");
+    await act(async () => {
+      fireEvent.press(card);
+    });
+
+    expect(onLinkPress).toHaveBeenCalledWith(
+      expect.anything(),
+      "https://www.volksverpetzer.de/project/landtagswahl-sachsen-anhalt/",
+    );
   });
 });

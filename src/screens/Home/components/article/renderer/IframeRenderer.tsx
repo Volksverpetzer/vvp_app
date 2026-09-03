@@ -9,8 +9,11 @@ import type {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
+import { ExternalLinkIcon } from "#/components/Icons";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
+import UiCard from "#/components/ui/UiCard";
 import UiErrorCard from "#/components/ui/UiErrorCard";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
@@ -131,6 +134,79 @@ const extractSlug = (source: string): string => {
     console.error("Error extracting slug:", error, "from src:", source);
     return "";
   }
+};
+
+/**
+ * Derives the canonical (non-embed) page URL from a wp-embedded-content
+ * iframe's src, e.g. ".../project/foo/embed/#?secret=xyz" becomes
+ * ".../project/foo/". Used to link out to content LoadArticlePost can't
+ * fetch as a regular post (e.g. a "project" custom-post-type page, whose
+ * REST endpoint isn't public).
+ */
+const embedSourceToPageUrl = (source: string): HttpsUrl | null => {
+  try {
+    const url = new URL(source);
+    url.hash = "";
+    url.search = "";
+    url.pathname = url.pathname.replace(/\/embed\/?$/, "/");
+    const page = url.toString();
+    return isHttpsUrl(page) ? page : null;
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Turns a slug like "landtagswahl-sachsen-anhalt" into "Landtagswahl Sachsen
+ * Anhalt". Used as the fallback card's title when the real post title isn't
+ * available — WordPress's own embed HTML carries it in a sibling
+ * <blockquote><a>, but ElementHandlers strips that stub before this renderer
+ * ever sees it, leaving only the bare <iframe>.
+ */
+const humanizeSlug = (slug: string): string =>
+  slug
+    .split("-")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+interface EmbedFallbackCardProperties {
+  slug: string;
+  source: string;
+  onLinkPress: (event: unknown, href: HttpsUrl) => void;
+}
+
+/**
+ * Shown in place of an embedded article when LoadArticlePost can't fetch it
+ * as a post (deleted/renamed slug, or content of a type other than "post",
+ * e.g. a WordPress "project" page). Links out to the real page instead of
+ * silently disappearing or showing a bare "couldn't load" error.
+ */
+const EmbedFallbackCard = ({
+  slug,
+  source,
+  onLinkPress,
+}: EmbedFallbackCardProperties) => {
+  const colorScheme = useAppColorScheme();
+  const pageUrl = embedSourceToPageUrl(source);
+  if (!pageUrl) return <></>;
+
+  return (
+    <UiPressable
+      accessibilityRole="link"
+      onPress={(event) => onLinkPress(event, pageUrl)}
+      style={{ marginHorizontal: spacing.md }}
+    >
+      <UiCard
+        style={{ flexDirection: "row", alignItems: "center", gap: spacing.md }}
+      >
+        <UiText style={{ flex: 1 }} bold>
+          {humanizeSlug(slug)}
+        </UiText>
+        <ExternalLinkIcon color={Colors[colorScheme].textMuted} />
+      </UiCard>
+    </UiPressable>
+  );
 };
 
 /**
@@ -359,10 +435,18 @@ const IframeRenderer = ({
             slug={slug}
             baseUrl={secondaryWp?.handle}
             elevated
-            // The embedded article can have been renamed or deleted since
-            // this article's body was written; drop it silently rather than
-            // showing a broken "couldn't load" card inline in the content.
-            renderError={() => <></>}
+            // The embed can point at a slug that's been renamed/deleted, or
+            // at content LoadArticlePost was never going to be able to fetch
+            // as a post (e.g. a "project" custom-post-type page). Either way,
+            // link out to the real page instead of showing a bare
+            // "couldn't load" card inline in the article.
+            renderError={() => (
+              <EmbedFallbackCard
+                slug={slug}
+                source={source ?? ""}
+                onLinkPress={onLinkPress}
+              />
+            )}
           />
         </View>
       </View>
