@@ -1,9 +1,25 @@
+import type { ReactElement } from "react";
 import { useCallback } from "react";
 
 import Loader from "#/components/loader/Loader";
 import ArticlePost from "#/components/posts/ArticlePost";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import type { ArticleProperties, HttpsUrl } from "#/types";
+
+/**
+ * Thrown when `WordPressAPI.getPost` resolves without a post for the given
+ * slug — as opposed to a network/server failure, which throws whatever error
+ * the fetch layer produced. Callers that want to tell the two apart (e.g. to
+ * only show a "not found" fallback for a genuinely missing slug, not mask a
+ * transient outage as one) can check `error instanceof ArticleNotFoundError`
+ * in `renderError`.
+ */
+export class ArticleNotFoundError extends Error {
+  constructor(slug: string) {
+    super(`Article not found for slug: ${slug}`);
+    this.name = "ArticleNotFoundError";
+  }
+}
 
 export type LoadProperties = {
   slug: string;
@@ -15,6 +31,13 @@ export type LoadProperties = {
   baseUrl?: HttpsUrl;
   inView?: boolean;
   elevated?: boolean;
+  /**
+   * Overrides the default "couldn't load" error card, e.g. to render nothing
+   * when a caller would rather silently drop a broken entry (such as a stale
+   * recommendation) than show an error in a list of otherwise-fine items.
+   * Return `null` to render nothing.
+   */
+  renderError?: (error: unknown) => ReactElement | null;
 };
 
 // Reuse one API client per secondary base URL so rendering many embedded
@@ -36,7 +59,7 @@ const secondaryApiFor = (baseUrl: HttpsUrl) => {
  * This component takes an article slug, pulls WordPress API and then Renders an Article Post with the Response
  */
 const LoadArticlePost = (properties: LoadProperties) => {
-  const { slug, baseUrl, inView = true, elevated } = properties;
+  const { slug, baseUrl, inView = true, elevated, renderError } = properties;
 
   const loadArticle = useCallback(
     (articleSlug: string) => {
@@ -45,9 +68,7 @@ const LoadArticlePost = (properties: LoadProperties) => {
         : WordPressAPI.getPost;
       return getPost(articleSlug).then((data) => {
         if (!data) {
-          return Promise.reject(
-            new Error(`Article not found for slug: ${articleSlug}`),
-          );
+          return Promise.reject(new ArticleNotFoundError(articleSlug));
         }
 
         return WordPressAPI.convertLoadProps(data);
@@ -68,6 +89,7 @@ const LoadArticlePost = (properties: LoadProperties) => {
       keyValue={slug}
       load={loadArticle}
       render={renderArticle}
+      renderError={renderError}
       loadingText="Lade Artikel..."
     />
   );

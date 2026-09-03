@@ -10,7 +10,8 @@ type LoaderProps<TData> = {
   keyValue: string;
   load: (keyValue: string) => Promise<TData>;
   render: (data: TData) => ReactElement;
-  renderError?: (error: unknown) => ReactElement;
+  /** Return `null` to render nothing for a handled failure. */
+  renderError?: (error: unknown) => ReactElement | null;
   onLoaded?: (data: TData) => void;
   loadingText?: string;
   spinnerProps?: ActivityIndicatorProps;
@@ -28,6 +29,13 @@ const Loader = <TData,>({
   const [data, setData] = useState<TData>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setLoading] = useState(true);
+  // Depend on presence, not identity: callers often pass a fresh inline
+  // renderError function each render (e.g. IframeRenderer's fallback card),
+  // and only whether one exists at all matters for the console.warn/error
+  // choice below — keying the effect on the boolean instead of the function
+  // itself avoids reloading on every render while still staying correct if a
+  // caller toggles renderError on/off between renders.
+  const hasRenderError = Boolean(renderError);
 
   useEffect(() => {
     let isMounted = true;
@@ -53,7 +61,14 @@ const Loader = <TData,>({
         if (isMounted) {
           setError(_error);
         }
-        console.error(_error);
+        // A caller that supplies its own renderError has UI for this failure
+        // (e.g. a link-out card for a stale embed) — that's an expected,
+        // handled case, not something that belongs in the error console.
+        if (hasRenderError) {
+          console.warn(_error);
+        } else {
+          console.error(_error);
+        }
       })
       .finally(() => {
         if (isMounted) {
@@ -64,7 +79,7 @@ const Loader = <TData,>({
     return () => {
       isMounted = false;
     };
-  }, [keyValue, load, onLoaded]);
+  }, [keyValue, load, onLoaded, hasRenderError]);
 
   if (isLoading) {
     return (
