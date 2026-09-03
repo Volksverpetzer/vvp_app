@@ -105,9 +105,9 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
       setImgURL(image ?? "");
       setImageCredit(credit);
       ContentStore.setStoredArticle(article.slug, {
+        ...article,
         imageUrl: image,
         imageCredit: credit,
-        ...article,
       });
     } catch (error) {
       console.error(error);
