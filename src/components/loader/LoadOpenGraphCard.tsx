@@ -68,20 +68,14 @@ const LoadOpenGraphCard = ({
 
   if (isLoading) {
     return (
-      <View
-        style={{
-          marginHorizontal: spacing.md,
-          minHeight: 100,
-          justifyContent: "center",
-        }}
-      >
+      <View style={{ minHeight: 100, justifyContent: "center" }}>
         <UiSpinner />
       </View>
     );
   }
 
   return (
-    <View style={[{ marginHorizontal: spacing.md }, shadowWrapperStyle]}>
+    <View style={shadowWrapperStyle}>
       <UiPressable accessibilityRole="link" onPress={onPress}>
         <UiCard
           style={{
