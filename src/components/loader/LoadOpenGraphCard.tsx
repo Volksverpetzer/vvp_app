@@ -2,6 +2,7 @@ import { Image } from "expo-image";
 import { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 
+import Typography from "#/components/ui/Typography";
 import UiCard from "#/components/ui/UiCard";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -9,6 +10,10 @@ import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { elevation } from "#/constants/Elevation";
+import {
+  CARD_CONTENT_GAP,
+  POST_PADDING_HORIZONTAL,
+} from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import type { OpenGraphPreview } from "#/helpers/utils/openGraph";
 import { fetchOpenGraphPreview } from "#/helpers/utils/openGraph";
@@ -93,16 +98,18 @@ const LoadOpenGraphCard = ({
               contentFit="cover"
             />
           )}
-          <View style={{ gap: spacing.xs, padding: spacing.md }}>
-            <UiText bold numberOfLines={2}>
+          <View
+            style={{
+              gap: CARD_CONTENT_GAP,
+              paddingHorizontal: POST_PADDING_HORIZONTAL,
+              paddingVertical: spacing.md,
+            }}
+          >
+            <Typography type="cardTitle" numberOfLines={2}>
               {preview?.title ?? fallbackTitle}
-            </UiText>
+            </Typography>
             {preview?.description && (
-              <UiText
-                size="sm"
-                numberOfLines={2}
-                style={{ color: Colors[colorScheme].textMuted }}
-              >
+              <UiText size="base" numberOfLines={2}>
                 {preview.description}
               </UiText>
             )}
