@@ -88,10 +88,14 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
 
   // Fetch the feature image when the article is in view.
   const getImages = useCallback(async () => {
+    // The featured-media link can be absent even when featured_media is set
+    // — e.g. WordPress omits it when the attachment isn't readable via the
+    // REST API. Just skip the image fetch rather than throwing.
+    const featuredMediaHref = article._links["wp:featuredmedia"]?.[0]?.href;
+    if (!featuredMediaHref) return;
     try {
-      const { image, credit } = await WordPressAPI.getFeatureImage(
-        article._links["wp:featuredmedia"][0].href,
-      );
+      const { image, credit } =
+        await WordPressAPI.getFeatureImage(featuredMediaHref);
       setImgURL(image);
       setImageCredit(credit);
       ContentStore.setStoredArticle(article.slug, {
