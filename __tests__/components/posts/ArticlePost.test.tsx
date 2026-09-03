@@ -5,7 +5,7 @@ import ArticlePost from "#/components/posts/ArticlePost";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
 jest.mock("expo-image", () => ({
-  Image: () => null,
+  Image: jest.fn(() => null),
 }));
 
 jest.mock("expo-router", () => ({
@@ -125,6 +125,25 @@ describe("ArticlePost — inView effects", () => {
         baseArticle.slug,
       ),
     );
+  });
+
+  it("skips the image fetch and clears the thumbnail when wp:featuredmedia is absent", async () => {
+    // WordPress can omit wp:featuredmedia from _links even when
+    // featured_media is set (e.g. an unreadable attachment). This is the
+    // feed-card half of the crash-fix guard: it must not call
+    // getFeatureImage, and a recycled row's previous thumbnail must be
+    // cleared rather than left showing.
+    const WordPressAPI = require("#/helpers/network/WordPressAPI").default;
+    const { Image } = require("expo-image");
+
+    await render(
+      <ArticlePost article={{ ...baseArticle, _links: {} }} inView={true} />,
+    );
+
+    await waitFor(() => expect(Image).toHaveBeenCalled());
+    expect(WordPressAPI.getFeatureImage).not.toHaveBeenCalled();
+    const lastCall = Image.mock.calls.at(-1);
+    expect(lastCall[0].source).toEqual({ uri: "" });
   });
 
   it("handles getFeatureImage errors gracefully", async () => {
