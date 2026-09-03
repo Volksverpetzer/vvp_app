@@ -10,7 +10,8 @@ type LoaderProps<TData> = {
   keyValue: string;
   load: (keyValue: string) => Promise<TData>;
   render: (data: TData) => ReactElement;
-  renderError?: (error: unknown) => ReactElement;
+  /** Return `null` to render nothing for a handled failure. */
+  renderError?: (error: unknown) => ReactElement | null;
   onLoaded?: (data: TData) => void;
   loadingText?: string;
   spinnerProps?: ActivityIndicatorProps;

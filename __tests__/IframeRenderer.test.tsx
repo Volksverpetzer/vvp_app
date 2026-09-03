@@ -1019,4 +1019,31 @@ describe("IframeRenderer wp-embedded-content fallback", () => {
 
     expect(onLinkPress).toHaveBeenCalledWith(expect.anything(), pageUrl);
   });
+
+  it("shows the default error card instead of the preview for a transient failure, not just a missing slug", async () => {
+    // A network/server error is not the same as "no post for this slug" —
+    // the embedded article might well exist, so this shouldn't render the
+    // Open Graph fallback (which would present possibly-stale/wrong content
+    // as if it were the real thing) or otherwise mask the failure.
+    mockGetPost.mockRejectedValue(new Error("network error"));
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+    const { findByText, queryByText } = await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    expect(
+      await findByText(
+        "Beitrag konnte nicht geladen werden. Bitte später erneut versuchen.",
+      ),
+    ).toBeTruthy();
+    expect(mockFetchOpenGraphPreview).not.toHaveBeenCalled();
+    expect(queryByText("Landtagswahl Sachsen Anhalt")).toBeNull();
+  });
 });

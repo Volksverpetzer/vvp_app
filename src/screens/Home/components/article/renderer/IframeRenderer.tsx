@@ -9,7 +9,9 @@ import type {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-import LoadArticlePost from "#/components/loader/LoadArticlePost";
+import LoadArticlePost, {
+  ArticleNotFoundError,
+} from "#/components/loader/LoadArticlePost";
 import LoadOpenGraphCard from "#/components/loader/LoadOpenGraphCard";
 import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -186,7 +188,7 @@ const EmbedFallbackCard = ({
   onLinkPress,
 }: EmbedFallbackCardProperties) => {
   const pageUrl = embedSourceToPageUrl(source);
-  if (!pageUrl) return <></>;
+  if (!pageUrl) return null;
 
   return (
     <LoadOpenGraphCard
@@ -423,18 +425,25 @@ const IframeRenderer = ({
             slug={slug}
             baseUrl={secondaryWp?.handle}
             elevated
-            // The embed can point at a slug that's been renamed/deleted, or
-            // at content LoadArticlePost was never going to be able to fetch
-            // as a post (e.g. a "project" custom-post-type page). Either way,
-            // link out to the real page instead of showing a bare
-            // "couldn't load" card inline in the article.
-            renderError={() => (
-              <EmbedFallbackCard
-                slug={slug}
-                source={source ?? ""}
-                onLinkPress={onLinkPress}
-              />
-            )}
+            // Only fall back to the preview card for a genuinely missing
+            // slug (renamed/deleted, or content of a type other than "post"
+            // such as a "project" page) — not for a transient network/server
+            // error, where the article might well exist and the default
+            // error card's "try again later" is the more honest message.
+            renderError={(error) =>
+              error instanceof ArticleNotFoundError ? (
+                <EmbedFallbackCard
+                  slug={slug}
+                  source={source ?? ""}
+                  onLinkPress={onLinkPress}
+                />
+              ) : (
+                <UiErrorCard
+                  style={{ marginHorizontal: spacing.md }}
+                  text="Beitrag konnte nicht geladen werden. Bitte später erneut versuchen."
+                />
+              )
+            }
           />
         </View>
       </View>

@@ -22,7 +22,7 @@ import type { HttpsUrl } from "#/types";
 
 export interface LoadOpenGraphCardProperties {
   url: HttpsUrl;
-  /** Shown while the preview is loading and if it comes back without a title. */
+  /** Shown as the card's title if the fetched preview comes back without an og:title. */
   fallbackTitle: string;
   onPress: (event: unknown) => void;
 }
