@@ -99,7 +99,7 @@ const LoadArticle = () => {
 
         if (signal.aborted) return;
         setArticle(loadedArticle);
-        setImageUrl(image);
+        setImageUrl(image ?? "");
         setImageCredit(credit);
         setIsLoading(false);
       } catch (error_) {

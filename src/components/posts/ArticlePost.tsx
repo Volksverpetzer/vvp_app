@@ -92,11 +92,17 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     // — e.g. WordPress omits it when the attachment isn't readable via the
     // REST API. Just skip the image fetch rather than throwing.
     const featuredMediaHref = article._links["wp:featuredmedia"]?.[0]?.href;
-    if (!featuredMediaHref) return;
+    if (!featuredMediaHref) {
+      // Clear rather than leave stale: this row may be recycled from a
+      // previous article that did have a thumbnail.
+      setImgURL("");
+      setImageCredit(undefined);
+      return;
+    }
     try {
       const { image, credit } =
         await WordPressAPI.getFeatureImage(featuredMediaHref);
-      setImgURL(image);
+      setImgURL(image ?? "");
       setImageCredit(credit);
       ContentStore.setStoredArticle(article.slug, {
         imageUrl: image,
