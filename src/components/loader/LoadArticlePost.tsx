@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { useCallback } from "react";
 
 import Loader from "#/components/loader/Loader";
@@ -15,6 +16,12 @@ export type LoadProperties = {
   baseUrl?: HttpsUrl;
   inView?: boolean;
   elevated?: boolean;
+  /**
+   * Overrides the default "couldn't load" error card, e.g. to render nothing
+   * when a caller would rather silently drop a broken entry (such as a stale
+   * recommendation) than show an error in a list of otherwise-fine items.
+   */
+  renderError?: (error: unknown) => ReactElement;
 };
 
 // Reuse one API client per secondary base URL so rendering many embedded
@@ -36,7 +43,7 @@ const secondaryApiFor = (baseUrl: HttpsUrl) => {
  * This component takes an article slug, pulls WordPress API and then Renders an Article Post with the Response
  */
 const LoadArticlePost = (properties: LoadProperties) => {
-  const { slug, baseUrl, inView = true, elevated } = properties;
+  const { slug, baseUrl, inView = true, elevated, renderError } = properties;
 
   const loadArticle = useCallback(
     (articleSlug: string) => {
@@ -68,6 +75,7 @@ const LoadArticlePost = (properties: LoadProperties) => {
       keyValue={slug}
       load={loadArticle}
       render={renderArticle}
+      renderError={renderError}
       loadingText="Lade Artikel..."
     />
   );

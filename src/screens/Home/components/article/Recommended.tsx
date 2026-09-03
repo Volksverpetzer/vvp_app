@@ -63,7 +63,17 @@ const Recommended = (properties: RecommendedProperties) => {
           const url = new URL(match.url);
           const path = url.pathname;
           const slug = path.replace(/\/+$/, "").split("/").pop();
-          return <LoadArticlePost key={String(index)} slug={slug} elevated />;
+          return (
+            <LoadArticlePost
+              key={String(index)}
+              slug={slug}
+              elevated
+              // A recommendation can point at a slug that's since been
+              // renamed or deleted on WordPress; drop it silently instead of
+              // showing an error card among otherwise-fine recommendations.
+              renderError={() => <></>}
+            />
+          );
         })}
       </View>
     </>
