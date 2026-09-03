@@ -35,6 +35,13 @@ jest.mock("#/helpers/network/WordPressAPI", () => ({
   default: {
     getPost: jest.fn(() => Promise.resolve(null)),
     create: jest.fn(() => null),
+    convertLoadProps: jest.fn((data) => data),
+    getFeatureImage: jest.fn(() =>
+      Promise.resolve({
+        image: "https://example.com/image.jpg",
+        credit: undefined,
+      }),
+    ),
   },
 }));
 
@@ -188,5 +195,40 @@ describe("LoadArticle native article anchor", () => {
     });
 
     expect(articleAnchorProp()).toBe("Erfurter-Resolution");
+  });
+
+  it("renders natively even when the post has no wp:featuredmedia link", async () => {
+    // WordPress can omit wp:featuredmedia from _links even though
+    // featured_media is set, e.g. when the attachment isn't readable via the
+    // REST API. That must not fail the whole article load into the webview
+    // fallback — it should just render without an image.
+    const WordPressAPI = jest.requireMock(
+      "#/helpers/network/WordPressAPI",
+    ).default;
+    WordPressAPI.getPost.mockResolvedValueOnce({
+      slug: "tum-studie-verbrenner-aus",
+      featured_media: 123268,
+      _links: {},
+    });
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "faktencheck",
+      slug: "tum-studie-verbrenner-aus",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => {
+      const Article = jest.requireMock(
+        "#/screens/Home/components/article/Article",
+      );
+      expect(Article).toHaveBeenCalled();
+    });
+
+    expect(WordPressAPI.getFeatureImage).not.toHaveBeenCalled();
+    const EdgelessWebview = jest.requireMock(
+      "#/screens/Home/components/EdgelessWebview",
+    );
+    expect(EdgelessWebview).not.toHaveBeenCalled();
   });
 });

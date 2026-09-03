@@ -34,7 +34,10 @@ export interface PostAuthor {
 
 export interface ArticleProperties {
   _links: {
-    "wp:featuredmedia": { href: string }[];
+    // Absent when WordPress can't resolve the attachment via the REST API
+    // (e.g. a featured_media id whose media object isn't publicly readable),
+    // even though featured_media itself is set on the post.
+    "wp:featuredmedia"?: { href: string }[];
   };
   date: string;
   link: HttpsUrl;
@@ -70,10 +73,12 @@ export interface InstaPostProperties {
     data: { media_url: string; id: string }[];
   };
   media_url: string;
+  thumbnail_url?: string;
   caption: string;
   displayText?: DisplayText;
   disableLink?: boolean;
   media_type: string;
+  media_product_type?: string;
   timestamp: string;
   permalink: HttpsUrl;
   inView?: boolean;
