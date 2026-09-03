@@ -158,8 +158,9 @@ const embedSourceToPageUrl = (source: string): HttpsUrl | null => {
 
 /**
  * Turns a slug like "landtagswahl-sachsen-anhalt" into "Landtagswahl Sachsen
- * Anhalt", for LoadOpenGraphCard's fallback title while its preview fetch is
- * in flight (or if that fetch can't find an og:title either).
+ * Anhalt", used as LoadOpenGraphCard's fallback title if its preview fetch
+ * resolves without an og:title. (Not shown during loading — that state is
+ * spinner-only.)
  */
 const humanizeSlug = (slug: string): string =>
   slug

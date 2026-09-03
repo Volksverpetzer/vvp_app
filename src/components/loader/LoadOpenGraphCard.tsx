@@ -60,11 +60,24 @@ const LoadOpenGraphCard = ({
     let isMounted = true;
     const controller = new AbortController();
     setIsLoading(true);
-    fetchOpenGraphPreview(url, controller.signal).then((result) => {
-      if (!isMounted) return;
-      setPreview(result);
-      setIsLoading(false);
-    });
+    fetchOpenGraphPreview(url, controller.signal)
+      .then((result) => {
+        if (!isMounted) return;
+        setPreview(result);
+      })
+      .catch((error) => {
+        // fetchOpenGraphPreview already swallows its own failures into
+        // `null`, but don't let an unexpected rejection (a mocked
+        // implementation in tests, a future change to that contract) leave
+        // this stuck on the spinner forever — fall back to fallbackTitle
+        // the same as a resolved-but-empty preview.
+        if (!isMounted) return;
+        console.warn(error);
+        setPreview(null);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
     return () => {
       isMounted = false;
       controller.abort();
