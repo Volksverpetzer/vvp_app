@@ -9,11 +9,9 @@ import type {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
-import { ExternalLinkIcon } from "#/components/Icons";
 import LoadArticlePost from "#/components/loader/LoadArticlePost";
-import UiCard from "#/components/ui/UiCard";
+import LoadOpenGraphCard from "#/components/loader/LoadOpenGraphCard";
 import UiErrorCard from "#/components/ui/UiErrorCard";
-import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
@@ -158,10 +156,8 @@ const embedSourceToPageUrl = (source: string): HttpsUrl | null => {
 
 /**
  * Turns a slug like "landtagswahl-sachsen-anhalt" into "Landtagswahl Sachsen
- * Anhalt". Used as the fallback card's title when the real post title isn't
- * available — WordPress's own embed HTML carries it in a sibling
- * <blockquote><a>, but ElementHandlers strips that stub before this renderer
- * ever sees it, leaving only the bare <iframe>.
+ * Anhalt", for LoadOpenGraphCard's fallback title while its preview fetch is
+ * in flight (or if that fetch can't find an og:title either).
  */
 const humanizeSlug = (slug: string): string =>
   slug
@@ -179,33 +175,25 @@ interface EmbedFallbackCardProperties {
 /**
  * Shown in place of an embedded article when LoadArticlePost can't fetch it
  * as a post (deleted/renamed slug, or content of a type other than "post",
- * e.g. a WordPress "project" page). Links out to the real page instead of
- * silently disappearing or showing a bare "couldn't load" error.
+ * e.g. a WordPress "project" page). Rather than a bare "couldn't load"
+ * error, this previews the real page the same way an ArticlePost previews a
+ * regular post — title, image, excerpt — sourced from that page's own Open
+ * Graph tags, since its REST data isn't reachable.
  */
 const EmbedFallbackCard = ({
   slug,
   source,
   onLinkPress,
 }: EmbedFallbackCardProperties) => {
-  const colorScheme = useAppColorScheme();
   const pageUrl = embedSourceToPageUrl(source);
   if (!pageUrl) return <></>;
 
   return (
-    <UiPressable
-      accessibilityRole="link"
+    <LoadOpenGraphCard
+      url={pageUrl}
+      fallbackTitle={humanizeSlug(slug)}
       onPress={(event) => onLinkPress(event, pageUrl)}
-      style={{ marginHorizontal: spacing.md }}
-    >
-      <UiCard
-        style={{ flexDirection: "row", alignItems: "center", gap: spacing.md }}
-      >
-        <UiText style={{ flex: 1 }} bold>
-          {humanizeSlug(slug)}
-        </UiText>
-        <ExternalLinkIcon color={Colors[colorScheme].textMuted} />
-      </UiCard>
-    </UiPressable>
+    />
   );
 };
 

@@ -53,7 +53,14 @@ const Loader = <TData,>({
         if (isMounted) {
           setError(_error);
         }
-        console.error(_error);
+        // A caller that supplies its own renderError has UI for this failure
+        // (e.g. a link-out card for a stale embed) — that's an expected,
+        // handled case, not something that belongs in the error console.
+        if (renderError) {
+          console.warn(_error);
+        } else {
+          console.error(_error);
+        }
       })
       .finally(() => {
         if (isMounted) {
@@ -64,6 +71,12 @@ const Loader = <TData,>({
     return () => {
       isMounted = false;
     };
+    // renderError is deliberately excluded: callers often pass a fresh inline
+    // function each render (e.g. IframeRenderer's fallback card), and it's
+    // only used for the console.warn/error choice inside the reject handler
+    // above — including it would re-trigger the load on every render instead
+    // of just on a real keyValue/load change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keyValue, load, onLoaded]);
 
   if (isLoading) {

@@ -47,6 +47,15 @@ jest.mock("#/helpers/network/WordPressAPI", () => ({
   },
 }));
 
+// Mock the Open Graph preview fetch used by LoadOpenGraphCard (the fallback
+// card for a wp-embedded-content embed LoadArticlePost couldn't resolve) so
+// its network call doesn't need a real fetch client in this test.
+const mockFetchOpenGraphPreview = jest.fn();
+jest.mock("#/helpers/utils/openGraph", () => ({
+  fetchOpenGraphPreview: (...args: unknown[]) =>
+    mockFetchOpenGraphPreview(...args),
+}));
+
 // Mock the html iframe hook to return predictable htmlAttribs
 const mockUseHtmlIframeProps = jest.fn(() => ({
   htmlAttribs: { src: "https://example.com/embed" },
@@ -941,23 +950,31 @@ describe("IframeRenderer non-video height cap", () => {
 });
 
 describe("IframeRenderer wp-embedded-content fallback", () => {
+  const embedSource =
+    "https://www.volksverpetzer.de/project/landtagswahl-sachsen-anhalt/embed/#?secret=abc";
+  const pageUrl =
+    "https://www.volksverpetzer.de/project/landtagswahl-sachsen-anhalt/";
+
   beforeEach(() => {
     mockUseHtmlIframeProps.mockClear();
     mockUseAppColorScheme.mockClear();
     mockUseAppColorScheme.mockReturnValue(ColorScheme.light);
     mockGetPost.mockClear();
-  });
-
-  it("links out to the real page instead of showing an error card when the embedded slug can't be loaded as a post", async () => {
+    mockFetchOpenGraphPreview.mockClear();
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: embedSource, class: "wp-embedded-content" },
+    } as unknown as ReturnType<typeof mockUseHtmlIframeProps>);
     // e.g. a WordPress "project" page linked via "Sonst schau auch hier
     // vorbei:" — its REST endpoint isn't public, so getPost never resolves it.
     mockGetPost.mockResolvedValue(null);
-    mockUseHtmlIframeProps.mockReturnValue({
-      htmlAttribs: {
-        src: "https://www.volksverpetzer.de/project/landtagswahl-sachsen-anhalt/embed/#?secret=abc",
-        class: "wp-embedded-content",
-      },
-    } as unknown as ReturnType<typeof mockUseHtmlIframeProps>);
+  });
+
+  it("shows an Open Graph preview card and links out to the real page", async () => {
+    mockFetchOpenGraphPreview.mockResolvedValue({
+      title: "Sachsen-Anhalt: Landtagswahl 2026",
+      description: "Warum sich Wählen lohnt.",
+      image: "https://www.volksverpetzer.de/preview.jpg",
+    });
     const onLinkPress = jest.fn();
     const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -970,14 +987,36 @@ describe("IframeRenderer wp-embedded-content fallback", () => {
       />,
     );
 
-    const card = await findByText("Landtagswahl Sachsen Anhalt");
-    await act(async () => {
-      fireEvent.press(card);
-    });
-
-    expect(onLinkPress).toHaveBeenCalledWith(
+    expect(mockFetchOpenGraphPreview).toHaveBeenCalledWith(
+      pageUrl,
       expect.anything(),
-      "https://www.volksverpetzer.de/project/landtagswahl-sachsen-anhalt/",
     );
+
+    const title = await findByText("Sachsen-Anhalt: Landtagswahl 2026");
+    expect(await findByText("Warum sich Wählen lohnt.")).toBeTruthy();
+
+    fireEvent.press(title);
+
+    expect(onLinkPress).toHaveBeenCalledWith(expect.anything(), pageUrl);
+  });
+
+  it("falls back to a humanized slug title when no Open Graph preview is available", async () => {
+    mockFetchOpenGraphPreview.mockResolvedValue(null);
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+    const { findByText } = await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    const title = await findByText("Landtagswahl Sachsen Anhalt");
+    fireEvent.press(title);
+
+    expect(onLinkPress).toHaveBeenCalledWith(expect.anything(), pageUrl);
   });
 });
