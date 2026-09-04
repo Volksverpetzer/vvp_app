@@ -402,7 +402,7 @@ describe("Networking utilities", () => {
     expect(request).toHaveBeenCalledTimes(2);
   });
 
-  it("get's retry delay removes its abort listener once the delay resolves normally", async () => {
+  it("get retry delay removes its abort listener once the delay resolves normally", async () => {
     const client = Networking.createClient("https://x" as any);
     const request = jest
       .fn<any>()
