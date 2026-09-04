@@ -167,6 +167,7 @@ export async function fetchWithTimeout<T>(
   path: string,
   config: FetchRequestConfig = {},
   abortTime?: number,
+  suppressErrorLog = false,
 ): Promise<FetchResponse<T>> {
   const controller = new AbortController();
   const externalSignal = config.signal;
@@ -190,7 +191,7 @@ export async function fetchWithTimeout<T>(
       signal: controller.signal,
     });
   } catch (error) {
-    if (!controller.signal.aborted) {
+    if (!controller.signal.aborted && !suppressErrorLog) {
       console.error(error);
       console.error(path);
     }
@@ -209,8 +210,67 @@ export async function fetchWithTimeout<T>(
 export const isHttpsUrl = (url: string): url is HttpsUrl =>
   url.startsWith("https://");
 
+const GET_RETRY_ATTEMPTS = 2;
+const GET_RETRY_DELAY_MS = 500;
+
 /**
- * GET request wrapper. Accepts optional config and abortTime.
+ * Resolves after `ms`, or immediately once `signal` aborts — so a caller
+ * cancelling between retries (e.g. a screen unmounting) doesn't have to wait
+ * out the rest of the backoff. Resolving (rather than rejecting) on abort is
+ * deliberate: the next loop iteration's fetchWithTimeout call will see the
+ * signal is already aborted and fail fast on its own.
+ */
+const delay = (ms: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve) => {
+    if (signal?.aborted) {
+      resolve();
+      return;
+    }
+    const onAbort = () => {
+      clearTimeout(id);
+      resolve();
+    };
+    const id = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+
+/**
+ * Shape-based check (matches FetcherUtilities.isAbortError) rather than
+ * `instanceof Error` — a DOMException/cancellation error isn't guaranteed to
+ * be an Error instance in every environment, and this must not miss one.
+ */
+const isAbortError = (error: unknown): boolean => {
+  if (!error || typeof error !== "object") return false;
+  const maybeError = error as { name?: string; code?: string };
+  return (
+    maybeError.name === "AbortError" ||
+    maybeError.name === "CanceledError" ||
+    maybeError.code === "ERR_CANCELED"
+  );
+};
+
+/**
+ * Whether a failed GET is worth retrying: transient server errors (5xx) and
+ * plain network failures (fetch throws a TypeError, e.g. offline/DNS/timeout
+ * right at the socket level). Client errors (4xx) and deliberate aborts are
+ * not retried since a retry wouldn't change the outcome.
+ */
+function isRetryableGetError(error: unknown): boolean {
+  if (error instanceof FetchError) return error.status >= 500;
+  return error instanceof TypeError;
+}
+
+/**
+ * GET request wrapper. Accepts optional config and abortTime. Retries
+ * transient failures a couple of times with a short delay — GET is safe to
+ * retry since it has no side effects, unlike POST.
+ *
+ * fetchWithTimeout's own per-attempt error logging is suppressed here so a
+ * transient failure that succeeds on retry doesn't spam the log; get() logs
+ * exactly once, only for a genuine final failure.
  */
 export async function get<T>(
   client: FetchClient,
@@ -218,13 +278,29 @@ export async function get<T>(
   config: FetchRequestConfig = {},
   abortTime?: number,
 ): Promise<T> {
-  const response = await fetchWithTimeout<T>(
-    client,
-    path,
-    { method: "GET", ...config },
-    abortTime,
-  );
-  return response.data;
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const response = await fetchWithTimeout<T>(
+        client,
+        path,
+        { method: "GET", ...config },
+        abortTime,
+        true,
+      );
+      return response.data;
+    } catch (error) {
+      const willRetry =
+        attempt < GET_RETRY_ATTEMPTS && isRetryableGetError(error);
+      if (!willRetry) {
+        if (!isAbortError(error)) {
+          console.error(error);
+          console.error(path);
+        }
+        throw error;
+      }
+      await delay(GET_RETRY_DELAY_MS * (attempt + 1), config.signal);
+    }
+  }
 }
 
 /**
