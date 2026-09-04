@@ -42,13 +42,14 @@ interface RedditProperties {
  */
 const RedditPost = (properties: RedditProperties) => {
   const router = useRouter();
-  const img_dim = properties.preview?.images[0].source ?? {
+  const img_dim = properties.preview?.images[0]?.source ?? {
     width: 100,
     height: 100,
   };
-  const height_relation = properties.is_reddit_media_domain
-    ? img_dim.height / img_dim.width
-    : DEFAULT_IMAGE_ASPECT_RATIO;
+  const height_relation =
+    properties.is_reddit_media_domain && img_dim.width > 0
+      ? img_dim.height / img_dim.width
+      : DEFAULT_IMAGE_ASPECT_RATIO;
   const size = properties.title.length > 100 ? 16 : 18;
   const author =
     properties.crosspost_parent_list?.[0]?.author ?? properties.author;

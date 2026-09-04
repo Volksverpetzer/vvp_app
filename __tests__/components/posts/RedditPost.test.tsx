@@ -112,4 +112,16 @@ describe("RedditPost", () => {
       .find((p: any) => p.children === "Test Reddit Post");
     expect(titleCallProps?.size).toBe("lg");
   });
+
+  it("does not crash when preview.images is an empty array", async () => {
+    await expect(
+      render(
+        <RedditPost
+          {...baseProps}
+          is_reddit_media_domain
+          preview={{ images: [], enabled: false }}
+        />,
+      ),
+    ).resolves.toBeTruthy();
+  });
 });
