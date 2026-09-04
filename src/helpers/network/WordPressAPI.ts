@@ -13,6 +13,15 @@ import type {
 export default class WordPressAPI {
   static readonly client = createClient(Config.wpUrl);
 
+  // Image credit metadata doesn't change once an article is published, and the
+  // same media (e.g. an author avatar, a reused featured image) is fetched
+  // repeatedly while scrolling feeds — cache it for the session instead of
+  // re-requesting it every time.
+  private static readonly mediaCreditCache = new Map<
+    string,
+    ImageCredit | undefined
+  >();
+
   /**
    * Get posts sorted by date (newest first).
    * @param page - The page number to fetch (pagination)
@@ -152,12 +161,19 @@ export default class WordPressAPI {
     signal?: AbortSignal,
   ): Promise<ImageCredit | undefined> {
     const origin = new URL(articleUrl).origin;
+    const cacheKey = `${origin}/${mediaId}`;
+    if (WordPressAPI.mediaCreditCache.has(cacheKey)) {
+      return WordPressAPI.mediaCreditCache.get(cacheKey);
+    }
+
     const data = await netGet<MediaResponse>(
       WordPressAPI.client,
       `${origin}/wp-json/wp/v2/media/${mediaId}`,
       { params: { _fields: "meta" }, signal },
     );
-    return WordPressAPI.extractImageCredit(data);
+    const credit = WordPressAPI.extractImageCredit(data);
+    WordPressAPI.mediaCreditCache.set(cacheKey, credit);
+    return credit;
   }
 
   /**
