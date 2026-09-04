@@ -3,13 +3,11 @@ import { useCallback, useEffect, useState } from "react";
 
 import Config from "#/constants/Config";
 import { Achievements } from "#/helpers/Achievements";
+import { consumeShareIntentUrl } from "#/helpers/ShareIntent";
 import { registerEvent } from "#/helpers/network/Analytics";
 
 interface SearchManagerProperties {
   initialSearch?: string;
-  // True when initialSearch came from the OS share sheet (handle-share.tsx),
-  // as opposed to the user typing/pasting into the search field themselves.
-  initialSearchFromShare?: boolean;
   children: (
     properties: SearchManagerState & SearchManagerActions,
   ) => ReactNode;
@@ -37,7 +35,6 @@ interface SearchManagerActions {
  */
 const SearchManager = ({
   initialSearch = "",
-  initialSearchFromShare = false,
   children,
 }: SearchManagerProperties) => {
   // Search state
@@ -88,21 +85,25 @@ const SearchManager = ({
     }
   }, [resultsLength, searchParameters, isAISearch]);
 
-  // Update search when initialSearch changes (for shareIntent)
+  // Update search when initialSearch changes (for shareIntent). Routed
+  // through handleSetSearchType/handleSetSearchParams (rather than the raw
+  // setters) so a share arriving mid-AI-request also clears a stuck spinner.
   useEffect(() => {
     if (initialSearch) {
       setSearch(initialSearch);
-      setResultsLength(undefined);
-      setSearchParameters(initialSearch);
-      setSearchType(initialSearch.includes("://") ? "ai" : "artikel");
+      const type = initialSearch.includes("://") ? "ai" : "artikel";
+      handleSetSearchType(type);
+      handleSetSearchParams(initialSearch);
 
       // rechercheur rewards sharing a link into the app via the OS share
-      // sheet specifically, not just pasting a URL into the search field.
-      if (initialSearchFromShare && initialSearch.includes("://")) {
+      // sheet specifically, not just pasting/typing a URL into the search
+      // field — consumeShareIntentUrl only returns true for a URL that was
+      // just marked by handle-share.tsx.
+      if (type === "ai" && consumeShareIntentUrl(initialSearch)) {
         Achievements.setAchievementValue("rechercheur");
       }
     }
-  }, [initialSearch, initialSearchFromShare]);
+  }, [initialSearch, handleSetSearchType, handleSetSearchParams]);
 
   return (
     <>

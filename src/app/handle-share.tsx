@@ -12,6 +12,7 @@ import Config from "#/constants/Config";
 import { spacing } from "#/constants/Spacing";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import { openExternalDownload } from "#/helpers/Linking";
+import { markShareIntentUrl } from "#/helpers/ShareIntent";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { isSameHost } from "#/helpers/utils/host";
 import { isHttpsUrl } from "#/helpers/utils/networking";
@@ -45,9 +46,10 @@ const HandleShare = () => {
         const isInternal = isSameHost(sharedUrl, Config.wpUrl) || !!secondary;
 
         if (!isInternal) {
+          markShareIntentUrl(sharedUrl);
           router.replace({
             pathname: "/search",
-            params: { tag: sharedUrl, share: "1" },
+            params: { tag: sharedUrl },
           });
           clearSharedPayloads();
           return;
@@ -107,9 +109,10 @@ const HandleShare = () => {
         clearSharedPayloads();
         return;
       } catch {
+        markShareIntentUrl(sharedUrl);
         router.replace({
           pathname: "/search",
-          params: { tag: sharedUrl, share: "1" },
+          params: { tag: sharedUrl },
         });
         clearSharedPayloads();
         return;
@@ -117,9 +120,10 @@ const HandleShare = () => {
     }
 
     if (firstPayload.shareType === TEXT_SHARE_TYPE) {
+      markShareIntentUrl(firstPayload.value);
       router.replace({
         pathname: "/search",
-        params: { tag: firstPayload.value, share: "1" },
+        params: { tag: firstPayload.value },
       });
       clearSharedPayloads();
       return;
