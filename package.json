@@ -133,7 +133,7 @@
     "babel-jest": "29.7.0",
     "babel-plugin-module-resolver": "5.0.3",
     "babel-preset-expo": "57.0.10",
-    "cspell": "10.2.0",
+    "cspell": "10.2.1",
     "eslint": "9.39.5",
     "eslint-config-expo": "57.0.2",
     "eslint-config-prettier": "10.1.8",
