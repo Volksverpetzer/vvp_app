@@ -402,6 +402,47 @@ describe("Networking utilities", () => {
     expect(request).toHaveBeenCalledTimes(2);
   });
 
+  it("get's retry delay removes its abort listener once the delay resolves normally", async () => {
+    const client = Networking.createClient("https://x" as any);
+    const request = jest
+      .fn<any>()
+      .mockRejectedValueOnce(
+        new Networking.FetchError("Request failed with status 500", {
+          status: 500,
+          statusText: "Internal Server Error",
+          url: "/p",
+          body: null,
+        }),
+      )
+      .mockResolvedValueOnce({ data: { ok: true } });
+    client.request = request;
+
+    const signal: any = {
+      aborted: false,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+    };
+
+    mockSetTimeout
+      .mockImplementationOnce(() => 123 as any) // abort timer for attempt 1 — inert
+      .mockImplementationOnce((cb: () => void) => {
+        cb();
+        return 999 as any;
+      }); // retry delay — fires normally (not via abort)
+
+    await Networking.get(client, "/p", { signal });
+
+    expect(signal.addEventListener).toHaveBeenCalledWith(
+      "abort",
+      expect.any(Function),
+      { once: true },
+    );
+    expect(signal.removeEventListener).toHaveBeenCalledWith(
+      "abort",
+      expect.any(Function),
+    );
+  });
+
   it("get retries once on a network-level TypeError, then succeeds", async () => {
     const client = Networking.createClient("https://x" as any);
     const request = jest
@@ -423,7 +464,7 @@ describe("Networking utilities", () => {
     expect(request).toHaveBeenCalledTimes(2);
   });
 
-  it("get's retry delay resolves immediately when the caller's signal is already aborted, instead of waiting out the backoff", async () => {
+  it("get retry delay resolves immediately when the caller's signal is already aborted, instead of waiting out the backoff", async () => {
     const client = Networking.createClient("https://x" as any);
     const error = new Networking.FetchError("Request failed with status 500", {
       status: 500,

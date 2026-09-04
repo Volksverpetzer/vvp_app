@@ -226,19 +226,31 @@ const delay = (ms: number, signal?: AbortSignal) =>
       resolve();
       return;
     }
-    const id = setTimeout(resolve, ms);
-    signal?.addEventListener(
-      "abort",
-      () => {
-        clearTimeout(id);
-        resolve();
-      },
-      { once: true },
-    );
+    const onAbort = () => {
+      clearTimeout(id);
+      resolve();
+    };
+    const id = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
+    signal?.addEventListener("abort", onAbort, { once: true });
   });
 
-const isAbortError = (error: unknown): boolean =>
-  error instanceof Error && error.name === "AbortError";
+/**
+ * Shape-based check (matches FetcherUtilities.isAbortError) rather than
+ * `instanceof Error` — a DOMException/cancellation error isn't guaranteed to
+ * be an Error instance in every environment, and this must not miss one.
+ */
+const isAbortError = (error: unknown): boolean => {
+  if (!error || typeof error !== "object") return false;
+  const maybeError = error as { name?: string; code?: string };
+  return (
+    maybeError.name === "AbortError" ||
+    maybeError.name === "CanceledError" ||
+    maybeError.code === "ERR_CANCELED"
+  );
+};
 
 /**
  * Whether a failed GET is worth retrying: transient server errors (5xx) and
