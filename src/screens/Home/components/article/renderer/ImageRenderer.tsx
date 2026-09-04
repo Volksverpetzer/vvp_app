@@ -57,7 +57,7 @@ const ImageRenderer = ({ url, ...properties }: ImageRendererProperties) => {
         <Image
           onLoad={onLoad}
           source={{ uri }}
-          style={{ width, height: width * ratio, backgroundColor }}
+          style={{ width, aspectRatio: 1 / ratio, backgroundColor }}
         />
       </UiPressable>
       <ImageCreditBadge credit={credit} position="bottomRight" />

@@ -111,7 +111,7 @@ const InstaPostImage = ({
   );
 
   const imageStyle = useMemo(
-    () => ({ width, height: width * ratio }),
+    () => ({ width, aspectRatio: 1 / ratio }),
     [width, ratio],
   );
 
