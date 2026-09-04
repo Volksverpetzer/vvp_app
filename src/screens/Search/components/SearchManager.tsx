@@ -7,6 +7,9 @@ import { registerEvent } from "#/helpers/network/Analytics";
 
 interface SearchManagerProperties {
   initialSearch?: string;
+  // True when initialSearch came from the OS share sheet (handle-share.tsx),
+  // as opposed to the user typing/pasting into the search field themselves.
+  initialSearchFromShare?: boolean;
   children: (
     properties: SearchManagerState & SearchManagerActions,
   ) => ReactNode;
@@ -34,6 +37,7 @@ interface SearchManagerActions {
  */
 const SearchManager = ({
   initialSearch = "",
+  initialSearchFromShare = false,
   children,
 }: SearchManagerProperties) => {
   // Search state
@@ -84,15 +88,6 @@ const SearchManager = ({
     }
   }, [resultsLength, searchParameters, isAISearch]);
 
-  // Set rechercheur achievement whenever the search query contains a URL.
-  // URL queries default to AI-search mode (see initialSearch effect below),
-  // so this must not be restricted to the "artikel" tab.
-  useEffect(() => {
-    if (searchParameters && searchParameters.includes("://")) {
-      Achievements.setAchievementValue("rechercheur");
-    }
-  }, [searchParameters]);
-
   // Update search when initialSearch changes (for shareIntent)
   useEffect(() => {
     if (initialSearch) {
@@ -100,8 +95,14 @@ const SearchManager = ({
       setResultsLength(undefined);
       setSearchParameters(initialSearch);
       setSearchType(initialSearch.includes("://") ? "ai" : "artikel");
+
+      // rechercheur rewards sharing a link into the app via the OS share
+      // sheet specifically, not just pasting a URL into the search field.
+      if (initialSearchFromShare && initialSearch.includes("://")) {
+        Achievements.setAchievementValue("rechercheur");
+      }
     }
-  }, [initialSearch]);
+  }, [initialSearch, initialSearchFromShare]);
 
   return (
     <>

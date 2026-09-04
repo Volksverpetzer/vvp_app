@@ -163,8 +163,9 @@ const SearchContent = ({
 };
 
 const SearchScreen = () => {
-  const parameters = useLocalSearchParams<{ tag: string }>();
+  const parameters = useLocalSearchParams<{ tag: string; share?: string }>();
   const tag: string | undefined = parameters?.tag;
+  const isFromShare = parameters?.share === "1";
   const searchReference = useRef<TextInput>(null);
 
   // Focus the search input when the screen is focused (unless there's a tag)
@@ -179,7 +180,7 @@ const SearchScreen = () => {
   );
 
   return (
-    <SearchManager initialSearch={tag}>
+    <SearchManager initialSearch={tag} initialSearchFromShare={isFromShare}>
       {({
         search,
         searchParams,

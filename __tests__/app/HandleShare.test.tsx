@@ -110,7 +110,7 @@ describe("HandleShare URL routing", () => {
     await waitFor(() => expect(mockReplace).toHaveBeenCalled());
     expect(mockReplace).toHaveBeenCalledWith({
       pathname: "/search",
-      params: { tag: "https://example.com/something/#quellen" },
+      params: { tag: "https://example.com/something/#quellen", share: "1" },
     });
   });
 });

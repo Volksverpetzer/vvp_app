@@ -47,7 +47,7 @@ const HandleShare = () => {
         if (!isInternal) {
           router.replace({
             pathname: "/search",
-            params: { tag: sharedUrl },
+            params: { tag: sharedUrl, share: "1" },
           });
           clearSharedPayloads();
           return;
@@ -109,7 +109,7 @@ const HandleShare = () => {
       } catch {
         router.replace({
           pathname: "/search",
-          params: { tag: sharedUrl },
+          params: { tag: sharedUrl, share: "1" },
         });
         clearSharedPayloads();
         return;
@@ -119,7 +119,7 @@ const HandleShare = () => {
     if (firstPayload.shareType === TEXT_SHARE_TYPE) {
       router.replace({
         pathname: "/search",
-        params: { tag: firstPayload.value },
+        params: { tag: firstPayload.value, share: "1" },
       });
       clearSharedPayloads();
       return;
