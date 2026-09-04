@@ -228,7 +228,7 @@ const Header = (properties: HeaderProperties) => {
           <View
             style={{
               width: width,
-              aspectRatio: 16 / 9,
+              aspectRatio: 9 / 16,
               backgroundColor: Colors.dark.background,
               paddingTop: ((width * 16) / 9) * 0.2,
               gap: spacing.xl,
