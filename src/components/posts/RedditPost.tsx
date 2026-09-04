@@ -1,6 +1,5 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { useState } from "react";
 import { View } from "react-native";
 
 import Typography from "#/components/ui/Typography";
@@ -42,15 +41,15 @@ interface RedditProperties {
  * Renders Reddit Post with data from Reddit API (RedditProps)
  */
 const RedditPost = (properties: RedditProperties) => {
-  const [dims, setDims] = useState({ width: 0, height: 0 });
   const router = useRouter();
-  const img_dim = properties.preview?.images[0].source ?? {
+  const img_dim = properties.preview?.images[0]?.source ?? {
     width: 100,
     height: 100,
   };
-  const height_relation = properties.is_reddit_media_domain
-    ? img_dim.height / img_dim.width
-    : DEFAULT_IMAGE_ASPECT_RATIO;
+  const height_relation =
+    properties.is_reddit_media_domain && img_dim.width > 0
+      ? img_dim.height / img_dim.width
+      : DEFAULT_IMAGE_ASPECT_RATIO;
   const size = properties.title.length > 100 ? 16 : 18;
   const author =
     properties.crosspost_parent_list?.[0]?.author ?? properties.author;
@@ -63,11 +62,6 @@ const RedditPost = (properties: RedditProperties) => {
     );
   };
   const date = datebeautify();
-
-  const onLayout = (event) => {
-    const { height, width } = event.nativeEvent.layout;
-    setDims({ width: width, height: height });
-  };
 
   const onShare = async () => {
     try {
@@ -94,14 +88,13 @@ const RedditPost = (properties: RedditProperties) => {
           })
         }
         onLongPress={onShare}
-        onLayout={onLayout}
       >
         <View>
           <Image
             style={{
               left: 0,
-              width: dims.width,
-              height: Math.round(height_relation * dims.width),
+              width: "100%",
+              aspectRatio: 1 / height_relation,
             }}
             source={{ uri: imageUri }}
           />

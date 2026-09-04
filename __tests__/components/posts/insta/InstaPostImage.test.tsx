@@ -1,5 +1,5 @@
 import { describe, expect, it, jest } from "@jest/globals";
-import { render } from "@testing-library/react-native";
+import { act, render } from "@testing-library/react-native";
 
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import { spacing } from "#/constants/Spacing";
@@ -87,5 +87,34 @@ describe("InstaPostImage", () => {
     const dotsRow = findDotsRow(toJSON());
     expect(dotsRow).toBeDefined();
     expect(flatten(dotsRow.props.style).gap).toBe(spacing.sm);
+  });
+
+  const findImageNode = (node: any): any => {
+    if (!node) return undefined;
+    if (typeof node.props?.onLoad === "function") return node;
+    for (const child of node.children ?? []) {
+      if (typeof child !== "object") continue;
+      const found = findImageNode(child);
+      if (found) return found;
+    }
+    return undefined;
+  };
+
+  it("keeps the fallback ratio when onLoad reports a zero-width image, instead of an invalid aspectRatio", async () => {
+    const { toJSON } = await render(
+      <InstaPostImage {...baseProps} photos={["a.jpg"]} inView />,
+    );
+
+    const before = flatten(findImageNode(toJSON()).props.style);
+    expect(Number.isFinite(before.aspectRatio)).toBe(true);
+
+    act(() => {
+      findImageNode(toJSON()).props.onLoad({
+        nativeEvent: { source: { width: 0, height: 400 } },
+      });
+    });
+
+    const after = flatten(findImageNode(toJSON()).props.style);
+    expect(after.aspectRatio).toBe(before.aspectRatio);
   });
 });

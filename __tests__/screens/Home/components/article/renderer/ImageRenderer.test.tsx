@@ -77,8 +77,25 @@ describe("ImageRenderer", () => {
     await render(<ImageRenderer {...baseRenderProps} />);
     const [firstProps] = Image.mock.calls[0];
     expect(firstProps.onLoad).toBeDefined();
-    act(() => {
+    await act(async () => {
       firstProps.onLoad({ source: { width: 800, height: 400 } });
+      await Promise.resolve();
     });
+  });
+
+  it("keeps the fallback ratio when onLoad reports a zero-width image, instead of an invalid aspectRatio", async () => {
+    const { Image } = jest.requireMock("expo-image");
+    await render(<ImageRenderer {...baseRenderProps} />);
+    const [initialProps] = Image.mock.calls[0];
+    const initialAspectRatio = initialProps.style.aspectRatio;
+    expect(Number.isFinite(initialAspectRatio)).toBe(true);
+
+    await act(async () => {
+      initialProps.onLoad({ source: { width: 0, height: 400 } });
+      await Promise.resolve();
+    });
+
+    const [lastCallProps] = Image.mock.calls.at(-1);
+    expect(lastCallProps.style.aspectRatio).toBe(initialAspectRatio);
   });
 });

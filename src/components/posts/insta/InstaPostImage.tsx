@@ -80,7 +80,13 @@ const InstaPostImage = ({
     (event: ImageLoadEventData) => {
       if (loaded) return;
       const { width: w, height: h } = event.source;
-      setRatio(Math.round((h / w) * 100) / 100);
+      const nextRatio = Math.round((h / w) * 100) / 100;
+      // Malformed image metadata (e.g. width 0) would otherwise produce an
+      // Infinity/NaN aspectRatio and break layout — keep the existing
+      // fallback ratio instead.
+      if (Number.isFinite(nextRatio) && nextRatio > 0) {
+        setRatio(nextRatio);
+      }
       setLoaded(true);
       onFirstLoad?.();
     },
@@ -111,7 +117,7 @@ const InstaPostImage = ({
   );
 
   const imageStyle = useMemo(
-    () => ({ width, height: width * ratio }),
+    () => ({ width, aspectRatio: 1 / ratio }),
     [width, ratio],
   );
 
