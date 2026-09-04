@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import Config from "#/constants/Config";
 import { Achievements } from "#/helpers/Achievements";
+import { consumeShareIntentUrl } from "#/helpers/ShareIntent";
 import { registerEvent } from "#/helpers/network/Analytics";
 
 interface SearchManagerProperties {
@@ -84,22 +85,25 @@ const SearchManager = ({
     }
   }, [resultsLength, searchParameters, isAISearch]);
 
-  // Set rechercheur achievement if a non-AI search query contains a URL
-  useEffect(() => {
-    if (!isAISearch && searchParameters && searchParameters.includes("://")) {
-      Achievements.setAchievementValue("rechercheur");
-    }
-  }, [isAISearch, searchParameters]);
-
-  // Update search when initialSearch changes (for shareIntent)
+  // Update search when initialSearch changes (for shareIntent). Routed
+  // through handleSetSearchType/handleSetSearchParams (rather than the raw
+  // setters) so a share arriving mid-AI-request also clears a stuck spinner.
   useEffect(() => {
     if (initialSearch) {
       setSearch(initialSearch);
-      setResultsLength(undefined);
-      setSearchParameters(initialSearch);
-      setSearchType(initialSearch.includes("://") ? "ai" : "artikel");
+      const type = initialSearch.includes("://") ? "ai" : "artikel";
+      handleSetSearchType(type);
+      handleSetSearchParams(initialSearch);
+
+      // rechercheur rewards sharing a link into the app via the OS share
+      // sheet specifically, not just pasting/typing a URL into the search
+      // field — consumeShareIntentUrl only returns true for a URL that was
+      // just marked by handle-share.tsx.
+      if (type === "ai" && consumeShareIntentUrl(initialSearch)) {
+        Achievements.setAchievementValue("rechercheur");
+      }
     }
-  }, [initialSearch]);
+  }, [initialSearch, handleSetSearchType, handleSetSearchParams]);
 
   return (
     <>

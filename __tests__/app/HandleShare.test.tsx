@@ -59,6 +59,11 @@ jest.mock("#/helpers/Linking", () => ({
 jest.mock("#/components/ui/UiSpinner", () => jest.fn(() => null));
 jest.mock("#/components/ui/UiText", () => jest.fn(() => null));
 
+const mockMarkShareIntentUrl = jest.fn();
+jest.mock("#/helpers/ShareIntent", () => ({
+  markShareIntentUrl: (url: string) => mockMarkShareIntentUrl(url),
+}));
+
 const renderWith = async (value: string) => {
   mockShare.value = value;
   mockShare.shareType = "url";
@@ -112,5 +117,8 @@ describe("HandleShare URL routing", () => {
       pathname: "/search",
       params: { tag: "https://example.com/something/#quellen" },
     });
+    expect(mockMarkShareIntentUrl).toHaveBeenCalledWith(
+      "https://example.com/something/#quellen",
+    );
   });
 });
