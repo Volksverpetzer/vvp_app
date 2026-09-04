@@ -21,7 +21,10 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { CONTENT_HORIZONTAL_PADDING } from "#/constants/GlobalStyles";
+import {
+  CONTENT_HORIZONTAL_PADDING,
+  DEFAULT_IMAGE_ASPECT_RATIO,
+} from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -57,7 +60,9 @@ const Header = (properties: HeaderProperties) => {
   const [imageLoaded2, setImageLoaded2] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
   const { width } = useWindowDimensions();
-  const [height, setHeight] = useState(Math.round(0.5125 * width));
+  const [height, setHeight] = useState(
+    Math.round(DEFAULT_IMAGE_ASPECT_RATIO * width),
+  );
   // Reference to the ViewShot component for image capture
   const reference = useRef<ViewShotRef>(null);
   const router = useRouter();
@@ -122,7 +127,7 @@ const Header = (properties: HeaderProperties) => {
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { width } = event.nativeEvent.layout;
-    setHeight(Math.round(0.5125 * width));
+    setHeight(Math.round(DEFAULT_IMAGE_ASPECT_RATIO * width));
   };
 
   return (
@@ -250,7 +255,7 @@ const Header = (properties: HeaderProperties) => {
               style={{
                 left: 0,
                 width: width,
-                height: Math.round(0.5125 * width),
+                height: Math.round(DEFAULT_IMAGE_ASPECT_RATIO * width),
               }}
               source={{ uri: article_image }}
               onLoad={() => setImageLoaded(true)}
