@@ -20,6 +20,7 @@ import {
 import type { ToastConfig } from "react-native-toast-message";
 import Toast from "react-native-toast-message";
 
+import ErrorBoundary from "#/components/ErrorBoundary";
 import ChangelogModal from "#/components/popups/ChangelogModal";
 import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -150,39 +151,41 @@ const RootLayout = () => {
           <BadgeProvider>
             <AudioProvider>
               <AppFrame>
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    gestureEnabled: true,
-                  }}
-                >
-                  <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
-                  <Stack.Screen
-                    name="[category]/[slug]"
-                    options={{ title: "Artikel" }}
-                  />
-                  <Stack.Screen
-                    name="insta/[post_id]"
-                    options={{ title: "Artikel" }}
-                  />
-                  <Stack.Screen
-                    name="podcast/[id]"
-                    options={{ title: "Podcast" }}
-                  />
-                  <Stack.Screen name="search" options={{ title: "Suche" }} />
-                  <Stack.Screen
-                    name="+not-found"
-                    options={{ title: "Nicht gefunden" }}
-                  />
-                  <Stack.Screen
-                    name="support"
-                    options={{ title: "Unterstutzen" }}
-                  />
-                  <Stack.Screen
-                    name="licenses"
-                    options={{ title: "Lizenzen" }}
-                  />
-                </Stack>
+                <ErrorBoundary>
+                  <Stack
+                    screenOptions={{
+                      headerShown: false,
+                      gestureEnabled: true,
+                    }}
+                  >
+                    <Stack.Screen name="(tabs)" options={{ title: "Home" }} />
+                    <Stack.Screen
+                      name="[category]/[slug]"
+                      options={{ title: "Artikel" }}
+                    />
+                    <Stack.Screen
+                      name="insta/[post_id]"
+                      options={{ title: "Artikel" }}
+                    />
+                    <Stack.Screen
+                      name="podcast/[id]"
+                      options={{ title: "Podcast" }}
+                    />
+                    <Stack.Screen name="search" options={{ title: "Suche" }} />
+                    <Stack.Screen
+                      name="+not-found"
+                      options={{ title: "Nicht gefunden" }}
+                    />
+                    <Stack.Screen
+                      name="support"
+                      options={{ title: "Unterstutzen" }}
+                    />
+                    <Stack.Screen
+                      name="licenses"
+                      options={{ title: "Lizenzen" }}
+                    />
+                  </Stack>
+                </ErrorBoundary>
                 <AppToast config={toastConfig} />
                 <ChangelogModal
                   isVisible={showChangelog}
