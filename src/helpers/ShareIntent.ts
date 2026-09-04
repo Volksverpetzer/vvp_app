@@ -15,3 +15,10 @@ export const consumeShareIntentUrl = (url: string): boolean => {
   pendingShareUrl = null;
   return matched;
 };
+
+// Test-only: clears the mark regardless of value, since a non-URL mark is
+// never consumed by consumeShareIntentUrl and would otherwise leak between
+// tests that don't overwrite it themselves.
+export const resetShareIntentForTests = (): void => {
+  pendingShareUrl = null;
+};

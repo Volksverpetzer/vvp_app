@@ -3,7 +3,10 @@ import { render } from "@testing-library/react-native";
 import React from "react";
 
 import { Achievements } from "#/helpers/Achievements";
-import { markShareIntentUrl } from "#/helpers/ShareIntent";
+import {
+  markShareIntentUrl,
+  resetShareIntentForTests,
+} from "#/helpers/ShareIntent";
 import SearchManager from "#/screens/Search/components/SearchManager";
 
 jest.mock("#/constants/Config", () => ({
@@ -23,7 +26,13 @@ const renderManager = (initialSearch?: string) =>
   );
 
 describe("SearchManager rechercheur achievement", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // A non-URL mark (see the "non-URL share intent" test below) is never
+    // consumed by consumeShareIntentUrl and would otherwise leak into later
+    // tests, making them order-dependent.
+    resetShareIntentForTests();
+  });
 
   it("awards rechercheur when the URL was marked as a share intent", async () => {
     const url = "https://example.com/fake-news";
