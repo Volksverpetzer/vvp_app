@@ -402,6 +402,55 @@ describe("Networking utilities", () => {
     expect(request).toHaveBeenCalledTimes(2);
   });
 
+  it("get retries once on a network-level TypeError, then succeeds", async () => {
+    const client = Networking.createClient("https://x" as any);
+    const request = jest
+      .fn<any>()
+      .mockRejectedValueOnce(new TypeError("Network request failed"))
+      .mockResolvedValueOnce({ data: { ok: true } });
+    client.request = request;
+
+    mockSetTimeout
+      .mockImplementationOnce(() => 123 as any) // abort timer for attempt 1 — inert
+      .mockImplementationOnce((cb: () => void) => {
+        cb();
+        return 999 as any;
+      }); // retry delay — fire immediately
+
+    const result = await Networking.get(client, "/p");
+
+    expect(result).toEqual({ ok: true });
+    expect(request).toHaveBeenCalledTimes(2);
+  });
+
+  it("get's retry delay resolves immediately when the caller's signal is already aborted, instead of waiting out the backoff", async () => {
+    const client = Networking.createClient("https://x" as any);
+    const error = new Networking.FetchError("Request failed with status 500", {
+      status: 500,
+      statusText: "Internal Server Error",
+      url: "/p",
+      body: null,
+    });
+    const request = jest.fn<any>().mockRejectedValue(error);
+    client.request = request;
+
+    const signal: any = {
+      aborted: true,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+    };
+
+    // The retry-delay setTimeout never fires its callback here — if delay()
+    // didn't short-circuit on an already-aborted signal, this would hang
+    // forever instead of rejecting.
+    mockSetTimeout.mockImplementation(() => 123 as any);
+
+    await expect(Networking.get(client, "/p", { signal })).rejects.toBe(error);
+    expect(request).toHaveBeenCalledTimes(3); // initial attempt + 2 retries
+
+    mockSetTimeout.mockImplementation(() => 123 as any);
+  });
+
   it("get does not retry a 4xx client error", async () => {
     const client = Networking.createClient("https://x" as any);
     const error = new Networking.FetchError("Request failed with status 404", {

@@ -167,6 +167,7 @@ export async function fetchWithTimeout<T>(
   path: string,
   config: FetchRequestConfig = {},
   abortTime?: number,
+  suppressErrorLog = false,
 ): Promise<FetchResponse<T>> {
   const controller = new AbortController();
   const externalSignal = config.signal;
@@ -190,7 +191,7 @@ export async function fetchWithTimeout<T>(
       signal: controller.signal,
     });
   } catch (error) {
-    if (!controller.signal.aborted) {
+    if (!controller.signal.aborted && !suppressErrorLog) {
       console.error(error);
       console.error(path);
     }
@@ -212,7 +213,32 @@ export const isHttpsUrl = (url: string): url is HttpsUrl =>
 const GET_RETRY_ATTEMPTS = 2;
 const GET_RETRY_DELAY_MS = 500;
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+/**
+ * Resolves after `ms`, or immediately once `signal` aborts — so a caller
+ * cancelling between retries (e.g. a screen unmounting) doesn't have to wait
+ * out the rest of the backoff. Resolving (rather than rejecting) on abort is
+ * deliberate: the next loop iteration's fetchWithTimeout call will see the
+ * signal is already aborted and fail fast on its own.
+ */
+const delay = (ms: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve) => {
+    if (signal?.aborted) {
+      resolve();
+      return;
+    }
+    const id = setTimeout(resolve, ms);
+    signal?.addEventListener(
+      "abort",
+      () => {
+        clearTimeout(id);
+        resolve();
+      },
+      { once: true },
+    );
+  });
+
+const isAbortError = (error: unknown): boolean =>
+  error instanceof Error && error.name === "AbortError";
 
 /**
  * Whether a failed GET is worth retrying: transient server errors (5xx) and
@@ -229,6 +255,10 @@ function isRetryableGetError(error: unknown): boolean {
  * GET request wrapper. Accepts optional config and abortTime. Retries
  * transient failures a couple of times with a short delay — GET is safe to
  * retry since it has no side effects, unlike POST.
+ *
+ * fetchWithTimeout's own per-attempt error logging is suppressed here so a
+ * transient failure that succeeds on retry doesn't spam the log; get() logs
+ * exactly once, only for a genuine final failure.
  */
 export async function get<T>(
   client: FetchClient,
@@ -243,13 +273,20 @@ export async function get<T>(
         path,
         { method: "GET", ...config },
         abortTime,
+        true,
       );
       return response.data;
     } catch (error) {
-      if (attempt >= GET_RETRY_ATTEMPTS || !isRetryableGetError(error)) {
+      const willRetry =
+        attempt < GET_RETRY_ATTEMPTS && isRetryableGetError(error);
+      if (!willRetry) {
+        if (!isAbortError(error)) {
+          console.error(error);
+          console.error(path);
+        }
         throw error;
       }
-      await delay(GET_RETRY_DELAY_MS * (attempt + 1));
+      await delay(GET_RETRY_DELAY_MS * (attempt + 1), config.signal);
     }
   }
 }
