@@ -84,12 +84,14 @@ const SearchManager = ({
     }
   }, [resultsLength, searchParameters, isAISearch]);
 
-  // Set rechercheur achievement if a non-AI search query contains a URL
+  // Set rechercheur achievement whenever the search query contains a URL.
+  // URL queries default to AI-search mode (see initialSearch effect below),
+  // so this must not be restricted to the "artikel" tab.
   useEffect(() => {
-    if (!isAISearch && searchParameters && searchParameters.includes("://")) {
+    if (searchParameters && searchParameters.includes("://")) {
       Achievements.setAchievementValue("rechercheur");
     }
-  }, [isAISearch, searchParameters]);
+  }, [searchParameters]);
 
   // Update search when initialSearch changes (for shareIntent)
   useEffect(() => {
