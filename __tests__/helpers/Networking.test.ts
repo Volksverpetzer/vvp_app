@@ -373,4 +373,70 @@ describe("Networking utilities", () => {
       expect.objectContaining({ method: "POST", data: { name: "test" } }),
     );
   });
+
+  it("get retries once on a transient 5xx error, then succeeds", async () => {
+    const client = Networking.createClient("https://x" as any);
+    const request = jest
+      .fn<any>()
+      .mockRejectedValueOnce(
+        new Networking.FetchError("Request failed with status 500", {
+          status: 500,
+          statusText: "Internal Server Error",
+          url: "/p",
+          body: null,
+        }),
+      )
+      .mockResolvedValueOnce({ data: { ok: true } });
+    client.request = request;
+
+    mockSetTimeout
+      .mockImplementationOnce(() => 123 as any) // abort timer for attempt 1 — inert
+      .mockImplementationOnce((cb: () => void) => {
+        cb();
+        return 999 as any;
+      }); // retry delay — fire immediately
+
+    const result = await Networking.get(client, "/p");
+
+    expect(result).toEqual({ ok: true });
+    expect(request).toHaveBeenCalledTimes(2);
+  });
+
+  it("get does not retry a 4xx client error", async () => {
+    const client = Networking.createClient("https://x" as any);
+    const error = new Networking.FetchError("Request failed with status 404", {
+      status: 404,
+      statusText: "Not Found",
+      url: "/p",
+      body: null,
+    });
+    const request = jest.fn<any>().mockRejectedValue(error);
+    client.request = request;
+
+    await expect(Networking.get(client, "/p")).rejects.toBe(error);
+    expect(request).toHaveBeenCalledTimes(1);
+  });
+
+  it("get gives up after exhausting retries on repeated 5xx errors", async () => {
+    const client = Networking.createClient("https://x" as any);
+    const error = new Networking.FetchError("Request failed with status 503", {
+      status: 503,
+      statusText: "Service Unavailable",
+      url: "/p",
+      body: null,
+    });
+    const request = jest.fn<any>().mockRejectedValue(error);
+    client.request = request;
+
+    mockSetTimeout.mockImplementation((cb: () => void, ms?: number) => {
+      // Fire retry-delay timers immediately; leave anything abort-timer-sized inert.
+      if (typeof ms === "number" && ms < 60000) cb();
+      return 123 as any;
+    });
+
+    await expect(Networking.get(client, "/p")).rejects.toBe(error);
+    expect(request).toHaveBeenCalledTimes(3); // initial attempt + 2 retries
+
+    mockSetTimeout.mockImplementation(() => 123 as any);
+  });
 });

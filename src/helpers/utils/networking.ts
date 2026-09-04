@@ -209,8 +209,26 @@ export async function fetchWithTimeout<T>(
 export const isHttpsUrl = (url: string): url is HttpsUrl =>
   url.startsWith("https://");
 
+const GET_RETRY_ATTEMPTS = 2;
+const GET_RETRY_DELAY_MS = 500;
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /**
- * GET request wrapper. Accepts optional config and abortTime.
+ * Whether a failed GET is worth retrying: transient server errors (5xx) and
+ * plain network failures (fetch throws a TypeError, e.g. offline/DNS/timeout
+ * right at the socket level). Client errors (4xx) and deliberate aborts are
+ * not retried since a retry wouldn't change the outcome.
+ */
+function isRetryableGetError(error: unknown): boolean {
+  if (error instanceof FetchError) return error.status >= 500;
+  return error instanceof TypeError;
+}
+
+/**
+ * GET request wrapper. Accepts optional config and abortTime. Retries
+ * transient failures a couple of times with a short delay — GET is safe to
+ * retry since it has no side effects, unlike POST.
  */
 export async function get<T>(
   client: FetchClient,
@@ -218,13 +236,22 @@ export async function get<T>(
   config: FetchRequestConfig = {},
   abortTime?: number,
 ): Promise<T> {
-  const response = await fetchWithTimeout<T>(
-    client,
-    path,
-    { method: "GET", ...config },
-    abortTime,
-  );
-  return response.data;
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const response = await fetchWithTimeout<T>(
+        client,
+        path,
+        { method: "GET", ...config },
+        abortTime,
+      );
+      return response.data;
+    } catch (error) {
+      if (attempt >= GET_RETRY_ATTEMPTS || !isRetryableGetError(error)) {
+        throw error;
+      }
+      await delay(GET_RETRY_DELAY_MS * (attempt + 1));
+    }
+  }
 }
 
 /**
