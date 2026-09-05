@@ -16,6 +16,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import Typography from "#/components/ui/Typography";
+import UiButton from "#/components/ui/UiButton";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import UiTextInput from "#/components/ui/UiTextInput";
@@ -101,9 +102,7 @@ const ContactScreen = () => {
   const blurTargetRef = useRef<ViewType>(null);
   const colorScheme = useAppColorScheme();
   const {
-    accent,
     error: errorColor,
-    surfaceDisabled,
     surfaceInput,
     primary,
     surface: backgroundColor,
@@ -156,19 +155,11 @@ const ContactScreen = () => {
           borderColor: errorColor,
         },
         submitButton: {
-          alignItems: "center",
           alignSelf: "center",
-          backgroundColor: accent,
-          borderRadius: radii.full,
-          justifyContent: "center",
-          paddingVertical: spacing.md,
           width: 120,
         },
-        submitButtonDisabled: {
-          backgroundColor: surfaceDisabled,
-        },
       }),
-    [surfaceInput, accent, surfaceDisabled, errorColor, primary, textMuted],
+    [surfaceInput, errorColor, primary, textMuted],
   );
 
   // Populate initial fields on component mount or when params change
@@ -427,22 +418,14 @@ const ContactScreen = () => {
               {error}
             </UiText>
           ) : undefined}
-          <UiPressable
-            accessibilityRole="button"
+          <UiButton
+            label="Senden"
+            variant="accent"
+            shape="pill"
             disabled={!buttonEnabled}
             onPress={onSubmit}
-            style={[
-              styles.submitButton,
-              !buttonEnabled && styles.submitButtonDisabled,
-            ]}
-          >
-            <UiText
-              size="lg"
-              style={[globalStyles.whiteText, { textAlign: "center" }]}
-            >
-              Senden
-            </UiText>
-          </UiPressable>
+            style={styles.submitButton}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
     </BlurTargetView>

@@ -1,4 +1,5 @@
 import Colors from "#/constants/Colors";
+import { fontFamily } from "#/constants/FontFamily";
 import { fontSizes } from "#/constants/FontSizes";
 import { spacing } from "#/constants/Spacing";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
@@ -35,12 +36,12 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       textDecorationColor: corporate,
     },
     em: {
-      fontFamily: "SourceSansProItalic",
+      fontFamily: fontFamily.italic,
     },
     p: { color: textColor, padding: spacing.md, fontSize: fontSizes.lg },
     strong: {
       color: textColor,
-      fontFamily: "SourceSansProBold",
+      fontFamily: fontFamily.bold,
     },
     h1: {
       textTransform: "uppercase" as const,
@@ -87,7 +88,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     blockquote: {
       color: textColor,
       fontSize: fontSizes.lg,
-      fontFamily: "SourceSansProItalic",
+      fontFamily: fontFamily.italic,
       paddingLeft: spacing.xl,
       paddingRight: spacing.md,
       paddingVertical: spacing.lg,
@@ -99,7 +100,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     cite: {
       color: textColor,
       fontSize: fontSizes.sm,
-      fontFamily: "SourceSansProItalic",
+      fontFamily: fontFamily.italic,
       textAlign: "right" as const,
       paddingTop: spacing.xs,
     },

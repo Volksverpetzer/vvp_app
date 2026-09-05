@@ -3,7 +3,6 @@ import { Image } from "expo-image";
 import type { Href } from "expo-router";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { LayoutChangeEvent } from "react-native";
 import {
   AppState,
   Modal,
@@ -21,7 +20,10 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { CONTENT_HORIZONTAL_PADDING } from "#/constants/GlobalStyles";
+import {
+  CONTENT_HORIZONTAL_PADDING,
+  DEFAULT_IMAGE_ASPECT_RATIO,
+} from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { outBoundLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -57,7 +59,6 @@ const Header = (properties: HeaderProperties) => {
   const [imageLoaded2, setImageLoaded2] = useState(false);
   const [urlCopied, setUrlCopied] = useState(false);
   const { width } = useWindowDimensions();
-  const [height, setHeight] = useState(Math.round(0.5125 * width));
   // Reference to the ViewShot component for image capture
   const reference = useRef<ViewShotRef>(null);
   const router = useRouter();
@@ -120,11 +121,6 @@ const Header = (properties: HeaderProperties) => {
     };
   }, [article_link, copyToClipboard, urlCopied]);
 
-  const onLayout = (event: LayoutChangeEvent) => {
-    const { width } = event.nativeEvent.layout;
-    setHeight(Math.round(0.5125 * width));
-  };
-
   return (
     <>
       {/* Pull the hero image edge-to-edge: the article ScrollView pads its
@@ -139,10 +135,13 @@ const Header = (properties: HeaderProperties) => {
         <UiPressable
           accessibilityRole="button"
           onLongPress={() => setVisible(true)}
-          onLayout={onLayout}
         >
           <Image
-            style={{ margin: "auto", height, width: "100%" }}
+            style={{
+              margin: "auto",
+              width: "100%",
+              aspectRatio: 1 / DEFAULT_IMAGE_ASPECT_RATIO,
+            }}
             source={{ uri: article_image }}
             placeholder={LoadingImage}
           />
@@ -229,7 +228,7 @@ const Header = (properties: HeaderProperties) => {
           <View
             style={{
               width: width,
-              height: (16 / 9) * width,
+              aspectRatio: 9 / 16,
               backgroundColor: Colors.dark.background,
               paddingTop: ((width * 16) / 9) * 0.2,
               gap: spacing.xl,
@@ -250,7 +249,7 @@ const Header = (properties: HeaderProperties) => {
               style={{
                 left: 0,
                 width: width,
-                height: Math.round(0.5125 * width),
+                aspectRatio: 1 / DEFAULT_IMAGE_ASPECT_RATIO,
               }}
               source={{ uri: article_image }}
               onLoad={() => setImageLoaded(true)}

@@ -6,6 +6,7 @@ import { View } from "react-native";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
 import Typography from "#/components/ui/Typography";
+import UiBadge from "#/components/ui/UiBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -23,8 +24,6 @@ import { useAudio } from "#/helpers/provider/AudioProvider";
 import { RESUME_MIN_SECONDS, formatTime } from "#/helpers/utils/audio";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { PodcastEpisodeProperties } from "#/types";
-
-import Badge from "./Badge";
 
 /**
  * Renders a podcast episode (Podigee) card: full-width cover on top, then title,
@@ -101,11 +100,11 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
               contentFit="cover"
               accessibilityIgnoresInvertColors
             />
-            <Badge position="topLeft" color={corporate}>
-              <UiText size="sm" style={globalStyles.whiteText}>
+            <UiBadge position="topLeft" variant="pruefpunkt">
+              <UiText style={[globalStyles.pillLabel, globalStyles.whiteText]}>
                 Podcast
               </UiText>
-            </Badge>
+            </UiBadge>
           </View>
         )}
         <UiSpace size={image_url ? 12 : 20} />

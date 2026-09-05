@@ -4,37 +4,37 @@ import React from "react";
 
 import UiButton from "#/components/ui/UiButton";
 
-jest.mock("expo-image", () => ({
-  Image: jest.fn(() => null),
-}));
-
 describe("UiButton", () => {
-  const source = { uri: "https://example.com/button.png" };
-
-  it("has button accessibility role", async () => {
-    const { getByRole } = await render(
-      <UiButton source={source} onPress={jest.fn()} />,
+  it("has button accessibility role and renders the label", async () => {
+    const { getByRole, getByText } = await render(
+      <UiButton label="Alles klar" onPress={jest.fn()} />,
     );
     expect(getByRole("button")).toBeTruthy();
+    expect(getByText("Alles klar")).toBeTruthy();
   });
 
   it("calls onPress when pressed", async () => {
     const onPress = jest.fn();
     const { getByRole } = await render(
-      <UiButton source={source} onPress={onPress} />,
+      <UiButton label="Senden" onPress={onPress} />,
     );
     await fireEvent.press(getByRole("button"));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
-  it("exposes accessibilityLabel", async () => {
-    const { getByLabelText } = await render(
-      <UiButton
-        source={source}
-        onPress={jest.fn()}
-        accessibilityLabel="Donate via PayPal"
-      />,
+  it("does not call onPress when disabled", async () => {
+    const onPress = jest.fn();
+    const { getByRole } = await render(
+      <UiButton label="Senden" onPress={onPress} disabled />,
     );
-    expect(getByLabelText("Donate via PayPal")).toBeTruthy();
+    await fireEvent.press(getByRole("button"));
+    expect(onPress).not.toHaveBeenCalled();
+  });
+
+  it("falls back to the label for accessibilityLabel", async () => {
+    const { getByLabelText } = await render(
+      <UiButton label="Schreib uns" onPress={jest.fn()} />,
+    );
+    expect(getByLabelText("Schreib uns")).toBeTruthy();
   });
 });

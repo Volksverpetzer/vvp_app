@@ -1,10 +1,9 @@
 import { ScrollView, StyleSheet } from "react-native";
 
 import BottomSheetModal from "#/components/popups/BottomSheetModal";
-import UiPressable from "#/components/ui/UiPressable";
+import UiButton from "#/components/ui/UiButton";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
-import { radii } from "#/constants/BorderRadius";
 import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
 import { LINE_HEIGHTS } from "#/constants/FontSizes";
@@ -18,9 +17,7 @@ interface ChangelogModalProperties {
 
 const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
   const textMuted = Colors[colorScheme].textMuted;
-  const onPrimary = Colors[colorScheme].onPrimary;
 
   return (
     <BottomSheetModal
@@ -39,15 +36,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
         </UiText>
       </ScrollView>
       <UiSpace size={spacing.xl} />
-      <UiPressable
-        accessibilityRole="button"
-        onPress={onClose}
-        style={[styles.button, { backgroundColor: corporate }]}
-      >
-        <UiText size="base" bold style={{ color: onPrimary }}>
-          Alles klar
-        </UiText>
-      </UiPressable>
+      <UiButton label="Alles klar" variant="primary" onPress={onClose} />
     </BottomSheetModal>
   );
 };
@@ -64,11 +53,6 @@ const styles = StyleSheet.create({
   },
   notes: {
     lineHeight: LINE_HEIGHTS.base,
-  },
-  button: {
-    alignItems: "center",
-    borderRadius: radii.md,
-    paddingVertical: spacing.md,
   },
 });
 

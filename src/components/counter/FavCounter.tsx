@@ -1,4 +1,4 @@
-import type { TextStyle } from "react-native";
+import type { StyleProp, TextStyle } from "react-native";
 import { View } from "react-native";
 
 import { StarIcon } from "#/components/Icons";
@@ -15,7 +15,7 @@ import type { FavPayload, FaveableType, ShareableType } from "#/types";
 interface FavCounterProperties {
   shareable: ShareableType[];
   size?: number;
-  style: TextStyle;
+  style: StyleProp<TextStyle>;
   contentFavIdentifier?: string;
   contentType?: FaveableType;
   favPayload?: FavPayload;

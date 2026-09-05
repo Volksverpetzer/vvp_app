@@ -43,7 +43,12 @@ const ImageRenderer = ({ url, ...properties }: ImageRendererProperties) => {
     setIsLoaded(true);
     const { width, height } = event.source;
     const _ratio = Math.round((height / width) * 100) / 100;
-    if (ratio !== _ratio) setRatio(_ratio);
+    // Malformed image metadata (e.g. width 0) would otherwise produce an
+    // Infinity/NaN aspectRatio and break layout — keep the existing
+    // fallback ratio instead.
+    if (Number.isFinite(_ratio) && _ratio > 0 && ratio !== _ratio) {
+      setRatio(_ratio);
+    }
   };
 
   return (
@@ -57,7 +62,7 @@ const ImageRenderer = ({ url, ...properties }: ImageRendererProperties) => {
         <Image
           onLoad={onLoad}
           source={{ uri }}
-          style={{ width, height: width * ratio, backgroundColor }}
+          style={{ width, aspectRatio: 1 / ratio, backgroundColor }}
         />
       </UiPressable>
       <ImageCreditBadge credit={credit} position="bottomRight" />

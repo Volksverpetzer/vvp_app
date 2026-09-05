@@ -4,6 +4,7 @@ import type {
   ListRenderItem,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  StyleProp,
   ViewStyle,
   ViewToken,
 } from "react-native";
@@ -40,7 +41,7 @@ export interface FeedProperties {
   }[];
   prioSort?: boolean;
   cutoffDate?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
   /** Show the one-time in-feed announcement cards (see #/constants/Announcements). */
   showAnnouncements?: boolean;
@@ -232,13 +233,15 @@ const Feed = (properties: FeedProperties) => {
   if (properties.fetchers.length === 0) {
     return (
       <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100%",
-          paddingHorizontal: spacing.xl,
-          ...properties.style,
-        }}
+        style={[
+          {
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            paddingHorizontal: spacing.xl,
+          },
+          properties.style,
+        ]}
       >
         <UiEmptyState
           icon={<SettingsIcon />}

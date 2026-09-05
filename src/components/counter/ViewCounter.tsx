@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { ColorValue, TextStyle } from "react-native";
+import type { ColorValue, StyleProp, TextStyle } from "react-native";
 import { ActivityIndicator, View } from "react-native";
 
 import { ArticleViewIcon } from "#/components/Icons";
@@ -12,7 +12,7 @@ import type { HttpsUrl } from "#/types";
 interface ViewCounterProperties {
   url: HttpsUrl; // the URL for which to fetch the views
   color?: ColorValue;
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
   size?: number;
   onLoad?: (count: number) => void;
 }
@@ -69,13 +69,7 @@ const ViewCounter = (properties: ViewCounterProperties) => {
       {isLoading ? (
         <ActivityIndicator color={color} />
       ) : (
-        <UiText
-          size="sm"
-          style={{
-            color: color,
-            ...style,
-          }}
-        >
+        <UiText size="sm" style={[{ color: color }, style]}>
           {views.toString().replaceAll(/\B(?=(\d{3})+(?!\d))/g, ".")}
         </UiText>
       )}

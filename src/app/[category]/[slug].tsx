@@ -87,14 +87,19 @@ const LoadArticle = () => {
         const loadedArticle: ArticleProperties =
           WordPressAPI.convertLoadProps(_article);
 
-        const { image, credit } = await WordPressAPI.getFeatureImage(
-          loadedArticle._links["wp:featuredmedia"][0].href,
-          signal,
-        );
+        // The featured-media link can be absent even when featured_media is
+        // set — e.g. WordPress omits it when the attachment itself isn't
+        // readable via the REST API. Missing artwork shouldn't fail the
+        // whole article load and fall back to the raw webview.
+        const featuredMediaHref =
+          loadedArticle._links["wp:featuredmedia"]?.[0]?.href;
+        const { image, credit } = featuredMediaHref
+          ? await WordPressAPI.getFeatureImage(featuredMediaHref, signal)
+          : { image: undefined, credit: undefined };
 
         if (signal.aborted) return;
         setArticle(loadedArticle);
-        setImageUrl(image);
+        setImageUrl(image ?? "");
         setImageCredit(credit);
         setIsLoading(false);
       } catch (error_) {

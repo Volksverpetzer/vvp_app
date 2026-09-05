@@ -1,4 +1,4 @@
-import { act, render } from "@testing-library/react-native";
+import { act, fireEvent, render } from "@testing-library/react-native";
 import * as Linking from "expo-linking";
 import { Dimensions } from "react-native";
 import type { CustomRendererProps, TBlock } from "react-native-render-html";
@@ -14,16 +14,46 @@ jest.mock("#/constants/Config", () => ({
   },
 }));
 
-// Mock expo-linking parse used in the component
+// Mock expo-linking parse used in the component. `path` mirrors the real
+// expo-linking behavior of omitting the leading slash (extractSlug below
+// relies on that: path.split("/")[1] is the slug for a "/category/slug/..."
+// permalink).
 jest.mock("expo-linking", () => ({
   parse: (url: string) => {
     try {
       const parsed = new URL(url);
-      return { hostname: parsed.hostname, path: parsed.pathname };
+      return {
+        hostname: parsed.hostname,
+        path: parsed.pathname.replace(/^\/+/, ""),
+      };
     } catch {
       return {};
     }
   },
+}));
+
+// Mock WordPressAPI.getPost so the wp-embedded-content fallback-card tests
+// can simulate a slug LoadArticlePost can't resolve (deleted/renamed, or a
+// non-"post" content type such as a WordPress "project" page).
+const mockGetPost = jest.fn();
+jest.mock("#/helpers/network/WordPressAPI", () => ({
+  __esModule: true,
+  default: {
+    getPost: (...args: unknown[]) => mockGetPost(...args),
+    create: jest.fn(() => ({
+      getPost: (...args: unknown[]) => mockGetPost(...args),
+    })),
+    convertLoadProps: jest.fn((data) => data),
+  },
+}));
+
+// Mock the Open Graph preview fetch used by LoadOpenGraphCard (the fallback
+// card for a wp-embedded-content embed LoadArticlePost couldn't resolve) so
+// its network call doesn't need a real fetch client in this test.
+const mockFetchOpenGraphPreview = jest.fn();
+jest.mock("#/helpers/utils/openGraph", () => ({
+  fetchOpenGraphPreview: (...args: unknown[]) =>
+    mockFetchOpenGraphPreview(...args),
 }));
 
 // Mock the html iframe hook to return predictable htmlAttribs
@@ -916,5 +946,104 @@ describe("IframeRenderer non-video height cap", () => {
       ? style.find((s: any) => s && typeof s.height === "number")?.height
       : style?.height;
     expect(height).toBe(maxHeight);
+  });
+});
+
+describe("IframeRenderer wp-embedded-content fallback", () => {
+  const embedSource =
+    "https://www.volksverpetzer.de/project/landtagswahl-sachsen-anhalt/embed/#?secret=abc";
+  const pageUrl =
+    "https://www.volksverpetzer.de/project/landtagswahl-sachsen-anhalt/";
+
+  beforeEach(() => {
+    mockUseHtmlIframeProps.mockClear();
+    mockUseAppColorScheme.mockClear();
+    mockUseAppColorScheme.mockReturnValue(ColorScheme.light);
+    mockGetPost.mockClear();
+    mockFetchOpenGraphPreview.mockClear();
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: embedSource, class: "wp-embedded-content" },
+    } as unknown as ReturnType<typeof mockUseHtmlIframeProps>);
+    // e.g. a WordPress "project" page linked via "Sonst schau auch hier
+    // vorbei:" — its REST endpoint isn't public, so getPost never resolves it.
+    mockGetPost.mockResolvedValue(null);
+  });
+
+  it("shows an Open Graph preview card and links out to the real page", async () => {
+    mockFetchOpenGraphPreview.mockResolvedValue({
+      title: "Sachsen-Anhalt: Landtagswahl 2026",
+      description: "Warum sich Wählen lohnt.",
+      image: "https://www.volksverpetzer.de/preview.jpg",
+    });
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+    const { findByText } = await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    expect(mockFetchOpenGraphPreview).toHaveBeenCalledWith(
+      pageUrl,
+      expect.anything(),
+    );
+
+    const title = await findByText("Sachsen-Anhalt: Landtagswahl 2026");
+    expect(await findByText("Warum sich Wählen lohnt.")).toBeTruthy();
+
+    fireEvent.press(title);
+
+    expect(onLinkPress).toHaveBeenCalledWith(expect.anything(), pageUrl);
+  });
+
+  it("falls back to a humanized slug title when no Open Graph preview is available", async () => {
+    mockFetchOpenGraphPreview.mockResolvedValue(null);
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+    const { findByText } = await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    const title = await findByText("Landtagswahl Sachsen Anhalt");
+    fireEvent.press(title);
+
+    expect(onLinkPress).toHaveBeenCalledWith(expect.anything(), pageUrl);
+  });
+
+  it("shows the default error card instead of the preview for a transient failure, not just a missing slug", async () => {
+    // A network/server error is not the same as "no post for this slug" —
+    // the embedded article might well exist, so this shouldn't render the
+    // Open Graph fallback (which would present possibly-stale/wrong content
+    // as if it were the real thing) or otherwise mask the failure.
+    mockGetPost.mockRejectedValue(new Error("network error"));
+    const onLinkPress = jest.fn();
+    const renderProps = {} as unknown as CustomRendererProps<TBlock>;
+
+    const { findByText, queryByText } = await render(
+      <IframeRenderer
+        renderProps={renderProps}
+        width={360}
+        maxWidth={700}
+        onLinkPress={onLinkPress}
+      />,
+    );
+
+    expect(
+      await findByText(
+        "Beitrag konnte nicht geladen werden. Bitte später erneut versuchen.",
+      ),
+    ).toBeTruthy();
+    expect(mockFetchOpenGraphPreview).not.toHaveBeenCalled();
+    expect(queryByText("Landtagswahl Sachsen Anhalt")).toBeNull();
   });
 });

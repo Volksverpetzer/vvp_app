@@ -207,6 +207,25 @@ describe("WordPressAPI", () => {
       });
       spy.mockRestore();
     });
+
+    it("caches the result and does not re-request the same media", async () => {
+      const spy = jest.spyOn(Networking, "get").mockResolvedValue({
+        meta: { isc_image_source: "Cached Source" },
+      } as any);
+
+      const first = await WordPressAPI.getMediaCredit(
+        "999123",
+        "https://volksverpetzer.de/aktuelles/cached-article/",
+      );
+      const second = await WordPressAPI.getMediaCredit(
+        "999123",
+        "https://volksverpetzer.de/aktuelles/cached-article/",
+      );
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(second).toEqual(first);
+      spy.mockRestore();
+    });
   });
 
   describe("create", () => {

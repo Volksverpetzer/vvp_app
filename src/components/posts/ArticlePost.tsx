@@ -6,6 +6,7 @@ import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
 import Typography from "#/components/ui/Typography";
+import UiBadge from "#/components/ui/UiBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -33,7 +34,6 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { ArticleProperties, ImageCredit } from "#/types";
 
-import Badge from "./Badge";
 import ImageCreditBadge from "./ImageCreditBadge";
 
 // Define the component props type.
@@ -88,16 +88,26 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
 
   // Fetch the feature image when the article is in view.
   const getImages = useCallback(async () => {
+    // Clear immediately rather than leave stale: this row may be recycled
+    // from a previous article, so without this its thumbnail would keep
+    // showing until (or if) the new fetch resolves.
+    setImgURL("");
+    setImageCredit(undefined);
+
+    // The featured-media link can be absent even when featured_media is set
+    // — e.g. WordPress omits it when the attachment isn't readable via the
+    // REST API. Just skip the image fetch rather than throwing.
+    const featuredMediaHref = article._links["wp:featuredmedia"]?.[0]?.href;
+    if (!featuredMediaHref) return;
     try {
-      const { image, credit } = await WordPressAPI.getFeatureImage(
-        article._links["wp:featuredmedia"][0].href,
-      );
-      setImgURL(image);
+      const { image, credit } =
+        await WordPressAPI.getFeatureImage(featuredMediaHref);
+      setImgURL(image ?? "");
       setImageCredit(credit);
       ContentStore.setStoredArticle(article.slug, {
+        ...article,
         imageUrl: image,
         imageCredit: credit,
-        ...article,
       });
     } catch (error) {
       console.error(error);
@@ -197,6 +207,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     [scrollProgress, corporate],
   );
   const categoryTextStyle: TextStyle[] = [
+    globalStyles.pillLabel,
     globalStyles.whiteText,
     { textAlign: "right" },
   ];
@@ -243,20 +254,26 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         </View>
         <UiSpace size={spacing.md} />
         {(article.sourceName || categoryText) && (
-          <Badge position="topLeft" color={corporate}>
-            <UiText size="sm" style={categoryTextStyle}>
+          <UiBadge
+            position="topLeft"
+            variant={
+              article.sourceName === "Prüfpunkt" ? "pruefpunkt" : "primary"
+            }
+          >
+            <UiText style={categoryTextStyle}>
               {article.sourceName || categoryText}
             </UiText>
-          </Badge>
+          </UiBadge>
         )}
         {inView && Config.enableEngagement && viewCount !== 0 && (
-          <Badge position="topRight" color={Colors[colorScheme].accent}>
+          <UiBadge position="topRight" variant="accent">
             <ViewCounter
               url={article.link}
               size={iconSizes.xs}
               onLoad={setViewCount}
+              style={globalStyles.pillLabel}
             />
-          </Badge>
+          </UiBadge>
         )}
         {excerpt && (
           <UiText

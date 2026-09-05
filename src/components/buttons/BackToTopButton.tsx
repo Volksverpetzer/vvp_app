@@ -2,9 +2,8 @@ import { StyleSheet } from "react-native";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
 import { ChevronIcon } from "#/components/Icons";
-import UiPressable from "#/components/ui/UiPressable";
+import UiFab from "#/components/ui/UiFab";
 import Colors from "#/constants/Colors";
-import { elevation } from "#/constants/Elevation";
 import { iconSizes } from "#/constants/IconSizes";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -33,39 +32,20 @@ const BackToTopButton = ({ visible, onPress }: BackToTopButtonProperties) => {
       exiting={FadeOutDown}
       style={styles.container}
     >
-      <UiPressable
-        accessibilityRole="button"
-        accessibilityLabel="Zurück nach oben"
-        onPress={onPress}
-        style={[
-          styles.button,
-          { backgroundColor: Colors[colorScheme].primary },
-        ]}
-      >
+      <UiFab accessibilityLabel="Zurück nach oben" onPress={onPress}>
         <ChevronIcon
           direction="up"
           size={iconSizes.md}
           color={Colors[colorScheme].background}
         />
-      </UiPressable>
+      </UiFab>
     </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: "center",
-    borderRadius: 24,
-    elevation: elevation.sm.android,
-    height: 48,
-    justifyContent: "center",
-    overflow: "hidden",
-    width: 48,
-  },
   container: {
-    borderRadius: 24,
     bottom: 20,
-    boxShadow: elevation.sm.boxShadow,
     position: "absolute",
     right: 20,
   },
