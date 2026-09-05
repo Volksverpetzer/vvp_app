@@ -47,6 +47,73 @@ jobs:
       - name: 🚀 EAS Build - ios
         run: APP=volksverpetzer eas build --platform ios --clear-cache --non-interactive --auto-submit --no-wait
 
+  push-play-metadata:
+    name: 📝 Push Google Play Metadata
+    needs: build-and-release-stores
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v7
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          install-deps: "false"
+          setup-expo-token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: ⏳ Wait for EAS android build
+        id: android-build
+        run: node scripts/wait-for-eas-build.mjs --platform android --commit ${{ github.sha }}
+
+      - name: 🛠 Prepare Play metadata
+        run: node scripts/prepare-play-metadata.mjs --play-version-code ${{ steps.android-build.outputs.build-version }}
+
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: 🔑 Write Play service account key
+        run: printf '%s' "$PLAY_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/play-key.json"
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+
+      - name: 🚀 Push metadata to Google Play
+        run: bundle exec fastlane android push_metadata version_code:${{ steps.android-build.outputs.build-version }}
+        env:
+          PLAY_JSON_KEY_FILE: ${{ runner.temp }}/play-key.json
+
+  push-appstore-metadata:
+    name: 📝 Push App Store Metadata
+    needs: build-and-release-stores
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v7
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          install-deps: "false"
+          setup-expo-token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: ⏳ Wait for EAS ios build
+        run: node scripts/wait-for-eas-build.mjs --platform ios --commit ${{ github.sha }}
+
+      # auto-submit runs asynchronously after the build — give it time to
+      # deliver the build so the release notes land on the new version
+      - name: ⏳ Wait for auto-submit
+        run: sleep 300
+
+      - name: 🛠 Generate store.config.json
+        run: node scripts/prepare-store-config.mjs
+
+      - name: 🚀 Push metadata to App Store
+        run: APP=volksverpetzer eas metadata:push --profile production --non-interactive
+
   build-and-release-apk:
     name: 🎂 Build and Release APK
     needs: build-and-release-stores

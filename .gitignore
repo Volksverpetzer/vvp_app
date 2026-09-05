@@ -53,3 +53,7 @@ coverage/
 /android
 /Volksverpetzer.app
 /Mimikama.app
+# store metadata push (generated in CI)
+/build/
+/store.config.json
+/vendor/bundle/
