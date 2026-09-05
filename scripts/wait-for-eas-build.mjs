@@ -32,7 +32,7 @@ if (!["android", "ios"].includes(platform) || !commit) {
 const listBuilds = () =>
   JSON.parse(
     execSync(
-      `eas build:list --platform ${platform} --limit 10 --json --non-interactive`,
+      `eas build:list --platform ${platform} --limit 50 --json --non-interactive`,
       { encoding: "utf8" },
     ),
   );
