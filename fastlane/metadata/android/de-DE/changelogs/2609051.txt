@@ -1,5 +1,1 @@
-- Vorschaukarten für eingebettete Artikel, die nicht direkt geöffnet werden können
-- Absturz beim Öffnen von Artikeln ohne Beitragsbild behoben
-- Fehler bei Instagram-Bildunterschriften unter Android behoben
-- Erfolg "Rechercheur" wird jetzt auch beim Teilen über die Teilen-Funktion erkannt
-- Kleinere Fehlerbehebungen und interne Verbesserungen
+- Fehlerbehebungen und kleinere Verbesserungen

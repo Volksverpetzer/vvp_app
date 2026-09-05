@@ -2,8 +2,7 @@
 const Changelog = {
   version: "2.5.2",
   versionCode: 2609051,
-  notes:
-    '- Vorschaukarten für eingebettete Artikel, die nicht direkt geöffnet werden können\n- Absturz beim Öffnen von Artikeln ohne Beitragsbild behoben\n- Fehler bei Instagram-Bildunterschriften unter Android behoben\n- Erfolg "Rechercheur" wird jetzt auch beim Teilen über die Teilen-Funktion erkannt\n- Kleinere Fehlerbehebungen und interne Verbesserungen',
+  notes: "- Fehlerbehebungen und kleinere Verbesserungen",
 };
 
 export default Changelog;
