@@ -21,3 +21,27 @@ minimumReleaseAgeExclude:
   - expo-router@57.0.19
   - expo-sharing@57.0.18
   - expo-build-properties@57.0.17
+  - "@cspell/cspell-bundled-dicts@10.2.2"
+  - "@cspell/cspell-json-reporter@10.2.2"
+  - "@cspell/cspell-performance-monitor@10.2.2"
+  - "@cspell/cspell-pipe@10.2.2"
+  - "@cspell/cspell-resolver@10.2.2"
+  - "@cspell/cspell-service-bus@10.2.2"
+  - "@cspell/cspell-types@10.2.2"
+  - "@cspell/cspell-worker@10.2.2"
+  - "@cspell/dynamic-import@10.2.2"
+  - "@cspell/eslint-plugin@10.2.2"
+  - "@cspell/filetypes@10.2.2"
+  - "@cspell/rpc@10.2.2"
+  - "@cspell/strong-weak-map@10.2.2"
+  - "@cspell/url@10.2.2"
+  - cspell-config-lib@10.2.2
+  - cspell-dictionary@10.2.2
+  - cspell-gitignore@10.2.2
+  - cspell-glob@10.2.2
+  - cspell-grammar@10.2.2
+  - cspell-io@10.2.2
+  - cspell-lib@10.2.2
+  - cspell-trie-lib@10.2.2
+  - cspell@10.2.2
+  - lint-staged@17.5.0
