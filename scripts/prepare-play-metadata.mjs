@@ -12,7 +12,14 @@
  * Usage: node scripts/prepare-play-metadata.mjs --play-version-code <code>
  * Output: build/play-metadata/android
  */
-import { cpSync, readFileSync, readdirSync, renameSync, rmSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+} from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -43,6 +50,16 @@ for (const locale of readdirSync(target)) {
   rmSync(resolve(target, locale, "images"), { recursive: true, force: true });
 
   const changelogDir = resolve(target, locale, "changelogs");
+  if (!existsSync(resolve(changelogDir, `${versionCode}.txt`))) {
+    console.error(
+      `✗ No changelog found at fastlane/metadata/android/${locale}/changelogs/${versionCode}.txt`,
+    );
+    console.error(
+      "  Create this file with release notes (pnpm prepare:changelog), then re-run this script.",
+    );
+    process.exit(1);
+  }
+
   for (const file of readdirSync(changelogDir)) {
     if (file === `${versionCode}.txt`) {
       renameSync(
