@@ -78,16 +78,34 @@ function buildUrl(
  * @param baseURL Base URL for requests
  * @param extraHeaders Additional headers merged into every request
  */
+/**
+ * Cache-defeating request headers for endpoints behind aggressive CDN
+ * caches. Empty on web: these headers aren't CORS-safelisted and would
+ * force a failing preflight; requests carry a timestamp param instead.
+ */
+export const CACHE_BUSTER_HEADERS: FetchHeaders =
+  Platform.OS === "web"
+    ? {}
+    : {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      };
+
 export function createClient(
   baseURL: HttpsUrl,
   extraHeaders: FetchHeaders = {},
 ): FetchClient {
   const baseHeaders: FetchHeaders = {
-    "Content-Type": "application/json",
-    "User-Agent": `${Constants.expoConfig?.slug}/${Application?.nativeApplicationVersion} (${Platform.OS}; ${Device.osName} ${Device.osVersion}; ${Device.modelName})`,
-    "Cache-Control": "no-cache, no-store, must-revalidate",
-    Pragma: "no-cache",
-    Expires: "0",
+    // On web these defaults must not be sent: User-Agent is a forbidden
+    // header there, and the others aren't CORS-safelisted, so they would
+    // turn every GET into a preflighted request that the WP/proxy
+    // endpoints reject. Browsers handle caching via response headers.
+    ...(Platform.OS !== "web" && {
+      "Content-Type": "application/json",
+      "User-Agent": `${Constants.expoConfig?.slug}/${Application?.nativeApplicationVersion} (${Platform.OS}; ${Device.osName} ${Device.osVersion}; ${Device.modelName})`,
+      ...CACHE_BUSTER_HEADERS,
+    }),
     ...extraHeaders,
   };
 
@@ -119,6 +137,10 @@ export function createClient(
           init.body = data as BodyInit;
         } else {
           init.body = JSON.stringify(data);
+          // The JSON content type is a base header on native only
+          if (!mergedHeaders["Content-Type"]) {
+            mergedHeaders["Content-Type"] = "application/json";
+          }
         }
       }
 
