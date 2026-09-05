@@ -48,6 +48,7 @@ jobs:
         run: APP=volksverpetzer eas build --platform ios --clear-cache --non-interactive --auto-submit --no-wait
 
   push-play-metadata:
+    name: 📝 Push Google Play Metadata
     needs: build-and-release-stores
     runs-on: ubuntu-latest
     timeout-minutes: 180
@@ -85,6 +86,7 @@ jobs:
           PLAY_JSON_KEY_FILE: ${{ runner.temp }}/play-key.json
 
   push-appstore-metadata:
+    name: 📝 Push App Store Metadata
     needs: build-and-release-stores
     runs-on: ubuntu-latest
     timeout-minutes: 180
