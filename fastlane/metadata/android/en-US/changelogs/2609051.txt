@@ -1,0 +1,5 @@
+- Preview cards for embedded articles that can't be opened directly
+- Fixed a crash when opening articles without a featured image
+- Fixed an issue with Instagram caption links on Android
+- The "Rechercheur" achievement now also triggers when sharing via the share sheet
+- Minor bug fixes and internal improvements
