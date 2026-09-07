@@ -43,6 +43,11 @@ const { versionCode } = pkg;
 const source = resolve(root, "fastlane/metadata/android");
 const target = resolve(root, "build/play-metadata/android");
 
+if (!existsSync(source)) {
+  console.error(`✗ No fastlane metadata found at fastlane/metadata/android`);
+  process.exit(1);
+}
+
 rmSync(target, { recursive: true, force: true });
 cpSync(source, target, { recursive: true });
 
