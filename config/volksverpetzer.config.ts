@@ -67,7 +67,7 @@ const extraConfig: ExtraConfigType = {
   feeds: {
     wp: [
       {
-        handle: "https://www.volksverpetzer.de",
+        handle: "https://volksverpetzer.de",
         label: "Artikel",
         enabled: true,
       },
