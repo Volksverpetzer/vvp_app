@@ -4,7 +4,7 @@ import type { ImageSource } from "expo-image";
 import UiPressable from "#/components/ui/UiPressable";
 import { radii } from "#/constants/BorderRadius";
 
-interface UiImageButtonProps {
+interface UiImageButtonProperties {
   source: ImageSource;
   onPress: () => void;
   accessibilityLabel?: string;
@@ -20,7 +20,7 @@ const UiImageButton = ({
   onPress,
   accessibilityLabel,
   accessibilityHint,
-}: UiImageButtonProps) => (
+}: UiImageButtonProperties) => (
   <UiPressable
     accessibilityRole="button"
     accessibilityLabel={accessibilityLabel}
