@@ -77,6 +77,10 @@ jobs:
 
       - name: 🔑 Write Play service account key
         run: |
+          if [ -z "$PLAY_SERVICE_ACCOUNT_JSON" ]; then
+            echo "✗ PLAY_SERVICE_ACCOUNT_JSON secret is missing or empty" >&2
+            exit 1
+          fi
           umask 077
           printf '%s' "$PLAY_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/play-key.json"
           chmod 600 "$RUNNER_TEMP/play-key.json"
