@@ -1,0 +1,33 @@
+default_platform(:android)
+
+platform :android do
+  desc "Push listing texts and release notes from build/play-metadata to Google Play"
+  desc "Options: version_code (EAS versionCode of the submitted build), track (default: beta)"
+  lane :push_metadata do |options|
+    version_code = options[:version_code].to_i
+    UI.user_error!("Pass version_code:<EAS versionCode>") if version_code <= 0
+    track = options[:track] || "beta"
+
+    # EAS auto-submit runs asynchronously after the build finishes — wait for
+    # the new versionCode to appear on the track before attaching release notes.
+    on_track = false
+    20.times do |attempt|
+      on_track = google_play_track_version_codes(track: track).include?(version_code)
+      break if on_track
+
+      UI.message("versionCode #{version_code} not on '#{track}' yet, retrying in 60s (#{attempt + 1}/20)")
+      sleep(60)
+    end
+    UI.user_error!("versionCode #{version_code} never appeared on track '#{track}'") unless on_track
+
+    upload_to_play_store(
+      track: track,
+      # fastlane resolves relative paths from this fastlane/ dir, not the repo root
+      metadata_path: File.expand_path("../build/play-metadata/android", __dir__),
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_screenshots: true,
+      skip_upload_images: true,
+    )
+  end
+end
