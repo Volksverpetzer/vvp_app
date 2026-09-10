@@ -89,7 +89,10 @@ Defined in `babel.config.cts` and `tsconfig.json`:
 
 ## Git Safety
 
-- **Never `git push` to `prerelease` (or any shared branch) and never merge/close a PR without asking the user first, per action.** A task description that implies the end result ("bump these packages and pick up dependabot PRs", "prep the release") is not standing authorization to push or merge — do the local work (edit, install, commit locally, run checks), then show what would be pushed/merged and get an explicit yes before running `git push` on a shared branch or `gh pr merge`. Violated on 2026-08-31 while bumping deps; the user had to force-push `prerelease` back to undo it.
+- **Never `git push` directly to `main` or `prerelease`.** These are the shared trunk/release branches — pushing to them bypasses review entirely.
+- **On an existing feature/bugfix branch (open PR or not), committing and pushing is fine when the changes are related to that branch's purpose** (e.g. addressing review comments on its own PR, fixing a bug the branch introduced) **or when explicitly asked.** Don't push unrelated changes onto someone else's feature branch without asking first.
+- **Never merge or close a PR without asking the user first, per action.** A task description that implies the end result ("bump these packages and pick up dependabot PRs", "prep the release") is not standing authorization to merge — do the work, then get an explicit yes before running `gh pr merge`.
+- Violated on 2026-08-31: pushed directly to `prerelease` while bumping deps; the user had to force-push it back to undo it. The rule above reflects the corrected, narrower scope after that incident.
 
 ## Quick PR checklist for agents
 
