@@ -66,18 +66,20 @@ for (const locale of readdirSync(target)) {
   }
 
   for (const file of readdirSync(changelogDir)) {
-    if (file === `${versionCode}.txt`) {
-      renameSync(
-        resolve(changelogDir, file),
-        resolve(changelogDir, `${playVersionCode}.txt`),
-      );
-      console.log(
-        `✓ ${locale}: ${file} → ${playVersionCode}.txt (EAS versionCode)`,
-      );
-    } else {
+    if (file !== `${versionCode}.txt` && file !== `${playVersionCode}.txt`) {
       rmSync(resolve(changelogDir, file));
     }
   }
+
+  if (versionCode !== playVersionCode) {
+    renameSync(
+      resolve(changelogDir, `${versionCode}.txt`),
+      resolve(changelogDir, `${playVersionCode}.txt`),
+    );
+  }
+  console.log(
+    `✓ ${locale}: ${versionCode}.txt → ${playVersionCode}.txt (EAS versionCode)`,
+  );
 }
 
 console.log(`✓ Play metadata prepared at build/play-metadata/android`);
