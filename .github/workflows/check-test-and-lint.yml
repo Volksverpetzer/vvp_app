@@ -25,6 +25,11 @@ jobs:
         shell: bash
 
       - name: 🩺 Expo doctor
+        # main only ever receives already-checked commits from prerelease (or a
+        # release-prep PR that was itself checked before merging); re-running
+        # here just risks a false-negative if Expo ships a patch in the gap
+        # between the prerelease check and the main merge.
+        if: github.ref_name != 'main'
         run: pnpm expo:doctor
         shell: bash
 
