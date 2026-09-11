@@ -45,7 +45,6 @@ const SettingsList = (properties: SettingsListProperties) => {
   const [pendingKeys, setPendingKeys] = useState<Set<string>>(new Set());
   const colorScheme = useAppColorScheme();
   const {
-    primary: corporate,
     primaryMuted,
     textMuted,
     surface,
@@ -98,11 +97,11 @@ const SettingsList = (properties: SettingsListProperties) => {
           const switchProps: ExtendedSwitchProps = {
             testID: "settingSwitch",
             activeTrackColor: primaryMuted,
-            activeThumbColor: corporate,
+            activeThumbColor: onPrimary,
             ios_backgroundColor: isDarkMode(colorScheme) // ios only
               ? surface
               : onPrimary,
-            thumbColor: setting.value && !disabled ? corporate : textMuted,
+            thumbColor: setting.value && !disabled ? onPrimary : textMuted,
             trackColor: {
               // Dark track under the light grey thumb — the thumb itself is
               // textMuted, so the off-track must not use the same grey
