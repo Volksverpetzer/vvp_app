@@ -40,9 +40,12 @@ import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import BackupView from "#/screens/Settings/components/BackupView";
 import type { NotificationSettingType, SettingType } from "#/types";
 
+const EASTER_EGG_TAP_COUNT = 10;
+
 const SettingsScreen = () => {
   const [token, setToken] = useState<string | undefined>();
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
+  const versionTapCountRef = useRef(0);
   const router = useRouter();
   const tabBarClearance = useTabBarClearance();
 
@@ -318,14 +321,29 @@ const SettingsScreen = () => {
           >
             <UiText>Alle Erfolge zurücksetzen</UiText>
           </UiPressable>
-          <UiText selectable>
-            Versionskennung: {Application.nativeApplicationVersion}
-            &nbsp;-&nbsp;
-            {Application.nativeBuildVersion}
-            {Config.buildLabel && ` - ${Config.buildLabel}`}
-            {Config.isFoss && " - FOSS"}
-            {!Config.isFoss && `\nToken: ${token}`}
-          </UiText>
+          <UiPressable
+            accessibilityRole="button"
+            onPress={() => {
+              versionTapCountRef.current += 1;
+              Haptics.selectionAsync();
+              if (versionTapCountRef.current >= EASTER_EGG_TAP_COUNT) {
+                versionTapCountRef.current = 0;
+                Haptics.notificationAsync(
+                  Haptics.NotificationFeedbackType.Success,
+                );
+                router.push("/game/DesinformationMemory");
+              }
+            }}
+          >
+            <UiText selectable>
+              Versionskennung: {Application.nativeApplicationVersion}
+              &nbsp;-&nbsp;
+              {Application.nativeBuildVersion}
+              {Config.buildLabel && ` - ${Config.buildLabel}`}
+              {Config.isFoss && " - FOSS"}
+              {!Config.isFoss && `\nToken: ${token}`}
+            </UiText>
+          </UiPressable>
         </View>
       </ScrollView>
     </>
