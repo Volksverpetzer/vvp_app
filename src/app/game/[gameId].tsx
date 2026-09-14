@@ -3,9 +3,7 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import UiButton from "#/components/ui/UiButton";
-import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
-import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -92,26 +90,18 @@ const GameScreen = () => {
         <UiText size="base" style={styles.levelText}>
           Wähle dein Level:
         </UiText>
-        <UiPressable
-          accessibilityRole="button"
-          style={[
-            styles.levelButton,
-            level === 1 && styles.levelButtonSelected,
-          ]}
+        <UiButton
+          label="Level 1 (einfach)"
+          variant={level === 1 ? "primary" : "secondary"}
           onPress={() => setLevel(1)}
-        >
-          <UiText style={styles.levelButtonText}>Level 1 (einfach)</UiText>
-        </UiPressable>
-        <UiPressable
-          accessibilityRole="button"
-          style={[
-            styles.levelButton,
-            level === 2 && styles.levelButtonSelected,
-          ]}
+          style={styles.levelButton}
+        />
+        <UiButton
+          label="Level 2 (schwer)"
+          variant={level === 2 ? "primary" : "secondary"}
           onPress={() => setLevel(2)}
-        >
-          <UiText style={styles.levelButtonText}>Level 2 (schwer)</UiText>
-        </UiPressable>
+          style={styles.levelButton}
+        />
       </View>
       <MemoryGame pairs={memoryPairs} />
       <UiButton
@@ -133,21 +123,17 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   levelButton: {
-    backgroundColor: "#007bff",
-    borderRadius: radii.xs,
     marginHorizontal: spacing.xs,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
   },
-  levelButtonSelected: { backgroundColor: "#0056b3" },
-  levelButtonText: { color: "#fff" },
   levelContainer: {
     alignItems: "center",
     flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
     marginBottom: spacing.xl,
   },
   levelText: { marginRight: spacing.md },
-  title: { marginBottom: spacing.xl },
+  title: { marginBottom: spacing.xl, textAlign: "center" },
 });
 
 export default GameScreen;
