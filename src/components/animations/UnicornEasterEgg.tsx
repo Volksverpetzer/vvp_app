@@ -11,8 +11,10 @@ const VISIBLE_DURATION_MS = 5000;
 // Intrinsic size of einhorn.webp is 600x871
 const MASCOT_WIDTH = 220;
 const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (871 / 600));
-// Matches the dome behind the mascot in the report success animation
-const CIRCLE_DIAMETER = MASCOT_WIDTH * 1.3;
+// Large enough to fully enclose the mascot image (its diagonal), with a
+// bit of margin, matching the dome behind the mascot in the report
+// success animation
+const CIRCLE_DIAMETER = Math.hypot(MASCOT_WIDTH, MASCOT_HEIGHT) * 1.1;
 
 interface UnicornEasterEggProperties {
   visible: boolean;
