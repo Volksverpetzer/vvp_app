@@ -17,6 +17,7 @@ import {
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
+import UnicornEasterEgg from "#/components/animations/UnicornEasterEgg";
 import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiDivider from "#/components/ui/UiDivider";
 import UiLink from "#/components/ui/UiLink";
@@ -40,9 +41,13 @@ import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import BackupView from "#/screens/Settings/components/BackupView";
 import type { NotificationSettingType, SettingType } from "#/types";
 
+const EASTER_EGG_TAP_COUNT = 10;
+
 const SettingsScreen = () => {
   const [token, setToken] = useState<string | undefined>();
+  const [showUnicorn, setShowUnicorn] = useState(false);
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
+  const versionTapCountRef = useRef(0);
   const router = useRouter();
   const tabBarClearance = useTabBarClearance();
 
@@ -318,16 +323,35 @@ const SettingsScreen = () => {
           >
             <UiText>Alle Erfolge zurücksetzen</UiText>
           </UiPressable>
-          <UiText selectable>
-            Versionskennung: {Application.nativeApplicationVersion}
-            &nbsp;-&nbsp;
-            {Application.nativeBuildVersion}
-            {Config.buildLabel && ` - ${Config.buildLabel}`}
-            {Config.isFoss && " - FOSS"}
-            {!Config.isFoss && `\nToken: ${token}`}
-          </UiText>
+          <UiPressable
+            accessibilityRole="button"
+            onPress={() => {
+              versionTapCountRef.current += 1;
+              Haptics.selectionAsync();
+              if (versionTapCountRef.current >= EASTER_EGG_TAP_COUNT) {
+                versionTapCountRef.current = 0;
+                Haptics.notificationAsync(
+                  Haptics.NotificationFeedbackType.Success,
+                );
+                setShowUnicorn(true);
+              }
+            }}
+          >
+            <UiText selectable>
+              Versionskennung: {Application.nativeApplicationVersion}
+              &nbsp;-&nbsp;
+              {Application.nativeBuildVersion}
+              {Config.buildLabel && ` - ${Config.buildLabel}`}
+              {Config.isFoss && " - FOSS"}
+              {!Config.isFoss && `\nToken: ${token}`}
+            </UiText>
+          </UiPressable>
         </View>
       </ScrollView>
+      <UnicornEasterEgg
+        visible={showUnicorn}
+        onHide={() => setShowUnicorn(false)}
+      />
     </>
   );
 };
