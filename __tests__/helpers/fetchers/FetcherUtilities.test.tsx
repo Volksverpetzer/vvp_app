@@ -182,6 +182,61 @@ describe("FetcherUtils", () => {
     });
   });
 
+  describe("removeYouTubePodcastDuplicates", () => {
+    const podcastPost = {
+      id: "podcast-1",
+      datetime: "2021-01-01T00:00:00Z",
+      contentType: "podcast",
+      data: { title: "Folge 25: Danger Dan – die Heizhammer-Lüge" },
+    } as unknown as Post<unknown>;
+
+    const matchingYouTubePost = {
+      id: "yt-1",
+      datetime: "2021-01-01T01:00:00Z",
+      data: {
+        snippet: {
+          title: "Podcast Folge 25: Danger Dan - die Heizhammer-Lüge",
+        },
+      },
+    } as unknown as Post<unknown>;
+
+    const unrelatedYouTubePost = {
+      id: "yt-2",
+      datetime: "2021-01-02T00:00:00Z",
+      data: { snippet: { title: "Ein ganz anderes Video" } },
+    } as unknown as Post<unknown>;
+
+    it("drops a YouTube post whose title matches a podcast episode (case/dash/prefix-insensitive)", () => {
+      const result = FetcherUtilities.removeYouTubePodcastDuplicates([
+        podcastPost,
+        matchingYouTubePost,
+        unrelatedYouTubePost,
+      ]);
+      expect(result).toEqual([podcastPost, unrelatedYouTubePost]);
+    });
+
+    it("keeps the YouTube post untouched when no podcast post is present", () => {
+      const result = FetcherUtilities.removeYouTubePodcastDuplicates([
+        matchingYouTubePost,
+        unrelatedYouTubePost,
+      ]);
+      expect(result).toEqual([matchingYouTubePost, unrelatedYouTubePost]);
+    });
+
+    it("leaves non-YouTube-shaped posts untouched", () => {
+      const wpPost = {
+        id: "wp-1",
+        datetime: "2021-01-01T02:00:00Z",
+        data: { title: "Some article" },
+      } as unknown as Post<unknown>;
+      const result = FetcherUtilities.removeYouTubePodcastDuplicates([
+        podcastPost,
+        wpPost,
+      ]);
+      expect(result).toEqual([podcastPost, wpPost]);
+    });
+  });
+
   describe("fetchAndProcessPosts", () => {
     const p1 = {
       id: "1",

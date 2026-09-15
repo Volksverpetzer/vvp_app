@@ -1,4 +1,23 @@
-import type { Post, SafeFetchFunction } from "#/types";
+import type {
+  PodcastEpisodeProperties,
+  Post,
+  SafeFetchFunction,
+  YouTubePostProperties,
+} from "#/types";
+import { FAV_TYPE_PODCAST } from "#/types";
+
+// The channel re-uploads podcast episodes to YouTube titled "Podcast <episode title>",
+// so a normalized-title match reliably identifies the YouTube upload as a duplicate
+// of the podcast episode (verified against live feeds: podigee "Folge 25: ..." vs
+// YouTube "Podcast Folge 25: ...").
+const PODCAST_TITLE_PREFIX = /^podcast\s+/i;
+const normalizeEpisodeTitle = (title: string): string =>
+  title
+    .toLowerCase()
+    .replace(PODCAST_TITLE_PREFIX, "")
+    .replaceAll(/[‐-―]/g, "-")
+    .replaceAll(/\s+/g, " ")
+    .trim();
 
 const FetcherUtilities = {
   isAbortError(error: unknown): boolean {
@@ -69,6 +88,30 @@ const FetcherUtilities = {
     });
   },
 
+  /**
+   * Drops YouTube posts that are re-uploads of a podcast episode already present
+   * in the same batch (title match, see normalizeEpisodeTitle). If the podcast
+   * feed is disabled for the user, no podcast posts are present here and the
+   * YouTube post is left untouched, so it still appears in the feed.
+   */
+  removeYouTubePodcastDuplicates(_posts: Post<unknown>[]): Post<unknown>[] {
+    const podcastTitles = new Set(
+      _posts
+        .filter((post) => post.contentType === FAV_TYPE_PODCAST)
+        .map((post) =>
+          normalizeEpisodeTitle((post.data as PodcastEpisodeProperties).title),
+        ),
+    );
+    if (podcastTitles.size === 0) return _posts;
+
+    return _posts.filter((post) => {
+      const ytTitle = (post.data as Partial<YouTubePostProperties>)?.snippet
+        ?.title;
+      if (typeof ytTitle !== "string") return true;
+      return !podcastTitles.has(normalizeEpisodeTitle(ytTitle));
+    });
+  },
+
   async fetchAndProcessPosts(
     fetchers: {
       fetcher: (
@@ -116,7 +159,12 @@ const FetcherUtilities = {
         );
       }
 
-      return FetcherUtilities.removeDuplicates([...allPosts, ...oldPosts]).sort(
+      allPosts = FetcherUtilities.removeYouTubePodcastDuplicates([
+        ...allPosts,
+        ...oldPosts,
+      ]);
+
+      return FetcherUtilities.removeDuplicates(allPosts).sort(
         options.prioSort
           ? FetcherUtilities.sortByPriority
           : FetcherUtilities.sortByDatetime,
