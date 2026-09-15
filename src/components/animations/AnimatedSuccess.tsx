@@ -18,8 +18,8 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 import Success from "#assets/images/success.png";
 
-// Display size of the mascot (intrinsic 600x871, scaled down)
-const MASCOT_IMAGE_STYLE = { height: 261, width: 180 } as const;
+// Display size of the mascot (intrinsic 524x833, scaled down)
+const MASCOT_IMAGE_STYLE = { height: 286, width: 180 } as const;
 
 interface AnimatedSuccessProperties {
   animated: boolean;

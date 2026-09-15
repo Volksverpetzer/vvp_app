@@ -8,9 +8,9 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const VISIBLE_DURATION_MS = 5000;
 
-// Intrinsic size of einhorn.webp is 600x871
+// Intrinsic size of einhorn.webp is 524x833
 const MASCOT_WIDTH = 220;
-const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (871 / 600));
+const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (833 / 524));
 // Large enough to fully enclose the mascot image (its diagonal), with a
 // bit of margin, matching the dome behind the mascot in the report
 // success animation
