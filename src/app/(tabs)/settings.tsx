@@ -46,6 +46,7 @@ const EASTER_EGG_TAP_COUNT = 10;
 const SettingsScreen = () => {
   const [token, setToken] = useState<string | undefined>();
   const [showUnicorn, setShowUnicorn] = useState(false);
+  const hideUnicorn = useCallback(() => setShowUnicorn(false), []);
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const versionTapCountRef = useRef(0);
   const router = useRouter();
@@ -348,10 +349,7 @@ const SettingsScreen = () => {
           </UiPressable>
         </View>
       </ScrollView>
-      <UnicornEasterEgg
-        visible={showUnicorn}
-        onHide={() => setShowUnicorn(false)}
-      />
+      <UnicornEasterEgg visible={showUnicorn} onHide={hideUnicorn} />
     </>
   );
 };

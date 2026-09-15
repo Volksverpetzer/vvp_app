@@ -35,6 +35,10 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
+  // Keep the latest onHide in a ref so a parent re-render (which recreates
+  // the callback) can't restart the effect below and reset the dismiss timer
+  const onHideRef = useRef(onHide);
+  onHideRef.current = onHide;
 
   const translateY = animation.interpolate({
     inputRange: [0, 100],
@@ -51,9 +55,9 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
       useNativeDriver: true,
       speed: 10,
     }).start(({ finished }) => {
-      if (finished) onHide();
+      if (finished) onHideRef.current();
     });
-  }, [animation, onHide]);
+  }, [animation]);
 
   useEffect(() => {
     if (!visible || !mascot) return;
