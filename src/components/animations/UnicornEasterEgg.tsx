@@ -2,13 +2,17 @@ import { Image } from "expo-image";
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Dimensions, Modal } from "react-native";
 
+import Colors from "#/constants/Colors";
 import { AppImages } from "#/helpers/AppImages";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const VISIBLE_DURATION_MS = 5000;
 
 // Intrinsic size of einhorn.webp is 600x871
 const MASCOT_WIDTH = 220;
 const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (871 / 600));
+// Matches the dome behind the mascot in the report success animation
+const CIRCLE_DIAMETER = MASCOT_WIDTH * 1.3;
 
 interface UnicornEasterEggProperties {
   visible: boolean;
@@ -23,6 +27,7 @@ interface UnicornEasterEggProperties {
 const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
   const { visible, onHide } = properties;
   const mascot = AppImages.announcementMascot;
+  const colorScheme = useAppColorScheme();
   const { height: screenHeight } = Dimensions.get("window");
   const animation = useRef(new Animated.Value(0)).current;
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -32,6 +37,10 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
   const translateY = animation.interpolate({
     inputRange: [0, 100],
     outputRange: [screenHeight, screenHeight * 0.4 - MASCOT_HEIGHT / 2],
+  });
+  const circleScale = animation.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, 1],
   });
 
   const animateOut = useCallback(() => {
@@ -80,6 +89,17 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
           transform: [{ translateY }],
         }}
       >
+        <Animated.View
+          style={{
+            backgroundColor: Colors[colorScheme].accent,
+            borderRadius: CIRCLE_DIAMETER / 2,
+            height: CIRCLE_DIAMETER,
+            position: "absolute",
+            top: (MASCOT_HEIGHT - CIRCLE_DIAMETER) / 2,
+            transform: [{ scale: circleScale }],
+            width: CIRCLE_DIAMETER,
+          }}
+        />
         <Image
           source={mascot}
           accessible={false}
