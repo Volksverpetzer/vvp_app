@@ -5,6 +5,7 @@ import React from "react";
 import Onboarding from "#/app/onboarding";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
+import { registerEvent } from "#/helpers/network/Analytics";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 
 // Controlled isFoss flag — changed per test
@@ -84,6 +85,10 @@ jest.mock("expo-web-browser", () => ({
 
 jest.mock("expo-linking", () => ({
   openSettings: jest.fn(),
+}));
+
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerEvent: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("#/helpers/Stores/SettingsStore", () => ({
@@ -314,6 +319,64 @@ describe("Onboarding", () => {
 
       const listProps = await renderNotificationStepAndGetListProps();
       expect(listProps?.disabled).toBe(false);
+    });
+  });
+
+  describe("funnel tracking", () => {
+    it("fires Onboarding Started once on mount", async () => {
+      await render(<Onboarding />);
+
+      expect(registerEvent).toHaveBeenCalledWith(
+        undefined,
+        "Onboarding Started",
+      );
+      expect(
+        (registerEvent as jest.Mock).mock.calls.filter(
+          ([, event]) => event === "Onboarding Started",
+        ),
+      ).toHaveLength(1);
+    });
+
+    it("fires Onboarding Step with step and stepId on forward progress", async () => {
+      await render(<Onboarding />);
+
+      await act(async () => {
+        capturedOnStepChange!({ id: 3 }, 1);
+        await Promise.resolve();
+      });
+
+      expect(registerEvent).toHaveBeenCalledWith(undefined, "Onboarding Step", {
+        step: 1,
+        stepId: 3,
+      });
+    });
+
+    it("does not re-fire Onboarding Step when revisiting a step", async () => {
+      await render(<Onboarding />);
+
+      await act(async () => {
+        capturedOnStepChange!({ id: 3 }, 1);
+        capturedOnStepChange!({ id: 1 }, 0);
+        capturedOnStepChange!({ id: 3 }, 1);
+        await Promise.resolve();
+      });
+
+      expect(
+        (registerEvent as jest.Mock).mock.calls.filter(
+          ([, event]) => event === "Onboarding Step",
+        ),
+      ).toHaveLength(1);
+    });
+
+    it("fires Onboarding Completed on finish", async () => {
+      await render(<Onboarding />);
+
+      await capturedOnFinish!();
+
+      expect(registerEvent).toHaveBeenCalledWith(
+        undefined,
+        "Onboarding Completed",
+      );
     });
   });
 
