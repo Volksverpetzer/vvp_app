@@ -69,7 +69,13 @@ const AISearch = ({
         />
         {showFaktenBot && (
           <View
-            style={{ position: "absolute", top: 20, right: 20, width: 150 }}
+            style={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+              width: 150,
+              height: 150,
+            }}
           >
             <FaktenBot search={true} reaction={reactionValue} />
           </View>
@@ -124,7 +130,13 @@ const AISearch = ({
         </UiPressable>
         {showFaktenBot && (
           <View
-            style={{ position: "absolute", top: 20, right: 20, width: 150 }}
+            style={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+              width: 150,
+              height: 150,
+            }}
           >
             <FaktenBot search={false} reaction={reactionValue} />
           </View>
@@ -142,6 +154,7 @@ const AISearch = ({
             top: 20,
             right: 20,
             width: 150,
+            height: 150,
             zIndex: layers.raised,
           }}
         >
