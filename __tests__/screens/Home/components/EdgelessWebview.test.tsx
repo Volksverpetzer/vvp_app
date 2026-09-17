@@ -315,6 +315,29 @@ describe("EdgelessWebview external schemes", () => {
     );
   });
 
+  it("still hands off a mailto: link when isTopFrame is undefined (Android)", async () => {
+    // Regression: react-native-webview's Android native code never sets
+    // isTopFrame on the event at all (only iOS does), so on a real Android
+    // device this arrives as undefined rather than true/false. A `!isTopFrame`
+    // check would have treated that the same as `isTopFrame: false` and let
+    // every request — including this one — fall through to the WebView's
+    // own (failing) loader instead of ever reaching the mailto hand-off.
+    const expoLinking = jest.requireMock("expo-linking");
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "mailto:redaktion@volksverpetzer.de",
+      isTopFrame: undefined,
+    });
+
+    expect(result).toBe(false);
+    expect(expoLinking.openURL).toHaveBeenCalledWith(
+      "mailto:redaktion@volksverpetzer.de",
+    );
+  });
+
   it("does not hand off an unrecognized non-https scheme", async () => {
     const expoLinking = jest.requireMock("expo-linking");
     await render(

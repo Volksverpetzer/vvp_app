@@ -206,7 +206,15 @@ const EdgelessWebview = ({
           }
         }}
         onShouldStartLoadWithRequest={({ url, isTopFrame }) => {
-          if (!url || !isTopFrame) return true;
+          // react-native-webview's Android implementation never actually
+          // sets isTopFrame on the native event (only iOS does), so it
+          // comes through as undefined there — `!isTopFrame` would treat
+          // every request as a non-top-frame one and always fall through to
+          // the `return true` below, letting the WebView attempt (and fail)
+          // to load e.g. a mailto: link itself. Match IframeRenderer's
+          // shouldStartRequest, which sidesteps this by checking `=== false`
+          // instead of a plain truthiness check.
+          if (!url || isTopFrame === false) return true;
           // about:/data: URLs are used internally by the WebView itself
           // (see IframeRenderer.shouldStartRequest for the same allowance)
           // and must stay allowed rather than get swept into the "block
