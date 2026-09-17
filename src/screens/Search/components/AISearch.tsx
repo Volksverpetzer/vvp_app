@@ -68,7 +68,9 @@ const AISearch = ({
           text={loadingMessage || "KI-Suche aktiviert - kann kurz dauern"}
         />
         {showFaktenBot && (
-          <View style={{ position: "absolute", top: 20, right: 20 }}>
+          <View
+            style={{ position: "absolute", top: 20, right: 20, width: 150 }}
+          >
             <FaktenBot search={true} reaction={reactionValue} />
           </View>
         )}
@@ -121,7 +123,9 @@ const AISearch = ({
           <UiText style={globalStyles.whiteText}>Neu Laden</UiText>
         </UiPressable>
         {showFaktenBot && (
-          <View style={{ position: "absolute", top: 20, right: 20 }}>
+          <View
+            style={{ position: "absolute", top: 20, right: 20, width: 150 }}
+          >
             <FaktenBot search={false} reaction={reactionValue} />
           </View>
         )}
@@ -137,6 +141,7 @@ const AISearch = ({
             position: "absolute",
             top: 20,
             right: 20,
+            width: 150,
             zIndex: layers.raised,
           }}
         >
