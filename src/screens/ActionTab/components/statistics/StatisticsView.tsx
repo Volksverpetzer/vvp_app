@@ -37,7 +37,8 @@ const StatisticsView = () => {
   const progressValue = useSharedValue(0);
   const { width } = useFeedDimensions();
   const panelWidth = containerWidth || width;
-  const corporate = Colors.dark.primary;
+  const panelBackground = Colors.light.surfaceInput;
+  const contentColor = Colors.dark.primary;
 
   useEffect(() => {
     Statistics.getAllStatistics().then(setStatistics);
@@ -71,7 +72,7 @@ const StatisticsView = () => {
         globalStyles.centered,
         {
           zIndex: layers.raised,
-          backgroundColor: corporate,
+          backgroundColor: panelBackground,
           borderRadius: radii.xxl,
           paddingVertical: spacing.xl,
           marginHorizontal: spacing.md,
@@ -100,6 +101,7 @@ const StatisticsView = () => {
           width={panelWidth}
           statistics={statistics}
           descriptionMap={descriptionMap}
+          contentColor={contentColor}
         />
         <StatisticsPanel
           icon="person"
@@ -112,11 +114,16 @@ const StatisticsView = () => {
           width={panelWidth}
           statistics={statistics}
           descriptionMap={descriptionMap}
+          contentColor={contentColor}
         />
       </Animated.ScrollView>
 
       <View style={{ height: 20, zIndex: layers.raised }}>
-        <AnimatedPageDots progress={progressValue} length={2} color="white" />
+        <AnimatedPageDots
+          progress={progressValue}
+          length={2}
+          color={contentColor}
+        />
       </View>
     </View>
   );

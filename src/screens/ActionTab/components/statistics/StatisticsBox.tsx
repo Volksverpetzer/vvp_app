@@ -22,12 +22,10 @@ const StatisticsBox = ({
   descriptionMap,
   style,
 }: StatsBoxProperties) => {
-  const primaryMuted = Colors.dark.primaryMuted;
+  const primary = Colors.dark.primary;
 
   return (
-    <View
-      style={[boxStyles.container, { backgroundColor: primaryMuted }, style]}
-    >
+    <View style={[boxStyles.container, { backgroundColor: primary }, style]}>
       <UiText size="xl" style={boxStyles.valueText} numberOfLines={1}>
         {statistic[valueKey]}
       </UiText>

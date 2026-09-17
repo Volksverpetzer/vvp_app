@@ -4,11 +4,9 @@ import type { OcticonsIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
-import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { StatisticsType, StatisticsValueKey } from "#/types";
 
 import StatisticsBox from "./StatisticsBox";
@@ -30,6 +28,7 @@ type StatsPanelProperties = {
   width: number;
   statistics: Record<string, StatisticsType>;
   descriptionMap: Record<string, string>;
+  contentColor: string;
 } & LeftChevronProp &
   RightChevronProp;
 
@@ -46,10 +45,8 @@ const StatisticsPanel = ({
   width,
   statistics,
   descriptionMap,
+  contentColor,
 }: StatsPanelProperties) => {
-  const colorScheme = useAppColorScheme();
-  const textMuted = Colors[colorScheme].textMuted;
-
   return (
     <View
       style={[
@@ -60,30 +57,30 @@ const StatisticsPanel = ({
       <View
         style={[
           globalStyles.row,
-          { justifyContent: "flex-start", paddingLeft: spacing.xxxl },
+          {
+            justifyContent: "flex-start",
+            paddingLeft: spacing.xxxl,
+            gap: spacing.md,
+          },
         ]}
       >
-        <StatisticsIcon name={icon} size={iconSizes.lg} color="white" />
-        <UiText
-          size="xl"
-          bold
-          style={[globalStyles.whiteText, { marginLeft: spacing.md }]}
+        <StatisticsIcon name={icon} size={iconSizes.lg} color={contentColor} />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "baseline",
+            gap: spacing.md,
+          }}
         >
-          {title}
-        </UiText>
-        {subtitle && (
-          <UiText
-            size="xs"
-            style={{
-              color: textMuted,
-              paddingLeft: spacing.md,
-              paddingBottom: spacing.xs,
-              alignSelf: "flex-end",
-            }}
-          >
-            {subtitle}
+          <UiText size="xl" bold style={{ color: contentColor }}>
+            {title}
           </UiText>
-        )}
+          {subtitle && (
+            <UiText size="xs" style={{ color: contentColor }}>
+              {subtitle}
+            </UiText>
+          )}
+        </View>
       </View>
 
       <View style={panelStyles.contentRow}>
@@ -94,7 +91,11 @@ const StatisticsPanel = ({
             onPress={onLeftPress}
             style={panelStyles.chevronButton}
           >
-            <ChevronIcon direction="left" size={iconSizes.md} color="white" />
+            <ChevronIcon
+              direction="left"
+              size={iconSizes.md}
+              color={contentColor}
+            />
           </UiPressable>
         ) : (
           <View style={panelStyles.chevronSlot} />
@@ -122,7 +123,11 @@ const StatisticsPanel = ({
             onPress={onRightPress}
             style={panelStyles.chevronButton}
           >
-            <ChevronIcon direction="right" size={iconSizes.md} color="white" />
+            <ChevronIcon
+              direction="right"
+              size={iconSizes.md}
+              color={contentColor}
+            />
           </UiPressable>
         ) : (
           <View style={panelStyles.chevronSlot} />

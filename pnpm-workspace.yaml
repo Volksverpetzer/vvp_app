@@ -20,7 +20,7 @@ minimumReleaseAgeExclude:
   - expo-notifications@57.0.17
   - expo-router@57.0.19
   - expo-sharing@57.0.18
-  - expo-build-properties@57.0.17
+  - expo-build-properties@57.0.20
   - "@cspell/cspell-bundled-dicts@10.2.2"
   - "@cspell/cspell-json-reporter@10.2.2"
   - "@cspell/cspell-performance-monitor@10.2.2"
