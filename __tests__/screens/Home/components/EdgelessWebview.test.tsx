@@ -329,4 +329,22 @@ describe("EdgelessWebview external schemes", () => {
     expect(result).toBe(false);
     expect(expoLinking.openURL).not.toHaveBeenCalled();
   });
+
+  it.each(["about:blank", "data:text/html,<html></html>"])(
+    "still allows the WebView's own internal %s navigation",
+    async (url) => {
+      const expoLinking = jest.requireMock("expo-linking");
+      await render(
+        <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+      );
+
+      const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+        url,
+        isTopFrame: true,
+      });
+
+      expect(result).toBe(true);
+      expect(expoLinking.openURL).not.toHaveBeenCalled();
+    },
+  );
 });

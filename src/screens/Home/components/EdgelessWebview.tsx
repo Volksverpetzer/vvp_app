@@ -207,6 +207,13 @@ const EdgelessWebview = ({
         }}
         onShouldStartLoadWithRequest={({ url, isTopFrame }) => {
           if (!url || !isTopFrame) return true;
+          // about:/data: URLs are used internally by the WebView itself
+          // (see IframeRenderer.shouldStartRequest for the same allowance)
+          // and must stay allowed rather than get swept into the "block
+          // unrecognized non-https scheme" branch below.
+          if (url.startsWith("about:") || url.startsWith("data:")) {
+            return true;
+          }
           // Allow the first load of the provided URI. parsePath normalizes
           // leading/trailing slashes so a WordPress canonical redirect that
           // only toggles the trailing slash is treated as the same page
