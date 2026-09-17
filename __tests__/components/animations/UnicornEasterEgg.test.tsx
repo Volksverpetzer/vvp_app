@@ -131,6 +131,24 @@ describe("UnicornEasterEgg", () => {
     await unmount();
   });
 
+  it("dismisses early on the Android back action instead of swallowing it", async () => {
+    const onHide = jest.fn();
+    const { getByTestId, unmount } = await render(
+      <UnicornEasterEgg visible onHide={onHide} />,
+    );
+
+    await act(async () => {
+      // RNTL treats a Modal's contents as hidden by default.
+      getByTestId("unicorn-easter-egg-modal", {
+        includeHiddenElements: true,
+      }).props.onRequestClose();
+      await Promise.resolve();
+    });
+
+    expect(onHide).toHaveBeenCalledTimes(1);
+    await unmount();
+  });
+
   it("auto-dismisses after 5 seconds", async () => {
     const onHide = jest.fn();
     const { unmount } = await render(
