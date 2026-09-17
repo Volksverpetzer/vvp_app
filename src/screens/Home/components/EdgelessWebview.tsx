@@ -1,3 +1,4 @@
+import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
@@ -18,6 +19,13 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 // every render. Unlike `source`, this specific prop doesn't itself trigger
 // a reload, but it's the same footgun so it's fixed alongside it.
 const ORIGIN_WHITELIST = ["*"];
+
+// Schemes a WordPress page can link to (e.g. `Mail:` on the Impressum page)
+// that the WebView itself can't load — it has no protocol handler for them
+// and fails with net::ERR_UNKNOWN_URL_SCHEME. Handing off only this known
+// set to the OS (rather than every non-https scheme) avoids blindly passing
+// through something like an Android `intent:` URI.
+const EXTERNAL_SCHEME_REGEX = /^(mailto|tel|sms|facetime|geo|maps):/i;
 
 // The in-app WebView never shows a cookie-consent UI of its own, so
 // Complianz's banner script serves no purpose here — and on some pages its
@@ -198,19 +206,24 @@ const EdgelessWebview = ({
           }
         }}
         onShouldStartLoadWithRequest={({ url, isTopFrame }) => {
+          if (!url || !isTopFrame) return true;
           // Allow the first load of the provided URI. parsePath normalizes
           // leading/trailing slashes so a WordPress canonical redirect that
           // only toggles the trailing slash is treated as the same page
           // instead of looping back into native navigation.
-          if (
-            !isHttpsUrl(url) ||
-            !isTopFrame ||
-            !url ||
-            parsePath(url) === parsePath(effectiveUri)
-          )
-            return true;
-          // Route natively instead
-          onLinkPress(url, router, effectiveUri);
+          if (isHttpsUrl(url)) {
+            if (parsePath(url) === parsePath(effectiveUri)) return true;
+            // Route natively instead
+            onLinkPress(url, router, effectiveUri);
+            return false;
+          }
+          // Non-https schemes (e.g. a `mailto:` link on the Impressum page)
+          // can't be loaded by the WebView itself — hand them to the OS.
+          if (EXTERNAL_SCHEME_REGEX.test(url)) {
+            Linking.openURL(url).catch((error) =>
+              console.warn("Failed to open link:", url, error),
+            );
+          }
           return false;
         }}
         injectedJavaScriptBeforeContentLoaded={BLOCK_COMPLIANZ_SCRIPT}

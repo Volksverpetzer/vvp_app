@@ -29,6 +29,7 @@ jest.mock("expo-linking", () => ({
       return {};
     }
   },
+  openURL: jest.fn().mockResolvedValue(undefined),
 }));
 
 // Keep the real parsePath (that's what's under test), but stub onLinkPress
@@ -285,5 +286,47 @@ describe("EdgelessWebview 404 slash retry", () => {
     expect(mockLastWebViewProps.source.uri).toBe(
       "https://volksverpetzer.de/ltw-lsa/?utm_source=app_share",
     );
+  });
+});
+
+describe("EdgelessWebview external schemes", () => {
+  beforeEach(() => {
+    mockLastWebViewProps = null;
+    jest.clearAllMocks();
+  });
+
+  it("hands a mailto: link off to the OS instead of letting the WebView load it", async () => {
+    // Regression (Impressum "Mail:" link, GH #525): the WebView has no
+    // protocol handler for mailto: and fails with
+    // net::ERR_UNKNOWN_URL_SCHEME if it tries to load it itself.
+    const expoLinking = jest.requireMock("expo-linking");
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "mailto:redaktion@volksverpetzer.de",
+      isTopFrame: true,
+    });
+
+    expect(result).toBe(false);
+    expect(expoLinking.openURL).toHaveBeenCalledWith(
+      "mailto:redaktion@volksverpetzer.de",
+    );
+  });
+
+  it("does not hand off an unrecognized non-https scheme", async () => {
+    const expoLinking = jest.requireMock("expo-linking");
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "intent://example",
+      isTopFrame: true,
+    });
+
+    expect(result).toBe(false);
+    expect(expoLinking.openURL).not.toHaveBeenCalled();
   });
 });
