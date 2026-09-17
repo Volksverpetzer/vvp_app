@@ -77,12 +77,13 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
 
   return (
     <Modal
+      testID="unicorn-easter-egg-modal"
       animationType="none"
       navigationBarTranslucent
       statusBarTranslucent
       transparent
       visible
-      onRequestClose={() => {}}
+      onRequestClose={animateOut}
     >
       <Animated.View
         pointerEvents="none"

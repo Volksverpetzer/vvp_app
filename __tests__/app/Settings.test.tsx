@@ -11,6 +11,7 @@ import { useFocusEffect } from "expo-router";
 import React, { useEffect } from "react";
 
 import SettingsScreen from "#/app/(tabs)/settings";
+import UnicornEasterEgg from "#/components/animations/UnicornEasterEgg";
 import { toast } from "#/helpers/toast";
 
 let mockIsFoss = false;
@@ -148,6 +149,14 @@ jest.mock("#/screens/Settings/components/BackupView", () => {
   const { Text } = require("react-native");
   return jest.fn(() => <Text>BackupView</Text>);
 });
+jest.mock("#/components/animations/UnicornEasterEgg", () =>
+  jest.fn(() => null),
+);
+jest.mock("expo-haptics", () => ({
+  selectionAsync: jest.fn(),
+  notificationAsync: jest.fn(),
+  NotificationFeedbackType: { Success: "success" },
+}));
 
 describe("SettingsScreen", () => {
   beforeEach(() => {
@@ -383,6 +392,41 @@ describe("SettingsScreen", () => {
       mockIsFoss = false;
       const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText(/ - FOSS/)).toBeNull();
+    });
+  });
+
+  describe("unicorn easter egg", () => {
+    const lastVisibleProp = () =>
+      jest.mocked(UnicornEasterEgg).mock.calls.at(-1)?.[0].visible;
+
+    it("stays hidden below the ten-tap threshold", async () => {
+      const { getByText } = await render(<SettingsScreen />);
+      const versionRow = getByText(/Versionskennung/);
+
+      for (let tap = 0; tap < 9; tap++) {
+        await fireEvent.press(versionRow);
+      }
+
+      expect(lastVisibleProp()).toBe(false);
+    });
+
+    it("shows itself on the tenth tap and resets the counter", async () => {
+      const { getByText } = await render(<SettingsScreen />);
+      const versionRow = getByText(/Versionskennung/);
+
+      for (let tap = 0; tap < 10; tap++) {
+        await fireEvent.press(versionRow);
+      }
+      expect(lastVisibleProp()).toBe(true);
+
+      // Counter was reset on trigger, so the next tap alone shouldn't
+      // trigger it again — UnicornEasterEgg isn't re-rendered with
+      // visible=true from a single extra tap this soon.
+      const callsAfterTrigger = jest.mocked(UnicornEasterEgg).mock.calls.length;
+      await fireEvent.press(versionRow);
+      expect(jest.mocked(UnicornEasterEgg).mock.calls.length).toBe(
+        callsAfterTrigger,
+      );
     });
   });
 });
