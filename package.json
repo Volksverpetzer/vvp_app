@@ -149,7 +149,7 @@
     "jest-react-native": "18.0.0",
     "license-checker-rseidelsohn": "5.0.1",
     "lint-staged": "17.5.1",
-    "prettier": "3.9.7",
+    "prettier": "3.9.8",
     "ts-node": "10.9.2",
     "typedoc": "0.28.20",
     "typescript": "6.0.3"
