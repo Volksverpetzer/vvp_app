@@ -11,6 +11,7 @@ import type {
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
+import type { LinkHref } from "#/helpers/Linking";
 import { onLinkPress, parsePath } from "#/helpers/Linking";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -26,6 +27,14 @@ const ORIGIN_WHITELIST = ["*"];
 // set to the OS (rather than every non-https scheme) avoids blindly passing
 // through something like an Android `intent:` URI.
 const EXTERNAL_SCHEME_REGEX = /^(mailto|tel|sms|facetime|geo|maps):/i;
+
+// onLinkPress upgrades a bare `http://` to `https://` itself (see its own
+// doc comment) — an `http://` link should be routed through it like any
+// https one rather than falling into the "block unrecognized scheme"
+// branch below, which would otherwise make a plain http link tap do
+// nothing at all.
+const isWebUrl = (url: string): url is LinkHref =>
+  isHttpsUrl(url) || url.startsWith("http://");
 
 // The in-app WebView never shows a cookie-consent UI of its own, so
 // Complianz's banner script serves no purpose here — and on some pages its
@@ -226,7 +235,7 @@ const EdgelessWebview = ({
           // leading/trailing slashes so a WordPress canonical redirect that
           // only toggles the trailing slash is treated as the same page
           // instead of looping back into native navigation.
-          if (isHttpsUrl(url)) {
+          if (isWebUrl(url)) {
             if (parsePath(url) === parsePath(effectiveUri)) return true;
             // Route natively instead
             onLinkPress(url, router, effectiveUri);

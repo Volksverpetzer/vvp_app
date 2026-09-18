@@ -353,6 +353,33 @@ describe("EdgelessWebview external schemes", () => {
     expect(expoLinking.openURL).not.toHaveBeenCalled();
   });
 
+  it("routes a plain http:// link through onLinkPress instead of blocking it", async () => {
+    // Regression (Copilot review + adversarial review on #569): a link on a
+    // WordPress page still using a plain http:// scheme (e.g. an old legal
+    // citation) matched neither isHttpsUrl nor EXTERNAL_SCHEME_REGEX, so it
+    // silently fell into the "block unrecognized scheme" branch — the tap
+    // did nothing at all, with no error and no OS hand-off. onLinkPress
+    // already upgrades http:// to https:// itself (see its own doc
+    // comment, for Android cleartext-traffic reasons), so it should still
+    // be the one routing this link.
+    const linkingHelpers = jest.requireMock("#/helpers/Linking");
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "http://volksverpetzer.de/other-page/",
+      isTopFrame: true,
+    });
+
+    expect(result).toBe(false);
+    expect(linkingHelpers.onLinkPress).toHaveBeenCalledWith(
+      "http://volksverpetzer.de/other-page/",
+      expect.anything(),
+      "https://volksverpetzer.de/impressum-volksverpetzer/",
+    );
+  });
+
   it.each(["about:blank", "data:text/html,<html></html>"])(
     "still allows the WebView's own internal %s navigation",
     async (url) => {
