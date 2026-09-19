@@ -1,6 +1,5 @@
 overrides:
   react-test-renderer: 19.2.3 # must match react version; @testing-library/react-native enforces exact match at runtime
-
 allowBuilds:
   dtrace-provider: true # required by eas-cli; pnpm v11 blocks its build scripts otherwise
   esbuild: true
@@ -11,5 +10,3 @@ packages:
   - .
 patchedDependencies:
   react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
-minimumReleaseAgeExclude:
-  - prettier@3.9.8
