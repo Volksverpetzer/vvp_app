@@ -70,7 +70,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             <Image
               style={{
                 flex: 1,
-                width: width - 24,
+                width: "100%",
                 backgroundColor: corporate,
               }}
               source={{ uri: preview }}
