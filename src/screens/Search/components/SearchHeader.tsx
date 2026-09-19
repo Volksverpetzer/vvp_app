@@ -100,43 +100,45 @@ const SearchHeader = ({
           </View>
         )}
       </UiHeaderGradient>
-      <View
-        style={[
-          globalStyles.row,
-          globalStyles.input,
-          {
-            height: 50,
-            // Reserves room for the trailing SearchIcon button so the
-            // TextInput's width: "100%" doesn't run underneath it.
-            paddingRight: iconSizes.md + spacing.xl,
-            backgroundColor: corporate,
-            marginBottom: spacing.huge,
-          },
-        ]}
-      >
-        <TextInput
-          accessibilityLabel="Text input field"
-          accessibilityHint="Füge Text ein und drücke Enter um zu suchen"
-          clearButtonMode="always"
-          value={search}
-          ref={searchRef}
-          placeholder="Suche ..."
-          placeholderTextColor="white"
-          onSubmitEditing={handleSubmit}
+      <View style={globalStyles.content}>
+        <View
           style={[
-            globalStyles.whiteText,
+            globalStyles.row,
+            globalStyles.input,
             {
-              fontFamily: fontFamily.regular,
-              fontSize: INPUT_FONT_SIZE,
-              width: "100%",
+              height: 50,
+              // Reserves room for the trailing SearchIcon button so the
+              // TextInput's width: "100%" doesn't run underneath it.
+              paddingRight: iconSizes.md + spacing.xl,
+              backgroundColor: corporate,
+              marginBottom: spacing.huge,
             },
           ]}
-          onChangeText={setSearch}
-          returnKeyType="search"
-        />
-        <UiPressable accessibilityRole="button" onPress={handleSubmit}>
-          <SearchIcon color="white" size={iconSizes.md} />
-        </UiPressable>
+        >
+          <TextInput
+            accessibilityLabel="Text input field"
+            accessibilityHint="Füge Text ein und drücke Enter um zu suchen"
+            clearButtonMode="always"
+            value={search}
+            ref={searchRef}
+            placeholder="Suche ..."
+            placeholderTextColor="white"
+            onSubmitEditing={handleSubmit}
+            style={[
+              globalStyles.whiteText,
+              {
+                fontFamily: fontFamily.regular,
+                fontSize: INPUT_FONT_SIZE,
+                width: "100%",
+              },
+            ]}
+            onChangeText={setSearch}
+            returnKeyType="search"
+          />
+          <UiPressable accessibilityRole="button" onPress={handleSubmit}>
+            <SearchIcon color="white" size={iconSizes.md} />
+          </UiPressable>
+        </View>
       </View>
     </>
   );
