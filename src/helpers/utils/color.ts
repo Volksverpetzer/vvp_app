@@ -1,6 +1,6 @@
 import Colors from "#/constants/Colors";
 import { fontFamily } from "#/constants/FontFamily";
-import { fontSizes } from "#/constants/FontSizes";
+import { CONTENT_LINE_HEIGHT, fontSizes } from "#/constants/FontSizes";
 import { spacing } from "#/constants/Spacing";
 import type { AppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -38,7 +38,12 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     em: {
       fontFamily: fontFamily.italic,
     },
-    p: { color: textColor, padding: spacing.md, fontSize: fontSizes.lg },
+    p: {
+      color: textColor,
+      padding: spacing.md,
+      fontSize: fontSizes.lg,
+      lineHeight: CONTENT_LINE_HEIGHT,
+    },
     strong: {
       color: textColor,
       fontFamily: fontFamily.bold,
@@ -88,6 +93,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     blockquote: {
       color: textColor,
       fontSize: fontSizes.lg,
+      lineHeight: CONTENT_LINE_HEIGHT,
       fontFamily: fontFamily.italic,
       paddingLeft: spacing.xl,
       paddingRight: spacing.md,
