@@ -169,6 +169,10 @@ export interface YouTubePostProperties {
     embedHeight: string;
     embedWidth: string;
   };
+  /** Only present once the server proxy requests the `statistics` part. */
+  statistics?: {
+    viewCount?: string;
+  };
   snippet: {
     publishedAt: string;
     channelId: string;
