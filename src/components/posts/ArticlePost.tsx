@@ -249,7 +249,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           )}
           <ImageCreditBadge credit={imageCredit} position="bottomRight" />
         </View>
-        <View style={progressBarStyle} />
+        <View testID="article-progress-bar" style={progressBarStyle} />
         <UiSpace size={spacing.md} />
         <View
           style={{
