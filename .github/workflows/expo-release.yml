@@ -50,7 +50,7 @@ jobs:
   push-play-metadata:
     name: 📝 Push Google Play Metadata
     needs: build-and-release-stores
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 180
     steps:
       - name: ⬇️ Checkout repo
@@ -94,7 +94,7 @@ jobs:
   push-appstore-metadata:
     name: 📝 Push App Store Metadata
     needs: build-and-release-stores
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 180
     steps:
       - name: ⬇️ Checkout repo
@@ -122,7 +122,7 @@ jobs:
   build-and-release-apk:
     name: 🎂 Build and Release APK
     needs: build-and-release-stores
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       APK_NAME: vvp-app-${{ github.ref_name }}
     steps:

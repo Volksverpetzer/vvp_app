@@ -51,7 +51,7 @@ jobs:
   build-and-release-apk:
     name: 🎂 Build and Release APK
     needs: build-and-release-stores
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     env:
       APK_NAME: vvp-app-v${{ github.ref_name }}
     steps:
