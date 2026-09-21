@@ -192,7 +192,15 @@ describe("ArticlePost — progress bar refresh", () => {
     });
   };
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // clearAllMocks keeps implementations, so restore the default explicitly
+    // and drop any focus state left by a previous case.
+    PersonalStore.getScrollPosition.mockReset();
+    PersonalStore.getScrollPosition.mockResolvedValue(null);
+    mockFocus.callback = null;
+    mockFocus.cleanup = undefined;
+  });
 
   it("re-reads the stored progress when the screen regains focus", async () => {
     PersonalStore.getScrollPosition.mockResolvedValue(0.2);
@@ -210,6 +218,42 @@ describe("ArticlePost — progress bar refresh", () => {
     await waitFor(() =>
       expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "60%" }),
     );
+  });
+
+  it("keeps the current bar on refocus instead of flashing to 0", async () => {
+    PersonalStore.getScrollPosition.mockResolvedValue(0.2);
+    const { getByTestId } = await render(
+      <ArticlePost article={baseArticle} inView={true} />,
+    );
+    await waitFor(() =>
+      expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "20%" }),
+    );
+
+    await blur();
+    PersonalStore.getScrollPosition.mockReturnValue(new Promise(() => {}));
+    await focus();
+
+    expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "20%" });
+  });
+
+  it("resets the bar when the card is reused for another article", async () => {
+    PersonalStore.getScrollPosition.mockResolvedValue(0.2);
+    const { getByTestId, rerender } = await render(
+      <ArticlePost article={baseArticle} inView={true} />,
+    );
+    await waitFor(() =>
+      expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "20%" }),
+    );
+
+    PersonalStore.getScrollPosition.mockReturnValue(new Promise(() => {}));
+    await rerender(
+      <ArticlePost
+        article={{ ...baseArticle, id: 43, slug: "other-article" }}
+        inView={true}
+      />,
+    );
+
+    expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "0%" });
   });
 
   it("ignores a stale read that resolves after the focus cleanup", async () => {

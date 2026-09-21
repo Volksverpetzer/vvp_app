@@ -75,13 +75,18 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const d = new Date(article.date);
   const date = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
 
+  // Reset when this row is recycled for a different article, so it never
+  // shows the previous article's progress. Deliberately not done on refocus:
+  // that would flash the bar to 0 before the stored value comes back.
+  useEffect(() => {
+    setScrollProgress("0%");
+  }, [article.slug]);
+
   // Retrieve and set scroll progress when inView. Runs on every screen focus
   // (not just once) so the bar catches up after reading an article and
   // navigating back to the feed.
   useFocusEffect(
     useCallback(() => {
-      // Reset first: this row may be recycled from a different article.
-      setScrollProgress("0%");
       if (!inView) return;
       let cancelled = false;
       PersonalStore.getScrollPosition(article.slug).then((progress) => {
