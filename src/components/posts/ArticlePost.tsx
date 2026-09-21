@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { DimensionValue, TextStyle } from "react-native";
 import { View } from "react-native";
@@ -75,16 +75,24 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const d = new Date(article.date);
   const date = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
 
-  // Retrieve and set scroll progress when inView.
-  useEffect(() => {
-    if (!inView) return;
-    PersonalStore.getScrollPosition(article.slug).then((progress) => {
-      if (progress !== null) {
-        const dimValue = progress * 100 + "%";
-        setScrollProgress(dimValue as DimensionValue);
-      }
-    });
-  }, [inView, article.slug]);
+  // Retrieve and set scroll progress when inView. Runs on every screen focus
+  // (not just once) so the bar catches up after reading an article and
+  // navigating back to the feed.
+  useFocusEffect(
+    useCallback(() => {
+      // Reset first: this row may be recycled from a different article.
+      setScrollProgress("0%");
+      if (!inView) return;
+      let cancelled = false;
+      PersonalStore.getScrollPosition(article.slug).then((progress) => {
+        if (cancelled || progress === null) return;
+        setScrollProgress((progress * 100 + "%") as DimensionValue);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }, [inView, article.slug]),
+  );
 
   // Fetch the feature image when the article is in view.
   const getImages = useCallback(async () => {

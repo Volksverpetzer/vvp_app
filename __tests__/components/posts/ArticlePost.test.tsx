@@ -10,6 +10,10 @@ jest.mock("expo-image", () => ({
 
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(() => ({ push: jest.fn(), back: jest.fn() })),
+  useFocusEffect: (callback: () => void | (() => void)) => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("react").useEffect(callback, [callback]);
+  },
 }));
 
 jest.mock("#/components/counter/ViewCounter", () => ({
