@@ -42,6 +42,13 @@ const video: YouTubePostProperties = {
   inView: true,
 };
 
+describe("YouTubePost video badge", () => {
+  it("labels the card as a video", async () => {
+    const { getByText } = await render(<YouTubePost {...video} />);
+    expect(getByText("Video")).toBeTruthy();
+  });
+});
+
 describe("YouTubePost view count", () => {
   it("shows the formatted view count when statistics are present", async () => {
     const { getByText } = await render(

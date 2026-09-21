@@ -89,6 +89,11 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             >
               <PlayIcon size={56} color={YOUTUBE_BRAND_COLOR} />
             </View>
+            <UiBadge position="topLeft" variant="primary">
+              <UiText style={[globalStyles.pillLabel, globalStyles.whiteText]}>
+                Video
+              </UiText>
+            </UiBadge>
             {inView && Config.enableEngagement && viewCount > 0 && (
               <UiBadge position="topRight" variant="accent">
                 <View
