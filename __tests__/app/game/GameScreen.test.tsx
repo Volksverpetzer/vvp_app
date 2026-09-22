@@ -1,11 +1,25 @@
-import { describe, expect, it, jest } from "@jest/globals";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
+import type { ComponentType } from "react";
 
-import GameScreen from "#/app/game/[gameId]";
 import type { DisinfoPair } from "#/types";
 
 jest.mock("expo-router", () => ({
   useLocalSearchParams: jest.fn(() => ({ gameId: "DesinformationMemory" })),
+}));
+
+// Stable mock for expo-image, so the finish screen's mascot Image can be
+// asserted on directly.
+const MockImage = jest.fn(() => null);
+jest.mock("expo-image", () => ({ Image: MockImage }));
+
+const mascotSource = { uri: "einhorn.webp" };
+jest.mock("#/helpers/AppImages", () => ({
+  AppImages: {
+    get announcementMascot() {
+      return mascotSource;
+    },
+  },
 }));
 
 jest.mock("#/components/bars/NavBar", () => jest.fn(() => null));
@@ -58,7 +72,21 @@ jest.mock("#/components/animations/UnicornEasterEgg", () => {
   );
 });
 
+// Loaded lazily (rather than a static top-level import) so the jest.mock
+// calls above — expo-image in particular — are guaranteed to be in place
+// before GameScreen's own module-level imports run.
+const GameScreen = require("#/app/game/[gameId]").default as ComponentType;
+
+beforeEach(() => {
+  MockImage.mockClear();
+});
+
 describe("GameScreen", () => {
+  it("shows the fixed game title", async () => {
+    const { getByText } = await render(<GameScreen />);
+    expect(getByText("Desinformations-Memory")).toBeTruthy();
+  });
+
   it("starts on level 1 with 3 pairs", async () => {
     const { getByText } = await render(<GameScreen />);
     expect(getByText("pairs:3")).toBeTruthy();
@@ -95,5 +123,19 @@ describe("GameScreen", () => {
 
     expect(queryByText(/pairs:/)).toBeNull();
     expect(getByText("Weitere Level folgen bald!")).toBeTruthy();
+  });
+
+  it("shows the mascot on the finish screen", async () => {
+    const { getByText } = await render(<GameScreen />);
+
+    await fireEvent.press(getByText("complete level"));
+    await fireEvent.press(getByText("hide popup"));
+    await fireEvent.press(getByText("complete level"));
+    await fireEvent.press(getByText("hide popup"));
+
+    expect(MockImage).toHaveBeenCalledWith(
+      expect.objectContaining({ source: mascotSource }),
+      undefined,
+    );
   });
 });

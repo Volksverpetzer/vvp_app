@@ -1,6 +1,7 @@
 import { Image } from "expo-image";
-import { useCallback, useEffect, useRef } from "react";
-import { Animated, Dimensions, Modal } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { LayoutChangeEvent } from "react-native";
+import { Animated, Dimensions, Modal, View } from "react-native";
 
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -13,10 +14,6 @@ const VISIBLE_DURATION_MS = 5000;
 // Intrinsic size of einhorn.webp is 524x833
 const MASCOT_WIDTH = 170;
 const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (833 / 524));
-// Reserved space below the mascot for an optional message caption, so the
-// circle (sized below) grows to enclose the text too, instead of the text
-// spilling past the circle's edge.
-const MESSAGE_AREA_HEIGHT = 110;
 
 interface UnicornEasterEggProperties {
   visible: boolean;
@@ -45,13 +42,18 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
   const onHideRef = useRef(onHide);
   onHideRef.current = onHide;
 
+  // Measured from the actual mascot+message block (rather than assumed from
+  // a guessed message height) so the circle always ends up truly centered
+  // on its content, regardless of how many lines the message wraps to.
+  const [contentHeight, setContentHeight] = useState(MASCOT_HEIGHT);
+  const handleContentLayout = useCallback((event: LayoutChangeEvent) => {
+    setContentHeight(event.nativeEvent.layout.height);
+  }, []);
+
   // The circle encloses the mascot alone, or the mascot plus the message
   // caption below it — sized off each case's own diagonal, with a bit of
   // margin, matching the dome behind the mascot in the report success
   // animation.
-  const contentHeight = message
-    ? MASCOT_HEIGHT + MESSAGE_AREA_HEIGHT
-    : MASCOT_HEIGHT;
   const circleDiameter = Math.hypot(MASCOT_WIDTH, contentHeight) * 1.1;
 
   const translateY = animation.interpolate({
@@ -111,6 +113,7 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
         }}
       >
         <Animated.View
+          testID="unicorn-easter-egg-circle"
           style={{
             backgroundColor: Colors[colorScheme].accent,
             borderRadius: circleDiameter / 2,
@@ -121,26 +124,32 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
             width: circleDiameter,
           }}
         />
-        <Image
-          source={mascot}
-          accessible={false}
-          style={{ height: MASCOT_HEIGHT, width: MASCOT_WIDTH }}
-        />
-        {message && (
-          <UiText
-            size="lg"
-            bold
-            style={{
-              color: Colors[colorScheme].onPrimary,
-              marginTop: spacing.md,
-              paddingBottom: spacing.xl,
-              paddingHorizontal: spacing.xl,
-              textAlign: "center",
-            }}
-          >
-            {message}
-          </UiText>
-        )}
+        <View
+          testID="unicorn-easter-egg-content"
+          onLayout={handleContentLayout}
+          style={{ alignItems: "center" }}
+        >
+          <Image
+            source={mascot}
+            accessible={false}
+            style={{ height: MASCOT_HEIGHT, width: MASCOT_WIDTH }}
+          />
+          {message && (
+            <UiText
+              size="lg"
+              bold
+              style={{
+                color: Colors[colorScheme].onPrimary,
+                marginTop: spacing.md,
+                paddingBottom: spacing.xl,
+                paddingHorizontal: spacing.xl,
+                textAlign: "center",
+              }}
+            >
+              {message}
+            </UiText>
+          )}
+        </View>
       </Animated.View>
     </Modal>
   );

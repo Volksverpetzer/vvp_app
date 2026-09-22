@@ -76,6 +76,35 @@ describe("UnicornEasterEgg", () => {
     await unmount();
   });
 
+  it("centers the circle on the measured mascot+message block, not a guessed height", async () => {
+    const { getByTestId, unmount } = await render(
+      <UnicornEasterEgg
+        visible
+        onHide={jest.fn()}
+        message="Juhu, Level geschafft!"
+      />,
+    );
+
+    const contentView = getByTestId("unicorn-easter-egg-content", {
+      includeHiddenElements: true,
+    });
+    await act(() => {
+      fireEvent(contentView, "layout", {
+        nativeEvent: { layout: { height: 400, width: 200, x: 0, y: 0 } },
+      });
+    });
+
+    const circleStyle = getByTestId("unicorn-easter-egg-circle", {
+      includeHiddenElements: true,
+    }).props.style;
+    // The circle's own vertical center (top + diameter/2) must land on the
+    // measured content's vertical center (height/2) — i.e. `top` cancels
+    // out to exactly half the surplus between the circle and the content,
+    // regardless of the circle being larger than the content.
+    expect(circleStyle.top + circleStyle.height / 2).toBeCloseTo(400 / 2, 5);
+    await unmount();
+  });
+
   it("renders nothing when there is no mascot asset (e.g. Mimikama)", async () => {
     mockMascot = null;
     const { toJSON, unmount } = await render(

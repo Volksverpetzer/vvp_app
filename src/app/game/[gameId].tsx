@@ -1,3 +1,4 @@
+import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -9,6 +10,7 @@ import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
+import { AppImages } from "#/helpers/AppImages";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MemoryGame from "#/screens/Games/Memory";
 import type { DisinfoPair } from "#/types";
@@ -18,6 +20,10 @@ type GameParameters = {
 };
 
 const MAX_LEVEL = 2;
+
+// Intrinsic size of einhorn.webp is 524x833
+const MASCOT_WIDTH = 170;
+const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (833 / 524));
 
 const GameScreen = () => {
   const colorScheme = useAppColorScheme();
@@ -111,12 +117,21 @@ const GameScreen = () => {
       <NavBar />
       <ScrollView contentContainerStyle={styles.container}>
         <UiText size="xl" bold style={styles.title}>
-          Memory-Spiel: {gameId}
+          Desinformations-Memory
         </UiText>
         {isFinished ? (
-          <UiText size="lg" bold style={styles.finishedText}>
-            Weitere Level folgen bald!
-          </UiText>
+          <View style={styles.finishedContainer}>
+            {AppImages.announcementMascot && (
+              <Image
+                source={AppImages.announcementMascot}
+                accessible={false}
+                style={styles.finishedMascot}
+              />
+            )}
+            <UiText size="lg" bold style={styles.finishedText}>
+              Weitere Level folgen bald!
+            </UiText>
+          </View>
         ) : (
           <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
         )}
@@ -135,8 +150,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: spacing.md,
   },
-  finishedText: {
+  finishedContainer: {
+    alignItems: "center",
     marginTop: spacing.xxxl,
+  },
+  finishedMascot: {
+    height: MASCOT_HEIGHT,
+    width: MASCOT_WIDTH,
+  },
+  finishedText: {
+    marginTop: spacing.md,
     textAlign: "center",
   },
   title: { marginBottom: spacing.xl, textAlign: "center" },

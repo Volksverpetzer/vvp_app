@@ -28,7 +28,7 @@ const ActionTab = () => {
       <RegionMap />
       <View style={{ paddingHorizontal: spacing.xl }}>
         <UiButton
-          label="Desinformation Memory spielen"
+          label="Desinformations-Memory spielen"
           onPress={() => router.push("/game")}
         />
       </View>
