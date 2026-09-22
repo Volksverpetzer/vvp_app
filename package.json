@@ -6,6 +6,13 @@
   "expo": {
     "install": {
       "exclude": []
+    },
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-render-html"
+        ]
+      }
     }
   },
   "packageManager": "pnpm@12.5.1",
