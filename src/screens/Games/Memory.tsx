@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ViewStyle } from "react-native";
 import { Dimensions, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -16,18 +16,40 @@ import { generateDeck } from "./GameHelper";
 
 interface MemoryGameProperties {
   pairs: DisinfoPair[];
+  /** Fired once, the moment the last pair is matched. */
+  onAllMatched?: () => void;
 }
 
-const MemoryGame = ({ pairs }: MemoryGameProperties) => {
+const MemoryGame = ({ pairs, onAllMatched }: MemoryGameProperties) => {
   const colorScheme = useAppColorScheme();
   const { accent, background, error, surfaceInput, text } = Colors[colorScheme];
   const [deck, setDeck] = useState<MemoryCard[]>([]);
   const [firstCard, setFirstCard] = useState<MemoryCard | undefined>();
   const [secondCard, setSecondCard] = useState<MemoryCard | undefined>();
+  // Guards against firing onAllMatched more than once for the same deck —
+  // reset whenever a new set of pairs (e.g. the next level) comes in.
+  const hasCompletedRef = useRef(false);
 
   useEffect(() => {
+    hasCompletedRef.current = false;
     setDeck(generateDeck(pairs));
+    // A new set of pairs (e.g. the next level) starts with a clean
+    // selection — otherwise the header would still show the previous
+    // level's last (matched) pair until the player tapped a new card.
+    setFirstCard(undefined);
+    setSecondCard(undefined);
   }, [pairs]);
+
+  useEffect(() => {
+    if (
+      deck.length > 0 &&
+      !hasCompletedRef.current &&
+      deck.every((card) => card.isMatched)
+    ) {
+      hasCompletedRef.current = true;
+      onAllMatched?.();
+    }
+  }, [deck, onAllMatched]);
 
   useEffect(() => {
     if (firstCard && secondCard && firstCard.pairId === secondCard.pairId) {
@@ -145,7 +167,7 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
 const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
-  gameContainer: { alignItems: "center", flex: 1 },
+  gameContainer: { alignItems: "center" },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",

@@ -1,7 +1,9 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
+import UnicornEasterEgg from "#/components/animations/UnicornEasterEgg";
 import UiButton from "#/components/ui/UiButton";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -14,15 +16,18 @@ type GameParameters = {
   gameId: string;
 };
 
+const MAX_LEVEL = 2;
+
 const GameScreen = () => {
   const colorScheme = useAppColorScheme();
   const router = useRouter();
   const { gameId } = useLocalSearchParams<GameParameters>();
-  const [level, setLevel] = useState<number>(1);
+  const [level, setLevel] = useState(1);
+  const [showLevelComplete, setShowLevelComplete] = useState(false);
 
   // Für Demo: Nur für 'DesinformationMemory'
-  let memoryPairs: DisinfoPair[] = [];
-  if (gameId === "DesinformationMemory") {
+  const memoryPairs = useMemo<DisinfoPair[]>(() => {
+    if (gameId !== "DesinformationMemory") return [];
     const allPairs = [
       {
         pairId: "1",
@@ -73,66 +78,53 @@ const GameScreen = () => {
       },
     ];
     // Level 1: einfach (nur 3 Paare)
-    memoryPairs = level === 1 ? allPairs.slice(0, 3) : allPairs;
-  }
+    return level === 1 ? allPairs.slice(0, 3) : allPairs;
+  }, [gameId, level]);
+
+  const handleAllMatched = useCallback(() => {
+    setShowLevelComplete(true);
+  }, []);
+
+  // Advance to the next level only once the celebration popup has finished
+  // hiding itself, so the completed board stays visible underneath it
+  // instead of reshuffling out from under the popup.
+  const handleLevelCompleteHide = useCallback(() => {
+    setShowLevelComplete(false);
+    setLevel((current) => Math.min(current + 1, MAX_LEVEL));
+  }, []);
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: Colors[colorScheme].background },
-      ]}
+    <ScrollView
+      style={{ backgroundColor: Colors[colorScheme].background }}
+      contentContainerStyle={styles.container}
     >
       <UiText size="xl" bold style={styles.title}>
         Memory-Spiel: {gameId}
       </UiText>
-      <View style={styles.levelContainer}>
-        <UiText size="base" style={styles.levelText}>
-          Wähle dein Level:
-        </UiText>
+      <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
+      <View style={styles.backButtonContainer}>
         <UiButton
-          label="Level 1 (einfach)"
-          variant={level === 1 ? "primary" : "secondary"}
-          onPress={() => setLevel(1)}
-          style={styles.levelButton}
-        />
-        <UiButton
-          label="Level 2 (schwer)"
-          variant={level === 2 ? "primary" : "secondary"}
-          onPress={() => setLevel(2)}
-          style={styles.levelButton}
+          label="Zurück zur Übersicht"
+          onPress={() => router.push("/")}
         />
       </View>
-      <MemoryGame pairs={memoryPairs} />
-      <UiButton
-        label="Zurück zur Übersicht"
-        onPress={() => router.push("/")}
-        style={styles.backButton}
+      <UnicornEasterEgg
+        visible={showLevelComplete}
+        onHide={handleLevelCompleteHide}
+        message="Juhu, Level geschafft!"
       />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  backButton: {
+  backButtonContainer: {
     marginTop: spacing.xl,
   },
   container: {
     alignItems: "center",
-    flex: 1,
     padding: spacing.md,
   },
-  levelButton: {
-    marginHorizontal: spacing.xs,
-  },
-  levelContainer: {
-    alignItems: "center",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    marginBottom: spacing.xl,
-  },
-  levelText: { marginRight: spacing.md },
   title: { marginBottom: spacing.xl, textAlign: "center" },
 });
 

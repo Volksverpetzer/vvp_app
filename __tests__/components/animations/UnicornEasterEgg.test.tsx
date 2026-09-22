@@ -93,6 +93,26 @@ describe("UnicornEasterEgg", () => {
     await unmount();
   });
 
+  it("shows the optional message caption when provided", async () => {
+    const { queryByText, unmount } = await render(
+      <UnicornEasterEgg
+        visible
+        onHide={jest.fn()}
+        message="Juhu, Level geschafft!"
+      />,
+    );
+    expect(queryByText("Juhu, Level geschafft!")).not.toBeNull();
+    await unmount();
+  });
+
+  it("renders no caption when no message is provided", async () => {
+    const { queryByText, unmount } = await render(
+      <UnicornEasterEgg visible onHide={jest.fn()} />,
+    );
+    expect(queryByText("Juhu, Level geschafft!")).toBeNull();
+    await unmount();
+  });
+
   it("does not restart the dismiss timer when the parent re-renders (recreating onHide) but visible stays true", async () => {
     // Regression test: onHide used to be a dependency of the effect that
     // schedules the auto-dismiss, so a parent re-render that recreates the

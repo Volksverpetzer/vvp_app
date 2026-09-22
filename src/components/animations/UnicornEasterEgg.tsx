@@ -2,7 +2,9 @@ import { Image } from "expo-image";
 import { useCallback, useEffect, useRef } from "react";
 import { Animated, Dimensions, Modal } from "react-native";
 
+import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -19,15 +21,18 @@ const CIRCLE_DIAMETER = Math.hypot(MASCOT_WIDTH, MASCOT_HEIGHT) * 1.1;
 interface UnicornEasterEggProperties {
   visible: boolean;
   onHide: () => void;
+  /** Optional caption shown below the mascot, e.g. a level-complete cheer. */
+  message?: string;
 }
 
 /**
- * The Volksverpetzer mascot pops up full-screen for a few seconds when the
- * easter egg on the Settings screen is triggered, then hides itself
- * automatically. Mimikama has no mascot, so this renders nothing there.
+ * The Volksverpetzer mascot pops up full-screen for a few seconds — used for
+ * the Settings-screen easter egg as well as celebrating milestones like a
+ * completed game level — then hides itself automatically. Mimikama has no
+ * mascot, so this renders nothing there.
  */
 const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
-  const { visible, onHide } = properties;
+  const { visible, onHide, message } = properties;
   const mascot = AppImages.announcementMascot;
   const colorScheme = useAppColorScheme();
   const { height: screenHeight } = Dimensions.get("window");
@@ -112,6 +117,19 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
           accessible={false}
           style={{ height: MASCOT_HEIGHT, width: MASCOT_WIDTH }}
         />
+        {message && (
+          <UiText
+            size="lg"
+            bold
+            style={{
+              marginTop: spacing.md,
+              paddingHorizontal: spacing.xl,
+              textAlign: "center",
+            }}
+          >
+            {message}
+          </UiText>
+        )}
       </Animated.View>
     </Modal>
   );
