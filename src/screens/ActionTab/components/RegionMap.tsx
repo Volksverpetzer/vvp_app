@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 import {
   FirstPlaceIcon,
@@ -73,9 +73,11 @@ const RegionMap = () => {
         <Image
           source={{
             uri: `${Config.apiUrl}/proxy/map?week=${weekNumber}`,
-            headers: {
-              "Cache-Control": "max-age=604800",
-            },
+            // Not CORS-safelisted: sending it on web would force a
+            // preflight the proxy doesn't answer.
+            ...(Platform.OS !== "web" && {
+              headers: { "Cache-Control": "max-age=604800" },
+            }),
           }}
           cachePolicy="disk"
           contentFit="contain"
