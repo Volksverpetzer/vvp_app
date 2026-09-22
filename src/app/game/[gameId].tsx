@@ -1,12 +1,13 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import UnicornEasterEgg from "#/components/animations/UnicornEasterEgg";
-import UiButton from "#/components/ui/UiButton";
+import NavBar from "#/components/bars/NavBar";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MemoryGame from "#/screens/Games/Memory";
@@ -20,7 +21,6 @@ const MAX_LEVEL = 2;
 
 const GameScreen = () => {
   const colorScheme = useAppColorScheme();
-  const router = useRouter();
   const { gameId } = useLocalSearchParams<GameParameters>();
   const [level, setLevel] = useState(1);
   const [showLevelComplete, setShowLevelComplete] = useState(false);
@@ -94,33 +94,29 @@ const GameScreen = () => {
   }, []);
 
   return (
-    <ScrollView
-      style={{ backgroundColor: Colors[colorScheme].background }}
-      contentContainerStyle={styles.container}
+    <View
+      style={[
+        globalStyles.container,
+        { backgroundColor: Colors[colorScheme].background },
+      ]}
     >
-      <UiText size="xl" bold style={styles.title}>
-        Memory-Spiel: {gameId}
-      </UiText>
-      <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
-      <View style={styles.backButtonContainer}>
-        <UiButton
-          label="Zurück zur Übersicht"
-          onPress={() => router.push("/")}
-        />
-      </View>
+      <NavBar />
+      <ScrollView contentContainerStyle={styles.container}>
+        <UiText size="xl" bold style={styles.title}>
+          Memory-Spiel: {gameId}
+        </UiText>
+        <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
+      </ScrollView>
       <UnicornEasterEgg
         visible={showLevelComplete}
         onHide={handleLevelCompleteHide}
         message="Juhu, Level geschafft!"
       />
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  backButtonContainer: {
-    marginTop: spacing.xl,
-  },
   container: {
     alignItems: "center",
     padding: spacing.md,
