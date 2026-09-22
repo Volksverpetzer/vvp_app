@@ -2,8 +2,8 @@ import { decode } from "html-entities";
 
 import Config from "#/constants/Config";
 import {
-  CACHE_BUSTER_HEADERS,
   createClient,
+  getCacheBusterHeaders,
   get as netGet,
 } from "#/helpers/utils/networking";
 import type {
@@ -50,7 +50,7 @@ export default class WordPressAPI {
           _: timestamp, // Cache-busting parameter
           _embed: "author",
         },
-        headers: CACHE_BUSTER_HEADERS,
+        headers: getCacheBusterHeaders(),
         signal,
       },
     );
@@ -198,7 +198,7 @@ export default class WordPressAPI {
               _: Date.now(),
               _embed: "author",
             },
-            headers: CACHE_BUSTER_HEADERS,
+            headers: getCacheBusterHeaders(),
             signal,
           },
         );

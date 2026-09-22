@@ -82,15 +82,21 @@ function buildUrl(
  * Cache-defeating request headers for endpoints behind aggressive CDN
  * caches. Empty on web: these headers aren't CORS-safelisted and would
  * force a failing preflight; requests carry a timestamp param instead.
+ *
+ * Read `Platform.OS` inside the function rather than at module scope, so
+ * it reflects the platform at call time instead of whatever it was when
+ * this module first loaded (matches how `baseHeaders` is computed fresh
+ * per `createClient()` call).
  */
-export const CACHE_BUSTER_HEADERS: FetchHeaders =
-  Platform.OS === "web"
+export function getCacheBusterHeaders(): FetchHeaders {
+  return Platform.OS === "web"
     ? {}
     : {
         "Cache-Control": "no-cache, no-store, must-revalidate",
         Pragma: "no-cache",
         Expires: "0",
       };
+}
 
 export function createClient(
   baseURL: HttpsUrl,
@@ -104,7 +110,7 @@ export function createClient(
     ...(Platform.OS !== "web" && {
       "Content-Type": "application/json",
       "User-Agent": `${Constants.expoConfig?.slug}/${Application?.nativeApplicationVersion} (${Platform.OS}; ${Device.osName} ${Device.osVersion}; ${Device.modelName})`,
-      ...CACHE_BUSTER_HEADERS,
+      ...getCacheBusterHeaders(),
     }),
     ...extraHeaders,
   };
