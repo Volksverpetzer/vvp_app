@@ -24,6 +24,7 @@ const GameScreen = () => {
   const { gameId } = useLocalSearchParams<GameParameters>();
   const [level, setLevel] = useState(1);
   const [showLevelComplete, setShowLevelComplete] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
   // Für Demo: Nur für 'DesinformationMemory'
   const memoryPairs = useMemo<DisinfoPair[]>(() => {
@@ -87,10 +88,17 @@ const GameScreen = () => {
 
   // Advance to the next level only once the celebration popup has finished
   // hiding itself, so the completed board stays visible underneath it
-  // instead of reshuffling out from under the popup.
+  // instead of reshuffling out from under the popup. Finishing the last
+  // level shows a "more to come" screen instead of advancing further.
   const handleLevelCompleteHide = useCallback(() => {
     setShowLevelComplete(false);
-    setLevel((current) => Math.min(current + 1, MAX_LEVEL));
+    setLevel((current) => {
+      if (current >= MAX_LEVEL) {
+        setIsFinished(true);
+        return current;
+      }
+      return current + 1;
+    });
   }, []);
 
   return (
@@ -105,7 +113,13 @@ const GameScreen = () => {
         <UiText size="xl" bold style={styles.title}>
           Memory-Spiel: {gameId}
         </UiText>
-        <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
+        {isFinished ? (
+          <UiText size="lg" bold style={styles.finishedText}>
+            Weitere Level folgen bald!
+          </UiText>
+        ) : (
+          <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
+        )}
       </ScrollView>
       <UnicornEasterEgg
         visible={showLevelComplete}
@@ -120,6 +134,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     padding: spacing.md,
+  },
+  finishedText: {
+    marginTop: spacing.xxxl,
+    textAlign: "center",
   },
   title: { marginBottom: spacing.xl, textAlign: "center" },
 });

@@ -11,12 +11,12 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 const VISIBLE_DURATION_MS = 5000;
 
 // Intrinsic size of einhorn.webp is 524x833
-const MASCOT_WIDTH = 220;
+const MASCOT_WIDTH = 170;
 const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (833 / 524));
-// Large enough to fully enclose the mascot image (its diagonal), with a
-// bit of margin, matching the dome behind the mascot in the report
-// success animation
-const CIRCLE_DIAMETER = Math.hypot(MASCOT_WIDTH, MASCOT_HEIGHT) * 1.1;
+// Reserved space below the mascot for an optional message caption, so the
+// circle (sized below) grows to enclose the text too, instead of the text
+// spilling past the circle's edge.
+const MESSAGE_AREA_HEIGHT = 110;
 
 interface UnicornEasterEggProperties {
   visible: boolean;
@@ -45,9 +45,18 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
   const onHideRef = useRef(onHide);
   onHideRef.current = onHide;
 
+  // The circle encloses the mascot alone, or the mascot plus the message
+  // caption below it — sized off each case's own diagonal, with a bit of
+  // margin, matching the dome behind the mascot in the report success
+  // animation.
+  const contentHeight = message
+    ? MASCOT_HEIGHT + MESSAGE_AREA_HEIGHT
+    : MASCOT_HEIGHT;
+  const circleDiameter = Math.hypot(MASCOT_WIDTH, contentHeight) * 1.1;
+
   const translateY = animation.interpolate({
     inputRange: [0, 100],
-    outputRange: [screenHeight, screenHeight * 0.4 - MASCOT_HEIGHT / 2],
+    outputRange: [screenHeight, screenHeight * 0.4 - contentHeight / 2],
   });
   const circleScale = animation.interpolate({
     inputRange: [0, 100],
@@ -104,12 +113,12 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
         <Animated.View
           style={{
             backgroundColor: Colors[colorScheme].accent,
-            borderRadius: CIRCLE_DIAMETER / 2,
-            height: CIRCLE_DIAMETER,
+            borderRadius: circleDiameter / 2,
+            height: circleDiameter,
             position: "absolute",
-            top: (MASCOT_HEIGHT - CIRCLE_DIAMETER) / 2,
+            top: (contentHeight - circleDiameter) / 2,
             transform: [{ scale: circleScale }],
-            width: CIRCLE_DIAMETER,
+            width: circleDiameter,
           }}
         />
         <Image
@@ -122,7 +131,9 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
             size="lg"
             bold
             style={{
+              color: Colors[colorScheme].onPrimary,
               marginTop: spacing.md,
+              paddingBottom: spacing.xl,
               paddingHorizontal: spacing.xl,
               textAlign: "center",
             }}
