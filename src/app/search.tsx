@@ -83,17 +83,16 @@ const SearchContent = ({
 
   return (
     <View style={[globalStyles.container, { backgroundColor }]}>
+      <SearchHeader
+        search={search}
+        setSearch={setSearch}
+        setSearchParams={setSearchParams}
+        searchRef={searchRef}
+        resultsLength={resultsLength}
+        isLoading={isLoading}
+        showFaktenBot={effectiveTab === "ai"}
+      />
       <View style={[globalStyles.content, { flex: 1 }]}>
-        <SearchHeader
-          search={search}
-          setSearch={setSearch}
-          setSearchParams={setSearchParams}
-          searchRef={searchRef}
-          resultsLength={resultsLength}
-          isLoading={isLoading}
-          showFaktenBot={effectiveTab === "ai"}
-        />
-
         {/* Tab toggle */}
         <View
           style={{
@@ -143,7 +142,6 @@ const SearchContent = ({
               setIsLoading={setIsLoading}
               search={searchParams}
               setResultsLength={setResultsLength}
-              showFaktenBot={true}
             />
           ) : (
             <View style={{ flex: 1, justifyContent: "center" }}>

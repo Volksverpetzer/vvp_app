@@ -3,16 +3,20 @@ import { useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import { WebView } from "react-native-webview";
 
-import { PlayIcon } from "#/components/Icons";
+import { ArticleViewIcon, PlayIcon } from "#/components/Icons";
 import Typography from "#/components/ui/Typography";
+import UiBadge from "#/components/ui/UiBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
+import UiText from "#/components/ui/UiText";
 import Config from "#/constants/Config";
 import {
   CARD_CONTENT_GAP,
   POST_PADDING_HORIZONTAL,
   globalStyles,
 } from "#/constants/GlobalStyles";
+import { iconSizes } from "#/constants/IconSizes";
+import { spacing } from "#/constants/Spacing";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import type { YouTubePostProperties } from "#/types";
@@ -23,7 +27,7 @@ const YOUTUBE_BRAND_COLOR = "#FF0000";
  * Renders a YouTube Post
  */
 const YouTubePost = (properties: YouTubePostProperties) => {
-  const { id, snippet, inView, player } = properties;
+  const { id, snippet, inView, player, statistics } = properties;
   const dims = {
     width: Number.parseInt(player.embedWidth),
     height: Number.parseInt(player.embedHeight),
@@ -39,6 +43,11 @@ const YouTubePost = (properties: YouTubePostProperties) => {
     : snippet.thumbnails.default.url;
   const published = new Date(snippet.publishedAt);
   const date = `${published.getDate()}.${published.getMonth() + 1}.${published.getFullYear()}`;
+
+  const viewCount = Number.parseInt(statistics?.viewCount ?? "", 10);
+  const formattedViews = viewCount
+    .toString()
+    .replaceAll(/\B(?=(\d{3})+(?!\d))/g, ".");
 
   const info = (
     <View style={{ paddingHorizontal: POST_PADDING_HORIZONTAL }}>
@@ -70,7 +79,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             <Image
               style={{
                 flex: 1,
-                width: width - 24,
+                width: "100%",
                 backgroundColor: corporate,
               }}
               source={{ uri: preview }}
@@ -80,6 +89,29 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             >
               <PlayIcon size={56} color={YOUTUBE_BRAND_COLOR} />
             </View>
+            <UiBadge position="topLeft" variant="primary">
+              <UiText style={[globalStyles.pillLabel, globalStyles.whiteText]}>
+                Video
+              </UiText>
+            </UiBadge>
+            {inView && Config.enableEngagement && viewCount > 0 && (
+              <UiBadge position="topRight" variant="accent">
+                <View
+                  accessible
+                  accessibilityLabel={`${formattedViews} Aufrufe`}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: spacing.xs,
+                  }}
+                >
+                  <ArticleViewIcon size={iconSizes.xs} color="#fff" />
+                  <UiText style={[{ color: "#fff" }, globalStyles.pillLabel]}>
+                    {formattedViews}
+                  </UiText>
+                </View>
+              </UiBadge>
+            )}
           </UiPressable>
         </View>
         {info}

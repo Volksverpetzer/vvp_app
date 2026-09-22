@@ -7,8 +7,14 @@ import Colors from "#/constants/Colors";
 import { hexToRgb } from "#/helpers/utils/color";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-/** Fraction of the header that stays solid before the fade begins. */
-const GRADIENT_LOCATIONS: [number, number] = [0.7, 1];
+/**
+ * Fade starts early and eases out over several stops, so the bottom edge
+ * blends in gradually instead of showing a visible band.
+ */
+const GRADIENT_LOCATIONS: [number, number, number, number] = [
+  0.4, 0.62, 0.82, 1,
+];
+const GRADIENT_ALPHAS = [1, 0.75, 0.35, 0.1];
 
 /**
  * Shared header background: a vertical gradient from the app background color
@@ -29,7 +35,14 @@ const UiHeaderGradient = ({
 
   return (
     <LinearGradient
-      colors={[`rgba(${r},${g},${b},1)`, `rgba(${r},${g},${b},0.1)`]}
+      colors={
+        GRADIENT_ALPHAS.map((a) => `rgba(${r},${g},${b},${a})`) as [
+          string,
+          string,
+          string,
+          string,
+        ]
+      }
       locations={GRADIENT_LOCATIONS}
       style={style}
     >
