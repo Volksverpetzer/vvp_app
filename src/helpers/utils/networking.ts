@@ -69,16 +69,6 @@ function buildUrl(
 }
 
 /**
- * Create a fetch client with default headers.
- *
- * The User-Agent will look like this:
- * YourApp/1.2.3 (android; Android 14; Pixel 7)
- * YourApp/1.2.3 (ios; iOS 17.3; iPhone 15 Pro)
- *
- * @param baseURL Base URL for requests
- * @param extraHeaders Additional headers merged into every request
- */
-/**
  * Cache-defeating request headers for endpoints behind aggressive CDN
  * caches. Empty on web: these headers aren't CORS-safelisted and would
  * force a failing preflight; requests carry a timestamp param instead.
@@ -98,6 +88,16 @@ export function getCacheBusterHeaders(): FetchHeaders {
       };
 }
 
+/**
+ * Create a fetch client with default headers.
+ *
+ * The User-Agent will look like this:
+ * YourApp/1.2.3 (android; Android 14; Pixel 7)
+ * YourApp/1.2.3 (ios; iOS 17.3; iPhone 15 Pro)
+ *
+ * @param baseURL Base URL for requests
+ * @param extraHeaders Additional headers merged into every request
+ */
 export function createClient(
   baseURL: HttpsUrl,
   extraHeaders: FetchHeaders = {},

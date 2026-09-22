@@ -58,6 +58,21 @@ describe("Networking utilities", () => {
     );
   });
 
+  it("getCacheBusterHeaders returns no headers on web and cache-defeating headers on native", () => {
+    expect(Networking.getCacheBusterHeaders()).toEqual({
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    });
+
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      expect(Networking.getCacheBusterHeaders()).toEqual({});
+    } finally {
+      platform.restore();
+    }
+  });
+
   it("createClient omits preflight-triggering default headers on web", async () => {
     const platform = jest.replaceProperty(Platform, "OS", "web");
     try {
