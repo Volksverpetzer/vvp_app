@@ -1,9 +1,9 @@
+import RenderHtml from "@native-html/render";
 import { decode } from "html-entities";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { LayoutChangeEvent } from "react-native";
 import { View, useWindowDimensions } from "react-native";
-import RenderHtml from "react-native-render-html";
 
 import Typography from "#/components/ui/Typography";
 import UiCard from "#/components/ui/UiCard";

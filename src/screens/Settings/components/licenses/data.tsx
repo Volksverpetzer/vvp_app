@@ -47,9 +47,15 @@ export default {
     licenseUrl:
       "https://github.com/likashefqet/react-native-image-zoom/raw/HEAD/LICENSE",
   },
-  "@native-html/iframe-plugin@2.6.1": {
+  "@native-html/iframe-plugin@3.0.0-alpha.0": {
     licenses: "MIT",
     repository: "https://github.com/native-html/plugins",
+    licenseUrl: "https://github.com/native-html/plugins/raw/HEAD/LICENSE",
+  },
+  "@native-html/render@1.0.3": {
+    licenses: "MIT",
+    repository: "https://github.com/native-html/render",
+    licenseUrl: "https://github.com/native-html/render/raw/HEAD/LICENSE",
   },
   "@react-native-async-storage/async-storage@2.2.0": {
     licenses: "MIT",
@@ -283,10 +289,6 @@ export default {
     repository: "https://github.com/software-mansion/react-native-reanimated",
     licenseUrl:
       "https://github.com/software-mansion/react-native-reanimated/raw/HEAD/LICENSE",
-  },
-  "react-native-render-html@6.3.4": {
-    licenses: "BSD-2-Clause",
-    repository: "https://github.com/meliorence/react-native-render-html",
   },
   "react-native-safe-area-context@5.7.0": {
     licenses: "MIT",

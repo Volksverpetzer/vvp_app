@@ -1,10 +1,10 @@
 import { describe, expect, it, jest } from "@jest/globals";
+import type { InternalRendererProps, TText } from "@native-html/render";
 import { render } from "@testing-library/react-native";
-import type { InternalRendererProps, TText } from "react-native-render-html";
 
 import EmRenderer from "#/screens/Home/components/article/renderer/EmRenderer";
 
-jest.mock("react-native-render-html", () => {
+jest.mock("@native-html/render", () => {
   const ReactInFactory = require("react");
   const { View } = require("react-native");
   return {

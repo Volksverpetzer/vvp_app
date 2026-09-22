@@ -1,15 +1,15 @@
 import { iframeModel } from "@native-html/iframe-plugin";
-import type { ChildNode } from "domhandler";
-import type { RefObject } from "react";
-import React, { useMemo } from "react";
-import type { GestureResponderEvent, View } from "react-native";
 import type {
   CustomTagRendererRecord,
   Element,
   InternalRendererProps,
   TBlock,
-} from "react-native-render-html";
-import RenderHtml, { defaultHTMLElementModels } from "react-native-render-html";
+} from "@native-html/render";
+import RenderHtml, { defaultHTMLElementModels } from "@native-html/render";
+import type { ChildNode } from "domhandler";
+import type { RefObject } from "react";
+import React, { useMemo } from "react";
+import type { GestureResponderEvent, View } from "react-native";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -76,7 +76,7 @@ const Body = (properties: BodyProperties) => {
     [colorScheme],
   );
 
-  // Memoized like renderersProperties below: react-native-render-html can
+  // Memoized like renderersProperties below: @native-html/render can
   // remount custom-rendered elements when this prop's identity changes,
   // which for the iframe renderer means remounting the embedded WebView —
   // visible as a reload/black-frame flash on an embedded YouTube video

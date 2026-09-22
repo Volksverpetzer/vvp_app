@@ -3,7 +3,7 @@ import React from "react";
 
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 
-jest.mock("react-native-render-html", () => jest.fn(() => null));
+jest.mock("@native-html/render", () => jest.fn(() => null));
 
 jest.mock("html-entities", () => ({
   decode: jest.fn((s: string) => s),

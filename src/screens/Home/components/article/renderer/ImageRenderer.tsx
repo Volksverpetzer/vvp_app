@@ -1,10 +1,10 @@
+import type { InternalRendererProps, TBlock } from "@native-html/render";
+import { useInternalRenderer } from "@native-html/render";
 import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import type { InternalRendererProps, TBlock } from "react-native-render-html";
-import { useInternalRenderer } from "react-native-render-html";
 
 import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
 import UiPressable from "#/components/ui/UiPressable";
