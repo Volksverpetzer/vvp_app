@@ -175,6 +175,14 @@ const Body = (properties: BodyProperties) => {
       contentWidth={width}
       customHTMLElementModels={customHTMLElementModels}
       domVisitors={{ onElement }}
+      // Every visual style comes from tagsStyles/baseStyle/the custom
+      // renderers below — nothing implicit from the engine's own default
+      // stylesheet. That default stylesheet isn't part of this library's
+      // public API and silently differs between versions (a heading lost
+      // its bold weight and margin across an engine bump, even though our
+      // own tagsStyles for it hadn't changed) — disabling it removes that
+      // whole class of upgrade risk.
+      enableUserAgentStyles={false}
       baseStyle={{
         fontFamily: fontFamily.regular,
         maxWidth: maxWidth,

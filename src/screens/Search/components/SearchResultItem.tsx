@@ -103,6 +103,9 @@ const SearchResultItem = ({
       systemFonts={SOURCE_SANS_FONTS}
       contentWidth={contentWidth}
       baseStyle={baseStyle}
+      // See Body.tsx for why: only tagsStyles/baseStyle should style this,
+      // never the engine's own (unversioned, implicit) default stylesheet.
+      enableUserAgentStyles={false}
     />
   );
 
