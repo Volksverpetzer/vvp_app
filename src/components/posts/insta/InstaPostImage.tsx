@@ -2,7 +2,7 @@ import { Zoomable } from "@likashefqet/react-native-image-zoom";
 import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
 import React, { useCallback, useMemo, useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -149,7 +149,11 @@ const InstaPostImage = ({
                     page >= index - 1 && inView
                       ? {
                           uri: source,
-                          headers: { "Cache-Control": "max-age=604000" },
+                          // Not CORS-safelisted: sending it on web would force
+                          // a preflight the media proxy doesn't answer.
+                          ...(Platform.OS !== "web" && {
+                            headers: { "Cache-Control": "max-age=604000" },
+                          }),
                         }
                       : undefined
                   }

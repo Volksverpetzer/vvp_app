@@ -1,5 +1,6 @@
 import { describe, expect, it, jest } from "@jest/globals";
 import { act, render } from "@testing-library/react-native";
+import { Platform } from "react-native";
 
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import { spacing } from "#/constants/Spacing";
@@ -108,13 +109,52 @@ describe("InstaPostImage", () => {
     const before = flatten(findImageNode(toJSON()).props.style);
     expect(Number.isFinite(before.aspectRatio)).toBe(true);
 
-    act(() => {
+    // Awaited: a sync act() here left the state update pending past this
+    // test's end, bleeding into the next test's render (its toJSON() came
+    // back null).
+    await act(async () => {
       findImageNode(toJSON()).props.onLoad({
         nativeEvent: { source: { width: 0, height: 400 } },
       });
+      await Promise.resolve();
     });
 
     const after = flatten(findImageNode(toJSON()).props.style);
     expect(after.aspectRatio).toBe(before.aspectRatio);
+  });
+
+  const findExpoImageNode = (node: any): any => {
+    if (!node) return undefined;
+    if (node.type === "ViewManagerAdapter_ExpoImage") return node;
+    for (const child of node.children ?? []) {
+      if (typeof child !== "object") continue;
+      const found = findExpoImageNode(child);
+      if (found) return found;
+    }
+    return undefined;
+  };
+
+  // Regression guard: Cache-Control isn't CORS-safelisted, so sending it on
+  // web forces a preflight the media proxy doesn't answer and the image
+  // silently never loads. See this PR.
+  it("omits the Cache-Control source header on web but keeps it on native", async () => {
+    const { toJSON } = await render(
+      <InstaPostImage {...baseProps} photos={["native.jpg"]} inView />,
+    );
+    expect(findExpoImageNode(toJSON()).props.source[0].headers).toEqual({
+      "Cache-Control": "max-age=604000",
+    });
+
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const { toJSON: toJSONWeb } = await render(
+        <InstaPostImage {...baseProps} photos={["web.jpg"]} inView />,
+      );
+      expect(
+        findExpoImageNode(toJSONWeb()).props.source[0].headers,
+      ).toBeUndefined();
+    } finally {
+      platform.restore();
+    }
   });
 });
