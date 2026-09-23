@@ -94,6 +94,11 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       color: textColor,
       fontSize: fontSizes.lg,
       lineHeight: CONTENT_LINE_HEIGHT,
+      // The site's own <li> has no margin at all — its item spacing
+      // comes from an oversized line-height (~2x font-size) on a
+      // single line of text, a CSS-only trick RN's box model can't
+      // reproduce. marginBottom is the closest RN equivalent to keep
+      // list items from running together.
       marginBottom: spacing.md,
     },
     ul: {
@@ -101,7 +106,15 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       paddingRight: spacing.md,
       paddingBottom: spacing.xxl,
     },
-    img: { minHeight: 200 },
+    img: {
+      minHeight: 200,
+      // Bare <img> tags (WordPress classic-editor output without a
+      // <figure> wrapper) get unwrapped to a plain sibling node by
+      // handleImageElements — without their own bottom spacing they'd
+      // butt directly against whatever follows (e.g. a heading with
+      // no paddingTop under the bottom-only convention).
+      marginBottom: spacing.xl,
+    },
     figure: {
       left: 0,
       marginBottom: spacing.xl,

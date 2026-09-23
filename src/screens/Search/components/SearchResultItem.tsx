@@ -55,12 +55,14 @@ const SearchResultItem = ({
   const [isTruncated, setIsTruncated] = useState(false);
   const [hasMeasured, setHasMeasured] = useState(false);
 
-  // The excerpt's <p> tag carries its own vertical padding (see
-  // getTagStyles), which counts toward both the clamped box and the
+  // The excerpt's <p> tag carries its own paddingBottom (see
+  // getTagStyles — it has no paddingTop under the bottom-only spacing
+  // convention), which counts toward both the clamped box and the
   // measured height — fold it in so the line-count math stays accurate.
   const collapsedHeight = useMemo(() => {
-    const pPadding = (styles.p as { padding?: number } | undefined)?.padding;
-    return COLLAPSED_LINES * CONTENT_LINE_HEIGHT + 2 * (pPadding ?? 0);
+    const pPaddingBottom = (styles.p as { paddingBottom?: number } | undefined)
+      ?.paddingBottom;
+    return COLLAPSED_LINES * CONTENT_LINE_HEIGHT + (pPaddingBottom ?? 0);
   }, [styles]);
 
   const handleMeasure = useCallback(
