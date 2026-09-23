@@ -17,7 +17,11 @@ const EmRenderer = (properties: InternalRendererProps<TText>) => {
       {...rendererProps}
       style={[
         rendererProps.style as TextStyle,
-        { fontFamily: resolvedFontFamily },
+        // fontStyle: "normal" cancels the engine's UA-default italic for
+        // <em> — resolvedFontFamily is already an italic-cut font file, and
+        // stacking the synthetic oblique on top of it on Android changes
+        // glyph advance widths (tighter wrapping) without changing fontSize.
+        { fontFamily: resolvedFontFamily, fontStyle: "normal" },
       ]}
     />
   );
