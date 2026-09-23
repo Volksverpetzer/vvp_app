@@ -3,6 +3,7 @@ import { fireEvent, render } from "@testing-library/react-native";
 import { Animated, Text } from "react-native";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
+import { CONTENT_MAX_WIDTH } from "#/constants/GlobalStyles";
 import { layers } from "#/constants/Layers";
 
 const mockPush = jest.fn();
@@ -113,11 +114,13 @@ describe("AnimatedHeader", () => {
 
   // Regression guard: the children wrapper had no alignSelf, so under the
   // gradient container's default `alignItems: "center"` it shrank to its
-  // content's width instead of the header's full width — visible on web as
-  // a search bar that didn't span the header (a `width: "100%"` child
+  // content's width instead of the header's width — visible on web as a
+  // search bar that didn't span the header (a `width: "100%"` child
   // resolves against this wrapper, so the wrapper itself must stretch).
+  // Fixing that by stretching to the full window overshot too — the wrapper
+  // must cap at the feed's own content column width, not the raw window.
   // See this PR.
-  it("stretches the children wrapper to the header's full width", async () => {
+  it("caps the children wrapper at the feed's content-column width, stretched to fill up to it", async () => {
     const { getByText } = await render(
       <AnimatedHeader
         scrollOffsetY={scrollOffsetY()}
@@ -133,5 +136,6 @@ describe("AnimatedHeader", () => {
       node = node.parent;
     }
     expect(node).toBeTruthy();
+    expect(flatten(node.props.style).maxWidth).toBe(CONTENT_MAX_WIDTH);
   });
 });

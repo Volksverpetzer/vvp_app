@@ -9,6 +9,10 @@ import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { fontFamily } from "#/constants/FontFamily";
+import {
+  CONTENT_HORIZONTAL_PADDING,
+  CONTENT_MAX_WIDTH,
+} from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
 import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
@@ -151,8 +155,17 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
           ))}
         <View
           style={{
+            // alignSelf overrides the gradient container's alignItems:
+            // "center", which would otherwise shrink this wrapper (and any
+            // width: "100%" child inside it, like the home search bar) to
+            // its content's size instead of the header's width. maxWidth +
+            // auto margins then cap that to the feed's own content column
+            // instead of the full window, matching globalStyles.content.
             alignSelf: "stretch",
-            marginHorizontal: spacing.md,
+            width: "100%",
+            maxWidth: CONTENT_MAX_WIDTH,
+            marginHorizontal: "auto",
+            paddingHorizontal: CONTENT_HORIZONTAL_PADDING,
           }}
         >
           {children}
