@@ -1,5 +1,6 @@
 import { describe, expect, it, jest } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react-native";
+import { Platform } from "react-native";
 
 import { spacing } from "#/constants/Spacing";
 import RegionMap from "#/screens/ActionTab/components/RegionMap";
@@ -98,5 +99,40 @@ describe("RegionMap", () => {
     };
 
     expect(findColumn(toJSON())).toBeDefined();
+  });
+
+  // Regression guard: Cache-Control isn't CORS-safelisted, so sending it on
+  // web forces a preflight the map proxy doesn't answer and the image
+  // silently never loads. See this PR.
+  it("omits the Cache-Control source header on web but keeps it on native", async () => {
+    mockGetRegions.mockResolvedValue(csv);
+
+    const findExpoImageNode = (node: any): any => {
+      if (!node) return undefined;
+      if (node.type === "ViewManagerAdapter_ExpoImage") return node;
+      for (const child of node.children ?? []) {
+        if (typeof child !== "object") continue;
+        const found = findExpoImageNode(child);
+        if (found) return found;
+      }
+      return undefined;
+    };
+
+    const { findByText, toJSON } = await render(<RegionMap />);
+    await findByText(" Bayern");
+    expect(findExpoImageNode(toJSON()).props.source[0].headers).toEqual({
+      "Cache-Control": "max-age=604800",
+    });
+
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const web = await render(<RegionMap />);
+      await web.findByText(" Bayern");
+      expect(
+        findExpoImageNode(web.toJSON()).props.source[0].headers,
+      ).toBeUndefined();
+    } finally {
+      platform.restore();
+    }
   });
 });
