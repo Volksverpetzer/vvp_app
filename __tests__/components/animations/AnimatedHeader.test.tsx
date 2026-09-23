@@ -110,4 +110,28 @@ describe("AnimatedHeader", () => {
     expect(findTitle(root)).toBeDefined();
     expect(layers.sticky).toBeGreaterThan(layers.raised);
   });
+
+  // Regression guard: the children wrapper had no alignSelf, so under the
+  // gradient container's default `alignItems: "center"` it shrank to its
+  // content's width instead of the header's full width — visible on web as
+  // a search bar that didn't span the header (a `width: "100%"` child
+  // resolves against this wrapper, so the wrapper itself must stretch).
+  // See this PR.
+  it("stretches the children wrapper to the header's full width", async () => {
+    const { getByText } = await render(
+      <AnimatedHeader
+        scrollOffsetY={scrollOffsetY()}
+        minHeight={50}
+        maxHeight={150}
+      >
+        <Text>Search bar</Text>
+      </AnimatedHeader>,
+    );
+
+    let node = getByText("Search bar").parent;
+    while (node && flatten(node.props?.style).alignSelf !== "stretch") {
+      node = node.parent;
+    }
+    expect(node).toBeTruthy();
+  });
 });

@@ -151,6 +151,7 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
           ))}
         <View
           style={{
+            alignSelf: "stretch",
             marginHorizontal: spacing.md,
           }}
         >
