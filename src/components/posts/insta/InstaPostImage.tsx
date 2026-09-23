@@ -121,6 +121,25 @@ const InstaPostImage = ({
     [width, ratio],
   );
 
+  // On web, a trackpad's diagonal swipe carries both deltaX and deltaY —
+  // without this, the vertical component bleeds into the page's scroll at
+  // the same time the horizontal one moves the slider, making the image
+  // wobble vertically while swiping through it. Only suppress the page
+  // scroll when the gesture is horizontally dominant, so a normal
+  // (vertical) scroll over the carousel still scrolls the feed.
+  const handleWheel =
+    Platform.OS === "web" && photos.length > 1
+      ? (event: {
+          deltaX: number;
+          deltaY: number;
+          preventDefault: () => void;
+        }) => {
+          if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+            event.preventDefault();
+          }
+        }
+      : undefined;
+
   return (
     <View>
       <View style={{ backgroundColor: corporate }}>
@@ -132,6 +151,7 @@ const InstaPostImage = ({
           onScroll={scrollHandler}
           scrollEventThrottle={16}
           onMomentumScrollEnd={handleMomentumScrollEnd}
+          {...(handleWheel && { onWheel: handleWheel })}
         >
           {photos.map((source, index) => (
             <UiPressable

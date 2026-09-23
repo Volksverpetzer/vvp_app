@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import Colors from "#/constants/Colors";
@@ -16,7 +17,16 @@ const ActionTab = () => {
       style={{ flex: 1, backgroundColor }}
       contentContainerStyle={[
         globalStyles.content,
-        { paddingHorizontal: 0, gap: spacing.xl },
+        {
+          paddingHorizontal: 0,
+          gap: spacing.xl,
+          // On native, this screen sits below the device's status-bar safe
+          // area, which already clears AchievementComponent's badge (it
+          // pokes 60px above its own card). Web has no such inset, so the
+          // badge gets clipped by the scroll container's top edge without
+          // this.
+          ...(Platform.OS === "web" && { paddingTop: spacing.huge }),
+        },
       ]}
     >
       <AchievementComponent />

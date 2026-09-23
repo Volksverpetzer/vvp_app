@@ -1,7 +1,7 @@
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, View } from "react-native";
+import { Animated, Platform, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import { LogoBig } from "#/components/SvgIcons";
@@ -41,6 +41,12 @@ const HomeScreen = () => {
   const backgroundColor = Colors[colorScheme].surface;
 
   const HEADER_HEIGHT = 220;
+  // The collapsed header's content (search bar) is bottom-anchored with a
+  // fixed paddingBottom, so minHeight === paddingBottom + button height
+  // leaves it flush against the very top once fully collapsed. Native's
+  // status bar masks that; web has no such inset, so give it a few extra
+  // px there.
+  const HEADER_MIN_HEIGHT = Platform.OS === "web" ? 105 : 95;
 
   const [feedprops, setFeedProperties] = useState<FeedProperties>({
     fetchers: [],
@@ -68,7 +74,7 @@ const HomeScreen = () => {
           )
         }
         scrollOffsetY={scrollOffsetY}
-        minHeight={95}
+        minHeight={HEADER_MIN_HEIGHT}
         maxHeight={HEADER_HEIGHT}
       >
         <UiPressable

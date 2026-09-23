@@ -80,25 +80,51 @@ describe("RegionMap", () => {
     expect(style.paddingLeft).toBe(spacing.xs);
   });
 
-  it("sizes the right column's bottom padding from the shared tab-bar clearance", async () => {
+  // Regression guard: this clearance used to sit on just the ranking
+  // column, so it was overridden by the map column's own height whenever
+  // that column was taller — the card's actual bottom edge never reached
+  // the tab bar clearance it was meant to keep clear of. It must live on
+  // the outer row so it governs the whole card regardless of which column
+  // is taller. See PR #589 (web-image-preflight-and-sizing follow-up).
+  it("sizes the card's bottom margin from the shared tab-bar clearance", async () => {
     mockUseSafeAreaInsets.mockReturnValue({ bottom: 83 });
     mockGetRegions.mockResolvedValue(csv);
     const { findByText, toJSON } = await render(<RegionMap />);
     await findByText(" Bayern");
 
-    const findColumn = (node: any): any => {
-      if (!node) return undefined;
-      const style = flatten(node.props?.style);
-      if (style.paddingBottom === 83 + spacing.xl) return node;
-      for (const child of node.children ?? []) {
-        if (typeof child !== "object") continue;
-        const found = findColumn(child);
-        if (found) return found;
-      }
-      return undefined;
-    };
+    const root = toJSON() as any;
+    expect(flatten(root.props.style).marginBottom).toBe(83 + spacing.xl);
+  });
 
-    expect(findColumn(toJSON())).toBeDefined();
+  // Regression guard: native bleeds this card to the device edge under its
+  // real tab bar, so only the top corners are rounded there. Web has no
+  // such chrome to blend into and now has a visible gap below the card
+  // (previous test), so it should round all four corners instead of ending
+  // on a flat edge. See this PR.
+  it("rounds all four corners on web but only the top ones on native", async () => {
+    mockGetRegions.mockResolvedValue(csv);
+
+    const { findByText, toJSON } = await render(<RegionMap />);
+    await findByText(" Bayern");
+    const nativeStyle = flatten((toJSON() as any).props.style);
+    expect(nativeStyle.borderBottomLeftRadius).toBeUndefined();
+    expect(nativeStyle.borderBottomRightRadius).toBeUndefined();
+
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const web = await render(<RegionMap />);
+      await web.findByText(" Bayern");
+      const webStyle = flatten((web.toJSON() as any).props.style);
+      expect(webStyle.borderTopLeftRadius).toBe(
+        webStyle.borderBottomLeftRadius,
+      );
+      expect(webStyle.borderTopRightRadius).toBe(
+        webStyle.borderBottomRightRadius,
+      );
+      expect(webStyle.borderBottomLeftRadius).toBeGreaterThan(0);
+    } finally {
+      platform.restore();
+    }
   });
 
   // Regression guard: Cache-Control isn't CORS-safelisted, so sending it on

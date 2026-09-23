@@ -123,6 +123,60 @@ describe("InstaPostImage", () => {
     expect(after.aspectRatio).toBe(before.aspectRatio);
   });
 
+  const findScrollViewNode = (node: any): any => {
+    if (!node) return undefined;
+    if (node.props?.pagingEnabled) return node;
+    for (const child of node.children ?? []) {
+      if (typeof child !== "object") continue;
+      const found = findScrollViewNode(child);
+      if (found) return found;
+    }
+    return undefined;
+  };
+
+  // Regression guard: a trackpad's diagonal swipe carries both deltaX and
+  // deltaY — without suppressing the vertical component when the gesture is
+  // horizontally dominant, the page scrolls at the same time the slider
+  // does, making the image wobble vertically while swiping through it. See
+  // this PR.
+  it("prevents the page from scrolling on a horizontally-dominant wheel gesture, on web with multiple photos", async () => {
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const { toJSON } = await render(
+        <InstaPostImage {...baseProps} photos={["a.jpg", "b.jpg"]} />,
+      );
+      const scrollView = findScrollViewNode(toJSON());
+      const preventDefault = jest.fn();
+      scrollView.props.onWheel({ deltaX: 20, deltaY: 5, preventDefault });
+      expect(preventDefault).toHaveBeenCalled();
+
+      preventDefault.mockClear();
+      scrollView.props.onWheel({ deltaX: 5, deltaY: 20, preventDefault });
+      expect(preventDefault).not.toHaveBeenCalled();
+    } finally {
+      platform.restore();
+    }
+  });
+
+  it("does not wire a wheel handler on native, or for a single-photo carousel on web", async () => {
+    const { toJSON: nativeJSON } = await render(
+      <InstaPostImage {...baseProps} photos={["a.jpg", "b.jpg"]} />,
+    );
+    expect(findScrollViewNode(nativeJSON()).props.onWheel).toBeUndefined();
+
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const { toJSON: singlePhotoJSON } = await render(
+        <InstaPostImage {...baseProps} photos={["a.jpg"]} />,
+      );
+      expect(
+        findScrollViewNode(singlePhotoJSON()).props.onWheel,
+      ).toBeUndefined();
+    } finally {
+      platform.restore();
+    }
+  });
+
   const findExpoImageNode = (node: any): any => {
     if (!node) return undefined;
     if (node.type === "ViewManagerAdapter_ExpoImage") return node;

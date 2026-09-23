@@ -64,9 +64,23 @@ const RegionMap = () => {
         backgroundColor: primaryMuted,
         borderTopLeftRadius: radii.xxl,
         borderTopRightRadius: radii.xxl,
+        // Native bleeds this card to the device edge, under its real tab
+        // bar. Web has no such chrome to blend into, so round the bottom
+        // too instead of ending the card on a flat edge.
+        ...(Platform.OS === "web" && {
+          borderBottomLeftRadius: radii.xxl,
+          borderBottomRightRadius: radii.xxl,
+        }),
         gap: spacing.xl,
         overflow: "hidden",
         paddingHorizontal: spacing.xl,
+        // marginBottom, not padding: padding would extend this View's own
+        // background (colored box) by the clearance amount instead of
+        // leaving a gap after it. On the row itself, not a column, so the
+        // card's actual bottom edge clears the tab bar regardless of which
+        // column is taller — on just the ranking column, it was overridden
+        // by the map column's own height whenever that column was taller.
+        marginBottom: tabBarClearance,
       }}
     >
       <View style={{ backgroundColor: primaryMuted, flex: 1 }}>
@@ -109,7 +123,6 @@ const RegionMap = () => {
         style={{
           flex: 1,
           gap: spacing.md,
-          paddingBottom: tabBarClearance,
         }}
       >
         <UiText size="xl" bold style={globalStyles.whiteText}>
