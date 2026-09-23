@@ -63,11 +63,12 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     h3: {
       textTransform: "uppercase" as const,
       color: textColor,
-      padding: spacing.md,
+      paddingLeft: spacing.md,
+      paddingRight: spacing.md,
+      paddingBottom: spacing.md,
       fontSize: fontSizes.xxl,
       lineHeight: LINE_HEIGHTS.xxl,
       fontWeight: "bold" as const,
-      marginBottom: spacing.xl,
     },
     h4: {
       textTransform: "uppercase" as const,
@@ -91,14 +92,14 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     },
     li: {
       color: textColor,
-      paddingHorizontal: spacing.md,
       fontSize: fontSizes.lg,
       lineHeight: CONTENT_LINE_HEIGHT,
       marginBottom: spacing.md,
     },
     ul: {
-      marginBottom: spacing.xl,
-      paddingLeft: spacing.xxxl,
+      paddingLeft: spacing.xl,
+      paddingRight: spacing.md,
+      paddingBottom: spacing.xxl,
     },
     img: { minHeight: 200 },
     figure: {
