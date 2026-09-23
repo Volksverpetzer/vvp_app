@@ -80,13 +80,14 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     },
     h5: {
       color: textColor,
-      padding: spacing.md,
-      fontSize: fontSizes.xxl,
+      paddingLeft: spacing.md,
+      paddingRight: spacing.md,
+      paddingBottom: spacing.md,
+      fontSize: fontSizes.lg,
       // React Native's lineHeight only accepts a number — there's no "normal"
       // keyword to fall back to, so the equivalent is simply not setting it,
       // leaving the platform to use the font's own natural line height.
       fontWeight: "bold" as const,
-      marginBottom: spacing.xl,
     },
     li: {
       color: textColor,
