@@ -57,7 +57,7 @@ jest.mock("#/constants/Colors", () => ({
   },
 }));
 
-jest.mock("#/helpers/utils/color", () => ({
+jest.mock("#/helpers/utils/articleTagStyles", () => ({
   getTagStyles: jest.fn(() => ({})),
 }));
 

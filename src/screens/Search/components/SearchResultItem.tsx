@@ -20,7 +20,7 @@ import {
 } from "#/constants/GlobalStyles";
 import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
-import { getTagStyles } from "#/helpers/utils/color";
+import { getTagStyles } from "#/helpers/utils/articleTagStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 // Konstanten außerhalb der Komponente sind immer stabil
