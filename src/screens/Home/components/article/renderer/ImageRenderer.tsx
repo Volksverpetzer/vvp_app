@@ -1,16 +1,17 @@
+import type { InternalRendererProps, TBlock } from "@native-html/render";
+import { useInternalRenderer } from "@native-html/render";
 import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { View, useWindowDimensions } from "react-native";
-import type { InternalRendererProps, TBlock } from "react-native-render-html";
-import { useInternalRenderer } from "react-native-render-html";
+import { View } from "react-native";
 
 import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import { useImageCredit } from "#/hooks/useImageCredit";
 import type { HttpsUrl } from "#/types";
 
@@ -24,7 +25,10 @@ const ImageRenderer = ({ url, ...properties }: ImageRendererProperties) => {
   const [ratio, setRatio] = useState(1.5);
   const [isLoaded, setIsLoaded] = useState(false);
   const { rendererProps } = useInternalRenderer("img", properties);
-  const { width } = useWindowDimensions();
+  // The article body's rendered width, not the window's — on wide/desktop
+  // viewports the content column is narrower than the window, and sizing
+  // off the window made images overflow their container.
+  const { width } = useFeedDimensions();
   const colorScheme = useAppColorScheme();
   const uri = rendererProps.source.uri;
   const backgroundColor = Colors[colorScheme].background;

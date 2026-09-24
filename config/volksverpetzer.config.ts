@@ -67,6 +67,8 @@ const extraConfig: ExtraConfigType = {
   feeds: {
     wp: [
       {
+        // Apex, not www: www 301s to the apex, and cross-origin redirects
+        // without CORS headers fail on web
         handle: "https://volksverpetzer.de",
         label: "Artikel",
         enabled: true,

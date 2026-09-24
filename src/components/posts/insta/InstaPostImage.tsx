@@ -1,8 +1,8 @@
 import { Zoomable } from "@likashefqet/react-native-image-zoom";
 import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
-import React, { useCallback, useMemo, useState } from "react";
-import { View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Platform, View } from "react-native";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -15,6 +15,13 @@ import type { SharedValue } from "react-native-reanimated";
 import UiPressable from "#/components/ui/UiPressable";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
+
+// Exported for direct unit testing — the wheel listener it's used from is a
+// native, non-passive DOM listener attached imperatively via a ref (see
+// below), which the test renderer can't simulate, so this keeps the actual
+// decision logic covered independently of that wiring.
+export const isHorizontallyDominant = (deltaX: number, deltaY: number) =>
+  Math.abs(deltaX) > Math.abs(deltaY);
 
 interface InstaPostImageProps {
   photos: string[];
@@ -121,9 +128,37 @@ const InstaPostImage = ({
     [width, ratio],
   );
 
+  // On web, a trackpad's diagonal swipe carries both deltaX and deltaY —
+  // without this, the vertical component bleeds into the page's scroll at
+  // the same time the horizontal one moves the slider, making the image
+  // wobble vertically while swiping through it. Only suppress the page
+  // scroll when the gesture is horizontally dominant, so a normal
+  // (vertical) scroll over the carousel still scrolls the feed.
+  //
+  // This has to be a native, non-passive DOM listener rather than a JSX
+  // onWheel prop: React registers wheel listeners as passive by default
+  // (matching the browser's own scroll-performance intervention), and
+  // preventDefault() is silently ignored inside a passive listener.
+  const wrapperRef = React.useRef<View>(null);
+  const multiPhoto = photos.length > 1;
+
+  useEffect(() => {
+    if (Platform.OS !== "web" || !multiPhoto) return;
+    const node = wrapperRef.current as unknown as HTMLElement | null;
+    if (!node || typeof node.addEventListener !== "function") return;
+
+    const onWheel = (event: WheelEvent) => {
+      if (isHorizontallyDominant(event.deltaX, event.deltaY)) {
+        event.preventDefault();
+      }
+    };
+    node.addEventListener("wheel", onWheel, { passive: false });
+    return () => node.removeEventListener("wheel", onWheel);
+  }, [multiPhoto]);
+
   return (
     <View>
-      <View style={{ backgroundColor: corporate }}>
+      <View style={{ backgroundColor: corporate }} ref={wrapperRef}>
         <Animated.ScrollView
           horizontal
           pagingEnabled
@@ -149,7 +184,11 @@ const InstaPostImage = ({
                     page >= index - 1 && inView
                       ? {
                           uri: source,
-                          headers: { "Cache-Control": "max-age=604000" },
+                          // Not CORS-safelisted: sending it on web would force
+                          // a preflight the media proxy doesn't answer.
+                          ...(Platform.OS !== "web" && {
+                            headers: { "Cache-Control": "max-age=604000" },
+                          }),
                         }
                       : undefined
                   }
@@ -161,7 +200,7 @@ const InstaPostImage = ({
         </Animated.ScrollView>
       </View>
 
-      {photos.length > 1 && (
+      {multiPhoto && (
         <View
           style={[
             globalStyles.centered,

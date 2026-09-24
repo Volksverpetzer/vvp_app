@@ -1,7 +1,7 @@
+import type { CustomRendererProps, TBlock } from "@native-html/render";
 import { act, fireEvent, render } from "@testing-library/react-native";
 import * as Linking from "expo-linking";
 import { Dimensions } from "react-native";
-import type { CustomRendererProps, TBlock } from "react-native-render-html";
 
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";

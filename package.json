@@ -8,7 +8,7 @@
       "exclude": []
     }
   },
-  "packageManager": "pnpm@12.5.1",
+  "packageManager": "pnpm@12.6.0",
   "engines": {
     "node": "24.x"
   },
@@ -58,7 +58,8 @@
     "@expo/metro-runtime": "57.0.16",
     "@expo/require-utils": "57.0.5",
     "@likashefqet/react-native-image-zoom": "4.3.0",
-    "@native-html/iframe-plugin": "2.6.1",
+    "@native-html/iframe-plugin": "3.0.0-alpha.0",
+    "@native-html/render": "1.0.3",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-vector-icons/octicons": "21.1.4",
     "@rive-app/react-native": "0.4.20",
@@ -106,7 +107,6 @@
     "react-native-nitro-modules": "0.37.1",
     "react-native-reanimated": "4.5.1",
     "react-native-reanimated-carousel": "5.1.1",
-    "react-native-render-html": "6.3.4",
     "react-native-safe-area-context": "5.7.0",
     "react-native-screens": "4.26.2",
     "react-native-svg": "15.15.4",
@@ -128,8 +128,8 @@
     "@types/lodash": "4.17.25",
     "@types/node": "24.13.3",
     "@types/react": "19.2.18",
-    "@typescript-eslint/eslint-plugin": "8.70.0",
-    "@typescript-eslint/parser": "8.70.0",
+    "@typescript-eslint/eslint-plugin": "8.70.1",
+    "@typescript-eslint/parser": "8.70.1",
     "babel-jest": "29.7.0",
     "babel-plugin-module-resolver": "5.0.3",
     "babel-preset-expo": "57.0.12",
@@ -149,7 +149,7 @@
     "jest-react-native": "18.0.0",
     "license-checker-rseidelsohn": "5.0.1",
     "lint-staged": "17.5.1",
-    "prettier": "3.9.8",
+    "prettier": "3.9.9",
     "ts-node": "10.9.2",
     "typedoc": "0.28.20",
     "typescript": "6.0.3"

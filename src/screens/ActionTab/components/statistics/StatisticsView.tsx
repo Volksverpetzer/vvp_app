@@ -2,12 +2,12 @@ import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated, {
-  runOnUI,
   scrollTo,
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
+import { scheduleOnUI } from "react-native-worklets";
 
 import AnimatedPageDots from "#/components/animations/AnimatedPageDots";
 import { radii } from "#/constants/BorderRadius";
@@ -61,7 +61,7 @@ const StatisticsView = () => {
 
   const scrollToPanel = useCallback(
     (x: number) => {
-      runOnUI(scrollTo)(scrollViewRef, x, 0, true);
+      scheduleOnUI(scrollTo, scrollViewRef, x, 0, true);
     },
     [scrollViewRef],
   );

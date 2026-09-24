@@ -103,7 +103,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   // project doesn't run the React Compiler (no "reactCompiler" experiment in
   // app.config.ts), so nothing else gives these a stable identity across
   // renders. Body's `renderers` prop is rebuilt from handleAnchorPress /
-  // handleLinkPress on every render, and react-native-render-html can
+  // handleLinkPress on every render, and @native-html/render can
   // remount custom-rendered elements (like the WebView inside an embedded
   // iframe) when that prop's identity changes — visible as a reload/
   // black-frame flash on an embedded video every time Article re-renders.

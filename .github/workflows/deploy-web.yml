@@ -1,6 +1,9 @@
 name: Deploy Web to Bunny
 
 on:
+  push:
+    branches:
+      - prerelease
   workflow_dispatch:
 
 concurrency:

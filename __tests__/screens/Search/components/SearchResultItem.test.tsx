@@ -1,9 +1,10 @@
 import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 
+import { getTagStyles } from "#/helpers/utils/articleTagStyles";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 
-jest.mock("react-native-render-html", () => jest.fn(() => null));
+jest.mock("@native-html/render", () => jest.fn(() => null));
 
 jest.mock("html-entities", () => ({
   decode: jest.fn((s: string) => s),
@@ -57,7 +58,7 @@ jest.mock("#/constants/Colors", () => ({
   },
 }));
 
-jest.mock("#/helpers/utils/color", () => ({
+jest.mock("#/helpers/utils/articleTagStyles", () => ({
   getTagStyles: jest.fn(() => ({})),
 }));
 
@@ -126,6 +127,29 @@ describe("SearchResultItem", () => {
       expect(
         queryByTestId("excerpt-measurer", { includeHiddenElements: true }),
       ).toBeNull();
+    });
+
+    it("folds the <p> tag's paddingBottom into the collapsed height instead of ignoring it", async () => {
+      // Regression test: collapsedHeight used to read a `padding` shorthand
+      // key that getTagStyles no longer emits for `p` (it's paddingLeft/
+      // paddingRight/paddingBottom now), silently treating it as 0 and
+      // clamping ~20px too short. With the real paddingBottom (20) folded
+      // in, a measured height of 120 — between the old buggy threshold
+      // (4*27=108) and the correct one (108+20=128) — must NOT be flagged
+      // as truncated.
+      jest.mocked(getTagStyles).mockReturnValueOnce({
+        p: { paddingBottom: 20 },
+      } as ReturnType<typeof getTagStyles>);
+
+      const { queryByTestId } = await render(
+        <SearchResultItem title="Title" text="<p>content</p>" collapsible />,
+      );
+      await fireEvent(
+        queryByTestId("excerpt-measurer", { includeHiddenElements: true })!,
+        "layout",
+        { nativeEvent: { layout: { height: 120 } } },
+      );
+      expect(queryByTestId("excerpt-toggle")).toBeNull();
     });
 
     it("shows a 'Mehr lesen' toggle once the excerpt overflows, exposes accessibilityState, and expands on tap", async () => {

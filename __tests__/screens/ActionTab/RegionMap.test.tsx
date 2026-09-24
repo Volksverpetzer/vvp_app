@@ -1,17 +1,14 @@
 import { describe, expect, it, jest } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react-native";
+import { Platform } from "react-native";
 
+import { radii } from "#/constants/BorderRadius";
 import { spacing } from "#/constants/Spacing";
 import RegionMap from "#/screens/ActionTab/components/RegionMap";
 
 const mockGetRegions = jest.fn<() => Promise<string>>();
 jest.mock("#/helpers/network/Action", () => ({
   getRegions: () => mockGetRegions(),
-}));
-
-const mockUseSafeAreaInsets = jest.fn(() => ({ bottom: 0 }));
-jest.mock("react-native-safe-area-context", () => ({
-  useSafeAreaInsets: () => mockUseSafeAreaInsets(),
 }));
 
 const flatten = (style: unknown): Record<string, unknown> => {
@@ -79,24 +76,52 @@ describe("RegionMap", () => {
     expect(style.paddingLeft).toBe(spacing.xs);
   });
 
-  it("sizes the right column's bottom padding from the shared tab-bar clearance", async () => {
-    mockUseSafeAreaInsets.mockReturnValue({ bottom: 83 });
+  // Regression guard: the card used to bleed to a flat bottom edge (rounded
+  // top corners only), matching native's real tab bar underneath it. Web
+  // has no such chrome to blend into, so it now carries a fixed bottom
+  // padding and rounds all four corners on every platform. See this PR.
+  it("pads the bottom and rounds all four corners", async () => {
     mockGetRegions.mockResolvedValue(csv);
+
     const { findByText, toJSON } = await render(<RegionMap />);
     await findByText(" Bayern");
+    const style = flatten((toJSON() as any).props.style);
+    expect(style.paddingBottom).toBe(40);
+    expect(style.borderRadius).toBe(radii.xxl);
+  });
 
-    const findColumn = (node: any): any => {
+  // Regression guard: Cache-Control isn't CORS-safelisted, so sending it on
+  // web forces a preflight the map proxy doesn't answer and the image
+  // silently never loads. See this PR.
+  it("omits the Cache-Control source header on web but keeps it on native", async () => {
+    mockGetRegions.mockResolvedValue(csv);
+
+    const findExpoImageNode = (node: any): any => {
       if (!node) return undefined;
-      const style = flatten(node.props?.style);
-      if (style.paddingBottom === 83 + spacing.xl) return node;
+      if (node.type === "ViewManagerAdapter_ExpoImage") return node;
       for (const child of node.children ?? []) {
         if (typeof child !== "object") continue;
-        const found = findColumn(child);
+        const found = findExpoImageNode(child);
         if (found) return found;
       }
       return undefined;
     };
 
-    expect(findColumn(toJSON())).toBeDefined();
+    const { findByText, toJSON } = await render(<RegionMap />);
+    await findByText(" Bayern");
+    expect(findExpoImageNode(toJSON()).props.source[0].headers).toEqual({
+      "Cache-Control": "max-age=604800",
+    });
+
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const web = await render(<RegionMap />);
+      await web.findByText(" Bayern");
+      expect(
+        findExpoImageNode(web.toJSON()).props.source[0].headers,
+      ).toBeUndefined();
+    } finally {
+      platform.restore();
+    }
   });
 });

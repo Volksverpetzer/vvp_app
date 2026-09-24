@@ -152,10 +152,10 @@ const Header = (properties: HeaderProperties) => {
       <Typography type="title" style={{ paddingHorizontal: spacing.xl }}>
         {article_title}
       </Typography>
+      <UiSpace size={spacing.sm} />
       <Typography
         type="meta"
         style={{
-          paddingVertical: spacing.md,
           paddingHorizontal: spacing.xl,
         }}
       >
@@ -189,10 +189,12 @@ const Header = (properties: HeaderProperties) => {
           })[0]
         }
       </Typography>
+      <UiSpace size={spacing.sm} />
       <ArticleStats
         article_link={article_link}
         reading_time={article.reading_time}
       />
+      <UiSpace size={spacing.sm} />
       {audioUrl && audioAvailability === "available" && (
         <AudioPlayer
           audioUrl={audioUrl}

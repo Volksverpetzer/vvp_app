@@ -8,11 +8,17 @@ jest.mock("react-native-reanimated", () => ({
   useSharedValue: jest.fn((v: number) => ({ value: v })),
   useAnimatedRef: jest.fn(() => ({ current: null })),
   useAnimatedScrollHandler: jest.fn(() => () => {}),
-  runOnUI: jest.fn((fn: (...args: unknown[]) => void) => fn),
   scrollTo: jest.fn(),
   default: {
     ScrollView: require("react-native").ScrollView,
   },
+}));
+
+jest.mock("react-native-worklets", () => ({
+  __esModule: true,
+  scheduleOnUI: jest.fn(
+    (fn: (...args: unknown[]) => void, ...args: unknown[]) => fn(...args),
+  ),
 }));
 
 const mockScrollTo = jest.fn();
@@ -34,10 +40,11 @@ describe("StatisticsView chevron navigation", () => {
   beforeEach(() => {
     mockScrollTo.mockClear();
     const reanimated = require("react-native-reanimated");
-    reanimated.runOnUI.mockImplementation(
-      (fn: (...args: unknown[]) => void) => fn,
-    );
     reanimated.scrollTo.mockImplementation(mockScrollTo);
+    const worklets = require("react-native-worklets");
+    worklets.scheduleOnUI.mockImplementation(
+      (fn: (...args: unknown[]) => void, ...args: unknown[]) => fn(...args),
+    );
   });
 
   it("right chevron scrolls to panel width", async () => {
