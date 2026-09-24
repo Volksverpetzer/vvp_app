@@ -13,7 +13,7 @@ jest.mock("expo-router", () => ({
   useRouter: jest.fn(() => ({ push: mockPush })),
 }));
 
-jest.mock("react-native-render-html", () => ({
+jest.mock("@native-html/render", () => ({
   useInternalRenderer: jest.fn(() => ({
     rendererProps: { source: { uri: "https://example.com/article-image.jpg" } },
   })),

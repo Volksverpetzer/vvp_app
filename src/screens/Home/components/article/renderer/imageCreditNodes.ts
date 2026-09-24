@@ -1,4 +1,4 @@
-import type { TNode } from "react-native-render-html";
+import type { TNode } from "@native-html/render";
 
 /**
  * Attachment id from the wp-image-{id} class WordPress puts on images in

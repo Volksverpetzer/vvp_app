@@ -6,16 +6,9 @@
   "expo": {
     "install": {
       "exclude": []
-    },
-    "doctor": {
-      "reactNativeDirectoryCheck": {
-        "exclude": [
-          "react-native-render-html"
-        ]
-      }
     }
   },
-  "packageManager": "pnpm@12.5.1",
+  "packageManager": "pnpm@12.6.0",
   "engines": {
     "node": "24.x"
   },
@@ -65,7 +58,8 @@
     "@expo/metro-runtime": "57.0.16",
     "@expo/require-utils": "57.0.5",
     "@likashefqet/react-native-image-zoom": "4.3.0",
-    "@native-html/iframe-plugin": "2.6.1",
+    "@native-html/iframe-plugin": "3.0.0-alpha.0",
+    "@native-html/render": "1.0.3",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-vector-icons/octicons": "21.1.4",
     "@rive-app/react-native": "0.4.20",
@@ -113,7 +107,6 @@
     "react-native-nitro-modules": "0.37.1",
     "react-native-reanimated": "4.5.1",
     "react-native-reanimated-carousel": "5.1.1",
-    "react-native-render-html": "6.3.4",
     "react-native-safe-area-context": "5.7.0",
     "react-native-screens": "4.26.2",
     "react-native-svg": "15.15.4",
@@ -156,7 +149,7 @@
     "jest-react-native": "18.0.0",
     "license-checker-rseidelsohn": "5.0.1",
     "lint-staged": "17.5.1",
-    "prettier": "3.9.8",
+    "prettier": "3.9.9",
     "ts-node": "10.9.2",
     "typedoc": "0.28.20",
     "typescript": "6.0.3"

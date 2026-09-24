@@ -1,7 +1,7 @@
+import RenderHtml from "@native-html/render";
 import { render } from "@testing-library/react-native";
 import type { RefObject } from "react";
 import React from "react";
-import RenderHtml from "react-native-render-html";
 
 import HeaderRenderer from "#/screens/Home/components/article/renderer/HeaderRenderer";
 

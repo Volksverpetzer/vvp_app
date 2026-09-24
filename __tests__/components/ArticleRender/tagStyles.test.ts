@@ -1,4 +1,4 @@
-import { getTagStyles } from "#/helpers/utils/color";
+import { getTagStyles } from "#/helpers/utils/articleTagStyles";
 import { ColorScheme } from "#/hooks/useAppColorScheme";
 
 describe("tagStyles", () => {
