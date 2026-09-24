@@ -122,16 +122,19 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     },
     img: {
       minHeight: 200,
-      // Bare <img> tags (WordPress classic-editor output without a
-      // <figure> wrapper) get unwrapped to a plain sibling node by
-      // handleImageElements — without their own bottom spacing they'd
-      // butt directly against whatever follows (e.g. a heading with
-      // no paddingTop under the bottom-only convention).
-      marginBottom: spacing.xl,
+      // Bottom spacing for images is applied by ImageRenderer itself
+      // (see its `hasCaption` check) rather than here: this tagStyle
+      // isn't consumed by that custom renderer, and applying it here
+      // as well as on `figure` below double-stacked the spacing for
+      // captioned images (RN doesn't collapse margins the way the
+      // site's CSS does).
     },
     figure: {
       left: 0,
-      marginBottom: spacing.xl,
+      // No marginBottom here — see the `img` comment above. A figure
+      // without a caption gets its bottom spacing from ImageRenderer
+      // instead; one with a caption gets it from figcaption's
+      // paddingBottom below.
     },
     div: {},
     iframe: { left: 100 },
