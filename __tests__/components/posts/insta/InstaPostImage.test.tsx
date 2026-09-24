@@ -2,7 +2,9 @@ import { describe, expect, it, jest } from "@jest/globals";
 import { act, render } from "@testing-library/react-native";
 import { Platform } from "react-native";
 
-import InstaPostImage from "#/components/posts/insta/InstaPostImage";
+import InstaPostImage, {
+  isHorizontallyDominant,
+} from "#/components/posts/insta/InstaPostImage";
 import { spacing } from "#/constants/Spacing";
 
 jest.mock("react-native-reanimated", () => ({
@@ -123,55 +125,35 @@ describe("InstaPostImage", () => {
     expect(after.aspectRatio).toBe(before.aspectRatio);
   });
 
-  const findScrollViewNode = (node: any): any => {
-    if (!node) return undefined;
-    if (node.props?.pagingEnabled) return node;
-    for (const child of node.children ?? []) {
-      if (typeof child !== "object") continue;
-      const found = findScrollViewNode(child);
-      if (found) return found;
-    }
-    return undefined;
-  };
-
   // Regression guard: a trackpad's diagonal swipe carries both deltaX and
   // deltaY — without suppressing the vertical component when the gesture is
   // horizontally dominant, the page scrolls at the same time the slider
-  // does, making the image wobble vertically while swiping through it. See
-  // this PR.
-  it("prevents the page from scrolling on a horizontally-dominant wheel gesture, on web with multiple photos", async () => {
-    const platform = jest.replaceProperty(Platform, "OS", "web");
-    try {
-      const { toJSON } = await render(
-        <InstaPostImage {...baseProps} photos={["a.jpg", "b.jpg"]} />,
-      );
-      const scrollView = findScrollViewNode(toJSON());
-      const preventDefault = jest.fn();
-      scrollView.props.onWheel({ deltaX: 20, deltaY: 5, preventDefault });
-      expect(preventDefault).toHaveBeenCalled();
+  // does, making the image wobble vertically while swiping through it.
+  //
+  // The actual listener is attached imperatively to a ref'd DOM node
+  // outside React's synthetic event system (deliberately: React registers
+  // wheel listeners as passive by default, which silently ignores
+  // preventDefault() called from a JSX onWheel prop) — react-test-renderer
+  // has no real DOM, so that wiring itself isn't exercised here. This tests
+  // the decision logic the listener calls directly. See this PR.
+  describe("isHorizontallyDominant", () => {
+    it("is true when the horizontal delta exceeds the vertical one", () => {
+      expect(isHorizontallyDominant(20, 5)).toBe(true);
+    });
 
-      preventDefault.mockClear();
-      scrollView.props.onWheel({ deltaX: 5, deltaY: 20, preventDefault });
-      expect(preventDefault).not.toHaveBeenCalled();
-    } finally {
-      platform.restore();
-    }
+    it("is false when the vertical delta is equal to or exceeds the horizontal one", () => {
+      expect(isHorizontallyDominant(5, 20)).toBe(false);
+      expect(isHorizontallyDominant(10, 10)).toBe(false);
+    });
   });
 
-  it("does not wire a wheel handler on native, or for a single-photo carousel on web", async () => {
-    const { toJSON: nativeJSON } = await render(
-      <InstaPostImage {...baseProps} photos={["a.jpg", "b.jpg"]} />,
-    );
-    expect(findScrollViewNode(nativeJSON()).props.onWheel).toBeUndefined();
-
+  it("renders without crashing on web with multiple photos (exercises the wheel-listener effect)", async () => {
     const platform = jest.replaceProperty(Platform, "OS", "web");
     try {
-      const { toJSON: singlePhotoJSON } = await render(
-        <InstaPostImage {...baseProps} photos={["a.jpg"]} />,
+      const { unmount } = await render(
+        <InstaPostImage {...baseProps} photos={["a.jpg", "b.jpg"]} />,
       );
-      expect(
-        findScrollViewNode(singlePhotoJSON()).props.onWheel,
-      ).toBeUndefined();
+      unmount();
     } finally {
       platform.restore();
     }
