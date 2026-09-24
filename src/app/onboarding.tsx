@@ -49,7 +49,9 @@ const Onboarding = () => {
   const hasRequestedNotificationPermission = useRef(false);
   // Furthest step the user has reached, so "Onboarding Step" fires once per
   // step on forward progress only — swiping back and forth doesn't re-count.
-  const furthestStepRef = useRef(0);
+  // Starts at -1 (not 0) so the first slide's mount-time onStepChange(item, 0)
+  // also passes the guard instead of being silently skipped.
+  const furthestStepRef = useRef(-1);
 
   useEffect(() => {
     registerEvent(Config.wpUrl, "Onboarding Started");

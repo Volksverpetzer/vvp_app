@@ -337,6 +337,20 @@ describe("Onboarding", () => {
       ).toHaveLength(1);
     });
 
+    it("fires Onboarding Step for the first slide (step 0) on mount", async () => {
+      await render(<Onboarding />);
+
+      await act(async () => {
+        capturedOnStepChange!({ id: 1 }, 0);
+        await Promise.resolve();
+      });
+
+      expect(registerEvent).toHaveBeenCalledWith(undefined, "Onboarding Step", {
+        step: 0,
+        stepId: 1,
+      });
+    });
+
     it("fires Onboarding Step with step and stepId on forward progress", async () => {
       await render(<Onboarding />);
 
