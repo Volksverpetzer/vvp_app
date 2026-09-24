@@ -210,6 +210,7 @@ const Header = (properties: HeaderProperties) => {
           accessible
           accessibilityRole="text"
           accessibilityLabel="Für diesen Artikel ist noch keine Audioversion verfügbar."
+          accessibilityHint="Nur für Sprachausgabe, nicht sichtbar"
           pointerEvents="none"
           style={{
             position: "absolute",

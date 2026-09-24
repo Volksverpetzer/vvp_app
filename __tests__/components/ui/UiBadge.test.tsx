@@ -97,6 +97,7 @@ describe("UiBadge", () => {
           position="topRight"
           onPress={onPress}
           accessibilityLabel="Merken"
+          accessibilityHint="Merkt diesen Beitrag"
         >
           <Text>x</Text>
         </UiBadge>,

@@ -66,6 +66,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
           <UiPressable
             accessibilityRole="button"
             accessibilityLabel={`YouTube Video abspielen: ${snippet.title}`}
+            accessibilityHint="Startet die Wiedergabe des Videos"
             onPress={() => {
               registerPostInteraction(
                 `https://youtu.be/${id}`,
@@ -99,6 +100,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
                 <View
                   accessible
                   accessibilityLabel={`${formattedViews} Aufrufe`}
+                  accessibilityHint="Anzahl der Aufrufe dieses Videos"
                   style={{
                     flexDirection: "row",
                     alignItems: "center",

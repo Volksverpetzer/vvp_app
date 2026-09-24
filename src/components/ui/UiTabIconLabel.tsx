@@ -43,6 +43,7 @@ const UiTabIconLabel = ({
     <UiPressable
       accessibilityRole="tab"
       accessibilityLabel={label}
+      accessibilityHint={`Wechselt zum Tab ${label}`}
       accessibilityState={{ selected: isActive }}
       onPress={onPress}
       style={[

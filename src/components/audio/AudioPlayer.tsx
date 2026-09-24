@@ -122,6 +122,9 @@ const AudioPlayer = ({
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel={playing ? "Pause" : "Abspielen"}
+        accessibilityHint={
+          playing ? "Pausiert die Wiedergabe" : "Startet die Wiedergabe"
+        }
         onPress={onToggle}
         // iconSizes.md (24) + 2*12 = 48, meeting MIN_TOUCH_TARGET with margin
         // instead of landing exactly on the 44pt floor.
@@ -147,10 +150,8 @@ const AudioPlayer = ({
       <View
         accessibilityRole="adjustable"
         accessibilityLabel="Fortschrittsbalken"
+        accessibilityHint="Nach oben wischen zum Vorspulen, nach unten wischen zum Zurückspulen"
         accessibilityValue={{
-          min: 0,
-          max: Math.floor(duration),
-          now: Math.floor(currentTime),
           text: `${formatTime(Math.floor(currentTime))} von ${formatTime(Math.floor(duration))}`,
         }}
         accessibilityActions={[

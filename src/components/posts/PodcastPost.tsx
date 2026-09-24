@@ -86,6 +86,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel={`Podcast Folge öffnen: ${title}`}
+        accessibilityHint="Öffnet die Detailansicht dieser Folge"
         onPress={openEpisode}
       >
         {image_url && (
@@ -147,6 +148,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
           <UiPressable
             accessibilityRole="button"
             accessibilityLabel={`Podcast Folge abspielen: ${title}`}
+            accessibilityHint="Startet die Wiedergabe dieser Folge"
             onPress={playEpisode}
             style={{
               flexDirection: "row",

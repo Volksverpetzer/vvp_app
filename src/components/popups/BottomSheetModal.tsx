@@ -73,6 +73,7 @@ const BottomSheetModal = ({
           <UiPressable
             accessibilityRole="button"
             accessibilityLabel="Schließen"
+            accessibilityHint="Schließt dieses Fenster"
             onPress={onClose}
             hitSlop={8}
           >

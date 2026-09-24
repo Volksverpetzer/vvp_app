@@ -32,7 +32,11 @@ const BackToTopButton = ({ visible, onPress }: BackToTopButtonProperties) => {
       exiting={FadeOutDown}
       style={styles.container}
     >
-      <UiFab accessibilityLabel="Zurück nach oben" onPress={onPress}>
+      <UiFab
+        accessibilityLabel="Zurück nach oben"
+        accessibilityHint="Scrollt an den Anfang der Liste"
+        onPress={onPress}
+      >
         <ChevronIcon
           direction="up"
           size={iconSizes.md}

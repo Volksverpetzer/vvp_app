@@ -463,6 +463,7 @@ const IframeRenderer = ({
         }}
         nestedScrollEnabled={false}
         accessibilityLabel={`Embedded content from ${Linking.parse(webViewSource.uri).hostname ?? "external source"}`}
+        accessibilityHint="Contains third-party content embedded in this article"
         thirdPartyCookiesEnabled={false}
         injectedJavaScriptBeforeContentLoaded={INJECT_BEFORE}
         injectedJavaScript={INJECT_AFTER}

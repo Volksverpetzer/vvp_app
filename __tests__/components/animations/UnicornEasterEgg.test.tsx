@@ -158,7 +158,10 @@ describe("UnicornEasterEgg", () => {
       const [, bump] = useState(0);
       return (
         <>
-          <Pressable onPress={() => bump((n) => n + 1)}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => bump((n) => n + 1)}
+          >
             <Text>bump</Text>
           </Pressable>
           <UnicornEasterEgg visible onHide={() => {}} />

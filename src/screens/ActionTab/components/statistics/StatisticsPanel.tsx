@@ -88,6 +88,7 @@ const StatisticsPanel = ({
           <UiPressable
             accessibilityRole="button"
             accessibilityLabel="Vorherige Seite"
+            accessibilityHint="Zeigt die vorherigen Statistiken an"
             onPress={onLeftPress}
             style={panelStyles.chevronButton}
           >
@@ -120,6 +121,7 @@ const StatisticsPanel = ({
           <UiPressable
             accessibilityRole="button"
             accessibilityLabel="Nächste Seite"
+            accessibilityHint="Zeigt die nächsten Statistiken an"
             onPress={onRightPress}
             style={panelStyles.chevronButton}
           >
