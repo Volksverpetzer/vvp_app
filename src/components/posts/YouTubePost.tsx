@@ -66,6 +66,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
           <UiPressable
             accessibilityRole="button"
             accessibilityLabel={`YouTube Video abspielen: ${snippet.title}`}
+            accessibilityHint="Startet die Wiedergabe des Videos"
             onPress={() => {
               registerPostInteraction(
                 `https://youtu.be/${id}`,
@@ -96,6 +97,7 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             </UiBadge>
             {inView && Config.enableEngagement && viewCount > 0 && (
               <UiBadge position="topRight" variant="accent">
+                {/* eslint-disable-next-line @volksverpetzer/react-native-a11y/has-accessibility-hint -- non-interactive status view: the label already fully describes the content ("X views"), and there's no action for a hint to explain. */}
                 <View
                   accessible
                   accessibilityLabel={`${formattedViews} Aufrufe`}

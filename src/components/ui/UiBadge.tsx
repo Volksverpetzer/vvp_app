@@ -28,6 +28,7 @@ interface UiBadgeProperties {
   variant?: UiBadgeVariant;
   onPress?: () => void;
   accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 /**
@@ -40,6 +41,7 @@ const UiBadge = ({
   variant = "primary",
   onPress,
   accessibilityLabel,
+  accessibilityHint,
 }: UiBadgeProperties) => {
   const colorScheme = useAppColorScheme();
   const { accent, primary, pruefpunkt } = Colors[colorScheme];
@@ -78,6 +80,7 @@ const UiBadge = ({
       <UiPressable
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
+        accessibilityHint={accessibilityHint}
         hitSlop={8}
         onPress={onPress}
         style={[

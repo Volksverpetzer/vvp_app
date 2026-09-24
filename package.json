@@ -130,6 +130,7 @@
     "@types/react": "19.2.18",
     "@typescript-eslint/eslint-plugin": "8.70.1",
     "@typescript-eslint/parser": "8.70.1",
+    "@volksverpetzer/eslint-plugin-react-native-a11y": "3.6.0",
     "babel-jest": "29.7.0",
     "babel-plugin-module-resolver": "5.0.3",
     "babel-preset-expo": "57.0.13",

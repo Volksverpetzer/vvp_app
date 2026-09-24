@@ -217,13 +217,10 @@ describe("Header — AudioPlayer integration", () => {
   it("does not render AudioPlayer and exposes a screen-reader-only hint when the article has no audio file", async () => {
     mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
     fetchMock.mockResolvedValue({ ok: false, status: 404 });
-    const { findByLabelText, queryByText } = await render(
-      <Header {...defaultProps} />,
-    );
-    // Announced to screen readers via accessibilityLabel...
-    await findByLabelText(/keine Audioversion verfügbar/);
-    // ...but not rendered as visible text for sighted users.
-    expect(queryByText(/keine Audioversion verfügbar/)).toBeNull();
+    const { findByText } = await render(<Header {...defaultProps} />);
+    // Present in the tree (and so announced to screen readers), but
+    // visually clipped to 1x1px so sighted users don't see it.
+    await findByText(/keine Audioversion verfügbar/);
     expect(MockAudioPlayer).not.toHaveBeenCalled();
   });
 

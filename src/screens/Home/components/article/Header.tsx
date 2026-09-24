@@ -205,11 +205,11 @@ const Header = (properties: HeaderProperties) => {
       {audioUrl && audioAvailability === "unavailable" && (
         // Visually hidden: sighted users see nothing where the player would
         // have been, but screen readers still announce that there's no
-        // audio here rather than silently skipping past it.
-        <View
+        // audio here rather than silently skipping past it. Real text
+        // content (rather than accessibilityLabel on an empty View) is
+        // announced on its own, so no accessibilityHint is needed.
+        <UiText
           accessible
-          accessibilityRole="text"
-          accessibilityLabel="Für diesen Artikel ist noch keine Audioversion verfügbar."
           pointerEvents="none"
           style={{
             position: "absolute",
@@ -217,7 +217,9 @@ const Header = (properties: HeaderProperties) => {
             height: 1,
             overflow: "hidden",
           }}
-        />
+        >
+          Für diesen Artikel ist noch keine Audioversion verfügbar.
+        </UiText>
       )}
       <ArticleSourceList
         article_link={article_link}

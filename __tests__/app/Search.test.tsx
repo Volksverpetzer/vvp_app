@@ -70,6 +70,8 @@ jest.mock("#/screens/Search/components/SearchHeader", () =>
           value={search}
           onChangeText={setSearch}
           onSubmitEditing={() => setSearchParams(search)}
+          accessibilityLabel="Text input field"
+          accessibilityHint="Füge Text ein und drücke Enter um zu suchen"
         />
         {showFaktenBot && <Text testID="faktenbot-active">faktenbot</Text>}
       </View>
