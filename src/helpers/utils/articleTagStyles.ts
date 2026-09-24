@@ -110,6 +110,16 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       paddingRight: spacing.md,
       paddingBottom: spacing.xxl,
     },
+    ol: {
+      // Real <ol> (Gutenberg's "wp-block-list", decimal marker) has no
+      // left indent at all on the site — unlike disc <ul>, which needs
+      // paddingLeft for the bullet. Still needs paddingLeft.md so the
+      // numbers line up with p/h1's own left edge (see ul/p comments on
+      // why horizontal padding is app-side, not copied from the site).
+      paddingLeft: spacing.md,
+      paddingRight: spacing.md,
+      paddingBottom: spacing.xxl,
+    },
     img: {
       minHeight: 200,
       // Bare <img> tags (WordPress classic-editor output without a
