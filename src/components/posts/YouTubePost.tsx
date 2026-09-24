@@ -97,10 +97,10 @@ const YouTubePost = (properties: YouTubePostProperties) => {
             </UiBadge>
             {inView && Config.enableEngagement && viewCount > 0 && (
               <UiBadge position="topRight" variant="accent">
+                {/* eslint-disable-next-line @volksverpetzer/react-native-a11y/has-accessibility-hint -- non-interactive status view: the label already fully describes the content ("X views"), and there's no action for a hint to explain. */}
                 <View
                   accessible
                   accessibilityLabel={`${formattedViews} Aufrufe`}
-                  accessibilityHint="Anzahl der Aufrufe dieses Videos"
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
