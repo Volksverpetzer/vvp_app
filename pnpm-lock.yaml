@@ -410,6 +410,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: 8.70.1
         version: 8.70.1(eslint@9.39.5(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
+      '@volksverpetzer/eslint-plugin-react-native-a11y':
+        specifier: 3.6.0
+        version: 3.6.0(eslint@9.39.5(supports-color@8.1.1))
       babel-jest:
         specifier: 29.7.0
         version: 29.7.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
@@ -437,9 +440,6 @@ importers:
       eslint-plugin-prettier:
         specifier: 5.5.6
         version: 5.5.6(eslint-config-prettier@10.1.8(eslint@9.39.5(supports-color@8.1.1)))(eslint@9.39.5(supports-color@8.1.1))(prettier@3.9.9)
-      eslint-plugin-react-native-a11y:
-        specifier: link:../eslint-plugin-react-native-a11y
-        version: link:../eslint-plugin-react-native-a11y
       eslint-plugin-unicorn:
         specifier: 65.0.1
         version: 65.0.1(eslint@9.39.5(supports-color@8.1.1))
@@ -2555,6 +2555,12 @@ packages:
   '@volksverpetzer/design-tokens@0.8.0':
     resolution: {integrity: sha512-EeS9p5W6MKB8aGlHzZi5NzH30XCzj8UweIZ706sft9nNTc7yM0DoIbVUiPDuo8NrKtmr7lsDa7uZheXlbrkhdA==}
 
+  '@volksverpetzer/eslint-plugin-react-native-a11y@3.6.0':
+    resolution: {integrity: sha512-QiGKkNmTUFa9NSEWunYE0wP2wUO6vDQGw3qNAbh56sxLe4noGdTyUgUVsTfZlR7kDNq3DtCRC+qFwhwDli76Sw==}
+    engines: {node: '>=12.0'}
+    peerDependencies:
+      eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9 || ^10
+
   '@xmldom/xmldom@0.8.15':
     resolution: {integrity: sha512-/5NV/vDALVFDXgLmfsy9TRCBlKwO2LNBFzpzvb9iIj+jR+eSc6DLYYvVOdivT/jm7MtU6TebYuRmzEOI7w40UA==}
     engines: {node: '>=10.0.0'}
@@ -2719,6 +2725,9 @@ packages:
 
   asap@2.0.6:
     resolution: {integrity: sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==}
+
+  ast-types-flow@0.0.8:
+    resolution: {integrity: sha512-OH/2E5Fg20h2aPrbe+QL8JZQFko0YZaF+j4mnQ7BGhfavO7OpSLa8a0y9sBwomHdSbkhTS8TQNayBfnW5DwbvQ==}
 
   async-function@1.0.0:
     resolution: {integrity: sha512-hsU18Ae8CDTR6Kgu9DYf0EbCr/a5iGL0rytQDobUcdpYOKokk8LEjVphnXkDkgpi0wYVsqrXuP0bZxJaTqdgoA==}
@@ -9437,6 +9446,13 @@ snapshots:
 
   '@volksverpetzer/design-tokens@0.8.0': {}
 
+  '@volksverpetzer/eslint-plugin-react-native-a11y@3.6.0(eslint@9.39.5(supports-color@8.1.1))':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      ast-types-flow: 0.0.8
+      eslint: 9.39.5(supports-color@8.1.1)
+      jsx-ast-utils: 3.3.5
+
   '@xmldom/xmldom@0.8.15': {}
 
   '@xmldom/xmldom@0.9.12': {}
@@ -9610,6 +9626,8 @@ snapshots:
       is-array-buffer: 3.0.5
 
   asap@2.0.6: {}
+
+  ast-types-flow@0.0.8: {}
 
   async-function@1.0.0: {}
 

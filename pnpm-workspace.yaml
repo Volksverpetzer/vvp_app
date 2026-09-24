@@ -24,3 +24,4 @@ minimumReleaseAgeExclude:
   - expo-router@57.0.23
   - expo-sharing@57.0.22
   - expo-build-properties@57.0.22
+  - "@volksverpetzer/eslint-plugin-react-native-a11y@3.6.0"
