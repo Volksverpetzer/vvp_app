@@ -23,7 +23,7 @@ const AchievementComponent = () => {
   const [level, setLevel] = useState<number>(0);
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const corporate = Colors.dark.primary;
-  const corporateColor = Colors.light.primary;
+  const panelBackground = Colors.light.surfaceInput;
   const colorScheme = useAppColorScheme();
   const highlight = Colors[colorScheme].accent;
   const backgroundColor = Colors[colorScheme].background;
@@ -89,9 +89,8 @@ const AchievementComponent = () => {
             Mission
           </Parallelogram>
           <Parallelogram
-            backgroundColor={corporateColor}
-            color="white"
             containerStyle={{ height: 30, marginTop: 0, marginLeft: -20 }}
+            backgroundColor={panelBackground}
           >
             Level {level + 1 + ": " + AchievementConfig[level].name}
           </Parallelogram>

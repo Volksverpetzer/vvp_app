@@ -2,7 +2,9 @@ import { describe, expect, it, jest } from "@jest/globals";
 import { act, render } from "@testing-library/react-native";
 import { Platform } from "react-native";
 
-import InstaPostImage from "#/components/posts/insta/InstaPostImage";
+import InstaPostImage, {
+  isHorizontallyDominant,
+} from "#/components/posts/insta/InstaPostImage";
 import { spacing } from "#/constants/Spacing";
 
 jest.mock("react-native-reanimated", () => ({
@@ -121,6 +123,40 @@ describe("InstaPostImage", () => {
 
     const after = flatten(findImageNode(toJSON()).props.style);
     expect(after.aspectRatio).toBe(before.aspectRatio);
+  });
+
+  // Regression guard: a trackpad's diagonal swipe carries both deltaX and
+  // deltaY — without suppressing the vertical component when the gesture is
+  // horizontally dominant, the page scrolls at the same time the slider
+  // does, making the image wobble vertically while swiping through it.
+  //
+  // The actual listener is attached imperatively to a ref'd DOM node
+  // outside React's synthetic event system (deliberately: React registers
+  // wheel listeners as passive by default, which silently ignores
+  // preventDefault() called from a JSX onWheel prop) — react-test-renderer
+  // has no real DOM, so that wiring itself isn't exercised here. This tests
+  // the decision logic the listener calls directly. See this PR.
+  describe("isHorizontallyDominant", () => {
+    it("is true when the horizontal delta exceeds the vertical one", () => {
+      expect(isHorizontallyDominant(20, 5)).toBe(true);
+    });
+
+    it("is false when the vertical delta is equal to or exceeds the horizontal one", () => {
+      expect(isHorizontallyDominant(5, 20)).toBe(false);
+      expect(isHorizontallyDominant(10, 10)).toBe(false);
+    });
+  });
+
+  it("renders without crashing on web with multiple photos (exercises the wheel-listener effect)", async () => {
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const { unmount } = await render(
+        <InstaPostImage {...baseProps} photos={["a.jpg", "b.jpg"]} />,
+      );
+      unmount();
+    } finally {
+      platform.restore();
+    }
   });
 
   const findExpoImageNode = (node: any): any => {

@@ -17,7 +17,6 @@ import { spacing } from "#/constants/Spacing";
 import { getRegions } from "#/helpers/network/Action";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import type { Region, RegionsByCode } from "#/types";
 
 import Legend from "./Legend";
@@ -43,7 +42,6 @@ const parseRegionsData = async (): Promise<Region[]> => {
 
 const RegionMap = () => {
   const [regionData, setRegionData] = useState<Region[] | undefined>();
-  const tabBarClearance = useTabBarClearance();
 
   useEffect(() => {
     parseRegionsData().then(setRegionData);
@@ -60,10 +58,10 @@ const RegionMap = () => {
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: -80,
+        paddingBottom: 40,
         paddingTop: 80,
         backgroundColor: primaryMuted,
-        borderTopLeftRadius: radii.xxl,
-        borderTopRightRadius: radii.xxl,
+        borderRadius: radii.xxl,
         gap: spacing.xl,
         overflow: "hidden",
         paddingHorizontal: spacing.xl,
@@ -109,7 +107,6 @@ const RegionMap = () => {
         style={{
           flex: 1,
           gap: spacing.md,
-          paddingBottom: tabBarClearance,
         }}
       >
         <UiText size="xl" bold style={globalStyles.whiteText}>
