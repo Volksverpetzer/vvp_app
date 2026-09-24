@@ -40,7 +40,6 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       fontWeight: "bold" as const,
     },
     h1: {
-      textTransform: "uppercase" as const,
       color: textColor,
       paddingLeft: spacing.md,
       paddingRight: spacing.md,
@@ -50,7 +49,6 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       fontWeight: "bold" as const,
     },
     h2: {
-      textTransform: "uppercase" as const,
       color: textColor,
       paddingLeft: spacing.md,
       paddingRight: spacing.md,
@@ -67,7 +65,6 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       marginBottom: spacing.md,
     },
     h3: {
-      textTransform: "uppercase" as const,
       color: textColor,
       paddingLeft: spacing.md,
       paddingRight: spacing.md,
@@ -77,7 +74,6 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       fontWeight: "bold" as const,
     },
     h4: {
-      textTransform: "uppercase" as const,
       color: textColor,
       padding: spacing.md,
       fontSize: fontSizes.xxl,

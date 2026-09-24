@@ -170,7 +170,10 @@ const Body = (properties: BodyProperties) => {
       tagsStyles={articleTagStyles}
       ignoredDomTags={["script", "style", "noscript", "input"]}
       renderersProps={renderersProperties}
-      defaultTextProps={{ selectable: true }}
+      defaultTextProps={{
+        selectable: true,
+        android_hyphenationFrequency: "normal",
+      }}
       systemFonts={SOURCE_SANS_FONTS}
       contentWidth={width}
       customHTMLElementModels={customHTMLElementModels}
