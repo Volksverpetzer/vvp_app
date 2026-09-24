@@ -2,6 +2,7 @@ import cspellESLintPluginRecommended from "@cspell/eslint-plugin/recommended";
 import expoConfig from "eslint-config-expo/flat.js";
 import importAlias from "eslint-plugin-import-alias";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import reactNativeA11y from "eslint-plugin-react-native-a11y";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
@@ -11,6 +12,7 @@ const tsconfigRootDir = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig([
   expoConfig,
+  reactNativeA11y.configs.flat.all,
   cspellESLintPluginRecommended,
   eslintPluginPrettierRecommended,
   {
