@@ -1,13 +1,16 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { Image } from "expo-image";
+import { useLocalSearchParams } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
-import UiButton from "#/components/ui/UiButton";
-import UiPressable from "#/components/ui/UiPressable";
+import UnicornEasterEgg from "#/components/animations/UnicornEasterEgg";
+import NavBar from "#/components/bars/NavBar";
 import UiText from "#/components/ui/UiText";
-import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
+import { AppImages } from "#/helpers/AppImages";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MemoryGame from "#/screens/Games/Memory";
 import type { DisinfoPair } from "#/types";
@@ -16,15 +19,22 @@ type GameParameters = {
   gameId: string;
 };
 
+const MAX_LEVEL = 2;
+
+// Intrinsic size of einhorn.webp is 524x833
+const MASCOT_WIDTH = 170;
+const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (833 / 524));
+
 const GameScreen = () => {
   const colorScheme = useAppColorScheme();
-  const router = useRouter();
   const { gameId } = useLocalSearchParams<GameParameters>();
-  const [level, setLevel] = useState<number>(1);
+  const [level, setLevel] = useState(1);
+  const [showLevelComplete, setShowLevelComplete] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
   // Für Demo: Nur für 'DesinformationMemory'
-  let memoryPairs: DisinfoPair[] = [];
-  if (gameId === "DesinformationMemory") {
+  const memoryPairs = useMemo<DisinfoPair[]>(() => {
+    if (gameId !== "DesinformationMemory") return [];
     const allPairs = [
       {
         pairId: "1",
@@ -75,79 +85,84 @@ const GameScreen = () => {
       },
     ];
     // Level 1: einfach (nur 3 Paare)
-    memoryPairs = level === 1 ? allPairs.slice(0, 3) : allPairs;
-  }
+    return level === 1 ? allPairs.slice(0, 3) : allPairs;
+  }, [gameId, level]);
+
+  const handleAllMatched = useCallback(() => {
+    setShowLevelComplete(true);
+  }, []);
+
+  // Advance to the next level only once the celebration popup has finished
+  // hiding itself, so the completed board stays visible underneath it
+  // instead of reshuffling out from under the popup. Finishing the last
+  // level shows a "more to come" screen instead of advancing further.
+  const handleLevelCompleteHide = useCallback(() => {
+    setShowLevelComplete(false);
+    setLevel((current) => {
+      if (current >= MAX_LEVEL) {
+        setIsFinished(true);
+        return current;
+      }
+      return current + 1;
+    });
+  }, []);
 
   return (
     <View
       style={[
-        styles.container,
+        globalStyles.container,
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <UiText size="xl" bold style={styles.title}>
-        Memory-Spiel: {gameId}
-      </UiText>
-      <View style={styles.levelContainer}>
-        <UiText size="base" style={styles.levelText}>
-          Wähle dein Level:
+      <NavBar />
+      <ScrollView contentContainerStyle={styles.container}>
+        <UiText size="xl" bold style={styles.title}>
+          Desinformations-Memory
         </UiText>
-        <UiPressable
-          accessibilityRole="button"
-          style={[
-            styles.levelButton,
-            level === 1 && styles.levelButtonSelected,
-          ]}
-          onPress={() => setLevel(1)}
-        >
-          <UiText style={styles.levelButtonText}>Level 1 (einfach)</UiText>
-        </UiPressable>
-        <UiPressable
-          accessibilityRole="button"
-          style={[
-            styles.levelButton,
-            level === 2 && styles.levelButtonSelected,
-          ]}
-          onPress={() => setLevel(2)}
-        >
-          <UiText style={styles.levelButtonText}>Level 2 (schwer)</UiText>
-        </UiPressable>
-      </View>
-      <MemoryGame pairs={memoryPairs} />
-      <UiButton
-        label="Zurück zur Übersicht"
-        onPress={() => router.push("/")}
-        style={styles.backButton}
+        {isFinished ? (
+          <View style={styles.finishedContainer}>
+            {AppImages.announcementMascot && (
+              <Image
+                source={AppImages.announcementMascot}
+                accessible={false}
+                style={styles.finishedMascot}
+              />
+            )}
+            <UiText size="lg" bold style={styles.finishedText}>
+              Weitere Level folgen bald!
+            </UiText>
+          </View>
+        ) : (
+          <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
+        )}
+      </ScrollView>
+      <UnicornEasterEgg
+        visible={showLevelComplete}
+        onHide={handleLevelCompleteHide}
+        message="Juhu, Level geschafft!"
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  backButton: {
-    marginTop: spacing.xl,
-  },
   container: {
     alignItems: "center",
-    flex: 1,
     padding: spacing.md,
   },
-  levelButton: {
-    backgroundColor: "#007bff",
-    borderRadius: radii.xs,
-    marginHorizontal: spacing.xs,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-  },
-  levelButtonSelected: { backgroundColor: "#0056b3" },
-  levelButtonText: { color: "#fff" },
-  levelContainer: {
+  finishedContainer: {
     alignItems: "center",
-    flexDirection: "row",
-    marginBottom: spacing.xl,
+    marginTop: spacing.xxxl,
   },
-  levelText: { marginRight: spacing.md },
-  title: { marginBottom: spacing.xl },
+  finishedMascot: {
+    height: MASCOT_HEIGHT,
+    width: MASCOT_WIDTH,
+  },
+  finishedText: {
+    marginTop: spacing.md,
+    textAlign: "center",
+  },
+  title: { marginBottom: spacing.xl, textAlign: "center" },
 });
 
 export default GameScreen;

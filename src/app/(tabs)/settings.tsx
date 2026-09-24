@@ -17,7 +17,6 @@ import {
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import UnicornEasterEgg from "#/components/animations/UnicornEasterEgg";
 import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiDivider from "#/components/ui/UiDivider";
 import UiLink from "#/components/ui/UiLink";
@@ -45,8 +44,6 @@ const EASTER_EGG_TAP_COUNT = 10;
 
 const SettingsScreen = () => {
   const [token, setToken] = useState<string | undefined>();
-  const [showUnicorn, setShowUnicorn] = useState(false);
-  const hideUnicorn = useCallback(() => setShowUnicorn(false), []);
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const versionTapCountRef = useRef(0);
   const router = useRouter();
@@ -334,7 +331,7 @@ const SettingsScreen = () => {
                 Haptics.notificationAsync(
                   Haptics.NotificationFeedbackType.Success,
                 );
-                setShowUnicorn(true);
+                router.push("/game/DesinformationMemory");
               }
             }}
           >
@@ -349,7 +346,6 @@ const SettingsScreen = () => {
           </UiPressable>
         </View>
       </ScrollView>
-      <UnicornEasterEgg visible={showUnicorn} onHide={hideUnicorn} />
     </>
   );
 };

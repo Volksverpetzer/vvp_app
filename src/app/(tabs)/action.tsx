@@ -1,5 +1,8 @@
+import { useRouter } from "expo-router";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
+import UiButton from "#/components/ui/UiButton";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
@@ -13,6 +16,7 @@ const ActionTab = () => {
   const colorScheme = useAppColorScheme();
   const tabBarClearance = useTabBarClearance();
   const backgroundColor = Colors[colorScheme].surface;
+  const router = useRouter();
 
   return (
     <ScrollView
@@ -29,6 +33,12 @@ const ActionTab = () => {
       <AchievementComponent />
       <StatisticsView />
       <RegionMap />
+      <View style={{ paddingHorizontal: spacing.xl }}>
+        <UiButton
+          label="Desinformations-Memory spielen"
+          onPress={() => router.push("/game")}
+        />
+      </View>
     </ScrollView>
   );
 };

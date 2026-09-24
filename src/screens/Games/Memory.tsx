@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ViewStyle } from "react-native";
 import { Dimensions, StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
@@ -16,17 +15,40 @@ import { generateDeck } from "./GameHelper";
 
 interface MemoryGameProperties {
   pairs: DisinfoPair[];
+  /** Fired once, the moment the last pair is matched. */
+  onAllMatched?: () => void;
 }
 
-const MemoryGame = ({ pairs }: MemoryGameProperties) => {
+const MemoryGame = ({ pairs, onAllMatched }: MemoryGameProperties) => {
   const colorScheme = useAppColorScheme();
+  const { accent, background, error, surfaceInput, text } = Colors[colorScheme];
   const [deck, setDeck] = useState<MemoryCard[]>([]);
   const [firstCard, setFirstCard] = useState<MemoryCard | undefined>();
   const [secondCard, setSecondCard] = useState<MemoryCard | undefined>();
+  // Guards against firing onAllMatched more than once for the same deck —
+  // reset whenever a new set of pairs (e.g. the next level) comes in.
+  const hasCompletedRef = useRef(false);
 
   useEffect(() => {
+    hasCompletedRef.current = false;
     setDeck(generateDeck(pairs));
+    // A new set of pairs (e.g. the next level) starts with a clean
+    // selection — otherwise the header would still show the previous
+    // level's last (matched) pair until the player tapped a new card.
+    setFirstCard(undefined);
+    setSecondCard(undefined);
   }, [pairs]);
+
+  useEffect(() => {
+    if (
+      deck.length > 0 &&
+      !hasCompletedRef.current &&
+      deck.every((card) => card.isMatched)
+    ) {
+      hasCompletedRef.current = true;
+      onAllMatched?.();
+    }
+  }, [deck, onAllMatched]);
 
   useEffect(() => {
     if (firstCard && secondCard && firstCard.pairId === secondCard.pairId) {
@@ -78,25 +100,33 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
   };
 
   const renderHeader = () => {
-    const headerStyle: ViewStyle[] = [styles.headerContent];
+    const headerStyle: ViewStyle[] = [
+      styles.headerContent,
+      { backgroundColor: surfaceInput },
+    ];
     let cardsToRender: MemoryCard[] = [];
     if (firstCard && secondCard) {
-      headerStyle.push(
-        firstCard.pairId === secondCard.pairId
-          ? styles.headerSuccess
-          : styles.headerError,
-      );
+      const isMatch = firstCard.pairId === secondCard.pairId;
+      headerStyle.push({ backgroundColor: isMatch ? accent : error });
       cardsToRender = [firstCard, secondCard];
     } else if (firstCard) {
       cardsToRender = [firstCard];
     }
+    const headerTextColor =
+      firstCard && secondCard ? Colors[colorScheme].onPrimary : text;
     if (cardsToRender.length > 0) {
       return (
         <View style={headerStyle}>
           <View style={styles.headerCardsContainer}>
             {cardsToRender.map((card) => (
-              <View style={styles.headerCard} key={card.instanceId}>
-                <UiText size="sm" style={styles.headerCardText}>
+              <View
+                style={[styles.headerCard, { borderColor: headerTextColor }]}
+                key={card.instanceId}
+              >
+                <UiText
+                  size="sm"
+                  style={[styles.headerCardText, { color: headerTextColor }]}
+                >
                   {card.cardType === "misinfo" && card.fullContent
                     ? card.fullContent
                     : card.content}
@@ -117,12 +147,7 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
   };
 
   return (
-    <View
-      style={[
-        styles.gameContainer,
-        { backgroundColor: Colors[colorScheme].background },
-      ]}
-    >
+    <View style={[styles.gameContainer, { backgroundColor: background }]}>
       <View style={styles.headerContainer}>{renderHeader()}</View>
       <View style={styles.grid}>
         {deck.map((card) => (
@@ -133,7 +158,6 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
           />
         ))}
       </View>
-      <Toast />
     </View>
   );
 };
@@ -141,17 +165,17 @@ const MemoryGame = ({ pairs }: MemoryGameProperties) => {
 const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
-  gameContainer: { alignItems: "center", flex: 1 },
+  gameContainer: { alignItems: "center" },
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: spacing.md,
     justifyContent: "center",
     marginTop: spacing.md,
+    paddingHorizontal: spacing.md,
     width: screenWidth,
   },
   headerCard: {
-    borderColor: "#999",
     borderRadius: radii.xs,
     borderWidth: 1,
     flex: 1,
@@ -165,7 +189,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   headerContainer: {
-    backgroundColor: "#f0f0f0",
     height: 180,
     width: screenWidth,
   },
@@ -175,8 +198,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: spacing.md,
   },
-  headerError: { backgroundColor: "#f8d7da" },
-  headerSuccess: { backgroundColor: "#d4edda" },
   headerText: { textAlign: "center" },
 });
 

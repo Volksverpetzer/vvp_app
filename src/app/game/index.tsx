@@ -26,7 +26,7 @@ const HomeScreen = () => {
         kannst. Wähle ein Spiel aus, um zu beginnen.
       </UiText>
       <UiButton
-        label="Desinformation Memory"
+        label="Desinformations-Memory"
         onPress={() => router.push("/game/DesinformationMemory")}
         style={styles.button}
       />
