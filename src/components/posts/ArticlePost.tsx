@@ -213,7 +213,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const progressBarStyle = useMemo(
     () => ({
       zIndex: layers.raised,
-      height: 3,
+      height: 5,
       width: scrollProgress,
       backgroundColor: corporate,
     }),
