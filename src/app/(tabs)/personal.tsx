@@ -28,13 +28,13 @@ const PersonalTab = () => {
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
 
-  const HEADER_HEIGHT = 200;
-  const MIN_HEIGHT = 110;
+  const HEADER_HEIGHT = 220;
+  const HEADER_MIN_HEIGHT = 110;
 
   const labelOpacity = useMemo(
     () =>
       scrollOffsetY.interpolate({
-        inputRange: [0, (HEADER_HEIGHT - MIN_HEIGHT) * 0.5],
+        inputRange: [0, (HEADER_HEIGHT - HEADER_MIN_HEIGHT) * 0.5],
         outputRange: [1, 0],
         extrapolate: "clamp",
       }),
@@ -44,7 +44,7 @@ const PersonalTab = () => {
   const labelHeight = useMemo(
     () =>
       scrollOffsetY.interpolate({
-        inputRange: [0, (HEADER_HEIGHT - MIN_HEIGHT) * 0.5],
+        inputRange: [0, (HEADER_HEIGHT - HEADER_MIN_HEIGHT) * 0.5],
         // The expanded height must match the label's line height, or the
         // overflow-hidden wrapper clips the text
         outputRange: [
@@ -61,8 +61,8 @@ const PersonalTab = () => {
       <AnimatedHeader
         title="Sammlung"
         scrollOffsetY={scrollOffsetY}
-        minHeight={110}
-        maxHeight={200}
+        minHeight={HEADER_MIN_HEIGHT}
+        maxHeight={HEADER_HEIGHT}
       >
         <View style={{ width: "100%" }}>
           <UiTabView width={200} style={{ alignSelf: "center" }}>
@@ -80,7 +80,7 @@ const PersonalTab = () => {
               label="Quellen"
               isActive={activeTab === "sources"}
               onPress={() => setActiveTab("sources")}
-              style={{ paddingVertical: spacing.md }}
+              style={{ paddingVertical: spacing.xl }}
               animatedLabelHeight={labelHeight}
               animatedLabelOpacity={labelOpacity}
             />

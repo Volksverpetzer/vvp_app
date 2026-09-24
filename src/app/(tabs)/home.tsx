@@ -41,12 +41,7 @@ const HomeScreen = () => {
   const backgroundColor = Colors[colorScheme].surface;
 
   const HEADER_HEIGHT = 220;
-  // The collapsed header's content (search bar) is bottom-anchored with a
-  // fixed paddingBottom, so minHeight === paddingBottom + button height
-  // leaves it flush against the very top once fully collapsed. Native's
-  // status bar masks that; web has no such inset, so give it a few extra
-  // px there.
-  const HEADER_MIN_HEIGHT = Platform.OS === "web" ? 105 : 95;
+  const HEADER_MIN_HEIGHT = 110;
 
   const [feedprops, setFeedProperties] = useState<FeedProperties>({
     fetchers: [],
