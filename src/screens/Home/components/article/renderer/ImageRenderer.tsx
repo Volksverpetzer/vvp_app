@@ -10,6 +10,7 @@ import ImageCreditBadge from "#/components/posts/ImageCreditBadge";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
+import { spacing } from "#/constants/Spacing";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import { useImageCredit } from "#/hooks/useImageCredit";
@@ -58,7 +59,16 @@ const ImageRenderer = ({ url, ...properties }: ImageRendererProperties) => {
   return (
     // flex: 0 so the wrapper hugs the image height; otherwise the absolutely
     // positioned badge could sit below the image in a taller container.
-    <View style={[globalStyles.centered, { flex: 0 }]}>
+    // A figcaption already carries its own paddingBottom, so a captioned
+    // image only needs a small gap here — stacking the full spacing on
+    // both nearly doubled the gap after a captioned image (see
+    // articleTagStyles.ts).
+    <View
+      style={[
+        globalStyles.centered,
+        { flex: 0, marginBottom: hasCaption ? spacing.xs : spacing.xl },
+      ]}
+    >
       <UiPressable
         accessibilityRole="button"
         onPress={() => router.push({ pathname: "/image", params: { uri } })}
