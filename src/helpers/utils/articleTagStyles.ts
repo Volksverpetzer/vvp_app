@@ -58,7 +58,13 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       fontSize: fontSizes.xxl,
       lineHeight: LINE_HEIGHTS.xxl,
       fontWeight: "bold" as const,
-      marginBottom: spacing.huge,
+      // Unlike h1/h3/h4/h5 (measured margin 0/0 on the site), the real
+      // h2 genuinely has margin-top:24 + margin-bottom:12.8 — it's the
+      // one heading that needs its own top space to separate it from
+      // the preceding paragraph, so it's exempt from the bottom-only
+      // convention here.
+      marginTop: spacing.xxl,
+      marginBottom: spacing.md,
     },
     h3: {
       textTransform: "uppercase" as const,
@@ -85,9 +91,7 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
       paddingRight: spacing.md,
       paddingBottom: spacing.md,
       fontSize: fontSizes.lg,
-      // React Native's lineHeight only accepts a number — there's no "normal"
-      // keyword to fall back to, so the equivalent is simply not setting it,
-      // leaving the platform to use the font's own natural line height.
+      lineHeight: LINE_HEIGHTS.xl,
       fontWeight: "bold" as const,
     },
     li: {
