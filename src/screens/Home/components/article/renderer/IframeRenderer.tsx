@@ -1,8 +1,8 @@
 import { useHtmlIframeProps } from "@native-html/iframe-plugin";
+import type { CustomRendererProps, TBlock } from "@native-html/render";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
 import { Dimensions, View } from "react-native";
-import type { CustomRendererProps, TBlock } from "react-native-render-html";
 import { WebView } from "react-native-webview";
 import type {
   WebViewErrorEvent,

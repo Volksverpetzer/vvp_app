@@ -1,15 +1,15 @@
 import { iframeModel } from "@native-html/iframe-plugin";
-import type { ChildNode } from "domhandler";
-import type { RefObject } from "react";
-import React, { useMemo } from "react";
-import type { GestureResponderEvent, View } from "react-native";
 import type {
   CustomTagRendererRecord,
   Element,
   InternalRendererProps,
   TBlock,
-} from "react-native-render-html";
-import RenderHtml, { defaultHTMLElementModels } from "react-native-render-html";
+} from "@native-html/render";
+import RenderHtml, { defaultHTMLElementModels } from "@native-html/render";
+import type { ChildNode } from "domhandler";
+import type { RefObject } from "react";
+import React, { useMemo } from "react";
+import type { GestureResponderEvent, View } from "react-native";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -18,7 +18,7 @@ import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { decodeAnchor } from "#/helpers/utils/anchors";
-import { getTagStyles } from "#/helpers/utils/color";
+import { getTagStyles } from "#/helpers/utils/articleTagStyles";
 import { isSameHost } from "#/helpers/utils/host";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -76,7 +76,7 @@ const Body = (properties: BodyProperties) => {
     [colorScheme],
   );
 
-  // Memoized like renderersProperties below: react-native-render-html can
+  // Memoized like renderersProperties below: @native-html/render can
   // remount custom-rendered elements when this prop's identity changes,
   // which for the iframe renderer means remounting the embedded WebView —
   // visible as a reload/black-frame flash on an embedded YouTube video
@@ -175,6 +175,14 @@ const Body = (properties: BodyProperties) => {
       contentWidth={width}
       customHTMLElementModels={customHTMLElementModels}
       domVisitors={{ onElement }}
+      // Every visual style comes from tagsStyles/baseStyle/the custom
+      // renderers below — nothing implicit from the engine's own default
+      // stylesheet. That default stylesheet isn't part of this library's
+      // public API and silently differs between versions (a heading lost
+      // its bold weight and margin across an engine bump, even though our
+      // own tagsStyles for it hadn't changed) — disabling it removes that
+      // whole class of upgrade risk.
+      enableUserAgentStyles={false}
       baseStyle={{
         fontFamily: fontFamily.regular,
         maxWidth: maxWidth,
