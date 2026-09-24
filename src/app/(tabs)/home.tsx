@@ -1,7 +1,7 @@
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Animated, Platform, View } from "react-native";
+import { Animated, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import { LogoBig } from "#/components/SvgIcons";
