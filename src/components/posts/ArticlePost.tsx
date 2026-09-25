@@ -249,7 +249,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
         <ReadingProgressBar
           testID="article-progress-bar"
           progress={scrollProgress}
-          height={5}
+          height={4}
           color={progressColor}
         />
         <UiSpace size={spacing.md} />

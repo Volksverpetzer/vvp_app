@@ -244,7 +244,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     <View style={globalStyles.container}>
       <ReadingProgressBar
         progress={scrollProgress}
-        height={5}
+        height={4}
         color={progressColor}
         style={{ position: "absolute" }}
       />
