@@ -5,6 +5,7 @@ import type { DimensionValue, TextStyle } from "react-native";
 import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
+import ReadingProgressBar from "#/components/progress/ReadingProgressBar";
 import Typography from "#/components/ui/Typography";
 import UiBadge from "#/components/ui/UiBadge";
 import UiPressable from "#/components/ui/UiPressable";
@@ -22,7 +23,6 @@ import {
   globalStyles,
 } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
-import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
@@ -63,7 +63,8 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
 
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  // Matches --vvp-accent, the progress-bar color used on the crowdfunding site.
+  const progressColor = Colors[colorScheme].accent;
   const { width } = useFeedDimensions();
   const router = useRouter();
   const height = useMemo(() => DEFAULT_IMAGE_ASPECT_RATIO * width, [width]);
@@ -210,15 +211,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }),
     [height],
   );
-  const progressBarStyle = useMemo(
-    () => ({
-      zIndex: layers.raised,
-      height: 3,
-      width: scrollProgress,
-      backgroundColor: corporate,
-    }),
-    [scrollProgress, corporate],
-  );
   const categoryTextStyle: TextStyle[] = [
     globalStyles.pillLabel,
     globalStyles.whiteText,
@@ -254,7 +246,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           )}
           <ImageCreditBadge credit={imageCredit} position="bottomRight" />
         </View>
-        <View testID="article-progress-bar" style={progressBarStyle} />
+        <ReadingProgressBar
+          testID="article-progress-bar"
+          progress={scrollProgress}
+          height={4}
+          color={progressColor}
+        />
         <UiSpace size={spacing.md} />
         <View
           style={{
