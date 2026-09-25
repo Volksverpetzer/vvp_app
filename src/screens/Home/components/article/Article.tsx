@@ -11,11 +11,11 @@ import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import BackToTopButton from "#/components/buttons/BackToTopButton";
+import ReadingProgressBar from "#/components/progress/ReadingProgressBar";
 import Footer from "#/components/views/Footer";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
-import { layers } from "#/constants/Layers";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -241,15 +241,12 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
 
   return (
     <View style={globalStyles.container}>
-      <Animated.View
-        style={{
-          position: "absolute",
-          zIndex: layers.raised,
-          height: 5,
-          width: scrollProgress,
-          backgroundColor: corporate,
-        }}
-      ></Animated.View>
+      <ReadingProgressBar
+        progress={scrollProgress}
+        height={5}
+        color={corporate}
+        style={{ position: "absolute" }}
+      />
       <View style={globalStyles.container}>
         <ScrollView
           testID="article-scroll"

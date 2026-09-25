@@ -5,6 +5,7 @@ import type { DimensionValue, TextStyle } from "react-native";
 import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
+import ReadingProgressBar from "#/components/progress/ReadingProgressBar";
 import Typography from "#/components/ui/Typography";
 import UiBadge from "#/components/ui/UiBadge";
 import UiPressable from "#/components/ui/UiPressable";
@@ -22,7 +23,6 @@ import {
   globalStyles,
 } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
-import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
@@ -210,15 +210,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }),
     [height],
   );
-  const progressBarStyle = useMemo(
-    () => ({
-      zIndex: layers.raised,
-      height: 5,
-      width: scrollProgress,
-      backgroundColor: corporate,
-    }),
-    [scrollProgress, corporate],
-  );
   const categoryTextStyle: TextStyle[] = [
     globalStyles.pillLabel,
     globalStyles.whiteText,
@@ -254,7 +245,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           )}
           <ImageCreditBadge credit={imageCredit} position="bottomRight" />
         </View>
-        <View testID="article-progress-bar" style={progressBarStyle} />
+        <ReadingProgressBar
+          testID="article-progress-bar"
+          progress={scrollProgress}
+          height={5}
+          color={corporate}
+        />
         <UiSpace size={spacing.md} />
         <View
           style={{
