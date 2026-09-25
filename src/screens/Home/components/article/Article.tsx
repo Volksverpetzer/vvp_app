@@ -65,7 +65,8 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backToTop = useBackToTop();
-  const corporate = Colors[colorScheme].primary;
+  // Matches --vvp-accent, the progress-bar color used on the crowdfunding site.
+  const progressColor = Colors[colorScheme].accent;
   const backgroundColor = Colors[colorScheme].background;
 
   const fullRead = useRef(false);
@@ -244,7 +245,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
       <ReadingProgressBar
         progress={scrollProgress}
         height={5}
-        color={corporate}
+        color={progressColor}
         style={{ position: "absolute" }}
       />
       <View style={globalStyles.container}>

@@ -63,7 +63,8 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
 
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  // Matches --vvp-accent, the progress-bar color used on the crowdfunding site.
+  const progressColor = Colors[colorScheme].accent;
   const { width } = useFeedDimensions();
   const router = useRouter();
   const height = useMemo(() => DEFAULT_IMAGE_ASPECT_RATIO * width, [width]);
@@ -249,7 +250,7 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           testID="article-progress-bar"
           progress={scrollProgress}
           height={5}
-          color={corporate}
+          color={progressColor}
         />
         <UiSpace size={spacing.md} />
         <View
