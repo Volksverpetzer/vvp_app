@@ -36,10 +36,11 @@ import logoPike from "#assets/images/logo_pike.webp";
 import { ArticleSourceList } from "./ArticleSourceList";
 import ArticleStats from "./ArticleStats";
 
-// Prefer the archive URL WordPress reports for the author (sites name the path
-// differently, e.g. /autor/ on mimikama.org); rebuild it only when absent.
+// Prefer the archive URL WordPress reports for the author; rebuild it with the
+// site's author path only when absent (e.g. articles cached by an older build).
 const getAuthorUrl = (author: { slug: string; link?: HttpsUrl }): HttpsUrl =>
-  author.link || `${Config.wpUrl}/author/${author.slug}/`;
+  author.link ||
+  `${Config.wpUrl}/${Config.authorBase ?? "author"}/${author.slug}/`;
 
 interface HeaderProperties {
   article: ArticleProperties;

@@ -162,6 +162,27 @@ describe("Header — author byline", () => {
     );
   });
 
+  it("builds the fallback author URL with the variant's author path", async () => {
+    const { onLinkPress } = jest.requireMock("#/helpers/Linking");
+    (mockConfig as { authorBase?: string }).authorBase = "autor";
+    try {
+      const { getAllByText } = await render(
+        <Header
+          {...defaultProps}
+          article={{ ...baseArticle, authors: [testAuthor] }}
+        />,
+      );
+      await fireEvent.press(getAllByText("Jane Doe")[0]);
+      expect(onLinkPress).toHaveBeenCalledWith(
+        "https://www.volksverpetzer.de/autor/jane-doe/",
+        expect.anything(),
+        defaultProps.article_link,
+      );
+    } finally {
+      delete (mockConfig as { authorBase?: string }).authorBase;
+    }
+  });
+
   it("also links the author in the share-preview layout", async () => {
     const { onLinkPress } = jest.requireMock("#/helpers/Linking");
     const { getAllByText, getAllByRole } = await render(

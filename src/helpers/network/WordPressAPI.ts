@@ -236,10 +236,18 @@ export default class WordPressAPI {
   static convertLoadProps(data: LoadArticlePostProperties): ArticleProperties {
     const description = data.yoast_head_json?.description ?? "";
     const title = decode(data.title?.rendered ?? "");
+    // Archive URLs come from the embedded author objects (sites name the
+    // path differently); explicit `authors` entries carry none, so merge the
+    // matching embedded link in by slug.
+    const embedded = data._embedded?.author ?? [];
+    const linkBySlug = new Map(embedded.map((a) => [a.slug, a.link]));
     const authors =
       data.authors?.length > 0
-        ? data.authors
-        : (data._embedded?.author ?? []).map((a) => ({
+        ? data.authors.map((a) => ({
+            ...a,
+            link: a.link ?? linkBySlug.get(a.slug),
+          }))
+        : embedded.map((a) => ({
             display_name: a.name,
             slug: a.slug,
             link: a.link,

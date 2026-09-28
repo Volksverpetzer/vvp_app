@@ -376,6 +376,49 @@ describe("WordPressAPI", () => {
       expect(article.authors).toEqual(authors);
     });
 
+    it("carries the embedded author's archive link through", () => {
+      const article = WordPressAPI.convertLoadProps({
+        ...baseData,
+        _embedded: {
+          author: [
+            { name: "Bob", slug: "bob", link: "https://x.org/autor/bob/" },
+          ],
+        },
+      } as any);
+      expect(article.authors).toEqual([
+        {
+          display_name: "Bob",
+          slug: "bob",
+          link: "https://x.org/autor/bob/",
+        },
+      ]);
+    });
+
+    it("adds the embedded link to explicit authors with the same slug", () => {
+      const article = WordPressAPI.convertLoadProps({
+        ...baseData,
+        authors: [
+          { display_name: "Anna", slug: "anna" },
+          { display_name: "Zed", slug: "zed", link: "https://own/zed/" },
+        ],
+        _embedded: {
+          author: [
+            { name: "Anna", slug: "anna", link: "https://x.org/autor/anna/" },
+            { name: "Zed", slug: "zed", link: "https://x.org/autor/zed/" },
+          ],
+        },
+      } as any);
+      expect(article.authors).toEqual([
+        {
+          display_name: "Anna",
+          slug: "anna",
+          link: "https://x.org/autor/anna/",
+        },
+        // An explicit link wins over the embedded one
+        { display_name: "Zed", slug: "zed", link: "https://own/zed/" },
+      ]);
+    });
+
     it("falls back to empty array when neither authors nor _embedded.author is present", () => {
       const article = WordPressAPI.convertLoadProps({
         ...baseData,
