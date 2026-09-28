@@ -10,6 +10,7 @@ import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 import UiTabView from "#/components/ui/UiTabView";
 import Colors from "#/constants/Colors";
+import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
@@ -18,6 +19,7 @@ import AISearch from "#/screens/Search/components/AISearch";
 import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";
 import SearchHeader from "#/screens/Search/components/SearchHeader";
 import SearchManager from "#/screens/Search/components/SearchManager";
+import WpSearchResults from "#/screens/Search/components/WpSearch";
 
 type SearchTab = "artikel" | "ai";
 
@@ -46,8 +48,13 @@ const SearchContent = ({
   setSearchType,
   searchRef,
 }: SearchContentProperties) => {
+  // Variants without an AI backend only offer the plain article search
+  const AI_ENABLED = !!Config.aiUrl;
+  const ArticleSearchResults = Config.algolia
+    ? AlgoliaSearchResults
+    : WpSearchResults;
   const [activeTab, setActiveTab] = useState<SearchTab>(
-    searchParams.includes("://") ? "ai" : "artikel",
+    AI_ENABLED && searchParams.includes("://") ? "ai" : "artikel",
   );
 
   const handleTabChange = useCallback(
@@ -64,11 +71,11 @@ const SearchContent = ({
   );
 
   useEffect(() => {
-    if (searchParams.includes("://")) {
+    if (AI_ENABLED && searchParams.includes("://")) {
       setActiveTab("ai");
       setSearchType("ai");
     }
-  }, [searchParams, setSearchType]);
+  }, [AI_ENABLED, searchParams, setSearchType]);
 
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
@@ -77,9 +84,8 @@ const SearchContent = ({
   const hasResults = searchParams.length >= 2;
   // Derive the rendered tab synchronously so URL submissions never flash the
   // Artikel branch before the useEffect fires and updates activeTab.
-  const effectiveTab: SearchTab = searchParams.includes("://")
-    ? "ai"
-    : activeTab;
+  const effectiveTab: SearchTab =
+    AI_ENABLED && searchParams.includes("://") ? "ai" : activeTab;
 
   return (
     <View style={[globalStyles.container, { backgroundColor }]}>
@@ -94,34 +100,42 @@ const SearchContent = ({
       />
       <View style={[globalStyles.content, { flex: 1 }]}>
         {/* Tab toggle */}
-        <View
-          style={{
-            alignItems: "center",
-            marginTop: -30,
-            marginBottom: spacing.lg,
-          }}
-        >
-          <UiTabView width={240}>
-            <UiTabIconLabel
-              icon={(color) => <SearchIcon color={color} size={iconSizes.md} />}
-              label="Artikel"
-              isActive={effectiveTab === "artikel"}
-              onPress={() => handleTabChange("artikel")}
-              style={{ paddingVertical: spacing.md }}
-            />
-            <UiTabIconLabel
-              icon={(color) => <SafetyIcon color={color} size={iconSizes.md} />}
-              label="KI-Faktenbot"
-              isActive={effectiveTab === "ai"}
-              onPress={() => handleTabChange("ai")}
-              style={{ paddingVertical: spacing.md }}
-            />
-          </UiTabView>
-        </View>
+        {AI_ENABLED ? (
+          <View
+            style={{
+              alignItems: "center",
+              marginTop: -30,
+              marginBottom: spacing.lg,
+            }}
+          >
+            <UiTabView width={240}>
+              <UiTabIconLabel
+                icon={(color) => (
+                  <SearchIcon color={color} size={iconSizes.md} />
+                )}
+                label="Artikel"
+                isActive={effectiveTab === "artikel"}
+                onPress={() => handleTabChange("artikel")}
+                style={{ paddingVertical: spacing.md }}
+              />
+              <UiTabIconLabel
+                icon={(color) => (
+                  <SafetyIcon color={color} size={iconSizes.md} />
+                )}
+                label="KI-Faktenbot"
+                isActive={effectiveTab === "ai"}
+                onPress={() => handleTabChange("ai")}
+                style={{ paddingVertical: spacing.md }}
+              />
+            </UiTabView>
+          </View>
+        ) : (
+          <View style={{ height: spacing.lg }} />
+        )}
 
         {effectiveTab === "artikel" &&
           (hasResults ? (
-            <AlgoliaSearchResults
+            <ArticleSearchResults
               searchString={searchParams}
               onResultsLength={setResultsLength}
             />

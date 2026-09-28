@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   KeyboardAvoidingView,
+  Linking,
   Platform,
   StyleSheet,
   View,
@@ -61,6 +62,34 @@ const CATEGORY_TEXTS: Record<
     titleHint: "Gib einen Betreff ein",
     messageLabel: "Deine Nachricht",
   },
+};
+
+const CATEGORY_LABELS: Record<ContactCategory, string> = {
+  app_feedback: "App-Feedback",
+  report_fake: "Fake-Report",
+  other: "Sonstiges",
+};
+
+/**
+ * Builds a mailto: link for variants without a contact backend, carrying the
+ * same client metadata the server would attach to a request.
+ */
+const buildMailtoUrl = (
+  to: string,
+  category: ContactCategory,
+  title: string,
+  message: string,
+) => {
+  const client = [
+    appName,
+    Application?.nativeApplicationVersion ?? "",
+    Platform.OS,
+  ]
+    .filter(Boolean)
+    .join(" | ");
+  const subject = `${CATEGORY_LABELS[category]} | ${title}`;
+  const body = `${message}\n\n--\nApp: ${client}`;
+  return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 };
 
 const isValidCategory = (value?: string): value is ContactCategory =>
@@ -237,6 +266,27 @@ const ContactScreen = () => {
       );
       return;
     }
+    if (Config.contactEmail) {
+      // No contact backend: hand the message over to the user's mail app
+      try {
+        await Linking.openURL(
+          buildMailtoUrl(
+            Config.contactEmail,
+            category,
+            title.trim(),
+            message.trim(),
+          ),
+        );
+        clearError();
+        registerEvent(Config.wpUrl, "Contact Submitted", { category });
+      } catch {
+        setErrorField(null);
+        setError(
+          `Keine E-Mail-App gefunden. Bitte schreib uns direkt an ${Config.contactEmail}.`,
+        );
+      }
+      return;
+    }
     if (email.trim() && !email.includes("@")) {
       showFieldError("email", "Bitte eine gültige E-Mail-Adresse eingeben");
       return;
@@ -390,36 +440,38 @@ const ContactScreen = () => {
               ]}
             />
           </View>
-          <View style={{ gap: spacing.md }}>
-            <Typography type="heading">
-              E-Mail für Rückfragen (optional)
-            </Typography>
-            <UiTextInput
-              accessibilityLabel="Text input field"
-              accessibilityHint="Gib deine E-Mail-Adresse ein"
-              placeholder="..."
-              placeholderTextColor={textColor}
-              value={email}
-              onChangeText={(value) => {
-                setEmail(value);
-                if (errorField === "email") clearError();
-              }}
-              autoCapitalize="none"
-              autoComplete="email"
-              keyboardType="email-address"
-              style={[
-                styles.input,
-                errorField === "email" && styles.inputError,
-              ]}
-            />
-          </View>
+          {!Config.contactEmail && (
+            <View style={{ gap: spacing.md }}>
+              <Typography type="heading">
+                E-Mail für Rückfragen (optional)
+              </Typography>
+              <UiTextInput
+                accessibilityLabel="Text input field"
+                accessibilityHint="Gib deine E-Mail-Adresse ein"
+                placeholder="..."
+                placeholderTextColor={textColor}
+                value={email}
+                onChangeText={(value) => {
+                  setEmail(value);
+                  if (errorField === "email") clearError();
+                }}
+                autoCapitalize="none"
+                autoComplete="email"
+                keyboardType="email-address"
+                style={[
+                  styles.input,
+                  errorField === "email" && styles.inputError,
+                ]}
+              />
+            </View>
+          )}
           {error ? (
             <UiText size="lg" bold style={styles.errorText}>
               {error}
             </UiText>
           ) : undefined}
           <UiButton
-            label="Senden"
+            label={Config.contactEmail ? "E-Mail erstellen" : "Senden"}
             variant="accent"
             shape="pill"
             disabled={!buttonEnabled}

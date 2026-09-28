@@ -14,6 +14,7 @@ const extraConfig: ExtraConfigType = {
   apiUrl: "https://mimikamaserver.azurewebsites.net",
   wpUrl: "https://www.mimikama.org",
   aboutUrl: "https://www.mimikama.org/ueber-uns/",
+  contactEmail: "buero@mimikama.at",
   sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
   dataProtectionUrl: "https://www.mimikama.org/datenschutzbestimmungen/",
   imprintUrl: "https://www.mimikama.org/impressum/",
@@ -69,7 +70,7 @@ const extraConfig: ExtraConfigType = {
       { handle: "https://www.mimikama.org", label: "Artikel", enabled: true },
     ],
     insta: [
-      { handle: "mimikama.at", label: "Instagram Slides", enabled: true },
+      { handle: "mimikama_org", label: "Instagram Slides", enabled: true },
     ],
   },
   colorScheme: colorScheme,

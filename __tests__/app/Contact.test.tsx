@@ -1,7 +1,16 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from "@jest/globals";
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { Linking } from "react-native";
 
 import ContactScreen from "#/app/(tabs)/contact";
+import Config from "#/constants/Config";
 import API from "#/helpers/network/ServerAPI";
 import { FetchError } from "#/helpers/utils/networking";
 
@@ -312,5 +321,55 @@ describe("ContactScreen", () => {
     expect(
       queryByText("Senden fehlgeschlagen. Bitte versuche es später erneut."),
     ).toBeNull();
+  });
+
+  describe("with a contactEmail configured", () => {
+    beforeEach(() => {
+      (Config as any).contactEmail = "team@example.org";
+      jest.spyOn(Linking, "openURL").mockResolvedValue(true);
+    });
+    afterEach(() => {
+      delete (Config as any).contactEmail;
+    });
+
+    it("opens a mailto link instead of posting to the server", async () => {
+      mockParameters = { category: "other" };
+      const { getByText, queryByText, getAllByPlaceholderText } = await render(
+        <ContactScreen />,
+      );
+      expect(queryByText("E-Mail für Rückfragen (optional)")).toBeNull();
+      const [titleInput, messageInput] = getAllByPlaceholderText("...");
+      await fireEvent.changeText(titleInput, "Betreff");
+      await fireEvent.changeText(
+        messageInput,
+        "Eine ausreichend lange Nachricht.",
+      );
+      await fireEvent.press(getByText("E-Mail erstellen"));
+
+      await waitFor(() => expect(Linking.openURL).toHaveBeenCalledTimes(1));
+      const url = (Linking.openURL as jest.Mock<any>).mock
+        .calls[0][0] as string;
+      expect(url.startsWith("mailto:team@example.org?subject=")).toBe(true);
+      expect(decodeURIComponent(url)).toContain("Sonstiges | Betreff");
+      expect(postContact).not.toHaveBeenCalled();
+    });
+
+    it("shows an error when no mail app can be opened", async () => {
+      mockParameters = { category: "other" };
+      (Linking.openURL as jest.Mock<any>).mockRejectedValue(new Error("none"));
+      const { getByText, getAllByPlaceholderText } = await render(
+        <ContactScreen />,
+      );
+      const [titleInput, messageInput] = getAllByPlaceholderText("...");
+      await fireEvent.changeText(titleInput, "Betreff");
+      await fireEvent.changeText(
+        messageInput,
+        "Eine ausreichend lange Nachricht.",
+      );
+      await fireEvent.press(getByText("E-Mail erstellen"));
+      await waitFor(() =>
+        expect(getByText(/Keine E-Mail-App gefunden/)).toBeTruthy(),
+      );
+    });
   });
 });
