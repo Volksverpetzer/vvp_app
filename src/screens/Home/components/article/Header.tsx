@@ -1,7 +1,5 @@
 import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
-import type { Href } from "expo-router";
-import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AppState,
@@ -37,8 +35,10 @@ import logoPike from "#assets/images/logo_pike.webp";
 import { ArticleSourceList } from "./ArticleSourceList";
 import ArticleStats from "./ArticleStats";
 
-const getAuthorPath = (slug: string) =>
-  `${Config.authorBase ?? "author"}/${slug}`;
+// Prefer the archive URL WordPress reports for the author (sites name the path
+// differently, e.g. /autor/ on mimikama.org); rebuild it only when absent.
+const getAuthorUrl = (author: { slug: string; link?: HttpsUrl }): HttpsUrl =>
+  author.link || `${Config.wpUrl}/author/${author.slug}/`;
 
 interface HeaderProperties {
   article: ArticleProperties;
@@ -64,7 +64,6 @@ const Header = (properties: HeaderProperties) => {
   const { width } = useWindowDimensions();
   // Reference to the ViewShot component for image capture
   const reference = useRef<ViewShotRef>(null);
-  const router = useRouter();
   const corporate = useCorporateColor();
 
   const audioUrl = Config.audioCdnUrl
@@ -169,10 +168,7 @@ const Header = (properties: HeaderProperties) => {
               <UiText
                 key={author.slug}
                 onPress={() =>
-                  outBoundLinkPress(
-                    `${Config.wpUrl}/${getAuthorPath(author.slug)}/`,
-                    article_link,
-                  )
+                  outBoundLinkPress(getAuthorUrl(author), article_link)
                 }
                 style={{ color: corporate }}
               >
@@ -287,7 +283,7 @@ const Header = (properties: HeaderProperties) => {
                     <UiText
                       key={author.slug}
                       onPress={() =>
-                        router.push(`/${getAuthorPath(author.slug)}` as Href)
+                        outBoundLinkPress(getAuthorUrl(author), article_link)
                       }
                       style={{ color: corporate }}
                     >

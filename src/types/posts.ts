@@ -48,7 +48,7 @@ export interface ArticleProperties {
   date_gmt: string;
   title: string;
   content?: { rendered: string };
-  authors?: { display_name: string; slug: string }[];
+  authors?: { display_name: string; slug: string; link?: HttpsUrl }[];
   imageUrl?: string;
   imageCredit?: ImageCredit;
   sourceName?: string;
@@ -61,10 +61,10 @@ export type LoadArticlePostProperties = Omit<
 > & {
   title?: { rendered: string };
   excerpt?: { rendered: string };
-  authors?: { display_name: string; slug: string }[];
+  authors?: { display_name: string; slug: string; link?: HttpsUrl }[];
   yoast_head_json?: { description?: string };
   _embedded?: {
-    author?: { name: string; slug: string }[];
+    author?: { name: string; slug: string; link?: HttpsUrl }[];
   };
 };
 

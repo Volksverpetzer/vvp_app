@@ -242,6 +242,7 @@ export default class WordPressAPI {
         : (data._embedded?.author ?? []).map((a) => ({
             display_name: a.name,
             slug: a.slug,
+            link: a.link,
           }));
     return { ...data, title, description, authors };
   }

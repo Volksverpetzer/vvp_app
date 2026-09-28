@@ -138,29 +138,27 @@ describe("Header — author byline", () => {
 
   it.each([
     [undefined, "https://www.volksverpetzer.de/author/jane-doe/"],
-    ["autor", "https://www.volksverpetzer.de/autor/jane-doe/"],
-  ])(
-    "links the author to the site's archive (authorBase %s)",
-    async (authorBase, expected) => {
-      const { outBoundLinkPress } = jest.requireMock("#/helpers/Linking");
-      (mockConfig as { authorBase?: string }).authorBase = authorBase;
-      try {
-        const { getAllByText } = await render(
-          <Header
-            {...defaultProps}
-            article={{ ...baseArticle, authors: [testAuthor] }}
-          />,
-        );
-        await fireEvent.press(getAllByText("Jane Doe")[0]);
-        expect(outBoundLinkPress).toHaveBeenCalledWith(
-          expected,
-          defaultProps.article_link,
-        );
-      } finally {
-        delete (mockConfig as { authorBase?: string }).authorBase;
-      }
-    },
-  );
+    [
+      "https://www.mimikama.org/autor/jane-doe/",
+      "https://www.mimikama.org/autor/jane-doe/",
+    ],
+  ])("links the author to the archive (link %s)", async (link, expected) => {
+    const { outBoundLinkPress } = jest.requireMock("#/helpers/Linking");
+    const { getAllByText } = await render(
+      <Header
+        {...defaultProps}
+        article={{
+          ...baseArticle,
+          authors: [{ ...testAuthor, link: link as HttpsUrl | undefined }],
+        }}
+      />,
+    );
+    await fireEvent.press(getAllByText("Jane Doe")[0]);
+    expect(outBoundLinkPress).toHaveBeenCalledWith(
+      expected,
+      defaultProps.article_link,
+    );
+  });
 
   it("hides the author byline when authors is undefined", async () => {
     const { queryByText } = await render(

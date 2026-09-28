@@ -16,7 +16,6 @@ const extraConfig: ExtraConfigType = {
   aboutUrl: "https://www.mimikama.org/ueber-uns/",
   hiddenNotifications: ["new_fact_check", "new_pruefpunkt"],
   flatPermalinks: true,
-  authorBase: "autor",
   contactEmail: "buero@mimikama.at",
   sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
   dataProtectionUrl: "https://www.mimikama.org/datenschutzbestimmungen/",
