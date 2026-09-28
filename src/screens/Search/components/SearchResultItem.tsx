@@ -167,6 +167,7 @@ const SearchResultItem = ({
           </>
         ) : maxLines ? (
           <View
+            testID="excerpt-clamp"
             style={{
               maxHeight: maxLines * CONTENT_LINE_HEIGHT + pPaddingBottom,
               overflow: "hidden",
