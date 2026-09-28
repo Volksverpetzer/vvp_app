@@ -185,7 +185,7 @@ const ContactScreen = () => {
         },
         submitButton: {
           alignSelf: "center",
-          width: 120,
+          minWidth: 120,
         },
       }),
     [surfaceInput, errorColor, primary, textMuted],
