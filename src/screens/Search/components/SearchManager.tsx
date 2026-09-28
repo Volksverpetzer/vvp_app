@@ -6,6 +6,10 @@ import { Achievements } from "#/helpers/Achievements";
 import { consumeShareIntentUrl } from "#/helpers/ShareIntent";
 import { registerEvent } from "#/helpers/network/Analytics";
 
+// A pasted URL is a fact-check query, but only where an AI backend exists
+const getSearchType = (value?: string): "ai" | "artikel" =>
+  Config.aiUrl && value?.includes("://") ? "ai" : "artikel";
+
 interface SearchManagerProperties {
   initialSearch?: string;
   children: (
@@ -45,7 +49,7 @@ const SearchManager = ({
   const [resultsLength, setResultsLength] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [searchType, setSearchType] = useState<"ai" | "artikel">(
-    initialSearch?.includes("://") ? "ai" : "artikel",
+    getSearchType(initialSearch),
   );
   const isAISearch = searchType === "ai";
 
@@ -91,7 +95,7 @@ const SearchManager = ({
   useEffect(() => {
     if (initialSearch) {
       setSearch(initialSearch);
-      const type = initialSearch.includes("://") ? "ai" : "artikel";
+      const type = getSearchType(initialSearch);
       handleSetSearchType(type);
       handleSetSearchParams(initialSearch);
 

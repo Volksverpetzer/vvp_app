@@ -9,18 +9,22 @@ import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
+import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
-import {
-  ALGOLIA_APP_ID,
-  ALGOLIA_INDEX_NAME,
-  ALGOLIA_SEARCH_KEY,
-} from "#/constants/Search";
 import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { useBackToTop } from "#/hooks/useBackToTop";
 import SearchResultItem from "#/screens/Search/components/SearchResultItem";
 
-const algoliaClient = searchClient(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
+// Created lazily: variants without an Algolia config use WpSearch instead.
+let algoliaClient: ReturnType<typeof searchClient> | undefined;
+const getAlgoliaClient = () => {
+  algoliaClient ??= searchClient(
+    Config.algolia.appId,
+    Config.algolia.searchKey,
+  );
+  return algoliaClient;
+};
 
 interface AlgoliaSearchProperties {
   searchString: string;
@@ -54,8 +58,8 @@ const AlgoliaSearchResults = ({
 
     const timer = setTimeout(async () => {
       try {
-        const { hits } = await algoliaClient.searchSingleIndex({
-          indexName: ALGOLIA_INDEX_NAME,
+        const { hits } = await getAlgoliaClient().searchSingleIndex({
+          indexName: Config.algolia.indexName,
           searchParams: { query: searchString, hitsPerPage: maxResults },
         });
         if (!cancelled) {

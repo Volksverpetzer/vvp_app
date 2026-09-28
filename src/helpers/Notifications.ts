@@ -158,11 +158,11 @@ const NotificationManager = {
     // are still doing network work.
     const persisted = persistChain.then(async () => {
       const storedSettings = await SettingsStore.getNotificationSettings();
-      const notificationSettings = {
+      const notificationSettings = SettingsStore.forceHiddenNotificationsOff({
         ...SettingsStore.defaultNotificationSettings,
         ...storedSettings,
         ...newSettings,
-      };
+      });
       await SettingsStore.setNotificationSettings(notificationSettings);
       return notificationSettings;
     });
@@ -323,12 +323,15 @@ const NotificationManager = {
     const { status: finalStatus } =
       await Notifications.requestPermissionsAsync();
     const granted = finalStatus === "granted";
-    const notificationSettings = Object.fromEntries(
-      Object.entries(currentSettings).map(([key, setting]) => [
-        key,
-        { ...setting, value: granted },
-      ]),
-    ) as NotificationSettingType;
+    // Types the variant hides have no switch, so a grant must not turn them on
+    const notificationSettings = SettingsStore.forceHiddenNotificationsOff(
+      Object.fromEntries(
+        Object.entries(currentSettings).map(([key, setting]) => [
+          key,
+          { ...setting, value: granted },
+        ]),
+      ) as NotificationSettingType,
+    );
 
     if (!granted) {
       // Persist the all-off settings locally, but skip

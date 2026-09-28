@@ -1,5 +1,6 @@
 import type { colorSchemeType } from "./colors";
 import type { FeedsConfig } from "./feeds";
+import type { NotificationSettingType } from "./settings";
 
 export type HttpsUrl = `https://${string}`;
 
@@ -9,7 +10,12 @@ export type HttpsUrl = `https://${string}`;
 export interface ExtraConfigType {
   instagramAppId?: string;
   apiUrl: HttpsUrl;
-  aiUrl?: HttpsUrl;
+  aiUrl?: HttpsUrl; // enables the AI fact-check search tab when set
+  algolia?: { appId: string; searchKey: string; indexName: string }; // Algolia article search; falls back to WordPress search when unset
+  hiddenNotifications?: (keyof NotificationSettingType)[]; // notification types this variant doesn't offer: not shown in settings and always off
+  flatPermalinks?: boolean; // articles live at /{slug}/ instead of /{category}/{slug}/, so a single path segment is looked up as an article
+  authorBase?: string; // path segment of the site's author archives, used only when the API gives no author link (default "author"; "autor" on mimikama.org)
+  contactEmail?: string; // when set, the contact form composes an email to this address instead of posting to the server
   dataProtectionUrl: HttpsUrl;
   imprintUrl: HttpsUrl;
   eas: {

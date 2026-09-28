@@ -25,6 +25,8 @@ const Recommended = (properties: RecommendedProperties) => {
   const { article_link } = properties;
 
   useEffect(() => {
+    // Recommendations come from the AI backend; variants without one skip them
+    if (!Config.aiUrl) return;
     const controller = new AbortController();
 
     IntelligenceAPI.recommendations(article_link, controller.signal)

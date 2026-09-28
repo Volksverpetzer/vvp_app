@@ -15,6 +15,7 @@ jest.mock("#/constants/Config", () => ({
   __esModule: true,
   default: {
     wpUrl: "https://example.com",
+    aiUrl: "https://ai.example.com",
   },
 }));
 
@@ -67,6 +68,22 @@ describe("Recommended", () => {
     await render(<Recommended article_link="https://example.com/article" />);
 
     await waitFor(() => expect(recommendations).toHaveBeenCalledTimes(1));
+  });
+
+  it("does not request recommendations without an AI backend", async () => {
+    const Config = jest.requireMock<{ default: Record<string, unknown> }>(
+      "#/constants/Config",
+    ).default;
+    const recommendations = (IntelligenceAPI as any)
+      .recommendations as jest.Mock<any>;
+    const { aiUrl } = Config;
+    delete Config.aiUrl;
+    try {
+      await render(<Recommended article_link="https://example.com/article" />);
+      expect(recommendations).not.toHaveBeenCalled();
+    } finally {
+      Config.aiUrl = aiUrl;
+    }
   });
 
   it("logs errors that are not caused by abort", async () => {
