@@ -67,6 +67,8 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
   default: {
     getNotificationSettings: jest.fn(),
     setNotificationSettings: jest.fn(),
+    // Identity by default; individual tests make it force a type off
+    forceHiddenNotificationsOff: jest.fn((settings: unknown) => settings),
     defaultNotificationSettings: {
       new_post: { value: true, name: "New Posts" },
     },
@@ -402,6 +404,49 @@ describe("NotificationManager", () => {
       expect(requestSpy).toHaveBeenCalled();
       expect(result.notificationSettings.new_post.value).toBe(true);
       expect(result.notificationSettings.new_fact_check.value).toBe(true);
+    });
+
+    it("keeps hidden notification types off when permission is granted", async () => {
+      (
+        SettingsStore.getNotificationSettings as jest.MockedFunction<
+          () => Promise<any>
+        >
+      ).mockResolvedValue({
+        new_post: { value: false, name: "New Posts" },
+        new_fact_check: { value: false, name: "New Fact Check" },
+      });
+      // This variant hides new_fact_check
+      (
+        SettingsStore.forceHiddenNotificationsOff as jest.Mock<any>
+      ).mockImplementation((settings: any) => ({
+        ...settings,
+        new_fact_check: { ...settings.new_fact_check, value: false },
+      }));
+      jest
+        .spyOn(Notifications, "getPermissionsAsync")
+        .mockResolvedValue({ status: "undetermined" } as any);
+      jest
+        .spyOn(Notifications, "requestPermissionsAsync")
+        .mockResolvedValue({ status: "granted" } as any);
+      jest
+        .spyOn(Notifications, "getExpoPushTokenAsync")
+        .mockResolvedValue({ data: "ExponentPushToken[test]" } as any);
+      const API = (jest.requireMock("#/helpers/network/ServerAPI") as any)
+        .default;
+      API.registerNotifications.mockResolvedValue({ status: "ok" });
+
+      const result =
+        await NotificationManager.requestPermissionAndApplyDefaults();
+
+      expect(result.notificationSettings.new_post.value).toBe(true);
+      expect(result.notificationSettings.new_fact_check.value).toBe(false);
+      expect(
+        API.registerNotifications.mock.calls.at(-1)[0].settings.new_fact_check
+          .value,
+      ).toBe(false);
+      (
+        SettingsStore.forceHiddenNotificationsOff as jest.Mock<any>
+      ).mockImplementation((settings: unknown) => settings);
     });
 
     it("requests permission and turns every switch off when denied", async () => {
