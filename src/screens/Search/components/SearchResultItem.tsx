@@ -37,6 +37,8 @@ interface SearchResultItemProps {
   onPress?: () => void;
   /** Clamp `text` to a few lines with a "Mehr lesen" toggle to expand. */
   collapsible?: boolean;
+  /** Hard-clamp `text` to this many lines (no toggle; the whole card stays pressable). */
+  maxLines?: number;
 }
 
 const SearchResultItem = ({
@@ -45,6 +47,7 @@ const SearchResultItem = ({
   subtitle,
   onPress,
   collapsible = false,
+  maxLines,
 }: SearchResultItemProps) => {
   const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
@@ -59,11 +62,10 @@ const SearchResultItem = ({
   // getTagStyles — it has no paddingTop under the bottom-only spacing
   // convention), which counts toward both the clamped box and the
   // measured height — fold it in so the line-count math stays accurate.
-  const collapsedHeight = useMemo(() => {
-    const pPaddingBottom = (styles.p as { paddingBottom?: number } | undefined)
-      ?.paddingBottom;
-    return COLLAPSED_LINES * CONTENT_LINE_HEIGHT + (pPaddingBottom ?? 0);
-  }, [styles]);
+  const pPaddingBottom =
+    (styles.p as { paddingBottom?: number } | undefined)?.paddingBottom ?? 0;
+  const collapsedHeight =
+    COLLAPSED_LINES * CONTENT_LINE_HEIGHT + pPaddingBottom;
 
   const handleMeasure = useCallback(
     (event: LayoutChangeEvent) => {
@@ -163,6 +165,15 @@ const SearchResultItem = ({
               </UiPressable>
             )}
           </>
+        ) : maxLines ? (
+          <View
+            style={{
+              maxHeight: maxLines * CONTENT_LINE_HEIGHT + pPaddingBottom,
+              overflow: "hidden",
+            }}
+          >
+            {html}
+          </View>
         ) : (
           html
         )}

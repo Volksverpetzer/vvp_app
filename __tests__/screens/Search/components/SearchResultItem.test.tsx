@@ -65,6 +65,18 @@ jest.mock("#/helpers/utils/articleTagStyles", () => ({
 describe("SearchResultItem", () => {
   beforeEach(() => jest.clearAllMocks());
 
+  it("clamps the excerpt to maxLines without adding a toggle", async () => {
+    const { UNSAFE_getAllByType, queryByTestId } = await render(
+      <SearchResultItem title="T" text="<p>Test</p>" maxLines={5} />,
+    );
+    const { View } = require("react-native");
+    const clamped = UNSAFE_getAllByType(View).find(
+      (node: any) => node.props.style?.overflow === "hidden",
+    );
+    expect(clamped?.props.style.maxHeight).toBeGreaterThan(0);
+    expect(queryByTestId("excerpt-toggle")).toBeNull();
+  });
+
   it("renders inside a plain View when onPress is not provided", async () => {
     const { getByTestId, queryByTestId } = await render(
       <SearchResultItem title="Test Title" text="<p>Test</p>" />,

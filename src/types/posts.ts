@@ -60,6 +60,7 @@ export type LoadArticlePostProperties = Omit<
   "title" | "authors"
 > & {
   title?: { rendered: string };
+  excerpt?: { rendered: string };
   authors?: { display_name: string; slug: string }[];
   yoast_head_json?: { description?: string };
   _embedded?: {

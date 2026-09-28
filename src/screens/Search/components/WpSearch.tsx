@@ -22,6 +22,14 @@ interface WpSearchProperties {
   onResultsLength?: (count: number) => void;
 }
 
+const EXCERPT_LINES = 5;
+
+// WordPress' own excerpt is always present; Yoast's description is only a
+// fallback for posts whose excerpt is empty.
+const getExcerptHtml = (item: LoadArticlePostProperties) =>
+  item.excerpt?.rendered?.trim() ||
+  `<p>${item.yoast_head_json?.description ?? ""}</p>`;
+
 const formatDate = (iso: string) => {
   const date = new Date(iso);
   return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
@@ -84,7 +92,8 @@ const WpSearchResults = ({
     ({ item }: { item: LoadArticlePostProperties }) => (
       <SearchResultItem
         title={decode(item.title?.rendered ?? "")}
-        text={`<div>${item.yoast_head_json?.description ?? ""}</div>`}
+        text={getExcerptHtml(item)}
+        maxLines={EXCERPT_LINES}
         subtitle={
           <UiText style={{ textAlign: "right" }}>
             {formatDate(item.date_gmt)}
