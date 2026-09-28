@@ -41,6 +41,7 @@ jest.mock("#/constants/Config", () => ({
 }));
 
 jest.mock("#/helpers/Linking", () => ({
+  onLinkPress: jest.fn(),
   outBoundLinkPress: jest.fn(),
 }));
 
@@ -143,7 +144,7 @@ describe("Header — author byline", () => {
       "https://www.mimikama.org/autor/jane-doe/",
     ],
   ])("links the author to the archive (link %s)", async (link, expected) => {
-    const { outBoundLinkPress } = jest.requireMock("#/helpers/Linking");
+    const { onLinkPress } = jest.requireMock("#/helpers/Linking");
     const { getAllByText } = await render(
       <Header
         {...defaultProps}
@@ -154,8 +155,9 @@ describe("Header — author byline", () => {
       />,
     );
     await fireEvent.press(getAllByText("Jane Doe")[0]);
-    expect(outBoundLinkPress).toHaveBeenCalledWith(
+    expect(onLinkPress).toHaveBeenCalledWith(
       expected,
+      expect.anything(),
       defaultProps.article_link,
     );
   });

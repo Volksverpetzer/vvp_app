@@ -1,5 +1,6 @@
 import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AppState,
@@ -23,7 +24,7 @@ import {
   DEFAULT_IMAGE_ASPECT_RATIO,
 } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
-import { outBoundLinkPress } from "#/helpers/Linking";
+import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useAudioAvailability } from "#/hooks/useAudioAvailability";
@@ -64,6 +65,7 @@ const Header = (properties: HeaderProperties) => {
   const { width } = useWindowDimensions();
   // Reference to the ViewShot component for image capture
   const reference = useRef<ViewShotRef>(null);
+  const router = useRouter();
   const corporate = useCorporateColor();
 
   const audioUrl = Config.audioCdnUrl
@@ -168,7 +170,7 @@ const Header = (properties: HeaderProperties) => {
               <UiText
                 key={author.slug}
                 onPress={() =>
-                  outBoundLinkPress(getAuthorUrl(author), article_link)
+                  onLinkPress(getAuthorUrl(author), router, article_link)
                 }
                 style={{ color: corporate }}
               >
@@ -283,7 +285,7 @@ const Header = (properties: HeaderProperties) => {
                     <UiText
                       key={author.slug}
                       onPress={() =>
-                        outBoundLinkPress(getAuthorUrl(author), article_link)
+                        onLinkPress(getAuthorUrl(author), router, article_link)
                       }
                       style={{ color: corporate }}
                     >
