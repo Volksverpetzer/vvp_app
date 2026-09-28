@@ -37,6 +37,9 @@ import logoPike from "#assets/images/logo_pike.webp";
 import { ArticleSourceList } from "./ArticleSourceList";
 import ArticleStats from "./ArticleStats";
 
+const getAuthorPath = (slug: string) =>
+  `${Config.authorBase ?? "author"}/${slug}`;
+
 interface HeaderProperties {
   article: ArticleProperties;
   article_image: string;
@@ -167,7 +170,7 @@ const Header = (properties: HeaderProperties) => {
                 key={author.slug}
                 onPress={() =>
                   outBoundLinkPress(
-                    `${Config.wpUrl}/author/${author.slug}/`,
+                    `${Config.wpUrl}/${getAuthorPath(author.slug)}/`,
                     article_link,
                   )
                 }
@@ -284,7 +287,7 @@ const Header = (properties: HeaderProperties) => {
                     <UiText
                       key={author.slug}
                       onPress={() =>
-                        router.push(`/author/${author.slug}` as Href)
+                        router.push(`/${getAuthorPath(author.slug)}` as Href)
                       }
                       style={{ color: corporate }}
                     >
