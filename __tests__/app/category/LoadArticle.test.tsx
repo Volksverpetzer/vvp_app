@@ -232,3 +232,42 @@ describe("LoadArticle native article anchor", () => {
     expect(EdgelessWebview).not.toHaveBeenCalled();
   });
 });
+
+describe("LoadArticle with flat permalinks", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.requireMock("#/constants/Config").default.flatPermalinks = true;
+  });
+  afterEach(() => {
+    delete jest.requireMock("#/constants/Config").default.flatPermalinks;
+  });
+
+  it("looks up a single path segment as the article slug", async () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    const WordPressAPI = jest.requireMock(
+      "#/helpers/network/WordPressAPI",
+    ).default;
+    useLocalSearchParams.mockReturnValue({ category: "mein-artikel" });
+    WordPressAPI.getPost.mockResolvedValueOnce({
+      slug: "mein-artikel",
+      _links: {},
+    });
+    render(<LoadArticle />);
+    await waitFor(() =>
+      expect(WordPressAPI.getPost).toHaveBeenCalledWith(
+        "mein-artikel",
+        expect.anything(),
+      ),
+    );
+    await waitFor(() => expect(articleAnchorProp).not.toThrow());
+  });
+
+  it("falls back to a /slug/ webview URL when no post matches (a page)", async () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({ category: "ueber-uns" });
+    render(<LoadArticle />);
+    await waitFor(() =>
+      expect(webviewUri()).toBe("https://volksverpetzer.de/ueber-uns/"),
+    );
+  });
+});

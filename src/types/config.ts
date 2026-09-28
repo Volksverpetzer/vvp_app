@@ -13,6 +13,7 @@ export interface ExtraConfigType {
   aiUrl?: HttpsUrl; // enables the AI fact-check search tab when set
   algolia?: { appId: string; searchKey: string; indexName: string }; // Algolia article search; falls back to WordPress search when unset
   hiddenNotifications?: (keyof NotificationSettingType)[]; // notification types this variant doesn't offer: not shown in settings and always off
+  flatPermalinks?: boolean; // articles live at /{slug}/ instead of /{category}/{slug}/, so a single path segment is looked up as an article
   contactEmail?: string; // when set, the contact form composes an email to this address instead of posting to the server
   dataProtectionUrl: HttpsUrl;
   imprintUrl: HttpsUrl;
