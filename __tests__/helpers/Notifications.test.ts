@@ -24,6 +24,7 @@ jest.mock("expo-notifications", () => ({
   getExpoPushTokenAsync: jest.fn(),
   scheduleNotificationAsync: jest.fn(),
   setNotificationChannelAsync: jest.fn(),
+  deleteNotificationChannelAsync: jest.fn(),
   setNotificationHandler: jest.fn(),
   PermissionStatus: {
     GRANTED: "granted",
@@ -366,6 +367,42 @@ describe("NotificationManager", () => {
       });
 
       expect(result.notificationSettings.new_post.value).toBe(false);
+    });
+  });
+
+  describe("Android notification channels", () => {
+    it("creates one channel per notification type and removes the legacy ones", async () => {
+      const platform = (jest.requireMock("react-native") as any).Platform;
+      platform.OS = "android";
+      try {
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue({});
+        // channelsConfigured is module state, so use a fresh module instance
+        let Manager: typeof NotificationManager;
+        jest.isolateModules(() => {
+          Manager = require("#/helpers/Notifications").default;
+        });
+
+        await Manager!.registerForPushNotifications();
+
+        const created = (
+          Notifications.setNotificationChannelAsync as jest.Mock
+        ).mock.calls.map(([id, config]: any) => [id, config.name]);
+        expect(created).toEqual([
+          ["new_post", "Neue Artikel"],
+          ["new_fact_check", "Neue Faktenchecks"],
+          ["new_pruefpunkt", "Neue Prüfpunkt-Artikel"],
+        ]);
+        const deleted = (
+          Notifications.deleteNotificationChannelAsync as jest.Mock
+        ).mock.calls.map(([id]) => id);
+        expect(deleted).toEqual(["default", "news"]);
+      } finally {
+        platform.OS = "ios";
+      }
     });
   });
 

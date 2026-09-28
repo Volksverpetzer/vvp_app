@@ -22,6 +22,16 @@ let registrationChain: Promise<void> = Promise.resolve();
 // toggle for nothing (Android freezes channel config after first creation).
 let channelsConfigured = false;
 
+type NotificationChannelKey = keyof NotificationSettingType;
+
+// Android channel names shown in the system settings, keyed by channel ID
+const NOTIFICATION_CHANNELS: Record<NotificationChannelKey, string> = {
+  new_post: "Neue Artikel",
+  new_fact_check: "Neue Faktenchecks",
+  new_pruefpunkt: "Neue Prüfpunkt-Artikel",
+};
+const LEGACY_CHANNEL_IDS = ["default", "news"];
+
 const getNotifications = (): typeof ExpoNotifications | null => {
   if (Config.isFoss) return null;
   if (Platform.OS === "web") return null;
@@ -211,27 +221,30 @@ const NotificationManager = {
 
     if (Platform.OS === "android" && !channelsConfigured) {
       channelsConfigured = true;
-      // Create a default channel for general notifications
-      await Notifications.setNotificationChannelAsync("default", {
-        name: "Default Notifications",
-        description: "Default channel for all notifications",
-        importance: Notifications.AndroidImportance.HIGH,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: Colors.light.primary,
-        enableLights: true,
-        enableVibrate: true,
-        showBadge: true,
-      });
-
-      // Create a channel for news notifications
-      await Notifications.setNotificationChannelAsync("news", {
-        name: "News Notifications",
-        description: "Notifications for new articles and updates",
-        importance: Notifications.AndroidImportance.DEFAULT,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: Colors.light.primary,
-        enableLights: true,
-      });
+      // One channel per push type; the channel ID equals the settings key, so
+      // the server sends `channelId: <type>` and the user can mute each type
+      // in the system settings. Types a variant hides get no channel.
+      await Promise.all(
+        (Object.keys(NOTIFICATION_CHANNELS) as NotificationChannelKey[])
+          .filter((key) => !Config.hiddenNotifications?.includes(key))
+          .map((key) =>
+            Notifications.setNotificationChannelAsync(key, {
+              name: NOTIFICATION_CHANNELS[key],
+              importance: Notifications.AndroidImportance.HIGH,
+              vibrationPattern: [0, 250, 250, 250],
+              lightColor: Colors.light.primary,
+              enableLights: true,
+              enableVibrate: true,
+              showBadge: true,
+            }),
+          ),
+      );
+      // Remove channels from app versions before per-type channels
+      await Promise.all(
+        LEGACY_CHANNEL_IDS.map((id) =>
+          Notifications.deleteNotificationChannelAsync(id),
+        ),
+      );
     }
 
     if (Device.isDevice) {
