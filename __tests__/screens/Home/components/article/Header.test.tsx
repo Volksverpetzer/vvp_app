@@ -162,6 +162,26 @@ describe("Header — author byline", () => {
     );
   });
 
+  it("also links the author in the share-preview layout", async () => {
+    const { onLinkPress } = jest.requireMock("#/helpers/Linking");
+    const { getAllByText, getAllByRole } = await render(
+      <Header
+        {...defaultProps}
+        article={{ ...baseArticle, authors: [testAuthor] }}
+      />,
+    );
+    // Long-pressing the hero image opens the share preview (a second byline)
+    await fireEvent(getAllByRole("button")[0], "longPress");
+    const names = getAllByText("Jane Doe");
+    expect(names.length).toBeGreaterThanOrEqual(2);
+    await fireEvent.press(names.at(-1));
+    expect(onLinkPress).toHaveBeenCalledWith(
+      "https://www.volksverpetzer.de/author/jane-doe/",
+      expect.anything(),
+      defaultProps.article_link,
+    );
+  });
+
   it("hides the author byline when authors is undefined", async () => {
     const { queryByText } = await render(
       <Header

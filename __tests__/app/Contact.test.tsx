@@ -242,6 +242,30 @@ describe("ContactScreen", () => {
     );
   });
 
+  it("clears the email error once the field is edited again", async () => {
+    mockParameters = { category: "other" };
+    const { getByText, queryByText, getAllByPlaceholderText } = await render(
+      <ContactScreen />,
+    );
+    const [titleInput, messageInput, emailInput] =
+      getAllByPlaceholderText("...");
+    await fireEvent.changeText(titleInput, "Betreff");
+    await fireEvent.changeText(
+      messageInput,
+      "Eine ausreichend lange Nachricht.",
+    );
+    await fireEvent.changeText(emailInput, "kein-at-zeichen");
+    await fireEvent.press(getByText("Senden"));
+    expect(
+      getByText("Bitte eine gültige E-Mail-Adresse eingeben"),
+    ).toBeTruthy();
+
+    await fireEvent.changeText(emailInput, "user@example.com");
+    expect(
+      queryByText("Bitte eine gültige E-Mail-Adresse eingeben"),
+    ).toBeNull();
+  });
+
   it("omits the email field when left blank", async () => {
     mockParameters = { category: "other" };
     const { getByText, getAllByPlaceholderText } = await render(
