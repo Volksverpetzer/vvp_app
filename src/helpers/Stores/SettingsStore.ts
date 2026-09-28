@@ -147,6 +147,20 @@ const SettingsStore = {
     }
   },
 
+  /**
+   * Types the variant doesn't offer have no switch, so a stored `true` (from
+   * an earlier build) could never be turned off — force them off.
+   */
+  forceHiddenNotificationsOff(
+    settings: NotificationSettingType,
+  ): NotificationSettingType {
+    const result = { ...settings };
+    for (const key of hiddenNotifications) {
+      result[key] = { ...result[key], value: false };
+    }
+    return result;
+  },
+
   async getNotificationSettings(): Promise<NotificationSettingType> {
     try {
       const jsonValue = await BaseStore.getItem(this.keys.notificationSettings);
@@ -155,7 +169,10 @@ const SettingsStore = {
         {};
       // Merge defaults so settings added later (e.g. new_pruefpunkt) appear for
       // users whose stored settings predate them.
-      return { ...this.defaultNotificationSettings, ...stored };
+      return this.forceHiddenNotificationsOff({
+        ...this.defaultNotificationSettings,
+        ...stored,
+      });
     } catch (error) {
       console.error("Error retrieving notification settings:", error);
       return this.defaultNotificationSettings;

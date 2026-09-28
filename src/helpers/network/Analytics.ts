@@ -23,6 +23,7 @@ export type AnalyticsEvent =
   | "DonateConversion"
   | "Outbound Link: Click"
   | "Contact Submitted"
+  | "Contact Mail Opened"
   | "Pruefpunkt View"
   | "Post Interaction"
   | "Onboarding Started"

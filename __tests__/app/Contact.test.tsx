@@ -352,6 +352,20 @@ describe("ContactScreen", () => {
       expect(url.startsWith("mailto:team@example.org?subject=")).toBe(true);
       expect(decodeURIComponent(url)).toContain("Sonstiges | Betreff");
       expect(postContact).not.toHaveBeenCalled();
+      // Opening the mail app is not a submission
+      const { registerEvent } = jest.requireMock<{
+        registerEvent: jest.Mock;
+      }>("#/helpers/network/Analytics");
+      expect(registerEvent).toHaveBeenCalledWith(
+        expect.anything(),
+        "Contact Mail Opened",
+        expect.anything(),
+      );
+      expect(registerEvent).not.toHaveBeenCalledWith(
+        expect.anything(),
+        "Contact Submitted",
+        expect.anything(),
+      );
     });
 
     it("shows an error when no mail app can be opened", async () => {

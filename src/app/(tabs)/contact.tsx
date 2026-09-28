@@ -277,7 +277,9 @@ const ContactScreen = () => {
           ),
         );
         clearError();
-        registerEvent(Config.wpUrl, "Contact Submitted", { category });
+        // openURL only means the mail app opened, not that a mail was sent, so
+        // this must not count as "Contact Submitted"
+        registerEvent(Config.wpUrl, "Contact Mail Opened", { category });
       } catch {
         setErrorField(null);
         setError(
