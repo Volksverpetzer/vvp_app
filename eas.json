@@ -91,6 +91,21 @@
         "APP": "mimikama"
       }
     },
+    "mimikama-beta": {
+      "autoIncrement": true,
+      "node": "24.14.0",
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "android": {
+        "image": "auto"
+      },
+      "channel": "preview",
+      "env": {
+        "APP": "mimikama",
+        "BUILD_LABEL": "beta"
+      }
+    },
     "fdroid": {
       "node": "24.14.0",
       "android": {
@@ -123,6 +138,14 @@
       }
     },
     "mimikama": {
+      "ios": {
+        "ascAppId": "6455988008"
+      },
+      "android": {
+        "track": "internal"
+      }
+    },
+    "mimikama-beta": {
       "ios": {
         "ascAppId": "6455988008"
       },
