@@ -25,30 +25,30 @@ jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: { container: {} },
 }));
 jest.mock("#/constants/Spacing", () => ({ spacing: { xl: 16 } }));
-jest.mock("#/components/Icons", () => ({ SearchIcon: () => null }));
-jest.mock("#/components/buttons/BackToTopButton", () => () => null);
+jest.mock("#/components/Icons", () => ({ SearchIcon: jest.fn(() => null) }));
+jest.mock("#/components/buttons/BackToTopButton", () => jest.fn(() => null));
 jest.mock("#/hooks/useBackToTop", () => ({
   useBackToTop: () => ({ onScroll: jest.fn(), visible: false }),
 }));
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
-  return ({ children }: any) => <Text>{children}</Text>;
+  return jest.fn(({ children }: any) => <Text>{children}</Text>);
 });
 jest.mock("#/components/ui/UiSpinner", () => {
   const { Text } = require("react-native");
-  return ({ text }: any) => <Text testID="spinner">{text}</Text>;
+  return jest.fn(({ text }: any) => <Text testID="spinner">{text}</Text>);
 });
 jest.mock("#/components/ui/UiEmptyState", () => {
   const { Text } = require("react-native");
-  return ({ children }: any) => <Text testID="empty">{children}</Text>;
+  return jest.fn(({ children }: any) => <Text testID="empty">{children}</Text>);
 });
 jest.mock("#/components/ui/UiErrorCard", () => {
   const { Text } = require("react-native");
-  return ({ text }: any) => <Text testID="error">{text}</Text>;
+  return jest.fn(({ text }: any) => <Text testID="error">{text}</Text>);
 });
 jest.mock("#/screens/Search/components/SearchResultItem", () => {
   const { Text } = require("react-native");
-  return ({ title }: any) => <Text testID="result">{title}</Text>;
+  return jest.fn(({ title }: any) => <Text testID="result">{title}</Text>);
 });
 
 const flushDebounce = () => act(() => jest.advanceTimersByTimeAsync(300));

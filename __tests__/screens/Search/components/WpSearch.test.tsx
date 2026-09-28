@@ -21,42 +21,46 @@ jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: { container: {} },
 }));
 jest.mock("#/constants/Spacing", () => ({ spacing: { xl: 16 } }));
-jest.mock("#/components/Icons", () => ({ SearchIcon: () => null }));
+jest.mock("#/components/Icons", () => ({ SearchIcon: jest.fn(() => null) }));
 jest.mock("#/components/buttons/BackToTopButton", () => {
   const { Pressable } = require("react-native");
-  return ({ onPress }: any) => (
-    <Pressable testID="back-to-top" onPress={onPress} />
-  );
+  return jest.fn(({ onPress }: any) => (
+    <Pressable
+      testID="back-to-top"
+      accessibilityRole="button"
+      onPress={onPress}
+    />
+  ));
 });
 jest.mock("#/hooks/useBackToTop", () => ({
   useBackToTop: () => ({ onScroll: jest.fn(), visible: false }),
 }));
 jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
-  return ({ children }: any) => <Text>{children}</Text>;
+  return jest.fn(({ children }: any) => <Text>{children}</Text>);
 });
 jest.mock("#/components/ui/UiSpinner", () => {
   const { Text } = require("react-native");
-  return ({ text }: any) => <Text testID="spinner">{text}</Text>;
+  return jest.fn(({ text }: any) => <Text testID="spinner">{text}</Text>);
 });
 jest.mock("#/components/ui/UiEmptyState", () => {
   const { Text } = require("react-native");
-  return ({ children }: any) => <Text testID="empty">{children}</Text>;
+  return jest.fn(({ children }: any) => <Text testID="empty">{children}</Text>);
 });
 jest.mock("#/components/ui/UiErrorCard", () => {
   const { Text } = require("react-native");
-  return ({ text }: any) => <Text testID="error">{text}</Text>;
+  return jest.fn(({ text }: any) => <Text testID="error">{text}</Text>);
 });
 
 // Expose what the row receives instead of rendering HTML
 jest.mock("#/screens/Search/components/SearchResultItem", () => {
   const { Pressable, Text } = require("react-native");
-  return ({ title, text, onPress }: any) => (
-    <Pressable testID="result" onPress={onPress}>
+  return jest.fn(({ title, text, onPress }: any) => (
+    <Pressable testID="result" accessibilityRole="button" onPress={onPress}>
       <Text testID="result-title">{title}</Text>
       <Text testID="result-text">{text}</Text>
     </Pressable>
-  );
+  ));
 });
 
 const searchPosts = WordPressAPI.searchPosts as jest.Mock;
@@ -248,7 +252,9 @@ describe("WpSearchResults", () => {
     await waitFor(() => expect(getAllByTestId("result")).toHaveLength(1));
 
     // The stale first response must not overwrite the newer results
-    await act(async () => resolveFirst([post(), post({ id: 2 })]));
+    await act(() => {
+      resolveFirst([post(), post({ id: 2 })]);
+    });
     expect(getAllByTestId("result")).toHaveLength(1);
     expect(onResultsLength).toHaveBeenCalledTimes(1);
   });
