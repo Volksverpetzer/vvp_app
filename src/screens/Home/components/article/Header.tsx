@@ -221,11 +221,15 @@ const Header = (properties: HeaderProperties) => {
           Für diesen Artikel ist noch keine Audioversion verfügbar.
         </UiText>
       )}
-      <ArticleSourceList
-        article_link={article_link}
-        article_title={article_title}
-        slug={slug}
-      />
+      {/* Most-clicked links come from the engagement backend; without it the
+          list could only ever say "Keine Daten". */}
+      {Config.enableEngagement && (
+        <ArticleSourceList
+          article_link={article_link}
+          article_title={article_title}
+          slug={slug}
+        />
+      )}
       <UiSpace size={spacing.sm} />
       <Modal visible={visible}>
         <ViewShot ref={reference} options={{ fileName: article_title }}>
