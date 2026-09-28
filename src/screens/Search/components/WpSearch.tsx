@@ -50,6 +50,9 @@ const getExcerptHtml = (item: LoadArticlePostProperties) => {
 const escapeHtml = (text: string) =>
   text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 
+// `date` is the site's local time without an offset, so parsing it as device-local
+// time keeps the calendar date the site shows (`date_gmt` has no "Z" either and
+// would shift by the UTC offset near midnight).
 const formatDate = (iso: string) => {
   const date = new Date(iso);
   return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
@@ -116,7 +119,7 @@ const WpSearchResults = ({
         maxLines={EXCERPT_LINES}
         subtitle={
           <UiText style={{ textAlign: "right" }}>
-            {formatDate(item.date_gmt)}
+            {formatDate(item.date)}
           </UiText>
         }
         onPress={() => onLinkPress(item.link, router)}

@@ -55,10 +55,11 @@ jest.mock("#/components/ui/UiErrorCard", () => {
 // Expose what the row receives instead of rendering HTML
 jest.mock("#/screens/Search/components/SearchResultItem", () => {
   const { Pressable, Text } = require("react-native");
-  return jest.fn(({ title, text, onPress }: any) => (
+  return jest.fn(({ title, text, subtitle, onPress }: any) => (
     <Pressable testID="result" accessibilityRole="button" onPress={onPress}>
       <Text testID="result-title">{title}</Text>
       <Text testID="result-text">{text}</Text>
+      {subtitle}
     </Pressable>
   ));
 });
@@ -68,6 +69,7 @@ const searchPosts = WordPressAPI.searchPosts as jest.Mock;
 const post = (over: Record<string, unknown> = {}) => ({
   id: 1,
   link: "https://www.mimikama.org/mein-artikel/",
+  date: "2026-09-28T06:05:00",
   date_gmt: "2026-09-28T04:05:00",
   title: { rendered: "Titel &amp; Mehr" },
   excerpt: { rendered: "<p>Ein Auszug mit <b>Markup</b> [&hellip;]</p>" },
@@ -125,6 +127,16 @@ describe("WpSearchResults", () => {
     expect(getAllByTestId("result-title")[0].props.children).toBe(
       "Titel & Mehr",
     );
+  });
+
+  it("shows the site's calendar date, not a UTC-shifted one", async () => {
+    // 23:30 on the 28th on the site (21:30 UTC): must not roll over to the 29th
+    searchPosts.mockResolvedValue([
+      post({ date: "2026-09-28T23:30:00", date_gmt: "2026-09-28T21:30:00" }),
+    ]);
+    const { getByText } = await renderSearch("datum");
+    await flushDebounce();
+    await waitFor(() => expect(getByText("28.9.2026")).toBeTruthy());
   });
 
   it("shows the excerpt as plain text ending in an ellipsis", async () => {
