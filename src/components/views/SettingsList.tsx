@@ -92,6 +92,8 @@ const SettingsList = (properties: SettingsListProperties) => {
           )
             return;
 
+          if (Config.hiddenNotifications?.includes(key as never)) return;
+
           // Build the Switch props in a local object so we can add runtime-only props
           // (like `activeThumbColor`) without TypeScript complaining about them.
           const switchProps: ExtendedSwitchProps = {

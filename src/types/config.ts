@@ -1,5 +1,6 @@
 import type { colorSchemeType } from "./colors";
 import type { FeedsConfig } from "./feeds";
+import type { NotificationSettingType } from "./settings";
 
 export type HttpsUrl = `https://${string}`;
 
@@ -11,6 +12,7 @@ export interface ExtraConfigType {
   apiUrl: HttpsUrl;
   aiUrl?: HttpsUrl; // enables the AI fact-check search tab when set
   algolia?: { appId: string; searchKey: string; indexName: string }; // Algolia article search; falls back to WordPress search when unset
+  hiddenNotifications?: (keyof NotificationSettingType)[]; // notification types this variant doesn't offer: not shown in settings and always off
   contactEmail?: string; // when set, the contact form composes an email to this address instead of posting to the server
   dataProtectionUrl: HttpsUrl;
   imprintUrl: HttpsUrl;
