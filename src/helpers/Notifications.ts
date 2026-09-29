@@ -62,6 +62,45 @@ const ensureNotificationsConfigured = () => {
 
 const NotificationManager = {
   /**
+   * Creates the per-type Android channels and removes the legacy ones, once
+   * per process. Called from both registration paths — a fresh install's
+   * first registration and an existing install's launch-time refresh (which
+   * skips registerForPushNotifications entirely once permission is already
+   * granted) — so an upgrading user is migrated without having to toggle
+   * their permission off and on again.
+   */
+  async ensureAndroidChannelsConfigured(
+    Notifications: typeof ExpoNotifications,
+  ) {
+    if (Platform.OS !== "android" || channelsConfigured) return;
+    channelsConfigured = true;
+    // One channel per push type; the channel ID equals the settings key, so
+    // the server sends `channelId: <type>` and the user can mute each type
+    // in the system settings. Types a variant hides get no channel.
+    await Promise.all(
+      (Object.keys(NOTIFICATION_CHANNELS) as NotificationChannelKey[])
+        .filter((key) => !Config.hiddenNotifications?.includes(key))
+        .map((key) =>
+          Notifications.setNotificationChannelAsync(key, {
+            name: NOTIFICATION_CHANNELS[key],
+            importance: Notifications.AndroidImportance.HIGH,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: Colors.light.primary,
+            enableLights: true,
+            enableVibrate: true,
+            showBadge: true,
+          }),
+        ),
+    );
+    // Remove channels from app versions before per-type channels
+    await Promise.all(
+      LEGACY_CHANNEL_IDS.map((id) =>
+        Notifications.deleteNotificationChannelAsync(id),
+      ),
+    );
+  },
+
+  /**
    * Gets the current notification permissions.
    * @returns A promise that resolves to the current notification permissions.
    */
@@ -111,6 +150,8 @@ const NotificationManager = {
     try {
       const Notifications = getNotifications();
       if (!Notifications) return;
+
+      await NotificationManager.ensureAndroidChannelsConfigured(Notifications);
 
       const permissions = await NotificationManager.getPermissions();
       if (permissions.status === Notifications.PermissionStatus.UNDETERMINED) {
@@ -219,33 +260,7 @@ const NotificationManager = {
 
     let token: string;
 
-    if (Platform.OS === "android" && !channelsConfigured) {
-      channelsConfigured = true;
-      // One channel per push type; the channel ID equals the settings key, so
-      // the server sends `channelId: <type>` and the user can mute each type
-      // in the system settings. Types a variant hides get no channel.
-      await Promise.all(
-        (Object.keys(NOTIFICATION_CHANNELS) as NotificationChannelKey[])
-          .filter((key) => !Config.hiddenNotifications?.includes(key))
-          .map((key) =>
-            Notifications.setNotificationChannelAsync(key, {
-              name: NOTIFICATION_CHANNELS[key],
-              importance: Notifications.AndroidImportance.HIGH,
-              vibrationPattern: [0, 250, 250, 250],
-              lightColor: Colors.light.primary,
-              enableLights: true,
-              enableVibrate: true,
-              showBadge: true,
-            }),
-          ),
-      );
-      // Remove channels from app versions before per-type channels
-      await Promise.all(
-        LEGACY_CHANNEL_IDS.map((id) =>
-          Notifications.deleteNotificationChannelAsync(id),
-        ),
-      );
-    }
+    await NotificationManager.ensureAndroidChannelsConfigured(Notifications);
 
     if (Device.isDevice) {
       const { status: existingStatus } =

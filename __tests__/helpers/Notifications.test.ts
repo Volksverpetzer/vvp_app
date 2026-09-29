@@ -77,10 +77,14 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
 }));
 
 let mockIsFoss = false;
+let mockHiddenNotifications: string[] | undefined;
 jest.mock("#/constants/Config", () => ({
   eas: { projectId: "test-project-id" },
   get isFoss() {
     return mockIsFoss;
+  },
+  get hiddenNotifications() {
+    return mockHiddenNotifications;
   },
 }));
 
@@ -371,6 +375,21 @@ describe("NotificationManager", () => {
   });
 
   describe("Android notification channels", () => {
+    // channelsConfigured is module state, so each case needs its own fresh
+    // module instance — otherwise a prior test's run already flipped the
+    // "configured" flag and this one would observe no calls at all.
+    const freshManager = (): typeof NotificationManager => {
+      let Manager: typeof NotificationManager;
+      jest.isolateModules(() => {
+        Manager = require("#/helpers/Notifications").default;
+      });
+      return Manager!;
+    };
+
+    afterEach(() => {
+      mockHiddenNotifications = undefined;
+    });
+
     it("creates one channel per notification type and removes the legacy ones", async () => {
       const platform = (jest.requireMock("react-native") as any).Platform;
       platform.OS = "android";
@@ -380,13 +399,8 @@ describe("NotificationManager", () => {
             () => Promise<any>
           >
         ).mockResolvedValue({});
-        // channelsConfigured is module state, so use a fresh module instance
-        let Manager: typeof NotificationManager;
-        jest.isolateModules(() => {
-          Manager = require("#/helpers/Notifications").default;
-        });
 
-        await Manager!.registerForPushNotifications();
+        await freshManager().registerForPushNotifications();
 
         const created = (
           Notifications.setNotificationChannelAsync as jest.Mock
@@ -395,6 +409,73 @@ describe("NotificationManager", () => {
           ["new_post", "Neue Artikel"],
           ["new_fact_check", "Neue Faktenchecks"],
           ["new_pruefpunkt", "Neue Prüfpunkt-Artikel"],
+        ]);
+        const deleted = (
+          Notifications.deleteNotificationChannelAsync as jest.Mock
+        ).mock.calls.map(([id]) => id);
+        expect(deleted).toEqual(["default", "news"]);
+      } finally {
+        platform.OS = "ios";
+      }
+    });
+
+    it("skips channels a variant hides, e.g. Mimikama's fact-check and Prüfpunkt types", async () => {
+      const platform = (jest.requireMock("react-native") as any).Platform;
+      platform.OS = "android";
+      try {
+        mockHiddenNotifications = ["new_fact_check", "new_pruefpunkt"];
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue({});
+
+        await freshManager().registerForPushNotifications();
+
+        const created = (
+          Notifications.setNotificationChannelAsync as jest.Mock
+        ).mock.calls.map(([id]: any) => id);
+        expect(created).toEqual(["new_post"]);
+        // Legacy channels are still removed for a variant that hides types.
+        const deleted = (
+          Notifications.deleteNotificationChannelAsync as jest.Mock
+        ).mock.calls.map(([id]) => id);
+        expect(deleted).toEqual(["default", "news"]);
+      } finally {
+        platform.OS = "ios";
+      }
+    });
+
+    it("migrates channels on launch for an existing user with permission already granted, not only on a fresh registration", async () => {
+      // refreshServer is what checkAndRequestOnLaunch calls when permission
+      // was already granted — it never calls registerForPushNotifications /
+      // performServerRegistration, so channel migration has to run from here
+      // too, or upgrading users are stuck on the removed default/news
+      // channels forever.
+      const platform = (jest.requireMock("react-native") as any).Platform;
+      platform.OS = "android";
+      try {
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue({});
+        jest
+          .spyOn(Notifications, "getPermissionsAsync")
+          .mockResolvedValue({ status: "granted" } as any);
+        jest
+          .spyOn(Notifications, "getExpoPushTokenAsync")
+          .mockResolvedValue({ data: "token" } as any);
+
+        await freshManager().refreshServer();
+
+        const created = (
+          Notifications.setNotificationChannelAsync as jest.Mock
+        ).mock.calls.map(([id]: any) => id);
+        expect(created).toEqual([
+          "new_post",
+          "new_fact_check",
+          "new_pruefpunkt",
         ]);
         const deleted = (
           Notifications.deleteNotificationChannelAsync as jest.Mock
