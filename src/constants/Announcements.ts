@@ -1,6 +1,6 @@
 import type { Href } from "expo-router";
 
-import { isVolksverpetzer } from "#/helpers/utils/variant";
+import { isMimikama, isVolksverpetzer } from "#/helpers/utils/variant";
 
 export interface AnnouncementEntry {
   /** Stable id — used as the permanent-dismissal key, never reuse across entries. */
@@ -25,9 +25,9 @@ export interface AnnouncementEntry {
  * entry is no longer worth showing (e.g. it's now common knowledge), delete
  * it here rather than letting it linger — there's no automatic expiry.
  *
- * Entries below promote VVP's own feeds (Podcast/Prüfpunkt) and are shown
- * only on the Volksverpetzer variant — every other variant gets an empty
- * list until it has announcements of its own.
+ * Entries are per app variant (they tend to promote a variant's own feeds
+ * or reference its own release) — each variant only sees its own list,
+ * picked below. A variant with no entries yet gets an empty list.
  */
 const volksverpetzerAnnouncements: AnnouncementEntry[] = [
   {
@@ -39,8 +39,23 @@ const volksverpetzerAnnouncements: AnnouncementEntry[] = [
   },
 ];
 
+const mimikamaAnnouncements: AnnouncementEntry[] = [
+  {
+    id: "under-the-hood-2026-09",
+    message:
+      "**Neu**: Unter der Haube hat sich in dieser Version einiges getan – wir haben viele technische Verbesserungen für eine stabilere und schnellere App eingebaut. Fällt dir etwas auf, das nicht rund läuft? Sag uns gerne Bescheid:",
+    actionLabel: "Feedback geben",
+    route: {
+      pathname: "/(tabs)/contact",
+      params: { category: "app_feedback" },
+    },
+  },
+];
+
 const Announcements: AnnouncementEntry[] = isVolksverpetzer
   ? volksverpetzerAnnouncements
-  : [];
+  : isMimikama
+    ? mimikamaAnnouncements
+    : [];
 
 export default Announcements;
