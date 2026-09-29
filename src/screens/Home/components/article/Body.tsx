@@ -21,6 +21,7 @@ import { decodeAnchor } from "#/helpers/utils/anchors";
 import { getTagStyles } from "#/helpers/utils/articleTagStyles";
 import { isSameHost } from "#/helpers/utils/host";
 import { isHttpsUrl } from "#/helpers/utils/networking";
+import { stripStyleBlocks } from "#/helpers/utils/stripStyleBlocks";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
 import DivRenderer from "#/screens/Home/components/article/renderer/DivRenderer";
@@ -168,7 +169,7 @@ const Body = (properties: BodyProperties) => {
 
   return (
     <RenderHtml
-      source={{ html: article_content.replace(/<style>.*<\/style>/s, "") }}
+      source={{ html: stripStyleBlocks(article_content) }}
       renderers={renderers}
       tagsStyles={articleTagStyles}
       ignoredDomTags={["script", "style", "noscript", "input"]}
