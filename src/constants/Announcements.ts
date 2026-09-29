@@ -43,7 +43,7 @@ const mimikamaAnnouncements: AnnouncementEntry[] = [
   {
     id: "under-the-hood-2026-09",
     message:
-      "**Neu**: Unter der Haube hat sich in dieser Version einiges getan – wir haben viele technische Verbesserungen für eine stabilere und schnellere App eingebaut. Fällt dir etwas auf, das nicht rund läuft? Sag uns gerne Bescheid:",
+      "**Neu**: Unter der Haube hat sich in dieser Version so manches getan – und auch die Oberfläche haben wir aufgeräumt. Fällt dir etwas auf, das nicht rund läuft oder aussieht? Sag uns gerne Bescheid:",
     actionLabel: "Feedback geben",
     route: {
       pathname: "/(tabs)/contact",
