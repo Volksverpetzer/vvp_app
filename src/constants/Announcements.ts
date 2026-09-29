@@ -1,5 +1,7 @@
 import type { Href } from "expo-router";
 
+import { isVolksverpetzer } from "#/helpers/utils/variant";
+
 export interface AnnouncementEntry {
   /** Stable id — used as the permanent-dismissal key, never reuse across entries. */
   id: string;
@@ -22,8 +24,12 @@ export interface AnnouncementEntry {
  * To promote something new next release: append a new entry. If an older
  * entry is no longer worth showing (e.g. it's now common knowledge), delete
  * it here rather than letting it linger — there's no automatic expiry.
+ *
+ * Entries below promote VVP's own feeds (Podcast/Prüfpunkt) and are shown
+ * only on the Volksverpetzer variant — every other variant gets an empty
+ * list until it has announcements of its own.
  */
-const Announcements: AnnouncementEntry[] = [
+const volksverpetzerAnnouncements: AnnouncementEntry[] = [
   {
     id: "podcast-pruefpunkt-2026-08",
     message:
@@ -32,5 +38,9 @@ const Announcements: AnnouncementEntry[] = [
     route: "/settings",
   },
 ];
+
+const Announcements: AnnouncementEntry[] = isVolksverpetzer
+  ? volksverpetzerAnnouncements
+  : [];
 
 export default Announcements;
