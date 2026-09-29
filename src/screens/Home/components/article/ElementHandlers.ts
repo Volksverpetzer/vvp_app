@@ -85,6 +85,34 @@ export const handleEmbeddedContent = (element: Element): boolean => {
 };
 
 /**
+ * Removes `element`, promoting all of its children — tags AND text nodes —
+ * to take its place as siblings, in their original order.
+ *
+ * domutils' `append(el, next)` inserts `next` immediately after `el` and
+ * calls `removeElement(next)` first (unlinking `next` from its current
+ * parent's children array). Naively looping `append(element, child)` for
+ * each child of `element` therefore has two failure modes seen in the wild
+ * on WordPress content with plain-text wrapper divs (e.g. a `<div>label
+ * text</div>` with no nested tag): (1) filtering the loop to `isTag(child)`
+ * silently drops any text-only child — the div (and its text) simply
+ * vanishes when `removeElement(element)` runs after — and (2) repeatedly
+ * appending after the same fixed `element` anchor reverses the children's
+ * order, since each call re-inserts right after `element` rather than
+ * after the previously moved sibling. Snapshotting `children` up front (so
+ * the removals during the loop don't shift the array we're iterating) and
+ * chaining the anchor forward avoids both.
+ */
+const unwrapElement = (element: Element): void => {
+  const children = [...element.children] as unknown as ChildNode[];
+  let anchor: ChildNode = element as unknown as ChildNode;
+  for (const child of children) {
+    append(anchor, child);
+    anchor = child;
+  }
+  removeElement(element);
+};
+
+/**
  * Handles container elements like figures and divs
  * @param element The element to process
  * @returns True if the element was handled
@@ -109,12 +137,7 @@ export const handleContainerElements = (element: Element): boolean => {
     }
 
     // Only remove simple figure containers without captions or special classes
-    for (const child of element.children) {
-      if (isTag(child)) {
-        append(element, child as unknown as ChildNode);
-      }
-    }
-    removeElement(element);
+    unwrapElement(element);
     return true;
   }
 
@@ -134,12 +157,7 @@ export const handleContainerElements = (element: Element): boolean => {
 
     // Only remove divs that appear to be simple wrappers with few children
     if (element.children.length <= 2) {
-      for (const child of element.children) {
-        if (isTag(child)) {
-          append(element, child as unknown as ChildNode);
-        }
-      }
-      removeElement(element);
+      unwrapElement(element);
       return true;
     }
   }
