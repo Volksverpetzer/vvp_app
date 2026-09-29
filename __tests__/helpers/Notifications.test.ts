@@ -399,6 +399,16 @@ describe("NotificationManager", () => {
             () => Promise<any>
           >
         ).mockResolvedValue({});
+        // Channel setup runs before the permission check, but stub it to a
+        // terminal status anyway so this test doesn't rely on whatever
+        // mockResolvedValue an earlier test's spyOn happened to leave behind
+        // (jest.clearAllMocks() resets call history, not spy implementations).
+        jest
+          .spyOn(Notifications, "getPermissionsAsync")
+          .mockResolvedValue({ status: "denied", canAskAgain: false } as any);
+        jest
+          .spyOn(Notifications, "requestPermissionsAsync")
+          .mockResolvedValue({ status: "denied" } as any);
 
         await freshManager().registerForPushNotifications();
 
@@ -429,6 +439,12 @@ describe("NotificationManager", () => {
             () => Promise<any>
           >
         ).mockResolvedValue({});
+        jest
+          .spyOn(Notifications, "getPermissionsAsync")
+          .mockResolvedValue({ status: "denied", canAskAgain: false } as any);
+        jest
+          .spyOn(Notifications, "requestPermissionsAsync")
+          .mockResolvedValue({ status: "denied" } as any);
 
         await freshManager().registerForPushNotifications();
 
@@ -437,6 +453,53 @@ describe("NotificationManager", () => {
         ).mock.calls.map(([id]: any) => id);
         expect(created).toEqual(["new_post"]);
         // Legacy channels are still removed for a variant that hides types.
+        const deleted = (
+          Notifications.deleteNotificationChannelAsync as jest.Mock
+        ).mock.calls.map(([id]) => id);
+        expect(deleted).toEqual(["default", "news"]);
+      } finally {
+        platform.OS = "ios";
+      }
+    });
+
+    it("retries channel setup after a transient failure instead of getting stuck forever", async () => {
+      const platform = (jest.requireMock("react-native") as any).Platform;
+      platform.OS = "android";
+      try {
+        (
+          SettingsStore.getNotificationSettings as jest.MockedFunction<
+            () => Promise<any>
+          >
+        ).mockResolvedValue({});
+        jest
+          .spyOn(Notifications, "getPermissionsAsync")
+          .mockResolvedValue({ status: "denied", canAskAgain: false } as any);
+        jest
+          .spyOn(Notifications, "requestPermissionsAsync")
+          .mockResolvedValue({ status: "denied" } as any);
+        (
+          Notifications.setNotificationChannelAsync as jest.Mock<any>
+        ).mockRejectedValueOnce(new Error("boom"));
+
+        const Manager = freshManager();
+        await expect(Manager.registerForPushNotifications()).rejects.toThrow(
+          "boom",
+        );
+
+        // A second attempt must retry from scratch, not be permanently
+        // skipped by a guard that was already flipped on the failed attempt.
+        await Manager.registerForPushNotifications();
+        const created = (
+          Notifications.setNotificationChannelAsync as jest.Mock
+        ).mock.calls.map(([id]: any) => id);
+        expect(created).toEqual([
+          "new_post",
+          "new_fact_check",
+          "new_pruefpunkt",
+          "new_post",
+          "new_fact_check",
+          "new_pruefpunkt",
+        ]);
         const deleted = (
           Notifications.deleteNotificationChannelAsync as jest.Mock
         ).mock.calls.map(([id]) => id);

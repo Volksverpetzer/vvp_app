@@ -20,7 +20,13 @@ let registrationChain: Promise<void> = Promise.resolve();
 // Android notification channels only need to be created once per process;
 // re-creating them on every registration adds two awaits to each settings
 // toggle for nothing (Android freezes channel config after first creation).
+// Only flips to true once both Expo calls below have actually succeeded, so
+// a transient failure doesn't permanently skip the migration for the rest
+// of the process; concurrent callers (a user-triggered registration racing
+// the launch-time refresh) share the same in-flight attempt instead of
+// firing the Expo calls twice.
 let channelsConfigured = false;
+let channelsConfigurationPromise: Promise<void> | null = null;
 
 type NotificationChannelKey = keyof NotificationSettingType;
 
@@ -73,31 +79,42 @@ const NotificationManager = {
     Notifications: typeof ExpoNotifications,
   ) {
     if (Platform.OS !== "android" || channelsConfigured) return;
-    channelsConfigured = true;
-    // One channel per push type; the channel ID equals the settings key, so
-    // the server sends `channelId: <type>` and the user can mute each type
-    // in the system settings. Types a variant hides get no channel.
-    await Promise.all(
-      (Object.keys(NOTIFICATION_CHANNELS) as NotificationChannelKey[])
-        .filter((key) => !Config.hiddenNotifications?.includes(key))
-        .map((key) =>
-          Notifications.setNotificationChannelAsync(key, {
-            name: NOTIFICATION_CHANNELS[key],
-            importance: Notifications.AndroidImportance.HIGH,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: Colors.light.primary,
-            enableLights: true,
-            enableVibrate: true,
-            showBadge: true,
-          }),
+    if (channelsConfigurationPromise) {
+      await channelsConfigurationPromise;
+      return;
+    }
+
+    channelsConfigurationPromise = (async () => {
+      // One channel per push type; the channel ID equals the settings key,
+      // so the server sends `channelId: <type>` and the user can mute each
+      // type in the system settings. Types a variant hides get no channel.
+      await Promise.all(
+        (Object.keys(NOTIFICATION_CHANNELS) as NotificationChannelKey[])
+          .filter((key) => !Config.hiddenNotifications?.includes(key))
+          .map((key) =>
+            Notifications.setNotificationChannelAsync(key, {
+              name: NOTIFICATION_CHANNELS[key],
+              importance: Notifications.AndroidImportance.HIGH,
+              vibrationPattern: [0, 250, 250, 250],
+              lightColor: Colors.light.primary,
+              enableLights: true,
+              enableVibrate: true,
+              showBadge: true,
+            }),
+          ),
+      );
+      // Remove channels from app versions before per-type channels
+      await Promise.all(
+        LEGACY_CHANNEL_IDS.map((id) =>
+          Notifications.deleteNotificationChannelAsync(id),
         ),
-    );
-    // Remove channels from app versions before per-type channels
-    await Promise.all(
-      LEGACY_CHANNEL_IDS.map((id) =>
-        Notifications.deleteNotificationChannelAsync(id),
-      ),
-    );
+      );
+      // Only mark done once every call above actually succeeded.
+      channelsConfigured = true;
+    })().finally(() => {
+      channelsConfigurationPromise = null;
+    });
+    await channelsConfigurationPromise;
   },
 
   /**
