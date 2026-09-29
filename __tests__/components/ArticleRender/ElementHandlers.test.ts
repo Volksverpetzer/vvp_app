@@ -70,5 +70,22 @@ describe("ElementHandlers", () => {
       // Should return false (not handled/removed) to preserve WordPress blocks
       expect(result).toBe(false);
     });
+
+    it("should preserve Mimikama's own note/pill divs so DivRenderer can style them", () => {
+      for (const className of ["mkk-pillar-link", "mkk-about", "mkk-label"]) {
+        const mockElement = {
+          tagName: "div",
+          attribs: { class: className },
+          // A single text child would otherwise qualify for unwrapping
+          // (<=2 children, no other recognized class) — these must survive
+          // as real divs regardless of child count.
+          children: [{ type: "text", data: "some text" }],
+        } as any;
+
+        const result = handleContainerElements(mockElement);
+
+        expect(result).toBe(false);
+      }
+    });
   });
 });

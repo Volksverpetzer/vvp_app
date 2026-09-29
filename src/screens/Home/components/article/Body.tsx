@@ -23,6 +23,7 @@ import { isSameHost } from "#/helpers/utils/host";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
+import DivRenderer from "#/screens/Home/components/article/renderer/DivRenderer";
 import EmRenderer from "#/screens/Home/components/article/renderer/EmRenderer";
 import FigcaptionRenderer from "#/screens/Home/components/article/renderer/FigcaptionRenderer";
 import HeaderRenderer from "#/screens/Home/components/article/renderer/HeaderRenderer";
@@ -105,6 +106,8 @@ const Body = (properties: BodyProperties) => {
       blockquote: (renderProperties) =>
         BlockRenderer({ renderProps: renderProperties, url: article_link }),
       em: (renderProperties) => EmRenderer(renderProperties),
+      div: (renderProperties: InternalRendererProps<TBlock>) =>
+        DivRenderer(renderProperties),
     }),
     [width, maxWidth, onLinkPress, article_link, headerRefs],
   );

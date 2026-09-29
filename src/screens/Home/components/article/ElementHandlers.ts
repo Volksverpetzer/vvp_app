@@ -148,7 +148,10 @@ export const handleContainerElements = (element: Element): boolean => {
       (element.attribs.class.includes("wp-block") ||
         element.attribs.class.includes("quote") ||
         element.attribs.class.includes("blockquote") ||
-        element.attribs.class.includes("wp-embed"));
+        element.attribs.class.includes("wp-embed") ||
+        // Mimikama's own theme prefix (note boxes, a kicker pill) — DivRenderer
+        // gives these a boxed/pill look, so they must survive to reach it.
+        element.attribs.class.includes("mkk-"));
 
     // Keep WordPress blocks and important containers
     if (hasImportantClass) {
