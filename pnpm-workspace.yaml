@@ -34,3 +34,10 @@ minimumReleaseAgeExclude:
   - cspell-lib@10.3.5
   - cspell-trie-lib@10.3.5
   - cspell@10.3.5
+  - expo-constants@57.0.20
+  - expo-modules-core@57.0.20
+  - expo@57.0.26
+  - "@expo/ui@57.0.21"
+  - expo-document-picker@57.0.3
+  - expo-router@57.0.24
+  - expo-updates@57.0.24
