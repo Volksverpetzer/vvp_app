@@ -10,8 +10,8 @@ type styleColors = {
   // Content
   text: CSSProperties["color"];
   textMuted: CSSProperties["color"];
-  // Decorative/non-text content between textMuted light and dark (e.g. muted icons)
-  textSubtle: CSSProperties["color"];
+  // Muted icon color, between textMuted light and dark
+  iconSubtle: CSSProperties["color"];
   // Content on top of primary-colored surfaces
   onPrimary: CSSProperties["color"];
   // Content on top of surfaceError

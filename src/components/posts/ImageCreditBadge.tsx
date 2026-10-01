@@ -33,7 +33,7 @@ const ImageCreditBadge = ({ credit, position }: ImageCreditBadgeProperties) => {
         accessibilityHint="Öffnet die Quellenangabe für dieses Bild"
         onPress={() => setIsVisible(true)}
       >
-        <InfoIcon size={iconSizes.xs} color={Colors[colorScheme].textSubtle} />
+        <InfoIcon size={iconSizes.xs} color={Colors[colorScheme].iconSubtle} />
       </UiBadge>
       <ImageCreditModal
         isVisible={isVisible}
