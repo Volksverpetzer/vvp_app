@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.21.0": {
+  "@atproto/api@0.22.0": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -69,7 +69,7 @@ export default {
     licenseUrl:
       "https://github.com/oblador/react-native-vector-icons/raw/HEAD/LICENSE",
   },
-  "@rive-app/react-native@0.4.20": {
+  "@rive-app/react-native@0.4.21": {
     licenses: "MIT",
     repository: "https://github.com/rive-app/rive-nitro-react-native",
     licenseUrl:
@@ -81,7 +81,7 @@ export default {
     licenseUrl:
       "https://github.com/stripe/stripe-react-native/raw/HEAD/LICENSE",
   },
-  "@volksverpetzer/design-tokens@0.8.0": {
+  "@volksverpetzer/design-tokens@0.9.0": {
     licenses: "MIT",
     repository: "https://github.com/Volksverpetzer/vvp_design_system",
     licenseUrl:
@@ -131,7 +131,7 @@ export default {
     licenses: "ISC",
     repository: "https://gitlab.com/breadboxio/expo-config",
   },
-  "expo-constants@57.0.19": {
+  "expo-constants@57.0.20": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -152,7 +152,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-document-picker@57.0.2": {
+  "expo-document-picker@57.0.3": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -202,7 +202,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-router@57.0.23": {
+  "expo-router@57.0.24": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -226,7 +226,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-updates@57.0.23": {
+  "expo-updates@57.0.24": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -235,7 +235,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@57.0.25": {
+  "expo@57.0.26": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
