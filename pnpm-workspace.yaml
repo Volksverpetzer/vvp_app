@@ -41,3 +41,4 @@ minimumReleaseAgeExclude:
   - expo-document-picker@57.0.3
   - expo-router@57.0.24
   - expo-updates@57.0.24
+  - "@volksverpetzer/design-tokens@0.9.0"
