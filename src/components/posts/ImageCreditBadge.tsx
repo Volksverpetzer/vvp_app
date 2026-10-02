@@ -3,7 +3,9 @@ import { useState } from "react";
 import { InfoIcon } from "#/components/Icons";
 import ImageCreditModal from "#/components/popups/ImageCreditModal";
 import UiBadge, { type BadgePosition } from "#/components/ui/UiBadge";
+import Colors from "#/constants/Colors";
 import { iconSizes } from "#/constants/IconSizes";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { ImageCredit } from "#/types";
 
 interface ImageCreditBadgeProperties {
@@ -18,6 +20,7 @@ interface ImageCreditBadgeProperties {
  */
 const ImageCreditBadge = ({ credit, position }: ImageCreditBadgeProperties) => {
   const [isVisible, setIsVisible] = useState(false);
+  const colorScheme = useAppColorScheme();
 
   if (!credit) return null;
 
@@ -30,7 +33,7 @@ const ImageCreditBadge = ({ credit, position }: ImageCreditBadgeProperties) => {
         accessibilityHint="Öffnet die Quellenangabe für dieses Bild"
         onPress={() => setIsVisible(true)}
       >
-        <InfoIcon size={iconSizes.xs} color="#999" />
+        <InfoIcon size={iconSizes.xs} color={Colors[colorScheme].iconSubtle} />
       </UiBadge>
       <ImageCreditModal
         isVisible={isVisible}

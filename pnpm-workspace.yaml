@@ -11,33 +11,5 @@ packages:
 patchedDependencies:
   react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
 minimumReleaseAgeExclude:
-  - "@cspell/cspell-bundled-dicts@10.3.5"
-  - "@cspell/cspell-json-reporter@10.3.5"
-  - "@cspell/cspell-performance-monitor@10.3.5"
-  - "@cspell/cspell-pipe@10.3.5"
-  - "@cspell/cspell-resolver@10.3.5"
-  - "@cspell/cspell-service-bus@10.3.5"
-  - "@cspell/cspell-types@10.3.5"
-  - "@cspell/cspell-worker@10.3.5"
-  - "@cspell/dynamic-import@10.3.5"
-  - "@cspell/eslint-plugin@10.3.5"
-  - "@cspell/filetypes@10.3.5"
-  - "@cspell/rpc@10.3.5"
-  - "@cspell/strong-weak-map@10.3.5"
-  - "@cspell/url@10.3.5"
-  - cspell-config-lib@10.3.5
-  - cspell-dictionary@10.3.5
-  - cspell-gitignore@10.3.5
-  - cspell-glob@10.3.5
-  - cspell-grammar@10.3.5
-  - cspell-io@10.3.5
-  - cspell-lib@10.3.5
-  - cspell-trie-lib@10.3.5
-  - cspell@10.3.5
-  - expo-constants@57.0.20
-  - expo-modules-core@57.0.20
-  - expo@57.0.26
-  - "@expo/ui@57.0.21"
-  - expo-document-picker@57.0.3
-  - expo-router@57.0.24
-  - expo-updates@57.0.24
+  - "@volksverpetzer/design-tokens@0.9.0"
+  - "@types/node@24.19.1"
