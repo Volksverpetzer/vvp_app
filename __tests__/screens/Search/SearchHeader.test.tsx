@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render } from "@testing-library/react-native";
+import { act, fireEvent, render } from "@testing-library/react-native";
 import React, { createRef } from "react";
-import { StyleSheet } from "react-native";
+import { Animated, StyleSheet } from "react-native";
 import type { TextInput } from "react-native";
 
 import { toast } from "#/helpers/toast";
@@ -104,6 +104,32 @@ describe("SearchHeader", () => {
       // would still be caught (a plain array flatten leaves it as a numeric ID).
       const flatStyle = StyleSheet.flatten(header.props.style) ?? {};
       expect(flatStyle.backgroundColor).toBeUndefined();
+    });
+  });
+
+  describe("collapsing on scroll", () => {
+    const titleBlockHeight = (getByTestId: (id: string) => any) =>
+      StyleSheet.flatten(getByTestId("header-gradient").parent?.props.style)
+        .height;
+
+    it("is 100 tall at the top and collapses to 0 as the list scrolls", async () => {
+      const scrollOffsetY = new Animated.Value(0);
+      const { getByTestId, getByLabelText } = await render(
+        <SearchHeader {...baseProps} scrollOffsetY={scrollOffsetY} />,
+      );
+      expect(titleBlockHeight(getByTestId)).toBe(100);
+
+      await act(() => {
+        scrollOffsetY.setValue(50);
+      });
+      expect(titleBlockHeight(getByTestId)).toBe(50);
+
+      await act(() => {
+        scrollOffsetY.setValue(500);
+      });
+      expect(titleBlockHeight(getByTestId)).toBe(0);
+      // The search input stays available
+      expect(getByLabelText("Text input field")).toBeTruthy();
     });
   });
 
