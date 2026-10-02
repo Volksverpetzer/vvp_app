@@ -29,7 +29,7 @@ const PersonalTab = () => {
   const backgroundColor = Colors[colorScheme].surface;
 
   const HEADER_HEIGHT = 220;
-  const HEADER_MIN_HEIGHT = 110;
+  const HEADER_MIN_HEIGHT = 140;
 
   const labelOpacity = useMemo(
     () =>
@@ -80,7 +80,7 @@ const PersonalTab = () => {
               label="Quellen"
               isActive={activeTab === "sources"}
               onPress={() => setActiveTab("sources")}
-              style={{ paddingVertical: spacing.xl }}
+              style={{ paddingVertical: spacing.md }}
               animatedLabelHeight={labelHeight}
               animatedLabelOpacity={labelOpacity}
             />

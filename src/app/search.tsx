@@ -1,7 +1,7 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
-import { View } from "react-native";
+import { Animated, View } from "react-native";
 import type { TextInput } from "react-native";
 
 import { SafetyIcon, SearchIcon } from "#/components/Icons";
@@ -77,6 +77,9 @@ const SearchContent = ({
     }
   }, [AI_ENABLED, searchParams, setSearchType]);
 
+  // Driven by whichever results list is showing; collapses the header's title
+  const scrollOffsetY = useRef(new Animated.Value(0)).current;
+
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].surface;
   const corporate = Colors[colorScheme].primary;
@@ -87,9 +90,15 @@ const SearchContent = ({
   const effectiveTab: SearchTab =
     AI_ENABLED && searchParams.includes("://") ? "ai" : activeTab;
 
+  // A new list starts at the top, so expand the header again
+  useEffect(() => {
+    scrollOffsetY.setValue(0);
+  }, [scrollOffsetY, effectiveTab, searchParams]);
+
   return (
     <View style={[globalStyles.container, { backgroundColor }]}>
       <SearchHeader
+        scrollOffsetY={scrollOffsetY}
         search={search}
         setSearch={setSearch}
         setSearchParams={setSearchParams}
@@ -138,6 +147,7 @@ const SearchContent = ({
             <ArticleSearchResults
               searchString={searchParams}
               onResultsLength={setResultsLength}
+              scrollOffsetY={scrollOffsetY}
             />
           ) : (
             <View style={{ flex: 1, justifyContent: "center" }}>
@@ -156,6 +166,7 @@ const SearchContent = ({
               setIsLoading={setIsLoading}
               search={searchParams}
               setResultsLength={setResultsLength}
+              scrollOffsetY={scrollOffsetY}
             />
           ) : (
             <View style={{ flex: 1, justifyContent: "center" }}>

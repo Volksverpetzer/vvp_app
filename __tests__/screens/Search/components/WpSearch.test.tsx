@@ -1,5 +1,6 @@
 import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
+import { Animated } from "react-native";
 
 import { onLinkPress } from "#/helpers/Linking";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
@@ -277,5 +278,27 @@ describe("WpSearchResults", () => {
     await flushDebounce();
     await waitFor(() => getByTestId("back-to-top"));
     await fireEvent.press(getByTestId("back-to-top"));
+  });
+
+  it("reports the list's scroll offset so the search header can collapse", async () => {
+    searchPosts.mockResolvedValue([post()]);
+    const scrollOffsetY = new Animated.Value(0);
+    const { getByTestId } = await render(
+      <WpSearchResults
+        searchString="scroll"
+        onResultsLength={jest.fn()}
+        scrollOffsetY={scrollOffsetY}
+      />,
+    );
+    await flushDebounce();
+    await waitFor(() => getByTestId("result"));
+    const list = getByTestId("result").parent?.parent;
+    await act(() => {
+      fireEvent.scroll(list!, {
+        nativeEvent: { contentOffset: { y: 75 } },
+      });
+    });
+    // @ts-expect-error __getValue is internal but the only synchronous read
+    expect(scrollOffsetY.__getValue()).toBe(75);
   });
 });
