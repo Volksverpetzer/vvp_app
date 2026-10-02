@@ -32,12 +32,6 @@ const withCustomPlugin = (config: any) => {
     "-Xmx4096m -XX:MaxMetaspaceSize=1024m", // Set data of your choice
   );
 
-  // @rive-app/react-native defaults to its experimental Android backend, which
-  // throws on state machine inputs (UnsupportedOperationException: "SMI inputs
-  // not supported in experimental API"). FaktenBot drives its animation through
-  // such inputs, so keep the legacy backend until it moves to data binding.
-  config = setGradlePropertiesValue(config, "USE_RIVE_LEGACY", "true");
-
   return config;
 };
 
