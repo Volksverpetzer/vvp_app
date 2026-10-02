@@ -4,7 +4,9 @@ import { Keyboard, TextInput, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
-import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
+import UiHeaderGradient, {
+  HEADER_FADE_HEIGHT,
+} from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -67,7 +69,8 @@ const SearchHeader = ({
         style={[
           globalStyles.row,
           {
-            height: 100,
+            height: 100 + HEADER_FADE_HEIGHT,
+            paddingBottom: HEADER_FADE_HEIGHT,
             justifyContent: "flex-end",
             paddingRight: spacing.xl,
           },
