@@ -33,12 +33,6 @@ const ActionTab = () => {
       <AchievementComponent />
       <StatisticsView />
       <RegionMap />
-      <View style={{ paddingHorizontal: spacing.xl }}>
-        <UiButton
-          label="Desinformations-Memory spielen"
-          onPress={() => router.push("/game")}
-        />
-      </View>
     </ScrollView>
   );
 };
