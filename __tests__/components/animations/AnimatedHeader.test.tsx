@@ -1,5 +1,5 @@
 import { describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render } from "@testing-library/react-native";
+import { act, fireEvent, render } from "@testing-library/react-native";
 import { Animated, Text } from "react-native";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
@@ -137,5 +137,38 @@ describe("AnimatedHeader", () => {
     }
     expect(node).toBeTruthy();
     expect(flatten(node.props.style).maxWidth).toBe(CONTENT_MAX_WIDTH);
+  });
+
+  describe("collapsing", () => {
+    const renderCollapsible = (offset: Animated.Value) =>
+      render(
+        <AnimatedHeader
+          title="Sammlung"
+          scrollOffsetY={offset}
+          minHeight={100}
+          maxHeight={200}
+        >
+          <Text>Tabs</Text>
+        </AnimatedHeader>,
+      );
+
+    it("gives the string title its layout height while expanded", async () => {
+      const { getByText } = await renderCollapsible(new Animated.Value(0));
+      const wrapper = getByText("Sammlung").parent;
+      expect(flatten(wrapper?.props.style).height).toBeGreaterThan(0);
+    });
+
+    it("shrinks the string title's layout height to 0 when collapsed, keeping the children", async () => {
+      const offset = new Animated.Value(0);
+      const { getByText } = await renderCollapsible(offset);
+      await act(() => {
+        offset.setValue(100);
+      });
+      const wrapper = getByText("Sammlung").parent;
+      const style = flatten(wrapper?.props.style);
+      expect(style.height).toBe(0);
+      expect(style.overflow).toBe("hidden");
+      expect(getByText("Tabs")).toBeTruthy();
+    });
   });
 });
