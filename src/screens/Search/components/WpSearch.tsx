@@ -2,6 +2,11 @@ import { useRouter } from "expo-router";
 import { decode } from "html-entities";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
+import type {
+  Animated,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import BackToTopButton from "#/components/buttons/BackToTopButton";
@@ -19,7 +24,10 @@ import type { LoadArticlePostProperties } from "#/types";
 
 interface WpSearchProperties {
   searchString: string;
-  onResultsLength?: (count: number) => void;
+  onResultsLength?: (
+    count: number,
+  ) => void; /** Receives the list's scroll offset so the search header can collapse. */
+  scrollOffsetY?: Animated.Value;
 }
 
 const EXCERPT_LINES = 5;
@@ -65,6 +73,7 @@ const formatDate = (iso: string) => {
 const WpSearchResults = ({
   searchString,
   onResultsLength,
+  scrollOffsetY,
 }: WpSearchProperties) => {
   const [results, setResults] = useState<LoadArticlePostProperties[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,6 +81,14 @@ const WpSearchResults = ({
   const router = useRouter();
   const listReference = useRef<FlatList>(null);
   const backToTop = useBackToTop();
+
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      backToTop.onScroll(event);
+      scrollOffsetY?.setValue(event.nativeEvent.contentOffset.y);
+    },
+    [backToTop, scrollOffsetY],
+  );
 
   useEffect(() => {
     if (!searchString || searchString.length < 2) {
@@ -162,7 +179,7 @@ const WpSearchResults = ({
         maxToRenderPerBatch={10}
         windowSize={5}
         keyboardDismissMode="on-drag"
-        onScroll={backToTop.onScroll}
+        onScroll={handleScroll}
         scrollEventThrottle={16}
       />
       <BackToTopButton

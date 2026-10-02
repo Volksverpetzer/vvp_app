@@ -1,12 +1,10 @@
 import type { RefObject } from "react";
-import { useCallback } from "react";
-import { Keyboard, TextInput, View } from "react-native";
+import { useCallback, useMemo } from "react";
+import { Animated, Keyboard, TextInput, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
-import UiHeaderGradient, {
-  HEADER_FADE_HEIGHT,
-} from "#/components/ui/UiHeaderGradient";
+import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
@@ -26,7 +24,12 @@ interface SearchHeaderProperties {
   isLoading: boolean;
   showFaktenBot?: boolean;
   onSubmit?: () => void;
+  /** Scroll offset of the results list; the title block collapses as it grows. */
+  scrollOffsetY?: Animated.Value;
 }
+
+const TITLE_HEIGHT = 100;
+const fallbackScrollOffsetY = new Animated.Value(0);
 
 const SearchHeader = ({
   search,
@@ -37,6 +40,7 @@ const SearchHeader = ({
   isLoading,
   showFaktenBot = true,
   onSubmit,
+  scrollOffsetY = fallbackScrollOffsetY,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
@@ -63,46 +67,63 @@ const SearchHeader = ({
     }
   }, [search, setSearch, setSearchParams, onSubmit]);
 
+  const titleBlockHeight = useMemo(
+    () =>
+      scrollOffsetY.interpolate({
+        inputRange: [0, TITLE_HEIGHT],
+        outputRange: [TITLE_HEIGHT, 0],
+        extrapolate: "clamp",
+      }),
+    [scrollOffsetY],
+  );
+
   return (
     <>
-      <UiHeaderGradient
-        style={[
-          globalStyles.row,
-          {
-            height: 100 + HEADER_FADE_HEIGHT,
-            paddingBottom: HEADER_FADE_HEIGHT,
-            justifyContent: "flex-end",
-            paddingRight: spacing.xl,
-          },
-        ]}
+      <Animated.View
+        style={{
+          height: titleBlockHeight,
+          overflow: "hidden",
+          justifyContent: "flex-end",
+        }}
       >
-        <UiText
-          bold
-          size="xxl"
-          style={{
-            paddingTop: spacing.xl,
-            color: corporate,
-            flex: 1,
-            textAlign: "center",
-          }}
+        <UiHeaderGradient
+          style={[
+            globalStyles.row,
+            {
+              height: TITLE_HEIGHT,
+              justifyContent: "flex-end",
+              paddingRight: spacing.xl,
+            },
+          ]}
         >
-          {showFaktenBot ? "Fact Check" : "Artikel-Suche"}
-        </UiText>
-        {showFaktenBot && (
-          <View
+          <UiText
+            bold
+            size="xxl"
             style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              right: 0,
-              width: 150,
-              justifyContent: "center",
+              paddingTop: spacing.xl,
+              color: corporate,
+              flex: 1,
+              textAlign: "center",
             }}
           >
-            <FaktenBot reaction={faktenBotReaction} search={isLoading} />
-          </View>
-        )}
-      </UiHeaderGradient>
+            {showFaktenBot ? "Fact Check" : "Artikel-Suche"}
+          </UiText>
+          {showFaktenBot && (
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                right: 0,
+                width: 150,
+                justifyContent: "center",
+              }}
+            >
+              <FaktenBot reaction={faktenBotReaction} search={isLoading} />
+            </View>
+          )}
+        </UiHeaderGradient>
+      </Animated.View>
       <View style={globalStyles.content}>
         <View
           style={[

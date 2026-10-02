@@ -3,6 +3,11 @@ import { useRouter } from "expo-router";
 import { decode } from "html-entities";
 import { useCallback, useRef } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
+import type {
+  Animated,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from "react-native";
 
 import { SafetyIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
@@ -28,7 +33,8 @@ interface AISearchProperties {
   search: string;
   setResultsLength: (results: number) => void;
   setIsLoading: (loading: boolean) => void;
-  showFaktenBot?: boolean;
+  showFaktenBot?: boolean; /** Receives the list's scroll offset so the search header can collapse. */
+  scrollOffsetY?: Animated.Value;
 }
 
 const AISearch = ({
@@ -36,6 +42,7 @@ const AISearch = ({
   setResultsLength,
   setIsLoading,
   showFaktenBot = false,
+  scrollOffsetY,
 }: AISearchProperties) => {
   const { results, error, noResults, loadingMessage, reactionValue, reload } =
     useAISearch({ search, setResultsLength, setIsLoading });
@@ -44,6 +51,14 @@ const AISearch = ({
   const corporate = Colors[colorScheme].primary;
   const listReference = useRef<FlatList>(null);
   const backToTop = useBackToTop();
+
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      backToTop.onScroll(event);
+      scrollOffsetY?.setValue(event.nativeEvent.contentOffset.y);
+    },
+    [backToTop, scrollOffsetY],
+  );
 
   const renderItem = useCallback(
     ({ item }: { item: AISearchResponse }) => {
@@ -170,7 +185,7 @@ const AISearch = ({
           gap: spacing.xl,
         }}
         renderItem={renderItem}
-        onScroll={backToTop.onScroll}
+        onScroll={handleScroll}
         scrollEventThrottle={16}
       />
       <BackToTopButton
