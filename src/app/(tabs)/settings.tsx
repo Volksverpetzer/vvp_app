@@ -306,21 +306,23 @@ const SettingsScreen = () => {
               <UiText>Benachrichtigungen zurücksetzen</UiText>
             </UiPressable>
           )}
-          <UiPressable
-            accessibilityRole="button"
-            onPress={() => {
-              toast.confirm(
-                "Erfolge zurücksetzen?",
-                "Drücke hier, um alle Erfolge zurückzusetzen",
-                () => {
-                  Achievements.resetEverything();
-                  toast.success("Erfolge zurückgesetzt");
-                },
-              );
-            }}
-          >
-            <UiText>Alle Erfolge zurücksetzen</UiText>
-          </UiPressable>
+          {Config.enableActions && (
+            <UiPressable
+              accessibilityRole="button"
+              onPress={() => {
+                toast.confirm(
+                  "Erfolge zurücksetzen?",
+                  "Drücke hier, um alle Erfolge zurückzusetzen",
+                  () => {
+                    Achievements.resetEverything();
+                    toast.success("Erfolge zurückgesetzt");
+                  },
+                );
+              }}
+            >
+              <UiText>Alle Erfolge zurücksetzen</UiText>
+            </UiPressable>
+          )}
           <UiPressable
             accessibilityRole="button"
             onPress={() => {
