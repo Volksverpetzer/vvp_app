@@ -15,6 +15,7 @@ import { toast } from "#/helpers/toast";
 
 let mockIsFoss = false;
 let mockEnableEngagement = false;
+let mockEnableActions = true;
 const mockRouterPush = jest.fn();
 
 jest.mock("#/constants/Config", () => ({
@@ -23,6 +24,9 @@ jest.mock("#/constants/Config", () => ({
   },
   get enableEngagement() {
     return mockEnableEngagement;
+  },
+  get enableActions() {
+    return mockEnableActions;
   },
   aboutUrl: "https://example.com/about",
   donations: { support: "https://example.com/donate" },
@@ -160,6 +164,7 @@ describe("SettingsScreen", () => {
     jest.clearAllMocks();
     mockIsFoss = false;
     mockEnableEngagement = false;
+    mockEnableActions = true;
 
     jest.spyOn(React, "useContext").mockReturnValue({
       contentSettings: {},
@@ -301,6 +306,20 @@ describe("SettingsScreen", () => {
         Notifications.default.registerForPushNotifications,
       ).toHaveBeenCalled();
       expect(jest.mocked(toast.success)).toHaveBeenCalled();
+    });
+  });
+
+  describe("achievements reset button", () => {
+    it("is visible when actions are enabled", async () => {
+      mockEnableActions = true;
+      const { queryByText } = await render(<SettingsScreen />);
+      expect(queryByText("Alle Erfolge zurücksetzen")).not.toBeNull();
+    });
+
+    it("is hidden when actions are disabled", async () => {
+      mockEnableActions = false;
+      const { queryByText } = await render(<SettingsScreen />);
+      expect(queryByText("Alle Erfolge zurücksetzen")).toBeNull();
     });
   });
 
