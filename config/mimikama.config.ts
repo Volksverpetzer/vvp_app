@@ -11,7 +11,7 @@ const assets = {
 };
 
 const extraConfig: ExtraConfigType = {
-  apiUrl: "https://mimikamaserver.azurewebsites.net",
+  apiUrl: "https://mimikama.volksverpetzer-app.de",
   wpUrl: "https://www.mimikama.org",
   aboutUrl: "https://www.mimikama.org/ueber-uns/",
   hiddenNotifications: ["new_fact_check", "new_pruefpunkt"],
