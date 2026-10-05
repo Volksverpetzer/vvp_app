@@ -11,5 +11,4 @@ packages:
 patchedDependencies:
   react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
 minimumReleaseAgeExclude:
-  - "@volksverpetzer/design-tokens@0.9.0"
-  - "@types/node@24.19.1"
+  - "@cspell/dict-de-de@4.1.3"
