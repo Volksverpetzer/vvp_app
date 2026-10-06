@@ -128,6 +128,12 @@ After updating `package.json`, write the release notes and regenerate the in-app
 
 > Note: F-Droid build failures are not reported to us. If a release doesn't appear on F-Droid after a few days, check https://monitor.f-droid.org/builds.
 
+### Releasing Mimikama
+
+Mimikama releases are cut by tag, independently of VVP's: push `mimikama-vX.Y.Z` on the commit to release (`.github/workflows/expo-release-mimikama.yml`). It builds both platforms with the `mimikama` profile (EAS auto-submit → Play internal track / TestFlight) and then pushes the Play listing texts and release notes from `fastlane/mimikama/metadata/android` (Google Play only; the App Store listing stays manual).
+
+Before tagging, add the German release notes as `fastlane/mimikama/metadata/android/de-DE/changelogs/{versionCode}.txt` (same `package.json` versionCode as VVP, max 500 characters) — the metadata job fails without it. Note that the first push replaces the live listing with the texts in that folder, so edit the texts there (title ≤30, short ≤80, full ≤4000 characters), not in the Play Console.
+
 ### Code Style
 
 - Arrow functions, 2-space indent, Prettier with sorted imports (enforced by lint-staged on commit)

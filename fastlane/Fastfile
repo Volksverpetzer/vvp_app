@@ -1,18 +1,30 @@
 default_platform(:android)
 
+# Per-app Play settings. `track` is where that app's EAS auto-submit delivers
+# the build (see the submit profiles in eas.json) — release notes are attached
+# to the versionCode on that track.
+APPS = {
+  "volksverpetzer" => { package_name: "de.volksverpetzer.app", track: "beta" },
+  "mimikama" => { package_name: "de.mimikama.app", track: "internal" },
+}.freeze
+
 platform :android do
   desc "Push listing texts and release notes from build/play-metadata to Google Play"
-  desc "Options: version_code (EAS versionCode of the submitted build), track (default: beta)"
+  desc "Options: version_code (EAS versionCode of the submitted build), app (volksverpetzer|mimikama, default: volksverpetzer), track (default: the app's submit track)"
   lane :push_metadata do |options|
     version_code = options[:version_code].to_i
     UI.user_error!("Pass version_code:<EAS versionCode>") if version_code <= 0
-    track = options[:track] || "beta"
+    app = options[:app] || "volksverpetzer"
+    config = APPS[app]
+    UI.user_error!("Unknown app '#{app}' (expected one of: #{APPS.keys.join(", ")})") if config.nil?
+    package_name = config[:package_name]
+    track = options[:track] || config[:track]
 
     # EAS auto-submit runs asynchronously after the build finishes — wait for
     # the new versionCode to appear on the track before attaching release notes.
     on_track = false
     20.times do |attempt|
-      on_track = google_play_track_version_codes(track: track).include?(version_code)
+      on_track = google_play_track_version_codes(package_name: package_name, track: track).include?(version_code)
       break if on_track
 
       UI.message("versionCode #{version_code} not on '#{track}' yet, retrying in 60s (#{attempt + 1}/20)")
@@ -21,6 +33,7 @@ platform :android do
     UI.user_error!("versionCode #{version_code} never appeared on track '#{track}'") unless on_track
 
     upload_to_play_store(
+      package_name: package_name,
       track: track,
       # fastlane resolves relative paths from this fastlane/ dir, not the repo root
       metadata_path: File.expand_path("../build/play-metadata/android", __dir__),
