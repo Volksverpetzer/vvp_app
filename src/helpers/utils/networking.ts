@@ -55,10 +55,17 @@ function buildUrl(
   url: string,
   params?: FetchRequestConfig["params"],
 ): string {
-  const finalUrl =
-    url.startsWith("http://") || url.startsWith("https://")
-      ? new URL(url)
-      : new URL(url, baseURL);
+  let finalUrl: URL;
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    finalUrl = new URL(url);
+  } else {
+    // Append to the base's path rather than resolving against it:
+    // new URL("/proxy", "https://host/api") would drop "/api", which breaks
+    // app servers mounted under a path (see helpers/apiUrl.ts).
+    const base = new URL(baseURL);
+    const basePath = base.pathname.replace(/\/+$/, "");
+    finalUrl = new URL(`${basePath}/${url.replace(/^\/+/, "")}`, base.origin);
+  }
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value === undefined || value === null) continue;

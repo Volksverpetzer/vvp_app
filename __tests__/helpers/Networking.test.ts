@@ -137,6 +137,35 @@ describe("Networking utilities", () => {
     ).toEqual(["https://one.example.com/test", "https://two.example.com/test"]);
   });
 
+  it("createClient keeps the base URL's path for relative endpoints", async () => {
+    (globalThis.fetch as jest.Mock<any>).mockImplementation(
+      mockJsonResponse({}),
+    );
+
+    await Networking.createClient("https://self.hosted/api" as any).request({
+      url: "/proxy/regions",
+      params: { week: 3 },
+    });
+    await Networking.createClient("https://self.hosted/api/" as any).request({
+      url: "posts?site=x",
+    });
+    await Networking.createClient("https://origin.example.com" as any).request({
+      url: "/test",
+    });
+    await Networking.createClient("https://self.hosted/api" as any).request({
+      url: "https://other.example.com/abs",
+    });
+
+    expect(
+      (globalThis.fetch as jest.Mock<any>).mock.calls.map((c) => c[0]),
+    ).toEqual([
+      "https://self.hosted/api/proxy/regions?week=3",
+      "https://self.hosted/api/posts?site=x",
+      "https://origin.example.com/test",
+      "https://other.example.com/abs",
+    ]);
+  });
+
   it("fetchWithTimeout resolves response data", async () => {
     const client = Networking.createClient("https://x" as any);
     const fakeResponse = { data: { foo: "bar" } };
