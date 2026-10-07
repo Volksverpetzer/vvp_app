@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { Text } from "react-native";
 
 import SettingsStore from "#/helpers/Stores/SettingsStore";
+import { loadApiUrlOverride } from "#/helpers/apiUrl";
 import {
   SettingsContext,
   SettingsProvider,
@@ -33,6 +34,10 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
   },
 }));
 
+jest.mock("#/helpers/apiUrl", () => ({
+  loadApiUrlOverride: jest.fn(),
+}));
+
 const mockSettingsStore = SettingsStore as jest.Mocked<typeof SettingsStore>;
 
 const ConsumerComponent = () => {
@@ -52,6 +57,7 @@ describe("SettingsProvider", () => {
     jest.clearAllMocks();
     mockSettingsStore.setContentSettings.mockResolvedValue(undefined as never);
     mockSettingsStore.setAdvancedSettings.mockResolvedValue(undefined as never);
+    jest.mocked(loadApiUrlOverride).mockResolvedValue(undefined);
   });
 
   it("renders null while settings are loading", async () => {
@@ -85,6 +91,37 @@ describe("SettingsProvider", () => {
 
     await waitFor(() => getByTestId("child"));
     expect(getByTestId("child")).toBeTruthy();
+  });
+
+  it("waits for the app-server override before rendering children", async () => {
+    mockSettingsStore.getContentSettings.mockResolvedValue(
+      {} as ContentSettingType,
+    );
+    mockSettingsStore.getAdvancedSettings.mockResolvedValue(
+      {} as AdvancedSettingType,
+    );
+    let resolveOverride: () => void = () => {};
+    jest.mocked(loadApiUrlOverride).mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveOverride = resolve;
+      }),
+    );
+
+    const { queryByTestId, getByTestId } = await render(
+      <SettingsProvider>
+        <Text testID="child">visible</Text>
+      </SettingsProvider>,
+    );
+
+    // Children fire requests on mount, so they must not render while the
+    // override (and with it the server URL) is still unknown.
+    expect(queryByTestId("child")).toBeNull();
+
+    await act(() => {
+      resolveOverride();
+    });
+
+    await waitFor(() => getByTestId("child"));
   });
 
   it("merges loaded settings over defaults", async () => {

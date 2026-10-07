@@ -37,6 +37,7 @@ import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useTabBarClearance } from "#/hooks/useTabBarClearance";
+import ApiUrlSetting from "#/screens/Settings/components/ApiUrlSetting";
 import BackupView from "#/screens/Settings/components/BackupView";
 import type { NotificationSettingType, SettingType } from "#/types";
 
@@ -234,6 +235,7 @@ const SettingsScreen = () => {
               saveSettings={saveAdvancedSetting}
               settings={advancedSettings}
             />
+            {Config.isFoss && <ApiUrlSetting />}
             {Config.enableEngagement && <BackupView />}
           </UiCollapsable>
         </View>

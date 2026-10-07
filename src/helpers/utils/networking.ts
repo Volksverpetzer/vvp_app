@@ -55,10 +55,17 @@ function buildUrl(
   url: string,
   params?: FetchRequestConfig["params"],
 ): string {
-  const finalUrl =
-    url.startsWith("http://") || url.startsWith("https://")
-      ? new URL(url)
-      : new URL(url, baseURL);
+  let finalUrl: URL;
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    finalUrl = new URL(url);
+  } else {
+    // Append to the base's path rather than resolving against it:
+    // new URL("/proxy", "https://host/api") would drop "/api", which breaks
+    // app servers mounted under a path (see helpers/apiUrl.ts).
+    const base = new URL(baseURL);
+    const basePath = base.pathname.replace(/\/+$/, "");
+    finalUrl = new URL(`${basePath}/${url.replace(/^\/+/, "")}`, base.origin);
+  }
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value === undefined || value === null) continue;
@@ -95,11 +102,12 @@ export function getCacheBusterHeaders(): FetchHeaders {
  * YourApp/1.2.3 (android; Android 14; Pixel 7)
  * YourApp/1.2.3 (ios; iOS 17.3; iPhone 15 Pro)
  *
- * @param baseURL Base URL for requests
+ * @param baseURL Base URL for requests, or a getter resolved on every request
+ *   (for base URLs the user can change at runtime)
  * @param extraHeaders Additional headers merged into every request
  */
 export function createClient(
-  baseURL: HttpsUrl,
+  baseURL: HttpsUrl | (() => HttpsUrl),
   extraHeaders: FetchHeaders = {},
 ): FetchClient {
   const baseHeaders: FetchHeaders = {
@@ -125,7 +133,11 @@ export function createClient(
       responseType = "json",
       signal,
     }: FetchRequestConfig & { url: string }): Promise<FetchResponse<T>> => {
-      const requestUrl = buildUrl(baseURL, url, params);
+      const requestUrl = buildUrl(
+        typeof baseURL === "function" ? baseURL() : baseURL,
+        url,
+        params,
+      );
       const mergedHeaders: FetchHeaders = {
         ...baseHeaders,
         ...headers,

@@ -60,6 +60,10 @@ export const DownloadIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="download" />
 );
 
+export const EditIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="pencil" />
+);
+
 export const ErrorIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="alert" />
 );
