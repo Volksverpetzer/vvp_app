@@ -27,7 +27,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
  *
  * The field is read-only until the pen is pressed; while editing, the pen
  * is replaced by save and cancel icons. Once a custom server is saved, a
- * line below the field names the default and offers resetting to it.
+ * link below the field resets it to the default.
  */
 const ApiUrlSetting = () => {
   const colorScheme = useAppColorScheme();
@@ -118,20 +118,16 @@ const ApiUrlSetting = () => {
         )}
       </View>
       {isCustom && !editing && (
-        <View style={styles.footer}>
-          <UiText size="sm" style={[styles.footerText, { color: textMuted }]}>
-            Standard: {Config.apiUrl}
+        <UiPressable
+          accessibilityRole="button"
+          accessibilityHint="Setzt die Adresse auf den Standard-Server zurück"
+          onPress={reset}
+          style={styles.resetLink}
+        >
+          <UiText size="sm" bold style={{ color: primary }}>
+            Zurücksetzen
           </UiText>
-          <UiPressable
-            accessibilityRole="button"
-            accessibilityHint="Setzt die Adresse auf den Standard-Server zurück"
-            onPress={reset}
-          >
-            <UiText size="sm" bold style={{ color: primary }}>
-              Zurücksetzen
-            </UiText>
-          </UiPressable>
-        </View>
+        </UiPressable>
       )}
     </View>
   );
@@ -161,14 +157,8 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: spacing.sm,
   },
-  footer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: spacing.md,
-  },
-  footerText: {
-    flexShrink: 1,
+  resetLink: {
+    alignSelf: "flex-end",
   },
 });
 
