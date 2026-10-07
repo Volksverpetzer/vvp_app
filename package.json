@@ -18,6 +18,7 @@
     "prebuild": "expo prebuild",
     "android": "expo run:android",
     "android:device": "expo run:android --device",
+    "android:fdroid": "node scripts/run-fdroid.mjs",
     "android:local": "pnpx eas-cli build -p android --profile local-apk --local",
     "android:submit": "pnpx eas-cli build -p android --auto-submit",
     "dev:android": "pnpx eas-cli build -p android --profile development",
