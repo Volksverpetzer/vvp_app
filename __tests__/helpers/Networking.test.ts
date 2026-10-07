@@ -121,6 +121,22 @@ describe("Networking utilities", () => {
     );
   });
 
+  it("createClient resolves a base URL getter on every request", async () => {
+    let base = "https://one.example.com";
+    const client = Networking.createClient(() => base as any);
+    (globalThis.fetch as jest.Mock<any>).mockImplementation(
+      mockJsonResponse({}),
+    );
+
+    await client.request({ url: "/test" });
+    base = "https://two.example.com";
+    await client.request({ url: "/test" });
+
+    expect(
+      (globalThis.fetch as jest.Mock<any>).mock.calls.map((c) => c[0]),
+    ).toEqual(["https://one.example.com/test", "https://two.example.com/test"]);
+  });
+
   it("fetchWithTimeout resolves response data", async () => {
     const client = Networking.createClient("https://x" as any);
     const fakeResponse = { data: { foo: "bar" } };

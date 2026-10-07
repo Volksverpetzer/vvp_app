@@ -95,11 +95,12 @@ export function getCacheBusterHeaders(): FetchHeaders {
  * YourApp/1.2.3 (android; Android 14; Pixel 7)
  * YourApp/1.2.3 (ios; iOS 17.3; iPhone 15 Pro)
  *
- * @param baseURL Base URL for requests
+ * @param baseURL Base URL for requests, or a getter resolved on every request
+ *   (for base URLs the user can change at runtime)
  * @param extraHeaders Additional headers merged into every request
  */
 export function createClient(
-  baseURL: HttpsUrl,
+  baseURL: HttpsUrl | (() => HttpsUrl),
   extraHeaders: FetchHeaders = {},
 ): FetchClient {
   const baseHeaders: FetchHeaders = {
@@ -125,7 +126,11 @@ export function createClient(
       responseType = "json",
       signal,
     }: FetchRequestConfig & { url: string }): Promise<FetchResponse<T>> => {
-      const requestUrl = buildUrl(baseURL, url, params);
+      const requestUrl = buildUrl(
+        typeof baseURL === "function" ? baseURL() : baseURL,
+        url,
+        params,
+      );
       const mergedHeaders: FetchHeaders = {
         ...baseHeaders,
         ...headers,
