@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { EditIcon, ResetIcon } from "#/components/Icons";
-import UiButton from "#/components/ui/UiButton";
+import { CheckboxIcon, CloseIcon, EditIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import UiTextInput from "#/components/ui/UiTextInput";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
-import { globalStyles } from "#/constants/GlobalStyles";
+import { fontSizes } from "#/constants/FontSizes";
 import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import {
   getApiUrl,
+  getApiUrlOverride,
   normalizeApiUrl,
   setApiUrlOverride,
 } from "#/helpers/apiUrl";
@@ -26,14 +26,15 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
  * loaded stays until it is refreshed.
  *
  * The field is read-only until the pen is pressed; while editing, the pen
- * turns into a reset icon that fills in the default server, and nothing is
- * stored until the change is saved.
+ * is replaced by save and cancel icons. Once a custom server is saved, a
+ * line below the field names the default and offers resetting to it.
  */
 const ApiUrlSetting = () => {
   const colorScheme = useAppColorScheme();
-  const { primary, textMuted } = Colors[colorScheme];
+  const { primary, surfaceInput, text, textMuted } = Colors[colorScheme];
   const [value, setValue] = useState<string>(getApiUrl());
   const [editing, setEditing] = useState(false);
+  const [isCustom, setIsCustom] = useState(!!getApiUrlOverride());
 
   const save = async () => {
     const url = normalizeApiUrl(value);
@@ -44,9 +45,11 @@ const ApiUrlSetting = () => {
       );
       return;
     }
-    await setApiUrlOverride(url);
     setValue(url);
     setEditing(false);
+    if (url === getApiUrl()) return;
+    await setApiUrlOverride(url);
+    setIsCustom(!!getApiUrlOverride());
     toast.success("Server gespeichert", url);
   };
 
@@ -55,40 +58,53 @@ const ApiUrlSetting = () => {
     setEditing(false);
   };
 
-  const isDefault = normalizeApiUrl(value) === Config.apiUrl;
+  const reset = async () => {
+    await setApiUrlOverride(undefined);
+    setValue(Config.apiUrl);
+    setIsCustom(false);
+    toast.success("Server zurückgesetzt", Config.apiUrl);
+  };
 
   return (
     <View style={styles.container}>
       <UiText size="base">App-Server</UiText>
-      <View style={styles.inputRow}>
+      <View style={[styles.field, { backgroundColor: surfaceInput }]}>
         <UiTextInput
           accessibilityLabel="App-Server-Adresse"
           accessibilityHint="Adresse des Servers, von dem die App Inhalte lädt"
           value={value}
           onChangeText={setValue}
           editable={editing}
+          autoFocus={editing}
           placeholder={Config.apiUrl}
           placeholderTextColor={textMuted}
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="url"
           onSubmitEditing={save}
-          style={[styles.input, !editing && { color: textMuted }]}
+          style={[styles.input, { color: editing ? text : textMuted }]}
         />
         {editing ? (
-          <UiPressable
-            accessibilityRole="button"
-            accessibilityLabel="Standard-Server einsetzen"
-            accessibilityHint="Setzt die Adresse auf den Standard-Server zurück"
-            onPress={() => setValue(Config.apiUrl)}
-            disabled={isDefault}
-            style={styles.iconButton}
-          >
-            <ResetIcon
-              size={iconSizes.md}
-              color={isDefault ? textMuted : primary}
-            />
-          </UiPressable>
+          <>
+            <UiPressable
+              accessibilityRole="button"
+              accessibilityLabel="Abbrechen"
+              accessibilityHint="Verwirft die Änderung"
+              onPress={cancel}
+              style={styles.iconButton}
+            >
+              <CloseIcon size={iconSizes.md} color={textMuted} />
+            </UiPressable>
+            <UiPressable
+              accessibilityRole="button"
+              accessibilityLabel="Speichern"
+              accessibilityHint="Speichert die Adresse"
+              onPress={save}
+              style={styles.iconButton}
+            >
+              <CheckboxIcon size={iconSizes.md} color={primary} />
+            </UiPressable>
+          </>
         ) : (
           <UiPressable
             accessibilityRole="button"
@@ -101,18 +117,20 @@ const ApiUrlSetting = () => {
           </UiPressable>
         )}
       </View>
-      <UiText size="sm" style={{ color: textMuted }}>
-        Standard: {Config.apiUrl}
-      </UiText>
-      {editing && (
-        <View style={styles.buttons}>
-          <UiButton label="Speichern" onPress={save} style={styles.button} />
-          <UiButton
-            label="Abbrechen"
-            variant="secondary"
-            onPress={cancel}
-            style={styles.button}
-          />
+      {isCustom && !editing && (
+        <View style={styles.footer}>
+          <UiText size="sm" style={[styles.footerText, { color: textMuted }]}>
+            Standard: {Config.apiUrl}
+          </UiText>
+          <UiPressable
+            accessibilityRole="button"
+            accessibilityHint="Setzt die Adresse auf den Standard-Server zurück"
+            onPress={reset}
+          >
+            <UiText size="sm" bold style={{ color: primary }}>
+              Zurücksetzen
+            </UiText>
+          </UiPressable>
         </View>
       )}
     </View>
@@ -122,30 +140,35 @@ const ApiUrlSetting = () => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: spacing.xl,
+    paddingTop: spacing.lg,
     paddingBottom: spacing.xl,
-    gap: spacing.md,
+    gap: spacing.sm,
   },
-  inputRow: {
+  field: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.md,
+    borderRadius: radii.md,
+    minHeight: spacing.huge + spacing.xs,
+    paddingLeft: spacing.lg,
+    paddingRight: spacing.xs,
   },
   input: {
-    ...globalStyles.input,
     flex: 1,
-    borderRadius: radii.xs,
-    paddingHorizontal: spacing.md,
+    backgroundColor: "transparent",
+    fontSize: fontSizes.base,
     paddingVertical: spacing.md,
   },
   iconButton: {
     padding: spacing.sm,
   },
-  buttons: {
+  footer: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     gap: spacing.md,
   },
-  button: {
-    flex: 1,
+  footerText: {
+    flexShrink: 1,
   },
 });
 

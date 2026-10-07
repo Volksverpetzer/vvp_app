@@ -140,10 +140,6 @@ export const ReportIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="report" />
 );
 
-export const ResetIcon = ({ ...rest }: OcticonsProps) => (
-  <Octicons {...rest} name="undo" />
-);
-
 export const SafetyIcon = ({ size, ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="shield-check" size={size ?? iconSizes.lg} />
 );
