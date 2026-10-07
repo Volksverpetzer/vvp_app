@@ -153,6 +153,10 @@ jest.mock("#/screens/Settings/components/BackupView", () => {
   const { Text } = require("react-native");
   return jest.fn(() => <Text>BackupView</Text>);
 });
+jest.mock("#/screens/Settings/components/ApiUrlSetting", () => {
+  const { Text } = require("react-native");
+  return jest.fn(() => <Text>ApiUrlSetting</Text>);
+});
 jest.mock("expo-haptics", () => ({
   selectionAsync: jest.fn(),
   notificationAsync: jest.fn(),

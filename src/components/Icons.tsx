@@ -60,6 +60,10 @@ export const DownloadIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="download" />
 );
 
+export const EditIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="pencil" />
+);
+
 export const ErrorIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="alert" />
 );
@@ -134,6 +138,10 @@ export const MailIcon = ({ ...rest }: OcticonsProps) => (
 
 export const ReportIcon = ({ ...rest }: OcticonsProps) => (
   <Octicons {...rest} name="report" />
+);
+
+export const ResetIcon = ({ ...rest }: OcticonsProps) => (
+  <Octicons {...rest} name="undo" />
 );
 
 export const SafetyIcon = ({ size, ...rest }: OcticonsProps) => (
