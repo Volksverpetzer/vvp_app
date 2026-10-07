@@ -56,7 +56,7 @@
     "@expo/config": "57.0.9",
     "@expo/dom-webview": "57.0.1",
     "@expo/metro-runtime": "57.0.16",
-    "@expo/require-utils": "57.0.5",
+    "@expo/require-utils": "58.0.3",
     "@likashefqet/react-native-image-zoom": "4.3.0",
     "@native-html/iframe-plugin": "3.0.0-alpha.0",
     "@native-html/render": "1.0.3",
