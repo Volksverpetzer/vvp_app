@@ -34,6 +34,13 @@ export const getApiUrl = (): HttpsUrl => override ?? Config.apiUrl;
 export const getApiUrlOverride = (): HttpsUrl | undefined => override;
 
 export const loadApiUrlOverride = async (): Promise<void> => {
+  // Only FOSS builds offer the setting. Any other build ignores a stored
+  // override (e.g. carried over via a data backup) — it would have no way
+  // to reset it and would silently send its traffic elsewhere.
+  if (!Config.isFoss) {
+    override = undefined;
+    return;
+  }
   const stored = await BaseStore.getItem(STORAGE_KEY);
   override = stored ? normalizeApiUrl(stored) : undefined;
 };

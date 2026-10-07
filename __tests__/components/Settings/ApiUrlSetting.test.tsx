@@ -8,7 +8,7 @@ import ApiUrlSetting from "#/screens/Settings/components/ApiUrlSetting";
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: { apiUrl: "https://default.example.com" },
+  default: { apiUrl: "https://default.example.com", isFoss: true },
 }));
 
 jest.mock("#/helpers/toast", () => ({

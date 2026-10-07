@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import Config from "#/constants/Config";
 import {
   getApiUrl,
   getApiUrlOverride,
@@ -11,7 +12,7 @@ import {
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: { apiUrl: "https://default.example.com" },
+  default: { apiUrl: "https://default.example.com", isFoss: true },
 }));
 
 describe("apiUrl", () => {
@@ -61,5 +62,17 @@ describe("apiUrl", () => {
     await AsyncStorage.setItem("apiUrlOverride", "http://insecure");
     await loadApiUrlOverride();
     expect(getApiUrl()).toBe("https://default.example.com");
+  });
+
+  it("ignores a stored override in non-FOSS builds", async () => {
+    await AsyncStorage.setItem("apiUrlOverride", "https://self.hosted");
+    Config.isFoss = false;
+    try {
+      await loadApiUrlOverride();
+      expect(getApiUrl()).toBe("https://default.example.com");
+      expect(getApiUrlOverride()).toBeUndefined();
+    } finally {
+      Config.isFoss = true;
+    }
   });
 });
