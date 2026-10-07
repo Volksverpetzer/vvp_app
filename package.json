@@ -63,7 +63,7 @@
     "@native-html/render": "1.0.3",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-vector-icons/octicons": "21.1.4",
-    "@rive-app/react-native": "0.4.21",
+    "@rive-app/react-native": "0.5.3",
     "@stripe/stripe-react-native": "0.64.0",
     "@volksverpetzer/design-tokens": "0.9.0",
     "buffer": "6.0.3",
