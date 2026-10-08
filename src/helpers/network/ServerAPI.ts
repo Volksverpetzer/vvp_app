@@ -211,7 +211,7 @@ class API {
     expo_token: string;
     settings: NotificationSettingType;
     os: string;
-    version: string;
+    version: string | null;
   }): Promise<{ status: string }> {
     return await API.post("/register", body);
   }
