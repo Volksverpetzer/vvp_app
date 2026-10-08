@@ -8,7 +8,7 @@
       "exclude": []
     }
   },
-  "packageManager": "pnpm@12.9.1",
+  "packageManager": "pnpm@12.10.1",
   "engines": {
     "node": "24.x"
   },
@@ -51,13 +51,13 @@
   },
   "dependencies": {
     "@algolia/client-search": "5.59.0",
-    "@atproto/api": "0.23.0",
+    "@atproto/api": "0.23.2",
     "@babel/runtime": "7.29.7",
-    "@expo-google-fonts/source-sans-3": "0.4.1",
-    "@expo/config": "57.0.9",
+    "@expo-google-fonts/source-sans-3": "0.4.2",
+    "@expo/config": "57.0.10",
     "@expo/dom-webview": "57.0.1",
     "@expo/metro-runtime": "57.0.16",
-    "@expo/require-utils": "57.0.5",
+    "@expo/require-utils": "57.0.6",
     "@likashefqet/react-native-image-zoom": "4.3.0",
     "@native-html/iframe-plugin": "3.0.0-alpha.0",
     "@native-html/render": "1.0.3",
@@ -134,7 +134,7 @@
     "@volksverpetzer/eslint-plugin-react-native-a11y": "3.6.0",
     "babel-jest": "29.7.0",
     "babel-plugin-module-resolver": "5.0.3",
-    "babel-preset-expo": "57.0.13",
+    "babel-preset-expo": "57.0.14",
     "cspell": "10.3.6",
     "eslint": "9.39.5",
     "eslint-config-expo": "57.0.2",

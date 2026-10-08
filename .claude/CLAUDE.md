@@ -128,6 +128,15 @@ After updating `package.json`, write the release notes and regenerate the in-app
 
 > Note: F-Droid build failures are not reported to us. If a release doesn't appear on F-Droid after a few days, check https://monitor.f-droid.org/builds.
 
+### AltStore (iOS sideload)
+
+iOS is also distributed via [AltStore](https://altstore.io/) as an alternative distribution channel (sideloading outside the App Store). This step is **production-only** and **manual — it cannot be CI-triggered**, because the ADP ID only exists after Apple notarizes the build and must be copied by hand.
+
+1. Wait until Apple has **notarized** the iOS build for the alternative distribution channel.
+2. Copy the **ADP ID** ("Paket-ID des alternativen Vertriebswegs") from App Store Connect: `Vertrieb → Allgemein → Verlauf → Paket-ID des alternativen Vertriebswegs`.
+3. In the separate [`AltStoreScript`](https://github.com/Volksverpetzer/AltStoreScript) repo, run `./run_adp.sh <ADPID>` locally. It uploads the package to the Bunny `vvpapps` storage zone and prepends the new version to `source.json`.
+4. Confirm the new version appears at `https://vvpapps.b-cdn.net/source.json` (purge the Bunny cache for that file if it's stale). Users subscribe to this `source.json` URL in their AltStore.
+
 ### Releasing Mimikama
 
 Mimikama releases are cut by tag, independently of VVP's: push `mimikama-vX.Y.Z` on the commit to release (`.github/workflows/expo-release-mimikama.yml`). It builds both platforms with the `mimikama` profile (EAS auto-submit → Play internal track / TestFlight) and then pushes the Play listing texts and release notes from `fastlane/mimikama/metadata/android` (Google Play only; the App Store listing stays manual).
