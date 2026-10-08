@@ -193,7 +193,7 @@ const NotificationManager = {
         expo_token: token,
         settings: storedSettings,
         os: Platform.OS,
-        version: Application?.nativeBuildVersion ?? "dev",
+        version: Application?.nativeBuildVersion,
       };
 
       await API.registerNotifications(body);
