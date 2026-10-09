@@ -1,7 +1,7 @@
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
-import Header from "#/screens/Home/components/article/Header";
+import Header, { getAuthorUrl } from "#/screens/Home/components/article/Header";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
 jest.mock("expo-router", () => ({
@@ -30,6 +30,11 @@ jest.mock("expo-clipboard", () => ({
 
 const mockConfig = {
   wpUrl: "https://www.volksverpetzer.de",
+  feeds: {
+    wp: [
+      { handle: "https://pruefpunkt.org", label: "Prüfpunkt", enabled: true },
+    ],
+  },
   importantCats: { 123: "Faktencheck" } as Record<number, string>,
   audioCdnUrl: undefined as HttpsUrl | undefined,
 };
@@ -296,5 +301,28 @@ describe("Header — AudioPlayer integration", () => {
     fetchMock.mockRejectedValue(new Error("network error"));
     await render(<Header {...defaultProps} />);
     await waitFor(() => expect(MockAudioPlayer).toHaveBeenCalled());
+  });
+});
+
+describe("getAuthorUrl", () => {
+  it("prefers the archive link WordPress reports", () => {
+    expect(
+      getAuthorUrl(
+        { slug: "a", link: "https://pruefpunkt.org/author/a/" },
+        "https://pruefpunkt.org/cat/slug/",
+      ),
+    ).toBe("https://pruefpunkt.org/author/a/");
+  });
+
+  it("falls back to the primary site for primary articles", () => {
+    expect(
+      getAuthorUrl({ slug: "a" }, "https://www.volksverpetzer.de/cat/slug/"),
+    ).toBe("https://www.volksverpetzer.de/author/a/");
+  });
+
+  it("falls back to the article's own site for secondary-feed articles", () => {
+    expect(
+      getAuthorUrl({ slug: "a" }, "https://pruefpunkt.org/cat/slug/"),
+    ).toBe("https://pruefpunkt.org/author/a/");
   });
 });
