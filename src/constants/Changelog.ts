@@ -2,8 +2,7 @@
 const Changelog = {
   version: "2.5.4",
   versionCode: 2610091,
-  notes:
-    "- Neu: YouTube-Videos zeigen im Feed jetzt ihre Aufrufzahlen\n- Neu: Das Desinformations-Memory ist zurück\n- Benachrichtigungen haben auf Android jetzt eigene Kanäle für Beiträge, Faktenchecks und Prüfpunkt und lassen sich in den Systemeinstellungen einzeln anpassen\n- Prüfpunkt-Benachrichtigungen öffnen jetzt den Artikel statt einer Fehlerseite\n- Fehlerbehebungen und Performance-Verbesserungen, u. a. bei abgeschnittenen Absätzen auf iOS und Zeilenumbrüchen in Überschriften auf Android",
+  notes: "- Fehlerbehebungen und (versteckte) Verbesserungen",
 };
 
 export default Changelog;

@@ -1,5 +1,1 @@
-- New: YouTube videos in the feed now show their view count
-- New: The disinformation memory game is back
-- Notifications on Android now have separate channels for posts, fact-checks and Prüfpunkt, which can be adjusted individually in the system settings
-- Prüfpunkt notifications now open the article instead of an error page
-- Bug fixes and performance improvements, including cut-off paragraphs on iOS and line breaks in headings on Android
+- Bug fixes and (hidden) improvements
