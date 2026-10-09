@@ -15,6 +15,8 @@ import { toast } from "#/helpers/toast";
 
 let mockIsFoss = false;
 let mockEnableEngagement = false;
+let mockEnableActions = true;
+const mockRouterPush = jest.fn();
 
 jest.mock("#/constants/Config", () => ({
   get isFoss() {
@@ -22,6 +24,9 @@ jest.mock("#/constants/Config", () => ({
   },
   get enableEngagement() {
     return mockEnableEngagement;
+  },
+  get enableActions() {
+    return mockEnableActions;
   },
   aboutUrl: "https://example.com/about",
   donations: { support: "https://example.com/donate" },
@@ -32,7 +37,7 @@ jest.mock("#/constants/Config", () => ({
 }));
 
 jest.mock("expo-router", () => ({
-  useRouter: jest.fn(() => ({ push: jest.fn() })),
+  useRouter: jest.fn(() => ({ push: mockRouterPush })),
   useFocusEffect: jest.fn(),
   router: { push: jest.fn() },
 }));
@@ -148,12 +153,22 @@ jest.mock("#/screens/Settings/components/BackupView", () => {
   const { Text } = require("react-native");
   return jest.fn(() => <Text>BackupView</Text>);
 });
+jest.mock("#/screens/Settings/components/ApiUrlSetting", () => {
+  const { Text } = require("react-native");
+  return jest.fn(() => <Text>ApiUrlSetting</Text>);
+});
+jest.mock("expo-haptics", () => ({
+  selectionAsync: jest.fn(),
+  notificationAsync: jest.fn(),
+  NotificationFeedbackType: { Success: "success" },
+}));
 
 describe("SettingsScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsFoss = false;
     mockEnableEngagement = false;
+    mockEnableActions = true;
 
     jest.spyOn(React, "useContext").mockReturnValue({
       contentSettings: {},
@@ -298,6 +313,20 @@ describe("SettingsScreen", () => {
     });
   });
 
+  describe("achievements reset button", () => {
+    it("is visible when actions are enabled", async () => {
+      mockEnableActions = true;
+      const { queryByText } = await render(<SettingsScreen />);
+      expect(queryByText("Alle Erfolge zurücksetzen")).not.toBeNull();
+    });
+
+    it("is hidden when actions are disabled", async () => {
+      mockEnableActions = false;
+      const { queryByText } = await render(<SettingsScreen />);
+      expect(queryByText("Alle Erfolge zurücksetzen")).toBeNull();
+    });
+  });
+
   describe("achievements reset button confirmation flow", () => {
     it("shows a confirm toast when pressed", async () => {
       const { getByText } = await render(<SettingsScreen />);
@@ -383,6 +412,35 @@ describe("SettingsScreen", () => {
       mockIsFoss = false;
       const { queryByText } = await render(<SettingsScreen />);
       expect(queryByText(/ - FOSS/)).toBeNull();
+    });
+  });
+
+  describe("memory game easter egg", () => {
+    it("does not navigate below the ten-tap threshold", async () => {
+      const { getByText } = await render(<SettingsScreen />);
+      const versionRow = getByText(/Versionskennung/);
+
+      for (let tap = 0; tap < 9; tap++) {
+        await fireEvent.press(versionRow);
+      }
+
+      expect(mockRouterPush).not.toHaveBeenCalled();
+    });
+
+    it("opens the memory game directly on the tenth tap and resets the counter", async () => {
+      const { getByText } = await render(<SettingsScreen />);
+      const versionRow = getByText(/Versionskennung/);
+
+      for (let tap = 0; tap < 10; tap++) {
+        await fireEvent.press(versionRow);
+      }
+      expect(mockRouterPush).toHaveBeenCalledTimes(1);
+      expect(mockRouterPush).toHaveBeenCalledWith("/game/DesinformationMemory");
+
+      // Counter was reset on trigger, so a single extra tap shouldn't
+      // navigate again.
+      await fireEvent.press(versionRow);
+      expect(mockRouterPush).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -13,7 +13,7 @@ jest.mock("expo-router", () => ({
   useRouter: jest.fn(() => ({ push: mockPush })),
 }));
 
-jest.mock("react-native-render-html", () => ({
+jest.mock("@native-html/render", () => ({
   useInternalRenderer: jest.fn(() => ({
     rendererProps: { source: { uri: "https://example.com/article-image.jpg" } },
   })),
@@ -38,6 +38,10 @@ jest.mock("#/constants/Colors", () => ({
     light: { background: "#ffffff" },
     dark: { background: "#000000" },
   },
+}));
+
+jest.mock("#/hooks/useFeedDimensions", () => ({
+  useFeedDimensions: jest.fn(() => ({ width: 321 })),
 }));
 
 const baseRenderProps = {
@@ -97,5 +101,16 @@ describe("ImageRenderer", () => {
 
     const [lastCallProps] = Image.mock.calls.at(-1);
     expect(lastCallProps.style.aspectRatio).toBe(initialAspectRatio);
+  });
+
+  // Regression guard: sizing off the window width instead of the article's
+  // content-column width made images overflow their container on wide/
+  // desktop web viewports, where the column is narrower than the window.
+  // See this PR.
+  it("sizes the image from the content column width, not the window width", async () => {
+    const { Image } = jest.requireMock("expo-image");
+    await render(<ImageRenderer {...baseRenderProps} />);
+    const [props] = Image.mock.calls[0];
+    expect(props.style.width).toBe(321);
   });
 });

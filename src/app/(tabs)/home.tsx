@@ -41,6 +41,7 @@ const HomeScreen = () => {
   const backgroundColor = Colors[colorScheme].surface;
 
   const HEADER_HEIGHT = 220;
+  const HEADER_MIN_HEIGHT = 110;
 
   const [feedprops, setFeedProperties] = useState<FeedProperties>({
     fetchers: [],
@@ -68,7 +69,7 @@ const HomeScreen = () => {
           )
         }
         scrollOffsetY={scrollOffsetY}
-        minHeight={95}
+        minHeight={HEADER_MIN_HEIGHT}
         maxHeight={HEADER_HEIGHT}
       >
         <UiPressable

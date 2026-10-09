@@ -2,13 +2,14 @@ import * as Linking from "expo-linking";
 
 import Config from "#/constants/Config";
 import { parsePath } from "#/helpers/Linking";
+import { getApiUrl } from "#/helpers/apiUrl";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { resolveAnalyticsSite } from "#/helpers/utils/analyticsSite";
 import { createClient, get } from "#/helpers/utils/networking";
 import type { HttpsUrl } from "#/types";
 
-const { apiUrl, wpUrl } = Config;
-const client = createClient(apiUrl);
+const { wpUrl } = Config;
+const client = createClient(getApiUrl);
 
 /**
  * Builds the `?site=` query string that tells the proxy which Plausible site

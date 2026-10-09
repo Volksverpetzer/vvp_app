@@ -20,7 +20,23 @@ let registrationChain: Promise<void> = Promise.resolve();
 // Android notification channels only need to be created once per process;
 // re-creating them on every registration adds two awaits to each settings
 // toggle for nothing (Android freezes channel config after first creation).
+// Only flips to true once both Expo calls below have actually succeeded, so
+// a transient failure doesn't permanently skip the migration for the rest
+// of the process; concurrent callers (a user-triggered registration racing
+// the launch-time refresh) share the same in-flight attempt instead of
+// firing the Expo calls twice.
 let channelsConfigured = false;
+let channelsConfigurationPromise: Promise<void> | null = null;
+
+type NotificationChannelKey = keyof NotificationSettingType;
+
+// Android channel names shown in the system settings, keyed by channel ID
+const NOTIFICATION_CHANNELS: Record<NotificationChannelKey, string> = {
+  new_post: "Neue Artikel",
+  new_fact_check: "Neue Faktenchecks",
+  new_pruefpunkt: "Neue Prüfpunkt-Artikel",
+};
+const LEGACY_CHANNEL_IDS = ["default", "news"];
 
 const getNotifications = (): typeof ExpoNotifications | null => {
   if (Config.isFoss) return null;
@@ -51,6 +67,56 @@ const ensureNotificationsConfigured = () => {
 };
 
 const NotificationManager = {
+  /**
+   * Creates the per-type Android channels and removes the legacy ones, once
+   * per process. Called from both registration paths — a fresh install's
+   * first registration and an existing install's launch-time refresh (which
+   * skips registerForPushNotifications entirely once permission is already
+   * granted) — so an upgrading user is migrated without having to toggle
+   * their permission off and on again.
+   */
+  async ensureAndroidChannelsConfigured(
+    Notifications: typeof ExpoNotifications,
+  ) {
+    if (Platform.OS !== "android" || channelsConfigured) return;
+    if (channelsConfigurationPromise) {
+      await channelsConfigurationPromise;
+      return;
+    }
+
+    channelsConfigurationPromise = (async () => {
+      // One channel per push type; the channel ID equals the settings key,
+      // so the server sends `channelId: <type>` and the user can mute each
+      // type in the system settings. Types a variant hides get no channel.
+      await Promise.all(
+        (Object.keys(NOTIFICATION_CHANNELS) as NotificationChannelKey[])
+          .filter((key) => !Config.hiddenNotifications?.includes(key))
+          .map((key) =>
+            Notifications.setNotificationChannelAsync(key, {
+              name: NOTIFICATION_CHANNELS[key],
+              importance: Notifications.AndroidImportance.HIGH,
+              vibrationPattern: [0, 250, 250, 250],
+              lightColor: Colors.light.primary,
+              enableLights: true,
+              enableVibrate: true,
+              showBadge: true,
+            }),
+          ),
+      );
+      // Remove channels from app versions before per-type channels
+      await Promise.all(
+        LEGACY_CHANNEL_IDS.map((id) =>
+          Notifications.deleteNotificationChannelAsync(id),
+        ),
+      );
+      // Only mark done once every call above actually succeeded.
+      channelsConfigured = true;
+    })().finally(() => {
+      channelsConfigurationPromise = null;
+    });
+    await channelsConfigurationPromise;
+  },
+
   /**
    * Gets the current notification permissions.
    * @returns A promise that resolves to the current notification permissions.
@@ -102,6 +168,8 @@ const NotificationManager = {
       const Notifications = getNotifications();
       if (!Notifications) return;
 
+      await NotificationManager.ensureAndroidChannelsConfigured(Notifications);
+
       const permissions = await NotificationManager.getPermissions();
       if (permissions.status === Notifications.PermissionStatus.UNDETERMINED) {
         await NotificationManager.registerForPushNotifications();
@@ -125,7 +193,7 @@ const NotificationManager = {
         expo_token: token,
         settings: storedSettings,
         os: Platform.OS,
-        version: Application?.nativeBuildVersion ?? "dev",
+        version: Application?.nativeBuildVersion,
       };
 
       await API.registerNotifications(body);
@@ -158,11 +226,11 @@ const NotificationManager = {
     // are still doing network work.
     const persisted = persistChain.then(async () => {
       const storedSettings = await SettingsStore.getNotificationSettings();
-      const notificationSettings = {
+      const notificationSettings = SettingsStore.forceHiddenNotificationsOff({
         ...SettingsStore.defaultNotificationSettings,
         ...storedSettings,
         ...newSettings,
-      };
+      });
       await SettingsStore.setNotificationSettings(notificationSettings);
       return notificationSettings;
     });
@@ -209,30 +277,7 @@ const NotificationManager = {
 
     let token: string;
 
-    if (Platform.OS === "android" && !channelsConfigured) {
-      channelsConfigured = true;
-      // Create a default channel for general notifications
-      await Notifications.setNotificationChannelAsync("default", {
-        name: "Default Notifications",
-        description: "Default channel for all notifications",
-        importance: Notifications.AndroidImportance.HIGH,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: Colors.light.primary,
-        enableLights: true,
-        enableVibrate: true,
-        showBadge: true,
-      });
-
-      // Create a channel for news notifications
-      await Notifications.setNotificationChannelAsync("news", {
-        name: "News Notifications",
-        description: "Notifications for new articles and updates",
-        importance: Notifications.AndroidImportance.DEFAULT,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: Colors.light.primary,
-        enableLights: true,
-      });
-    }
+    await NotificationManager.ensureAndroidChannelsConfigured(Notifications);
 
     if (Device.isDevice) {
       const { status: existingStatus } =
@@ -323,12 +368,15 @@ const NotificationManager = {
     const { status: finalStatus } =
       await Notifications.requestPermissionsAsync();
     const granted = finalStatus === "granted";
-    const notificationSettings = Object.fromEntries(
-      Object.entries(currentSettings).map(([key, setting]) => [
-        key,
-        { ...setting, value: granted },
-      ]),
-    ) as NotificationSettingType;
+    // Types the variant hides have no switch, so a grant must not turn them on
+    const notificationSettings = SettingsStore.forceHiddenNotificationsOff(
+      Object.fromEntries(
+        Object.entries(currentSettings).map(([key, setting]) => [
+          key,
+          { ...setting, value: granted },
+        ]),
+      ) as NotificationSettingType,
+    );
 
     if (!granted) {
       // Persist the all-off settings locally, but skip

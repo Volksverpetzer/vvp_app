@@ -7,10 +7,11 @@ import { registerEvent } from "#/helpers/network/Analytics";
 
 jest.mock("#/components/ui/UiButton", () => {
   const { Pressable } = require("react-native");
-  return jest.fn(({ onPress, accessibilityLabel }: any) => (
+  return jest.fn(({ onPress, accessibilityLabel, accessibilityHint }: any) => (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
       onPress={onPress}
     />
   ));

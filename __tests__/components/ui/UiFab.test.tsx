@@ -58,7 +58,11 @@ describe("UiFab", () => {
 
   it("exposes accessibilityLabel", async () => {
     const { getByLabelText } = await render(
-      <UiFab onPress={jest.fn()} accessibilityLabel="Zurück nach oben">
+      <UiFab
+        onPress={jest.fn()}
+        accessibilityLabel="Zurück nach oben"
+        accessibilityHint="Scrollt an den Anfang der Liste"
+      >
         <Text>x</Text>
       </UiFab>,
     );

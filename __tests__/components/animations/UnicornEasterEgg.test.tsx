@@ -76,6 +76,35 @@ describe("UnicornEasterEgg", () => {
     await unmount();
   });
 
+  it("centers the circle on the measured mascot+message block, not a guessed height", async () => {
+    const { getByTestId, unmount } = await render(
+      <UnicornEasterEgg
+        visible
+        onHide={jest.fn()}
+        message="Juhu, Level geschafft!"
+      />,
+    );
+
+    const contentView = getByTestId("unicorn-easter-egg-content", {
+      includeHiddenElements: true,
+    });
+    await act(() => {
+      fireEvent(contentView, "layout", {
+        nativeEvent: { layout: { height: 400, width: 200, x: 0, y: 0 } },
+      });
+    });
+
+    const circleStyle = getByTestId("unicorn-easter-egg-circle", {
+      includeHiddenElements: true,
+    }).props.style;
+    // The circle's own vertical center (top + diameter/2) must land on the
+    // measured content's vertical center (height/2) — i.e. `top` cancels
+    // out to exactly half the surplus between the circle and the content,
+    // regardless of the circle being larger than the content.
+    expect(circleStyle.top + circleStyle.height / 2).toBeCloseTo(400 / 2, 5);
+    await unmount();
+  });
+
   it("renders nothing when there is no mascot asset (e.g. Mimikama)", async () => {
     mockMascot = null;
     const { toJSON, unmount } = await render(
@@ -90,6 +119,26 @@ describe("UnicornEasterEgg", () => {
       <UnicornEasterEgg visible onHide={jest.fn()} />,
     );
     expect(toJSON()).not.toBeNull();
+    await unmount();
+  });
+
+  it("shows the optional message caption when provided", async () => {
+    const { queryByText, unmount } = await render(
+      <UnicornEasterEgg
+        visible
+        onHide={jest.fn()}
+        message="Juhu, Level geschafft!"
+      />,
+    );
+    expect(queryByText("Juhu, Level geschafft!")).not.toBeNull();
+    await unmount();
+  });
+
+  it("renders no caption when no message is provided", async () => {
+    const { queryByText, unmount } = await render(
+      <UnicornEasterEgg visible onHide={jest.fn()} />,
+    );
+    expect(queryByText("Juhu, Level geschafft!")).toBeNull();
     await unmount();
   });
 
@@ -109,7 +158,10 @@ describe("UnicornEasterEgg", () => {
       const [, bump] = useState(0);
       return (
         <>
-          <Pressable onPress={() => bump((n) => n + 1)}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => bump((n) => n + 1)}
+          >
             <Text>bump</Text>
           </Pressable>
           <UnicornEasterEgg visible onHide={() => {}} />
@@ -128,6 +180,24 @@ describe("UnicornEasterEgg", () => {
 
     expect(clearTimeoutSpy).not.toHaveBeenCalled();
     expect(setTimeoutSpy.mock.calls.length).toBe(scheduledCallsAfterMount);
+    await unmount();
+  });
+
+  it("dismisses early on the Android back action instead of swallowing it", async () => {
+    const onHide = jest.fn();
+    const { getByTestId, unmount } = await render(
+      <UnicornEasterEgg visible onHide={onHide} />,
+    );
+
+    await act(async () => {
+      // RNTL treats a Modal's contents as hidden by default.
+      getByTestId("unicorn-easter-egg-modal", {
+        includeHiddenElements: true,
+      }).props.onRequestClose();
+      await Promise.resolve();
+    });
+
+    expect(onHide).toHaveBeenCalledTimes(1);
     await unmount();
   });
 

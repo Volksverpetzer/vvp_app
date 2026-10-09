@@ -48,6 +48,27 @@ jobs:
       - name: 🚀 EAS Build - ios
         run: APP=volksverpetzer eas build --profile internal --platform ios --clear-cache --non-interactive --auto-submit --no-wait
 
+  build-and-release-mimikama:
+    name: 🚀 Build and Release Mimikama to Stores
+    needs: test-and-lint
+    runs-on: ubuntu-slim
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-expo-token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 🚀 EAS Build - mimikama android
+        run: APP=mimikama eas build --profile mimikama-beta --platform android --clear-cache --non-interactive --auto-submit --no-wait
+
+      - name: 🚀 EAS Build - mimikama ios
+        run: APP=mimikama eas build --profile mimikama-beta --platform ios --clear-cache --non-interactive --auto-submit --no-wait
+
   build-and-release-apk:
     name: 🎂 Build and Release APK
     needs: build-and-release-stores

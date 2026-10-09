@@ -54,8 +54,13 @@ describe("UiCard", () => {
 
   it("forwards other View props", async () => {
     const { getByTestId } = await render(
-      <UiCard testID="card" accessibilityLabel="a card" />,
+      <UiCard
+        testID="card"
+        accessibilityLabel="a card"
+        accessibilityHint="a hint"
+      />,
     );
     expect(getByTestId("card").props.accessibilityLabel).toBe("a card");
+    expect(getByTestId("card").props.accessibilityHint).toBe("a hint");
   });
 });

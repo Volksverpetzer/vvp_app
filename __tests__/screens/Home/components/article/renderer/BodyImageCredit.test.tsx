@@ -1,7 +1,7 @@
+import type { InternalRendererProps, TBlock } from "@native-html/render";
+import RenderHtml, { defaultHTMLElementModels } from "@native-html/render";
 import { render, waitFor } from "@testing-library/react-native";
 import React from "react";
-import type { InternalRendererProps, TBlock } from "react-native-render-html";
-import RenderHtml, { defaultHTMLElementModels } from "react-native-render-html";
 
 import {
   handleContainerElements,

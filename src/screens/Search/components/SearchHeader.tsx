@@ -1,6 +1,6 @@
 import type { RefObject } from "react";
-import { useCallback } from "react";
-import { Keyboard, TextInput, View } from "react-native";
+import { useCallback, useMemo } from "react";
+import { Animated, Keyboard, TextInput, View } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
@@ -24,7 +24,12 @@ interface SearchHeaderProperties {
   isLoading: boolean;
   showFaktenBot?: boolean;
   onSubmit?: () => void;
+  /** Scroll offset of the results list; the title block collapses as it grows. */
+  scrollOffsetY?: Animated.Value;
 }
+
+const TITLE_HEIGHT = 100;
+const fallbackScrollOffsetY = new Animated.Value(0);
 
 const SearchHeader = ({
   search,
@@ -35,6 +40,7 @@ const SearchHeader = ({
   isLoading,
   showFaktenBot = true,
   onSubmit,
+  scrollOffsetY = fallbackScrollOffsetY,
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
@@ -61,82 +67,102 @@ const SearchHeader = ({
     }
   }, [search, setSearch, setSearchParams, onSubmit]);
 
+  const titleBlockHeight = useMemo(
+    () =>
+      scrollOffsetY.interpolate({
+        inputRange: [0, TITLE_HEIGHT],
+        outputRange: [TITLE_HEIGHT, 0],
+        extrapolate: "clamp",
+      }),
+    [scrollOffsetY],
+  );
+
   return (
     <>
-      <UiHeaderGradient
-        style={[
-          globalStyles.row,
-          {
-            height: 100,
-            justifyContent: "flex-end",
-            paddingRight: spacing.xl,
-          },
-        ]}
+      <Animated.View
+        style={{
+          height: titleBlockHeight,
+          overflow: "hidden",
+          justifyContent: "flex-end",
+        }}
       >
-        <UiText
-          bold
-          size="xxl"
-          style={{
-            paddingTop: spacing.xl,
-            color: corporate,
-            flex: 1,
-            textAlign: "center",
-          }}
-        >
-          {showFaktenBot ? "Fact Check" : "Artikel-Suche"}
-        </UiText>
-        {showFaktenBot && (
-          <View
-            style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              right: 0,
-              width: 150,
-              justifyContent: "center",
-            }}
-          >
-            <FaktenBot reaction={faktenBotReaction} search={isLoading} />
-          </View>
-        )}
-      </UiHeaderGradient>
-      <View
-        style={[
-          globalStyles.row,
-          globalStyles.input,
-          {
-            height: 50,
-            // Reserves room for the trailing SearchIcon button so the
-            // TextInput's width: "100%" doesn't run underneath it.
-            paddingRight: iconSizes.md + spacing.xl,
-            backgroundColor: corporate,
-            marginBottom: spacing.huge,
-          },
-        ]}
-      >
-        <TextInput
-          accessibilityLabel="Text input field"
-          accessibilityHint="Füge Text ein und drücke Enter um zu suchen"
-          clearButtonMode="always"
-          value={search}
-          ref={searchRef}
-          placeholder="Suche ..."
-          placeholderTextColor="white"
-          onSubmitEditing={handleSubmit}
+        <UiHeaderGradient
           style={[
-            globalStyles.whiteText,
+            globalStyles.row,
             {
-              fontFamily: fontFamily.regular,
-              fontSize: INPUT_FONT_SIZE,
-              width: "100%",
+              height: TITLE_HEIGHT,
+              justifyContent: "flex-end",
+              paddingRight: spacing.xl,
             },
           ]}
-          onChangeText={setSearch}
-          returnKeyType="search"
-        />
-        <UiPressable accessibilityRole="button" onPress={handleSubmit}>
-          <SearchIcon color="white" size={iconSizes.md} />
-        </UiPressable>
+        >
+          <UiText
+            bold
+            size="xxl"
+            style={{
+              paddingTop: spacing.xl,
+              color: corporate,
+              flex: 1,
+              textAlign: "center",
+            }}
+          >
+            {showFaktenBot ? "Fact Check" : "Artikel-Suche"}
+          </UiText>
+          {showFaktenBot && (
+            <View
+              style={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                right: 0,
+                width: 150,
+                justifyContent: "center",
+              }}
+            >
+              <FaktenBot reaction={faktenBotReaction} search={isLoading} />
+            </View>
+          )}
+        </UiHeaderGradient>
+      </Animated.View>
+      <View style={globalStyles.content}>
+        <View
+          style={[
+            globalStyles.row,
+            globalStyles.input,
+            {
+              height: 50,
+              // Reserves room for the trailing SearchIcon button so the
+              // TextInput's width: "100%" doesn't run underneath it.
+              paddingRight: iconSizes.md + spacing.xl,
+              backgroundColor: corporate,
+              marginBottom: spacing.huge,
+            },
+          ]}
+        >
+          <TextInput
+            accessibilityLabel="Text input field"
+            accessibilityHint="Füge Text ein und drücke Enter um zu suchen"
+            clearButtonMode="always"
+            value={search}
+            ref={searchRef}
+            placeholder="Suche ..."
+            placeholderTextColor="white"
+            onSubmitEditing={handleSubmit}
+            style={[
+              globalStyles.whiteText,
+              {
+                fontFamily: fontFamily.regular,
+                fontSize: INPUT_FONT_SIZE,
+                width: "100%",
+              },
+            ]}
+            onChangeText={setSearch}
+            returnKeyType="search"
+          />
+          <UiPressable accessibilityRole="button" onPress={handleSubmit}>
+            <SearchIcon color="white" size={iconSizes.md} />
+          </UiPressable>
+        </View>
       </View>
     </>
   );

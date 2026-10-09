@@ -1,9 +1,9 @@
+import RenderHtml from "@native-html/render";
 import { decode } from "html-entities";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { LayoutChangeEvent } from "react-native";
 import { View, useWindowDimensions } from "react-native";
-import RenderHtml from "react-native-render-html";
 
 import Typography from "#/components/ui/Typography";
 import UiCard from "#/components/ui/UiCard";
@@ -20,7 +20,7 @@ import {
 } from "#/constants/GlobalStyles";
 import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
-import { getTagStyles } from "#/helpers/utils/color";
+import { getTagStyles } from "#/helpers/utils/articleTagStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 // Konstanten außerhalb der Komponente sind immer stabil
@@ -37,6 +37,8 @@ interface SearchResultItemProps {
   onPress?: () => void;
   /** Clamp `text` to a few lines with a "Mehr lesen" toggle to expand. */
   collapsible?: boolean;
+  /** Hard-clamp `text` to this many lines (no toggle; the whole card stays pressable). */
+  maxLines?: number;
 }
 
 const SearchResultItem = ({
@@ -45,6 +47,7 @@ const SearchResultItem = ({
   subtitle,
   onPress,
   collapsible = false,
+  maxLines,
 }: SearchResultItemProps) => {
   const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
@@ -55,13 +58,14 @@ const SearchResultItem = ({
   const [isTruncated, setIsTruncated] = useState(false);
   const [hasMeasured, setHasMeasured] = useState(false);
 
-  // The excerpt's <p> tag carries its own vertical padding (see
-  // getTagStyles), which counts toward both the clamped box and the
+  // The excerpt's <p> tag carries its own paddingBottom (see
+  // getTagStyles — it has no paddingTop under the bottom-only spacing
+  // convention), which counts toward both the clamped box and the
   // measured height — fold it in so the line-count math stays accurate.
-  const collapsedHeight = useMemo(() => {
-    const pPadding = (styles.p as { padding?: number } | undefined)?.padding;
-    return COLLAPSED_LINES * CONTENT_LINE_HEIGHT + 2 * (pPadding ?? 0);
-  }, [styles]);
+  const pPaddingBottom =
+    (styles.p as { paddingBottom?: number } | undefined)?.paddingBottom ?? 0;
+  const collapsedHeight =
+    COLLAPSED_LINES * CONTENT_LINE_HEIGHT + pPaddingBottom;
 
   const handleMeasure = useCallback(
     (event: LayoutChangeEvent) => {
@@ -103,6 +107,9 @@ const SearchResultItem = ({
       systemFonts={SOURCE_SANS_FONTS}
       contentWidth={contentWidth}
       baseStyle={baseStyle}
+      // See Body.tsx for why: only tagsStyles/baseStyle should style this,
+      // never the engine's own (unversioned, implicit) default stylesheet.
+      enableUserAgentStyles={false}
     />
   );
 
@@ -158,6 +165,16 @@ const SearchResultItem = ({
               </UiPressable>
             )}
           </>
+        ) : maxLines ? (
+          <View
+            testID="excerpt-clamp"
+            style={{
+              maxHeight: maxLines * CONTENT_LINE_HEIGHT + pPaddingBottom,
+              overflow: "hidden",
+            }}
+          >
+            {html}
+          </View>
         ) : (
           html
         )}

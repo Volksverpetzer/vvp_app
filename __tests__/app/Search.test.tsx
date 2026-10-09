@@ -14,7 +14,11 @@ jest.mock("expo-router", () => ({
 // ── Config / state deps used by SearchManager ────────────────────────────────
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: { wpUrl: "https://example.com" },
+  default: {
+    wpUrl: "https://example.com",
+    aiUrl: "https://ai.example.com",
+    algolia: { appId: "a", searchKey: "b", indexName: "c" },
+  },
 }));
 jest.mock("#/helpers/Achievements", () => ({
   Achievements: { setAchievementValue: jest.fn() },
@@ -70,6 +74,8 @@ jest.mock("#/screens/Search/components/SearchHeader", () =>
           value={search}
           onChangeText={setSearch}
           onSubmitEditing={() => setSearchParams(search)}
+          accessibilityLabel="Text input field"
+          accessibilityHint="Füge Text ein und drücke Enter um zu suchen"
         />
         {showFaktenBot && <Text testID="faktenbot-active">faktenbot</Text>}
       </View>
@@ -97,6 +103,10 @@ jest.mock("#/screens/Search/components/AlgoliaSearch", () =>
     return <Text testID="algolia-results">{searchString}</Text>;
   }),
 );
+
+// WpSearch: never rendered in these tests (Algolia is configured), but its
+// import chain pulls in reanimated, so stub it.
+jest.mock("#/screens/Search/components/WpSearch", () => jest.fn(() => null));
 
 // AISearch: expose testID + the search string being passed, and resolve a
 // fixed result count so SearchManager's analytics effect fires.
@@ -242,6 +252,21 @@ describe("SearchScreen", () => {
           },
         ),
       );
+    });
+  });
+
+  describe("without an AI backend", () => {
+    it("hides the KI-Faktenbot tab", async () => {
+      const Config = require("#/constants/Config").default;
+      const { aiUrl } = Config;
+      delete Config.aiUrl;
+      try {
+        const { queryByText, queryByTestId } = await render(<SearchScreen />);
+        expect(queryByText("KI-Faktenbot")).toBeNull();
+        expect(queryByTestId("tutorial-artikel")).not.toBeNull();
+      } finally {
+        Config.aiUrl = aiUrl;
+      }
     });
   });
 });

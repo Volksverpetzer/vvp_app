@@ -23,8 +23,12 @@ export type AnalyticsEvent =
   | "DonateConversion"
   | "Outbound Link: Click"
   | "Contact Submitted"
+  | "Contact Mail Opened"
   | "Pruefpunkt View"
-  | "Post Interaction";
+  | "Post Interaction"
+  | "Onboarding Started"
+  | "Onboarding Step"
+  | "Onboarding Completed";
 
 /**
  * Props that registerEvent always sets on every event. Callers must not pass

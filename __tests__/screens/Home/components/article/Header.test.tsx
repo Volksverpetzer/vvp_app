@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react-native";
+import { fireEvent, render, waitFor } from "@testing-library/react-native";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
 import Header from "#/screens/Home/components/article/Header";
@@ -41,6 +41,7 @@ jest.mock("#/constants/Config", () => ({
 }));
 
 jest.mock("#/helpers/Linking", () => ({
+  onLinkPress: jest.fn(),
   outBoundLinkPress: jest.fn(),
 }));
 
@@ -136,6 +137,72 @@ describe("Header — author byline", () => {
     expect(getAllByText("Jane Doe").length).toBeGreaterThanOrEqual(1);
   });
 
+  it.each([
+    [undefined, "https://www.volksverpetzer.de/author/jane-doe/"],
+    [
+      "https://www.mimikama.org/autor/jane-doe/",
+      "https://www.mimikama.org/autor/jane-doe/",
+    ],
+  ])("links the author to the archive (link %s)", async (link, expected) => {
+    const { onLinkPress } = jest.requireMock("#/helpers/Linking");
+    const { getAllByText } = await render(
+      <Header
+        {...defaultProps}
+        article={{
+          ...baseArticle,
+          authors: [{ ...testAuthor, link: link as HttpsUrl | undefined }],
+        }}
+      />,
+    );
+    await fireEvent.press(getAllByText("Jane Doe")[0]);
+    expect(onLinkPress).toHaveBeenCalledWith(
+      expected,
+      expect.anything(),
+      defaultProps.article_link,
+    );
+  });
+
+  it("builds the fallback author URL with the variant's author path", async () => {
+    const { onLinkPress } = jest.requireMock("#/helpers/Linking");
+    (mockConfig as { authorBase?: string }).authorBase = "autor";
+    try {
+      const { getAllByText } = await render(
+        <Header
+          {...defaultProps}
+          article={{ ...baseArticle, authors: [testAuthor] }}
+        />,
+      );
+      await fireEvent.press(getAllByText("Jane Doe")[0]);
+      expect(onLinkPress).toHaveBeenCalledWith(
+        "https://www.volksverpetzer.de/autor/jane-doe/",
+        expect.anything(),
+        defaultProps.article_link,
+      );
+    } finally {
+      delete (mockConfig as { authorBase?: string }).authorBase;
+    }
+  });
+
+  it("also links the author in the share-preview layout", async () => {
+    const { onLinkPress } = jest.requireMock("#/helpers/Linking");
+    const { getAllByText, getAllByRole } = await render(
+      <Header
+        {...defaultProps}
+        article={{ ...baseArticle, authors: [testAuthor] }}
+      />,
+    );
+    // Long-pressing the hero image opens the share preview (a second byline)
+    await fireEvent(getAllByRole("button")[0], "longPress");
+    const names = getAllByText("Jane Doe");
+    expect(names.length).toBeGreaterThanOrEqual(2);
+    await fireEvent.press(names.at(-1));
+    expect(onLinkPress).toHaveBeenCalledWith(
+      "https://www.volksverpetzer.de/author/jane-doe/",
+      expect.anything(),
+      defaultProps.article_link,
+    );
+  });
+
   it("hides the author byline when authors is undefined", async () => {
     const { queryByText } = await render(
       <Header
@@ -217,13 +284,10 @@ describe("Header — AudioPlayer integration", () => {
   it("does not render AudioPlayer and exposes a screen-reader-only hint when the article has no audio file", async () => {
     mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
     fetchMock.mockResolvedValue({ ok: false, status: 404 });
-    const { findByLabelText, queryByText } = await render(
-      <Header {...defaultProps} />,
-    );
-    // Announced to screen readers via accessibilityLabel...
-    await findByLabelText(/keine Audioversion verfügbar/);
-    // ...but not rendered as visible text for sighted users.
-    expect(queryByText(/keine Audioversion verfügbar/)).toBeNull();
+    const { findByText } = await render(<Header {...defaultProps} />);
+    // Present in the tree (and so announced to screen readers), but
+    // visually clipped to 1x1px so sighted users don't see it.
+    await findByText(/keine Audioversion verfügbar/);
     expect(MockAudioPlayer).not.toHaveBeenCalled();
   });
 

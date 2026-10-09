@@ -1,8 +1,8 @@
 import Config from "#/constants/Config";
+import { getApiUrl } from "#/helpers/apiUrl";
 import { createClient, get } from "#/helpers/utils/networking";
 
-const { apiUrl } = Config;
-const client = createClient(apiUrl);
+const client = createClient(getApiUrl);
 
 /**
  * Fetches the regions from the counter API

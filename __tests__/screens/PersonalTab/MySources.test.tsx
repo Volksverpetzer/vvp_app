@@ -28,7 +28,11 @@ jest.mock("react-native-gesture-handler/ReanimatedSwipeable", () => {
 jest.mock("#/components/actions/RightAction", () => {
   const { Pressable, Text } = require("react-native");
   const MockRightAction = ({ onAction }: any) => (
-    <Pressable onPress={onAction} accessibilityLabel="Löschen">
+    <Pressable
+      onPress={onAction}
+      accessibilityLabel="Löschen"
+      accessibilityHint="Entfernt diese Quelle"
+    >
       <Text>Löschen</Text>
     </Pressable>
   );

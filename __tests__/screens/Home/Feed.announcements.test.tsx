@@ -20,8 +20,10 @@ jest.mock("#/components/ui/UiSpinner", () => () => null);
 jest.mock("#/components/ui/UiEmptyState", () => () => null);
 jest.mock("#/components/ui/UiPressable", () => {
   const { Pressable } = require("react-native");
-  return jest.fn(({ children, onPress }: any) => (
-    <Pressable onPress={onPress}>{children}</Pressable>
+  return jest.fn(({ children, onPress, ...rest }: any) => (
+    <Pressable onPress={onPress} {...rest}>
+      {children}
+    </Pressable>
   ));
 });
 jest.mock("#/components/ui/UiText", () => {
@@ -41,6 +43,7 @@ jest.mock("#/components/posts/AnnouncementCard", () => {
   return jest.fn(({ announcement, onDismiss }: any) => (
     <Pressable
       testID="announcement-card"
+      accessibilityRole="button"
       onPress={() => onDismiss(announcement.id)}
     >
       <Text>{announcement.message}</Text>

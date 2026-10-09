@@ -11,7 +11,10 @@ import SearchManager from "#/screens/Search/components/SearchManager";
 
 jest.mock("#/constants/Config", () => ({
   __esModule: true,
-  default: { wpUrl: "https://example.com" },
+  default: {
+    wpUrl: "https://example.com",
+    aiUrl: "https://ai.example.com",
+  },
 }));
 jest.mock("#/helpers/Achievements", () => ({
   Achievements: { setAchievementValue: jest.fn() },

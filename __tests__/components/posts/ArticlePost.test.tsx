@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import ArticlePost from "#/components/posts/ArticlePost";
@@ -8,8 +8,24 @@ jest.mock("expo-image", () => ({
   Image: jest.fn(() => null),
 }));
 
+// Captures the latest focus callback so tests can simulate blur/focus cycles.
+const mockFocus: {
+  callback: (() => void | (() => void)) | null;
+  cleanup: void | (() => void);
+} = { callback: null, cleanup: undefined };
+
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(() => ({ push: jest.fn(), back: jest.fn() })),
+  useFocusEffect: (callback: () => void | (() => void)) => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("react").useEffect(() => {
+      mockFocus.callback = callback;
+      mockFocus.cleanup = callback();
+      return () => {
+        if (typeof mockFocus.cleanup === "function") mockFocus.cleanup();
+      };
+    }, [callback]);
+  },
 }));
 
 jest.mock("#/components/counter/ViewCounter", () => ({
@@ -157,6 +173,107 @@ describe("ArticlePost — inView effects", () => {
 
     await waitFor(() => expect(consoleSpy).toHaveBeenCalled());
     consoleSpy.mockRestore();
+  });
+});
+
+describe("ArticlePost — progress bar refresh", () => {
+  const PersonalStore = require("#/helpers/Stores/PersonalStore").default;
+  const blur = async () => {
+    await act(async () => {
+      if (typeof mockFocus.cleanup === "function") mockFocus.cleanup();
+      mockFocus.cleanup = undefined;
+      await Promise.resolve();
+    });
+  };
+  const focus = async () => {
+    await act(async () => {
+      mockFocus.cleanup = mockFocus.callback!();
+      await Promise.resolve();
+    });
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // clearAllMocks keeps implementations, so restore the default explicitly
+    // and drop any focus state left by a previous case.
+    PersonalStore.getScrollPosition.mockReset();
+    PersonalStore.getScrollPosition.mockResolvedValue(null);
+    mockFocus.callback = null;
+    mockFocus.cleanup = undefined;
+  });
+
+  it("re-reads the stored progress when the screen regains focus", async () => {
+    PersonalStore.getScrollPosition.mockResolvedValue(0.2);
+    const { getByTestId } = await render(
+      <ArticlePost article={baseArticle} inView={true} />,
+    );
+    await waitFor(() =>
+      expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "20%" }),
+    );
+
+    await blur();
+    PersonalStore.getScrollPosition.mockResolvedValue(0.6);
+    await focus();
+
+    await waitFor(() =>
+      expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "60%" }),
+    );
+  });
+
+  it("keeps the current bar on refocus instead of flashing to 0", async () => {
+    PersonalStore.getScrollPosition.mockResolvedValue(0.2);
+    const { getByTestId } = await render(
+      <ArticlePost article={baseArticle} inView={true} />,
+    );
+    await waitFor(() =>
+      expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "20%" }),
+    );
+
+    await blur();
+    PersonalStore.getScrollPosition.mockReturnValue(new Promise(() => {}));
+    await focus();
+
+    expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "20%" });
+  });
+
+  it("resets the bar when the card is reused for another article", async () => {
+    PersonalStore.getScrollPosition.mockResolvedValue(0.2);
+    const { getByTestId, rerender } = await render(
+      <ArticlePost article={baseArticle} inView={true} />,
+    );
+    await waitFor(() =>
+      expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "20%" }),
+    );
+
+    PersonalStore.getScrollPosition.mockReturnValue(new Promise(() => {}));
+    await rerender(
+      <ArticlePost
+        article={{ ...baseArticle, id: 43, slug: "other-article" }}
+        inView={true}
+      />,
+    );
+
+    expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "0%" });
+  });
+
+  it("ignores a stale read that resolves after the focus cleanup", async () => {
+    let resolveStale: (value: number) => void = () => {};
+    PersonalStore.getScrollPosition.mockReturnValue(
+      new Promise<number>((resolve) => {
+        resolveStale = resolve;
+      }),
+    );
+    const { getByTestId } = await render(
+      <ArticlePost article={baseArticle} inView={true} />,
+    );
+
+    await blur();
+    await act(async () => {
+      resolveStale(0.9);
+      await Promise.resolve();
+    });
+
+    expect(getByTestId("article-progress-bar")).toHaveStyle({ width: "0%" });
   });
 });
 

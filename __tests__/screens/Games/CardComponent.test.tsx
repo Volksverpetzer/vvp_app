@@ -1,6 +1,7 @@
 import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
 
+import Colors from "#/constants/Colors";
 import CardComponent from "#/screens/Games/CardComponent";
 import type { MemoryCard } from "#/types";
 
@@ -55,7 +56,7 @@ describe("CardComponent", () => {
       />,
     );
     const style = flatten(getByRole("button").props.style);
-    expect(style.borderColor).toBe("#28a745");
+    expect(style.borderColor).toBe(Colors.light.primary);
   });
 
   it("applies the selected border colour while flipped but not matched", async () => {
@@ -66,7 +67,7 @@ describe("CardComponent", () => {
       />,
     );
     const style = flatten(getByRole("button").props.style);
-    expect(style.borderColor).toBe("#ffa500");
+    expect(style.borderColor).toBe(Colors.light.accent);
   });
 
   it("calls onPress with the card when tapped", async () => {

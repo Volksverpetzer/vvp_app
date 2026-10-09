@@ -14,6 +14,11 @@ const extraConfig: ExtraConfigType = {
   instagramAppId: "1064021441903778",
   apiUrl: "https://volksverpetzer-app.de",
   aiUrl: "https://ai.volksverpetzer-app.de",
+  algolia: {
+    appId: "W8YO8C6SIN",
+    searchKey: "f8211e7620b2d30da0d73f451fe36634",
+    indexName: "wp_searchable_posts",
+  },
   wpUrl: "https://volksverpetzer.de",
   aboutUrl: "https://volksverpetzer.de/ueber-uns/",
   sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
@@ -67,6 +72,8 @@ const extraConfig: ExtraConfigType = {
   feeds: {
     wp: [
       {
+        // Apex, not www: www 301s to the apex, and cross-origin redirects
+        // without CORS headers fail on web
         handle: "https://volksverpetzer.de",
         label: "Artikel",
         enabled: true,

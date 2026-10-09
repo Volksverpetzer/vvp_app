@@ -33,6 +33,7 @@ describe("UiImageButton", () => {
         source={source}
         onPress={jest.fn()}
         accessibilityLabel="Donate via PayPal"
+        accessibilityHint="Opens PayPal in the browser"
       />,
     );
     expect(getByLabelText("Donate via PayPal")).toBeTruthy();

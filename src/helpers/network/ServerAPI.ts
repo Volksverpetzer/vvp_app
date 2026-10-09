@@ -1,6 +1,6 @@
 import type { AppBskyFeedDefs } from "@atproto/api";
 
-import Config from "#/constants/Config";
+import { getApiUrl } from "#/helpers/apiUrl";
 import {
   createClient,
   get as netGet,
@@ -23,7 +23,7 @@ import type {
  * The API class provides methods for making HTTP requests and fetching data from an API.
  */
 class API {
-  private static client = createClient(Config.apiUrl);
+  private static client = createClient(getApiUrl);
 
   /**
    * GET request wrapper. Accepts optional config and abortTime.
@@ -211,7 +211,7 @@ class API {
     expo_token: string;
     settings: NotificationSettingType;
     os: string;
-    version: string;
+    version: string | null;
   }): Promise<{ status: string }> {
     return await API.post("/register", body);
   }

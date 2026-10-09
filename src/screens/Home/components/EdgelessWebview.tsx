@@ -1,3 +1,4 @@
+import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
@@ -10,6 +11,7 @@ import type {
 
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
+import type { LinkHref } from "#/helpers/Linking";
 import { onLinkPress, parsePath } from "#/helpers/Linking";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -18,6 +20,21 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 // every render. Unlike `source`, this specific prop doesn't itself trigger
 // a reload, but it's the same footgun so it's fixed alongside it.
 const ORIGIN_WHITELIST = ["*"];
+
+// Schemes a WordPress page can link to (e.g. `Mail:` on the Impressum page)
+// that the WebView itself can't load — it has no protocol handler for them
+// and fails with net::ERR_UNKNOWN_URL_SCHEME. Handing off only this known
+// set to the OS (rather than every non-https scheme) avoids blindly passing
+// through something like an Android `intent:` URI.
+const EXTERNAL_SCHEME_REGEX = /^(mailto|tel|sms|facetime|geo|maps):/i;
+
+// onLinkPress upgrades a bare `http://` to `https://` itself (see its own
+// doc comment) — an `http://` link should be routed through it like any
+// https one rather than falling into the "block unrecognized scheme"
+// branch below, which would otherwise make a plain http link tap do
+// nothing at all.
+const isWebUrl = (url: string): url is LinkHref =>
+  isHttpsUrl(url) || url.startsWith("http://");
 
 // The in-app WebView never shows a cookie-consent UI of its own, so
 // Complianz's banner script serves no purpose here — and on some pages its
@@ -198,19 +215,39 @@ const EdgelessWebview = ({
           }
         }}
         onShouldStartLoadWithRequest={({ url, isTopFrame }) => {
+          // react-native-webview's Android implementation never actually
+          // sets isTopFrame on the native event (only iOS does), so it
+          // comes through as undefined there — `!isTopFrame` would treat
+          // every request as a non-top-frame one and always fall through to
+          // the `return true` below, letting the WebView attempt (and fail)
+          // to load e.g. a mailto: link itself. Match IframeRenderer's
+          // shouldStartRequest, which sidesteps this by checking `=== false`
+          // instead of a plain truthiness check.
+          if (!url || isTopFrame === false) return true;
+          // about:/data: URLs are used internally by the WebView itself
+          // (see IframeRenderer.shouldStartRequest for the same allowance)
+          // and must stay allowed rather than get swept into the "block
+          // unrecognized non-https scheme" branch below.
+          if (url.startsWith("about:") || url.startsWith("data:")) {
+            return true;
+          }
           // Allow the first load of the provided URI. parsePath normalizes
           // leading/trailing slashes so a WordPress canonical redirect that
           // only toggles the trailing slash is treated as the same page
           // instead of looping back into native navigation.
-          if (
-            !isHttpsUrl(url) ||
-            !isTopFrame ||
-            !url ||
-            parsePath(url) === parsePath(effectiveUri)
-          )
-            return true;
-          // Route natively instead
-          onLinkPress(url, router, effectiveUri);
+          if (isWebUrl(url)) {
+            if (parsePath(url) === parsePath(effectiveUri)) return true;
+            // Route natively instead
+            onLinkPress(url, router, effectiveUri);
+            return false;
+          }
+          // Non-https schemes (e.g. a `mailto:` link on the Impressum page)
+          // can't be loaded by the WebView itself — hand them to the OS.
+          if (EXTERNAL_SCHEME_REGEX.test(url)) {
+            Linking.openURL(url).catch((error) =>
+              console.warn("Failed to open link:", url, error),
+            );
+          }
           return false;
         }}
         injectedJavaScriptBeforeContentLoaded={BLOCK_COMPLIANZ_SCRIPT}

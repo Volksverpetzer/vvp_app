@@ -1,7 +1,11 @@
 import { decode } from "html-entities";
 
 import Config from "#/constants/Config";
-import { createClient, get as netGet } from "#/helpers/utils/networking";
+import {
+  createClient,
+  getCacheBusterHeaders,
+  get as netGet,
+} from "#/helpers/utils/networking";
 import type {
   ArticleProperties,
   HttpsUrl,
@@ -46,11 +50,7 @@ export default class WordPressAPI {
           _: timestamp, // Cache-busting parameter
           _embed: "author",
         },
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
-        },
+        headers: getCacheBusterHeaders(),
         signal,
       },
     );
@@ -198,11 +198,7 @@ export default class WordPressAPI {
               _: Date.now(),
               _embed: "author",
             },
-            headers: {
-              "Cache-Control": "no-cache, no-store, must-revalidate",
-              Pragma: "no-cache",
-              Expires: "0",
-            },
+            headers: getCacheBusterHeaders(),
             signal,
           },
         );
@@ -240,12 +236,21 @@ export default class WordPressAPI {
   static convertLoadProps(data: LoadArticlePostProperties): ArticleProperties {
     const description = data.yoast_head_json?.description ?? "";
     const title = decode(data.title?.rendered ?? "");
+    // Archive URLs come from the embedded author objects (sites name the
+    // path differently); explicit `authors` entries carry none, so merge the
+    // matching embedded link in by slug.
+    const embedded = data._embedded?.author ?? [];
+    const linkBySlug = new Map(embedded.map((a) => [a.slug, a.link]));
     const authors =
       data.authors?.length > 0
-        ? data.authors
-        : (data._embedded?.author ?? []).map((a) => ({
+        ? data.authors.map((a) => ({
+            ...a,
+            link: a.link ?? linkBySlug.get(a.slug),
+          }))
+        : embedded.map((a) => ({
             display_name: a.name,
             slug: a.slug,
+            link: a.link,
           }));
     return { ...data, title, description, authors };
   }

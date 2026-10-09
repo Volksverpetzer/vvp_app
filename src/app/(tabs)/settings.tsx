@@ -17,7 +17,6 @@ import {
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import UnicornEasterEgg from "#/components/animations/UnicornEasterEgg";
 import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiDivider from "#/components/ui/UiDivider";
 import UiLink from "#/components/ui/UiLink";
@@ -38,6 +37,7 @@ import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useTabBarClearance } from "#/hooks/useTabBarClearance";
+import ApiUrlSetting from "#/screens/Settings/components/ApiUrlSetting";
 import BackupView from "#/screens/Settings/components/BackupView";
 import type { NotificationSettingType, SettingType } from "#/types";
 
@@ -45,8 +45,6 @@ const EASTER_EGG_TAP_COUNT = 10;
 
 const SettingsScreen = () => {
   const [token, setToken] = useState<string | undefined>();
-  const [showUnicorn, setShowUnicorn] = useState(false);
-  const hideUnicorn = useCallback(() => setShowUnicorn(false), []);
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const versionTapCountRef = useRef(0);
   const router = useRouter();
@@ -237,6 +235,7 @@ const SettingsScreen = () => {
               saveSettings={saveAdvancedSetting}
               settings={advancedSettings}
             />
+            {Config.isFoss && <ApiUrlSetting />}
             {Config.enableEngagement && <BackupView />}
           </UiCollapsable>
         </View>
@@ -309,21 +308,23 @@ const SettingsScreen = () => {
               <UiText>Benachrichtigungen zurücksetzen</UiText>
             </UiPressable>
           )}
-          <UiPressable
-            accessibilityRole="button"
-            onPress={() => {
-              toast.confirm(
-                "Erfolge zurücksetzen?",
-                "Drücke hier, um alle Erfolge zurückzusetzen",
-                () => {
-                  Achievements.resetEverything();
-                  toast.success("Erfolge zurückgesetzt");
-                },
-              );
-            }}
-          >
-            <UiText>Alle Erfolge zurücksetzen</UiText>
-          </UiPressable>
+          {Config.enableActions && (
+            <UiPressable
+              accessibilityRole="button"
+              onPress={() => {
+                toast.confirm(
+                  "Erfolge zurücksetzen?",
+                  "Drücke hier, um alle Erfolge zurückzusetzen",
+                  () => {
+                    Achievements.resetEverything();
+                    toast.success("Erfolge zurückgesetzt");
+                  },
+                );
+              }}
+            >
+              <UiText>Alle Erfolge zurücksetzen</UiText>
+            </UiPressable>
+          )}
           <UiPressable
             accessibilityRole="button"
             onPress={() => {
@@ -334,7 +335,7 @@ const SettingsScreen = () => {
                 Haptics.notificationAsync(
                   Haptics.NotificationFeedbackType.Success,
                 );
-                setShowUnicorn(true);
+                router.push("/game/DesinformationMemory");
               }
             }}
           >
@@ -349,7 +350,6 @@ const SettingsScreen = () => {
           </UiPressable>
         </View>
       </ScrollView>
-      <UnicornEasterEgg visible={showUnicorn} onHide={hideUnicorn} />
     </>
   );
 };

@@ -1,9 +1,13 @@
 name: Expo Release Mimikama
 
+# Releases are cut by tag (like the Volksverpetzer release): push e.g.
+# mimikama-v2.5.5 on the commit to release. Before tagging, make sure
+# fastlane/mimikama/metadata/android/de-DE/changelogs/<package.json versionCode>.txt
+# exists — the metadata job fails without it.
 on:
   push:
-    branches:
-      - "main-mimikama"
+    tags:
+      - "mimikama-v*.*.*"
 
 jobs:
   test-and-lint:
@@ -23,56 +27,9 @@ jobs:
       - name: 🏃‍♀️ Run composite test-and-lint
         uses: ./.github/actions/test-and-lint
 
-  release-prepare:
-    name: 📄 Prepare Release
-    needs: test-and-lint
-    runs-on: ubuntu-slim
-    outputs:
-      commit: ${{ steps.get_sha.outputs.commit_sha }}
-    steps:
-      - name: ⬇️ Checkout repo
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: 🏗 Setup environment
-        uses: ./.github/actions/setup-node-pnpm-expo
-        with:
-          setup-node: "false"
-
-      - name: 📄 Generate license JSON
-        run: |
-          pnpm install -g npm-license-crawler
-          npm-license-crawler \
-            --json src/screens/Settings/components/licenses/licenseData.json \
-            --onlyDirectDependencies \
-            --onlyProdDependencies
-
-      - name: 📄 Build license data.tsx
-        run: |
-          echo "export default " > src/screens/Settings/components/licenses/data.tsx
-          cat src/screens/Settings/components/licenses/licenseData.json >> src/screens/Settings/components/licenses/data.tsx
-          echo ";" >> src/screens/Settings/components/licenses/data.tsx
-
-      - name: 🫸 Push license data changes
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "actions@github.com"
-          git add src/screens/Settings/components/licenses/data.tsx
-          if git diff --cached --quiet HEAD; then
-            echo "No changes to commit"
-          else
-            git commit -m "Bump license data"
-            git push --force-with-lease
-          fi
-
-      - name: 🔗 Get prepared commit SHA
-        id: get_sha
-        run: echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
   release-build:
     name: 🚀 Release Build
-    needs: release-prepare
+    needs: test-and-lint
     runs-on: ubuntu-slim
     strategy:
       fail-fast: false
@@ -83,7 +40,6 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          ref: ${{ needs.release-prepare.outputs.commit || github.sha }}
 
       - name: 🏗 Setup environment
         uses: ./.github/actions/setup-node-pnpm-expo
@@ -91,4 +47,53 @@ jobs:
           setup-expo-token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🚀 EAS Build - mimikama
-        run: APP=mimikama eas build --profile mimikama --platform ${{ matrix.platform }} --clear-cache --non-interactive  --auto-submit --no-wait
+        run: APP=mimikama eas build --profile mimikama --platform ${{ matrix.platform }} --clear-cache --non-interactive --auto-submit --no-wait
+
+  push-play-metadata:
+    name: 📝 Push Google Play Metadata
+    needs: release-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v7
+
+      - name: 🏗 Setup environment
+        uses: ./.github/actions/setup-node-pnpm-expo
+        with:
+          setup-expo-token: ${{ secrets.EXPO_TOKEN }}
+
+      # APP selects the Mimikama EAS project for `eas build:list`
+      - name: ⏳ Wait for EAS android build
+        id: android-build
+        run: node scripts/wait-for-eas-build.mjs --platform android --commit ${{ github.sha }}
+        env:
+          APP: mimikama
+
+      - name: 🛠 Prepare Play metadata
+        run: node scripts/prepare-play-metadata.mjs --app mimikama --play-version-code ${{ steps.android-build.outputs.build-version }}
+
+      - name: 💎 Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: 🔑 Write Play service account key
+        run: |
+          if [ -z "$PLAY_SERVICE_ACCOUNT_JSON" ]; then
+            echo "✗ PLAY_SERVICE_ACCOUNT_JSON secret is missing or empty" >&2
+            exit 1
+          fi
+          umask 077
+          printf '%s' "$PLAY_SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/play-key.json"
+          chmod 600 "$RUNNER_TEMP/play-key.json"
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+
+      # EAS auto-submit delivers Mimikama builds to the internal track (see the
+      # `mimikama` submit profile in eas.json), where the notes get attached.
+      - name: 🚀 Push metadata to Google Play
+        run: bundle exec fastlane android push_metadata app:mimikama version_code:${{ steps.android-build.outputs.build-version }}
+        env:
+          PLAY_JSON_KEY_FILE: ${{ runner.temp }}/play-key.json

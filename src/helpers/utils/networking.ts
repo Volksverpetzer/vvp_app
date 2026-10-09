@@ -55,10 +55,17 @@ function buildUrl(
   url: string,
   params?: FetchRequestConfig["params"],
 ): string {
-  const finalUrl =
-    url.startsWith("http://") || url.startsWith("https://")
-      ? new URL(url)
-      : new URL(url, baseURL);
+  let finalUrl: URL;
+  if (url.startsWith("http://") || url.startsWith("https://")) {
+    finalUrl = new URL(url);
+  } else {
+    // Append to the base's path rather than resolving against it:
+    // new URL("/proxy", "https://host/api") would drop "/api", which breaks
+    // app servers mounted under a path (see helpers/apiUrl.ts).
+    const base = new URL(baseURL);
+    const basePath = base.pathname.replace(/\/+$/, "");
+    finalUrl = new URL(`${basePath}/${url.replace(/^\/+/, "")}`, base.origin);
+  }
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value === undefined || value === null) continue;
@@ -69,25 +76,50 @@ function buildUrl(
 }
 
 /**
+ * Cache-defeating request headers for endpoints behind aggressive CDN
+ * caches. Empty on web: these headers aren't CORS-safelisted and would
+ * force a failing preflight; requests carry a timestamp param instead.
+ *
+ * Read `Platform.OS` inside the function rather than at module scope, so
+ * it reflects the platform at call time instead of whatever it was when
+ * this module first loaded (matches how `baseHeaders` is computed fresh
+ * per `createClient()` call).
+ */
+export function getCacheBusterHeaders(): FetchHeaders {
+  return Platform.OS === "web"
+    ? {}
+    : {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      };
+}
+
+/**
  * Create a fetch client with default headers.
  *
  * The User-Agent will look like this:
  * YourApp/1.2.3 (android; Android 14; Pixel 7)
  * YourApp/1.2.3 (ios; iOS 17.3; iPhone 15 Pro)
  *
- * @param baseURL Base URL for requests
+ * @param baseURL Base URL for requests, or a getter resolved on every request
+ *   (for base URLs the user can change at runtime)
  * @param extraHeaders Additional headers merged into every request
  */
 export function createClient(
-  baseURL: HttpsUrl,
+  baseURL: HttpsUrl | (() => HttpsUrl),
   extraHeaders: FetchHeaders = {},
 ): FetchClient {
   const baseHeaders: FetchHeaders = {
-    "Content-Type": "application/json",
-    "User-Agent": `${Constants.expoConfig?.slug}/${Application?.nativeApplicationVersion} (${Platform.OS}; ${Device.osName} ${Device.osVersion}; ${Device.modelName})`,
-    "Cache-Control": "no-cache, no-store, must-revalidate",
-    Pragma: "no-cache",
-    Expires: "0",
+    // On web these defaults must not be sent: User-Agent is a forbidden
+    // header there, and the others aren't CORS-safelisted, so they would
+    // turn every GET into a preflighted request that the WP/proxy
+    // endpoints reject. Browsers handle caching via response headers.
+    ...(Platform.OS !== "web" && {
+      "Content-Type": "application/json",
+      "User-Agent": `${Constants.expoConfig?.slug}/${Application?.nativeApplicationVersion} (${Platform.OS}; ${Device.osName} ${Device.osVersion}; ${Device.modelName})`,
+      ...getCacheBusterHeaders(),
+    }),
     ...extraHeaders,
   };
 
@@ -101,7 +133,11 @@ export function createClient(
       responseType = "json",
       signal,
     }: FetchRequestConfig & { url: string }): Promise<FetchResponse<T>> => {
-      const requestUrl = buildUrl(baseURL, url, params);
+      const requestUrl = buildUrl(
+        typeof baseURL === "function" ? baseURL() : baseURL,
+        url,
+        params,
+      );
       const mergedHeaders: FetchHeaders = {
         ...baseHeaders,
         ...headers,
@@ -119,6 +155,10 @@ export function createClient(
           init.body = data as BodyInit;
         } else {
           init.body = JSON.stringify(data);
+          // The JSON content type is a base header on native only
+          if (!mergedHeaders["Content-Type"]) {
+            mergedHeaders["Content-Type"] = "application/json";
+          }
         }
       }
 

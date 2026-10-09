@@ -2,6 +2,7 @@ import { createContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
 import SettingsStore from "#/helpers/Stores/SettingsStore";
+import { loadApiUrlOverride } from "#/helpers/apiUrl";
 import type { AdvancedSettingType, ContentSettingType } from "#/types";
 
 interface SettContextInterface {
@@ -35,6 +36,9 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     Promise.all([
       SettingsStore.getContentSettings(),
       SettingsStore.getAdvancedSettings(),
+      // Resolved before children render so no request goes out to the
+      // default server when the user has configured their own.
+      loadApiUrlOverride(),
     ])
       .then(([contentSettings, advancedSettings]) => {
         setContentSettings((previous) => ({ ...previous, ...contentSettings }));

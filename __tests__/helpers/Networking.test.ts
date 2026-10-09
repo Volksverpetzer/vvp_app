@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { Platform } from "react-native";
 
 import * as Networking from "#/helpers/utils/networking";
 
@@ -57,6 +58,51 @@ describe("Networking utilities", () => {
     );
   });
 
+  it("getCacheBusterHeaders returns no headers on web and cache-defeating headers on native", () => {
+    expect(Networking.getCacheBusterHeaders()).toEqual({
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    });
+
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      expect(Networking.getCacheBusterHeaders()).toEqual({});
+    } finally {
+      platform.restore();
+    }
+  });
+
+  it("createClient omits preflight-triggering default headers on web", async () => {
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const client = Networking.createClient("https://example.com" as any);
+      (globalThis.fetch as jest.Mock<any>)
+        .mockImplementationOnce(mockJsonResponse({}))
+        .mockImplementationOnce(mockJsonResponse({}));
+
+      // Custom headers on a GET would force a CORS preflight in browsers
+      await client.request({ url: "/test" });
+      const getInit = (fetch as jest.Mock<any>).mock.calls[0][1] as RequestInit;
+      expect(getInit.headers).not.toHaveProperty("Content-Type");
+      expect(getInit.headers).not.toHaveProperty("User-Agent");
+      expect(getInit.headers).not.toHaveProperty("Cache-Control");
+      expect(getInit.headers).not.toHaveProperty("Pragma");
+      expect(getInit.headers).not.toHaveProperty("Expires");
+
+      // A JSON body still declares its content type
+      await client.request({ url: "/test", method: "POST", data: { a: 1 } });
+      const postInit = (fetch as jest.Mock<any>).mock
+        .calls[1][1] as RequestInit;
+      expect(postInit.headers).toHaveProperty(
+        "Content-Type",
+        "application/json",
+      );
+    } finally {
+      platform.restore();
+    }
+  });
+
   it("createClient merges extraHeaders into every request", async () => {
     const client = Networking.createClient("https://example.com" as any, {
       Referer: "https://example.com",
@@ -73,6 +119,51 @@ describe("Networking utilities", () => {
         headers: expect.objectContaining({ Referer: "https://example.com" }),
       }),
     );
+  });
+
+  it("createClient resolves a base URL getter on every request", async () => {
+    let base = "https://one.example.com";
+    const client = Networking.createClient(() => base as any);
+    (globalThis.fetch as jest.Mock<any>).mockImplementation(
+      mockJsonResponse({}),
+    );
+
+    await client.request({ url: "/test" });
+    base = "https://two.example.com";
+    await client.request({ url: "/test" });
+
+    expect(
+      (globalThis.fetch as jest.Mock<any>).mock.calls.map((c) => c[0]),
+    ).toEqual(["https://one.example.com/test", "https://two.example.com/test"]);
+  });
+
+  it("createClient keeps the base URL's path for relative endpoints", async () => {
+    (globalThis.fetch as jest.Mock<any>).mockImplementation(
+      mockJsonResponse({}),
+    );
+
+    await Networking.createClient("https://self.hosted/api" as any).request({
+      url: "/proxy/regions",
+      params: { week: 3 },
+    });
+    await Networking.createClient("https://self.hosted/api/" as any).request({
+      url: "posts?site=x",
+    });
+    await Networking.createClient("https://origin.example.com" as any).request({
+      url: "/test",
+    });
+    await Networking.createClient("https://self.hosted/api" as any).request({
+      url: "https://other.example.com/abs",
+    });
+
+    expect(
+      (globalThis.fetch as jest.Mock<any>).mock.calls.map((c) => c[0]),
+    ).toEqual([
+      "https://self.hosted/api/proxy/regions?week=3",
+      "https://self.hosted/api/posts?site=x",
+      "https://origin.example.com/test",
+      "https://other.example.com/abs",
+    ]);
   });
 
   it("fetchWithTimeout resolves response data", async () => {

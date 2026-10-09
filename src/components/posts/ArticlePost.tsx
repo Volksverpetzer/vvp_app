@@ -1,10 +1,11 @@
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { DimensionValue, TextStyle } from "react-native";
 import { View } from "react-native";
 
 import ViewCounter from "#/components/counter/ViewCounter";
+import ReadingProgressBar from "#/components/progress/ReadingProgressBar";
 import Typography from "#/components/ui/Typography";
 import UiBadge from "#/components/ui/UiBadge";
 import UiPressable from "#/components/ui/UiPressable";
@@ -22,7 +23,6 @@ import {
   globalStyles,
 } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
-import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
@@ -63,7 +63,8 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
 
   // Hooks and derived values.
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  // Matches --vvp-accent, the progress-bar color used on the crowdfunding site.
+  const progressColor = Colors[colorScheme].accent;
   const { width } = useFeedDimensions();
   const router = useRouter();
   const height = useMemo(() => DEFAULT_IMAGE_ASPECT_RATIO * width, [width]);
@@ -75,16 +76,29 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
   const d = new Date(article.date);
   const date = `${d.getDate()}.${d.getMonth() + 1}.${d.getFullYear()}`;
 
-  // Retrieve and set scroll progress when inView.
+  // Reset when this row is recycled for a different article, so it never
+  // shows the previous article's progress. Deliberately not done on refocus:
+  // that would flash the bar to 0 before the stored value comes back.
   useEffect(() => {
-    if (!inView) return;
-    PersonalStore.getScrollPosition(article.slug).then((progress) => {
-      if (progress !== null) {
-        const dimValue = progress * 100 + "%";
-        setScrollProgress(dimValue as DimensionValue);
-      }
-    });
-  }, [inView, article.slug]);
+    setScrollProgress("0%");
+  }, [article.slug]);
+
+  // Retrieve and set scroll progress when inView. Runs on every screen focus
+  // (not just once) so the bar catches up after reading an article and
+  // navigating back to the feed.
+  useFocusEffect(
+    useCallback(() => {
+      if (!inView) return;
+      let cancelled = false;
+      PersonalStore.getScrollPosition(article.slug).then((progress) => {
+        if (cancelled || progress === null) return;
+        setScrollProgress((progress * 100 + "%") as DimensionValue);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }, [inView, article.slug]),
+  );
 
   // Fetch the feature image when the article is in view.
   const getImages = useCallback(async () => {
@@ -197,15 +211,6 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
     }),
     [height],
   );
-  const progressBarStyle = useMemo(
-    () => ({
-      zIndex: layers.raised,
-      height: 3,
-      width: scrollProgress,
-      backgroundColor: corporate,
-    }),
-    [scrollProgress, corporate],
-  );
   const categoryTextStyle: TextStyle[] = [
     globalStyles.pillLabel,
     globalStyles.whiteText,
@@ -241,7 +246,12 @@ const ArticlePost = (properties: ArticlePostScreenProperties) => {
           )}
           <ImageCreditBadge credit={imageCredit} position="bottomRight" />
         </View>
-        <View style={progressBarStyle} />
+        <ReadingProgressBar
+          testID="article-progress-bar"
+          progress={scrollProgress}
+          height={4}
+          color={progressColor}
+        />
         <UiSpace size={spacing.md} />
         <View
           style={{

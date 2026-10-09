@@ -1,10 +1,10 @@
 import { describe, expect, it, jest } from "@jest/globals";
+import type { InternalRendererProps, TText } from "@native-html/render";
 import { render } from "@testing-library/react-native";
-import type { InternalRendererProps, TText } from "react-native-render-html";
 
 import EmRenderer from "#/screens/Home/components/article/renderer/EmRenderer";
 
-jest.mock("react-native-render-html", () => {
+jest.mock("@native-html/render", () => {
   const ReactInFactory = require("react");
   const { View } = require("react-native");
   return {
@@ -30,6 +30,11 @@ const getFontFamily = (style: unknown): string | undefined => {
   return styles.map((s: any) => s?.fontFamily).find(Boolean);
 };
 
+const getFontStyle = (style: unknown): string | undefined => {
+  const styles = Array.isArray(style) ? style : [style];
+  return styles.map((s: any) => s?.fontStyle).find(Boolean);
+};
+
 describe("EmRenderer font family", () => {
   it("uses SourceSansProBoldItalic when parent is SourceSansProBold", async () => {
     const { getByTestId } = await render(
@@ -38,6 +43,10 @@ describe("EmRenderer font family", () => {
     expect(getFontFamily(getByTestId("em-text").props.style)).toBe(
       "SourceSansProBoldItalic",
     );
+    // Cancels the engine's UA-default italic for <em>, which would
+    // otherwise stack a synthetic oblique on top of this already-italic
+    // font file and shrink glyph widths on Android — see EmRenderer.tsx.
+    expect(getFontStyle(getByTestId("em-text").props.style)).toBe("normal");
   });
 
   it("uses SourceSansProItalic when parent has a non-bold font", async () => {
@@ -47,6 +56,7 @@ describe("EmRenderer font family", () => {
     expect(getFontFamily(getByTestId("em-text").props.style)).toBe(
       "SourceSansProItalic",
     );
+    expect(getFontStyle(getByTestId("em-text").props.style)).toBe("normal");
   });
 
   it("uses SourceSansProItalic when parent has no font family", async () => {
@@ -56,5 +66,6 @@ describe("EmRenderer font family", () => {
     expect(getFontFamily(getByTestId("em-text").props.style)).toBe(
       "SourceSansProItalic",
     );
+    expect(getFontStyle(getByTestId("em-text").props.style)).toBe("normal");
   });
 });

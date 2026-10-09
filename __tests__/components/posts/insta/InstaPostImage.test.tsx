@@ -1,7 +1,10 @@
 import { describe, expect, it, jest } from "@jest/globals";
 import { act, render } from "@testing-library/react-native";
+import { Platform } from "react-native";
 
-import InstaPostImage from "#/components/posts/insta/InstaPostImage";
+import InstaPostImage, {
+  isHorizontallyDominant,
+} from "#/components/posts/insta/InstaPostImage";
 import { spacing } from "#/constants/Spacing";
 
 jest.mock("react-native-reanimated", () => ({
@@ -108,13 +111,86 @@ describe("InstaPostImage", () => {
     const before = flatten(findImageNode(toJSON()).props.style);
     expect(Number.isFinite(before.aspectRatio)).toBe(true);
 
-    act(() => {
+    // Awaited: a sync act() here left the state update pending past this
+    // test's end, bleeding into the next test's render (its toJSON() came
+    // back null).
+    await act(async () => {
       findImageNode(toJSON()).props.onLoad({
         nativeEvent: { source: { width: 0, height: 400 } },
       });
+      await Promise.resolve();
     });
 
     const after = flatten(findImageNode(toJSON()).props.style);
     expect(after.aspectRatio).toBe(before.aspectRatio);
+  });
+
+  // Regression guard: a trackpad's diagonal swipe carries both deltaX and
+  // deltaY — without suppressing the vertical component when the gesture is
+  // horizontally dominant, the page scrolls at the same time the slider
+  // does, making the image wobble vertically while swiping through it.
+  //
+  // The actual listener is attached imperatively to a ref'd DOM node
+  // outside React's synthetic event system (deliberately: React registers
+  // wheel listeners as passive by default, which silently ignores
+  // preventDefault() called from a JSX onWheel prop) — react-test-renderer
+  // has no real DOM, so that wiring itself isn't exercised here. This tests
+  // the decision logic the listener calls directly. See this PR.
+  describe("isHorizontallyDominant", () => {
+    it("is true when the horizontal delta exceeds the vertical one", () => {
+      expect(isHorizontallyDominant(20, 5)).toBe(true);
+    });
+
+    it("is false when the vertical delta is equal to or exceeds the horizontal one", () => {
+      expect(isHorizontallyDominant(5, 20)).toBe(false);
+      expect(isHorizontallyDominant(10, 10)).toBe(false);
+    });
+  });
+
+  it("renders without crashing on web with multiple photos (exercises the wheel-listener effect)", async () => {
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const { unmount } = await render(
+        <InstaPostImage {...baseProps} photos={["a.jpg", "b.jpg"]} />,
+      );
+      unmount();
+    } finally {
+      platform.restore();
+    }
+  });
+
+  const findExpoImageNode = (node: any): any => {
+    if (!node) return undefined;
+    if (node.type === "ViewManagerAdapter_ExpoImage") return node;
+    for (const child of node.children ?? []) {
+      if (typeof child !== "object") continue;
+      const found = findExpoImageNode(child);
+      if (found) return found;
+    }
+    return undefined;
+  };
+
+  // Regression guard: Cache-Control isn't CORS-safelisted, so sending it on
+  // web forces a preflight the media proxy doesn't answer and the image
+  // silently never loads. See this PR.
+  it("omits the Cache-Control source header on web but keeps it on native", async () => {
+    const { toJSON } = await render(
+      <InstaPostImage {...baseProps} photos={["native.jpg"]} inView />,
+    );
+    expect(findExpoImageNode(toJSON()).props.source[0].headers).toEqual({
+      "Cache-Control": "max-age=604000",
+    });
+
+    const platform = jest.replaceProperty(Platform, "OS", "web");
+    try {
+      const { toJSON: toJSONWeb } = await render(
+        <InstaPostImage {...baseProps} photos={["web.jpg"]} inView />,
+      );
+      expect(
+        findExpoImageNode(toJSONWeb()).props.source[0].headers,
+      ).toBeUndefined();
+    } finally {
+      platform.restore();
+    }
   });
 });

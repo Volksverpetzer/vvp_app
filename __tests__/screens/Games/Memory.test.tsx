@@ -117,6 +117,81 @@ describe("MemoryGame", () => {
     );
   });
 
+  it("clears the previous level's matched-pair header when new pairs arrive", async () => {
+    mockGenerateDeck.mockReturnValueOnce(fixedDeck);
+    const { getAllByRole, getAllByText, getByText, queryByText, rerender } =
+      await render(<MemoryGame pairs={pairs} />);
+    const buttons = getAllByRole("button");
+    await fireEvent.press(buttons[0]);
+    await fireEvent.press(buttons[1]);
+    expect(getAllByText("Straw man").length).toBeGreaterThan(0);
+
+    const nextLevelPairs: DisinfoPair[] = [
+      {
+        pairId: "2",
+        technique: "Ad hominem",
+        misinfo: "They attacked the messenger.",
+        factCheck: "Attacking the messenger doesn't refute the claim.",
+      },
+    ];
+    const nextLevelDeck: MemoryCard[] = [
+      {
+        pairId: "2",
+        factCheck: nextLevelPairs[0].factCheck,
+        instanceId: "2-tech",
+        isFlipped: false,
+        isMatched: false,
+        cardType: "technique",
+        content: "Ad hominem",
+      },
+      {
+        pairId: "2",
+        factCheck: nextLevelPairs[0].factCheck,
+        instanceId: "2-mis",
+        isFlipped: false,
+        isMatched: false,
+        cardType: "misinfo",
+        content: "They attacked the messenger.",
+        fullContent: "They attacked the messenger.",
+      },
+    ];
+    mockGenerateDeck.mockReturnValueOnce(nextLevelDeck);
+    await rerender(<MemoryGame pairs={nextLevelPairs} />);
+
+    // The new level's cards are face-down again, so the old level's
+    // revealed content must be gone and the instructional prompt back.
+    expect(queryByText("Straw man")).toBeNull();
+    expect(
+      getByText("Tippe auf eine Karte, um deren Inhalt anzuzeigen."),
+    ).toBeTruthy();
+  });
+
+  it("calls onAllMatched once the last pair is matched", async () => {
+    mockGenerateDeck.mockReturnValue(fixedDeck);
+    const onAllMatched = jest.fn();
+    const { getAllByRole } = await render(
+      <MemoryGame pairs={pairs} onAllMatched={onAllMatched} />,
+    );
+    const buttons = getAllByRole("button");
+    await fireEvent.press(buttons[0]);
+    await fireEvent.press(buttons[1]);
+
+    expect(onAllMatched).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call onAllMatched while pairs remain unmatched", async () => {
+    mockGenerateDeck.mockReturnValue(mismatchedDeck);
+    const onAllMatched = jest.fn();
+    const { getAllByRole } = await render(
+      <MemoryGame pairs={pairs} onAllMatched={onAllMatched} />,
+    );
+    const buttons = getAllByRole("button");
+    await fireEvent.press(buttons[0]);
+    await fireEvent.press(buttons[1]);
+
+    expect(onAllMatched).not.toHaveBeenCalled();
+  });
+
   it("resets the selection instead of flipping a third card after a mismatch", async () => {
     mockGenerateDeck.mockReturnValue(mismatchedDeck);
     const { getAllByRole, queryByText } = await render(

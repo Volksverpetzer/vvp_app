@@ -5,10 +5,16 @@ import { Animated, View } from "react-native";
 import type { ViewStyle } from "react-native";
 
 import { HeartIcon } from "#/components/Icons";
-import UiHeaderGradient from "#/components/ui/UiHeaderGradient";
+import UiHeaderGradient, {
+  HEADER_FADE_HEIGHT,
+} from "#/components/ui/UiHeaderGradient";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
 import { fontFamily } from "#/constants/FontFamily";
+import {
+  CONTENT_HORIZONTAL_PADDING,
+  CONTENT_MAX_WIDTH,
+} from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
 import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
@@ -35,8 +41,10 @@ const gradientContainerStyle: ViewStyle = {
   flex: 1,
   alignItems: "center",
   justifyContent: "flex-end",
-  paddingBottom: 45,
+  paddingBottom: HEADER_FADE_HEIGHT,
 };
+
+const TITLE_EXPANDED_HEIGHT = 66;
 
 /**
  * AnimatedHeader renders a collapsible header bar that shrinks and fades
@@ -72,6 +80,16 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
         extrapolate: "clamp",
       }),
     [scrollOffsetY, H_SCROLL_DISTANCE, maxHeight, minHeight],
+  );
+
+  const titleHeight = useMemo(
+    () =>
+      scrollOffsetY.interpolate({
+        inputRange: [0, H_SCROLL_DISTANCE],
+        outputRange: [TITLE_EXPANDED_HEIGHT, 0],
+        extrapolate: "clamp",
+      }),
+    [scrollOffsetY, H_SCROLL_DISTANCE],
   );
 
   const headerFontSize = useMemo(
@@ -136,14 +154,26 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
         )}
         {title &&
           (typeof title === "string" ? (
-            <Animated.Text
-              style={[
-                titleTextStyle,
-                children ? { opacity: titleOpacity } : null,
-              ]}
+            <Animated.View
+              style={
+                children
+                  ? {
+                      height: titleHeight,
+                      overflow: "hidden",
+                      justifyContent: "flex-end",
+                    }
+                  : null
+              }
             >
-              {title}
-            </Animated.Text>
+              <Animated.Text
+                style={[
+                  titleTextStyle,
+                  children ? { opacity: titleOpacity } : null,
+                ]}
+              >
+                {title}
+              </Animated.Text>
+            </Animated.View>
           ) : (
             <Animated.View style={{ opacity: titleOpacity, flex: 1 }}>
               {title}
@@ -151,7 +181,17 @@ const AnimatedHeader = (properties: AnimatedHeaderProperties) => {
           ))}
         <View
           style={{
-            marginHorizontal: spacing.md,
+            // alignSelf overrides the gradient container's alignItems:
+            // "center", which would otherwise shrink this wrapper (and any
+            // width: "100%" child inside it, like the home search bar) to
+            // its content's size instead of the header's width. maxWidth +
+            // auto margins then cap that to the feed's own content column
+            // instead of the full window, matching globalStyles.content.
+            alignSelf: "stretch",
+            width: "100%",
+            maxWidth: CONTENT_MAX_WIDTH,
+            marginHorizontal: "auto",
+            paddingHorizontal: CONTENT_HORIZONTAL_PADDING,
           }}
         >
           {children}

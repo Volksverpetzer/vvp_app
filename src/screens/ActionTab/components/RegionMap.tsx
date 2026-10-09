@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 import {
   FirstPlaceIcon,
@@ -11,13 +11,12 @@ import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
-import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
+import { getApiUrl } from "#/helpers/apiUrl";
 import { getRegions } from "#/helpers/network/Action";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import type { Region, RegionsByCode } from "#/types";
 
 import Legend from "./Legend";
@@ -43,7 +42,6 @@ const parseRegionsData = async (): Promise<Region[]> => {
 
 const RegionMap = () => {
   const [regionData, setRegionData] = useState<Region[] | undefined>();
-  const tabBarClearance = useTabBarClearance();
 
   useEffect(() => {
     parseRegionsData().then(setRegionData);
@@ -60,10 +58,10 @@ const RegionMap = () => {
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: -80,
+        paddingBottom: 40,
         paddingTop: 80,
         backgroundColor: primaryMuted,
-        borderTopLeftRadius: radii.xxl,
-        borderTopRightRadius: radii.xxl,
+        borderRadius: radii.xxl,
         gap: spacing.xl,
         overflow: "hidden",
         paddingHorizontal: spacing.xl,
@@ -72,10 +70,12 @@ const RegionMap = () => {
       <View style={{ backgroundColor: primaryMuted, flex: 1 }}>
         <Image
           source={{
-            uri: `${Config.apiUrl}/proxy/map?week=${weekNumber}`,
-            headers: {
-              "Cache-Control": "max-age=604800",
-            },
+            uri: `${getApiUrl()}/proxy/map?week=${weekNumber}`,
+            // Not CORS-safelisted: sending it on web would force a
+            // preflight the proxy doesn't answer.
+            ...(Platform.OS !== "web" && {
+              headers: { "Cache-Control": "max-age=604800" },
+            }),
           }}
           cachePolicy="disk"
           contentFit="contain"
@@ -107,7 +107,6 @@ const RegionMap = () => {
         style={{
           flex: 1,
           gap: spacing.md,
-          paddingBottom: tabBarClearance,
         }}
       >
         <UiText size="xl" bold style={globalStyles.whiteText}>

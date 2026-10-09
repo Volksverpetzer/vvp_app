@@ -11,11 +11,11 @@ import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
 
 import NavBar from "#/components/bars/NavBar";
 import BackToTopButton from "#/components/buttons/BackToTopButton";
+import ReadingProgressBar from "#/components/progress/ReadingProgressBar";
 import Footer from "#/components/views/Footer";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
-import { layers } from "#/constants/Layers";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
@@ -65,7 +65,8 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backToTop = useBackToTop();
-  const corporate = Colors[colorScheme].primary;
+  // Matches --vvp-accent, the progress-bar color used on the crowdfunding site.
+  const progressColor = Colors[colorScheme].accent;
   const backgroundColor = Colors[colorScheme].background;
 
   const fullRead = useRef(false);
@@ -103,7 +104,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   // project doesn't run the React Compiler (no "reactCompiler" experiment in
   // app.config.ts), so nothing else gives these a stable identity across
   // renders. Body's `renderers` prop is rebuilt from handleAnchorPress /
-  // handleLinkPress on every render, and react-native-render-html can
+  // handleLinkPress on every render, and @native-html/render can
   // remount custom-rendered elements (like the WebView inside an embedded
   // iframe) when that prop's identity changes — visible as a reload/
   // black-frame flash on an embedded video every time Article re-renders.
@@ -241,15 +242,12 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
 
   return (
     <View style={globalStyles.container}>
-      <Animated.View
-        style={{
-          position: "absolute",
-          zIndex: layers.raised,
-          height: 5,
-          width: scrollProgress,
-          backgroundColor: corporate,
-        }}
-      ></Animated.View>
+      <ReadingProgressBar
+        progress={scrollProgress}
+        height={4}
+        color={progressColor}
+        style={{ position: "absolute" }}
+      />
       <View style={globalStyles.container}>
         <ScrollView
           testID="article-scroll"

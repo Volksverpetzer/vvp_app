@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import { useEffect } from "react";
 import { Platform } from "react-native";
 
+import { redirectSystemPath } from "#/app/+native-intent";
 import Config from "#/constants/Config";
 
 /**
@@ -35,8 +36,13 @@ export const useNotificationObserver = () => {
       if (!url || typeof url !== "string") return;
       // delay redirect to allow router to be mounted
       setTimeout(() => {
-        const { path } = Linking.parse(url);
-        if (path) router.push(path as Href);
+        // Route like an opened link: articles from a secondary WordPress feed
+        // (e.g. pruefpunkt.org) need originalUrl, otherwise the article route
+        // looks the slug up on the primary site and falls back to a 404 page.
+        // Unrecognized URLs come back unchanged; keep their plain path.
+        const target = redirectSystemPath({ path: url });
+        const href = target === url ? Linking.parse(url).path : target;
+        if (href) router.push(href as Href);
       }, 2000);
     };
 

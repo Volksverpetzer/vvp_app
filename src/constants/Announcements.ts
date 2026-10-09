@@ -1,5 +1,7 @@
 import type { Href } from "expo-router";
 
+import { isMimikama, isVolksverpetzer } from "#/helpers/utils/variant";
+
 export interface AnnouncementEntry {
   /** Stable id — used as the permanent-dismissal key, never reuse across entries. */
   id: string;
@@ -22,8 +24,12 @@ export interface AnnouncementEntry {
  * To promote something new next release: append a new entry. If an older
  * entry is no longer worth showing (e.g. it's now common knowledge), delete
  * it here rather than letting it linger — there's no automatic expiry.
+ *
+ * Entries are per app variant (they tend to promote a variant's own feeds
+ * or reference its own release) — each variant only sees its own list,
+ * picked below. A variant with no entries yet gets an empty list.
  */
-const Announcements: AnnouncementEntry[] = [
+const volksverpetzerAnnouncements: AnnouncementEntry[] = [
   {
     id: "podcast-pruefpunkt-2026-08",
     message:
@@ -32,5 +38,24 @@ const Announcements: AnnouncementEntry[] = [
     route: "/settings",
   },
 ];
+
+const mimikamaAnnouncements: AnnouncementEntry[] = [
+  {
+    id: "under-the-hood-2026-09",
+    message:
+      "**Neu**: Unter der Haube hat sich in dieser Version so manches getan – und auch die Oberfläche haben wir aufgeräumt. Fällt dir etwas auf, das nicht rund läuft oder aussieht? Sag uns gerne Bescheid:",
+    actionLabel: "Feedback geben",
+    route: {
+      pathname: "/(tabs)/contact",
+      params: { category: "app_feedback" },
+    },
+  },
+];
+
+const Announcements: AnnouncementEntry[] = isVolksverpetzer
+  ? volksverpetzerAnnouncements
+  : isMimikama
+    ? mimikamaAnnouncements
+    : [];
 
 export default Announcements;

@@ -55,6 +55,7 @@ const ShareCounter = (properties: ShareCounterProperties) => {
     <UiPressable
       accessibilityRole="button"
       accessibilityLabel="Teilen"
+      accessibilityHint="Öffnet die Teilen-Optionen"
       onPress={onPress}
       onLongPress={onPress}
       hitSlop={20}

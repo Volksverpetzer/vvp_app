@@ -11,9 +11,19 @@ const assets = {
 };
 
 const extraConfig: ExtraConfigType = {
-  apiUrl: "https://mimikamaserver.azurewebsites.net",
+  apiUrl: "https://mimikama.volksverpetzer-app.de",
   wpUrl: "https://www.mimikama.org",
   aboutUrl: "https://www.mimikama.org/ueber-uns/",
+  hiddenNotifications: ["new_fact_check", "new_pruefpunkt"],
+  // Native rendering flattens Mimikama's own custom layout components
+  // (comparison cards, ranking tables, timelines — a different one per
+  // article, not a small fixed set) down to plain unstyled text. Until we
+  // settle on how to handle that (map more of them, or render just the
+  // unrecognized parts in a WebView), articles go back to the full-page
+  // WebView fallback by leaving this unset.
+  // flatPermalinks: true,
+  authorBase: "autor",
+  contactEmail: "buero@mimikama.at",
   sourceUrl: "https://github.com/Volksverpetzer/vvp_app",
   dataProtectionUrl: "https://www.mimikama.org/datenschutzbestimmungen/",
   imprintUrl: "https://www.mimikama.org/impressum/",
@@ -69,7 +79,7 @@ const extraConfig: ExtraConfigType = {
       { handle: "https://www.mimikama.org", label: "Artikel", enabled: true },
     ],
     insta: [
-      { handle: "mimikama.at", label: "Instagram Slides", enabled: true },
+      { handle: "mimikama_org", label: "Instagram Slides", enabled: true },
     ],
   },
   colorScheme: colorScheme,

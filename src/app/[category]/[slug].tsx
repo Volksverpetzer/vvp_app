@@ -29,7 +29,13 @@ const LoadArticle = () => {
   // useLocalSearchParams already ran decodeURIComponent on every param, so
   // `anchor` is the decoded fragment — decoding again here would corrupt ids
   // that legitimately contain `%`. Re-encode only when rebuilding a URL.
-  const { slug, category, originalUrl, "#": anchor } = parameters;
+  const { originalUrl, "#": anchor } = parameters;
+  // With flat permalinks (/{slug}/) the article's slug is the only path
+  // segment, which Expo Router hands us as `category`.
+  const isFlatArticle =
+    Config.flatPermalinks && !parameters.slug && !!parameters.category;
+  const slug = isFlatArticle ? parameters.category : parameters.slug;
+  const category = isFlatArticle ? undefined : parameters.category;
   const anchorSuffix = anchor ? `#${encodeURIComponent(anchor)}` : "";
 
   // A WordPress feed entry from a different site than the primary one whose

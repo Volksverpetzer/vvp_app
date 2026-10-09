@@ -29,6 +29,7 @@ jest.mock("expo-linking", () => ({
       return {};
     }
   },
+  openURL: jest.fn().mockResolvedValue(undefined),
 }));
 
 // Keep the real parsePath (that's what's under test), but stub onLinkPress
@@ -286,4 +287,114 @@ describe("EdgelessWebview 404 slash retry", () => {
       "https://volksverpetzer.de/ltw-lsa/?utm_source=app_share",
     );
   });
+});
+
+describe("EdgelessWebview external schemes", () => {
+  beforeEach(() => {
+    mockLastWebViewProps = null;
+    jest.clearAllMocks();
+  });
+
+  it("hands a mailto: link off to the OS instead of letting the WebView load it", async () => {
+    // Regression (Impressum "Mail:" link, GH #525): the WebView has no
+    // protocol handler for mailto: and fails with
+    // net::ERR_UNKNOWN_URL_SCHEME if it tries to load it itself.
+    const expoLinking = jest.requireMock("expo-linking");
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "mailto:redaktion@volksverpetzer.de",
+      isTopFrame: true,
+    });
+
+    expect(result).toBe(false);
+    expect(expoLinking.openURL).toHaveBeenCalledWith(
+      "mailto:redaktion@volksverpetzer.de",
+    );
+  });
+
+  it("still hands off a mailto: link when isTopFrame is undefined (Android)", async () => {
+    // Regression: react-native-webview's Android native code never sets
+    // isTopFrame on the event at all (only iOS does), so on a real Android
+    // device this arrives as undefined rather than true/false. A `!isTopFrame`
+    // check would have treated that the same as `isTopFrame: false` and let
+    // every request — including this one — fall through to the WebView's
+    // own (failing) loader instead of ever reaching the mailto hand-off.
+    const expoLinking = jest.requireMock("expo-linking");
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "mailto:redaktion@volksverpetzer.de",
+      isTopFrame: undefined,
+    });
+
+    expect(result).toBe(false);
+    expect(expoLinking.openURL).toHaveBeenCalledWith(
+      "mailto:redaktion@volksverpetzer.de",
+    );
+  });
+
+  it("does not hand off an unrecognized non-https scheme", async () => {
+    const expoLinking = jest.requireMock("expo-linking");
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "intent://example",
+      isTopFrame: true,
+    });
+
+    expect(result).toBe(false);
+    expect(expoLinking.openURL).not.toHaveBeenCalled();
+  });
+
+  it("routes a plain http:// link through onLinkPress instead of blocking it", async () => {
+    // Regression (Copilot review + adversarial review on #569): a link on a
+    // WordPress page still using a plain http:// scheme (e.g. an old legal
+    // citation) matched neither isHttpsUrl nor EXTERNAL_SCHEME_REGEX, so it
+    // silently fell into the "block unrecognized scheme" branch — the tap
+    // did nothing at all, with no error and no OS hand-off. onLinkPress
+    // already upgrades http:// to https:// itself (see its own doc
+    // comment, for Android cleartext-traffic reasons), so it should still
+    // be the one routing this link.
+    const linkingHelpers = jest.requireMock("#/helpers/Linking");
+    await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+    );
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "http://volksverpetzer.de/other-page/",
+      isTopFrame: true,
+    });
+
+    expect(result).toBe(false);
+    expect(linkingHelpers.onLinkPress).toHaveBeenCalledWith(
+      "http://volksverpetzer.de/other-page/",
+      expect.anything(),
+      "https://volksverpetzer.de/impressum-volksverpetzer/",
+    );
+  });
+
+  it.each(["about:blank", "data:text/html,<html></html>"])(
+    "still allows the WebView's own internal %s navigation",
+    async (url) => {
+      const expoLinking = jest.requireMock("expo-linking");
+      await render(
+        <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
+      );
+
+      const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+        url,
+        isTopFrame: true,
+      });
+
+      expect(result).toBe(true);
+      expect(expoLinking.openURL).not.toHaveBeenCalled();
+    },
+  );
 });

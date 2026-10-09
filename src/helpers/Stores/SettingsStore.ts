@@ -7,6 +7,8 @@ import type {
   NotificationSettingType,
 } from "#/types";
 
+const hiddenNotifications = Config.hiddenNotifications ?? [];
+
 const wpFeeds = Config.feeds?.wp ?? [];
 const instaFeeds = Config.feeds?.insta ?? [];
 
@@ -54,10 +56,18 @@ const SettingsStore = {
     alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
   } satisfies AdvancedSettingType,
 
+  // Types a variant doesn't offer stay in the payload (the server requires
+  // the keys) but are always off, since the user has no switch for them.
   defaultNotificationSettings: {
     new_post: { value: true, name: "Neuer Artikel" },
-    new_fact_check: { value: true, name: "Neuer Faktencheck" },
-    new_pruefpunkt: { value: true, name: "Neuer Prüfpunkt Artikel" },
+    new_fact_check: {
+      value: !hiddenNotifications.includes("new_fact_check"),
+      name: "Neuer Faktencheck",
+    },
+    new_pruefpunkt: {
+      value: !hiddenNotifications.includes("new_pruefpunkt"),
+      name: "Neuer Prüfpunkt Artikel",
+    },
   } satisfies NotificationSettingType,
 
   async getContentSettings(): Promise<ContentSettingType> {
@@ -137,6 +147,20 @@ const SettingsStore = {
     }
   },
 
+  /**
+   * Types the variant doesn't offer have no switch, so a stored `true` (from
+   * an earlier build) could never be turned off — force them off.
+   */
+  forceHiddenNotificationsOff(
+    settings: NotificationSettingType,
+  ): NotificationSettingType {
+    const result = { ...settings };
+    for (const key of hiddenNotifications) {
+      result[key] = { ...result[key], value: false };
+    }
+    return result;
+  },
+
   async getNotificationSettings(): Promise<NotificationSettingType> {
     try {
       const jsonValue = await BaseStore.getItem(this.keys.notificationSettings);
@@ -145,7 +169,10 @@ const SettingsStore = {
         {};
       // Merge defaults so settings added later (e.g. new_pruefpunkt) appear for
       // users whose stored settings predate them.
-      return { ...this.defaultNotificationSettings, ...stored };
+      return this.forceHiddenNotificationsOff({
+        ...this.defaultNotificationSettings,
+        ...stored,
+      });
     } catch (error) {
       console.error("Error retrieving notification settings:", error);
       return this.defaultNotificationSettings;

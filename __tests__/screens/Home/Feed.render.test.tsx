@@ -24,8 +24,10 @@ jest.mock("#/components/ui/UiEmptyState", () => {
 });
 jest.mock("#/components/ui/UiPressable", () => {
   const { Pressable } = require("react-native");
-  return jest.fn(({ children, onPress }: any) => (
-    <Pressable onPress={onPress}>{children}</Pressable>
+  return jest.fn(({ children, onPress, ...rest }: any) => (
+    <Pressable onPress={onPress} {...rest}>
+      {children}
+    </Pressable>
   ));
 });
 jest.mock("#/components/ui/UiText", () => {

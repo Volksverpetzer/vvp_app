@@ -4,6 +4,9 @@ import { Dimensions, StyleSheet, View } from "react-native";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import { radii } from "#/constants/BorderRadius";
+import Colors from "#/constants/Colors";
+import { spacing } from "#/constants/Spacing";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { MemoryCard } from "#/types";
 
 interface CardComponentProperties {
@@ -12,24 +15,34 @@ interface CardComponentProperties {
 }
 
 const CardComponent = ({ card, onPress }: CardComponentProperties) => {
-  const getCardStyle = () => {
-    const styleArray: ViewStyle[] = [cardStyles.card];
+  const colorScheme = useAppColorScheme();
+  const { accent, primary, surface, text, textMuted } = Colors[colorScheme];
+
+  const getCardStyle = (): ViewStyle => {
     if (card.isMatched) {
-      styleArray.push(cardStyles.matchedCard);
-    } else if (card.isFlipped) {
-      styleArray.push(cardStyles.selectedCard);
+      return { backgroundColor: surface, borderColor: primary };
     }
-    return styleArray;
+    if (card.isFlipped) {
+      return { backgroundColor: surface, borderColor: accent };
+    }
+    return { backgroundColor: surface, borderColor: surface };
   };
 
   return (
     <UiPressable
       accessibilityRole="button"
-      style={getCardStyle()}
+      style={[cardStyles.card, getCardStyle()]}
       onPress={() => onPress(card)}
     >
       <View style={cardStyles.cardInner}>
-        <UiText size="base" style={cardStyles.cardText}>
+        <UiText
+          size="sm"
+          bold={card.isFlipped || card.isMatched}
+          style={[
+            cardStyles.cardText,
+            { color: card.isFlipped || card.isMatched ? text : textMuted },
+          ]}
+        >
           {card.isFlipped || card.isMatched ? card.content : "?"}
         </UiText>
       </View>
@@ -38,21 +51,23 @@ const CardComponent = ({ card, onPress }: CardComponentProperties) => {
 };
 
 const screenWidth = Dimensions.get("window").width;
-const cardSize = screenWidth / 3;
+const cardSize = (screenWidth - spacing.md * 4) / 3;
 
 const cardStyles = StyleSheet.create({
   card: {
     alignItems: "center",
-    borderRadius: radii.xs,
+    borderRadius: radii.md,
     borderWidth: 2,
-    height: cardSize - 10,
+    height: cardSize,
     justifyContent: "center",
-    width: cardSize - 10,
+    width: cardSize,
   },
-  cardInner: { alignItems: "center", justifyContent: "center" },
+  cardInner: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: spacing.xs,
+  },
   cardText: { textAlign: "center" },
-  matchedCard: { borderColor: "#28a745" },
-  selectedCard: { borderColor: "#ffa500" },
 });
 
 export default CardComponent;
