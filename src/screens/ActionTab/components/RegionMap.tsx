@@ -55,7 +55,15 @@ const RegionMap = () => {
   );
 
   useEffect(() => {
-    parseRegionsData().then(setRegionData);
+    // Ignore a response from the previous server that resolves after the
+    // request for the new one, so it can't overwrite the fresh ranking.
+    let current = true;
+    parseRegionsData().then((data) => {
+      if (current) setRegionData(data);
+    });
+    return () => {
+      current = false;
+    };
   }, [apiUrl]);
   const colorScheme = useAppColorScheme();
   const corporate = Colors.light.primary;

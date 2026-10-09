@@ -167,4 +167,37 @@ describe("RegionMap", () => {
     );
     mockApiUrl = "https://volksverpetzer-app.de";
   });
+
+  it("ignores a late response from the previous server", async () => {
+    let resolveOld: (csv: string) => void = () => {};
+    mockGetRegions
+      .mockReturnValueOnce(
+        new Promise<string>((resolve) => {
+          resolveOld = resolve;
+        }),
+      )
+      .mockResolvedValueOnce("DE-HE,Hessen,999");
+    let onFocus: (() => void) | undefined;
+    (useFocusEffect as jest.Mock).mockImplementation((callback: unknown) => {
+      onFocus = callback as () => void;
+    });
+
+    const { findByText, queryByText } = await render(<RegionMap />);
+
+    // The address changes while the first request is still pending.
+    mockApiUrl = "https://self-hosted.example";
+    await act(() => {
+      onFocus?.();
+    });
+    expect(await findByText(" Hessen")).toBeTruthy();
+
+    // The old server answers last; its ranking must not replace the new one.
+    await act(async () => {
+      resolveOld(csv);
+      await Promise.resolve();
+    });
+    expect(queryByText(" Bayern")).toBeNull();
+    expect(queryByText(" Hessen")).toBeTruthy();
+    mockApiUrl = "https://volksverpetzer-app.de";
+  });
 });
