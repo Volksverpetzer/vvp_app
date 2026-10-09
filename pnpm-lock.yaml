@@ -176,8 +176,8 @@ importers:
         specifier: 5.59.0
         version: 5.59.0
       '@atproto/api':
-        specifier: 0.23.2
-        version: 0.23.2
+        specifier: 0.24.2
+        version: 0.24.2
       '@babel/runtime':
         specifier: 7.29.10
         version: 7.29.10
@@ -505,8 +505,8 @@ packages:
     resolution: {integrity: sha512-YYHLEs5rC6oRTFwT7bJaKBR9NSFzikeVHGAT1ffATmUQzR8XqyhHXjoieAUoR7fBU6I5cfy1FVeh5GoRgriuzA==}
     engines: {node: '>= 14.0.0'}
 
-  '@atproto/api@0.23.2':
-    resolution: {integrity: sha512-z4V739zjKhqsjlGGD7jGXlw+0jw5zfEeIZHmApfz9aYmODPQBKZ5HHq60E7H7/PhfrjQim1GVnTTeBxZiB26hA==}
+  '@atproto/api@0.24.2':
+    resolution: {integrity: sha512-c0Yc7L46DRfVuaZ7uefaJ0grfdUOXWrZm5NMUNHbzectMY2Y81YqhI7a8KQvEW/mHolbPGxdzyCRL8743zgDBw==}
     engines: {node: '>=22'}
 
   '@atproto/common-web@0.5.14':
@@ -6903,7 +6903,7 @@ snapshots:
     dependencies:
       '@algolia/client-common': 5.59.0
 
-  '@atproto/api@0.23.2':
+  '@atproto/api@0.24.2':
     dependencies:
       '@atproto/common-web': 0.5.14
       '@atproto/lexicon': 0.7.16
