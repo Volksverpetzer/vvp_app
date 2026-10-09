@@ -1,5 +1,6 @@
 import { describe, expect, it, jest } from "@jest/globals";
-import { render, waitFor } from "@testing-library/react-native";
+import { act, render, waitFor } from "@testing-library/react-native";
+import { useFocusEffect } from "expo-router";
 import { Platform } from "react-native";
 
 import { radii } from "#/constants/BorderRadius";
@@ -9,6 +10,11 @@ import RegionMap from "#/screens/ActionTab/components/RegionMap";
 const mockGetRegions = jest.fn<() => Promise<string>>();
 jest.mock("#/helpers/network/Action", () => ({
   getRegions: () => mockGetRegions(),
+}));
+
+let mockApiUrl = "https://volksverpetzer-app.de";
+jest.mock("#/helpers/apiUrl", () => ({
+  getApiUrl: () => mockApiUrl,
 }));
 
 const flatten = (style: unknown): Record<string, unknown> => {
@@ -123,5 +129,75 @@ describe("RegionMap", () => {
     } finally {
       platform.restore();
     }
+  });
+
+  it("reloads map and ranking from a server address changed while mounted", async () => {
+    mockGetRegions.mockResolvedValue(csv);
+    let onFocus: (() => void) | undefined;
+    (useFocusEffect as jest.Mock).mockImplementation((callback: unknown) => {
+      onFocus = callback as () => void;
+    });
+
+    const findExpoImageNode = (node: any): any => {
+      if (!node) return undefined;
+      if (node.type === "ViewManagerAdapter_ExpoImage") return node;
+      for (const child of node.children ?? []) {
+        if (typeof child !== "object") continue;
+        const found = findExpoImageNode(child);
+        if (found) return found;
+      }
+      return undefined;
+    };
+
+    const { findByText, toJSON } = await render(<RegionMap />);
+    await findByText(" Bayern");
+    const callsBefore = mockGetRegions.mock.calls.length;
+
+    // The user saves a different FOSS server in Settings, then returns.
+    mockApiUrl = "https://self-hosted.example";
+    await act(() => {
+      onFocus?.();
+    });
+
+    await waitFor(() =>
+      expect(mockGetRegions.mock.calls.length).toBe(callsBefore + 1),
+    );
+    expect(findExpoImageNode(toJSON()).props.source[0].uri).toMatch(
+      /^https:\/\/self-hosted\.example\/proxy\/map\?week=/,
+    );
+    mockApiUrl = "https://volksverpetzer-app.de";
+  });
+
+  it("ignores a late response from the previous server", async () => {
+    let resolveOld: (csv: string) => void = () => {};
+    mockGetRegions
+      .mockReturnValueOnce(
+        new Promise<string>((resolve) => {
+          resolveOld = resolve;
+        }),
+      )
+      .mockResolvedValueOnce("DE-HE,Hessen,999");
+    let onFocus: (() => void) | undefined;
+    (useFocusEffect as jest.Mock).mockImplementation((callback: unknown) => {
+      onFocus = callback as () => void;
+    });
+
+    const { findByText, queryByText } = await render(<RegionMap />);
+
+    // The address changes while the first request is still pending.
+    mockApiUrl = "https://self-hosted.example";
+    await act(() => {
+      onFocus?.();
+    });
+    expect(await findByText(" Hessen")).toBeTruthy();
+
+    // The old server answers last; its ranking must not replace the new one.
+    await act(async () => {
+      resolveOld(csv);
+      await Promise.resolve();
+    });
+    expect(queryByText(" Bayern")).toBeNull();
+    expect(queryByText(" Hessen")).toBeTruthy();
+    mockApiUrl = "https://volksverpetzer-app.de";
   });
 });
