@@ -1,0 +1,5 @@
+- Neu: YouTube-Videos zeigen im Feed jetzt ihre Aufrufzahlen
+- Neu: Das Desinformations-Memory ist zurück
+- Benachrichtigungen haben auf Android jetzt eigene Kanäle für Beiträge, Faktenchecks und Prüfpunkt und lassen sich in den Systemeinstellungen einzeln anpassen
+- Prüfpunkt-Benachrichtigungen öffnen jetzt den Artikel statt einer Fehlerseite
+- Fehlerbehebungen und Performance-Verbesserungen, u. a. bei abgeschnittenen Absätzen auf iOS und Zeilenumbrüchen in Überschriften auf Android
