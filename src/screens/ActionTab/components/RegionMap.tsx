@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { Platform, View } from "react-native";
 
 import {
@@ -42,10 +43,28 @@ const parseRegionsData = async (): Promise<Region[]> => {
 
 const RegionMap = () => {
   const [regionData, setRegionData] = useState<Region[] | undefined>();
+  const [apiUrl, setApiUrl] = useState(getApiUrl);
+
+  // FOSS builds can change the server address in Settings while this tab
+  // stays mounted; pick it up when the tab regains focus so the map and the
+  // ranking come from the new server.
+  useFocusEffect(
+    useCallback(() => {
+      setApiUrl(getApiUrl());
+    }, []),
+  );
 
   useEffect(() => {
-    parseRegionsData().then(setRegionData);
-  }, []);
+    // Ignore a response from the previous server that resolves after the
+    // request for the new one, so it can't overwrite the fresh ranking.
+    let current = true;
+    parseRegionsData().then((data) => {
+      if (current) setRegionData(data);
+    });
+    return () => {
+      current = false;
+    };
+  }, [apiUrl]);
   const colorScheme = useAppColorScheme();
   const corporate = Colors.light.primary;
   const corporateColor = Colors.dark.primary;
@@ -70,7 +89,7 @@ const RegionMap = () => {
       <View style={{ backgroundColor: primaryMuted, flex: 1 }}>
         <Image
           source={{
-            uri: `${getApiUrl()}/proxy/map?week=${weekNumber}`,
+            uri: `${apiUrl}/proxy/map?week=${weekNumber}`,
             // Not CORS-safelisted: sending it on web would force a
             // preflight the proxy doesn't answer.
             ...(Platform.OS !== "web" && {

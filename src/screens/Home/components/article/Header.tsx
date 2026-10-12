@@ -26,6 +26,7 @@ import {
 import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
+import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { useCorporateColor } from "#/hooks/useAppColorScheme";
 import { useAudioAvailability } from "#/hooks/useAudioAvailability";
 import type { ArticleProperties, HttpsUrl } from "#/types";
@@ -36,11 +37,25 @@ import logoPike from "#assets/images/logo_pike.webp";
 import { ArticleSourceList } from "./ArticleSourceList";
 import ArticleStats from "./ArticleStats";
 
-// Prefer the archive URL WordPress reports for the author; rebuild it with the
-// site's author path only when absent (e.g. articles cached by an older build).
-const getAuthorUrl = (author: { slug: string; link?: HttpsUrl }): HttpsUrl =>
-  author.link ||
-  `${Config.wpUrl}/${Config.authorBase ?? "author"}/${author.slug}/`;
+// Prefer the archive URL WordPress reports for the author; rebuild it only
+// when absent (e.g. articles cached by an older build). Articles from a
+// secondary feed (e.g. pruefpunkt.org) link to that site's WordPress default
+// author path; Config.authorBase only applies to the primary site.
+export const getAuthorUrl = (
+  author: { slug: string; link?: HttpsUrl },
+  articleLink?: string,
+): HttpsUrl => {
+  if (author.link) return author.link;
+  const secondary = findSecondaryWpFeed(
+    articleLink,
+    Config.wpUrl,
+    Config.feeds?.wp,
+  );
+  if (secondary) {
+    return `${secondary.handle}/author/${author.slug}/`;
+  }
+  return `${Config.wpUrl}/${Config.authorBase ?? "author"}/${author.slug}/`;
+};
 
 interface HeaderProperties {
   article: ArticleProperties;
@@ -171,7 +186,11 @@ const Header = (properties: HeaderProperties) => {
               <UiText
                 key={author.slug}
                 onPress={() =>
-                  onLinkPress(getAuthorUrl(author), router, article_link)
+                  onLinkPress(
+                    getAuthorUrl(author, article_link),
+                    router,
+                    article_link,
+                  )
                 }
                 style={{ color: corporate }}
               >
@@ -286,7 +305,11 @@ const Header = (properties: HeaderProperties) => {
                     <UiText
                       key={author.slug}
                       onPress={() =>
-                        onLinkPress(getAuthorUrl(author), router, article_link)
+                        onLinkPress(
+                          getAuthorUrl(author, article_link),
+                          router,
+                          article_link,
+                        )
                       }
                       style={{ color: corporate }}
                     >

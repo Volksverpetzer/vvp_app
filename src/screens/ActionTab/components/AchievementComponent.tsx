@@ -91,6 +91,10 @@ const AchievementComponent = () => {
           <Parallelogram
             containerStyle={{ height: 30, marginTop: 0, marginLeft: -20 }}
             backgroundColor={panelBackground}
+            // The badge background is always the light surface, so pin the
+            // text to the light theme too; the active theme's text colour
+            // would be light-on-light in dark mode.
+            color={Colors.light.text}
           >
             Level {level + 1 + ": " + AchievementConfig[level].name}
           </Parallelogram>

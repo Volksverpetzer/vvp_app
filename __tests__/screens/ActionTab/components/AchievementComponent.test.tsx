@@ -4,6 +4,7 @@ import { render, waitFor } from "@testing-library/react-native";
 // reference it (jest only allows out-of-scope names matching /^mock/i).
 import { useEffect as mockUseEffect } from "react";
 
+import Colors from "#/constants/Colors";
 import type { LevelType } from "#/helpers/Achievements";
 import AchievementComponent from "#/screens/ActionTab/components/AchievementComponent";
 
@@ -36,6 +37,12 @@ jest.mock("#/components/Icons", () => ({
 jest.mock("expo-router", () => ({
   __esModule: true,
   useFocusEffect: (callback: () => void) => mockUseEffect(callback, [callback]),
+}));
+
+let mockColorScheme: "light" | "dark" = "light";
+jest.mock("#/hooks/useAppColorScheme", () => ({
+  ...(jest.requireActual("#/hooks/useAppColorScheme") as object),
+  useAppColorScheme: () => mockColorScheme,
 }));
 
 const level = (overrides: Partial<LevelType> = {}): LevelType => ({
@@ -107,5 +114,20 @@ describe("AchievementComponent", () => {
       expect(mockGetCurrentAchievements).toHaveBeenCalled();
     });
     expect(queryByText("Artikel lesen")).toBeNull();
+  });
+
+  it("keeps the level badge text dark on its light background in dark mode", async () => {
+    mockColorScheme = "dark";
+    try {
+      const { findByText } = await render(<AchievementComponent />);
+      const badge = await findByText("Level 1: Einsteiger");
+      const style = Object.assign(
+        {},
+        ...[badge.props.style].flat(Infinity).filter(Boolean),
+      );
+      expect(style.color).toBe(Colors.light.text);
+    } finally {
+      mockColorScheme = "light";
+    }
   });
 });
