@@ -5,13 +5,13 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.23.2": {
+  "@atproto/api@0.24.3": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
       "https://github.com/bluesky-social/atproto/raw/HEAD/LICENSE.txt",
   },
-  "@babel/runtime@7.29.7": {
+  "@babel/runtime@7.29.10": {
     licenses: "MIT",
     repository: "https://github.com/babel/babel",
     licenseUrl: "https://github.com/babel/babel/raw/HEAD/LICENSE",
