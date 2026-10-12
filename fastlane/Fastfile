@@ -35,6 +35,9 @@ platform :android do
     upload_to_play_store(
       package_name: package_name,
       track: track,
+      # With no binary upload, supply only knows which release (and which
+      # changelogs/<versionCode>.txt) to update through this option
+      version_code: version_code,
       # fastlane resolves relative paths from this fastlane/ dir, not the repo root
       metadata_path: File.expand_path("../build/play-metadata/android", __dir__),
       skip_upload_apk: true,
