@@ -11,9 +11,9 @@ import {
   FeedIcon,
   GiveIcon,
   ImprintIcon,
+  InfoIcon,
   LockIcon,
   NotificationIcon,
-  SearchIcon,
   SettingsIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
@@ -243,7 +243,7 @@ const SettingsScreen = () => {
         <View style={styles.linksContainer}>
           <UiLink
             url={Config.aboutUrl}
-            icon={<SearchIcon color={primary} size={iconSizes.md} />}
+            icon={<InfoIcon color={primary} size={iconSizes.md} />}
             text="Über uns"
           />
           <UiLink
