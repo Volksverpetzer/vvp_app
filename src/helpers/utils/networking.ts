@@ -311,19 +311,23 @@ function isRetryableGetError(error: unknown): boolean {
  * fetchWithTimeout's own per-attempt error logging is suppressed here so a
  * transient failure that succeeds on retry doesn't spam the log; get() logs
  * exactly once, only for a genuine final failure.
+ *
+ * `silentStatuses` lists HTTP statuses the caller expects and handles itself
+ * (e.g. 404 for "nothing found"); those still throw but aren't logged.
  */
 export async function get<T>(
   client: FetchClient,
   path: string,
-  config: FetchRequestConfig = {},
+  config: FetchRequestConfig & { silentStatuses?: number[] } = {},
   abortTime?: number,
 ): Promise<T> {
+  const { silentStatuses = [], ...requestConfig } = config;
   for (let attempt = 0; ; attempt++) {
     try {
       const response = await fetchWithTimeout<T>(
         client,
         path,
-        { method: "GET", ...config },
+        { method: "GET", ...requestConfig },
         abortTime,
         true,
       );
@@ -332,13 +336,15 @@ export async function get<T>(
       const willRetry =
         attempt < GET_RETRY_ATTEMPTS && isRetryableGetError(error);
       if (!willRetry) {
-        if (!isAbortError(error)) {
+        const isSilent =
+          error instanceof FetchError && silentStatuses.includes(error.status);
+        if (!isAbortError(error) && !isSilent) {
           console.error(error);
           console.error(path);
         }
         throw error;
       }
-      await delay(GET_RETRY_DELAY_MS * (attempt + 1), config.signal);
+      await delay(GET_RETRY_DELAY_MS * (attempt + 1), requestConfig.signal);
     }
   }
 }

@@ -17,6 +17,9 @@ jest.mock("#/helpers/utils/networking", () => {
     })),
     get: jest.fn(),
     post: jest.fn(),
+    FetchError: (
+      jest.requireActual("#/helpers/utils/networking") as typeof Networking
+    ).FetchError,
   };
 });
 
@@ -244,7 +247,7 @@ describe("IntelligenceAPI", () => {
       expect(Networking.get).toHaveBeenCalledWith(
         expect.anything(),
         `/api/recommend/?url=${encodeURIComponent(url)}`,
-        undefined,
+        { signal: undefined, silentStatuses: [404] },
       );
     });
 
@@ -260,9 +263,41 @@ describe("IntelligenceAPI", () => {
       expect(Networking.get).toHaveBeenCalledWith(
         expect.anything(),
         `/api/recommend/?url=${encodeURIComponent(url)}`,
-        undefined,
+        { signal: undefined, silentStatuses: [404] },
       );
       expect(result).toEqual(mockResponse);
+    });
+
+    it("returns no results when the backend has not indexed the url (404)", async () => {
+      jest.mocked(Networking.get).mockRejectedValue(
+        new Networking.FetchError("Request failed with status 404", {
+          status: 404,
+          statusText: "Not Found",
+          url: "/api/recommend/",
+          body: { error: "Item not found" },
+        }),
+      );
+
+      await expect(
+        RealIntelligenceAPI.recommendations("https://pruefpunkt.org/a/" as any),
+      ).resolves.toEqual({ results: [] });
+    });
+
+    it("rethrows other errors", async () => {
+      const error = new Networking.FetchError(
+        "Request failed with status 500",
+        {
+          status: 500,
+          statusText: "Internal Server Error",
+          url: "/api/recommend/",
+          body: null,
+        },
+      );
+      jest.mocked(Networking.get).mockRejectedValue(error);
+
+      await expect(
+        RealIntelligenceAPI.recommendations("https://example.com/a/" as any),
+      ).rejects.toBe(error);
     });
   });
 
