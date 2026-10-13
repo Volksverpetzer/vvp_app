@@ -1,4 +1,4 @@
-import Octicons from "@react-native-vector-icons/octicons/static";
+import Lucide from "@react-native-vector-icons/lucide/static";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -158,7 +158,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
               paddingVertical: spacing.md,
             }}
           >
-            <Octicons name="play" size={iconSizes.md} color={corporate} />
+            <Lucide name="play" size={iconSizes.md} color={corporate} />
             <UiText size="base" style={{ color: corporate }}>
               {resumePosition > RESUME_MIN_SECONDS
                 ? `Fortsetzen bei ${formatTime(resumePosition)}`

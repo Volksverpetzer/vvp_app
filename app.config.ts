@@ -46,7 +46,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
     userInterfaceStyle: "automatic",
     plugins: [
       "./plugins/gradleproperties.plugin.ts",
-      "@react-native-vector-icons/octicons",
+      "@react-native-vector-icons/lucide",
       ["expo-router"],
       ["expo-asset"],
       [

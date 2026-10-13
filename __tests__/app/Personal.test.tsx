@@ -42,7 +42,7 @@ jest.mock("react-native-gesture-handler", () => ({
   ScrollView: jest.fn(({ children }: any) => children),
 }));
 
-jest.mock("@react-native-vector-icons/octicons/static", () => ({
+jest.mock("@react-native-vector-icons/lucide/static", () => ({
   default: jest.fn(() => null),
   __esModule: true,
 }));

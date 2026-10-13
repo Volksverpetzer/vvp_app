@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 
-import type { OcticonsIconName } from "#/components/Icons";
+import type { LucideIconName } from "#/components/Icons";
 import { ChevronIcon, StatisticsIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
@@ -20,7 +20,7 @@ type RightChevronProp =
   | { showRightChevron?: false; onRightPress?: never };
 
 type StatsPanelProperties = {
-  icon: OcticonsIconName;
+  icon: LucideIconName;
   title: string;
   subtitle?: string;
   streakKeyToExclude: string;

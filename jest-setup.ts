@@ -16,7 +16,7 @@ jest.mock("react-native/Libraries/Interaction/InteractionManager", () => ({
   clearInteractionHandle: jest.fn(),
 }));
 
-jest.mock("@react-native-vector-icons/octicons/static", () => ({
+jest.mock("@react-native-vector-icons/lucide/static", () => ({
   default: jest.fn(),
   __esModule: true,
 }));

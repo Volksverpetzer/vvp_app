@@ -4,7 +4,7 @@ import { fireEvent, render } from "@testing-library/react-native";
 import PodcastPost from "#/components/posts/PodcastPost";
 import type { PodcastEpisodeProperties } from "#/types";
 
-jest.mock("@react-native-vector-icons/octicons/static", () => "Octicons");
+jest.mock("@react-native-vector-icons/lucide/static", () => "Lucide");
 
 jest.mock("expo-image", () => ({
   __esModule: true,

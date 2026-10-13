@@ -4,7 +4,7 @@ import { render } from "@testing-library/react-native";
 import YouTubePost from "#/components/posts/YouTubePost";
 import type { YouTubePostProperties } from "#/types";
 
-jest.mock("@react-native-vector-icons/octicons/static", () => "Octicons");
+jest.mock("@react-native-vector-icons/lucide/static", () => "Lucide");
 
 jest.mock("expo-image", () => ({
   __esModule: true,
