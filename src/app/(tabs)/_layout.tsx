@@ -42,7 +42,7 @@ const TabLayout = () => {
       labelVisibilityMode="unlabeled"
       shadowColor={surfaceDisabled}
     >
-      <NativeTabs.Trigger name="house">
+      <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Icon
           src={<NativeTabs.Trigger.VectorIcon family={Lucide} name="house" />}
         />
