@@ -12,24 +12,50 @@ patchedDependencies:
   react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
 minimumReleaseAgeExclude:
   - "@cspell/dict-de-de@4.1.3"
-  - "@expo/cli@57.0.28"
+  - "@expo/cli@57.0.28 || 57.0.29"
   - "@expo/config-plugins@57.0.10"
   - "@expo/config@57.0.10"
   - "@expo/image-utils@0.11.6"
   - "@expo/metro-config@57.0.13"
   - "@expo/metro-file-map@57.0.4"
-  - "@expo/prebuild-config@57.0.17"
+  - "@expo/prebuild-config@57.0.17 || 57.0.18"
   - "@expo/require-utils@57.0.6"
   - "@expo/router-server@57.0.12"
-  - babel-preset-expo@57.0.14
+  - babel-preset-expo@57.0.14 || 57.0.15
   - expo-asset@57.0.19
   - expo-constants@57.0.21
-  - expo-modules-autolinking@57.0.14
-  - expo-modules-core@57.0.21
-  - expo@57.0.27
-  - "@expo/ui@57.0.22"
+  - expo-modules-autolinking@57.0.14 || 57.0.15
+  - expo-modules-core@57.0.21 || 57.0.22
+  - expo@57.0.27 || 57.0.28
+  - "@expo/ui@57.0.22 || 57.0.23"
   - expo-eas-client@57.0.5
   - expo-linking@57.0.12
   - expo-notifications@57.0.22
-  - expo-router@57.0.25
-  - expo-updates@57.0.25
+  - expo-router@57.0.25 || 57.0.26
+  - expo-updates@57.0.25 || 57.0.26
+  - "@algolia/client-common@5.60.0"
+  - "@algolia/client-search@5.60.0"
+  - "@algolia/requester-browser-xhr@5.60.0"
+  - "@algolia/requester-fetch@5.60.0"
+  - "@algolia/requester-node-http@5.60.0"
+  - "@atproto/api@0.25.0"
+  - "@expo/fingerprint@0.20.14"
+  - "@expo/inline-modules@0.1.8"
+  - "@expo/local-build-cache-provider@57.0.9"
+  - "@typescript-eslint/eslint-plugin@8.71.2"
+  - "@typescript-eslint/parser@8.71.2"
+  - "@typescript-eslint/project-service@8.71.2"
+  - "@typescript-eslint/scope-manager@8.71.2"
+  - "@typescript-eslint/tsconfig-utils@8.71.2"
+  - "@typescript-eslint/type-utils@8.71.2"
+  - "@typescript-eslint/types@8.71.2"
+  - "@typescript-eslint/typescript-estree@8.71.2"
+  - "@typescript-eslint/utils@8.71.2"
+  - "@typescript-eslint/visitor-keys@8.71.2"
+  - expo-dev-client@57.0.20
+  - expo-dev-launcher@57.0.21
+  - expo-dev-menu@57.0.20
+  - expo-modules-jsi@57.1.2
+  - expo-sharing@57.0.23
+  - expo-splash-screen@57.0.10
+  - jest-expo@57.0.6
