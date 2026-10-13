@@ -1,4 +1,4 @@
-import Octicons from "@react-native-vector-icons/octicons/static";
+import Lucide from "@react-native-vector-icons/lucide/static";
 import { useRef } from "react";
 import { View } from "react-native";
 
@@ -138,7 +138,7 @@ const AudioPlayer = ({
             importantForAccessibility="no"
           />
         ) : (
-          <Octicons
+          <Lucide
             name="play"
             size={iconSizes.md}
             color={corporate}

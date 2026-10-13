@@ -63,7 +63,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-async-storage/async-storage/raw/HEAD/LICENSE",
   },
-  "@react-native-vector-icons/octicons@21.1.4": {
+  "@react-native-vector-icons/lucide@13.1.5": {
     licenses: "MIT",
     repository: "https://github.com/oblador/react-native-vector-icons",
     licenseUrl:

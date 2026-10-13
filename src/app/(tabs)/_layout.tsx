@@ -1,4 +1,4 @@
-import Octicons from "@react-native-vector-icons/octicons/static";
+import Lucide from "@react-native-vector-icons/lucide/static";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 import Colors from "#/constants/Colors";
@@ -42,16 +42,16 @@ const TabLayout = () => {
       labelVisibilityMode="unlabeled"
       shadowColor={surfaceDisabled}
     >
-      <NativeTabs.Trigger name="home">
+      <NativeTabs.Trigger name="house">
         <NativeTabs.Trigger.Icon
-          src={<NativeTabs.Trigger.VectorIcon family={Octicons} name="home" />}
+          src={<NativeTabs.Trigger.VectorIcon family={Lucide} name="house" />}
         />
         <NativeTabs.Trigger.Label hidden>Startseite</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger hidden={!engagementActive} name="personal">
         <NativeTabs.Trigger.Icon
-          src={<NativeTabs.Trigger.VectorIcon family={Octicons} name="star" />}
+          src={<NativeTabs.Trigger.VectorIcon family={Lucide} name="star" />}
         />
         <NativeTabs.Trigger.Badge hidden={!badgeState.personal} />
         <NativeTabs.Trigger.Label hidden>Favoriten</NativeTabs.Trigger.Label>
@@ -59,9 +59,7 @@ const TabLayout = () => {
 
       <NativeTabs.Trigger hidden={!actionsActive} name="action">
         <NativeTabs.Trigger.Icon
-          src={
-            <NativeTabs.Trigger.VectorIcon family={Octicons} name="trophy" />
-          }
+          src={<NativeTabs.Trigger.VectorIcon family={Lucide} name="trophy" />}
         />
         <NativeTabs.Trigger.Badge hidden={!badgeState.action} />
         <NativeTabs.Trigger.Label hidden>Aktionen</NativeTabs.Trigger.Label>
@@ -69,7 +67,7 @@ const TabLayout = () => {
 
       <NativeTabs.Trigger name="contact">
         <NativeTabs.Trigger.Icon
-          src={<NativeTabs.Trigger.VectorIcon family={Octicons} name="mail" />}
+          src={<NativeTabs.Trigger.VectorIcon family={Lucide} name="mail" />}
         />
         <NativeTabs.Trigger.Badge hidden={!badgeState.contact} />
         <NativeTabs.Trigger.Label hidden>Kontakt</NativeTabs.Trigger.Label>
@@ -77,7 +75,9 @@ const TabLayout = () => {
 
       <NativeTabs.Trigger name="settings">
         <NativeTabs.Trigger.Icon
-          src={<NativeTabs.Trigger.VectorIcon family={Octicons} name="gear" />}
+          src={
+            <NativeTabs.Trigger.VectorIcon family={Lucide} name="settings" />
+          }
         />
         <NativeTabs.Trigger.Label hidden>
           Einstellungen
