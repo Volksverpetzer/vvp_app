@@ -37,6 +37,13 @@ jest.mock("#/constants/Colors", () => ({
   },
 }));
 
+let mockMascot: number | null = null;
+jest.mock("#/helpers/AppImages", () => ({
+  get AppImages() {
+    return { announcementMascot: mockMascot };
+  },
+}));
+
 const announcement: AnnouncementEntry = {
   id: "pruefpunkt-feed-2026-07",
   message: "Wusstest du schon? Wir haben jetzt auch Prüfpunkt in unserer App!",
@@ -45,7 +52,27 @@ const announcement: AnnouncementEntry = {
 };
 
 describe("AnnouncementCard", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockMascot = null;
+  });
+
+  it("renders no mascot when the variant has none", async () => {
+    const { queryByTestId } = await render(
+      <AnnouncementCard announcement={announcement} onDismiss={jest.fn()} />,
+    );
+    expect(queryByTestId("announcementMascot")).toBeNull();
+  });
+
+  it("renders the mascot without intercepting touches", async () => {
+    mockMascot = 1;
+    const { getByTestId } = await render(
+      <AnnouncementCard announcement={announcement} onDismiss={jest.fn()} />,
+    );
+    expect(getByTestId("announcementMascot").props.style).toEqual(
+      expect.objectContaining({ pointerEvents: "none" }),
+    );
+  });
 
   it("renders the announcement message", async () => {
     const { getByText } = await render(

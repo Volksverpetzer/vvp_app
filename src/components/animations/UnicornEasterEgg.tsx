@@ -117,8 +117,8 @@ const UnicornEasterEgg = (properties: UnicornEasterEggProperties) => {
       onRequestClose={animateOut}
     >
       <Animated.View
-        pointerEvents="none"
         style={{
+          pointerEvents: "none",
           alignItems: "center",
           left: 0,
           opacity: hasMeasured ? 1 : 0,
