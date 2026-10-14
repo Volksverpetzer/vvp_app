@@ -231,8 +231,8 @@ const Header = (properties: HeaderProperties) => {
         // announced on its own, so no accessibilityHint is needed.
         <UiText
           accessible
-          pointerEvents="none"
           style={{
+            pointerEvents: "none",
             position: "absolute",
             width: 1,
             height: 1,

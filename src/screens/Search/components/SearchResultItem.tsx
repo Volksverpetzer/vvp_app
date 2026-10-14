@@ -140,11 +140,11 @@ const SearchResultItem = ({
               <View
                 testID="excerpt-measurer"
                 style={{
+                  pointerEvents: "none",
                   position: "absolute",
                   opacity: 0,
                   zIndex: layers.hidden,
                 }}
-                pointerEvents="none"
                 importantForAccessibility="no-hide-descendants"
                 accessibilityElementsHidden
                 onLayout={handleMeasure}

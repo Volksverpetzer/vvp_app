@@ -48,18 +48,24 @@ const AnnouncementCard = ({
   return (
     <View style={mascot ? { paddingTop: MASCOT_PEEK } : undefined}>
       {mascot && (
-        <Image
-          source={mascot}
-          accessible={false}
-          pointerEvents="none"
+        // expo-image's style type has no pointerEvents, so the wrapper
+        // carries it (and the positioning).
+        <View
           style={{
+            pointerEvents: "none",
             alignSelf: "center",
             height: MASCOT_HEIGHT,
             position: "absolute",
             top: -MASCOT_OVERLAP,
             width: MASCOT_WIDTH,
           }}
-        />
+        >
+          <Image
+            source={mascot}
+            accessible={false}
+            style={{ height: "100%", width: "100%" }}
+          />
+        </View>
       )}
       <UiCard style={{ gap: spacing.lg }}>
         <UiText size="base" style={{ lineHeight: LINE_HEIGHTS.base }}>
