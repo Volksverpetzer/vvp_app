@@ -27,9 +27,6 @@ const ThemeSetting = () => {
 
   return (
     <View style={styles.container}>
-      <UiText size="base">
-        Wähle, ob die App hell oder dunkel angezeigt wird.
-      </UiText>
       <View
         accessibilityRole="radiogroup"
         style={[styles.segments, { backgroundColor: surfaceInput }]}
@@ -61,12 +58,8 @@ const ThemeSetting = () => {
 };
 
 const styles = StyleSheet.create({
-  // No top padding: the intro text sits directly under the section title,
-  // like the Feed section's description.
   container: {
-    paddingHorizontal: spacing.xl,
-    paddingBottom: spacing.xl,
-    gap: spacing.sm,
+    paddingVertical: spacing.xs,
   },
   segments: {
     flexDirection: "row",

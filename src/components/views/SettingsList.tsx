@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { StyleProp, ViewStyle } from "react-native";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Platform, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
@@ -7,8 +7,8 @@ import UiSwitch from "#/components/ui/UiSwitch";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
-import { spacing } from "#/constants/Spacing";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -29,8 +29,6 @@ interface SettingsListProperties {
   disabled?: boolean;
   disabledMessage?: string;
   onDisabledPress?: () => void;
-  // Intro text shown above the switches.
-  description?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -42,6 +40,17 @@ export const SETTINGS_ROW_MIN_HEIGHT = Platform.select({
   default: 48,
 });
 
+// Settings texts use a fixed line height so their position is predictable:
+// a row centers its single-line label, so padding a text block by the same
+// inset puts its first line exactly where a row's label would be — also when
+// the text wraps. Keeps every section's first line at the same distance from
+// its title, whether it starts with an intro text or a switch.
+export const settingsTextStyle: TextStyle = { lineHeight: LINE_HEIGHTS.base };
+
+export const settingsTextRowStyle: ViewStyle = {
+  paddingVertical: (SETTINGS_ROW_MIN_HEIGHT - LINE_HEIGHTS.base) / 2,
+};
+
 const SettingsList = (properties: SettingsListProperties) => {
   // Tracks in-flight saves per key, not globally, so toggling one switch
   // doesn't disable/grey out its siblings while its save is pending.
@@ -49,41 +58,32 @@ const SettingsList = (properties: SettingsListProperties) => {
   const colorScheme = useAppColorScheme();
   const { textMuted } = Colors[colorScheme];
   const activeSettings = getEnabledFeeds(Config.feeds);
-  const { disabled, disabledMessage, onDisabledPress, description, style } =
-    properties;
+  const { disabled, disabledMessage, onDisabledPress, style } = properties;
 
+  // No outer padding: the surrounding container (e.g. SettingsSection) owns it.
   return (
-    <View
-      style={[
-        {
-          // An intro text sits directly under the section title.
-          paddingTop: description ? 0 : spacing.lg,
-          paddingBottom: spacing.xl,
-          paddingHorizontal: spacing.xl,
-        },
-        style,
-      ]}
-    >
-      {description && (
-        <UiText size="base" style={{ paddingBottom: spacing.sm }}>
-          {description}
-        </UiText>
-      )}
+    <View style={style}>
       {disabled &&
         disabledMessage &&
         (onDisabledPress ? (
           <UiPressable
             accessibilityRole="button"
             onPress={onDisabledPress}
-            style={{ paddingBottom: spacing.md }}
+            style={settingsTextRowStyle}
           >
-            <UiText size="base" style={{ color: textMuted }}>
+            <UiText
+              size="base"
+              style={[settingsTextStyle, { color: textMuted }]}
+            >
               {disabledMessage}
             </UiText>
           </UiPressable>
         ) : (
-          <View style={{ paddingBottom: spacing.md }}>
-            <UiText size="base" style={{ color: textMuted }}>
+          <View style={settingsTextRowStyle}>
+            <UiText
+              size="base"
+              style={[settingsTextStyle, { color: textMuted }]}
+            >
               {disabledMessage}
             </UiText>
           </View>
@@ -109,7 +109,9 @@ const SettingsList = (properties: SettingsListProperties) => {
               key={key}
               style={[globalStyles.row, { minHeight: SETTINGS_ROW_MIN_HEIGHT }]}
             >
-              <UiText size="base">{setting.name}</UiText>
+              <UiText size="base" style={settingsTextStyle}>
+                {setting.name}
+              </UiText>
               <UiSwitch
                 testID="settingSwitch"
                 value={disabled ? false : setting.value}

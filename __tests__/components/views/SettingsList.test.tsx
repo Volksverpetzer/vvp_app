@@ -193,16 +193,4 @@ describe("SettingsList", () => {
       }
     });
   });
-
-  it("renders the description above the switches", async () => {
-    const { getByText } = await render(
-      <SettingsList
-        saveSettings={() => {}}
-        settings={settings}
-        description="Was möchtest du sehen?"
-      />,
-    );
-
-    expect(getByText("Was möchtest du sehen?")).toBeTruthy();
-  });
 });

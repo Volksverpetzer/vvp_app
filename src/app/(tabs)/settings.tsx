@@ -18,7 +18,6 @@ import {
   ThemeIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
-import UiCollapsable from "#/components/ui/UiCollapsable";
 import UiDivider from "#/components/ui/UiDivider";
 import UiLink from "#/components/ui/UiLink";
 import UiPressable from "#/components/ui/UiPressable";
@@ -40,6 +39,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import ApiUrlSetting from "#/screens/Settings/components/ApiUrlSetting";
 import BackupView from "#/screens/Settings/components/BackupView";
+import SettingsSection from "#/screens/Settings/components/SettingsSection";
 import ThemeSetting from "#/screens/Settings/components/ThemeSetting";
 import type { NotificationSettingType, SettingType } from "#/types";
 
@@ -200,22 +200,20 @@ const SettingsScreen = () => {
         scrollEventThrottle={16}
       >
         <View>
-          <UiCollapsable
+          <SettingsSection
             icon={<FeedIcon color={primary} size={iconSizes.md} />}
             title="Feed"
-            borderRadius={0}
+            description="Was möchtest du in deinem Feed sehen?"
           >
             <SettingsList
-              description="Was möchtest du in deinem Feed sehen?"
               saveSettings={saveContentSetting}
               settings={contentSettings}
             />
-          </UiCollapsable>
+          </SettingsSection>
           {!Config.isFoss && (
-            <UiCollapsable
+            <SettingsSection
               icon={<NotificationIcon color={primary} size={iconSizes.md} />}
               title="Benachrichtigungen"
-              borderRadius={0}
             >
               <SettingsList
                 saveSettings={saveNotificationSetting}
@@ -224,29 +222,26 @@ const SettingsScreen = () => {
                 disabledMessage="Benachrichtigungen sind in den Systemeinstellungen deaktiviert. Tippe hier, um sie zu aktivieren."
                 onDisabledPress={() => Linking.openSettings()}
               />
-            </UiCollapsable>
+            </SettingsSection>
           )}
-          <UiCollapsable
+          <SettingsSection
             icon={<ThemeIcon color={primary} size={iconSizes.md} />}
             title="Darstellung"
-            borderRadius={0}
+            description="Wähle, ob die App hell oder dunkel angezeigt wird."
           >
             <ThemeSetting />
-          </UiCollapsable>
-          <UiCollapsable
+          </SettingsSection>
+          <SettingsSection
             icon={<SettingsIcon color={primary} size={iconSizes.md} />}
             title="Erweitert"
-            borderRadius={0}
           >
             <SettingsList
               saveSettings={saveAdvancedSetting}
               settings={advancedSettings}
-              // The backup rows continue the list directly below.
-              style={Config.enableEngagement && { paddingBottom: 0 }}
             />
             {Config.isFoss && <ApiUrlSetting />}
             {Config.enableEngagement && <BackupView />}
-          </UiCollapsable>
+          </SettingsSection>
         </View>
         <UiDivider paddingHorizontal={35} paddingVertical={5} />
         <View style={styles.linksContainer}>
