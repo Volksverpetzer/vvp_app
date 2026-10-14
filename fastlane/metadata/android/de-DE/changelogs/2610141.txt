@@ -1,0 +1,2 @@
+- Neu: Unter Einstellungen → Darstellung kannst du jetzt zwischen System, Hell und Dunkel wählen – z. B. hell lesen, obwohl dein Handy im Dark Mode ist
+- Fehlerbehebungen und (versteckte) Verbesserungen

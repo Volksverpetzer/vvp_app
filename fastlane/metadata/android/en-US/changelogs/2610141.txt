@@ -1,0 +1,2 @@
+- New: Settings → Appearance now lets you choose between System, Light and Dark – e.g. read in light mode while your phone is in dark mode
+- Bug fixes and (hidden) improvements
