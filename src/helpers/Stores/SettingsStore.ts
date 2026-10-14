@@ -5,7 +5,14 @@ import type {
   AdvancedSettingType,
   ContentSettingType,
   NotificationSettingType,
+  ThemePreference,
 } from "#/types";
+
+const themePreferences: ReadonlySet<ThemePreference> = new Set([
+  "system",
+  "light",
+  "dark",
+]);
 
 const hiddenNotifications = Config.hiddenNotifications ?? [];
 
@@ -49,11 +56,13 @@ const SettingsStore = {
     contentSettings: "contentSettings",
     advancedSettings: "advancedSettings",
     notificationSettings: "notificationSettings",
+    themePreference: "themePreference",
   },
+
+  defaultThemePreference: "system" as ThemePreference,
 
   defaultAdvancedSettings: {
     advancedReporting: { value: false, name: "Erweitertes Reporting" },
-    alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
   } satisfies AdvancedSettingType,
 
   // Types a variant doesn't offer stay in the payload (the server requires
@@ -106,10 +115,61 @@ const SettingsStore = {
   async getAdvancedSettings(): Promise<AdvancedSettingType> {
     try {
       const jsonValue = await BaseStore.getItem(this.keys.advancedSettings);
-      return BaseStore.parseJSON(jsonValue, this.defaultAdvancedSettings);
+      const stored =
+        BaseStore.parseJSON<Record<string, unknown>>(jsonValue, {}) ?? {};
+      // Only keep known keys — stored payloads from older builds may still
+      // carry removed settings (e.g. "alwaysDarkMode"), which would otherwise
+      // show up as orphaned switches.
+      const result = { ...this.defaultAdvancedSettings };
+      for (const key of Object.keys(result) as (keyof AdvancedSettingType)[]) {
+        const raw = stored[key] as { value?: unknown } | undefined;
+        if (typeof raw?.value === "boolean") {
+          result[key] = { ...result[key], value: raw.value };
+        }
+      }
+      return result;
     } catch (error) {
       console.error("Error retrieving advanced settings:", error);
       return this.defaultAdvancedSettings;
+    }
+  },
+
+  /**
+   * Reads the theme preference. Users of earlier builds who had enabled the
+   * "Immer Dark Mode" switch (stored in the advanced settings) are migrated
+   * to "dark".
+   */
+  async getThemePreference(): Promise<ThemePreference> {
+    try {
+      // Read both keys up front: the advanced settings are rewritten (without
+      // the legacy switch) as soon as the SettingsProvider mounts.
+      const [storedValue, advancedJson] = await Promise.all([
+        BaseStore.getItem(this.keys.themePreference),
+        BaseStore.getItem(this.keys.advancedSettings),
+      ]);
+      if (themePreferences.has(storedValue as ThemePreference)) {
+        return storedValue as ThemePreference;
+      }
+      const legacy = BaseStore.parseJSON<{
+        alwaysDarkMode?: { value?: boolean };
+      }>(advancedJson, {});
+      const preference: ThemePreference =
+        legacy?.alwaysDarkMode?.value === true
+          ? "dark"
+          : this.defaultThemePreference;
+      await this.setThemePreference(preference);
+      return preference;
+    } catch (error) {
+      console.error("Error retrieving theme preference:", error);
+      return this.defaultThemePreference;
+    }
+  },
+
+  async setThemePreference(preference: ThemePreference) {
+    try {
+      await BaseStore.setItem(this.keys.themePreference, preference);
+    } catch (error) {
+      console.error("Error saving theme preference:", error);
     }
   },
 

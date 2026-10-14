@@ -15,6 +15,7 @@ import {
   LockIcon,
   NotificationIcon,
   SettingsIcon,
+  ThemeIcon,
 } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import UiCollapsable from "#/components/ui/UiCollapsable";
@@ -39,6 +40,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import ApiUrlSetting from "#/screens/Settings/components/ApiUrlSetting";
 import BackupView from "#/screens/Settings/components/BackupView";
+import ThemeSetting from "#/screens/Settings/components/ThemeSetting";
 import type { NotificationSettingType, SettingType } from "#/types";
 
 const EASTER_EGG_TAP_COUNT = 10;
@@ -226,6 +228,13 @@ const SettingsScreen = () => {
               />
             </UiCollapsable>
           )}
+          <UiCollapsable
+            icon={<ThemeIcon color={primary} size={iconSizes.md} />}
+            title="Darstellung"
+            borderRadius={0}
+          >
+            <ThemeSetting />
+          </UiCollapsable>
           <UiCollapsable
             icon={<SettingsIcon color={primary} size={iconSizes.md} />}
             title="Erweitert"
