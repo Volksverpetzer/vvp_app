@@ -61,9 +61,10 @@ const ThemeSetting = () => {
 };
 
 const styles = StyleSheet.create({
+  // No top padding: the intro text sits directly under the section title,
+  // like the Feed section's description.
   container: {
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
     paddingBottom: spacing.xl,
     gap: spacing.sm,
   },

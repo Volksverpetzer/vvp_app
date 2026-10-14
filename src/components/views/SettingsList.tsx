@@ -52,7 +52,8 @@ const SettingsList = (properties: SettingsListProperties) => {
     <View
       style={[
         {
-          paddingTop: spacing.lg,
+          // An intro text sits directly under the section title.
+          paddingTop: description ? 0 : spacing.lg,
           paddingBottom: spacing.xl,
           paddingHorizontal: spacing.xl,
         },
