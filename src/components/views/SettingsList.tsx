@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiSwitch from "#/components/ui/UiSwitch";
@@ -35,8 +35,12 @@ interface SettingsListProperties {
 }
 
 // Shared by every settings row (switches, backup actions) so rows sit on the
-// same rhythm across sections; 44pt is also the minimum touch target.
-export const SETTINGS_ROW_MIN_HEIGHT = 44;
+// same rhythm across sections. Also the platform's minimum touch target:
+// 44pt on iOS (HIG), 48dp elsewhere (Material).
+export const SETTINGS_ROW_MIN_HEIGHT = Platform.select({
+  ios: 44,
+  default: 48,
+});
 
 const SettingsList = (properties: SettingsListProperties) => {
   // Tracks in-flight saves per key, not globally, so toggling one switch
