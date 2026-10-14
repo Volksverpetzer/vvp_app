@@ -205,10 +205,8 @@ const SettingsScreen = () => {
             title="Feed"
             borderRadius={0}
           >
-            <UiText size="base" style={styles.sectionText}>
-              Was möchtest du in deinem Feed sehen?
-            </UiText>
             <SettingsList
+              description="Was möchtest du in deinem Feed sehen?"
               saveSettings={saveContentSetting}
               settings={contentSettings}
             />
@@ -243,6 +241,8 @@ const SettingsScreen = () => {
             <SettingsList
               saveSettings={saveAdvancedSetting}
               settings={advancedSettings}
+              // The backup rows continue the list directly below.
+              style={Config.enableEngagement && { paddingBottom: 0 }}
             />
             {Config.isFoss && <ApiUrlSetting />}
             {Config.enableEngagement && <BackupView />}
@@ -371,9 +371,6 @@ const styles = StyleSheet.create({
   infoContainer: {
     paddingHorizontal: spacing.xl,
     gap: spacing.xl,
-  },
-  sectionText: {
-    paddingHorizontal: spacing.xl,
   },
 });
 

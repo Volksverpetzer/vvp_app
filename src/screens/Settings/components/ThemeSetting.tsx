@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.lg,
     paddingBottom: spacing.xl,
-    gap: spacing.md,
+    gap: spacing.sm,
   },
   segments: {
     flexDirection: "row",

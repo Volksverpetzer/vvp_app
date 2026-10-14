@@ -7,6 +7,7 @@ import { ActivityIndicator, View } from "react-native";
 import { DownloadIcon, UploadIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import { SETTINGS_ROW_MIN_HEIGHT } from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
@@ -121,13 +122,10 @@ const BackupView = () => {
     }
   };
 
-  const rowStyle = [
-    globalStyles.row,
-    { paddingBottom: spacing.xl, maxHeight: 45 },
-  ];
+  const rowStyle = [globalStyles.row, { minHeight: SETTINGS_ROW_MIN_HEIGHT }];
 
   return (
-    <View style={{ padding: spacing.xl }}>
+    <View style={{ paddingHorizontal: spacing.xl, paddingBottom: spacing.xl }}>
       <UiPressable
         accessibilityRole="button"
         onPress={handleExport}

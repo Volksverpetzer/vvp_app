@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { StyleProp, ViewStyle } from "react-native";
 import { View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
@@ -28,7 +29,14 @@ interface SettingsListProperties {
   disabled?: boolean;
   disabledMessage?: string;
   onDisabledPress?: () => void;
+  // Intro text shown above the switches.
+  description?: string;
+  style?: StyleProp<ViewStyle>;
 }
+
+// Shared by every settings row (switches, backup actions) so rows sit on the
+// same rhythm across sections; 44pt is also the minimum touch target.
+export const SETTINGS_ROW_MIN_HEIGHT = 44;
 
 const SettingsList = (properties: SettingsListProperties) => {
   // Tracks in-flight saves per key, not globally, so toggling one switch
@@ -37,12 +45,25 @@ const SettingsList = (properties: SettingsListProperties) => {
   const colorScheme = useAppColorScheme();
   const { textMuted } = Colors[colorScheme];
   const activeSettings = getEnabledFeeds(Config.feeds);
-  const { disabled, disabledMessage, onDisabledPress } = properties;
+  const { disabled, disabledMessage, onDisabledPress, description, style } =
+    properties;
 
   return (
     <View
-      style={{ paddingVertical: spacing.xl, paddingHorizontal: spacing.xl }}
+      style={[
+        {
+          paddingTop: spacing.lg,
+          paddingBottom: spacing.xl,
+          paddingHorizontal: spacing.xl,
+        },
+        style,
+      ]}
     >
+      {description && (
+        <UiText size="base" style={{ paddingBottom: spacing.sm }}>
+          {description}
+        </UiText>
+      )}
       {disabled &&
         disabledMessage &&
         (onDisabledPress ? (
@@ -81,10 +102,7 @@ const SettingsList = (properties: SettingsListProperties) => {
           return (
             <View
               key={key}
-              style={[
-                globalStyles.row,
-                { paddingTop: spacing.xl, maxHeight: 45 },
-              ]}
+              style={[globalStyles.row, { minHeight: SETTINGS_ROW_MIN_HEIGHT }]}
             >
               <UiText size="base">{setting.name}</UiText>
               <UiSwitch
