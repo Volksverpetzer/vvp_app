@@ -51,6 +51,7 @@ const AnnouncementCard = ({
         // expo-image's style type has no pointerEvents, so the wrapper
         // carries it (and the positioning).
         <View
+          testID="announcementMascot"
           style={{
             pointerEvents: "none",
             alignSelf: "center",
