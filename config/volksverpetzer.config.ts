@@ -137,8 +137,10 @@ const googleServicesFile = process.env.google_services;
 // Match only the app's deep-linkable shapes — a 1-segment page like
 // `/impressum-volksverpetzer/` (rendered in-app via the category webview) and a
 // 2-segment article `/{category}/{slug}` (route src/app/[category]/[slug].tsx),
-// each with an optional trailing slash. This deliberately does NOT match
-// `/wp-content/uploads/…` files (3+ segments), which should download in the
+// each with an optional trailing slash, plus a numbered page of a multi-page
+// article (`/{category}/{slug}/{page}`, route
+// src/app/[category]/[slug]/[page].tsx). This deliberately does NOT match
+// `/wp-content/uploads/…` files (4+ segments), which should download in the
 // browser instead. Advanced glob has no grouping, so the 1- and 2-segment cases
 // are two separate patterns.
 //
@@ -148,6 +150,9 @@ const googleServicesFile = process.env.google_services;
 const ARTICLE_PATH_PATTERNS = [
   "/[^/]+/{0,1}", // 1 segment, e.g. /impressum-volksverpetzer/
   "/[^/]+/[^/]+/{0,1}", // 2 segments, e.g. /aktuelles/slug/
+  // A page of a multi-page article ([nextpage] shortcodes), e.g.
+  // /aktuelles/slug/2/ — numeric only, so it doesn't claim upload paths.
+  "/[^/]+/[^/]+/[0-9]+/{0,1}",
 ];
 
 const DEEP_LINK_HOSTS = ["volksverpetzer.de", "pruefpunkt.org"];

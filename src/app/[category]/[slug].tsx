@@ -15,6 +15,8 @@ type LoadArticleParameters = {
   imageUrl?: string;
   slug: string;
   category?: string;
+  /** Third path segment, from the paged route (`/{category}/{slug}/{page}/`). */
+  page?: string;
   originalUrl?: string;
   // Expo Router exposes the URL fragment (…/#quellen) as the `#` param.
   "#"?: string;
@@ -34,8 +36,23 @@ const LoadArticle = () => {
   // segment, which Expo Router hands us as `category`.
   const isFlatArticle =
     Config.flatPermalinks && !parameters.slug && !!parameters.category;
-  const slug = isFlatArticle ? parameters.category : parameters.slug;
-  const category = isFlatArticle ? undefined : parameters.category;
+  // …and a page of a multi-page article (/{slug}/2/) arrives as category +
+  // slug, the slug being the page number.
+  const isFlatPagedArticle =
+    Config.flatPermalinks &&
+    !parameters.page &&
+    !!parameters.category &&
+    /^\d+$/.test(parameters.slug ?? "");
+  const slug =
+    isFlatArticle || isFlatPagedArticle ? parameters.category : parameters.slug;
+  const category =
+    isFlatArticle || isFlatPagedArticle ? undefined : parameters.category;
+  // Paged URLs of a multi-page article ([nextpage] shortcodes), as the
+  // website numbers them: /{category}/{slug}/2/ is page 2.
+  const pageSegment = isFlatPagedArticle ? parameters.slug : parameters.page;
+  const page = /^\d+$/.test(pageSegment ?? "")
+    ? Number(pageSegment)
+    : undefined;
   const anchorSuffix = anchor ? `#${encodeURIComponent(anchor)}` : "";
 
   // A WordPress feed entry from a different site than the primary one whose
@@ -118,8 +135,11 @@ const LoadArticle = () => {
     [slug, secondaryApi, originalUrl, wpUrl],
   );
 
+  // A third path segment that isn't a page number (see below).
+  const isUnknownSubpage = !!pageSegment && page === undefined;
+
   useEffect(() => {
-    if (!slug) return;
+    if (!slug || isUnknownSubpage) return;
     const controller = new AbortController();
 
     void fetchArticle(controller.signal);
@@ -127,7 +147,17 @@ const LoadArticle = () => {
     return () => {
       controller.abort();
     };
-  }, [slug, fetchArticle]);
+  }, [slug, isUnknownSubpage, fetchArticle]);
+
+  // A third path segment that isn't a page number isn't an article URL we
+  // know how to render natively — show the website instead.
+  if (isUnknownSubpage) {
+    const trimmedBase = wpUrl.replace(/\/+$/, "");
+    const url =
+      originalUrl ??
+      `${trimmedBase}/${[category, slug, pageSegment].filter(Boolean).join("/")}/${anchorSuffix}`;
+    return <EdgelessWebview uri={url as HttpsUrl} />;
+  }
 
   if (!slug) {
     const baseUrl = secondaryWp?.handle ?? wpUrl;
@@ -158,7 +188,9 @@ const LoadArticle = () => {
       imageUrl: imageUrl || article.imageUrl || "",
       imageCredit: imageCredit ?? article.imageCredit,
     };
-    return <ArticleScreen article={articleWithImage} anchor={anchor} />;
+    return (
+      <ArticleScreen article={articleWithImage} anchor={anchor} page={page} />
+    );
   }
 
   // If fetching failed, fall back to the webview for compatibility
@@ -182,7 +214,9 @@ const LoadArticle = () => {
       return path ? `${trimmedBase}/${path}/` : trimmedBase;
     };
 
-    const cleanPath = buildFallbackUrl(wpUrl, category, slug) + anchorSuffix;
+    const cleanPath =
+      buildFallbackUrl(wpUrl, category, slug, page ? String(page) : undefined) +
+      anchorSuffix;
     return <EdgelessWebview uri={cleanPath} />;
   }
 
