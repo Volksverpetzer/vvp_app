@@ -1,7 +1,6 @@
 import { act, fireEvent, render } from "@testing-library/react-native";
 import React from "react";
-import { Platform, Text } from "react-native";
-import useWindowDimensions from "react-native/Libraries/Utilities/useWindowDimensions";
+import { Platform, Text, useWindowDimensions } from "react-native";
 
 import FlatBoard from "#/screens/Onboarding/components/Flatboard";
 import type { OnBoardingData } from "#/screens/Onboarding/components/Flatboard";

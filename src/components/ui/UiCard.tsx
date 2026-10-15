@@ -1,11 +1,12 @@
 import { View } from "react-native";
+import type { ViewProps } from "react-native";
 
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import { CARD_PADDING } from "#/constants/GlobalStyles";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-export type UiCardProperties = View["props"];
+export type UiCardProperties = ViewProps;
 
 const UiCard = ({ style, ...otherProperties }: UiCardProperties) => {
   const colorScheme = useAppColorScheme();
