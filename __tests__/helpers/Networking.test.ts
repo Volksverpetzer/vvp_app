@@ -3,6 +3,8 @@ import { Platform } from "react-native";
 
 import * as Networking from "#/helpers/utils/networking";
 
+import type { AsyncMock } from "#tests/mocks/jestTypes";
+
 // Mock AbortController
 (globalThis as any).AbortController = class {
   signal = {};
@@ -40,7 +42,7 @@ describe("Networking utilities", () => {
 
   it("createClient sends default headers on every request", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -77,13 +79,14 @@ describe("Networking utilities", () => {
     const platform = jest.replaceProperty(Platform, "OS", "web");
     try {
       const client = Networking.createClient("https://example.com" as any);
-      (globalThis.fetch as jest.Mock<any>)
+      (globalThis.fetch as jest.Mock<AsyncMock>)
         .mockImplementationOnce(mockJsonResponse({}))
         .mockImplementationOnce(mockJsonResponse({}));
 
       // Custom headers on a GET would force a CORS preflight in browsers
       await client.request({ url: "/test" });
-      const getInit = (fetch as jest.Mock<any>).mock.calls[0][1] as RequestInit;
+      const getInit = (fetch as jest.Mock<AsyncMock>).mock
+        .calls[0][1] as RequestInit;
       expect(getInit.headers).not.toHaveProperty("Content-Type");
       expect(getInit.headers).not.toHaveProperty("User-Agent");
       expect(getInit.headers).not.toHaveProperty("Cache-Control");
@@ -92,7 +95,7 @@ describe("Networking utilities", () => {
 
       // A JSON body still declares its content type
       await client.request({ url: "/test", method: "POST", data: { a: 1 } });
-      const postInit = (fetch as jest.Mock<any>).mock
+      const postInit = (fetch as jest.Mock<AsyncMock>).mock
         .calls[1][1] as RequestInit;
       expect(postInit.headers).toHaveProperty(
         "Content-Type",
@@ -107,7 +110,7 @@ describe("Networking utilities", () => {
     const client = Networking.createClient("https://example.com" as any, {
       Referer: "https://example.com",
     });
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -124,7 +127,7 @@ describe("Networking utilities", () => {
   it("createClient resolves a base URL getter on every request", async () => {
     let base = "https://one.example.com";
     const client = Networking.createClient(() => base as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementation(
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementation(
       mockJsonResponse({}),
     );
 
@@ -133,12 +136,12 @@ describe("Networking utilities", () => {
     await client.request({ url: "/test" });
 
     expect(
-      (globalThis.fetch as jest.Mock<any>).mock.calls.map((c) => c[0]),
+      (globalThis.fetch as jest.Mock<AsyncMock>).mock.calls.map((c) => c[0]),
     ).toEqual(["https://one.example.com/test", "https://two.example.com/test"]);
   });
 
   it("createClient keeps the base URL's path for relative endpoints", async () => {
-    (globalThis.fetch as jest.Mock<any>).mockImplementation(
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementation(
       mockJsonResponse({}),
     );
 
@@ -157,7 +160,7 @@ describe("Networking utilities", () => {
     });
 
     expect(
-      (globalThis.fetch as jest.Mock<any>).mock.calls.map((c) => c[0]),
+      (globalThis.fetch as jest.Mock<AsyncMock>).mock.calls.map((c) => c[0]),
     ).toEqual([
       "https://self.hosted/api/proxy/regions?week=3",
       "https://self.hosted/api/posts?site=x",
@@ -169,7 +172,7 @@ describe("Networking utilities", () => {
   it("fetchWithTimeout resolves response data", async () => {
     const client = Networking.createClient("https://x" as any);
     const fakeResponse = { data: { foo: "bar" } };
-    const mockRequest = jest.fn<any>().mockResolvedValue(fakeResponse);
+    const mockRequest = jest.fn<AsyncMock>().mockResolvedValue(fakeResponse);
     client.request = mockRequest;
 
     const result = await Networking.fetchWithTimeout(client, "/p", {}, 1000);
@@ -185,7 +188,7 @@ describe("Networking utilities", () => {
   it("fetchWithTimeout handles errors correctly", async () => {
     const client = Networking.createClient("https://x" as any);
     const error = new Error("Network error");
-    client.request = jest.fn<any>().mockRejectedValue(error);
+    client.request = jest.fn<AsyncMock>().mockRejectedValue(error);
 
     await expect(Networking.fetchWithTimeout(client, "/p")).rejects.toThrow(
       "Network error",
@@ -197,7 +200,7 @@ describe("Networking utilities", () => {
 
   it("fetchWithTimeout uses default timeout of 60 seconds if not specified", async () => {
     const client = Networking.createClient("https://x" as any);
-    client.request = jest.fn<any>().mockResolvedValue({ data: {} });
+    client.request = jest.fn<AsyncMock>().mockResolvedValue({ data: {} });
 
     await Networking.fetchWithTimeout(client, "/p");
 
@@ -219,9 +222,11 @@ describe("Networking utilities", () => {
     let abortListener: (() => void) | undefined;
     const externalSignal = {
       aborted: false,
-      addEventListener: jest.fn((_event: string, cb: () => void) => {
-        abortListener = cb;
-      }),
+      addEventListener: jest.fn(
+        (_event: string, cb: () => void, _options?: unknown) => {
+          abortListener = cb;
+        },
+      ),
       removeEventListener: jest.fn(),
     };
 
@@ -229,7 +234,7 @@ describe("Networking utilities", () => {
       (globalThis as any).AbortController = TestAbortController;
       const client = Networking.createClient("https://x" as any);
       const fakeResponse = { data: { ok: true } };
-      const mockRequest = (jest.fn() as jest.Mock<any>).mockResolvedValue(
+      const mockRequest = (jest.fn() as jest.Mock<AsyncMock>).mockResolvedValue(
         fakeResponse,
       );
       client.request = mockRequest;
@@ -267,7 +272,7 @@ describe("Networking utilities", () => {
 
   it("FetchError preserves response body", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(
       mockJsonResponse({ error: "not found" }, 404),
     );
 
@@ -288,7 +293,7 @@ describe("Networking utilities", () => {
     try {
       const client = Networking.createClient("https://x" as any);
       const error = new Error("aborted");
-      client.request = jest.fn<any>().mockRejectedValue(error);
+      client.request = jest.fn<AsyncMock>().mockRejectedValue(error);
 
       await expect(Networking.fetchWithTimeout(client, "/p")).rejects.toThrow(
         "aborted",
@@ -317,7 +322,7 @@ describe("Networking utilities", () => {
 
     try {
       const client = Networking.createClient("https://x" as any);
-      client.request = jest.fn<any>().mockResolvedValue({ data: {} });
+      client.request = jest.fn<AsyncMock>().mockResolvedValue({ data: {} });
 
       await Networking.fetchWithTimeout(client, "/p", {
         signal: externalSignal as any,
@@ -332,7 +337,7 @@ describe("Networking utilities", () => {
 
   it("createClient resolves absolute URLs without prepending baseURL", async () => {
     const client = Networking.createClient("https://base.com" as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -346,7 +351,7 @@ describe("Networking utilities", () => {
 
   it("createClient skips null and undefined params but includes falsy values", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -355,7 +360,8 @@ describe("Networking utilities", () => {
       params: { q: "hello", skip: null, undef: undefined, page: 0 },
     });
 
-    const calledUrl = (fetch as jest.Mock<any>).mock.calls[0][0] as string;
+    const calledUrl = (fetch as jest.Mock<AsyncMock>).mock
+      .calls[0][0] as string;
     expect(calledUrl).toContain("q=hello");
     expect(calledUrl).toContain("page=0");
     expect(calledUrl).not.toContain("skip");
@@ -364,7 +370,7 @@ describe("Networking utilities", () => {
 
   it("createClient serialises POST body as JSON by default", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
@@ -374,25 +380,25 @@ describe("Networking utilities", () => {
       data: { key: "value" },
     });
 
-    const init = (fetch as jest.Mock<any>).mock.calls[0][1] as any;
+    const init = (fetch as jest.Mock<AsyncMock>).mock.calls[0][1] as any;
     expect(init.body).toBe(JSON.stringify({ key: "value" }));
   });
 
   it("createClient passes string body as-is for POST", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(
       mockJsonResponse({}),
     );
 
     await client.request({ url: "/raw", method: "POST", data: "plain text" });
 
-    const init = (fetch as jest.Mock<any>).mock.calls[0][1] as any;
+    const init = (fetch as jest.Mock<AsyncMock>).mock.calls[0][1] as any;
     expect(init.body).toBe("plain text");
   });
 
   it("createClient returns raw text when responseType is text", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(() =>
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
         status: 200,
@@ -409,7 +415,7 @@ describe("Networking utilities", () => {
 
   it("createClient parses empty response body as null", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(() =>
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
         status: 204,
@@ -426,7 +432,7 @@ describe("Networking utilities", () => {
 
   it("createClient falls back to raw text when response is not valid JSON", async () => {
     const client = Networking.createClient("https://example.com" as any);
-    (globalThis.fetch as jest.Mock<any>).mockImplementationOnce(() =>
+    (globalThis.fetch as jest.Mock<AsyncMock>).mockImplementationOnce(() =>
       Promise.resolve({
         ok: true,
         status: 200,
@@ -443,7 +449,9 @@ describe("Networking utilities", () => {
 
   it("get wrapper returns response data", async () => {
     const client = Networking.createClient("https://x" as any);
-    client.request = jest.fn<any>().mockResolvedValue({ data: { id: 1 } });
+    client.request = jest
+      .fn<AsyncMock>()
+      .mockResolvedValue({ data: { id: 1 } });
 
     const result = await Networking.get(client, "/item");
 
@@ -455,7 +463,9 @@ describe("Networking utilities", () => {
 
   it("post wrapper sends data and returns response", async () => {
     const client = Networking.createClient("https://x" as any);
-    client.request = jest.fn<any>().mockResolvedValue({ data: { ok: true } });
+    client.request = jest
+      .fn<AsyncMock>()
+      .mockResolvedValue({ data: { ok: true } });
 
     const result = await Networking.post(client, "/submit", { name: "test" });
 
@@ -468,7 +478,7 @@ describe("Networking utilities", () => {
   it("get retries once on a transient 5xx error, then succeeds", async () => {
     const client = Networking.createClient("https://x" as any);
     const request = jest
-      .fn<any>()
+      .fn<AsyncMock>()
       .mockRejectedValueOnce(
         new Networking.FetchError("Request failed with status 500", {
           status: 500,
@@ -496,7 +506,7 @@ describe("Networking utilities", () => {
   it("get retry delay removes its abort listener once the delay resolves normally", async () => {
     const client = Networking.createClient("https://x" as any);
     const request = jest
-      .fn<any>()
+      .fn<AsyncMock>()
       .mockRejectedValueOnce(
         new Networking.FetchError("Request failed with status 500", {
           status: 500,
@@ -537,7 +547,7 @@ describe("Networking utilities", () => {
   it("get retries once on a network-level TypeError, then succeeds", async () => {
     const client = Networking.createClient("https://x" as any);
     const request = jest
-      .fn<any>()
+      .fn<AsyncMock>()
       .mockRejectedValueOnce(new TypeError("Network request failed"))
       .mockResolvedValueOnce({ data: { ok: true } });
     client.request = request;
@@ -563,7 +573,7 @@ describe("Networking utilities", () => {
       url: "/p",
       body: null,
     });
-    const request = jest.fn<any>().mockRejectedValue(error);
+    const request = jest.fn<AsyncMock>().mockRejectedValue(error);
     client.request = request;
 
     const signal: any = {
@@ -591,7 +601,7 @@ describe("Networking utilities", () => {
       url: "/p",
       body: null,
     });
-    const request = jest.fn<any>().mockRejectedValue(error);
+    const request = jest.fn<AsyncMock>().mockRejectedValue(error);
     client.request = request;
 
     await expect(Networking.get(client, "/p")).rejects.toBe(error);
@@ -606,7 +616,7 @@ describe("Networking utilities", () => {
       url: "/p",
       body: null,
     });
-    client.request = jest.fn<any>().mockRejectedValue(error);
+    client.request = jest.fn<AsyncMock>().mockRejectedValue(error);
 
     await expect(
       Networking.get(client, "/p", { silentStatuses: [404] }),
@@ -622,7 +632,7 @@ describe("Networking utilities", () => {
       url: "/p",
       body: null,
     });
-    client.request = jest.fn<any>().mockRejectedValue(error);
+    client.request = jest.fn<AsyncMock>().mockRejectedValue(error);
 
     await expect(
       Networking.get(client, "/p", { silentStatuses: [404] }),
@@ -638,7 +648,7 @@ describe("Networking utilities", () => {
       url: "/p",
       body: null,
     });
-    const request = jest.fn<any>().mockRejectedValue(error);
+    const request = jest.fn<AsyncMock>().mockRejectedValue(error);
     client.request = request;
 
     mockSetTimeout.mockImplementation((cb: () => void, ms?: number) => {

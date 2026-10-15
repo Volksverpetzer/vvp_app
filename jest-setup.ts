@@ -9,26 +9,9 @@ declare global {
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
-jest.mock("react-native/Libraries/Interaction/InteractionManager", () => ({
-  createInteractionHandle: jest.fn(),
-  runAfterInteractions: jest.fn(),
-  setDeadline: jest.fn(),
-  clearInteractionHandle: jest.fn(),
-}));
-
 jest.mock("@react-native-vector-icons/lucide/static", () => ({
   default: jest.fn(),
   __esModule: true,
-}));
-
-// expo-image wires an ExpoObserve native-module integration at import time.
-// jest-expo's native-module auto-mock resolves the module to a stub without
-// getIntegrations(), so any test that imports expo-image throws "not a
-// function". expo-image ships no jest mock for it (yet), so stub the whole
-// integration out here instead.
-jest.mock("expo-image/src/observe", () => ({
-  initObserveIntegrationIfNeeded: jest.fn(),
-  initObserveIntegrationIfNeededImpl: jest.fn(),
 }));
 
 jest.mock("expo-constants", () => ({

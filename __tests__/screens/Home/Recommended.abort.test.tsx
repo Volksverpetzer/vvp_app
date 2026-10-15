@@ -4,6 +4,8 @@ import { act, render, waitFor } from "@testing-library/react-native";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import Recommended from "#/screens/Home/components/article/Recommended";
 
+import type { AsyncMock } from "#tests/mocks/jestTypes";
+
 jest.mock("#/helpers/network/IntelligenceAPI", () => ({
   __esModule: true,
   default: {
@@ -57,7 +59,7 @@ beforeEach(() => {
 describe("Recommended", () => {
   it("renders matched articles for urls within the configured wpUrl", async () => {
     const recommendations = (IntelligenceAPI as any)
-      .recommendations as jest.Mock<any>;
+      .recommendations as jest.Mock<AsyncMock>;
     recommendations.mockResolvedValue({
       results: [
         { url: "https://example.com/article/one", title: "One" },
@@ -75,7 +77,7 @@ describe("Recommended", () => {
       "#/constants/Config",
     ).default;
     const recommendations = (IntelligenceAPI as any)
-      .recommendations as jest.Mock<any>;
+      .recommendations as jest.Mock<AsyncMock>;
     const { aiUrl } = Config;
     delete Config.aiUrl;
     try {
@@ -88,7 +90,7 @@ describe("Recommended", () => {
 
   it("logs errors that are not caused by abort", async () => {
     const recommendations = (IntelligenceAPI as any)
-      .recommendations as jest.Mock<any>;
+      .recommendations as jest.Mock<AsyncMock>;
     const consoleErrorSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => {});

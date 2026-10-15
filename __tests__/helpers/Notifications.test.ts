@@ -11,6 +11,8 @@ import * as Notifications from "expo-notifications";
 import NotificationManager from "#/helpers/Notifications";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 
+import type { AsyncMock } from "#tests/mocks/jestTypes";
+
 // Mock dependencies
 jest.mock("react-native", () => ({
   Platform: {
@@ -478,7 +480,7 @@ describe("NotificationManager", () => {
           .spyOn(Notifications, "requestPermissionsAsync")
           .mockResolvedValue({ status: "denied" } as any);
         (
-          Notifications.setNotificationChannelAsync as jest.Mock<any>
+          Notifications.setNotificationChannelAsync as jest.Mock<AsyncMock>
         ).mockRejectedValueOnce(new Error("boom"));
 
         const Manager = freshManager();
@@ -598,7 +600,7 @@ describe("NotificationManager", () => {
       });
       // This variant hides new_fact_check
       (
-        SettingsStore.forceHiddenNotificationsOff as jest.Mock<any>
+        SettingsStore.forceHiddenNotificationsOff as jest.Mock
       ).mockImplementation((settings: any) => ({
         ...settings,
         new_fact_check: { ...settings.new_fact_check, value: false },
@@ -626,7 +628,7 @@ describe("NotificationManager", () => {
           .value,
       ).toBe(false);
       (
-        SettingsStore.forceHiddenNotificationsOff as jest.Mock<any>
+        SettingsStore.forceHiddenNotificationsOff as jest.Mock
       ).mockImplementation((settings: unknown) => settings);
     });
 

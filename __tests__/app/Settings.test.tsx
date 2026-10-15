@@ -13,6 +13,8 @@ import React, { useEffect } from "react";
 import SettingsScreen from "#/app/(tabs)/settings";
 import { toast } from "#/helpers/toast";
 
+import type { AsyncMock } from "#tests/mocks/jestTypes";
+
 let mockIsFoss = false;
 let mockEnableEngagement = false;
 let mockEnableActions = true;
@@ -214,7 +216,7 @@ describe("SettingsScreen", () => {
 
     it("disables the notification switches when permission is denied", async () => {
       const Notifications = jest.requireMock("#/helpers/Notifications") as {
-        default: { getPermissions: jest.Mock<any> };
+        default: { getPermissions: jest.Mock<AsyncMock> };
       };
       Notifications.default.getPermissions.mockResolvedValue({
         status: "denied",
@@ -229,7 +231,7 @@ describe("SettingsScreen", () => {
 
     it("keeps the notification switches enabled when permission is granted", async () => {
       const Notifications = jest.requireMock("#/helpers/Notifications") as {
-        default: { getPermissions: jest.Mock<any> };
+        default: { getPermissions: jest.Mock<AsyncMock> };
       };
       Notifications.default.getPermissions.mockResolvedValue({
         status: "granted",
@@ -245,7 +247,7 @@ describe("SettingsScreen", () => {
 
     it("opens system Settings when the disabled message is pressed", async () => {
       const Notifications = jest.requireMock("#/helpers/Notifications") as {
-        default: { getPermissions: jest.Mock<any> };
+        default: { getPermissions: jest.Mock<AsyncMock> };
       };
       Notifications.default.getPermissions.mockResolvedValue({
         status: "denied",
@@ -266,7 +268,7 @@ describe("SettingsScreen", () => {
     it("does not check permissions in FOSS mode", async () => {
       mockIsFoss = true;
       const Notifications = jest.requireMock("#/helpers/Notifications") as {
-        default: { getPermissions: jest.Mock<any> };
+        default: { getPermissions: jest.Mock<AsyncMock> };
       };
 
       await render(<SettingsScreen />);
