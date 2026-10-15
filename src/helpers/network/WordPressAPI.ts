@@ -26,6 +26,31 @@ export default class WordPressAPI {
     ImageCredit | undefined
   >();
 
+  // In-flight credit lookups by cache key, so concurrent callers share one.
+  private static readonly mediaCreditRequests = new Map<
+    string,
+    Promise<ImageCredit | undefined>
+  >();
+
+  // Settles the in-flight promise above once its batch returns.
+  private static readonly mediaCreditWaiters = new Map<
+    string,
+    {
+      resolve: (credit: ImageCredit | undefined) => void;
+      reject: (error: unknown) => void;
+    }
+  >();
+
+  // Media ids waiting to be fetched, per site origin. Collected over one tick
+  // and then fetched with as few list requests as possible — a long article
+  // mounts hundreds of images at once, and one request per image flooded the
+  // network (and the server) with parallel /media/{id} calls.
+  private static readonly mediaCreditQueue = new Map<string, Set<string>>();
+  private static mediaCreditFlush: ReturnType<typeof setTimeout> | undefined;
+
+  // The WordPress REST API's maximum per_page.
+  private static readonly MEDIA_BATCH_SIZE = 100;
+
   /**
    * Get posts sorted by date (newest first).
    * @param page - The page number to fetch (pagination)
@@ -151,29 +176,97 @@ export default class WordPressAPI {
   /**
    * Get the image credit for a media attachment by id, e.g. from the
    * wp-image-{id} class WordPress puts on images in post content.
+   * Lookups requested within the same tick are batched into a single
+   * /media?include=… request per site.
    * @param mediaId - The attachment id
    * @param articleUrl - Any URL on the article's site; determines which
    *   WordPress API to query (articles can come from secondary sites)
    */
-  static async getMediaCredit(
+  static getMediaCredit(
     mediaId: string,
     articleUrl: HttpsUrl,
-    signal?: AbortSignal,
   ): Promise<ImageCredit | undefined> {
     const origin = new URL(articleUrl).origin;
     const cacheKey = `${origin}/${mediaId}`;
     if (WordPressAPI.mediaCreditCache.has(cacheKey)) {
-      return WordPressAPI.mediaCreditCache.get(cacheKey);
+      return Promise.resolve(WordPressAPI.mediaCreditCache.get(cacheKey));
     }
+    const inFlight = WordPressAPI.mediaCreditRequests.get(cacheKey);
+    if (inFlight) return inFlight;
 
-    const data = await netGet<MediaResponse>(
-      WordPressAPI.client,
-      `${origin}/wp-json/wp/v2/media/${mediaId}`,
-      { params: { _fields: "meta" }, signal },
+    const queued = WordPressAPI.mediaCreditQueue.get(origin) ?? new Set();
+    queued.add(mediaId);
+    WordPressAPI.mediaCreditQueue.set(origin, queued);
+    WordPressAPI.mediaCreditFlush ??= setTimeout(
+      WordPressAPI.flushMediaCreditQueue,
+      0,
     );
-    const credit = WordPressAPI.extractImageCredit(data);
-    WordPressAPI.mediaCreditCache.set(cacheKey, credit);
-    return credit;
+
+    const request = new Promise<ImageCredit | undefined>((resolve, reject) => {
+      WordPressAPI.mediaCreditWaiters.set(cacheKey, { resolve, reject });
+    });
+    WordPressAPI.mediaCreditRequests.set(cacheKey, request);
+    return request;
+  }
+
+  private static flushMediaCreditQueue() {
+    WordPressAPI.mediaCreditFlush = undefined;
+    const queue = [...WordPressAPI.mediaCreditQueue];
+    WordPressAPI.mediaCreditQueue.clear();
+    for (const [origin, idSet] of queue) {
+      // Sorted so the same set of images always yields the same (CDN
+      // cacheable) URL.
+      const ids = [...idSet].sort();
+      for (
+        let index = 0;
+        index < ids.length;
+        index += WordPressAPI.MEDIA_BATCH_SIZE
+      ) {
+        void WordPressAPI.fetchMediaCredits(
+          origin,
+          ids.slice(index, index + WordPressAPI.MEDIA_BATCH_SIZE),
+        );
+      }
+    }
+  }
+
+  private static async fetchMediaCredits(origin: string, ids: string[]) {
+    const settle = (cacheKey: string) => {
+      const waiter = WordPressAPI.mediaCreditWaiters.get(cacheKey);
+      WordPressAPI.mediaCreditWaiters.delete(cacheKey);
+      WordPressAPI.mediaCreditRequests.delete(cacheKey);
+      return waiter;
+    };
+    try {
+      const items = await netGet<(MediaResponse & { id?: number })[]>(
+        WordPressAPI.client,
+        `${origin}/wp-json/wp/v2/media`,
+        {
+          params: {
+            include: ids.join(","),
+            per_page: ids.length,
+            _fields: "id,meta",
+          },
+        },
+      );
+      const byId = new Map(
+        (Array.isArray(items) ? items : []).map((item) => [
+          String(item.id),
+          item,
+        ]),
+      );
+      for (const id of ids) {
+        const cacheKey = `${origin}/${id}`;
+        // An id missing from the response (deleted or private media) has no
+        // credit to show; cache that too instead of asking again.
+        const credit = WordPressAPI.extractImageCredit(byId.get(id));
+        WordPressAPI.mediaCreditCache.set(cacheKey, credit);
+        settle(cacheKey)?.resolve(credit);
+      }
+    } catch (error) {
+      // Not cached, so a later render can retry.
+      for (const id of ids) settle(`${origin}/${id}`)?.reject(error);
+    }
   }
 
   /**

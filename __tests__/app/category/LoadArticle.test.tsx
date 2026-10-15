@@ -271,3 +271,104 @@ describe("LoadArticle with flat permalinks", () => {
     );
   });
 });
+
+describe("LoadArticle paged URLs (/{category}/{slug}/{page}/)", () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  const articlePageProp = () => {
+    const Article = jest.requireMock(
+      "#/screens/Home/components/article/Article",
+    );
+    const [props] = Article.mock.calls.at(-1);
+    return props.page as number | undefined;
+  };
+
+  it("passes the page number of a paged URL to ArticleScreen", async () => {
+    const WordPressAPI = jest.requireMock(
+      "#/helpers/network/WordPressAPI",
+    ).default;
+    WordPressAPI.getPost.mockResolvedValueOnce({
+      slug: "long-read",
+      _links: {},
+    });
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "aktuelles",
+      slug: "long-read",
+      page: "3",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() => expect(articlePageProp()).toBe(3));
+    expect(WordPressAPI.getPost).toHaveBeenCalledWith(
+      "long-read",
+      expect.anything(),
+    );
+  });
+
+  it("keeps the page in the webview fallback URL", async () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "aktuelles",
+      slug: "long-read",
+      page: "3",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() =>
+      expect(webviewUri()).toBe(
+        "https://volksverpetzer.de/aktuelles/long-read/3/",
+      ),
+    );
+  });
+
+  it("shows the website for a third segment that isn't a page number", async () => {
+    const WordPressAPI = jest.requireMock(
+      "#/helpers/network/WordPressAPI",
+    ).default;
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "aktuelles",
+      slug: "long-read",
+      page: "amp",
+    });
+
+    await render(<LoadArticle />);
+
+    expect(webviewUri()).toBe(
+      "https://volksverpetzer.de/aktuelles/long-read/amp/",
+    );
+    expect(WordPressAPI.getPost).not.toHaveBeenCalled();
+  });
+
+  it("reads /{slug}/{page}/ as a paged article with flat permalinks", async () => {
+    const config = jest.requireMock("#/constants/Config").default;
+    config.flatPermalinks = true;
+    try {
+      const WordPressAPI = jest.requireMock(
+        "#/helpers/network/WordPressAPI",
+      ).default;
+      WordPressAPI.getPost.mockResolvedValueOnce({
+        slug: "mein-artikel",
+        _links: {},
+      });
+      const { useLocalSearchParams } = jest.requireMock("expo-router");
+      useLocalSearchParams.mockReturnValue({
+        category: "mein-artikel",
+        slug: "2",
+      });
+
+      await render(<LoadArticle />);
+
+      await waitFor(() => expect(articlePageProp()).toBe(2));
+      expect(WordPressAPI.getPost).toHaveBeenCalledWith(
+        "mein-artikel",
+        expect.anything(),
+      );
+    } finally {
+      delete config.flatPermalinks;
+    }
+  });
+});

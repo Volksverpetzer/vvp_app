@@ -162,6 +162,10 @@ const RootLayout = () => {
                     options={{ title: "Artikel" }}
                   />
                   <Stack.Screen
+                    name="[category]/[slug]/[page]"
+                    options={{ title: "Artikel" }}
+                  />
+                  <Stack.Screen
                     name="insta/[post_id]"
                     options={{ title: "Artikel" }}
                   />

@@ -9,6 +9,7 @@ const PersonalStore = {
   keys: {
     onboardingDone: "onboarded",
     scrollPosition: "scrollPosition",
+    scrollPage: "scrollPage",
     audioPosition: "audioPosition",
     longPressTip: "longPressTip",
     lastSeenChangelog: "lastSeenChangelog",
@@ -142,6 +143,40 @@ const PersonalStore = {
       return BaseStore.parseJSON<number>(jsonValue, 0);
     } catch (error) {
       console.error("Error retrieving scroll position:", error);
+      return 0;
+    }
+  },
+
+  /**
+   * Stores the page (index) a multi-page article was last read on; the
+   * scroll position stored alongside it is the position on that page.
+   * @param {number} page - The page index to store.
+   * @param {string} slug - The slug of the article.
+   */
+  async setScrollPage(page: number, slug: string): Promise<void> {
+    try {
+      await BaseStore.setItem(
+        `${this.keys.scrollPage}_${slug}`,
+        JSON.stringify(page),
+      );
+    } catch (error) {
+      console.error("Error setting scroll page:", error);
+    }
+  },
+
+  /**
+   * Retrieves the page (index) a multi-page article was last read on.
+   * @param {string} slug - The slug of the article.
+   * @returns {Promise<number>} The stored page index, 0 if none.
+   */
+  async getScrollPage(slug: string): Promise<number> {
+    try {
+      const jsonValue = await BaseStore.getItem(
+        `${this.keys.scrollPage}_${slug}`,
+      );
+      return BaseStore.parseJSON<number>(jsonValue, 0);
+    } catch (error) {
+      console.error("Error retrieving scroll page:", error);
       return 0;
     }
   },

@@ -2,13 +2,29 @@ import { iframeModel } from "@native-html/iframe-plugin";
 import type {
   CustomTagRendererRecord,
   Element,
+  HTMLSourceDom,
   InternalRendererProps,
   TBlock,
+  TDocument,
+  TNode,
 } from "@native-html/render";
-import RenderHtml, { defaultHTMLElementModels } from "@native-html/render";
-import type { ChildNode } from "domhandler";
+import {
+  RenderHTMLConfigProvider,
+  RenderHTMLSource,
+  TRenderEngineProvider,
+  defaultHTMLElementModels,
+  useAmbientTRenderEngine,
+} from "@native-html/render";
+import type { ChildNode, Document } from "domhandler";
 import type { RefObject } from "react";
-import React, { useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { GestureResponderEvent, View } from "react-native";
 
 import Colors from "#/constants/Colors";
@@ -21,6 +37,7 @@ import { decodeAnchor } from "#/helpers/utils/anchors";
 import { getTagStyles } from "#/helpers/utils/articleTagStyles";
 import { isSameHost } from "#/helpers/utils/host";
 import { isHttpsUrl } from "#/helpers/utils/networking";
+import { parseArticlePageLink } from "#/helpers/utils/posts";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
 import EmRenderer from "#/screens/Home/components/article/renderer/EmRenderer";
@@ -37,6 +54,17 @@ import {
   handleRemovableElements,
   handleSpecialElements,
 } from "./ElementHandlers";
+import {
+  BodyChunkOffsetContext,
+  chunkIndexOfId,
+  splitIntoChunks,
+} from "./bodyChunks";
+
+const IGNORED_DOM_TAGS = ["script", "style", "noscript", "input"];
+const DEFAULT_TEXT_PROPS = {
+  selectable: true,
+  android_hyphenationFrequency: "normal",
+} as const;
 
 interface BodyProperties {
   article_content: string;
@@ -50,7 +78,139 @@ interface BodyProperties {
   headerRefs: RefObject<Record<string, RefObject<View>>>;
   /** Scrolls the article to the header with the given (decoded) anchor id. */
   onAnchorPress: (id: string) => void;
+  /** Decoded id of a deep-link target; its part of the body renders first. */
+  anchor?: string;
+  /** Called (in a layout effect) once the whole body has been rendered. */
+  onRendered?: () => void;
+  /**
+   * Called for a link to one of the article's own paged URLs (`…/3/`) with
+   * its website page number and decoded fragment. Without it, such links
+   * open like any other internal link.
+   */
+  onPagePress?: (pageNumber: number, anchor?: string) => void;
 }
+
+/**
+ * Runs the callback once the JS thread is idle (or on the next macrotask
+ * where requestIdleCallback isn't available), returning a cancel function.
+ */
+const whenIdle = (callback: () => void): (() => void) => {
+  if (typeof requestIdleCallback === "function") {
+    const handle = requestIdleCallback(callback, { timeout: 100 });
+    return () => cancelIdleCallback(handle);
+  }
+  const handle = setTimeout(callback, 0);
+  return () => clearTimeout(handle);
+};
+
+const bodyOf = (tree: TDocument): TNode | undefined =>
+  tree.children.find((child) => child.tagName === "body");
+
+interface ChunkProperties {
+  dom: Document;
+  width: number;
+  getOffset: () => number;
+  onTTreeChange: (tree: TDocument) => void;
+}
+
+const Chunk = React.memo(function Chunk({
+  dom,
+  width,
+  getOffset,
+  onTTreeChange,
+}: ChunkProperties) {
+  const source = useMemo(
+    // The DOM comes from the engine's own parser (via the app's newer
+    // domhandler types, which describe the same objects).
+    () => ({ dom: dom as unknown as HTMLSourceDom["dom"] }),
+    [dom],
+  );
+  return (
+    <BodyChunkOffsetContext.Provider value={getOffset}>
+      <RenderHTMLSource
+        source={source}
+        contentWidth={width}
+        onTTreeChange={onTTreeChange}
+      />
+    </BodyChunkOffsetContext.Provider>
+  );
+});
+
+interface ChunkedSourceProperties {
+  html: string;
+  width: number;
+  anchor?: string;
+  onRendered?: () => void;
+}
+
+/**
+ * Renders the article body a chunk of top-level blocks at a time: the first
+ * chunk right away, each further one once the JS thread is idle again.
+ * Building and mounting the whole body of a long article at once (~2000
+ * top-level blocks on the AfD chronology) blocked the JS thread for seconds
+ * before anything showed up. The chunk containing a deep-link anchor, and
+ * all chunks before it, render immediately so the anchor can be aligned.
+ */
+const ChunkedSource = ({
+  html,
+  width,
+  anchor,
+  onRendered,
+}: ChunkedSourceProperties) => {
+  const engine = useAmbientTRenderEngine();
+  const chunks = useMemo(
+    () => splitIntoChunks(engine.parseDocument(html) as unknown as Document),
+    [engine, html],
+  );
+  const anchorChunk = useMemo(
+    () => chunkIndexOfId(chunks, anchor),
+    [chunks, anchor],
+  );
+  const [renderedCount, setRenderedCount] = useState(1);
+  const visibleCount = Math.min(
+    chunks.length,
+    Math.max(renderedCount, anchorChunk + 1),
+  );
+
+  useEffect(() => {
+    if (visibleCount >= chunks.length) return;
+    return whenIdle(() => setRenderedCount(visibleCount + 1));
+  }, [visibleCount, chunks.length]);
+
+  useLayoutEffect(() => {
+    if (visibleCount >= chunks.length) onRendered?.();
+  }, [visibleCount, chunks.length, onRendered]);
+
+  // Top-level block count of each built chunk, for BodyChunkOffsetContext.
+  const blockCounts = useRef<number[]>([]);
+  const chunkCallbacks = useMemo(
+    () =>
+      chunks.map((_, index) => ({
+        getOffset: () =>
+          blockCounts.current
+            .slice(0, index)
+            .reduce((sum, count) => sum + (count ?? 0), 0),
+        onTTreeChange: (tree: TDocument) => {
+          blockCounts.current[index] = bodyOf(tree)?.children.length ?? 0;
+        },
+      })),
+    [chunks],
+  );
+
+  return (
+    <>
+      {chunks.slice(0, visibleCount).map((dom, index) => (
+        <Chunk
+          key={index}
+          dom={dom}
+          width={width}
+          getOffset={chunkCallbacks[index].getOffset}
+          onTTreeChange={chunkCallbacks[index].onTTreeChange}
+        />
+      ))}
+    </>
+  );
+};
 
 /**
  * Renders the body of an article
@@ -68,6 +228,9 @@ const Body = (properties: BodyProperties) => {
     onAnchorPress,
     slug,
     article_title,
+    anchor,
+    onRendered,
+    onPagePress,
   } = properties;
   const colorScheme = useAppColorScheme();
 
@@ -118,6 +281,18 @@ const Body = (properties: BodyProperties) => {
     [],
   );
 
+  // A tapped in-article anchor may point into a chunk that isn't rendered
+  // yet; render up to it like a deep-link anchor.
+  const [tappedAnchor, setTappedAnchor] = useState<string>();
+  useEffect(() => setTappedAnchor(undefined), [anchor]);
+  const handleAnchorPress = useCallback(
+    (id: string) => {
+      setTappedAnchor(id);
+      onAnchorPress(id);
+    },
+    [onAnchorPress],
+  );
+
   const renderersProperties = useMemo(
     () => ({
       a: {
@@ -127,6 +302,16 @@ const Body = (properties: BodyProperties) => {
          * @param {string} href - The URL of the link
          */
         onPress: (event: GestureResponderEvent, href: string) => {
+          const pageLink = onPagePress
+            ? parseArticlePageLink(href, article_link)
+            : undefined;
+          if (pageLink) {
+            onPagePress(
+              pageLink.pageNumber,
+              pageLink.anchor ? decodeAnchor(pageLink.anchor) : undefined,
+            );
+            return;
+          }
           if (
             href.includes(article_link) ||
             href.startsWith("about:///blank#")
@@ -134,7 +319,7 @@ const Body = (properties: BodyProperties) => {
             if (href.includes("#")) {
               // Fragments in hrefs may be percent-encoded (e.g. a trailing
               // %20), while header ids are raw text — decode once to match.
-              onAnchorPress(decodeAnchor(href.split("#")[1] ?? ""));
+              handleAnchorPress(decodeAnchor(href.split("#")[1] ?? ""));
             }
             return;
           }
@@ -147,37 +332,52 @@ const Body = (properties: BodyProperties) => {
         },
       },
     }),
-    [article_link, article_title, onAnchorPress, onLinkPress, slug],
+    [
+      article_link,
+      article_title,
+      handleAnchorPress,
+      onLinkPress,
+      onPagePress,
+      slug,
+    ],
   );
 
   /**
    * Processes HTML elements and removes unwanted elements from the DOM
    * @param {ChildNode & Element} element - The HTML element to process
    */
-  const onElement = (element: ChildNode & Element) => {
-    const domElement = element;
-    if (handleEmbeddedContent(domElement)) return;
-    if (handleRemovableElements(domElement)) return;
-    if (handleSpecialElements(domElement)) return;
-    if (handleContainerElements(domElement)) return;
-    handleImageElements(domElement);
-  };
+  const domVisitors = useMemo(
+    () => ({
+      onElement: (element: ChildNode & Element) => {
+        const domElement = element;
+        if (handleEmbeddedContent(domElement)) return;
+        if (handleRemovableElements(domElement)) return;
+        if (handleSpecialElements(domElement)) return;
+        if (handleContainerElements(domElement)) return;
+        handleImageElements(domElement);
+      },
+    }),
+    [],
+  );
+
+  // Memoized: the render engine is rebuilt (and the whole body re-parsed)
+  // whenever any of its config props changes identity.
+  const baseStyle = useMemo(
+    () => ({
+      fontFamily: fontFamily.regular,
+      maxWidth: maxWidth,
+      color: Colors[colorScheme].text,
+    }),
+    [maxWidth, colorScheme],
+  );
 
   return (
-    <RenderHtml
-      source={{ html: article_content.replace(/<style>.*<\/style>/s, "") }}
-      renderers={renderers}
+    <TRenderEngineProvider
       tagsStyles={articleTagStyles}
-      ignoredDomTags={["script", "style", "noscript", "input"]}
-      renderersProps={renderersProperties}
-      defaultTextProps={{
-        selectable: true,
-        android_hyphenationFrequency: "normal",
-      }}
+      ignoredDomTags={IGNORED_DOM_TAGS}
       systemFonts={SOURCE_SANS_FONTS}
-      contentWidth={width}
       customHTMLElementModels={customHTMLElementModels}
-      domVisitors={{ onElement }}
+      domVisitors={domVisitors}
       // Every visual style comes from tagsStyles/baseStyle/the custom
       // renderers below — nothing implicit from the engine's own default
       // stylesheet. That default stylesheet isn't part of this library's
@@ -186,12 +386,21 @@ const Body = (properties: BodyProperties) => {
       // own tagsStyles for it hadn't changed) — disabling it removes that
       // whole class of upgrade risk.
       enableUserAgentStyles={false}
-      baseStyle={{
-        fontFamily: fontFamily.regular,
-        maxWidth: maxWidth,
-        color: Colors[colorScheme].text,
-      }}
-    />
+      baseStyle={baseStyle}
+    >
+      <RenderHTMLConfigProvider
+        renderers={renderers}
+        renderersProps={renderersProperties}
+        defaultTextProps={DEFAULT_TEXT_PROPS}
+      >
+        <ChunkedSource
+          html={article_content}
+          width={width}
+          anchor={tappedAnchor ?? anchor}
+          onRendered={onRendered}
+        />
+      </RenderHTMLConfigProvider>
+    </TRenderEngineProvider>
   );
 };
 
