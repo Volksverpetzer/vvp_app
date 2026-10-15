@@ -109,6 +109,11 @@ describe("Icons", () => {
     expect(renderedNames()).toEqual(["play"]);
   });
 
+  it("PlayIcon keeps the triangle at half the circle's size", async () => {
+    await render(<Icons.PlayIcon size={56} />);
+    expect(mockLucide.mock.calls[0][0].size).toBe(28);
+  });
+
   it("StatisticsIcon renders the given glyph", async () => {
     await render(<Icons.StatisticsIcon name="zap" />);
     expect(renderedNames()).toEqual(["zap"]);
