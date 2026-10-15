@@ -151,6 +151,10 @@ const RootLayout = () => {
             <AudioProvider>
               <AppFrame>
                 <Stack
+                  // SDK 58 types `id` as required once strictNullChecks is off
+                  // (string | undefined collapses to string); undefined keeps
+                  // the navigator unnamed as before.
+                  id={undefined}
                   screenOptions={{
                     headerShown: false,
                     gestureEnabled: true,

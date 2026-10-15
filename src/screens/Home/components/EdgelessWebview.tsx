@@ -153,7 +153,9 @@ const EdgelessWebview = ({
   showNavBar = true,
 }: EdgelessWebviewProperties) => {
   const insets = useSafeAreaInsets();
-  const webViewReference = useRef<WebView>(null);
+  // react-native-webview 14 defaults the extra-props generic to `undefined`,
+  // which collapses the props type; `object` restores the old `{}` default.
+  const webViewReference = useRef<WebView<object>>(null);
   // Whether a given WordPress path 404s or redirects on its slashless form
   // is inconsistent site-wide: some pages hard-404 without a trailing slash
   // and redirect fine with one (e.g. /stellenausschreibung-redaktion/), while
