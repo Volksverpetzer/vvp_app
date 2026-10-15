@@ -1,7 +1,9 @@
 overrides:
-  react-test-renderer: 19.2.3 # must match react version; @testing-library/react-native enforces exact match at runtime
+  "@react-native/metro-config": 0.88.0-rc.4 # auto-installed peer of react-native-worklets; keep in lockstep with react-native
+  react-test-renderer: 19.3.0 # must match react version; @testing-library/react-native enforces exact match at runtime
 allowBuilds:
   dtrace-provider: true # required by eas-cli; pnpm v11 blocks its build scripts otherwise
+  "@parcel/watcher": false # pulled in by jest-haste-map 30; prebuilt binary ships via optional deps, install script only builds from source
   esbuild: true
   msgpackr-extract: true
   unrs-resolver: true
