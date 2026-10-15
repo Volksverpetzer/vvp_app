@@ -184,6 +184,10 @@ export const SettingsIcon = ({ size, ...rest }: LucideProps) => (
   <Lucide {...rest} name="settings" size={size ?? iconSizes.lg} />
 );
 
+export const ThemeIcon = ({ size, ...rest }: LucideProps) => (
+  <Lucide {...rest} name="sun-moon" size={size ?? iconSizes.lg} />
+);
+
 export const ShareIcon = ({ size, ...rest }: LucideProps) => (
   <Lucide
     {...rest}

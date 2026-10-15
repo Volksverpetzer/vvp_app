@@ -1,0 +1,1 @@
+Neu: Unter Einstellungen → Darstellung kannst du jetzt zwischen System, Hell und Dunkel wählen. Außerdem Fehlerbehebungen und kleine Verbesserungen.

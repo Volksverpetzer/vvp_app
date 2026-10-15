@@ -32,6 +32,9 @@ import WelcomeVVP from "#assets/images/welcome.webp";
 
 const NOTIFICATION_STEP_ID = 7;
 
+// SettingsList has no padding of its own; keep the onboarding layout's.
+const SETTINGS_LIST_STYLE = { padding: spacing.xl };
+
 const Onboarding = () => {
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettingType>(
@@ -207,6 +210,7 @@ const Onboarding = () => {
           <SettingsList
             saveSettings={saveContentSetting}
             settings={contentSettings}
+            style={SETTINGS_LIST_STYLE}
           />
         </View>
       ),
@@ -244,6 +248,7 @@ const Onboarding = () => {
                   disabled={notificationPermissionDenied}
                   disabledMessage="Benachrichtigungen sind deaktiviert. Tippe hier, um sie in den Einstellungen zu aktivieren."
                   onDisabledPress={() => Linking.openSettings()}
+                  style={SETTINGS_LIST_STYLE}
                 />
               </View>
             ),

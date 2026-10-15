@@ -47,7 +47,7 @@ const SECONDARY_BG_SCREENS = new Set(["action", "support"]);
 /**
  * Manages the background color for the app shell — including the notch/status bar
  * area — based on the current screen and color scheme. Lives inside all providers
- * so forced dark mode is respected.
+ * so a forced light/dark theme is respected.
  */
 const AppFrame = ({ children }: PropsWithChildren) => {
   const colorScheme = useAppColorScheme();
