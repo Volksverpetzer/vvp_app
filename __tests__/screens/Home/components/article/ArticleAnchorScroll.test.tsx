@@ -1,4 +1,4 @@
-import { fireEvent, render } from "@testing-library/react-native";
+import { act, fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 import { ScrollView } from "react-native";
 
@@ -193,6 +193,28 @@ describe("ArticleScreen saved reading position", () => {
     await fireEvent(scrollView, "contentSizeChange", 400, 2000);
 
     expect(mockGetScrollPosition).not.toHaveBeenCalled();
+  });
+
+  it("drops a restore whose storage read finishes after the reader scrolled", async () => {
+    let resolvePosition: (progress: number) => void = () => {};
+    mockGetScrollPosition.mockReturnValue(
+      new Promise<number>((resolve) => {
+        resolvePosition = resolve;
+      }),
+    );
+    const scrollView = await renderAndResize();
+    expect(mockGetScrollPosition).toHaveBeenCalledTimes(1);
+
+    await fireEvent(scrollView, "scrollBeginDrag", scrollTo80);
+    await act(async () => {
+      resolvePosition(0.5);
+      await Promise.resolve();
+    });
+
+    expect(scrollToSpy).not.toHaveBeenCalledWith({
+      y: 1000,
+      animated: false,
+    });
   });
 
   it("does not restore when opened on a deep-link anchor", async () => {

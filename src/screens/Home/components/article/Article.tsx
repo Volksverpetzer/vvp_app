@@ -77,6 +77,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   // Whether the saved reading position was restored — or no longer should
   // be, because the reader or a deep-link anchor already moved the view.
   const positionRestoreHandled = useRef(false);
+  // Bumped whenever the reader (or an anchor) moves the view, so a restore
+  // whose storage read is still in flight knows not to apply its result.
+  const restoreGeneration = useRef(0);
+  const cancelPositionRestore = () => {
+    positionRestoreHandled.current = true;
+    restoreGeneration.current++;
+  };
   // Body renders long articles in chunks; until the last one is in, the
   // content height (and thus any scroll progress) is only partial.
   const bodyRendered = useRef(false);
@@ -158,6 +165,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
       pendingAnchor.current = id;
       // Jumping to an anchor replaces resuming the saved reading position.
       positionRestoreHandled.current = true;
+      restoreGeneration.current++;
       scrollToAnchor(id);
       // Bound the auto-align window. It normally ends when the user starts
       // scrolling, but react-native-web never fires onScrollBeginDrag for
@@ -176,6 +184,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const handleAnchorPress = useCallback(
     (id: string) => {
       positionRestoreHandled.current = true;
+      restoreGeneration.current++;
       // A tapped in-article anchor supersedes a deep-link anchor; otherwise
       // the next content resize would snap back to it.
       pendingAnchor.current = undefined;
@@ -241,8 +250,11 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const restoreScrollPosition = (contentHeight: number) => {
     if (positionRestoreHandled.current) return;
     positionRestoreHandled.current = true;
+    const generation = restoreGeneration.current;
     PersonalStore.getScrollPosition(slug).then((progress) => {
       if (!mounted.current || progress > 0.8) return;
+      // The reader moved the view while the position was being read.
+      if (generation !== restoreGeneration.current) return;
       if (pendingAnchor.current) return;
       savedPosition.current = progress;
       scrollReference.current?.scrollTo({
@@ -319,7 +331,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             // The user took over — stop snapping back to the anchor, and
             // don't yank them to the saved position anymore.
             pendingAnchor.current = undefined;
-            positionRestoreHandled.current = true;
+            cancelPositionRestore();
           }}
         >
           <View style={{ paddingBottom: 100 }}>
@@ -360,7 +372,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             // Back-to-top is explicit user navigation — it must win over a
             // still-pending deep-link anchor.
             pendingAnchor.current = undefined;
-            positionRestoreHandled.current = true;
+            cancelPositionRestore();
             scrollReference.current?.scrollTo({ y: 0, animated: true });
           }}
         />
