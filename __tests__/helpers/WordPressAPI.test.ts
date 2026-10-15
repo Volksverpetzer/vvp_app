@@ -185,10 +185,12 @@ describe("WordPressAPI", () => {
   });
 
   describe("getMediaCredit", () => {
-    it("requests the media endpoint on the article's own origin", async () => {
-      const spy = jest.spyOn(Networking, "get").mockResolvedValue({
-        meta: { isc_image_source: "Media Tenor" },
-      } as any);
+    it("requests the media list endpoint on the article's own origin", async () => {
+      const spy = jest
+        .spyOn(Networking, "get")
+        .mockResolvedValue([
+          { id: 101850, meta: { isc_image_source: "Media Tenor" } },
+        ] as any);
 
       const credit = await WordPressAPI.getMediaCredit(
         "101850",
@@ -197,8 +199,10 @@ describe("WordPressAPI", () => {
 
       expect(spy).toHaveBeenCalledWith(
         WordPressAPI["client"],
-        "https://volksverpetzer.de/wp-json/wp/v2/media/101850",
-        expect.objectContaining({ params: { _fields: "meta" } }),
+        "https://volksverpetzer.de/wp-json/wp/v2/media",
+        expect.objectContaining({
+          params: { include: "101850", per_page: 1, _fields: "id,meta" },
+        }),
       );
       expect(credit).toEqual({
         source: "Media Tenor",
@@ -208,10 +212,69 @@ describe("WordPressAPI", () => {
       spy.mockRestore();
     });
 
+    it("batches lookups from the same tick into one request per site", async () => {
+      const spy = jest.spyOn(Networking, "get").mockImplementation(((
+        _client: unknown,
+        url: string,
+      ) =>
+        Promise.resolve(
+          url.startsWith("https://volksverpetzer.de")
+            ? [
+                { id: 3, meta: { isc_image_source: "Three" } },
+                { id: 1, meta: { isc_image_source: "One" } },
+              ]
+            : [{ id: 7, meta: { isc_image_source: "Seven" } }],
+        )) as any);
+      const article = "https://volksverpetzer.de/aktuelles/batched/";
+
+      const credits = await Promise.all([
+        WordPressAPI.getMediaCredit("3", article),
+        WordPressAPI.getMediaCredit("1", article),
+        // Same id twice shares the pending lookup.
+        WordPressAPI.getMediaCredit("1", article),
+        // Missing from the response, e.g. deleted media.
+        WordPressAPI.getMediaCredit("2", article),
+        WordPressAPI.getMediaCredit("7", "https://www.pruefpunkt.org/x/"),
+      ]);
+
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith(
+        WordPressAPI["client"],
+        "https://volksverpetzer.de/wp-json/wp/v2/media",
+        expect.objectContaining({
+          params: { include: "1,2,3", per_page: 3, _fields: "id,meta" },
+        }),
+      );
+      expect(credits.map((credit) => credit?.source)).toEqual([
+        "Three",
+        "One",
+        "One",
+        undefined,
+        "Seven",
+      ]);
+      spy.mockRestore();
+    });
+
+    it("splits more ids than one page holds into several requests", async () => {
+      const spy = jest.spyOn(Networking, "get").mockResolvedValue([] as any);
+      const article = "https://volksverpetzer.de/aktuelles/many-images/";
+
+      await Promise.all(
+        Array.from({ length: 150 }, (_, index) =>
+          WordPressAPI.getMediaCredit(String(5000 + index), article),
+        ),
+      );
+
+      expect(spy).toHaveBeenCalledTimes(2);
+      spy.mockRestore();
+    });
+
     it("caches the result and does not re-request the same media", async () => {
-      const spy = jest.spyOn(Networking, "get").mockResolvedValue({
-        meta: { isc_image_source: "Cached Source" },
-      } as any);
+      const spy = jest
+        .spyOn(Networking, "get")
+        .mockResolvedValue([
+          { id: 999123, meta: { isc_image_source: "Cached Source" } },
+        ] as any);
 
       const first = await WordPressAPI.getMediaCredit(
         "999123",
@@ -224,6 +287,25 @@ describe("WordPressAPI", () => {
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(second).toEqual(first);
+      spy.mockRestore();
+    });
+
+    it("does not cache a failed lookup", async () => {
+      const spy = jest
+        .spyOn(Networking, "get")
+        .mockRejectedValueOnce(new Error("offline"))
+        .mockResolvedValueOnce([
+          { id: 424242, meta: { isc_image_source: "Retried" } },
+        ] as any);
+      const article = "https://volksverpetzer.de/aktuelles/retry/";
+
+      await expect(
+        WordPressAPI.getMediaCredit("424242", article),
+      ).rejects.toThrow("offline");
+      const credit = await WordPressAPI.getMediaCredit("424242", article);
+
+      expect(credit?.source).toBe("Retried");
+      expect(spy).toHaveBeenCalledTimes(2);
       spy.mockRestore();
     });
   });

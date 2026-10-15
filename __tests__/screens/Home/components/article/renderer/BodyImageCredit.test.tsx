@@ -95,11 +95,7 @@ describe("body image credits", () => {
 
     await waitFor(
       () => {
-        expect(mockGetMediaCredit).toHaveBeenCalledWith(
-          "101850",
-          articleLink,
-          expect.anything(),
-        );
+        expect(mockGetMediaCredit).toHaveBeenCalledWith("101850", articleLink);
       },
       { timeout: 5000 },
     );
