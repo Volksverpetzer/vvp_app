@@ -27,6 +27,10 @@ import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { stripVisualComposerShortcodes } from "#/helpers/utils/posts";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useBackToTop } from "#/hooks/useBackToTop";
+import {
+  ScrollViewportContext,
+  createScrollViewport,
+} from "#/hooks/useNearViewport";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
 import Body from "./Body";
@@ -96,7 +100,15 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   );
   const article_link = article.link;
   const _date = new Date(article.date);
-  const width = useWindowDimensions().width;
+  const { width, height: windowHeight } = useWindowDimensions();
+  // Lets article content (e.g. embedded article cards) defer work until the
+  // reader scrolls near it.
+  const viewport = useMemo(
+    () => createScrollViewport(innerViewReference, windowHeight),
+    // Only the initial height matters; scroll events report the real one.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   const maxWidth = 700;
   const date =
@@ -230,6 +242,10 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
    */
   const scrollListener = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     backToTop.onScroll(event);
+    viewport.update(
+      event.nativeEvent.contentOffset.y,
+      event.nativeEvent.layoutMeasurement.height,
+    );
     const progress =
       event.nativeEvent.contentOffset.y / event.nativeEvent.contentSize.height;
     scrollProgress.setValue(progress * 1.1 * width);
@@ -289,17 +305,19 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
               date={date}
               slug={slug}
             />
-            <Body
-              article_content={article_content}
-              article_title={article_title}
-              slug={slug}
-              article_link={article_link}
-              maxWidth={maxWidth}
-              width={width}
-              headerRefs={headerReferences}
-              onAnchorPress={handleAnchorPress}
-              onLinkPress={handleLinkPress}
-            />
+            <ScrollViewportContext.Provider value={viewport}>
+              <Body
+                article_content={article_content}
+                article_title={article_title}
+                slug={slug}
+                article_link={article_link}
+                maxWidth={maxWidth}
+                width={width}
+                headerRefs={headerReferences}
+                onAnchorPress={handleAnchorPress}
+                onLinkPress={handleLinkPress}
+              />
+            </ScrollViewportContext.Provider>
             <Recommended article_link={article_link}></Recommended>
             <Footer
               article_link={article_link}
