@@ -1,6 +1,7 @@
-import { render, waitFor } from "@testing-library/react-native";
-import React from "react";
+import { act, render, waitFor } from "@testing-library/react-native";
+import React, { forwardRef } from "react";
 
+import GenericPost from "#/components/posts/GenericPost";
 import Feed from "#/screens/Home/components/Feed";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 import type { Post } from "#/types";
@@ -55,6 +56,17 @@ jest.mock("#/screens/Home/fetchers/FetcherUtilities", () => ({
 }));
 
 const mockFetch = FetcherUtilities.fetchAndProcessPosts as jest.Mock;
+
+const makePost = (id: string): Post<unknown> => ({
+  id,
+  component: jest.fn(() => null) as any,
+  data: {},
+  datetime: "2024-01-01T00:00:00Z",
+  inView: false,
+  shareable: [],
+  contentFavIdentifier: `post-${id}`,
+  contentType: "article",
+});
 
 describe("Feed rendering", () => {
   beforeEach(() => jest.clearAllMocks());
@@ -114,5 +126,50 @@ describe("Feed rendering", () => {
     const { getAllByTestId } = await render(<Feed fetchers={[{ fetcher }]} />);
 
     await waitFor(() => expect(getAllByTestId("post-item")).toHaveLength(2));
+  });
+
+  it("marks posts as in view once they become visible", async () => {
+    // Wrap the real FlatList to capture the viewability callback the feed
+    // registers; the test renderer never computes viewability on its own
+    const ReactNativeModule = require("react-native");
+    const ActualFlatList = ReactNativeModule.FlatList;
+    let flatListProperties: any;
+    const SpyFlatList = forwardRef(function SpyFlatList(
+      properties: any,
+      reference,
+    ) {
+      flatListProperties = properties;
+      return <ActualFlatList ref={reference} {...properties} />;
+    });
+    const spy = jest
+      .spyOn(ReactNativeModule, "FlatList", "get")
+      .mockReturnValue(SpyFlatList);
+    const posts = [makePost("1"), makePost("2")];
+    mockFetch.mockResolvedValueOnce(posts);
+    const MockGenericPost = GenericPost as unknown as jest.Mock;
+
+    const fetcher = jest.fn().mockResolvedValue(posts);
+    const { getAllByTestId } = await render(<Feed fetchers={[{ fetcher }]} />);
+    await waitFor(() => expect(getAllByTestId("post-item")).toHaveLength(2));
+    const inViewOf = (id: string) =>
+      MockGenericPost.mock.calls.findLast(
+        ([props]: any) => props.contentFavIdentifier === `post-${id}`,
+      )[0].inView;
+    expect(inViewOf("1")).toBe(false);
+
+    const { onViewableItemsChanged } =
+      flatListProperties.viewabilityConfigCallbackPairs[0];
+    await act(() => {
+      onViewableItemsChanged({
+        viewableItems: [
+          { isViewable: true, item: posts[0] },
+          { isViewable: false, item: posts[1] },
+        ],
+      });
+    });
+
+    expect(inViewOf("1")).toBe(true);
+    expect(inViewOf("2")).toBe(false);
+    spy.mockRestore();
   });
 });
