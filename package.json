@@ -65,7 +65,7 @@
     "@react-native-vector-icons/lucide": "13.1.5",
     "@rive-app/react-native": "0.4.21",
     "@stripe/stripe-react-native": "0.64.0",
-    "@volksverpetzer/design-tokens": "0.9.0",
+    "@volksverpetzer/design-tokens": "0.9.1",
     "buffer": "6.0.3",
     "domhandler": "6.0.1",
     "domutils": "4.0.2",
