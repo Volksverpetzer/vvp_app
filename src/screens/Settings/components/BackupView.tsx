@@ -39,7 +39,7 @@ const BackupView = () => {
       const date = new Date().toISOString().split("T")[0];
       const filename = `vvp_data_${date}.json`;
       const file = new File(Paths.document, filename);
-      file.write(JSON.stringify({ favorites, sources }, null, 2));
+      await file.write(JSON.stringify({ favorites, sources }, null, 2));
       await Sharing.shareAsync(file.uri, {
         mimeType: "application/json",
         dialogTitle: "Backup exportieren",
