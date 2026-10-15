@@ -302,11 +302,11 @@ export default {
     licenseUrl:
       "https://github.com/software-mansion/react-native-screens/raw/HEAD/LICENSE",
   },
-  "react-native-svg@15.15.5": {
+  "react-native-svg@15.15.4": {
     licenses: "MIT",
-    repository: "https://github.com/software-mansion/react-native-svg",
+    repository: "https://github.com/react-native-community/react-native-svg",
     licenseUrl:
-      "https://github.com/software-mansion/react-native-svg/raw/HEAD/LICENSE",
+      "https://github.com/react-native-community/react-native-svg/raw/HEAD/LICENSE",
   },
   "react-native-toast-message@2.5.2": {
     licenses: "MIT",
