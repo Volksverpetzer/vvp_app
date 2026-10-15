@@ -152,6 +152,8 @@ export const PlayIcon = ({
   <View
     style={[
       {
+        width: size,
+        height: size,
         backgroundColor: "rgba(0,0,0,0.85)",
         borderRadius: radii.full,
         justifyContent: "center",
@@ -160,7 +162,15 @@ export const PlayIcon = ({
       style,
     ]}
   >
-    <Lucide {...rest} name="play" size={size} />
+    {/* Lucide's play glyph is a bare triangle that would fill the whole
+        circle; keep it at about half the circle's size, nudged right so it
+        looks optically centered. */}
+    <Lucide
+      {...rest}
+      name="play"
+      size={Math.round(size * 0.5)}
+      style={{ marginLeft: Math.round(size * 0.06) }}
+    />
   </View>
 );
 
