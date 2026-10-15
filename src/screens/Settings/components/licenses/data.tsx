@@ -202,7 +202,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-router@57.0.27": {
+  "expo-router@57.0.28": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -235,7 +235,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@57.0.29": {
+  "expo@57.0.30": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -302,11 +302,11 @@ export default {
     licenseUrl:
       "https://github.com/software-mansion/react-native-screens/raw/HEAD/LICENSE",
   },
-  "react-native-svg@15.15.4": {
+  "react-native-svg@15.15.5": {
     licenses: "MIT",
-    repository: "https://github.com/react-native-community/react-native-svg",
+    repository: "https://github.com/software-mansion/react-native-svg",
     licenseUrl:
-      "https://github.com/react-native-community/react-native-svg/raw/HEAD/LICENSE",
+      "https://github.com/software-mansion/react-native-svg/raw/HEAD/LICENSE",
   },
   "react-native-toast-message@2.5.2": {
     licenses: "MIT",
