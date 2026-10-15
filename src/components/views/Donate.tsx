@@ -2,6 +2,7 @@ import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import type { ScrollViewInstance } from "react-native";
 
 import AnimatedSuccess from "#/components/animations/AnimatedSuccess";
 import PaypalButton from "#/components/buttons/PaypalButton";
@@ -32,7 +33,7 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
   const [pickerWidth, setPickerWidth] = useState(0);
   const [successAnimated, setSuccessAnimated] = useState(false);
   const [isPlatformPaySupported, setIsPlatformPaySupported] = useState(true);
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance>(null);
   const colorScheme = useAppColorScheme();
   const paypalAlways =
     properties?.paypalAlways || !Config.donations.platformPay;

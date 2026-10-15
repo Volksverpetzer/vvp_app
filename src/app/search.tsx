@@ -2,7 +2,7 @@ import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { Animated, View } from "react-native";
-import type { TextInput } from "react-native";
+import type { TextInputInstance } from "react-native";
 
 import { SafetyIcon, SearchIcon } from "#/components/Icons";
 import NavBar from "#/components/bars/NavBar";
@@ -33,7 +33,7 @@ interface SearchContentProperties {
   setResultsLength: (length: number | undefined) => void;
   setIsLoading: (loading: boolean) => void;
   setSearchType: (type: "ai" | "artikel") => void;
-  searchRef: RefObject<TextInput>;
+  searchRef: RefObject<TextInputInstance>;
 }
 
 const SearchContent = ({
@@ -188,7 +188,7 @@ const SearchContent = ({
 const SearchScreen = () => {
   const parameters = useLocalSearchParams<{ tag: string }>();
   const tag: string | undefined = parameters?.tag;
-  const searchReference = useRef<TextInput>(null);
+  const searchReference = useRef<TextInputInstance>(null);
 
   // Focus the search input when the screen is focused (unless there's a tag)
   useFocusEffect(

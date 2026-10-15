@@ -3,6 +3,7 @@ import type { ImageLoadEventData } from "expo-image";
 import { Image } from "expo-image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Platform, View } from "react-native";
+import type { ViewInstance } from "react-native";
 import Animated, {
   Extrapolation,
   interpolate,
@@ -139,7 +140,7 @@ const InstaPostImage = ({
   // onWheel prop: React registers wheel listeners as passive by default
   // (matching the browser's own scroll-performance intervention), and
   // preventDefault() is silently ignored inside a passive listener.
-  const wrapperRef = React.useRef<View>(null);
+  const wrapperRef = React.useRef<ViewInstance>(null);
   const multiPhoto = photos.length > 1;
 
   useEffect(() => {

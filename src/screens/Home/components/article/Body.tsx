@@ -9,7 +9,7 @@ import RenderHtml, { defaultHTMLElementModels } from "@native-html/render";
 import type { ChildNode } from "domhandler";
 import type { RefObject } from "react";
 import React, { useMemo } from "react";
-import type { GestureResponderEvent, View } from "react-native";
+import type { GestureResponderEvent, ViewInstance } from "react-native";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -47,7 +47,7 @@ interface BodyProperties {
   width: number;
   maxWidth: number;
   /** Header refs by HTML id, owned by ArticleScreen (also used for deep-link anchors). */
-  headerRefs: RefObject<Record<string, RefObject<View>>>;
+  headerRefs: RefObject<Record<string, RefObject<ViewInstance>>>;
   /** Scrolls the article to the header with the given (decoded) anchor id. */
   onAnchorPress: (id: string) => void;
 }

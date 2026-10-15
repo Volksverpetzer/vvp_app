@@ -1,6 +1,7 @@
 import type { RefObject } from "react";
 import { useCallback, useMemo } from "react";
 import { Animated, Keyboard, TextInput, View } from "react-native";
+import type { TextInputInstance } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
@@ -19,7 +20,7 @@ interface SearchHeaderProperties {
   search: string;
   setSearch: (value: string) => void;
   setSearchParams: (value: string) => void;
-  searchRef: RefObject<TextInput>;
+  searchRef: RefObject<TextInputInstance>;
   resultsLength?: number;
   isLoading: boolean;
   showFaktenBot?: boolean;

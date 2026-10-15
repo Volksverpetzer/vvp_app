@@ -6,6 +6,8 @@ import type {
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  ScrollViewInstance,
+  ViewInstance,
 } from "react-native";
 import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
 
@@ -58,10 +60,10 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const { article, anchor } = properties;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const scrollProgress = useRef(new Animated.Value(0)).current;
-  const scrollReference = useRef<ScrollView>(null);
+  const scrollReference = useRef<ScrollViewInstance>(null);
   // Ref to the ScrollView's inner content view; anchor positions are
   // measured against it (see scrollToAnchor).
-  const innerViewReference = useRef<View>(null);
+  const innerViewReference = useRef<ViewInstance>(null);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backToTop = useBackToTop();
@@ -74,7 +76,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const heightCaptured = useRef(false);
   // Refs to rendered headers by their HTML id, registered by HeaderRenderer.
   // Used both for in-article anchor links and for deep links with a fragment.
-  const headerReferences = useRef<Record<string, RefObject<View>>>({});
+  const headerReferences = useRef<Record<string, RefObject<ViewInstance>>>({});
   // The anchor still waiting to be aligned. Content height keeps changing
   // while images load in, so we re-align on every content size change until
   // the user takes over scrolling (a one-shot scroll would land wrong).
