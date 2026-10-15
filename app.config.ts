@@ -84,6 +84,11 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
                 merchantIdentifier:
                   variableConfig.extraConfig.donations.merchantIdentifier,
                 enableGooglePay: false,
+                // Resolve the Stripe iOS SDK through CocoaPods: its Swift
+                // Package Manager path needs dynamic frameworks, but Expo's
+                // precompiled modules force React-Core dependents (Stripe
+                // included) to static linkage
+                disableSPM: true,
               },
             ] as [string, any],
             [
