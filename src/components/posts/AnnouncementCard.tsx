@@ -48,16 +48,18 @@ const AnnouncementCard = ({
   useEffect(() => {
     if (reportedImpressions.has(announcement.id)) return;
     reportedImpressions.add(announcement.id);
-    void registerAnnouncementEvent("Announcement Shown", announcement.id);
+    void registerAnnouncementEvent("Announcement Shown", announcement);
+    // Keyed on the id only: a new object for the same card is not a new impression.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [announcement.id]);
 
   const handleDismiss = () => {
-    void registerAnnouncementEvent("Announcement Dismissed", announcement.id);
+    void registerAnnouncementEvent("Announcement Dismissed", announcement);
     onDismiss(announcement.id);
   };
 
   const handleAction = () => {
-    void registerAnnouncementEvent("Announcement Action", announcement.id, {
+    void registerAnnouncementEvent("Announcement Action", announcement, {
       source: "button",
     });
     onDismiss(announcement.id);
@@ -125,7 +127,7 @@ const AnnouncementCard = ({
                     onPress={() => {
                       void registerAnnouncementEvent(
                         "Announcement Action",
-                        announcement.id,
+                        announcement,
                         { source: "link" },
                       );
                       onLinkPress(url, router);

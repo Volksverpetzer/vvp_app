@@ -182,7 +182,7 @@ describe("AnnouncementCard", () => {
       const impressions = mockRegisterAnnouncementEvent.mock.calls.filter(
         ([event]) => event === "Announcement Shown",
       );
-      expect(impressions).toEqual([["Announcement Shown", "impression-once"]]);
+      expect(impressions).toEqual([["Announcement Shown", shown]]);
     });
 
     it("reports a dismissal when 'Alles klar!' is pressed", async () => {
@@ -192,7 +192,7 @@ describe("AnnouncementCard", () => {
       await fireEvent.press(getByText("Alles klar!"));
       expect(mockRegisterAnnouncementEvent).toHaveBeenCalledWith(
         "Announcement Dismissed",
-        announcement.id,
+        announcement,
       );
       expect(mockRegisterAnnouncementEvent).not.toHaveBeenCalledWith(
         "Announcement Action",
@@ -208,7 +208,7 @@ describe("AnnouncementCard", () => {
       await fireEvent.press(getByText("Zu den Einstellungen"));
       expect(mockRegisterAnnouncementEvent).toHaveBeenCalledWith(
         "Announcement Action",
-        announcement.id,
+        announcement,
         { source: "button" },
       );
     });
@@ -226,7 +226,7 @@ describe("AnnouncementCard", () => {
       await fireEvent.press(getByText("Prüfpunkt"));
       expect(mockRegisterAnnouncementEvent).toHaveBeenCalledWith(
         "Announcement Action",
-        announcement.id,
+        expect.objectContaining({ id: announcement.id }),
         { source: "link" },
       );
     });

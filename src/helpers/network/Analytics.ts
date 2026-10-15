@@ -1,8 +1,10 @@
 import * as Application from "expo-application";
 import { Dimensions, Platform } from "react-native";
 
+import type { AnnouncementEntry } from "#/constants/Announcements";
 import Config from "#/constants/Config";
 import { resolveAnalyticsSite } from "#/helpers/utils/analyticsSite";
+import { parseInlineMarkdown } from "#/helpers/utils/inlineMarkdown";
 import { createClient, post } from "#/helpers/utils/networking";
 
 const plausibleClient = createClient("https://plausible.io");
@@ -133,21 +135,45 @@ const registerPostInteraction = (
 type AnnouncementEvent =
   "Announcement Shown" | "Announcement Action" | "Announcement Dismissed";
 
+const ANNOUNCEMENT_TITLE_MAX_LENGTH = 80;
+
+/**
+ * Human-readable label for an announcement in Plausible, where the bare id is
+ * hard to recognize: the first line of its message with the markdown
+ * stripped, truncated.
+ */
+const announcementTitle = ({ message }: AnnouncementEntry): string => {
+  const firstLine = parseInlineMarkdown(message.split("\n")[0])
+    .map((token) => token.content)
+    .join("")
+    .trim();
+  return firstLine.length > ANNOUNCEMENT_TITLE_MAX_LENGTH
+    ? `${firstLine.slice(0, ANNOUNCEMENT_TITLE_MAX_LENGTH - 1).trimEnd()}…`
+    : firstLine;
+};
+
 /**
  * Records the lifecycle of an in-feed announcement card (see
  * #/constants/Announcements): shown, its action taken (button or an inline
  * link), or dismissed via "Alles klar!". Separate event names (rather than one
  * event with an action prop) so each can be a Plausible goal and Shown →
- * Action can be a funnel; `announcement_id` breaks them down per card.
+ * Action can be a funnel. `announcement_id` is the stable key to break them
+ * down by; `announcement_title` makes the card recognizable in the dashboard.
  */
 const registerAnnouncementEvent = (
   event: AnnouncementEvent,
-  announcementId: string,
+  announcement: AnnouncementEntry,
   properties: { source?: "button" | "link" } = {},
 ): Promise<void> =>
   registerEvent("", event, {
-    announcement_id: announcementId,
+    announcement_id: announcement.id,
+    announcement_title: announcementTitle(announcement),
     ...properties,
   });
 
-export { registerAnnouncementEvent, registerEvent, registerPostInteraction };
+export {
+  announcementTitle,
+  registerAnnouncementEvent,
+  registerEvent,
+  registerPostInteraction,
+};
