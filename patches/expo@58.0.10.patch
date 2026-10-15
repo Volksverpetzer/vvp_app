@@ -1,0 +1,58 @@
+diff --git a/types/react-native-web.d.ts b/types/react-native-web.d.ts
+index 1fc21a25fb53e757c4fea694f0b83a4d52a2150a..3c83f5dbb1de5ce4b5271692f1e5aa53130cfb68 100644
+--- a/types/react-native-web.d.ts
++++ b/types/react-native-web.d.ts
+@@ -15,12 +15,8 @@ declare module 'react-native' {
+     /** @platform web */
+     backdropFilter?: string;
+     /** @platform web */
+-    animationDelay?: string | string[] | number | number[];
+-    /** @platform web */
+     animationDirection?: string | string[];
+     /** @platform web */
+-    animationDuration?: string | string[] | number | number[];
+-    /** @platform web */
+     animationFillMode?: string | string[];
+     /** @platform web */
+     animationName?: string | Record<string, any> | (string | Record<string, any>)[];
+@@ -83,16 +79,10 @@ declare module 'react-native' {
+     /** @platform web */
+     touchAction?: string;
+     /** @platform web */
+-    transitionDelay?: string | string[];
+-    /** @platform web */
+-    transitionDuration?: string | string[] | number;
+-    /** @platform web */
+     transitionProperty?: string | string[];
+     /** @platform web */
+     transitionTimingFunction?: string | Function | (string | Function)[];
+     /** @platform web */
+-    userSelect?: string;
+-    /** @platform web */
+     visibility?: string;
+     /** @platform web */
+     willChange?: string;
+@@ -116,12 +106,8 @@ declare module 'react-native' {
+     /** @platform web */
+     backdropFilter?: string;
+     /** @platform web */
+-    animationDelay?: string | string[] | number | number[];
+-    /** @platform web */
+     animationDirection?: string | string[];
+     /** @platform web */
+-    animationDuration?: string | string[] | number | number[];
+-    /** @platform web */
+     animationFillMode?: string | string[];
+     /** @platform web */
+     animationName?: string | Record<string, any> | (string | Record<string, any>)[];
+@@ -186,10 +172,6 @@ declare module 'react-native' {
+     /** @platform web */
+     touchAction?: string;
+     /** @platform web */
+-    transitionDelay?: string | string[];
+-    /** @platform web */
+-    transitionDuration?: string | string[];
+-    /** @platform web */
+     transitionProperty?: string | string[];
+     /** @platform web */
+     transitionTimingFunction?: string | Function | (string | Function)[];
