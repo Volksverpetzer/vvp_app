@@ -15,13 +15,16 @@ const loadAnnouncements = (variant: {
 };
 
 describe("Announcements", () => {
-  it("has VVP's podcast/Prüfpunkt announcement on the Volksverpetzer variant", () => {
+  it("has the Grimme-Preis vote first, then podcast/Prüfpunkt, on the Volksverpetzer variant", () => {
     const Announcements = loadAnnouncements({
       isVolksverpetzer: true,
       isMimikama: false,
     });
-    expect(Announcements).toHaveLength(1);
-    expect(Announcements[0].id).toBe("podcast-pruefpunkt-2026-08");
+    expect(Announcements.map((a) => a.id)).toEqual([
+      "grimme-preis-voting-2026-10",
+      "podcast-pruefpunkt-2026-08",
+    ]);
+    expect(Announcements[0].route).toMatch(/^https:\/\//);
   });
 
   it("has the under-the-hood announcement on the Mimikama variant", () => {
@@ -31,6 +34,7 @@ describe("Announcements", () => {
     });
     expect(Announcements).toHaveLength(1);
     expect(Announcements[0].id).toBe("under-the-hood-2026-09");
+    expect(Announcements.some((a) => a.id.startsWith("grimme"))).toBe(false);
     expect(Announcements[0].route).toEqual({
       pathname: "/(tabs)/contact",
       params: { category: "app_feedback" },

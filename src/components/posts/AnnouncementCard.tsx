@@ -40,7 +40,12 @@ const AnnouncementCard = ({
 
   const handleAction = () => {
     onDismiss(announcement.id);
-    router.push(announcement.route);
+    const { route } = announcement;
+    if (typeof route === "string" && route.startsWith("https://")) {
+      onLinkPress(route as HttpsUrl, router);
+    } else {
+      router.push(route);
+    }
   };
 
   const mascot = AppImages.announcementMascot;
