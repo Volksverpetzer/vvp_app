@@ -11,7 +11,7 @@ import { spacing } from "#/constants/Spacing";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl, InstaPostProperties } from "#/types";
 
 const InstaPostDetail = (properties: InstaPostProperties) => {
@@ -19,6 +19,7 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
 
   const router = useRouter();
   const corporate = useCorporateColor();
+  const linkColor = useLinkColor();
   const { width } = useWindowDimensions();
   const wpUrl = Config.wpUrl;
 
@@ -54,7 +55,7 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
         id={id}
         onLongPress={handleLongPress}
       />
-      <Hyperlink linkStyle={{ color: corporate }} onPress={handleLinkPress}>
+      <Hyperlink linkStyle={{ color: linkColor }} onPress={handleLinkPress}>
         <Typography
           type="body"
           style={{ paddingHorizontal: spacing.md, paddingBottom: spacing.huge }}

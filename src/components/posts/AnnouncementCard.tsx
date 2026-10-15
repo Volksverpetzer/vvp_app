@@ -36,7 +36,7 @@ const AnnouncementCard = ({
 }: AnnouncementCardProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
 
   const handleAction = () => {
     onDismiss(announcement.id);
@@ -98,7 +98,7 @@ const AnnouncementCard = ({
                     key={key}
                     onPress={() => onLinkPress(url, router)}
                     style={{
-                      color: corporate,
+                      color: linkColor,
                       textDecorationLine: "underline",
                     }}
                   >
