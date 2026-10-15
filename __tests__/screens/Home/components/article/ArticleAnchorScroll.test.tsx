@@ -1,5 +1,6 @@
 import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
+import { ScrollView } from "react-native";
 
 import ArticleScreen from "#/screens/Home/components/article/Article";
 import type { ArticleProperties } from "#/types";
@@ -8,11 +9,22 @@ import type { ArticleProperties } from "#/types";
 const mockRegisterEvent = jest.fn();
 const mockSetAchievement = jest.fn();
 const mockSetScrollPosition = jest.fn();
+const mockGetScrollPosition = jest.fn(() => Promise.resolve(0));
 
 jest.mock("expo-router", () => ({ useRouter: () => ({ push: jest.fn() }) }));
 
 // Child components are irrelevant to the scroll-tracking logic under test.
-jest.mock("#/screens/Home/components/article/Body", () => jest.fn(() => null));
+// Body renders long articles in chunks and reports when the last one is in.
+let mockBodyFinishesRendering = true;
+jest.mock("#/screens/Home/components/article/Body", () => {
+  const { useLayoutEffect } = jest.requireActual("react");
+  return jest.fn(({ onRendered }: { onRendered?: () => void }) => {
+    useLayoutEffect(() => {
+      if (mockBodyFinishesRendering) onRendered?.();
+    }, [onRendered]);
+    return null;
+  });
+});
 jest.mock("#/screens/Home/components/article/Header", () =>
   jest.fn(() => null),
 );
@@ -37,7 +49,7 @@ jest.mock("#/helpers/Achievements", () => ({
 jest.mock("#/helpers/Stores/PersonalStore", () => ({
   __esModule: true,
   default: {
-    getScrollPosition: jest.fn(() => Promise.resolve(0)),
+    getScrollPosition: () => mockGetScrollPosition(),
     setScrollPosition: (...args: unknown[]) => mockSetScrollPosition(...args),
   },
 }));
@@ -84,12 +96,15 @@ const renderAndScroll = async (anchor?: string) => {
     <ArticleScreen article={article} anchor={anchor} />,
   );
   const scrollView = await view.findByTestId("article-scroll");
-  fireEvent.scroll(scrollView, scrollTo80);
+  await fireEvent.scroll(scrollView, scrollTo80);
   return { view, scrollView };
 };
 
 describe("ArticleScreen anchor scroll tracking", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockBodyFinishesRendering = true;
+  });
 
   it("records a FullRead and saves position on a genuine user scroll", async () => {
     await renderAndScroll(undefined);
@@ -116,10 +131,73 @@ describe("ArticleScreen anchor scroll tracking", () => {
     const { scrollView } = await renderAndScroll("quellen");
 
     // User drag ends the auto-align; subsequent scrolls are real reading.
-    fireEvent(scrollView, "scrollBeginDrag", scrollTo80);
-    fireEvent.scroll(scrollView, scrollTo80);
+    await fireEvent(scrollView, "scrollBeginDrag", scrollTo80);
+    await fireEvent.scroll(scrollView, scrollTo80);
 
     expect(mockRegisterEvent).toHaveBeenCalledWith(article.link, "FullRead");
     expect(mockSetScrollPosition).toHaveBeenCalled();
+  });
+
+  it("does not track reading while the body is still rendering", async () => {
+    // Progress against a partially rendered body would be overstated.
+    mockBodyFinishesRendering = false;
+    await renderAndScroll(undefined);
+
+    expect(mockRegisterEvent).not.toHaveBeenCalledWith(
+      article.link,
+      "FullRead",
+    );
+    expect(mockSetScrollPosition).not.toHaveBeenCalled();
+  });
+});
+
+describe("ArticleScreen saved reading position", () => {
+  const scrollToSpy = jest.spyOn(ScrollView.prototype, "scrollTo");
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockBodyFinishesRendering = true;
+    mockGetScrollPosition.mockResolvedValue(0.5);
+  });
+
+  const renderAndResize = async (anchor?: string) => {
+    const view = await render(
+      <ArticleScreen article={article} anchor={anchor} />,
+    );
+    const scrollView = await view.findByTestId("article-scroll");
+    await fireEvent(scrollView, "contentSizeChange", 400, 2000);
+    return scrollView;
+  };
+
+  it("restores the saved position against the full content height", async () => {
+    await renderAndResize();
+
+    expect(scrollToSpy).toHaveBeenCalledWith({ y: 1000, animated: false });
+  });
+
+  it("waits for the whole body before restoring", async () => {
+    mockBodyFinishesRendering = false;
+    await renderAndResize();
+
+    expect(mockGetScrollPosition).not.toHaveBeenCalled();
+    expect(scrollToSpy).not.toHaveBeenCalledWith({
+      y: 1000,
+      animated: false,
+    });
+  });
+
+  it("does not restore once the reader started scrolling", async () => {
+    const view = await render(<ArticleScreen article={article} />);
+    const scrollView = await view.findByTestId("article-scroll");
+    await fireEvent(scrollView, "scrollBeginDrag", scrollTo80);
+    await fireEvent(scrollView, "contentSizeChange", 400, 2000);
+
+    expect(mockGetScrollPosition).not.toHaveBeenCalled();
+  });
+
+  it("does not restore when opened on a deep-link anchor", async () => {
+    await renderAndResize("quellen");
+
+    expect(mockGetScrollPosition).not.toHaveBeenCalled();
   });
 });
