@@ -137,4 +137,26 @@ describe("AnnouncementCard", () => {
     expect(onDismiss).toHaveBeenCalledWith(announcement.id);
     expect(mockPush).toHaveBeenCalledWith(announcement.route);
   });
+
+  it("dismisses and opens the url via onLinkPress for an external action", async () => {
+    const onDismiss = jest.fn();
+    const { getByText } = await render(
+      <AnnouncementCard
+        announcement={{
+          id: "external",
+          message: "Jetzt abstimmen!",
+          actionLabel: "Abstimmen",
+          route: "https://example.org/vote",
+        }}
+        onDismiss={onDismiss}
+      />,
+    );
+    await fireEvent.press(getByText("Abstimmen"));
+    expect(onDismiss).toHaveBeenCalledWith("external");
+    expect(mockOnLinkPress).toHaveBeenCalledWith(
+      "https://example.org/vote",
+      expect.anything(),
+    );
+    expect(mockPush).not.toHaveBeenCalled();
+  });
 });
