@@ -1,4 +1,4 @@
-const { getDefaultConfig } = require("expo/metro-config.js");
+const { getDefaultConfig } = require("expo/metro-config");
 const { resolve } = require("metro-resolver");
 
 const config = getDefaultConfig(__dirname);
