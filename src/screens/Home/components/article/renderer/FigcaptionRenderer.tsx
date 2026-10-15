@@ -6,7 +6,7 @@ import { MIN_TOUCH_TARGET } from "#/constants/IconSizes";
 import { useImageCredit } from "#/hooks/useImageCredit";
 import type { HttpsUrl } from "#/types";
 
-import { findImageTNode, mediaIdOf } from "./imageCreditNodes";
+import { figureOfCaption, findImageTNode, mediaIdOf } from "./imageCreditNodes";
 
 interface FigcaptionRendererProperties extends InternalRendererProps<TBlock> {
   url?: HttpsUrl;
@@ -21,7 +21,7 @@ const FigcaptionRenderer = ({
   ...properties
 }: FigcaptionRendererProperties) => {
   const { TDefaultRenderer, ...defaultProperties } = properties;
-  const image = findImageTNode(properties.tnode.parent ?? undefined);
+  const image = findImageTNode(figureOfCaption(properties.tnode));
   const credit = useImageCredit(mediaIdOf(image), url);
 
   // Inset the centered caption by the badge's touch target on both sides so the
