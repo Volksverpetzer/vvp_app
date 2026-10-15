@@ -109,6 +109,8 @@ const Body = (properties: BodyProperties) => {
     [width, maxWidth, onLinkPress, article_link, headerRefs],
   );
 
+  const source = useMemo(() => ({ html: article_content }), [article_content]);
+
   const customHTMLElementModels = useMemo(
     () => ({
       iframe: iframeModel,
@@ -165,7 +167,7 @@ const Body = (properties: BodyProperties) => {
 
   return (
     <RenderHtml
-      source={{ html: article_content.replace(/<style>.*<\/style>/s, "") }}
+      source={source}
       renderers={renderers}
       tagsStyles={articleTagStyles}
       ignoredDomTags={["script", "style", "noscript", "input"]}

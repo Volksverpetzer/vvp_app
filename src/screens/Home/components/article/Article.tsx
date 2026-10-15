@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import type { RefObject } from "react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import type {
   GestureResponderEvent,
   LayoutChangeEvent,
@@ -83,8 +83,16 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const slug = article.slug;
   const article_image = article.imageUrl;
   const article_title = article.title;
-  const article_content = stripVisualComposerShortcodes(
-    article.content?.rendered ?? "",
+  const rawContent = article.content?.rendered ?? "";
+  // Memoized: long articles run to ~1 MB of HTML, and this screen re-renders
+  // on every back-to-top visibility toggle while scrolling.
+  const article_content = useMemo(
+    () =>
+      stripVisualComposerShortcodes(rawContent).replace(
+        /<style>.*<\/style>/s,
+        "",
+      ),
+    [rawContent],
   );
   const article_link = article.link;
   const _date = new Date(article.date);
