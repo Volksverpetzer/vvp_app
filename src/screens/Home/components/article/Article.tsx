@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import type { RefObject } from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   GestureResponderEvent,
   NativeScrollEvent,
@@ -23,7 +23,12 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { registerViews } from "#/helpers/network/Engagement";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
-import { stripVisualComposerShortcodes } from "#/helpers/utils/posts";
+import {
+  findPageIndexForAnchor,
+  findPageIndexForPageNumber,
+  splitArticlePages,
+  stripVisualComposerShortcodes,
+} from "#/helpers/utils/posts";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useBackToTop } from "#/hooks/useBackToTop";
 import {
@@ -32,6 +37,10 @@ import {
 } from "#/hooks/useNearViewport";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
+import {
+  ArticlePageNavigation,
+  ArticleTableOfContents,
+} from "./ArticlePagination";
 import Body from "./Body";
 import Header from "./Header";
 import Recommended from "./Recommended";
@@ -45,6 +54,8 @@ interface ArticleScreenProperties {
   article: ArticleProperties;
   /** Decoded URL fragment of the deep link (e.g. "quellen") to scroll to. */
   anchor?: string;
+  /** Website page number of a paged deep link (`…/{slug}/3/`). */
+  page?: number;
 }
 
 /**
@@ -52,13 +63,17 @@ interface ArticleScreenProperties {
  *
  * Handles scrolling by rendering a progress bar and saving scroll position
  * to local storage. Also triggers "FullRead" analytics event when user
- * scrolls 70% down the article.
+ * scrolls 70% down the article (down its last page, for a paged one).
+ *
+ * Articles split into pages by WordPress `[nextpage]` shortcodes render one
+ * page at a time, with a table of contents above and previous/next buttons
+ * below the body.
  *
  * @param {ArticleProperties} properties - Article data from WordPress API
  * @returns
  */
 const ArticleScreen = (properties: ArticleScreenProperties) => {
-  const { article, anchor } = properties;
+  const { article, anchor, page } = properties;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const scrollProgress = useRef(new Animated.Value(0)).current;
   const scrollReference = useRef<ScrollView>(null);
@@ -89,6 +104,12 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const pendingAnchor = useRef(anchor);
   const anchorAlignTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const mounted = useRef(true);
+  // Latest content height, for restoring the position without waiting for
+  // another content size change.
+  const contentHeight = useRef(0);
+  // The view above the body (table of contents, or the body itself); a page
+  // change scrolls back to it.
+  const pageStartReference = useRef<View>(null);
   const slug = article.slug;
   const article_image = article.imageUrl;
   const article_title = article.title;
@@ -103,6 +124,27 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
       ),
     [rawContent],
   );
+  const pages = useMemo(
+    () => splitArticlePages(article_content),
+    [article_content],
+  );
+  const isPaged = pages.length > 1;
+  const [pageIndex, setPageIndex] = useState(() => {
+    const anchorPage = findPageIndexForAnchor(pages, anchor ?? "");
+    if (anchorPage >= 0) return anchorPage;
+    return Math.max(page ? findPageIndexForPageNumber(pages, page) : -1, 0);
+  });
+  // Mirrors pageIndex for callbacks that must not change identity with it.
+  const pageIndexReference = useRef(pageIndex);
+  // Body's anchor prop: the part of the page containing it renders first.
+  const [pageAnchor, setPageAnchor] = useState(anchor);
+  // Whether the page the reader was last on is still being looked up; the
+  // saved position within the page waits for it.
+  const pageRestorePending = useRef(isPaged && !anchor && !page);
+  // The page resumed from storage, whose saved position must survive.
+  const restoredPage = useRef<number>(undefined);
+  const currentPage = Math.min(pageIndex, pages.length - 1);
+  const isLastPage = currentPage === pages.length - 1;
   const article_link = article.link;
   const _date = new Date(article.date);
   const { width, height: windowHeight } = useWindowDimensions();
@@ -173,6 +215,58 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     [scrollToAnchor],
   );
 
+  /** Switches the rendered page; Body remounts and renders it from scratch. */
+  const showPage = useCallback((index: number) => {
+    if (index === pageIndexReference.current) return;
+    pageIndexReference.current = index;
+    // Progress against the old page's height means nothing for the new one.
+    bodyRendered.current = false;
+    setPageIndex(index);
+  }, []);
+
+  /**
+   * Navigates to a page of a multi-page article, as the reader asked: to
+   * the given anchor on it, or else to the start of the page. Remembers the
+   * page as the reading position.
+   * @param index The page index
+   * @param targetAnchor Decoded id of an element on that page to align on
+   */
+  const goToPage = useCallback(
+    (index: number, targetAnchor?: string) => {
+      if (index < 0 || index >= pages.length) return;
+      pageRestorePending.current = false;
+      positionRestoreHandled.current = true;
+      pendingAnchor.current = undefined;
+      showPage(index);
+      setPageAnchor(targetAnchor);
+      if (targetAnchor) {
+        alignToAnchor(targetAnchor);
+        return;
+      }
+      const pageStart = pageStartReference.current;
+      const innerView = innerViewReference.current;
+      if (!pageStart || !innerView) return;
+      pageStart.measureLayout(innerView, (_x, y) => {
+        scrollReference.current?.scrollTo({ y, animated: false });
+      });
+    },
+    [pages.length, showPage, alignToAnchor],
+  );
+
+  /** Aligns on an anchor, switching to the page containing it if needed. */
+  const goToAnchor = useCallback(
+    (id: string) => {
+      const target = findPageIndexForAnchor(pages, id);
+      if (target >= 0 && target !== pageIndexReference.current) {
+        goToPage(target, id);
+        return;
+      }
+      setPageAnchor(id);
+      alignToAnchor(id);
+    },
+    [pages, goToPage, alignToAnchor],
+  );
+
   const handleAnchorPress = useCallback(
     (id: string) => {
       positionRestoreHandled.current = true;
@@ -180,10 +274,24 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
       // the next content resize would snap back to it.
       pendingAnchor.current = undefined;
       // A target further down may not be rendered yet (Body renders it
-      // next); align on it once it is.
-      if (!scrollToAnchor(id)) alignToAnchor(id);
+      // next), or live on another page; align on it once it is rendered.
+      if (!scrollToAnchor(id)) goToAnchor(id);
     },
-    [scrollToAnchor, alignToAnchor],
+    [scrollToAnchor, goToAnchor],
+  );
+
+  // A link to one of the article's own paged URLs (`…/3/`).
+  const handlePagePress = useCallback(
+    (pageNumber: number, targetAnchor?: string) => {
+      const index = findPageIndexForPageNumber(pages, pageNumber);
+      // Page 1 is the plain permalink, even when an empty intro was dropped.
+      if (index >= 0 || pageNumber === 1) {
+        goToPage(Math.max(index, 0), targetAnchor);
+      } else if (targetAnchor) {
+        handleAnchorPress(targetAnchor);
+      }
+    },
+    [pages, goToPage, handleAnchorPress],
   );
 
   const handleBodyRendered = useCallback(() => {
@@ -209,8 +317,60 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     // existing screen instance instead of remounting it — re-arm the pending
     // anchor and jump right away (no-op if the headers aren't laid out yet;
     // onContentSizeChange picks it up then).
-    if (anchor) alignToAnchor(anchor);
-  }, [anchor, alignToAnchor]);
+    if (anchor) goToAnchor(anchor);
+  }, [anchor, goToAnchor]);
+
+  useEffect(() => {
+    // Same for a paged deep link (`…/3/`) without a fragment.
+    if (!page || anchor) return;
+    const index = findPageIndexForPageNumber(pages, page);
+    if (index >= 0 && index !== pageIndexReference.current) goToPage(index);
+    // Only a changed page param is a new navigation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  useEffect(() => {
+    // Remember the page of a multi-page article as part of the reading
+    // position; the saved position within it starts over.
+    if (!isPaged || pageRestorePending.current) return;
+    if (restoredPage.current === currentPage) {
+      restoredPage.current = undefined;
+      return;
+    }
+    savedPosition.current = 0;
+    PersonalStore.setScrollPage(currentPage, slug);
+    PersonalStore.setScrollPosition(0, slug);
+  }, [isPaged, currentPage, slug]);
+
+  useEffect(() => {
+    // Resume a multi-page article on the page the reader left it on; the
+    // position within that page is restored once it has rendered.
+    if (!pageRestorePending.current) return;
+    PersonalStore.getScrollPage(slug).then((savedPage) => {
+      if (!mounted.current || !pageRestorePending.current) return;
+      pageRestorePending.current = false;
+      if (positionRestoreHandled.current) {
+        // The reader started on this page instead; the position they save
+        // from here on belongs to it.
+        if (savedPage !== pageIndexReference.current) {
+          PersonalStore.setScrollPage(pageIndexReference.current, slug);
+        }
+        return;
+      }
+      if (
+        savedPage > 0 &&
+        savedPage < pages.length &&
+        savedPage !== pageIndexReference.current
+      ) {
+        restoredPage.current = savedPage;
+        showPage(savedPage);
+      } else if (bodyRendered.current) {
+        restoreScrollPosition(contentHeight.current);
+      }
+    });
+    // Once per article screen.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     registerViews(article_link);
@@ -236,17 +396,17 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
    * only once the whole body is rendered — the saved position is a fraction
    * of the full content height. Skipped when the reader (or a deep-link
    * anchor) moved the view first.
-   * @param contentHeight The scroll view's full content height
+   * @param height The scroll view's full content height
    */
-  const restoreScrollPosition = (contentHeight: number) => {
-    if (positionRestoreHandled.current) return;
+  const restoreScrollPosition = (height: number) => {
+    if (positionRestoreHandled.current || pageRestorePending.current) return;
     positionRestoreHandled.current = true;
     PersonalStore.getScrollPosition(slug).then((progress) => {
       if (!mounted.current || progress > 0.8) return;
       if (pendingAnchor.current) return;
       savedPosition.current = progress;
       scrollReference.current?.scrollTo({
-        y: contentHeight * progress,
+        y: height * progress,
         animated: false,
       });
     });
@@ -273,7 +433,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     // Likewise while the body is still rendering: progress against a partial
     // content height would overstate how far the reader got.
     if (pendingAnchor.current || !bodyRendered.current) return;
-    if (progress > 0.7 && !fullRead.current) {
+    if (isLastPage && progress > 0.7 && !fullRead.current) {
       fullRead.current = true;
       registerEvent(article_link, "FullRead");
       Achievements.setAchievementValue("reader", true);
@@ -306,13 +466,14 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
           ref={scrollReference}
           innerViewRef={innerViewReference}
           scrollEventThrottle={16}
-          onContentSizeChange={(_width, contentHeight) => {
+          onContentSizeChange={(_width, height) => {
+            contentHeight.current = height;
             // Re-align the pending anchor whenever async content (images,
             // embeds, further body chunks) resizes the article above it.
             if (pendingAnchor.current) {
               scrollToAnchor(pendingAnchor.current);
             } else if (bodyRendered.current) {
-              restoreScrollPosition(contentHeight);
+              restoreScrollPosition(height);
             }
           }}
           onScrollBeginDrag={() => {
@@ -331,9 +492,19 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
               date={date}
               slug={slug}
             />
+            <View ref={pageStartReference} collapsable={false}>
+              {isPaged && (
+                <ArticleTableOfContents
+                  pages={pages}
+                  currentPage={currentPage}
+                  onSelectPage={goToPage}
+                />
+              )}
+            </View>
             <ScrollViewportContext.Provider value={viewport}>
               <Body
-                article_content={article_content}
+                key={currentPage}
+                article_content={pages[currentPage].html}
                 article_title={article_title}
                 slug={slug}
                 article_link={article_link}
@@ -342,16 +513,28 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
                 headerRefs={headerReferences}
                 onAnchorPress={handleAnchorPress}
                 onLinkPress={handleLinkPress}
-                anchor={anchor}
+                anchor={pageAnchor}
                 onRendered={handleBodyRendered}
+                onPagePress={handlePagePress}
               />
             </ScrollViewportContext.Provider>
-            <Recommended article_link={article_link}></Recommended>
-            <Footer
-              article_link={article_link}
-              article_title={article_title}
-              onShare={onShare}
-            />
+            {isPaged && (
+              <ArticlePageNavigation
+                pages={pages}
+                currentPage={currentPage}
+                onSelectPage={goToPage}
+              />
+            )}
+            {isLastPage && (
+              <>
+                <Recommended article_link={article_link}></Recommended>
+                <Footer
+                  article_link={article_link}
+                  article_title={article_title}
+                  onShare={onShare}
+                />
+              </>
+            )}
           </View>
         </ScrollView>
         <BackToTopButton

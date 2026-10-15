@@ -37,6 +37,7 @@ import { decodeAnchor } from "#/helpers/utils/anchors";
 import { getTagStyles } from "#/helpers/utils/articleTagStyles";
 import { isSameHost } from "#/helpers/utils/host";
 import { isHttpsUrl } from "#/helpers/utils/networking";
+import { parseArticlePageLink } from "#/helpers/utils/posts";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
 import EmRenderer from "#/screens/Home/components/article/renderer/EmRenderer";
@@ -81,6 +82,12 @@ interface BodyProperties {
   anchor?: string;
   /** Called (in a layout effect) once the whole body has been rendered. */
   onRendered?: () => void;
+  /**
+   * Called for a link to one of the article's own paged URLs (`…/3/`) with
+   * its website page number and decoded fragment. Without it, such links
+   * open like any other internal link.
+   */
+  onPagePress?: (pageNumber: number, anchor?: string) => void;
 }
 
 /**
@@ -223,6 +230,7 @@ const Body = (properties: BodyProperties) => {
     article_title,
     anchor,
     onRendered,
+    onPagePress,
   } = properties;
   const colorScheme = useAppColorScheme();
 
@@ -294,6 +302,16 @@ const Body = (properties: BodyProperties) => {
          * @param {string} href - The URL of the link
          */
         onPress: (event: GestureResponderEvent, href: string) => {
+          const pageLink = onPagePress
+            ? parseArticlePageLink(href, article_link)
+            : undefined;
+          if (pageLink) {
+            onPagePress(
+              pageLink.pageNumber,
+              pageLink.anchor ? decodeAnchor(pageLink.anchor) : undefined,
+            );
+            return;
+          }
           if (
             href.includes(article_link) ||
             href.startsWith("about:///blank#")
@@ -314,7 +332,14 @@ const Body = (properties: BodyProperties) => {
         },
       },
     }),
-    [article_link, article_title, handleAnchorPress, onLinkPress, slug],
+    [
+      article_link,
+      article_title,
+      handleAnchorPress,
+      onLinkPress,
+      onPagePress,
+      slug,
+    ],
   );
 
   /**
