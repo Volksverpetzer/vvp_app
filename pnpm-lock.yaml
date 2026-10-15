@@ -163,6 +163,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  expo-atlas>expo-server: 58.0.5
   '@react-native/metro-config': 0.88.0-rc.4
   react-test-renderer: 19.3.0
 
@@ -3962,10 +3963,6 @@ packages:
         optional: true
       react-server-dom-webpack:
         optional: true
-
-  expo-server@57.0.3:
-    resolution: {integrity: sha512-aK+LdKzauHSGmsOStZtyxdzv0zWssCkxTw3m4QuOhfDSJsZaMRTd9O41d8ixU/QfELTbaJ0oRNcF7JFV/7O9YQ==}
-    engines: {node: '>=20.16.0'}
 
   expo-server@58.0.5:
     resolution: {integrity: sha512-FHYecxfGOuAhacHcanR6qCN8Cln9S+FFulcYetLu3ddDg55ohuCsMZ9U4Egzwdm+A2o6N+MdSoJKquBC5F9NIg==}
@@ -10817,7 +10814,7 @@ snapshots:
     dependencies:
       connect: 3.7.0(supports-color@8.1.1)
       expo: 58.0.10(patch_hash=e75f262f3bcb4ef44746da7de48407067beb51eb2e9564234502b206cf11bf5a)(e029d292a93c9215ba83f89ff7c73f03)
-      expo-server: 57.0.3
+      expo-server: 58.0.5
       morgan: 1.11.0(supports-color@8.1.1)
       open: 8.4.2
       serve-static: 2.2.1(supports-color@8.1.1)
@@ -11053,8 +11050,6 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
-
-  expo-server@57.0.3: {}
 
   expo-server@58.0.5: {}
 
