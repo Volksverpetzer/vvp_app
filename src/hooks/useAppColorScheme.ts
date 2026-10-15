@@ -37,6 +37,15 @@ export const useCorporateColor = () => {
   return Colors[colorScheme].primary;
 };
 
+/**
+ * A hook that returns the link text color for the current color scheme.
+ * @returns The link text color for the current color scheme.
+ */
+export const useLinkColor = () => {
+  const colorScheme = useAppColorScheme();
+  return Colors[colorScheme].linkText;
+};
+
 export const useReverseColorScheme = () => {
   const colorScheme = useAppColorScheme();
   return isDarkMode(colorScheme) ? ColorScheme.light : ColorScheme.dark;

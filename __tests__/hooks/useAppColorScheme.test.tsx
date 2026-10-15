@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useAppColorScheme, useLinkColor } from "#/hooks/useAppColorScheme";
 import type { ThemePreference } from "#/types";
 
 // jest-setup mocks this hook globally; test the real implementation here.
@@ -17,9 +17,10 @@ jest.mock("react-native/Libraries/Utilities/useColorScheme", () => ({
   default: () => mockUseColorScheme(),
 }));
 
-const renderWith = (
+const renderWith = <T,>(
   themePreference: ThemePreference,
   deviceScheme: "light" | "dark",
+  hook: () => T = useAppColorScheme as () => T,
 ) => {
   mockUseColorScheme.mockReturnValue(deviceScheme);
   const wrapper = ({ children }: { children: ReactNode }) => (
@@ -36,7 +37,7 @@ const renderWith = (
       {children}
     </SettingsContext.Provider>
   );
-  return renderHook(() => useAppColorScheme(), { wrapper });
+  return renderHook(() => hook(), { wrapper });
 };
 
 describe("useAppColorScheme", () => {
@@ -53,5 +54,14 @@ describe("useAppColorScheme", () => {
   it("forces dark even when the device is light", async () => {
     const { result } = await renderWith("dark", "light");
     expect(result.current).toBe("dark");
+  });
+});
+
+describe("useLinkColor", () => {
+  it("returns the linkText token of the active scheme", async () => {
+    const light = await renderWith("light", "dark", useLinkColor);
+    expect(light.result.current).toBe("#1B7194");
+    const dark = await renderWith("dark", "light", useLinkColor);
+    expect(dark.result.current).toBe("#4A9CC7");
   });
 });

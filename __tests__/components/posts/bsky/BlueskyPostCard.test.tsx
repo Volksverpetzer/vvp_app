@@ -24,6 +24,11 @@ jest.mock("#/components/Icons", () => ({
   ExternalLinkIcon: () => null,
 }));
 
+// Dark mode, where the 0.9.1 linkText (#4A9CC7) differs from primary
+jest.mock("#/hooks/useAppColorScheme", () => ({
+  useAppColorScheme: () => "dark",
+}));
+
 jest.mock("#/helpers/Linking", () => ({
   onLinkPress: jest.fn(),
 }));
@@ -73,8 +78,7 @@ describe("BlueskyPostCard", () => {
       <BlueskyPostCard post={makeFeedPost(longText)} />,
     );
     const label = getByText("mehr");
-    // Concrete fixture value from jest-setup, distinct from primary
-    expect(StyleSheet.flatten(label.props.style).color).toBe("#0e5a7a");
+    expect(StyleSheet.flatten(label.props.style).color).toBe("#4A9CC7");
   });
 
   it("shows the thread count in the link color when replies exist", async () => {
@@ -85,8 +89,7 @@ describe("BlueskyPostCard", () => {
       />,
     );
     const label = getByText("Thread (1 von 2)");
-    // Concrete fixture value from jest-setup, distinct from primary
-    expect(StyleSheet.flatten(label.props.style).color).toBe("#0e5a7a");
+    expect(StyleSheet.flatten(label.props.style).color).toBe("#4A9CC7");
   });
 
   it("navigates to the thread and tracks the open when pressed", async () => {
