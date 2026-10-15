@@ -51,7 +51,7 @@ const SearchResultItem = ({
 }: SearchResultItemProps) => {
   const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
   const styles = useMemo(() => getTagStyles(colorScheme), [colorScheme]);
   const { width, fontScale } = useWindowDimensions();
   const [expanded, setExpanded] = useState(false);
@@ -159,7 +159,7 @@ const SearchResultItem = ({
                 accessibilityState={{ expanded }}
                 onPress={() => setExpanded((value) => !value)}
               >
-                <UiText bold style={{ color: corporate }}>
+                <UiText bold style={{ color: linkColor }}>
                   {expanded ? "Weniger anzeigen" : "Mehr lesen"}
                 </UiText>
               </UiPressable>
