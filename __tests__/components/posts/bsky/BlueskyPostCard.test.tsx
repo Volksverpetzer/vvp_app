@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { StyleSheet } from "react-native";
 
 import BlueskyPostCard from "#/components/posts/bsky/BlueskyPostCard";
-import Colors from "#/constants/Colors";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 
 const mockRouter = { push: jest.fn(), back: jest.fn() };
@@ -74,9 +73,8 @@ describe("BlueskyPostCard", () => {
       <BlueskyPostCard post={makeFeedPost(longText)} />,
     );
     const label = getByText("mehr");
-    expect(StyleSheet.flatten(label.props.style).color).toBe(
-      Colors.light.linkText,
-    );
+    // Concrete fixture value from jest-setup, distinct from primary
+    expect(StyleSheet.flatten(label.props.style).color).toBe("#0e5a7a");
   });
 
   it("shows the thread count in the link color when replies exist", async () => {
@@ -87,9 +85,8 @@ describe("BlueskyPostCard", () => {
       />,
     );
     const label = getByText("Thread (1 von 2)");
-    expect(StyleSheet.flatten(label.props.style).color).toBe(
-      Colors.light.linkText,
-    );
+    // Concrete fixture value from jest-setup, distinct from primary
+    expect(StyleSheet.flatten(label.props.style).color).toBe("#0e5a7a");
   });
 
   it("navigates to the thread and tracks the open when pressed", async () => {
