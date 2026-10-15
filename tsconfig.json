@@ -8,12 +8,21 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "types": ["jest"],
+    "types": ["jest", "node"],
     "paths": {
       "#assets/*": ["./assets/*"],
       "#tests/*": ["./__tests__/*"],
       "#plugins/*": ["./plugins/*"],
-      "#/*": ["./src/*"]
+      "#/*": ["./src/*"],
+      // The "react-native" export condition points these at raw .tsx sources,
+      // which don't type-check under our non-strict config with RN 0.88
+      // types; use their published declarations instead.
+      "react-native-reanimated-carousel": [
+        "./node_modules/react-native-reanimated-carousel/lib/typescript/module/index.d.ts"
+      ],
+      "react-native-view-shot": [
+        "./node_modules/react-native-view-shot/lib/index.d.ts"
+      ]
     }
   },
   "include": [

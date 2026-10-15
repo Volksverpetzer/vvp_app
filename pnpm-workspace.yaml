@@ -11,6 +11,7 @@ nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 packages:
   - .
 patchedDependencies:
+  expo@58.0.10: patches/expo@58.0.10.patch
   react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
 minimumReleaseAgeExclude:
   - "@cspell/dict-de-de@4.1.3"
