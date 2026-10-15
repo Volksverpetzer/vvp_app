@@ -68,6 +68,12 @@ describe("splitIntoChunks", () => {
     ]);
   });
 
+  it("treats top-level (hoisted) images as blocks", () => {
+    const html = `<p>A</p><img src="https://x.test/a.png"><img src="https://x.test/b.png"><p>B</p>`;
+    const tags = splitIntoChunks(parse(html), 1, 1).map(topLevelTags);
+    expect(tags).toEqual([["p"], ["img"], ["img"], ["p"]]);
+  });
+
   it("keeps a moved figcaption with its figure", () => {
     const html = `<p>A</p><figure><img src="https://x.test/a.png"></figure><figure><img src="https://x.test/b.png"><figcaption>Caption</figcaption></figure><p>B</p>`;
     const tags = splitIntoChunks(parse(html), 1, 1).map(topLevelTags);

@@ -27,6 +27,9 @@ const BLOCK_TAGS = new Set([
   "header",
   "hr",
   "iframe",
+  // Images are hoisted out of <p>/<a> to the top level by
+  // handleImageElements and render as their own block.
+  "img",
   "main",
   "nav",
   "ol",
