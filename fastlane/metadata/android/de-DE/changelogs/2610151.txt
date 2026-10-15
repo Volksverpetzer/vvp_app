@@ -1,2 +1,3 @@
 - Neu: Unter Einstellungen → Darstellung kannst du jetzt zwischen System, Hell und Dunkel wählen – z. B. hell lesen, obwohl dein Handy im Dark Mode ist
+- Besser lesbar: Links sind im Dark Mode jetzt deutlich kontrastreicher, z. B. in den Quellen unter Artikeln
 - Fehlerbehebungen und (versteckte) Verbesserungen
