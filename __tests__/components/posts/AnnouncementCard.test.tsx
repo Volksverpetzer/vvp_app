@@ -16,6 +16,15 @@ jest.mock("#/helpers/Linking", () => ({
   onLinkPress: (...args: unknown[]) => mockOnLinkPress(...args),
 }));
 
+const mockRegisterAnnouncementEvent = jest.fn((..._args: unknown[]) =>
+  Promise.resolve(),
+);
+jest.mock("#/helpers/network/Analytics", () => ({
+  __esModule: true,
+  registerAnnouncementEvent: (...args: unknown[]) =>
+    mockRegisterAnnouncementEvent(...args),
+}));
+
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => "light",
 }));
@@ -158,5 +167,68 @@ describe("AnnouncementCard", () => {
       expect.anything(),
     );
     expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  describe("analytics", () => {
+    it("reports an impression only once per announcement per session", async () => {
+      const shown = { ...announcement, id: "impression-once" };
+      const { rerender } = await render(
+        <AnnouncementCard key="a" announcement={shown} onDismiss={jest.fn()} />,
+      );
+      // A new key forces a re-mount, as a feed refresh or tab switch would.
+      await rerender(
+        <AnnouncementCard key="b" announcement={shown} onDismiss={jest.fn()} />,
+      );
+      const impressions = mockRegisterAnnouncementEvent.mock.calls.filter(
+        ([event]) => event === "Announcement Shown",
+      );
+      expect(impressions).toEqual([["Announcement Shown", "impression-once"]]);
+    });
+
+    it("reports a dismissal when 'Alles klar!' is pressed", async () => {
+      const { getByText } = await render(
+        <AnnouncementCard announcement={announcement} onDismiss={jest.fn()} />,
+      );
+      await fireEvent.press(getByText("Alles klar!"));
+      expect(mockRegisterAnnouncementEvent).toHaveBeenCalledWith(
+        "Announcement Dismissed",
+        announcement.id,
+      );
+      expect(mockRegisterAnnouncementEvent).not.toHaveBeenCalledWith(
+        "Announcement Action",
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
+    it("reports a button action", async () => {
+      const { getByText } = await render(
+        <AnnouncementCard announcement={announcement} onDismiss={jest.fn()} />,
+      );
+      await fireEvent.press(getByText("Zu den Einstellungen"));
+      expect(mockRegisterAnnouncementEvent).toHaveBeenCalledWith(
+        "Announcement Action",
+        announcement.id,
+        { source: "button" },
+      );
+    });
+
+    it("reports an inline link tap as a link action", async () => {
+      const { getByText } = await render(
+        <AnnouncementCard
+          announcement={{
+            ...announcement,
+            message: "mehr auf [Prüfpunkt](https://pruefpunkt.org)",
+          }}
+          onDismiss={jest.fn()}
+        />,
+      );
+      await fireEvent.press(getByText("Prüfpunkt"));
+      expect(mockRegisterAnnouncementEvent).toHaveBeenCalledWith(
+        "Announcement Action",
+        announcement.id,
+        { source: "link" },
+      );
+    });
   });
 });

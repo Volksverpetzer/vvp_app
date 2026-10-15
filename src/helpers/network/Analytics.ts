@@ -28,7 +28,10 @@ export type AnalyticsEvent =
   | "Post Interaction"
   | "Onboarding Started"
   | "Onboarding Step"
-  | "Onboarding Completed";
+  | "Onboarding Completed"
+  | "Announcement Shown"
+  | "Announcement Action"
+  | "Announcement Dismissed";
 
 /**
  * Props that registerEvent always sets on every event. Callers must not pass
@@ -127,4 +130,24 @@ const registerPostInteraction = (
     action,
   });
 
-export { registerEvent, registerPostInteraction };
+type AnnouncementEvent =
+  "Announcement Shown" | "Announcement Action" | "Announcement Dismissed";
+
+/**
+ * Records the lifecycle of an in-feed announcement card (see
+ * #/constants/Announcements): shown, its action taken (button or an inline
+ * link), or dismissed via "Alles klar!". Separate event names (rather than one
+ * event with an action prop) so each can be a Plausible goal and Shown →
+ * Action can be a funnel; `announcement_id` breaks them down per card.
+ */
+const registerAnnouncementEvent = (
+  event: AnnouncementEvent,
+  announcementId: string,
+  properties: { source?: "button" | "link" } = {},
+): Promise<void> =>
+  registerEvent("", event, {
+    announcement_id: announcementId,
+    ...properties,
+  });
+
+export { registerAnnouncementEvent, registerEvent, registerPostInteraction };
