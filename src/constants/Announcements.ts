@@ -19,12 +19,14 @@ export interface AnnouncementEntry {
 /**
  * One-time in-feed announcement cards for existing users, shown at the top of
  * the home feed until dismissed (see PersonalStore.dismissAnnouncement). Only
- * the first not-yet-dismissed entry is shown at a time (oldest first — nothing
- * is silently skipped).
+ * the first not-yet-dismissed entry is shown at a time, in list order —
+ * nothing is silently skipped.
  *
- * To promote something new next release: append a new entry. If an older
- * entry is no longer worth showing (e.g. it's now common knowledge), delete
- * it here rather than letting it linger — there's no automatic expiry.
+ * To promote something new next release: append a new entry. A time-limited
+ * entry (e.g. a vote with a deadline) may go first instead, so it isn't
+ * queued behind older ones. If an older entry is no longer worth showing
+ * (e.g. it's now common knowledge), delete it here rather than letting it
+ * linger — there's no automatic expiry.
  *
  * Entries are per app variant (they tend to promote a variant's own feeds
  * or reference its own release) — each variant only sees its own list,
