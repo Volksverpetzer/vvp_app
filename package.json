@@ -146,7 +146,7 @@
     "eslint-plugin-prettier": "5.5.7",
     "eslint-plugin-unicorn": "65.0.1",
     "eslint-plugin-unused-imports": "4.4.1",
-    "expo-atlas": "0.4.3",
+    "expo-atlas": "0.5.0",
     "expo-build-properties": "58.0.10",
     "husky": "9.1.7",
     "jest": "30.5.2",
