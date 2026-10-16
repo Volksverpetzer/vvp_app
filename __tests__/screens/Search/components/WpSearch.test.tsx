@@ -292,7 +292,9 @@ describe("WpSearchResults", () => {
     );
     await flushDebounce();
     await waitFor(() => getByTestId("result"));
-    const list = getByTestId("result").parent?.parent;
+    // scroll is a direct event in React Native, so fire it on the scroll view host itself
+    let list = getByTestId("result").parent;
+    while (list && list.type !== "RCTScrollView") list = list.parent;
     await act(() => {
       fireEvent.scroll(list!, {
         nativeEvent: { contentOffset: { y: 75 } },
