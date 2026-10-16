@@ -21,6 +21,7 @@ import UiButton from "#/components/ui/UiButton";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import UiTextInput from "#/components/ui/UiTextInput";
+import TabScreenView from "#/components/views/TabScreenView";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -336,152 +337,154 @@ const ContactScreen = () => {
   const texts = CATEGORY_TEXTS[category];
 
   return (
-    <BlurTargetView ref={blurTargetRef} style={globalStyles.container}>
-      <AnimatedHeader
-        title="Kontakt"
-        scrollOffsetY={scrollOffsetY}
-        minHeight={100}
-        maxHeight={HEADER_HEIGHT}
-      />
-      <AnimatedSuccess
-        animated={animation}
-        subtitle="Deine Nachricht ist bei uns eingegangen!"
-        blurTargetRef={blurTargetRef}
-      />
-      <KeyboardAvoidingView
-        style={globalStyles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={0}
-      >
-        <ScrollView
-          style={{
-            flex: 1,
-            backgroundColor,
-          }}
-          contentContainerStyle={[
-            globalStyles.content,
-            {
-              paddingTop: HEADER_HEIGHT,
-              paddingBottom: tabBarClearance,
-              gap: spacing.xl,
-            },
-          ]}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-            { useNativeDriver: false },
-          )}
-          scrollEventThrottle={16}
+    <TabScreenView>
+      <BlurTargetView ref={blurTargetRef} style={globalStyles.container}>
+        <AnimatedHeader
+          title="Kontakt"
+          scrollOffsetY={scrollOffsetY}
+          minHeight={100}
+          maxHeight={HEADER_HEIGHT}
+        />
+        <AnimatedSuccess
+          animated={animation}
+          subtitle="Deine Nachricht ist bei uns eingegangen!"
+          blurTargetRef={blurTargetRef}
+        />
+        <KeyboardAvoidingView
+          style={globalStyles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={0}
         >
-          <View style={{ gap: spacing.md }}>
-            <Typography type="heading">Thema wählen:</Typography>
-            <View style={styles.categoryContainer}>
-              {CATEGORIES.map(({ key, label }) => (
-                <UiPressable
-                  key={key}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: category === key }}
-                  onPress={() => {
-                    setCategory(key);
-                    clearError();
-                  }}
-                  style={[
-                    styles.categoryPill,
-                    category === key && styles.categoryPillActive,
-                  ]}
-                >
-                  <UiText
+          <ScrollView
+            style={{
+              flex: 1,
+              backgroundColor,
+            }}
+            contentContainerStyle={[
+              globalStyles.content,
+              {
+                paddingTop: HEADER_HEIGHT,
+                paddingBottom: tabBarClearance,
+                gap: spacing.xl,
+              },
+            ]}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+              { useNativeDriver: false },
+            )}
+            scrollEventThrottle={16}
+          >
+            <View style={{ gap: spacing.md }}>
+              <Typography type="heading">Thema wählen:</Typography>
+              <View style={styles.categoryContainer}>
+                {CATEGORIES.map(({ key, label }) => (
+                  <UiPressable
+                    key={key}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: category === key }}
+                    onPress={() => {
+                      setCategory(key);
+                      clearError();
+                    }}
                     style={[
-                      globalStyles.pillLabel,
-                      category === key
-                        ? globalStyles.whiteText
-                        : styles.categoryPillLabelInactive,
+                      styles.categoryPill,
+                      category === key && styles.categoryPillActive,
                     ]}
                   >
-                    {label}
-                  </UiText>
-                </UiPressable>
-              ))}
+                    <UiText
+                      style={[
+                        globalStyles.pillLabel,
+                        category === key
+                          ? globalStyles.whiteText
+                          : styles.categoryPillLabelInactive,
+                      ]}
+                    >
+                      {label}
+                    </UiText>
+                  </UiPressable>
+                ))}
+              </View>
             </View>
-          </View>
-          <View style={{ gap: spacing.md }}>
-            <Typography type="heading">{texts.titleLabel}</Typography>
-            <UiTextInput
-              accessibilityLabel="Text input field"
-              accessibilityHint={texts.titleHint}
-              placeholder="..."
-              placeholderTextColor={textColor}
-              value={title}
-              onChangeText={(value) => {
-                setTitle(value);
-                if (errorField === "title") clearError();
-              }}
-              style={[
-                styles.input,
-                errorField === "title" && styles.inputError,
-              ]}
-            />
-          </View>
-          <View style={{ gap: spacing.md }}>
-            <Typography type="heading">{texts.messageLabel}</Typography>
-            <UiTextInput
-              accessibilityLabel="Text input field"
-              accessibilityHint="Gib deine Nachricht ein"
-              placeholder="..."
-              placeholderTextColor={textColor}
-              value={message}
-              onChangeText={(value) => {
-                setMessage(value);
-                if (errorField === "message") clearError();
-              }}
-              multiline
-              style={[
-                styles.input,
-                { height: 120 },
-                errorField === "message" && styles.inputError,
-              ]}
-            />
-          </View>
-          {!Config.contactEmail && (
             <View style={{ gap: spacing.md }}>
-              <Typography type="heading">
-                E-Mail für Rückfragen (optional)
-              </Typography>
+              <Typography type="heading">{texts.titleLabel}</Typography>
               <UiTextInput
                 accessibilityLabel="Text input field"
-                accessibilityHint="Gib deine E-Mail-Adresse ein"
+                accessibilityHint={texts.titleHint}
                 placeholder="..."
                 placeholderTextColor={textColor}
-                value={email}
+                value={title}
                 onChangeText={(value) => {
-                  setEmail(value);
-                  if (errorField === "email") clearError();
+                  setTitle(value);
+                  if (errorField === "title") clearError();
                 }}
-                autoCapitalize="none"
-                autoComplete="email"
-                keyboardType="email-address"
                 style={[
                   styles.input,
-                  errorField === "email" && styles.inputError,
+                  errorField === "title" && styles.inputError,
                 ]}
               />
             </View>
-          )}
-          {error ? (
-            <UiText size="lg" bold style={styles.errorText}>
-              {error}
-            </UiText>
-          ) : undefined}
-          <UiButton
-            label={Config.contactEmail ? "E-Mail erstellen" : "Senden"}
-            variant="accent"
-            shape="pill"
-            disabled={!buttonEnabled}
-            onPress={onSubmit}
-            style={styles.submitButton}
-          />
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </BlurTargetView>
+            <View style={{ gap: spacing.md }}>
+              <Typography type="heading">{texts.messageLabel}</Typography>
+              <UiTextInput
+                accessibilityLabel="Text input field"
+                accessibilityHint="Gib deine Nachricht ein"
+                placeholder="..."
+                placeholderTextColor={textColor}
+                value={message}
+                onChangeText={(value) => {
+                  setMessage(value);
+                  if (errorField === "message") clearError();
+                }}
+                multiline
+                style={[
+                  styles.input,
+                  { height: 120 },
+                  errorField === "message" && styles.inputError,
+                ]}
+              />
+            </View>
+            {!Config.contactEmail && (
+              <View style={{ gap: spacing.md }}>
+                <Typography type="heading">
+                  E-Mail für Rückfragen (optional)
+                </Typography>
+                <UiTextInput
+                  accessibilityLabel="Text input field"
+                  accessibilityHint="Gib deine E-Mail-Adresse ein"
+                  placeholder="..."
+                  placeholderTextColor={textColor}
+                  value={email}
+                  onChangeText={(value) => {
+                    setEmail(value);
+                    if (errorField === "email") clearError();
+                  }}
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  keyboardType="email-address"
+                  style={[
+                    styles.input,
+                    errorField === "email" && styles.inputError,
+                  ]}
+                />
+              </View>
+            )}
+            {error ? (
+              <UiText size="lg" bold style={styles.errorText}>
+                {error}
+              </UiText>
+            ) : undefined}
+            <UiButton
+              label={Config.contactEmail ? "E-Mail erstellen" : "Senden"}
+              variant="accent"
+              shape="pill"
+              disabled={!buttonEnabled}
+              onPress={onSubmit}
+              style={styles.submitButton}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </BlurTargetView>
+    </TabScreenView>
   );
 };
 

@@ -24,6 +24,7 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Donate from "#/components/views/Donate";
 import SettingsList from "#/components/views/SettingsList";
+import TabScreenView from "#/components/views/TabScreenView";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
@@ -172,7 +173,7 @@ const SettingsScreen = () => {
   );
 
   return (
-    <>
+    <TabScreenView>
       <AnimatedHeader
         title="Einstellungen"
         scrollOffsetY={scrollOffsetY}
@@ -354,7 +355,7 @@ const SettingsScreen = () => {
           </UiPressable>
         </View>
       </ScrollView>
-    </>
+    </TabScreenView>
   );
 };
 

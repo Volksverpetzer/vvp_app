@@ -51,6 +51,19 @@ const htmlWithoutCaption = `
 <p class="wp-block-paragraph">After text</p>
 `;
 
+const imageWithId = (id: number) =>
+  image.replace("wp-image-101850", `wp-image-${id}`);
+
+// Several figures in one body, as in any longer article: each caption must
+// credit its own figure's image, and an image without a caption must still
+// get its overlay even though other figures in the body have captions.
+const multiFigureHtml = `
+<figure class="wp-block-image size-full">${imageWithId(1)}<figcaption class="wp-element-caption">Caption one</figcaption></figure>
+<p class="wp-block-paragraph">Between</p>
+<figure class="wp-block-image size-full">${imageWithId(2)}<figcaption class="wp-element-caption">Caption two</figcaption></figure>
+<figure class="wp-block-image size-large">${imageWithId(3)}</figure>
+`;
+
 const articleLink: HttpsUrl =
   "https://volksverpetzer.de/aktuelles/blaue-schelle-niederlagen-afd/";
 
@@ -95,11 +108,7 @@ describe("body image credits", () => {
 
     await waitFor(
       () => {
-        expect(mockGetMediaCredit).toHaveBeenCalledWith(
-          "101850",
-          articleLink,
-          expect.anything(),
-        );
+        expect(mockGetMediaCredit).toHaveBeenCalledWith("101850", articleLink);
       },
       { timeout: 5000 },
     );
@@ -122,6 +131,16 @@ describe("body image credits", () => {
       },
       { timeout: 5000 },
     );
+  });
+
+  it("looks up each figure's own image in a body with several figures", async () => {
+    mockGetMediaCredit.mockResolvedValue({ source: "Media Tenor" });
+    const { findAllByLabelText } = await renderBody(multiFigureHtml);
+
+    expect(await findAllByLabelText("Bildquelle anzeigen")).toHaveLength(3);
+    expect(
+      mockGetMediaCredit.mock.calls.map(([mediaId]) => mediaId).sort(),
+    ).toEqual(["1", "2", "3"]);
   });
 
   it("renders no badge when the image has no credit", async () => {

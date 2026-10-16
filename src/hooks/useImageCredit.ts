@@ -18,18 +18,20 @@ export const useImageCredit = (
     // credit badge showing for the wrong image.
     setCredit(undefined);
     if (!mediaId || !articleUrl) return;
-    const controller = new AbortController();
+    // Batched and shared with other images, so the request itself isn't
+    // cancelled — only this image stops listening for its result.
+    let cancelled = false;
 
-    WordPressAPI.getMediaCredit(mediaId, articleUrl, controller.signal)
+    WordPressAPI.getMediaCredit(mediaId, articleUrl)
       .then((_credit) => {
-        if (!controller.signal.aborted) setCredit(_credit);
+        if (!cancelled) setCredit(_credit);
       })
       .catch(() => {
         // The image just renders without a credit badge.
       });
 
     return () => {
-      controller.abort();
+      cancelled = true;
     };
   }, [mediaId, articleUrl]);
 
