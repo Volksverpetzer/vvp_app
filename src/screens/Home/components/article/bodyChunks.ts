@@ -8,7 +8,7 @@ import { createContext } from "react";
  * falls between two of these, so the render engine groups inline content
  * (hoisting, whitespace collapsing) the same as it would for the whole body.
  */
-const BLOCK_TAGS = new Set([
+export const BLOCK_TAGS = new Set([
   "address",
   "article",
   "aside",

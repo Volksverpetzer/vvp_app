@@ -1,0 +1,6 @@
+- Neu: Unter Einstellungen → Darstellung kannst du zwischen System, Hell und Dunkel wählen
+- Schneller: Lange Artikel öffnen sich sofort, YouTube-Videos laden erst beim Antippen
+- Besser lesbar: Links im Dark Mode sind kontrastreicher, ältere Artikel haben jetzt die richtige Schriftgröße und Ränder
+- Neue, einheitliche Icons
+- Stimm beim Grimme Online Award für uns ab – direkt im Feed
+- Fehlerbehebungen und (versteckte) Verbesserungen
