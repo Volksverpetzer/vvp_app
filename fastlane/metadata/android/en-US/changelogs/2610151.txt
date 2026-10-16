@@ -1,3 +1,0 @@
-- New: Settings → Appearance now lets you choose between System, Light and Dark – e.g. read in light mode while your phone is in dark mode
-- Easier to read: links now have much better contrast in dark mode, e.g. in the sources below articles
-- Bug fixes and (hidden) improvements

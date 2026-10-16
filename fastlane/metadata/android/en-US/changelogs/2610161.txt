@@ -1,0 +1,6 @@
+- New: Settings → Appearance lets you choose between System, Light and Dark
+- Faster: long articles open right away, YouTube videos only load when you tap them
+- Easier to read: better link contrast in dark mode, older articles now have the right font size and margins
+- New, consistent icons
+- Vote for us in the Grimme Online Award – right in the feed
+- Bug fixes and (hidden) improvements

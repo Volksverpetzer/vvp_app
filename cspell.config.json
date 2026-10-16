@@ -2,6 +2,7 @@
   "import": ["@cspell/dict-de-de/cspell-ext.json"],
   "language": "de, de_DE, en, en_GB",
   "words": [
+    "antippen",
     "armeabi",
     "atproto",
     "autor",
@@ -52,6 +53,7 @@
     "rerank",
     "RNTL",
     "schedulable",
+    "stimm",
     "tiktok",
     "tnode",
     "tracken",
