@@ -59,6 +59,7 @@ import {
   chunkIndexOfId,
   splitIntoChunks,
 } from "./bodyChunks";
+import { wrapLooseText } from "./looseText";
 
 const IGNORED_DOM_TAGS = ["script", "style", "noscript", "input"];
 const DEFAULT_TEXT_PROPS = {
@@ -152,7 +153,10 @@ const ChunkedSource = ({
 }: ChunkedSourceProperties) => {
   const engine = useAmbientTRenderEngine();
   const chunks = useMemo(
-    () => splitIntoChunks(engine.parseDocument(html) as unknown as Document),
+    () =>
+      splitIntoChunks(
+        wrapLooseText(engine.parseDocument(html) as unknown as Document),
+      ),
     [engine, html],
   );
   const anchorChunk = useMemo(
