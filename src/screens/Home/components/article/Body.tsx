@@ -159,7 +159,12 @@ const ChunkedSource = ({
     () => chunkIndexOfId(chunks, anchor),
     [chunks, anchor],
   );
-  const [restRendered, setRestRendered] = useState(false);
+  // The HTML the rest was rendered for: a new body starts from the first
+  // chunk again instead of mounting in one blocking pass. A rebuilt engine
+  // (e.g. a theme switch) keeps the whole body mounted, so a reader further
+  // down isn't dropped back to the top while the lower chunks re-render.
+  const [restRenderedFor, setRestRenderedFor] = useState<string>();
+  const restRendered = restRenderedFor === html;
   const visibleCount = restRendered
     ? chunks.length
     : Math.min(chunks.length, Math.max(1, anchorChunk + 1));
@@ -169,11 +174,11 @@ const ChunkedSource = ({
     const timeout = setTimeout(
       // A transition, so React renders the rest in time slices that touch
       // handling can interrupt; only the final commit blocks.
-      () => startTransition(() => setRestRendered(true)),
+      () => startTransition(() => setRestRenderedFor(html)),
       REST_DELAY_MS,
     );
     return () => clearTimeout(timeout);
-  }, [visibleCount, chunks.length]);
+  }, [visibleCount, chunks.length, html]);
 
   useLayoutEffect(() => {
     if (visibleCount >= chunks.length) onRendered?.();

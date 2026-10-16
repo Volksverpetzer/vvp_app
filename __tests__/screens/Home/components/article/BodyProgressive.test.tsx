@@ -47,37 +47,40 @@ const html = Array.from({ length: PARAGRAPHS }, (_, index) =>
 
 const articleLink: HttpsUrl = "https://volksverpetzer.de/analyse/lang/";
 
-const renderBody = (
+const bodyElement = (
   properties: {
     anchor?: string;
     onRendered?: () => void;
     onAnchorPress?: (id: string) => void;
+    article_content?: string;
   } = {},
-) =>
-  render(
-    <SettingsContext.Provider
-      value={
-        {
-          advancedSettings: {
-            advancedReporting: { value: true, name: "" },
-          },
-        } as never
-      }
-    >
-      <Body
-        article_content={html}
-        article_link={articleLink}
-        article_title="Lang"
-        slug="lang"
-        width={400}
-        maxWidth={700}
-        headerRefs={{ current: {} }}
-        onAnchorPress={jest.fn()}
-        onLinkPress={jest.fn()}
-        {...properties}
-      />
-    </SettingsContext.Provider>,
-  );
+) => (
+  <SettingsContext.Provider
+    value={
+      {
+        advancedSettings: {
+          advancedReporting: { value: true, name: "" },
+        },
+      } as never
+    }
+  >
+    <Body
+      article_content={html}
+      article_link={articleLink}
+      article_title="Lang"
+      slug="lang"
+      width={400}
+      maxWidth={700}
+      headerRefs={{ current: {} }}
+      onAnchorPress={jest.fn()}
+      onLinkPress={jest.fn()}
+      {...properties}
+    />
+  </SettingsContext.Provider>
+);
+
+const renderBody = (properties: Parameters<typeof bodyElement>[0] = {}) =>
+  render(bodyElement(properties));
 
 // The rest of the body renders a frame after the first chunk.
 const flushChunks = async () => {
@@ -99,6 +102,19 @@ describe("Body progressive rendering", () => {
 
     expect(queryByText(`Paragraph ${PARAGRAPHS - 1}`)).toBeTruthy();
     expect(onRendered).toHaveBeenCalledTimes(1);
+  });
+
+  it("starts from the first chunk again for a new article body", async () => {
+    const screen = await renderBody();
+    await flushChunks();
+
+    const next = html.replaceAll("Paragraph", "Absatz");
+    await screen.rerender(bodyElement({ article_content: next }));
+    expect(screen.queryByText("Absatz 0")).toBeTruthy();
+    expect(screen.queryByText(`Absatz ${PARAGRAPHS - 1}`)).toBeNull();
+
+    await flushChunks();
+    expect(screen.queryByText(`Absatz ${PARAGRAPHS - 1}`)).toBeTruthy();
   });
 
   it("renders up to a deep-link anchor's chunk right away", async () => {
