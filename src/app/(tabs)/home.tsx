@@ -8,6 +8,7 @@ import { LogoBig } from "#/components/SvgIcons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import TabScreenView from "#/components/views/TabScreenView";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { fontFamily } from "#/constants/FontFamily";
@@ -59,7 +60,7 @@ const HomeScreen = () => {
   }, [contentSettings]);
 
   return (
-    <>
+    <TabScreenView>
       <AnimatedHeader
         title={
           isVolksverpetzer ? (
@@ -106,7 +107,7 @@ const HomeScreen = () => {
           )}
         />
       </View>
-    </>
+    </TabScreenView>
   );
 };
 
