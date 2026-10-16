@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@algolia/client-search": "5.60.0",
-    "@atproto/api": "0.26.0",
+    "@atproto/api": "0.27.0",
     "@babel/runtime": "7.29.10",
     "@expo-google-fonts/source-sans-3": "0.4.2",
     "@expo/config": "57.0.10",
@@ -60,7 +60,7 @@
     "@expo/require-utils": "57.0.6",
     "@likashefqet/react-native-image-zoom": "4.3.0",
     "@native-html/iframe-plugin": "3.0.0-alpha.0",
-    "@native-html/render": "1.0.3",
+    "@native-html/render": "1.0.4",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-vector-icons/lucide": "13.1.5",
     "@rive-app/react-native": "0.4.21",

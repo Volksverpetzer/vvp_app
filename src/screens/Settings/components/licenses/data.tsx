@@ -5,7 +5,7 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.26.0": {
+  "@atproto/api@0.27.0": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -52,7 +52,7 @@ export default {
     repository: "https://github.com/native-html/plugins",
     licenseUrl: "https://github.com/native-html/plugins/raw/HEAD/LICENSE",
   },
-  "@native-html/render@1.0.3": {
+  "@native-html/render@1.0.4": {
     licenses: "MIT",
     repository: "https://github.com/native-html/render",
     licenseUrl: "https://github.com/native-html/render/raw/HEAD/LICENSE",

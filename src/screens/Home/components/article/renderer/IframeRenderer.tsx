@@ -19,6 +19,7 @@ import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
+import RenderWhenNearViewport from "#/components/views/RenderWhenNearViewport";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -459,8 +460,10 @@ const IframeRenderer = ({
       );
     }
 
+    // Long articles can embed dozens of these cards, each fetching its post
+    // and image — only start that when the reader gets close to one.
     return (
-      <View
+      <RenderWhenNearViewport
         style={{
           maxWidth: 500,
           minHeight: 450,
@@ -494,7 +497,7 @@ const IframeRenderer = ({
             }
           />
         </View>
-      </View>
+      </RenderWhenNearViewport>
     );
   }
 
