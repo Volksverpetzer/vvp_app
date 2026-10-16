@@ -80,6 +80,10 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   // Bumped whenever the reader (or an anchor) moves the view, so a restore
   // whose storage read is still in flight knows not to apply its result.
   const restoreGeneration = useRef(0);
+  // Scroll offset when the saved position started loading; any movement
+  // away from it before the restore lands is the reader's.
+  const restoreReadOffset = useRef<number>(undefined);
+  const lastScrollOffset = useRef(0);
   const cancelPositionRestore = () => {
     positionRestoreHandled.current = true;
     restoreGeneration.current++;
@@ -251,7 +255,9 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
     if (positionRestoreHandled.current) return;
     positionRestoreHandled.current = true;
     const generation = restoreGeneration.current;
+    restoreReadOffset.current = lastScrollOffset.current;
     PersonalStore.getScrollPosition(slug).then((progress) => {
+      restoreReadOffset.current = undefined;
       if (!mounted.current || progress > 0.8) return;
       // The reader moved the view while the position was being read.
       if (generation !== restoreGeneration.current) return;
@@ -272,6 +278,18 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
    */
   const scrollListener = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     backToTop.onScroll(event);
+    const offset = event.nativeEvent.contentOffset.y;
+    lastScrollOffset.current = offset;
+    // Reading moves the view before the saved position could be restored:
+    // drop the restore. onScrollBeginDrag covers touch scrolling, but
+    // react-native-web never fires it for wheel/trackpad scrolling. The only
+    // programmatic scrolls before the restore are anchor jumps, which cancel
+    // it themselves.
+    const movedBeforeRestore = !positionRestoreHandled.current && offset > 1;
+    const movedDuringRead =
+      restoreReadOffset.current !== undefined &&
+      Math.abs(offset - restoreReadOffset.current) > 1;
+    if (movedBeforeRestore || movedDuringRead) cancelPositionRestore();
     viewport.update(
       event.nativeEvent.contentOffset.y,
       event.nativeEvent.layoutMeasurement.height,

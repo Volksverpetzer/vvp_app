@@ -217,6 +217,50 @@ describe("ArticleScreen saved reading position", () => {
     });
   });
 
+  // react-native-web fires no scrollBeginDrag for wheel/trackpad scrolling,
+  // only scroll events.
+  it("does not restore after the reader scrolled without a drag (web wheel)", async () => {
+    const view = await render(<ArticleScreen article={article} />);
+    const scrollView = await view.findByTestId("article-scroll");
+    await fireEvent.scroll(scrollView, scrollTo80);
+    await fireEvent(scrollView, "contentSizeChange", 400, 2000);
+
+    expect(mockGetScrollPosition).not.toHaveBeenCalled();
+  });
+
+  it("drops a pending restore when the reader scrolls without a drag (web wheel)", async () => {
+    let resolvePosition: (progress: number) => void = () => {};
+    mockGetScrollPosition.mockReturnValue(
+      new Promise<number>((resolve) => {
+        resolvePosition = resolve;
+      }),
+    );
+    const scrollView = await renderAndResize();
+
+    await fireEvent.scroll(scrollView, scrollTo80);
+    await act(async () => {
+      resolvePosition(0.5);
+      await Promise.resolve();
+    });
+
+    expect(scrollToSpy).not.toHaveBeenCalledWith({
+      y: 1000,
+      animated: false,
+    });
+  });
+
+  it("still restores when nothing moved the view", async () => {
+    const view = await render(<ArticleScreen article={article} />);
+    const scrollView = await view.findByTestId("article-scroll");
+    // A scroll event at the top (e.g. on mount) isn't reading.
+    await fireEvent.scroll(scrollView, {
+      nativeEvent: { ...scrollTo80.nativeEvent, contentOffset: { x: 0, y: 0 } },
+    });
+    await fireEvent(scrollView, "contentSizeChange", 400, 2000);
+
+    expect(scrollToSpy).toHaveBeenCalledWith({ y: 1000, animated: false });
+  });
+
   it("does not restore when opened on a deep-link anchor", async () => {
     await renderAndResize("quellen");
 
