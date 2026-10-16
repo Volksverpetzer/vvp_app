@@ -11,8 +11,17 @@ runs:
       run: pnpm lint
       shell: bash
 
+    # Jest babel-transforms all of node_modules (transformIgnorePatterns: []),
+    # so a cold cache makes the first test file take minutes on its own.
+    - name: 💾 Restore Jest transform cache
+      uses: actions/cache@v6
+      with:
+        path: node_modules/.cache/jest
+        key: jest-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'babel.config.cts', 'jest.config.ts') }}
+        restore-keys: jest-${{ runner.os }}-
+
     - name: ✅ Run tests
-      run: pnpm test --silent
+      run: pnpm test --silent --cacheDirectory=node_modules/.cache/jest
       shell: bash
 
     - name: 📊 Upload coverage to Codecov
