@@ -39,7 +39,7 @@ const MySources = () => {
   const wpUrl = Config.wpUrl;
 
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
   const tabBarClearance = useTabBarClearance();
   useFocusEffect(
     useCallback(() => {
@@ -121,7 +121,7 @@ const MySources = () => {
                       outBoundLinkPress(entry.href, wpUrl + "/" + group.slug)
                     }
                   >
-                    <UiText style={{ color: corporate }}>{entry.href}</UiText>
+                    <UiText style={{ color: linkColor }}>{entry.href}</UiText>
                   </UiPressable>
                 </Swipeable>
               ))}

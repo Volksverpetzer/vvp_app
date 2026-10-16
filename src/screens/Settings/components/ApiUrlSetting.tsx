@@ -135,9 +135,7 @@ const ApiUrlSetting = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.xl,
+    paddingVertical: spacing.sm,
     gap: spacing.sm,
   },
   field: {

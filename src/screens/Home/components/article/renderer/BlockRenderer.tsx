@@ -1,8 +1,10 @@
+import type { TNode } from "@native-html/render";
 import type { FC } from "react";
 import { useContext } from "react";
 import { View } from "react-native";
 
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
+import { BodyChunkOffsetContext } from "#/screens/Home/components/article/bodyChunks";
 import ReportingWrapper from "#/screens/Home/components/article/renderer/ReportingWrapper";
 import type { HttpsUrl } from "#/types";
 
@@ -10,6 +12,7 @@ interface BlockRenderProperties {
   renderProps: {
     TDefaultRenderer: FC<Record<string, unknown>>;
     renderIndex: number;
+    tnode?: TNode;
   };
   url: HttpsUrl;
 }
@@ -19,6 +22,7 @@ interface BlockRenderProperties {
  */
 const BlockRenderer = (properties: BlockRenderProperties) => {
   const { advancedSettings } = useContext(SettingsContext);
+  const chunkOffset = useContext(BodyChunkOffsetContext);
 
   if (!("TDefaultRenderer" in properties.renderProps)) {
     return null;
@@ -41,6 +45,13 @@ const BlockRenderer = (properties: BlockRenderProperties) => {
       <ReportingWrapper
         url={properties.url}
         renderIndex={properties.renderProps.renderIndex}
+        // The body renders in chunks; a top-level block's renderIndex is
+        // its position within its chunk, not the whole article.
+        indexOffset={
+          properties.renderProps.tnode?.parent?.tagName === "body"
+            ? chunkOffset
+            : undefined
+        }
       >
         {defaultContent}
       </ReportingWrapper>

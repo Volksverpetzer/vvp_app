@@ -22,7 +22,7 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useAudio } from "#/helpers/provider/AudioProvider";
 import { RESUME_MIN_SECONDS, formatTime } from "#/helpers/utils/audio";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import type { PodcastEpisodeProperties } from "#/types";
 
 /**
@@ -37,6 +37,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
     properties;
   const [resumePosition, setResumePosition] = useState(0);
   const corporate = useCorporateColor();
+  const linkColor = useLinkColor();
   const router = useRouter();
   const audio = useAudio();
 
@@ -158,8 +159,8 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
               paddingVertical: spacing.md,
             }}
           >
-            <Lucide name="play" size={iconSizes.md} color={corporate} />
-            <UiText size="base" style={{ color: corporate }}>
+            <Lucide name="play" size={iconSizes.md} color={linkColor} />
+            <UiText size="base" style={{ color: linkColor }}>
               {resumePosition > RESUME_MIN_SECONDS
                 ? `Fortsetzen bei ${formatTime(resumePosition)}`
                 : "Folge abspielen"}

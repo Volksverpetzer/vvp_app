@@ -17,7 +17,7 @@ import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { registerViews } from "#/helpers/network/Engagement";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { InstaPostProperties } from "#/types";
 
@@ -28,6 +28,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
 
   const router = useRouter();
   const corporate = useCorporateColor();
+  const linkColor = useLinkColor();
   const { width } = useFeedDimensions();
   const wpUrl = Config.wpUrl;
 
@@ -88,7 +89,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
       >
         <UiText size="base">{excerpt}…</UiText>
         <View style={[globalStyles.row, { justifyContent: "flex-end" }]}>
-          <UiText size="base" style={{ color: corporate }}>
+          <UiText size="base" style={{ color: linkColor }}>
             mehr
           </UiText>
         </View>

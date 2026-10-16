@@ -28,5 +28,7 @@ export type NotificationSettingType = {
 
 export type AdvancedSettingType = {
   advancedReporting: SettingType;
-  alwaysDarkMode: SettingType;
 };
+
+/** "system" follows the device setting; "light"/"dark" force that theme. */
+export type ThemePreference = "system" | "light" | "dark";

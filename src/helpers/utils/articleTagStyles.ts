@@ -15,13 +15,14 @@ import type { AppColorScheme } from "#/hooks/useAppColorScheme";
  */
 export const getTagStyles = (colorScheme: AppColorScheme) => {
   const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
   const textColor = Colors[colorScheme].text;
 
   return {
     a: {
-      color: corporate,
+      color: linkColor,
       textDecorationLine: "underline" as const,
-      textDecorationColor: corporate,
+      textDecorationColor: linkColor,
     },
     em: {
       fontFamily: fontFamily.italic,

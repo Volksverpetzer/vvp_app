@@ -27,7 +27,7 @@ import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { useLinkColor } from "#/hooks/useAppColorScheme";
 import { useAudioAvailability } from "#/hooks/useAudioAvailability";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
@@ -82,7 +82,7 @@ const Header = (properties: HeaderProperties) => {
   // Reference to the ViewShot component for image capture
   const reference = useRef<ViewShotRef>(null);
   const router = useRouter();
-  const corporate = useCorporateColor();
+  const linkColor = useLinkColor();
 
   const audioUrl = Config.audioCdnUrl
     ? `${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`
@@ -192,7 +192,7 @@ const Header = (properties: HeaderProperties) => {
                     article_link,
                   )
                 }
-                style={{ color: corporate }}
+                style={{ color: linkColor }}
               >
                 {author.display_name}
                 {index < array.length - 1 ? ", " : ""}
@@ -231,8 +231,8 @@ const Header = (properties: HeaderProperties) => {
         // announced on its own, so no accessibilityHint is needed.
         <UiText
           accessible
-          pointerEvents="none"
           style={{
+            pointerEvents: "none",
             position: "absolute",
             width: 1,
             height: 1,
@@ -311,7 +311,7 @@ const Header = (properties: HeaderProperties) => {
                           article_link,
                         )
                       }
-                      style={{ color: corporate }}
+                      style={{ color: Colors.dark.linkText }}
                     >
                       {author.display_name}
                       {index < array.length - 1 ? ", " : ""}

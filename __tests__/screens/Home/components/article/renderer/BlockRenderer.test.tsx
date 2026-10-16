@@ -42,6 +42,8 @@ const wrap = async (ui: React.ReactElement, advancedReporting = false) =>
         contentSettings: {} as any,
         setAdvancedSettings: jest.fn(),
         setContentSettings: jest.fn(),
+        themePreference: "system",
+        setThemePreference: jest.fn(),
       }}
     >
       {ui}

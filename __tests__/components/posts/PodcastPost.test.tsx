@@ -51,6 +51,7 @@ jest.mock("#/helpers/provider/AudioProvider", () => ({
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => "light",
   useCorporateColor: () => "#1B7194",
+  useLinkColor: () => "#1B7194",
 }));
 
 const episode: PodcastEpisodeProperties = {

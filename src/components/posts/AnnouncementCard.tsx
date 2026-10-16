@@ -36,11 +36,16 @@ const AnnouncementCard = ({
 }: AnnouncementCardProperties) => {
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
 
   const handleAction = () => {
     onDismiss(announcement.id);
-    router.push(announcement.route);
+    const { route } = announcement;
+    if (typeof route === "string" && route.startsWith("https://")) {
+      onLinkPress(route as HttpsUrl, router);
+    } else {
+      router.push(route);
+    }
   };
 
   const mascot = AppImages.announcementMascot;
@@ -48,18 +53,25 @@ const AnnouncementCard = ({
   return (
     <View style={mascot ? { paddingTop: MASCOT_PEEK } : undefined}>
       {mascot && (
-        <Image
-          source={mascot}
-          accessible={false}
-          pointerEvents="none"
+        // expo-image's style type has no pointerEvents, so the wrapper
+        // carries it (and the positioning).
+        <View
+          testID="announcementMascot"
           style={{
+            pointerEvents: "none",
             alignSelf: "center",
             height: MASCOT_HEIGHT,
             position: "absolute",
             top: -MASCOT_OVERLAP,
             width: MASCOT_WIDTH,
           }}
-        />
+        >
+          <Image
+            source={mascot}
+            accessible={false}
+            style={{ height: "100%", width: "100%" }}
+          />
+        </View>
       )}
       <UiCard style={{ gap: spacing.lg }}>
         <UiText size="base" style={{ lineHeight: LINE_HEIGHTS.base }}>
@@ -91,7 +103,7 @@ const AnnouncementCard = ({
                     key={key}
                     onPress={() => onLinkPress(url, router)}
                     style={{
-                      color: corporate,
+                      color: linkColor,
                       textDecorationLine: "underline",
                     }}
                   >

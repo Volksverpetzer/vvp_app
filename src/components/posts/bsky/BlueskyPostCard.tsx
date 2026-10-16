@@ -33,7 +33,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   const { record, author, uri } = post.post;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
   const grey = Colors[colorScheme].textMuted;
   const postId = uri.split("/app.bsky.feed.post/")[1];
 
@@ -103,7 +103,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
         <BlueskyPostHeader author={author} />
 
         <Hyperlink
-          linkStyle={{ color: corporate }}
+          linkStyle={{ color: linkColor }}
           onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
         >
           <Typography type="body">
@@ -130,12 +130,12 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
             </UiText>
           )}
           {replies?.length > 0 ? (
-            <UiText size="base" style={{ color: corporate }}>
+            <UiText size="base" style={{ color: linkColor }}>
               Thread (1 von {replies.length + 1})
             </UiText>
           ) : (
             isTruncated && (
-              <UiText size="base" style={{ color: corporate }}>
+              <UiText size="base" style={{ color: linkColor }}>
                 mehr
               </UiText>
             )

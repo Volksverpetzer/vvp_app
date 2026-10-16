@@ -82,6 +82,7 @@ jest.mock("expo-constants", () => ({
             accent: "#DB2685",
             primary: "#1b7194",
             primaryMuted: "#3893C0",
+            linkText: "#1B7194",
             pruefpunkt: "#442674",
           },
           dark: {
@@ -96,6 +97,7 @@ jest.mock("expo-constants", () => ({
             accent: "#DB2685",
             primary: "#1b7194",
             primaryMuted: "#3893C0",
+            linkText: "#4A9CC7",
             pruefpunkt: "#8B5CF6",
           },
         },
@@ -148,6 +150,7 @@ jest.mock("expo-web-browser", () => ({
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
   useCorporateColor: jest.fn(() => "#1b7194"),
+  useLinkColor: jest.fn(() => "#1B7194"),
   ColorScheme: { light: "light", dark: "dark" },
 }));
 
