@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { View } from "react-native";
 
 import UiButton from "#/components/ui/UiButton";
@@ -12,6 +13,7 @@ import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
 import { onLinkPress } from "#/helpers/Linking";
+import { registerAnnouncementEvent } from "#/helpers/network/Analytics";
 import { parseInlineMarkdown } from "#/helpers/utils/inlineMarkdown";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl } from "#/types";
@@ -24,6 +26,11 @@ const MASCOT_WIDTH = 160;
 const MASCOT_HEIGHT = Math.round(MASCOT_WIDTH * (833 / 524));
 const MASCOT_PEEK = Math.round(MASCOT_HEIGHT / 2);
 const MASCOT_OVERLAP = 28;
+
+// Ids already reported as shown in this app session, so a re-mount (feed
+// refresh, tab switch) doesn't count the same card again and inflate the
+// impressions the click-through rate is measured against.
+const reportedImpressions = new Set<string>();
 
 interface AnnouncementCardProperties {
   announcement: AnnouncementEntry;
@@ -38,7 +45,23 @@ const AnnouncementCard = ({
   const colorScheme = useAppColorScheme();
   const linkColor = Colors[colorScheme].linkText;
 
+  useEffect(() => {
+    if (reportedImpressions.has(announcement.id)) return;
+    reportedImpressions.add(announcement.id);
+    void registerAnnouncementEvent("Announcement Shown", announcement);
+    // Keyed on the id only: a new object for the same card is not a new impression.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [announcement.id]);
+
+  const handleDismiss = () => {
+    void registerAnnouncementEvent("Announcement Dismissed", announcement);
+    onDismiss(announcement.id);
+  };
+
   const handleAction = () => {
+    void registerAnnouncementEvent("Announcement Action", announcement, {
+      source: "button",
+    });
     onDismiss(announcement.id);
     const { route } = announcement;
     if (typeof route === "string" && route.startsWith("https://")) {
@@ -101,7 +124,14 @@ const AnnouncementCard = ({
                 return (
                   <UiText
                     key={key}
-                    onPress={() => onLinkPress(url, router)}
+                    onPress={() => {
+                      void registerAnnouncementEvent(
+                        "Announcement Action",
+                        announcement,
+                        { source: "link" },
+                      );
+                      onLinkPress(url, router);
+                    }}
                     style={{
                       color: linkColor,
                       textDecorationLine: "underline",
@@ -120,7 +150,7 @@ const AnnouncementCard = ({
           <UiButton
             label="Alles klar!"
             variant="secondary"
-            onPress={() => onDismiss(announcement.id)}
+            onPress={handleDismiss}
             style={{ flex: 1 }}
           />
           <UiButton

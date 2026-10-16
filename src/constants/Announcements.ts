@@ -40,8 +40,7 @@ const volksverpetzerAnnouncements: AnnouncementEntry[] = [
     message:
       "**Wir sind für den Grimme-Preis nominiert!**\nHilf uns mit deiner Stimme beim Publikumspreis – das Voting läuft nur für kurze Zeit:",
     actionLabel: "Jetzt abstimmen",
-    // Placeholder until the real voting page is live.
-    route: "https://www.veeck.de",
+    route: "https://www.grimme-online-award.de/voting",
   },
   {
     id: "podcast-pruefpunkt-2026-08",
