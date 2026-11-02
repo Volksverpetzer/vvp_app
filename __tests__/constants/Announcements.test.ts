@@ -15,7 +15,7 @@ const loadAnnouncements = (variant: {
 };
 
 describe("Announcements", () => {
-  it("has the Grimme-Preis vote first, then podcast/Prüfpunkt, on the Volksverpetzer variant", () => {
+  it("has the Grimme Online Award vote first, then podcast/Prüfpunkt, on the Volksverpetzer variant", () => {
     const Announcements = loadAnnouncements({
       isVolksverpetzer: true,
       isMimikama: false,
