@@ -1,6 +1,7 @@
 import { act, fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 import { Text, View } from "react-native";
+import type { ViewInstance } from "react-native";
 
 import RenderWhenNearViewport from "#/components/views/RenderWhenNearViewport";
 import {
@@ -12,9 +13,17 @@ import {
 const SCREEN = 1334;
 
 const renderAt = async (elementTop: number) => {
-  const viewport = createScrollViewport({ current: {} as View }, SCREEN);
+  const viewport = createScrollViewport(
+    { current: {} as ViewInstance },
+    SCREEN,
+  );
   const measureLayout = jest
-    .spyOn(View.prototype, "measureLayout")
+    // RN 0.88 types View as a function component; at runtime its host
+    // instances still inherit measureLayout from this prototype
+    .spyOn(
+      (View as unknown as { prototype: ViewInstance }).prototype,
+      "measureLayout",
+    )
     .mockImplementation((_relativeTo, onSuccess) => {
       onSuccess(0, elementTop, 300, 450);
     });
