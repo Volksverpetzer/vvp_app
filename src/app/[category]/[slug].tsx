@@ -158,7 +158,16 @@ const LoadArticle = () => {
       imageUrl: imageUrl || article.imageUrl || "",
       imageCredit: imageCredit ?? article.imageCredit,
     };
-    return <ArticleScreen article={articleWithImage} anchor={anchor} />;
+    // Keyed by slug: ArticleScreen keeps per-article state in refs (saved
+    // position restore, FullRead, progressive body rendering), so a deep link
+    // to a different article must remount it rather than reuse the instance.
+    return (
+      <ArticleScreen
+        key={article.slug}
+        article={articleWithImage}
+        anchor={anchor}
+      />
+    );
   }
 
   // If fetching failed, fall back to the webview for compatibility
