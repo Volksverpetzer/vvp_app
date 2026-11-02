@@ -100,8 +100,4 @@ const TabLayout = () => {
   );
 };
 
-export const unstable_settings = {
-  anchor: "home",
-};
-
 export default TabLayout;
