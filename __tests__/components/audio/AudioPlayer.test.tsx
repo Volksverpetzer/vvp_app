@@ -2,7 +2,7 @@ import { fireEvent, render } from "@testing-library/react-native";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
 
-jest.mock("@react-native-vector-icons/octicons/static", () => "Octicons");
+jest.mock("@react-native-vector-icons/lucide/static", () => "Lucide");
 
 jest.mock("#/components/Icons", () => ({ PauseIcon: () => null }));
 

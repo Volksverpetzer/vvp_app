@@ -19,6 +19,8 @@ type styleColors = {
   // Brand
   primary: CSSProperties["color"];
   primaryMuted: CSSProperties["color"];
+  // Link text, readable on background and surface
+  linkText: CSSProperties["color"];
   accent: CSSProperties["color"];
   // Prüfpunkt fact-check sub-brand
   pruefpunkt: CSSProperties["color"];

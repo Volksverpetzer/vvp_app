@@ -25,12 +25,14 @@ jest.mock("#/helpers/Stores/SettingsStore", () => ({
     },
     defaultAdvancedSettings: {
       advancedReporting: { value: false, name: "Erweitertes Reporting" },
-      alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
     },
+    defaultThemePreference: "system",
     getContentSettings: jest.fn(),
     getAdvancedSettings: jest.fn(),
+    getThemePreference: jest.fn(),
     setContentSettings: jest.fn(),
     setAdvancedSettings: jest.fn(),
+    setThemePreference: jest.fn(),
   },
 }));
 
@@ -41,13 +43,15 @@ jest.mock("#/helpers/apiUrl", () => ({
 const mockSettingsStore = SettingsStore as jest.Mocked<typeof SettingsStore>;
 
 const ConsumerComponent = () => {
-  const { contentSettings, advancedSettings } = useContext(SettingsContext);
+  const { contentSettings, advancedSettings, themePreference } =
+    useContext(SettingsContext);
   return (
     <>
       <Text testID="reddit">{String(contentSettings.reddit.value)}</Text>
-      <Text testID="darkMode">
-        {String(advancedSettings.alwaysDarkMode.value)}
+      <Text testID="reporting">
+        {String(advancedSettings.advancedReporting.value)}
       </Text>
+      <Text testID="theme">{themePreference}</Text>
     </>
   );
 };
@@ -57,6 +61,8 @@ describe("SettingsProvider", () => {
     jest.clearAllMocks();
     mockSettingsStore.setContentSettings.mockResolvedValue(undefined as never);
     mockSettingsStore.setAdvancedSettings.mockResolvedValue(undefined as never);
+    mockSettingsStore.setThemePreference.mockResolvedValue(undefined as never);
+    mockSettingsStore.getThemePreference.mockResolvedValue("system");
     jest.mocked(loadApiUrlOverride).mockResolvedValue(undefined);
   });
 
@@ -129,8 +135,9 @@ describe("SettingsProvider", () => {
       reddit: { value: false, name: "Memes" },
     } as unknown as ContentSettingType);
     mockSettingsStore.getAdvancedSettings.mockResolvedValue({
-      alwaysDarkMode: { value: true, name: "Immer Dark Mode" },
-    } as unknown as AdvancedSettingType);
+      advancedReporting: { value: true, name: "Erweitertes Reporting" },
+    } as AdvancedSettingType);
+    mockSettingsStore.getThemePreference.mockResolvedValue("light");
 
     const { getByTestId } = await render(
       <SettingsProvider>
@@ -140,7 +147,42 @@ describe("SettingsProvider", () => {
 
     await waitFor(() => getByTestId("reddit"));
     expect(getByTestId("reddit").props.children).toBe("false");
-    expect(getByTestId("darkMode").props.children).toBe("true");
+    expect(getByTestId("reporting").props.children).toBe("true");
+    expect(getByTestId("theme").props.children).toBe("light");
+  });
+
+  it("updates and persists the theme preference", async () => {
+    mockSettingsStore.getContentSettings.mockResolvedValue(
+      {} as ContentSettingType,
+    );
+    mockSettingsStore.getAdvancedSettings.mockResolvedValue(
+      {} as AdvancedSettingType,
+    );
+
+    const ThemeSetter = () => {
+      const { themePreference, setThemePreference } =
+        useContext(SettingsContext);
+      return (
+        <Text testID="theme" onPress={() => setThemePreference("light")}>
+          {themePreference}
+        </Text>
+      );
+    };
+
+    const { getByTestId } = await render(
+      <SettingsProvider>
+        <ThemeSetter />
+      </SettingsProvider>,
+    );
+
+    await waitFor(() => getByTestId("theme"));
+    expect(mockSettingsStore.setThemePreference).not.toHaveBeenCalled();
+    await act(() => {
+      getByTestId("theme").props.onPress();
+    });
+
+    expect(getByTestId("theme").props.children).toBe("light");
+    expect(mockSettingsStore.setThemePreference).toHaveBeenCalledWith("light");
   });
 
   it("persists content settings changes to store", async () => {

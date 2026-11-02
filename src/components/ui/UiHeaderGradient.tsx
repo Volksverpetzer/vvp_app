@@ -56,17 +56,19 @@ const UiHeaderGradient = ({
   return (
     <View style={style}>
       <View
-        pointerEvents="none"
         style={[
           StyleSheet.absoluteFill,
-          { bottom: HEADER_FADE_HEIGHT, backgroundColor },
+          {
+            bottom: HEADER_FADE_HEIGHT,
+            backgroundColor,
+            pointerEvents: "none",
+          },
         ]}
       />
       <LinearGradient
-        pointerEvents="none"
         colors={fadeColors}
         locations={FADE_LOCATIONS}
-        style={fadeStyle}
+        style={[fadeStyle, { pointerEvents: "none" }]}
       />
       {children}
     </View>

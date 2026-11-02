@@ -37,7 +37,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
   const { account, content, answers, created_at, uri } = post;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
   const grey = Colors[colorScheme].textMuted;
   const htmlPattern = /<[^>]+>/g;
   const fulltext = decode(
@@ -61,7 +61,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
       disabled={displayText === DISPLAY_TEXT_FULL}
     >
       <Hyperlink
-        linkStyle={{ color: corporate }}
+        linkStyle={{ color: linkColor }}
         style={{ flex: 1 }}
         onPress={(url: HttpsUrl) => {
           onLinkPress(url, router, uri);
@@ -107,7 +107,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
                 size="lg"
                 style={{
                   lineHeight: LINE_HEIGHTS.lg,
-                  color: corporate,
+                  color: linkColor,
                   marginBottom: spacing.xl,
                 }}
               >
@@ -131,7 +131,7 @@ const MastodonPost = (properties: MastodonPostScreenProperties) => {
               {answers && answers.length > 0 && (
                 <UiText
                   size="lg"
-                  style={{ lineHeight: LINE_HEIGHTS.lg, color: corporate }}
+                  style={{ lineHeight: LINE_HEIGHTS.lg, color: linkColor }}
                 >
                   Thread 1 von {answers.length + 1}
                 </UiText>

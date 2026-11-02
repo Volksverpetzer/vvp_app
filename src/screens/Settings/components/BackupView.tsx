@@ -7,10 +7,13 @@ import { ActivityIndicator, View } from "react-native";
 import { DownloadIcon, UploadIcon } from "#/components/Icons";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
+import {
+  SETTINGS_ROW_MIN_HEIGHT,
+  settingsTextStyle,
+} from "#/components/views/SettingsList";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
-import { spacing } from "#/constants/Spacing";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { toast } from "#/helpers/toast";
@@ -121,20 +124,20 @@ const BackupView = () => {
     }
   };
 
-  const rowStyle = [
-    globalStyles.row,
-    { paddingBottom: spacing.xl, maxHeight: 45 },
-  ];
+  const rowStyle = [globalStyles.row, { minHeight: SETTINGS_ROW_MIN_HEIGHT }];
 
   return (
-    <View style={{ padding: spacing.xl }}>
+    <View>
       <UiPressable
         accessibilityRole="button"
         onPress={handleExport}
         disabled={!!busy}
         style={rowStyle}
       >
-        <UiText size="base" style={{ opacity: busy === "import" ? 0.4 : 1 }}>
+        <UiText
+          size="base"
+          style={[settingsTextStyle, { opacity: busy === "import" ? 0.4 : 1 }]}
+        >
           Sammlung exportieren
         </UiText>
         {busy === "export" ? (
@@ -149,7 +152,10 @@ const BackupView = () => {
         disabled={!!busy}
         style={rowStyle}
       >
-        <UiText size="base" style={{ opacity: busy === "export" ? 0.4 : 1 }}>
+        <UiText
+          size="base"
+          style={[settingsTextStyle, { opacity: busy === "export" ? 0.4 : 1 }]}
+        >
           Sammlung importieren
         </UiText>
         {busy === "import" ? (

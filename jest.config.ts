@@ -9,6 +9,10 @@ const config: Config.InitialOptions = {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
   setupFilesAfterEnv: ["<rootDir>/jest-setup.ts"],
+  // The first test in a file also pays for babel-transforming its imports; on
+  // a cold cache and the 1-vCPU ubuntu-slim release runner that alone can
+  // exceed the default 5 s.
+  testTimeout: 15000,
   testPathIgnorePatterns: ["<rootDir>/__tests__/mocks/"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   collectCoverage: true,

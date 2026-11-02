@@ -4,7 +4,7 @@ import { fireEvent, render } from "@testing-library/react-native";
 import PodcastPost from "#/components/posts/PodcastPost";
 import type { PodcastEpisodeProperties } from "#/types";
 
-jest.mock("@react-native-vector-icons/octicons/static", () => "Octicons");
+jest.mock("@react-native-vector-icons/lucide/static", () => "Lucide");
 
 jest.mock("expo-image", () => ({
   __esModule: true,
@@ -51,6 +51,7 @@ jest.mock("#/helpers/provider/AudioProvider", () => ({
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: () => "light",
   useCorporateColor: () => "#1B7194",
+  useLinkColor: () => "#1B7194",
 }));
 
 const episode: PodcastEpisodeProperties = {

@@ -3,8 +3,11 @@ import * as Application from "expo-application";
 import * as Linking from "expo-linking";
 import { Platform } from "react-native";
 
+import type { AnnouncementEntry } from "#/constants/Announcements";
 import Config from "#/constants/Config";
 import {
+  announcementTitle,
+  registerAnnouncementEvent,
   registerEvent,
   registerPostInteraction,
 } from "#/helpers/network/Analytics";
@@ -199,6 +202,68 @@ describe("Analytics (Plausible)", () => {
           platform: Platform.OS,
         }),
       );
+    });
+  });
+
+  describe("announcements", () => {
+    const announcement: AnnouncementEntry = {
+      id: "grimme-preis-voting-2026-10",
+      message: "**Wir sind nominiert!**\nHilf uns mit deiner Stimme",
+      actionLabel: "Jetzt abstimmen",
+      route: "https://example.org/vote",
+    };
+
+    beforeEach(() => {
+      parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
+      postSpy.mockResolvedValue({ success: true });
+    });
+
+    it("registerAnnouncementEvent sends the event with id and title props", async () => {
+      await registerAnnouncementEvent("Announcement Shown", announcement);
+
+      const [, , body] = postSpy.mock.calls[0];
+      expect(body.name).toBe("Announcement Shown");
+      expect(body.props).toEqual(
+        expect.objectContaining({
+          announcement_id: "grimme-preis-voting-2026-10",
+          announcement_title: "Wir sind nominiert!",
+        }),
+      );
+      expect(body.props).not.toHaveProperty("source");
+    });
+
+    it("registerAnnouncementEvent passes the action source through", async () => {
+      await registerAnnouncementEvent("Announcement Action", announcement, {
+        source: "link",
+      });
+
+      const [, , body] = postSpy.mock.calls[0];
+      expect(body.name).toBe("Announcement Action");
+      expect(body.props).toEqual(
+        expect.objectContaining({
+          announcement_id: "grimme-preis-voting-2026-10",
+          announcement_title: "Wir sind nominiert!",
+          source: "link",
+        }),
+      );
+    });
+
+    it("announcementTitle keeps link and italic text but drops their syntax", () => {
+      expect(
+        announcementTitle({
+          ...announcement,
+          message: "*Neu*: mehr auf [Prüfpunkt](https://x.org)",
+        }),
+      ).toBe("Neu: mehr auf Prüfpunkt");
+    });
+
+    it("announcementTitle truncates long lines with an ellipsis", () => {
+      const title = announcementTitle({
+        ...announcement,
+        message: "a".repeat(200),
+      });
+      expect(title).toHaveLength(80);
+      expect(title.endsWith("…")).toBe(true);
     });
   });
 

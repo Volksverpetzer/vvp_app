@@ -7,6 +7,7 @@ import { LinkIcon, StarIcon } from "#/components/Icons";
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
 import UiTabIconLabel from "#/components/ui/UiTabIconLabel";
 import UiTabView from "#/components/ui/UiTabView";
+import TabScreenView from "#/components/views/TabScreenView";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
@@ -57,7 +58,7 @@ const PersonalTab = () => {
   );
 
   return (
-    <>
+    <TabScreenView>
       <AnimatedHeader
         title="Sammlung"
         scrollOffsetY={scrollOffsetY}
@@ -104,7 +105,7 @@ const PersonalTab = () => {
       >
         {activeTab === "favs" ? <MyFavs /> : <MySources />}
       </ScrollView>
-    </>
+    </TabScreenView>
   );
 };
 

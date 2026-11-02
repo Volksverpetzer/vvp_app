@@ -104,7 +104,7 @@ const StatisticsView = () => {
           contentColor={contentColor}
         />
         <StatisticsPanel
-          icon="person"
+          icon="user"
           title="Meine Stats"
           streakKeyToExclude="appOpened"
           valueKey="count"

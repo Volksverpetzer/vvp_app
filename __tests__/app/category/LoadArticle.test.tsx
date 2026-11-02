@@ -197,6 +197,50 @@ describe("LoadArticle native article anchor", () => {
     expect(articleAnchorProp()).toBe("Erfurter-Resolution");
   });
 
+  it("remounts ArticleScreen when the params switch to a different article", async () => {
+    // ArticleScreen keeps per-article state in refs, so a deep link to another
+    // article on the open screen must not reuse the same instance.
+    const Article = jest.requireMock(
+      "#/screens/Home/components/article/Article",
+    );
+    const mounts: string[] = [];
+    Article.mockImplementation(({ article }: { article: { slug: string } }) => {
+      React.useEffect(() => {
+        mounts.push(article.slug);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, []);
+      return null;
+    });
+    const ContentStore = jest.requireMock(
+      "#/helpers/Stores/ContentStore",
+    ).default;
+    ContentStore.getStoredArticle.mockImplementation((slug: string) =>
+      Promise.resolve({ slug, imageUrl: "" }),
+    );
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "analyse",
+      slug: "erster-artikel",
+    });
+
+    const { rerender } = await render(<LoadArticle />);
+    await waitFor(() => expect(mounts).toEqual(["erster-artikel"]));
+
+    useLocalSearchParams.mockReturnValue({
+      category: "analyse",
+      slug: "zweiter-artikel",
+    });
+    await rerender(<LoadArticle />);
+
+    await waitFor(() =>
+      expect(mounts).toEqual(["erster-artikel", "zweiter-artikel"]),
+    );
+    Article.mockImplementation(() => null);
+    ContentStore.getStoredArticle.mockImplementation(() =>
+      Promise.resolve(null),
+    );
+  });
+
   it("renders natively even when the post has no wp:featuredmedia link", async () => {
     // WordPress can omit wp:featuredmedia from _links even though
     // featured_media is set, e.g. when the attachment isn't readable via the

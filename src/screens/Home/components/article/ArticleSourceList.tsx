@@ -31,7 +31,7 @@ export const ArticleSourceList = ({
   const [open, setOpen] = useState(false);
   const colorScheme = useAppColorScheme();
   const textColor = Colors[colorScheme].text;
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
 
   useEffect(() => {
     if (!Config.enableEngagement) {
@@ -94,7 +94,7 @@ export const ArticleSourceList = ({
                 style={{ width: "80%" }}
                 onPress={() => onPress(link.url)}
               >
-                <UiText style={{ color: corporate }}>
+                <UiText style={{ color: linkColor }}>
                   {link.url.split("?")[0].split("#")[0]}
                 </UiText>
               </UiPressable>

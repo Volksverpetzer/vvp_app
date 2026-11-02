@@ -132,10 +132,12 @@ jest.mock("#/components/Icons", () => ({
   FeedbackIcon: jest.fn(() => null),
   GiveIcon: jest.fn(() => null),
   ImprintIcon: jest.fn(() => null),
+  InfoIcon: jest.fn(() => null),
   LockIcon: jest.fn(() => null),
   NotificationIcon: jest.fn(() => null),
   SearchIcon: jest.fn(() => null),
   SettingsIcon: jest.fn(() => null),
+  ThemeIcon: jest.fn(() => null),
   UploadIcon: jest.fn(() => null),
 }));
 jest.mock("react-native-gesture-handler", () => ({

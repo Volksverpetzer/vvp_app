@@ -1,5 +1,6 @@
 import { useHtmlIframeProps } from "@native-html/iframe-plugin";
 import type { CustomRendererProps, TBlock } from "@native-html/render";
+import { Image } from "expo-image";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
 import { Dimensions, View } from "react-native";
@@ -9,16 +10,20 @@ import type {
   WebViewMessageEvent,
 } from "react-native-webview/lib/WebViewTypes";
 
+import { PlayIcon } from "#/components/Icons";
 import LoadArticlePost, {
   ArticleNotFoundError,
 } from "#/components/loader/LoadArticlePost";
 import LoadOpenGraphCard from "#/components/loader/LoadOpenGraphCard";
 import UiErrorCard from "#/components/ui/UiErrorCard";
+import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
+import RenderWhenNearViewport from "#/components/views/RenderWhenNearViewport";
 import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { globalStyles } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { safeParseHostname } from "#/helpers/Linking";
 import { isDarkMode } from "#/helpers/utils/color";
@@ -235,6 +240,32 @@ const VIMEO_HOSTS = ["vimeo.com"];
 const isVideoEmbedHost = (hostname: string): boolean =>
   hostMatchesAny(hostname, [...YOUTUBE_HOSTS, ...VIMEO_HOSTS]);
 
+const YOUTUBE_BRAND_COLOR = "#FF0000";
+
+/**
+ * Extracts the video id from a YouTube embed URL (".../embed/{id}" on
+ * youtube.com / youtube-nocookie.com, or "youtu.be/{id}"). Returns undefined
+ * for anything else, in which case the embed loads its WebView right away.
+ */
+export const youTubeVideoId = (url: string | undefined): string | undefined => {
+  if (!url) return undefined;
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return undefined;
+  }
+  const hostname = parsed.hostname;
+  const segments = parsed.pathname.split("/").filter(Boolean);
+  const id = hostMatches(hostname, "youtu.be")
+    ? segments[0]
+    : hostMatchesAny(hostname, ["youtube.com", "youtube-nocookie.com"]) &&
+        segments[0] === "embed"
+      ? segments[1]
+      : undefined;
+  return id && /^[\w-]+$/.test(id) ? id : undefined;
+};
+
 interface WebViewRequest {
   url?: string;
   isTopFrame?: boolean;
@@ -339,11 +370,28 @@ const IframeRenderer = ({
   const fallbackHeight = Math.min(width, 400);
   const colorScheme = useAppColorScheme();
   const [webViewHeight, setWebViewHeight] = useState(fallbackHeight);
+  // YouTube embeds start as a static thumbnail and only mount their WebView
+  // once tapped. Each player is a full WebView loading YouTube's player
+  // bundle, and long articles can embed dozens of videos — mounting them all
+  // at once made such articles take many seconds to open (e.g. the AfD
+  // chronology with ~70 videos).
+  const [playerActivated, setPlayerActivated] = useState(false);
   const { htmlAttribs } = useHtmlIframeProps(renderProps);
   // htmlAttribs is typed as Record<string, string>, but a malformed
   // <iframe> with no src attribute genuinely yields undefined at runtime.
   const source = htmlAttribs.src as string | undefined;
-  const webViewSource = prepareWebViewSource(source, colorScheme);
+  const preparedSource = prepareWebViewSource(source, colorScheme);
+  const videoId = youTubeVideoId(source);
+  const showFacade = !!videoId && !playerActivated;
+  // The facade tap is the user's play gesture, so start playback right away
+  // instead of making them tap the player a second time.
+  const webViewSource =
+    preparedSource && videoId && playerActivated
+      ? {
+          ...preparedSource,
+          uri: preparedSource.uri.replace("autoplay=0", "autoplay=1"),
+        }
+      : preparedSource;
   const isVideo = isVideoEmbedHost(safeParseHostname(source));
   // Video players get a fixed 16:9 height derived from the WebView's actual
   // rendered width instead of the WebView's self-reported content height.
@@ -412,8 +460,10 @@ const IframeRenderer = ({
       );
     }
 
+    // Long articles can embed dozens of these cards, each fetching its post
+    // and image — only start that when the reader gets close to one.
     return (
-      <View
+      <RenderWhenNearViewport
         style={{
           maxWidth: 500,
           minHeight: 450,
@@ -447,6 +497,37 @@ const IframeRenderer = ({
             }
           />
         </View>
+      </RenderWhenNearViewport>
+    );
+  }
+
+  if (showFacade) {
+    return (
+      <View style={{ alignItems: "center" }}>
+        <UiPressable
+          accessibilityRole="button"
+          accessibilityLabel="YouTube Video abspielen"
+          accessibilityHint="Lädt den YouTube-Player und startet das Video"
+          testID="youtube-facade"
+          onPress={() => setPlayerActivated(true)}
+          style={{
+            width,
+            maxWidth: maxWidth + 40,
+            height: videoHeight,
+            backgroundColor: "black",
+          }}
+        >
+          <Image
+            style={{ flex: 1, width: "100%" }}
+            contentFit="cover"
+            source={{ uri: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` }}
+          />
+          <View
+            style={[globalStyles.centeredAbsolute, { pointerEvents: "none" }]}
+          >
+            <PlayIcon size={56} color={YOUTUBE_BRAND_COLOR} />
+          </View>
+        </UiPressable>
       </View>
     );
   }
@@ -473,7 +554,9 @@ const IframeRenderer = ({
         }
         allowsFullscreenVideo
         incognito
-        mediaPlaybackRequiresUserAction
+        // After a facade tap the user already asked to play; elsewhere media
+        // must not start on its own.
+        mediaPlaybackRequiresUserAction={!(videoId && playerActivated)}
         allowsInlineMediaPlayback
         renderError={() => <UiText>Render Error</UiText>}
         scalesPageToFit={false}

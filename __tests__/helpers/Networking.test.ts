@@ -598,6 +598,38 @@ describe("Networking utilities", () => {
     expect(request).toHaveBeenCalledTimes(1);
   });
 
+  it("get does not log errors whose status is in silentStatuses", async () => {
+    const client = Networking.createClient("https://x" as any);
+    const error = new Networking.FetchError("Request failed with status 404", {
+      status: 404,
+      statusText: "Not Found",
+      url: "/p",
+      body: null,
+    });
+    client.request = jest.fn<any>().mockRejectedValue(error);
+
+    await expect(
+      Networking.get(client, "/p", { silentStatuses: [404] }),
+    ).rejects.toBe(error);
+    expect(console.error).not.toHaveBeenCalled();
+  });
+
+  it("get still logs errors whose status is not in silentStatuses", async () => {
+    const client = Networking.createClient("https://x" as any);
+    const error = new Networking.FetchError("Request failed with status 403", {
+      status: 403,
+      statusText: "Forbidden",
+      url: "/p",
+      body: null,
+    });
+    client.request = jest.fn<any>().mockRejectedValue(error);
+
+    await expect(
+      Networking.get(client, "/p", { silentStatuses: [404] }),
+    ).rejects.toBe(error);
+    expect(console.error).toHaveBeenCalledWith(error);
+  });
+
   it("get gives up after exhausting retries on repeated 5xx errors", async () => {
     const client = Networking.createClient("https://x" as any);
     const error = new Networking.FetchError("Request failed with status 503", {

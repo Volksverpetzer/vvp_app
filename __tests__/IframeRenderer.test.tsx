@@ -1,10 +1,12 @@
 import type { CustomRendererProps, TBlock } from "@native-html/render";
-import { act, fireEvent, render } from "@testing-library/react-native";
+import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import * as Linking from "expo-linking";
 import { Dimensions } from "react-native";
 
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
-import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRenderer";
+import IframeRenderer, {
+  youTubeVideoId,
+} from "#/screens/Home/components/article/renderer/IframeRenderer";
 
 // Mock Config to provide wpUrl
 jest.mock("#/constants/Config", () => ({
@@ -83,6 +85,15 @@ jest.mock("react-native-webview", () => {
     WebView: MockWebViewComponent,
   };
 });
+
+// YouTube embeds render a thumbnail facade until tapped; tap it to mount the
+// actual player WebView.
+const activateYouTubeFacade = async () => {
+  await act(async () => {
+    fireEvent.press(screen.getByTestId("youtube-facade"));
+    await Promise.resolve();
+  });
+};
 
 describe("IframeRenderer dynamic height", () => {
   beforeEach(() => {
@@ -458,7 +469,7 @@ describe("IframeRenderer prepareWebViewSource", () => {
   });
 
   describe("YouTube URL handling", () => {
-    it("should disable autoplay parameter for youtube.com URLs", async () => {
+    it("starts playback once the youtube.com facade is tapped, keeping other params", async () => {
       const onLinkPress = jest.fn();
       const renderProps = {} as unknown as CustomRendererProps<TBlock>;
 
@@ -477,9 +488,11 @@ describe("IframeRenderer prepareWebViewSource", () => {
         />,
       );
 
+      await activateYouTubeFacade();
+
       const resultUrl = new URL(mockLastWebViewProps.source.uri);
       expect(resultUrl.hostname).toBe("www.youtube.com");
-      expect(resultUrl.searchParams.get("autoplay")).toBe("0");
+      expect(resultUrl.searchParams.get("autoplay")).toBe("1");
       expect(resultUrl.searchParams.get("start")).toBe("10");
     });
 
@@ -501,6 +514,8 @@ describe("IframeRenderer prepareWebViewSource", () => {
           onLinkPress={onLinkPress}
         />,
       );
+
+      await activateYouTubeFacade();
 
       expect(mockLastWebViewProps.source.headers).toBeDefined();
       expect(mockLastWebViewProps.source.headers).toHaveProperty("Referer");
@@ -526,9 +541,11 @@ describe("IframeRenderer prepareWebViewSource", () => {
         />,
       );
 
+      await activateYouTubeFacade();
+
       const resultUrl = new URL(mockLastWebViewProps.source.uri);
       expect(resultUrl.hostname).toBe("www.youtube-nocookie.com");
-      expect(resultUrl.searchParams.get("autoplay")).toBe("0");
+      expect(resultUrl.searchParams.get("autoplay")).toBe("1");
       expect(mockLastWebViewProps.source.headers).toBeDefined();
       expect(mockLastWebViewProps.source.headers).toHaveProperty("Referer");
     });
@@ -552,9 +569,11 @@ describe("IframeRenderer prepareWebViewSource", () => {
         />,
       );
 
+      await activateYouTubeFacade();
+
       const resultUrl = new URL(mockLastWebViewProps.source.uri);
       expect(resultUrl.hostname).toBe("youtu.be");
-      expect(resultUrl.searchParams.get("autoplay")).toBe("0");
+      expect(resultUrl.searchParams.get("autoplay")).toBe("1");
       expect(mockLastWebViewProps.source.headers).toBeDefined();
     });
   });
@@ -751,11 +770,13 @@ describe("IframeRenderer prepareWebViewSource", () => {
         />,
       );
 
-      // YouTube URLs should be processed with autoplay disabled and headers added
+      await activateYouTubeFacade();
+
+      // Tapped YouTube facades start playing; headers are still added
       expect(mockLastWebViewProps).not.toBeNull();
       expect(mockLastWebViewProps.source).toBeDefined();
       expect(mockLastWebViewProps.source.uri).toContain("youtube.com");
-      expect(mockLastWebViewProps.source.uri).toContain("autoplay=0");
+      expect(mockLastWebViewProps.source.uri).toContain("autoplay=1");
       expect(mockLastWebViewProps.source.headers).toBeDefined();
     });
 
@@ -784,6 +805,80 @@ describe("IframeRenderer prepareWebViewSource", () => {
       expect(mockLastWebViewProps.source.uri).toContain("youtube.com");
       expect(mockLastWebViewProps.source.uri).toContain("autoplay=0");
     });
+  });
+});
+
+describe("IframeRenderer YouTube facade", () => {
+  beforeEach(() => {
+    mockUseHtmlIframeProps.mockClear();
+    mockUseAppColorScheme.mockClear();
+    mockLastWebViewProps = null;
+    mockUseAppColorScheme.mockReturnValue(ColorScheme.light);
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://www.youtube.com/embed/Fh-mJhfrvJo?rel=0" },
+    });
+  });
+
+  it("shows a thumbnail instead of mounting the player WebView until tapped", async () => {
+    await render(
+      <IframeRenderer
+        renderProps={{} as unknown as CustomRendererProps<TBlock>}
+        width={360}
+        maxWidth={700}
+        onLinkPress={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByTestId("youtube-facade")).toBeTruthy();
+    expect(screen.queryByTestId("mock-webview")).toBeNull();
+    expect(mockLastWebViewProps).toBeNull();
+
+    await activateYouTubeFacade();
+
+    expect(screen.queryByTestId("youtube-facade")).toBeNull();
+    expect(screen.getByTestId("mock-webview")).toBeTruthy();
+    // The tap is the user's play gesture, so the player may start on its own.
+    expect(mockLastWebViewProps.mediaPlaybackRequiresUserAction).toBe(false);
+  });
+
+  it("keeps requiring a user gesture for media in non-YouTube embeds", async () => {
+    mockUseHtmlIframeProps.mockReturnValue({
+      htmlAttribs: { src: "https://player.vimeo.com/video/123" },
+    });
+
+    await render(
+      <IframeRenderer
+        renderProps={{} as unknown as CustomRendererProps<TBlock>}
+        width={360}
+        maxWidth={700}
+        onLinkPress={jest.fn()}
+      />,
+    );
+
+    expect(screen.queryByTestId("youtube-facade")).toBeNull();
+    expect(mockLastWebViewProps.mediaPlaybackRequiresUserAction).toBe(true);
+  });
+});
+
+describe("youTubeVideoId", () => {
+  it.each([
+    ["https://www.youtube.com/embed/Fh-mJhfrvJo?enablejsapi=1", "Fh-mJhfrvJo"],
+    ["https://www.youtube-nocookie.com/embed/abc_123", "abc_123"],
+    ["https://youtu.be/short123?t=4", "short123"],
+  ])("extracts the id from %s", (url, id) => {
+    expect(youTubeVideoId(url)).toBe(id);
+  });
+
+  it.each([
+    undefined,
+    "",
+    "not a url",
+    "https://youtube.com/",
+    "https://www.youtube.com/watch?v=abc",
+    "https://notyoutube.com/embed/abc",
+    "https://www.youtube.com/embed/abc%22onerror",
+  ])("returns undefined for %s", (url) => {
+    expect(youTubeVideoId(url)).toBeUndefined();
   });
 });
 
@@ -821,6 +916,8 @@ describe("IframeRenderer video embed sizing", () => {
         onLinkPress={onLinkPress}
       />,
     );
+
+    await activateYouTubeFacade();
 
     const expectedHeight = Math.round(360 * (9 / 16));
     expect(getHeight(mockLastWebViewProps)).toBe(expectedHeight);
@@ -873,6 +970,8 @@ describe("IframeRenderer video embed sizing", () => {
         onLinkPress={onLinkPress}
       />,
     );
+
+    await activateYouTubeFacade();
 
     expect(getHeight(mockLastWebViewProps)).toBe(Math.round(740 * (9 / 16)));
   });

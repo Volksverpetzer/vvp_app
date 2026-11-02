@@ -5,7 +5,7 @@ import {
   SourceSans3_700Bold_Italic,
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
-import OcticonsFont from "@react-native-vector-icons/octicons/fonts/Octicons.ttf";
+import LucideFont from "@react-native-vector-icons/lucide/fonts/Lucide.ttf";
 import { Stack, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -47,7 +47,7 @@ const SECONDARY_BG_SCREENS = new Set(["action", "support"]);
 /**
  * Manages the background color for the app shell — including the notch/status bar
  * area — based on the current screen and color scheme. Lives inside all providers
- * so forced dark mode is respected.
+ * so a forced light/dark theme is respected.
  */
 const AppFrame = ({ children }: PropsWithChildren) => {
   const colorScheme = useAppColorScheme();
@@ -99,7 +99,7 @@ const RootLayout = () => {
     [fontFamily.boldItalic]: SourceSans3_700Bold_Italic,
     // The icon font is bundled natively by the vector-icons config plugin,
     // but on web it has to be registered explicitly
-    ...(Platform.OS === "web" && { Octicons: OcticonsFont }),
+    ...(Platform.OS === "web" && { Lucide: LucideFont }),
   });
 
   const [showChangelog, setShowChangelog] = useState(false);

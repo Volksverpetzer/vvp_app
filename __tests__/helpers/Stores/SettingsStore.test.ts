@@ -188,7 +188,6 @@ describe("SettingsStore", () => {
     it("returns parsed advanced settings", async () => {
       const settings: AdvancedSettingType = {
         advancedReporting: { value: true, name: "Erweitertes Reporting" },
-        alwaysDarkMode: { value: false, name: "Immer Dark Mode" },
       };
       jest
         .spyOn(BaseStore, "getItem")
@@ -199,6 +198,23 @@ describe("SettingsStore", () => {
 
       expect(BaseStore.getItem).toHaveBeenCalledWith("advancedSettings");
       expect(result).toEqual(settings);
+    });
+
+    it("drops keys of removed settings from older builds", async () => {
+      const stored = {
+        advancedReporting: { value: true, name: "Erweitertes Reporting" },
+        alwaysDarkMode: { value: true, name: "Immer Dark Mode" },
+      };
+      jest
+        .spyOn(BaseStore, "getItem")
+        .mockResolvedValue(JSON.stringify(stored));
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(stored);
+
+      const result = await SettingsStore.getAdvancedSettings();
+
+      expect(result).toEqual({
+        advancedReporting: { value: true, name: "Erweitertes Reporting" },
+      });
     });
 
     it("returns defaults on error", async () => {
@@ -213,6 +229,98 @@ describe("SettingsStore", () => {
 
       expect(result).toEqual(SettingsStore.defaultAdvancedSettings);
       consoleSpy.mockRestore();
+    });
+  });
+
+  describe("getThemePreference", () => {
+    const mockStorage = (values: Record<string, string | undefined>) => {
+      // Earlier tests leave a rejecting setItem behind on the module mock.
+      jest.spyOn(BaseStore, "setItem").mockResolvedValue(undefined);
+      jest
+        .spyOn(BaseStore, "getItem")
+        .mockImplementation((key: string) => Promise.resolve(values[key]));
+      jest
+        .spyOn(BaseStore, "parseJSON")
+        .mockImplementation((json, fallback) =>
+          json ? JSON.parse(json as string) : fallback,
+        );
+    };
+
+    it("returns the stored preference", async () => {
+      mockStorage({ themePreference: "light" });
+
+      const result = await SettingsStore.getThemePreference();
+
+      expect(result).toBe("light");
+      expect(BaseStore.setItem).not.toHaveBeenCalled();
+    });
+
+    it("migrates the legacy always-dark-mode switch to dark", async () => {
+      mockStorage({
+        advancedSettings: JSON.stringify({
+          alwaysDarkMode: { value: true, name: "Immer Dark Mode" },
+        }),
+      });
+
+      const result = await SettingsStore.getThemePreference();
+
+      expect(result).toBe("dark");
+      expect(BaseStore.setItem).toHaveBeenCalledWith("themePreference", "dark");
+    });
+
+    it("defaults to system when nothing is stored", async () => {
+      mockStorage({});
+
+      const result = await SettingsStore.getThemePreference();
+
+      expect(result).toBe("system");
+      expect(BaseStore.setItem).toHaveBeenCalledWith(
+        "themePreference",
+        "system",
+      );
+    });
+
+    it("returns the default on a storage error", async () => {
+      jest
+        .spyOn(BaseStore, "getItem")
+        .mockRejectedValue(new Error("Storage error"));
+      const consoleSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      const result = await SettingsStore.getThemePreference();
+
+      expect(result).toBe("system");
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Error retrieving theme preference:",
+        expect.any(Error),
+      );
+      consoleSpy.mockRestore();
+    });
+
+    it("logs storage errors when saving", async () => {
+      jest
+        .spyOn(BaseStore, "setItem")
+        .mockRejectedValue(new Error("Storage error"));
+      const consoleSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      await SettingsStore.setThemePreference("dark");
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Error saving theme preference:",
+        expect.any(Error),
+      );
+      consoleSpy.mockRestore();
+    });
+
+    it("ignores an invalid stored value", async () => {
+      mockStorage({ themePreference: "sepia" });
+
+      const result = await SettingsStore.getThemePreference();
+
+      expect(result).toBe("system");
     });
   });
 

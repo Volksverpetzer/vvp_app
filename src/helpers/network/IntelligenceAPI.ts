@@ -1,5 +1,6 @@
 import Config from "#/constants/Config";
 import {
+  FetchError,
   createClient,
   get as netGet,
   post as netPost,
@@ -64,13 +65,26 @@ class IntelligenceAPI {
     }));
   }
 
+  /**
+   * Related articles for a URL. A URL the backend hasn't indexed (e.g.
+   * Prüfpunkt articles) answers 404, which just means "no recommendations".
+   */
   static async recommendations(
     url: HttpsUrl,
     signal?: AbortSignal,
   ): Promise<{ results: { url: string; title: string }[] }> {
-    return await this.get<{
-      results: { url: string; title: string }[];
-    }>(`/api/recommend/?url=${encodeURIComponent(url)}`, signal);
+    try {
+      return await netGet<{ results: { url: string; title: string }[] }>(
+        this.client,
+        `/api/recommend/?url=${encodeURIComponent(url)}`,
+        { signal, silentStatuses: [404] },
+      );
+    } catch (error) {
+      if (error instanceof FetchError && error.status === 404) {
+        return { results: [] };
+      }
+      throw error;
+    }
   }
 }
 

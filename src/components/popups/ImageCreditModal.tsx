@@ -22,7 +22,7 @@ const ImageCreditModal = ({
   credit,
 }: ImageCreditModalProperties) => {
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
   const textMuted = Colors[colorScheme].textMuted;
 
   // isc_image_source_url is free-form WordPress admin input, not guaranteed
@@ -54,7 +54,7 @@ const ImageCreditModal = ({
             accessibilityRole="link"
             onPress={() => outBoundLinkPress(sourceUrl)}
           >
-            <UiText size="sm" style={[styles.link, { color: corporate }]}>
+            <UiText size="sm" style={[styles.link, { color: linkColor }]}>
               {sourceUrl}
             </UiText>
           </UiPressable>

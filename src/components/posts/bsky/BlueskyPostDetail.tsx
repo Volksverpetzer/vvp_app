@@ -27,7 +27,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
   const { wpUrl } = Config;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
   const postId = uri.split("/app.bsky.feed.post/")[1];
   const htmlPattern = /<[^>]+>/g;
 
@@ -67,7 +67,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
       <BlueskyPostHeader author={author} />
 
       <Hyperlink
-        linkStyle={{ color: corporate }}
+        linkStyle={{ color: linkColor }}
         style={{ flex: 1 }}
         onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
       >

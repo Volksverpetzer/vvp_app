@@ -12,6 +12,8 @@ import type { HttpsUrl } from "#/types";
 interface ReportingWrapperProperties {
   url: HttpsUrl;
   renderIndex: number;
+  /** Added to renderIndex when reporting; read at report time. */
+  indexOffset?: () => number;
   children: ReactNode;
 }
 
@@ -21,6 +23,7 @@ interface ReportingWrapperProperties {
 const ReportingWrapper = ({
   url,
   renderIndex,
+  indexOffset,
   children,
 }: ReportingWrapperProperties) => {
   const router = useRouter();
@@ -32,7 +35,7 @@ const ReportingWrapper = ({
       params: {
         category: "app_feedback",
         url,
-        index: String(renderIndex),
+        index: String(renderIndex + (indexOffset?.() ?? 0)),
       },
     });
   };

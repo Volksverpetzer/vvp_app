@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { View } from "react-native";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
+import { Platform, View } from "react-native";
 
 import UiPressable from "#/components/ui/UiPressable";
 import UiSwitch from "#/components/ui/UiSwitch";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { LINE_HEIGHTS } from "#/constants/FontSizes";
 import { globalStyles } from "#/constants/GlobalStyles";
-import { spacing } from "#/constants/Spacing";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -28,7 +29,27 @@ interface SettingsListProperties {
   disabled?: boolean;
   disabledMessage?: string;
   onDisabledPress?: () => void;
+  style?: StyleProp<ViewStyle>;
 }
+
+// Shared by every settings row (switches, backup actions) so rows sit on the
+// same rhythm across sections. Also the platform's minimum touch target:
+// 44pt on iOS (HIG), 48dp elsewhere (Material).
+export const SETTINGS_ROW_MIN_HEIGHT = Platform.select({
+  ios: 44,
+  default: 48,
+});
+
+// Settings texts use a fixed line height so their position is predictable:
+// a row centers its single-line label, so padding a text block by the same
+// inset puts its first line exactly where a row's label would be — also when
+// the text wraps. Keeps every section's first line at the same distance from
+// its title, whether it starts with an intro text or a switch.
+export const settingsTextStyle: TextStyle = { lineHeight: LINE_HEIGHTS.base };
+
+export const settingsTextRowStyle: ViewStyle = {
+  paddingVertical: (SETTINGS_ROW_MIN_HEIGHT - LINE_HEIGHTS.base) / 2,
+};
 
 const SettingsList = (properties: SettingsListProperties) => {
   // Tracks in-flight saves per key, not globally, so toggling one switch
@@ -37,27 +58,32 @@ const SettingsList = (properties: SettingsListProperties) => {
   const colorScheme = useAppColorScheme();
   const { textMuted } = Colors[colorScheme];
   const activeSettings = getEnabledFeeds(Config.feeds);
-  const { disabled, disabledMessage, onDisabledPress } = properties;
+  const { disabled, disabledMessage, onDisabledPress, style } = properties;
 
+  // No outer padding: the surrounding container (e.g. SettingsSection) owns it.
   return (
-    <View
-      style={{ paddingVertical: spacing.xl, paddingHorizontal: spacing.xl }}
-    >
+    <View style={style}>
       {disabled &&
         disabledMessage &&
         (onDisabledPress ? (
           <UiPressable
             accessibilityRole="button"
             onPress={onDisabledPress}
-            style={{ paddingBottom: spacing.md }}
+            style={settingsTextRowStyle}
           >
-            <UiText size="base" style={{ color: textMuted }}>
+            <UiText
+              size="base"
+              style={[settingsTextStyle, { color: textMuted }]}
+            >
               {disabledMessage}
             </UiText>
           </UiPressable>
         ) : (
-          <View style={{ paddingBottom: spacing.md }}>
-            <UiText size="base" style={{ color: textMuted }}>
+          <View style={settingsTextRowStyle}>
+            <UiText
+              size="base"
+              style={[settingsTextStyle, { color: textMuted }]}
+            >
               {disabledMessage}
             </UiText>
           </View>
@@ -81,12 +107,11 @@ const SettingsList = (properties: SettingsListProperties) => {
           return (
             <View
               key={key}
-              style={[
-                globalStyles.row,
-                { paddingTop: spacing.xl, maxHeight: 45 },
-              ]}
+              style={[globalStyles.row, { minHeight: SETTINGS_ROW_MIN_HEIGHT }]}
             >
-              <UiText size="base">{setting.name}</UiText>
+              <UiText size="base" style={settingsTextStyle}>
+                {setting.name}
+              </UiText>
               <UiSwitch
                 testID="settingSwitch"
                 value={disabled ? false : setting.value}

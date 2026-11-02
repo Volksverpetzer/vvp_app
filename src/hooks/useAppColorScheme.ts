@@ -15,13 +15,16 @@ export const ColorScheme = {
 } as const satisfies Record<AppColorScheme, AppColorScheme>;
 
 /**
- * A hook that returns the color scheme of the device, or "dark" if the user has set the advanced setting "Always Dark Mode".
- * @returns The color scheme of the device, or "dark" if the user has set the advanced setting "Always Dark Mode".
+ * A hook that returns the app's color scheme: the one the user picked in the
+ * settings ("Darstellung"), or the device's color scheme if they left it on
+ * "System".
+ * @returns The color scheme the app should render in.
  */
 export const useAppColorScheme = (): AppColorScheme => {
-  const { advancedSettings } = useContext(SettingsContext);
+  const { themePreference } = useContext(SettingsContext);
   const scheme: ColorSchemeName = useColorScheme();
-  if (advancedSettings?.alwaysDarkMode?.value ?? false) return ColorScheme.dark;
+  if (themePreference === ColorScheme.light) return ColorScheme.light;
+  if (themePreference === ColorScheme.dark) return ColorScheme.dark;
   return scheme === ColorScheme.dark ? ColorScheme.dark : ColorScheme.light;
 };
 
@@ -32,6 +35,15 @@ export const useAppColorScheme = (): AppColorScheme => {
 export const useCorporateColor = () => {
   const colorScheme = useAppColorScheme();
   return Colors[colorScheme].primary;
+};
+
+/**
+ * A hook that returns the link text color for the current color scheme.
+ * @returns The link text color for the current color scheme.
+ */
+export const useLinkColor = () => {
+  const colorScheme = useAppColorScheme();
+  return Colors[colorScheme].linkText;
 };
 
 export const useReverseColorScheme = () => {

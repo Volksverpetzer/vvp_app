@@ -20,7 +20,7 @@ export const PostText = ({ feedViewPost, uri }: PostTextProps) => {
   const record = feedViewPost?.post?.record;
 
   const colorScheme = useAppColorScheme();
-  const corporate = Colors[colorScheme].primary;
+  const linkColor = Colors[colorScheme].linkText;
 
   if (!hasText(record)) {
     return null;
@@ -50,7 +50,7 @@ export const PostText = ({ feedViewPost, uri }: PostTextProps) => {
 
   return (
     <Hyperlink
-      linkStyle={{ color: corporate }}
+      linkStyle={{ color: linkColor }}
       linkText={(url) => linkTextToUrlMap[url]}
       onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
     >

@@ -26,7 +26,8 @@ import {
 import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
-import { useCorporateColor } from "#/hooks/useAppColorScheme";
+import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
+import { useLinkColor } from "#/hooks/useAppColorScheme";
 import { useAudioAvailability } from "#/hooks/useAudioAvailability";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
@@ -36,11 +37,25 @@ import logoPike from "#assets/images/logo_pike.webp";
 import { ArticleSourceList } from "./ArticleSourceList";
 import ArticleStats from "./ArticleStats";
 
-// Prefer the archive URL WordPress reports for the author; rebuild it with the
-// site's author path only when absent (e.g. articles cached by an older build).
-const getAuthorUrl = (author: { slug: string; link?: HttpsUrl }): HttpsUrl =>
-  author.link ||
-  `${Config.wpUrl}/${Config.authorBase ?? "author"}/${author.slug}/`;
+// Prefer the archive URL WordPress reports for the author; rebuild it only
+// when absent (e.g. articles cached by an older build). Articles from a
+// secondary feed (e.g. pruefpunkt.org) link to that site's WordPress default
+// author path; Config.authorBase only applies to the primary site.
+export const getAuthorUrl = (
+  author: { slug: string; link?: HttpsUrl },
+  articleLink?: string,
+): HttpsUrl => {
+  if (author.link) return author.link;
+  const secondary = findSecondaryWpFeed(
+    articleLink,
+    Config.wpUrl,
+    Config.feeds?.wp,
+  );
+  if (secondary) {
+    return `${secondary.handle}/author/${author.slug}/`;
+  }
+  return `${Config.wpUrl}/${Config.authorBase ?? "author"}/${author.slug}/`;
+};
 
 interface HeaderProperties {
   article: ArticleProperties;
@@ -67,7 +82,7 @@ const Header = (properties: HeaderProperties) => {
   // Reference to the ViewShot component for image capture
   const reference = useRef<ViewShotRef>(null);
   const router = useRouter();
-  const corporate = useCorporateColor();
+  const linkColor = useLinkColor();
 
   const audioUrl = Config.audioCdnUrl
     ? `${Config.audioCdnUrl.replace(/\/$/, "")}/${encodeURIComponent(slug)}.mp3`
@@ -171,9 +186,13 @@ const Header = (properties: HeaderProperties) => {
               <UiText
                 key={author.slug}
                 onPress={() =>
-                  onLinkPress(getAuthorUrl(author), router, article_link)
+                  onLinkPress(
+                    getAuthorUrl(author, article_link),
+                    router,
+                    article_link,
+                  )
                 }
-                style={{ color: corporate }}
+                style={{ color: linkColor }}
               >
                 {author.display_name}
                 {index < array.length - 1 ? ", " : ""}
@@ -212,8 +231,8 @@ const Header = (properties: HeaderProperties) => {
         // announced on its own, so no accessibilityHint is needed.
         <UiText
           accessible
-          pointerEvents="none"
           style={{
+            pointerEvents: "none",
             position: "absolute",
             width: 1,
             height: 1,
@@ -286,9 +305,13 @@ const Header = (properties: HeaderProperties) => {
                     <UiText
                       key={author.slug}
                       onPress={() =>
-                        onLinkPress(getAuthorUrl(author), router, article_link)
+                        onLinkPress(
+                          getAuthorUrl(author, article_link),
+                          router,
+                          article_link,
+                        )
                       }
-                      style={{ color: corporate }}
+                      style={{ color: Colors.dark.linkText }}
                     >
                       {author.display_name}
                       {index < array.length - 1 ? ", " : ""}
