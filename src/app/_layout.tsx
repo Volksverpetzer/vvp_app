@@ -208,7 +208,7 @@ const RootLayout = () => {
  * @see https://docs.expo.dev/router/advanced/router-settings/#initialroutename
  */
 export const unstable_settings = {
-  initialRouteName: "(tabs)",
+  anchor: "(tabs)",
 };
 
 export default RootLayout;

@@ -7,7 +7,7 @@ import { useBadge } from "#/helpers/provider/BadgeProvider";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 export const unstable_settings = {
-  initialRouteName: "home",
+  anchor: "home",
 };
 
 /**

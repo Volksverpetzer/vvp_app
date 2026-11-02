@@ -101,7 +101,7 @@ const TabLayout = () => {
 };
 
 export const unstable_settings = {
-  initialRouteName: "home",
+  anchor: "home",
 };
 
 export default TabLayout;
