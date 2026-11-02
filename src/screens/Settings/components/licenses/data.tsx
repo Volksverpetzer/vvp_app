@@ -31,7 +31,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "@expo/metro-runtime@58.0.14": {
+  "@expo/metro-runtime@58.0.16": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -102,27 +102,27 @@ export default {
     repository: "https://github.com/fb55/domutils",
     licenseUrl: "https://github.com/fb55/domutils/raw/HEAD/LICENSE",
   },
-  "expo-application@58.1.1": {
+  "expo-application@58.1.2": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-asset@58.0.15": {
+  "expo-asset@58.0.19": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-audio@58.0.9": {
+  "expo-audio@58.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-blur@58.0.3": {
+  "expo-blur@58.0.5": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-clipboard@58.0.3": {
+  "expo-clipboard@58.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -131,7 +131,7 @@ export default {
     licenses: "ISC",
     repository: "https://gitlab.com/breadboxio/expo-config",
   },
-  "expo-constants@58.0.12": {
+  "expo-constants@58.0.14": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -142,7 +142,7 @@ export default {
     licenseUrl:
       "https://github.com/malaa-tech/expo-custom-assets/raw/HEAD/LICENSE",
   },
-  "expo-dev-client@58.0.13": {
+  "expo-dev-client@58.0.18": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -157,22 +157,22 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-file-system@58.0.9": {
+  "expo-file-system@58.0.13": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-font@58.0.8": {
+  "expo-font@58.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-haptics@58.0.6": {
+  "expo-haptics@58.0.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-image@58.0.14": {
+  "expo-image@58.0.18": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -187,7 +187,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-linking@58.0.13": {
+  "expo-linking@58.0.15": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -197,45 +197,45 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-notifications@58.1.4": {
+  "expo-notifications@58.1.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-router@58.0.19": {
+  "expo-router@58.0.29": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-sharing@58.0.18": {
-    licenses: "MIT",
-    repository: "https://github.com/expo/expo",
-    licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
-  },
-  "expo-splash-screen@58.0.9": {
+  "expo-sharing@58.0.21": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-status-bar@58.0.3": {
+  "expo-splash-screen@58.0.12": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-system-ui@58.0.5": {
+  "expo-status-bar@58.0.4": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-updates@58.0.16": {
-    licenses: "MIT",
-    repository: "https://github.com/expo/expo",
-  },
-  "expo-web-browser@58.0.6": {
+  "expo-system-ui@58.0.7": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@58.0.10": {
+  "expo-updates@58.0.20": {
+    licenses: "MIT",
+    repository: "https://github.com/expo/expo",
+  },
+  "expo-web-browser@58.0.7": {
+    licenses: "MIT",
+    repository: "https://github.com/expo/expo",
+    licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
+  },
+  "expo@58.0.22": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -296,13 +296,13 @@ export default {
     licenseUrl:
       "https://github.com/appandflow/react-native-safe-area-context/raw/HEAD/LICENSE",
   },
-  "react-native-screens@4.30.0": {
+  "react-native-screens@4.30.1": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-screens",
     licenseUrl:
       "https://github.com/software-mansion/react-native-screens/raw/HEAD/LICENSE",
   },
-  "react-native-svg@15.15.5": {
+  "react-native-svg@15.16.0": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-svg",
     licenseUrl:
@@ -337,7 +337,7 @@ export default {
     licenseUrl:
       "https://github.com/software-mansion/react-native-reanimated/raw/HEAD/LICENSE",
   },
-  "react-native@0.88.0-rc.4": {
+  "react-native@0.88.1": {
     licenses: "MIT",
     repository: "https://github.com/react/react-native",
     licenseUrl: "https://github.com/react/react-native/raw/HEAD/LICENSE",
