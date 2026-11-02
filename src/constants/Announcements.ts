@@ -38,7 +38,7 @@ const volksverpetzerAnnouncements: AnnouncementEntry[] = [
   {
     id: "grimme-preis-voting-2026-10",
     message:
-      "**Wir sind für den Grimme-Preis nominiert!**\nHilf uns mit deiner Stimme beim Publikumspreis – das Voting läuft nur für kurze Zeit:",
+      "**Wir sind für den Grimme Online Award nominiert!**\nHilf uns mit deiner Stimme beim Publikumspreis – das Voting läuft nur für kurze Zeit:",
     actionLabel: "Jetzt abstimmen",
     route: "https://www.grimme-online-award.de/voting",
   },

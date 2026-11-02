@@ -1,0 +1,3 @@
+- New: Settings → Appearance lets you choose between System, Light and Dark
+- Vote for us in the Grimme Online Award – right in the feed
+- Design and contrast improvements, and of course bug fixes
