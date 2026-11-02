@@ -8,7 +8,7 @@
       "exclude": []
     }
   },
-  "packageManager": "pnpm@12.11.2",
+  "packageManager": "pnpm@12.16.1",
   "engines": {
     "node": "24.x"
   },
@@ -50,7 +50,7 @@
     "update:deps": "pnpx npm-check-updates -c 1d -i --format group"
   },
   "dependencies": {
-    "@algolia/client-search": "5.60.0",
+    "@algolia/client-search": "5.61.0",
     "@atproto/api": "0.27.0",
     "@babel/runtime": "7.29.10",
     "@expo-google-fonts/source-sans-3": "0.4.2",
@@ -126,11 +126,11 @@
     "@testing-library/react-native": "14.1.0",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "@types/jest": "29.5.14",
-    "@types/lodash": "4.17.26",
+    "@types/lodash": "4.17.27",
     "@types/node": "24.19.2",
     "@types/react": "19.2.18",
-    "@typescript-eslint/eslint-plugin": "8.71.2",
-    "@typescript-eslint/parser": "8.71.2",
+    "@typescript-eslint/eslint-plugin": "8.72.1",
+    "@typescript-eslint/parser": "8.72.1",
     "@volksverpetzer/eslint-plugin-react-native-a11y": "3.6.0",
     "babel-jest": "29.7.0",
     "babel-plugin-module-resolver": "5.0.3",
