@@ -1,11 +1,11 @@
 export default {
-  "@algolia/client-search@5.60.0": {
+  "@algolia/client-search@5.61.0": {
     licenses: "MIT",
     repository: "https://github.com/algolia/algoliasearch-client-javascript",
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.27.0": {
+  "@atproto/api@0.30.0": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
@@ -197,16 +197,16 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-notifications@57.0.23": {
+  "expo-notifications@57.0.24": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-router@57.0.28": {
+  "expo-router@57.0.29": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-sharing@57.0.23": {
+  "expo-sharing@57.0.24": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -235,7 +235,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@57.0.30": {
+  "expo@57.0.31": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -320,7 +320,7 @@ export default {
     licenseUrl:
       "https://github.com/gre/react-native-view-shot/raw/HEAD/LICENSE",
   },
-  "react-native-web@0.21.2": {
+  "react-native-web@0.21.4": {
     licenses: "MIT",
     repository: "https://github.com/necolas/react-native-web",
     licenseUrl: "https://github.com/necolas/react-native-web/raw/HEAD/LICENSE",
