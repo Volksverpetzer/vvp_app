@@ -76,12 +76,14 @@ const extraConfig: ExtraConfigType = {
         // without CORS headers fail on web
         handle: "https://volksverpetzer.de",
         label: "Artikel",
+        aiSite: "vvp",
         enabled: true,
       },
       {
         handle: "https://pruefpunkt.org",
         label: "Prüfpunkt Artikel",
         sourceName: "Prüfpunkt",
+        aiSite: "pp",
         enabled: true,
       },
     ],

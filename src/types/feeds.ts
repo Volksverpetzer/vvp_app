@@ -13,6 +13,12 @@ export type WpFeedEntry = {
   label: string; // name shown for this feed's content setting
   enabled?: boolean;
   sourceName?: string; // stamped on articles so the post card shows the source
+  /**
+   * This site's key in the AI backend's `/api/recommend/` `site` filter
+   * (vvp_factcheck_search: crawler/sites.py), so an article's recommendations
+   * come from its own site. Unset: no filter, i.e. anything in the index.
+   */
+  aiSite?: string;
 };
 
 export type InstaFeedEntry = {

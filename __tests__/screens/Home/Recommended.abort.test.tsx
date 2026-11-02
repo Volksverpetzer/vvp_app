@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { act, render, waitFor } from "@testing-library/react-native";
 
+import LoadArticlePost from "#/components/loader/LoadArticlePost";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
 import Recommended from "#/screens/Home/components/article/Recommended";
 
@@ -16,6 +17,16 @@ jest.mock("#/constants/Config", () => ({
   default: {
     wpUrl: "https://example.com",
     aiUrl: "https://ai.example.com",
+    feeds: {
+      wp: [
+        { handle: "https://example.com", label: "Artikel", aiSite: "ex" },
+        {
+          handle: "https://second.example.org",
+          label: "Second",
+          aiSite: "second",
+        },
+      ],
+    },
   },
 }));
 
@@ -23,7 +34,10 @@ jest.mock("#/components/ui/UiText", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children }: any) => <Text>{children}</Text>);
 });
-jest.mock("#/components/loader/LoadArticlePost", () => () => null);
+jest.mock("#/components/loader/LoadArticlePost", () => ({
+  __esModule: true,
+  default: jest.fn(() => null),
+}));
 jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: {
     content: {},
@@ -68,6 +82,47 @@ describe("Recommended", () => {
     await render(<Recommended article_link="https://example.com/article" />);
 
     await waitFor(() => expect(recommendations).toHaveBeenCalledTimes(1));
+  });
+
+  it("asks for recommendations from the article's own site", async () => {
+    const recommendations = (IntelligenceAPI as any)
+      .recommendations as jest.Mock<any>;
+    recommendations.mockResolvedValue({ results: [] });
+
+    await render(<Recommended article_link="https://example.com/article" />);
+    await render(
+      <Recommended article_link="https://www.second.example.org/a/b/" />,
+    );
+    await render(<Recommended article_link="https://unknown.example.net/a/" />);
+
+    await waitFor(() => expect(recommendations).toHaveBeenCalledTimes(3));
+    expect(recommendations.mock.calls.map((call) => call[2])).toEqual([
+      "ex",
+      "second",
+      undefined,
+    ]);
+  });
+
+  it("loads secondary-site recommendations from that site's WordPress", async () => {
+    const recommendations = (IntelligenceAPI as any)
+      .recommendations as jest.Mock<any>;
+    recommendations.mockResolvedValue({
+      results: [
+        { url: "https://example.com/cat/primary-post/", title: "Primary" },
+        { url: "https://second.example.org/cat/second-post/", title: "Second" },
+        { url: "https://other.com/cat/foreign-post/", title: "Foreign" },
+      ],
+    });
+
+    await render(<Recommended article_link="https://example.com/article" />);
+
+    const load = LoadArticlePost as unknown as jest.Mock;
+    await waitFor(() => expect(load).toHaveBeenCalledTimes(2));
+    const props = load.mock.calls.map(([p]) => p as Record<string, unknown>);
+    expect(props.map(({ slug, baseUrl }) => ({ slug, baseUrl }))).toEqual([
+      { slug: "primary-post", baseUrl: undefined },
+      { slug: "second-post", baseUrl: "https://second.example.org" },
+    ]);
   });
 
   it("does not request recommendations without an AI backend", async () => {

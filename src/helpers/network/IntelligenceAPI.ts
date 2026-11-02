@@ -66,17 +66,22 @@ class IntelligenceAPI {
   }
 
   /**
-   * Related articles for a URL. A URL the backend hasn't indexed (e.g.
-   * Prüfpunkt articles) answers 404, which just means "no recommendations".
+   * Related articles for a URL. A URL the backend hasn't indexed (yet)
+   * answers 404, which just means "no recommendations".
+   *
+   * @param site backend site key (a WordPress feed's `aiSite`, e.g. "vvp" or
+   *   "pp") to only get recommendations from that site; omit for no filter.
    */
   static async recommendations(
     url: HttpsUrl,
     signal?: AbortSignal,
+    site?: string,
   ): Promise<{ results: { url: string; title: string }[] }> {
+    const siteParameter = site ? `&site=${encodeURIComponent(site)}` : "";
     try {
       return await netGet<{ results: { url: string; title: string }[] }>(
         this.client,
-        `/api/recommend/?url=${encodeURIComponent(url)}`,
+        `/api/recommend/?url=${encodeURIComponent(url)}${siteParameter}`,
         { signal, silentStatuses: [404] },
       );
     } catch (error) {
