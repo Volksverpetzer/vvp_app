@@ -88,7 +88,7 @@ describe("Recommended", () => {
 
   it("asks for recommendations from the article's own site", async () => {
     const recommendations = (IntelligenceAPI as any)
-      .recommendations as jest.Mock<any>;
+      .recommendations as jest.Mock<AsyncMock>;
     recommendations.mockResolvedValue({ results: [] });
 
     await render(<Recommended article_link="https://example.com/article" />);
@@ -107,7 +107,7 @@ describe("Recommended", () => {
 
   it("loads secondary-site recommendations from that site's WordPress", async () => {
     const recommendations = (IntelligenceAPI as any)
-      .recommendations as jest.Mock<any>;
+      .recommendations as jest.Mock<AsyncMock>;
     recommendations.mockResolvedValue({
       results: [
         { url: "https://example.com/cat/primary-post/", title: "Primary" },
