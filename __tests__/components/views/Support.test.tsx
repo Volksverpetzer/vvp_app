@@ -50,7 +50,7 @@ describe("Support bank transfer dialog", () => {
 
   it("closes on Android's back button", async () => {
     const { getByTestId, queryByText } = await openBankTransfer();
-    await fireEvent(getByTestId("bank-transfer-modal"), "requestClose");
+    await fireEvent(getByTestId("bank-transfer"), "requestClose");
     expect(queryByText("Banküberweisung")).toBeNull();
   });
 
