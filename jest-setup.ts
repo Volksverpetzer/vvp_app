@@ -27,7 +27,9 @@ jest.mock("react-native-reanimated", () => {
     },
     // Gesture Handler's gesture hooks check config values with isSharedValue
     isSharedValue: () => false,
-    useSharedValue: (initial: unknown) => ({ value: initial }),
+    // Shared values keep their identity across renders, like the real ones
+    useSharedValue: (initial: unknown) =>
+      require("react").useRef({ value: initial }).current,
     useAnimatedStyle: (factory: () => object) => factory(),
     withTiming: (
       toValue: unknown,

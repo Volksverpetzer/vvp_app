@@ -28,69 +28,86 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
 const ANIMATION_DURATION = 300;
 const BACKDROP_OPACITY = 0.7;
-// Dragging the sheet down this far (or flinging it this fast) closes it
-const SWIPE_CLOSE_DISTANCE = 100;
-const SWIPE_CLOSE_VELOCITY = 1000;
+// Dragging a sheet down this far (or flinging it this fast) closes it
+export const SWIPE_CLOSE_DISTANCE = 100;
+export const SWIPE_CLOSE_VELOCITY = 1000;
 // Off-screen start position until the sheet has measured its real height
 const HIDDEN_OFFSET = 2000;
+// A dialog grows from this scale while it fades in
+const DIALOG_START_SCALE = 0.95;
 
-interface BottomSheetModalProperties {
+export type UiModalVariant = "sheet" | "dialog";
+
+interface UiModalProperties {
   isVisible: boolean;
   onClose: () => void;
-  title: string;
+  /**
+   * `sheet` slides up from the bottom with a drag handle and closes on a
+   * swipe down; `dialog` fades in as a centered card. Defaults to `dialog`.
+   */
+  variant?: UiModalVariant;
+  /** Shown left of the close button in the header. */
+  title?: string;
   children: ReactNode;
-  /** Extra styles for the sheet container, e.g. a maxHeight. */
+  /** Extra styles for the card or sheet, e.g. a maxHeight. */
   containerStyle?: StyleProp<ViewStyle>;
+  /** Base for the testIDs of the modal and its backdrop. */
+  testID?: string;
 }
 
 /**
- * A bottom-anchored sheet modal: a rounded surface that slides up from the
- * bottom with a drag handle, a title + close-button header, and swipe/backdrop
- * dismissal. Content below the header is provided via children. The bottom
- * padding includes the safe-area inset so content clears the Android nav bar.
- *
- * Swiping works on the handle and header only, so scrollable children keep
- * their own scrolling. Android's back button closes the sheet as well.
+ * The app's modal: a card or bottom sheet over a dimmed backdrop, with a
+ * title + close-button header. Tapping the backdrop, the close button or
+ * Android's back button calls onClose; sheets also close on a swipe down
+ * (on the handle and header, so scrollable children keep scrolling).
  */
-const BottomSheetModal = ({
+const UiModal = ({
   isVisible,
   onClose,
+  variant = "dialog",
   title,
   children,
   containerStyle,
-}: BottomSheetModalProperties) => {
+  testID = "ui-modal",
+}: UiModalProperties) => {
   const colorScheme = useAppColorScheme();
   const insets = useSafeAreaInsets();
   const corporate = Colors[colorScheme].primary;
   const surface = Colors[colorScheme].surface;
   const textMuted = Colors[colorScheme].textMuted;
+  const isSheet = variant === "sheet";
 
-  // Stays true through the closing animation, so the sheet can slide out
-  // before the native modal goes away
+  // Stays true through the closing animation, so the content can animate
+  // out before the native modal goes away
   const [mounted, setMounted] = useState(isVisible);
+  // 0 = hidden, 1 = shown; drives the backdrop and the dialog's fade
+  const progress = useSharedValue(0);
+  // How far the sheet is pushed down from its resting position
   const sheetHeight = useSharedValue(HIDDEN_OFFSET);
   const offset = useSharedValue(HIDDEN_OFFSET);
-  const backdrop = useSharedValue(0);
 
   useEffect(() => {
     if (isVisible) {
       setMounted(true);
+      progress.value = withTiming(1, { duration: ANIMATION_DURATION });
       offset.value = withTiming(0, { duration: ANIMATION_DURATION });
-      backdrop.value = withTiming(1, { duration: ANIMATION_DURATION });
     } else {
-      backdrop.value = withTiming(0, { duration: ANIMATION_DURATION });
-      offset.value = withTiming(
-        sheetHeight.value,
+      offset.value = withTiming(sheetHeight.value, {
+        duration: ANIMATION_DURATION,
+      });
+      progress.value = withTiming(
+        0,
         { duration: ANIMATION_DURATION },
         (finished) => {
           if (finished) scheduleOnRN(setMounted, false);
         },
       );
     }
-  }, [isVisible, offset, backdrop, sheetHeight]);
+  }, [isVisible, progress, offset, sheetHeight]);
 
   const panConfig = useMemo(
     () => ({
+      enabled: isSheet,
       activeOffsetY: [-10, 10] as [number, number],
       onUpdate: (event: PanGestureActiveEvent) => {
         "worklet";
@@ -108,16 +125,47 @@ const BottomSheetModal = ({
         }
       },
     }),
-    [offset, onClose],
+    [isSheet, offset, onClose],
   );
   const pan = usePanGesture(panConfig);
 
-  const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: offset.value }],
-  }));
   const backdropStyle = useAnimatedStyle(() => ({
-    opacity: backdrop.value * BACKDROP_OPACITY,
+    opacity: progress.value * BACKDROP_OPACITY,
   }));
+  const contentStyle = useAnimatedStyle(() =>
+    isSheet
+      ? { transform: [{ translateY: offset.value }] }
+      : {
+          opacity: progress.value,
+          transform: [
+            {
+              scale:
+                DIALOG_START_SCALE + (1 - DIALOG_START_SCALE) * progress.value,
+            },
+          ],
+        },
+  );
+
+  const header = (
+    <View style={styles.header}>
+      {title ? (
+        <UiText bold size="xl" style={styles.title}>
+          {title}
+        </UiText>
+      ) : (
+        <View />
+      )}
+      <UiPressable
+        accessibilityRole="button"
+        accessibilityLabel="Schließen"
+        accessibilityHint="Schließt dieses Fenster"
+        onPress={onClose}
+        hitSlop={8}
+      >
+        <CloseIcon size={iconSizes.lg} color={corporate} />
+      </UiPressable>
+    </View>
+  );
 
   return (
     <Modal
@@ -127,58 +175,50 @@ const BottomSheetModal = ({
       statusBarTranslucent
       navigationBarTranslucent
       onRequestClose={onClose}
-      testID="bottom-sheet-modal"
+      testID={testID}
     >
       {/* Gestures inside a Modal need their own root view on Android */}
-      <GestureHandlerRootView style={styles.root}>
+      <GestureHandlerRootView
+        style={[styles.root, isSheet ? styles.rootSheet : styles.rootDialog]}
+      >
         <Animated.View style={[StyleSheet.absoluteFill, backdropStyle]}>
           <Pressable
             accessible={false}
             importantForAccessibility="no"
             style={[StyleSheet.absoluteFill, styles.backdrop]}
             onPress={onClose}
-            testID="bottom-sheet-backdrop"
+            testID={`${testID}-backdrop`}
           />
         </Animated.View>
         <Animated.View
+          testID={`${testID}-content`}
           onLayout={(event) => {
             sheetHeight.value = event.nativeEvent.layout.height;
           }}
           style={[
-            styles.container,
-            // containerStyle sits between the base container style and the
-            // safe-area object below: it can override styles.container (e.g.
-            // maxHeight), but the trailing object still wins over
-            // containerStyle, keeping the safe-area padding/background
-            // authoritative.
+            isSheet ? styles.sheet : styles.dialog,
+            // containerStyle can override the base style (e.g. maxHeight),
+            // but the trailing object keeps the surface color and the
+            // sheet's safe-area padding authoritative
             containerStyle,
             {
               backgroundColor: surface,
-              paddingBottom: spacing.xxl + insets.bottom,
+              ...(isSheet && { paddingBottom: spacing.xxl + insets.bottom }),
             },
-            sheetStyle,
+            contentStyle,
           ]}
         >
-          <GestureDetector gesture={pan}>
-            <View style={styles.dragArea}>
-              <View style={[styles.handle, { backgroundColor: textMuted }]} />
-              <UiSpace size={spacing.lg} />
-              <View style={styles.header}>
-                <UiText bold size="xl">
-                  {title}
-                </UiText>
-                <UiPressable
-                  accessibilityRole="button"
-                  accessibilityLabel="Schließen"
-                  accessibilityHint="Schließt dieses Fenster"
-                  onPress={onClose}
-                  hitSlop={8}
-                >
-                  <CloseIcon size={iconSizes.lg} color={corporate} />
-                </UiPressable>
+          {isSheet ? (
+            <GestureDetector gesture={pan}>
+              <View style={styles.transparent}>
+                <View style={[styles.handle, { backgroundColor: textMuted }]} />
+                <UiSpace size={spacing.lg} />
+                {header}
               </View>
-            </View>
-          </GestureDetector>
+            </GestureDetector>
+          ) : (
+            header
+          )}
           {children}
         </Animated.View>
       </GestureHandlerRootView>
@@ -189,18 +229,28 @@ const BottomSheetModal = ({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+  },
+  rootSheet: {
     justifyContent: "flex-end",
+  },
+  rootDialog: {
+    justifyContent: "center",
+    padding: spacing.xl,
   },
   backdrop: {
     backgroundColor: "black",
   },
-  container: {
+  sheet: {
     borderTopLeftRadius: radii.xl,
     borderTopRightRadius: radii.xl,
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.md,
   },
-  dragArea: {
+  dialog: {
+    borderRadius: radii.lg,
+    padding: spacing.xl,
+  },
+  transparent: {
     backgroundColor: "transparent",
   },
   handle: {
@@ -213,8 +263,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "transparent",
     flexDirection: "row",
+    gap: spacing.md,
     justifyContent: "space-between",
+  },
+  title: {
+    flexShrink: 1,
   },
 });
 
-export default BottomSheetModal;
+export default UiModal;
