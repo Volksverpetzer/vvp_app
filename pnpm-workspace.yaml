@@ -11,7 +11,6 @@ nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 packages:
   - .
 patchedDependencies:
-  react-native-modal@14.0.0-rc.1: patches/react-native-modal@14.0.0-rc.1.patch
   react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
 minimumReleaseAgeExclude:
   - "@expo/cli@58.1.19"

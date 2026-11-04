@@ -268,12 +268,6 @@ export default {
     licenseUrl:
       "https://github.com/obipawan/react-native-hyperlink/raw/HEAD/LICENSE",
   },
-  "react-native-modal@14.0.0-rc.1": {
-    licenses: "MIT",
-    repository: "https://github.com/react-native-modal/react-native-modal",
-    licenseUrl:
-      "https://github.com/react-native-modal/react-native-modal/raw/HEAD/LICENSE.md",
-  },
   "react-native-nitro-modules@0.37.1": {
     licenses: "MIT",
     repository: "https://github.com/mrousavy/nitro",
