@@ -1,7 +1,6 @@
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
-import { View } from "react-native";
-import Modal from "react-native-modal";
+import { Modal, Pressable, StyleSheet, View } from "react-native";
 
 import { CloseIcon, HeartIcon } from "#/components/Icons";
 import Typography from "#/components/ui/Typography";
@@ -73,55 +72,82 @@ const Support = ({ article_link }: SupportProperties) => {
         direkt bei der Bank einrichten.
       </UiText>
       <Modal
-        isVisible={showBank}
-        onSwipeComplete={() => setShowBank(false)}
-        swipeDirection={["down", "up"]}
+        visible={showBank}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        navigationBarTranslucent
+        onRequestClose={() => setShowBank(false)}
+        testID="bank-transfer-modal"
       >
-        <View
-          style={{
-            padding: spacing.xl,
-            alignItems: "center",
-            backgroundColor,
-            borderRadius: radii.lg,
-          }}
-        >
+        <View style={styles.overlay}>
+          <Pressable
+            accessible={false}
+            importantForAccessibility="no"
+            style={[StyleSheet.absoluteFill, styles.backdrop]}
+            onPress={() => setShowBank(false)}
+            testID="bank-transfer-backdrop"
+          />
           <View
             style={{
-              width: "100%",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-              padding: spacing.xs,
+              padding: spacing.xl,
+              alignItems: "center",
+              backgroundColor,
+              borderRadius: radii.lg,
             }}
           >
-            <UiPressable
-              accessibilityRole="button"
-              onPress={() => setShowBank(false)}
+            <View
+              style={{
+                width: "100%",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                padding: spacing.xs,
+              }}
             >
-              <CloseIcon size={iconSizes.lg} color={corporate} />
-            </UiPressable>
+              <UiPressable
+                accessibilityRole="button"
+                accessibilityLabel="Schließen"
+                accessibilityHint="Schließt dieses Fenster"
+                onPress={() => setShowBank(false)}
+              >
+                <CloseIcon size={iconSizes.lg} color={corporate} />
+              </UiPressable>
+            </View>
+            <UiText size="xxl">Banküberweisung</UiText>
+            <UiSpace size={spacing.xl} />
+            <UiText size="base" style={{ textAlign: "center" }}>
+              Wow! Du bist der Hammer! Danke für deine Mühe, wir wissen das echt
+              zu schätzen
+            </UiText>
+            <UiSpace size={spacing.xl} />
+            <UiText size="base" style={{ textAlign: "center" }}>
+              IBAN ist in die Zwischenablage kopiert, hier nochmal zur
+              Sicherheit:
+            </UiText>
+            <UiSpace size={spacing.xl} />
+            <UiText selectable size="base" style={{ textAlign: "center" }}>
+              Name: {Config.donations.account.holder} {`\n`}
+              Bank: {Config.donations.account.bank} {`\n`}
+              IBAN: {Config.donations.account.IBAN} {`\n`}
+              Verwendungszweck: {Config.donations.account.note} {`\n`}
+            </UiText>
+            <HeartIcon color={corporate} size={iconSizes.lg} />
           </View>
-          <UiText size="xxl">Banküberweisung</UiText>
-          <UiSpace size={spacing.xl} />
-          <UiText size="base" style={{ textAlign: "center" }}>
-            Wow! Du bist der Hammer! Danke für deine Mühe, wir wissen das echt
-            zu schätzen
-          </UiText>
-          <UiSpace size={spacing.xl} />
-          <UiText size="base" style={{ textAlign: "center" }}>
-            IBAN ist in die Zwischenablage kopiert, hier nochmal zur Sicherheit:
-          </UiText>
-          <UiSpace size={spacing.xl} />
-          <UiText selectable size="base" style={{ textAlign: "center" }}>
-            Name: {Config.donations.account.holder} {`\n`}
-            Bank: {Config.donations.account.bank} {`\n`}
-            IBAN: {Config.donations.account.IBAN} {`\n`}
-            Verwendungszweck: {Config.donations.account.note} {`\n`}
-          </UiText>
-          <HeartIcon color={corporate} size={iconSizes.lg} />
         </View>
       </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: "center",
+    padding: spacing.xl,
+  },
+  backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
+});
 
 export default Support;
