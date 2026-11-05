@@ -82,7 +82,7 @@ const AppFrame = ({ children }: PropsWithChildren) => {
 
 /**
  * Wraps Toast so its bottom offset clears the Android nav bar, matching the
- * padding approach used by BottomSheetModal/ChangelogModal.
+ * padding approach used by the UiModal sheet.
  */
 const AppToast = ({ config }: { config: ToastConfig }) => {
   const insets = useSafeAreaInsets();

@@ -4,12 +4,6 @@ import React from "react";
 
 import ChangelogModal from "#/components/popups/ChangelogModal";
 
-// Render children when visible, render nothing when hidden — keeps tests focused
-// on the modal's own content rather than react-native-modal internals.
-jest.mock("react-native-modal", () =>
-  jest.fn(({ isVisible, children }: any) => (isVisible ? children : null)),
-);
-
 jest.mock("#/constants/Changelog", () => ({
   __esModule: true,
   default: {

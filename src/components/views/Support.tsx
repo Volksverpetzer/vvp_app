@@ -1,14 +1,13 @@
 import * as Clipboard from "expo-clipboard";
 import { useState } from "react";
-import { View } from "react-native";
-import Modal from "react-native-modal";
+import { StyleSheet, View } from "react-native";
 
-import { CloseIcon, HeartIcon } from "#/components/Icons";
+import { HeartIcon } from "#/components/Icons";
 import Typography from "#/components/ui/Typography";
+import UiModal from "#/components/ui/UiModal";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
-import { radii } from "#/constants/BorderRadius";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { iconSizes } from "#/constants/IconSizes";
@@ -72,46 +71,24 @@ const Support = ({ article_link }: SupportProperties) => {
       <UiText size="base" style={{ textAlign: "center" }}>
         direkt bei der Bank einrichten.
       </UiText>
-      <Modal
+      <UiModal
         isVisible={showBank}
-        onSwipeComplete={() => setShowBank(false)}
-        swipeDirection={["down", "up"]}
+        onClose={() => setShowBank(false)}
+        title="Banküberweisung"
+        testID="bank-transfer"
       >
-        <View
-          style={{
-            padding: spacing.xl,
-            alignItems: "center",
-            backgroundColor,
-            borderRadius: radii.lg,
-          }}
-        >
-          <View
-            style={{
-              width: "100%",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-              padding: spacing.xs,
-            }}
-          >
-            <UiPressable
-              accessibilityRole="button"
-              onPress={() => setShowBank(false)}
-            >
-              <CloseIcon size={iconSizes.lg} color={corporate} />
-            </UiPressable>
-          </View>
-          <UiText size="xxl">Banküberweisung</UiText>
-          <UiSpace size={spacing.xl} />
-          <UiText size="base" style={{ textAlign: "center" }}>
+        <View style={styles.body}>
+          <UiSpace size={spacing.lg} />
+          <UiText size="base" style={styles.centered}>
             Wow! Du bist der Hammer! Danke für deine Mühe, wir wissen das echt
             zu schätzen
           </UiText>
           <UiSpace size={spacing.xl} />
-          <UiText size="base" style={{ textAlign: "center" }}>
+          <UiText size="base" style={styles.centered}>
             IBAN ist in die Zwischenablage kopiert, hier nochmal zur Sicherheit:
           </UiText>
           <UiSpace size={spacing.xl} />
-          <UiText selectable size="base" style={{ textAlign: "center" }}>
+          <UiText selectable size="base" style={styles.centered}>
             Name: {Config.donations.account.holder} {`\n`}
             Bank: {Config.donations.account.bank} {`\n`}
             IBAN: {Config.donations.account.IBAN} {`\n`}
@@ -119,9 +96,19 @@ const Support = ({ article_link }: SupportProperties) => {
           </UiText>
           <HeartIcon color={corporate} size={iconSizes.lg} />
         </View>
-      </Modal>
+      </UiModal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  body: {
+    alignItems: "center",
+    backgroundColor: "transparent",
+  },
+  centered: {
+    textAlign: "center",
+  },
+});
 
 export default Support;
