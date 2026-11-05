@@ -217,8 +217,8 @@ importers:
         specifier: 0.4.21
         version: 0.4.21(react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       '@stripe/stripe-react-native':
-        specifier: 0.81.0
-        version: 0.81.0(expo@58.0.23)(react-native-webview@14.0.1(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
+        specifier: 0.82.0
+        version: 0.82.0(expo@58.0.23)(react-native-webview@14.0.1(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       '@volksverpetzer/design-tokens':
         specifier: 0.9.1
         version: 0.9.1
@@ -2374,8 +2374,8 @@ packages:
   '@sinonjs/fake-timers@15.4.0':
     resolution: {integrity: sha512-DsG+8/LscQIQg68J6Ef3dv10u6nVyetYn923s3/sus5eaGfTo1of5WMZSLf0UJc9KDuKPilPH0UDJCjvNbDNCA==}
 
-  '@stripe/stripe-react-native@0.81.0':
-    resolution: {integrity: sha512-7i1rGIEz8N1SQkHNOEIs6LoCLal48L6beYMyfg1p5VVto2hDqxo5IUjScJAE7FlYozNyUZBo/zKFFJksstunxQ==}
+  '@stripe/stripe-react-native@0.82.0':
+    resolution: {integrity: sha512-zM507j0c2SdR/+gHmKNG5EqbuwJU57s5gou4rKVKUaQvVpMB4486so+52iHfRgotf12M3G3V9Rd4Z1doURuz1Q==}
     peerDependencies:
       expo: '>=46.0.9'
       react: '*'
@@ -9320,7 +9320,7 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@stripe/stripe-react-native@0.81.0(expo@58.0.23)(react-native-webview@14.0.1(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)':
+  '@stripe/stripe-react-native@0.82.0(expo@58.0.23)(react-native-webview@14.0.1(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)':
     dependencies:
       react: 19.3.0
       react-native: 0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
