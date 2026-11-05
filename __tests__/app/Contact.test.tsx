@@ -14,6 +14,8 @@ import Config from "#/constants/Config";
 import API from "#/helpers/network/ServerAPI";
 import { FetchError } from "#/helpers/utils/networking";
 
+import type { AsyncMock } from "#tests/mocks/jestTypes";
+
 let mockParameters: Record<string, string> = {};
 
 jest.mock("expo-router", () => ({
@@ -102,7 +104,7 @@ describe("ContactScreen", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockParameters = {};
-    (postContact as jest.Mock<any>).mockResolvedValue({
+    (postContact as jest.Mock<AsyncMock>).mockResolvedValue({
       success: true,
       id: "abc",
     });
@@ -287,7 +289,9 @@ describe("ContactScreen", () => {
 
   it("shows an error and allows retrying when submission fails", async () => {
     mockParameters = { category: "other" };
-    (postContact as jest.Mock<any>).mockRejectedValue(new Error("network"));
+    (postContact as jest.Mock<AsyncMock>).mockRejectedValue(
+      new Error("network"),
+    );
     const { getByText, getAllByPlaceholderText } = await render(
       <ContactScreen />,
     );
@@ -306,7 +310,7 @@ describe("ContactScreen", () => {
     );
 
     // The button is re-enabled, so a retry triggers another request
-    (postContact as jest.Mock<any>).mockResolvedValue({
+    (postContact as jest.Mock<AsyncMock>).mockResolvedValue({
       success: true,
       id: "abc",
     });
@@ -316,7 +320,7 @@ describe("ContactScreen", () => {
 
   it("shows a rate-limit message when submission fails with 429", async () => {
     mockParameters = { category: "other" };
-    (postContact as jest.Mock<any>).mockRejectedValue(
+    (postContact as jest.Mock<AsyncMock>).mockRejectedValue(
       new FetchError("Too Many Requests", {
         status: 429,
         statusText: "Too Many Requests",
@@ -350,7 +354,7 @@ describe("ContactScreen", () => {
   describe("with a contactEmail configured", () => {
     beforeEach(() => {
       (Config as any).contactEmail = "team@example.org";
-      jest.spyOn(Linking, "openURL").mockResolvedValue(true);
+      jest.spyOn(Linking, "openURL").mockResolvedValue(undefined);
     });
     afterEach(() => {
       delete (Config as any).contactEmail;
@@ -371,7 +375,7 @@ describe("ContactScreen", () => {
       await fireEvent.press(getByText("E-Mail erstellen"));
 
       await waitFor(() => expect(Linking.openURL).toHaveBeenCalledTimes(1));
-      const url = (Linking.openURL as jest.Mock<any>).mock
+      const url = (Linking.openURL as jest.Mock<AsyncMock>).mock
         .calls[0][0] as string;
       expect(url.startsWith("mailto:team@example.org?subject=")).toBe(true);
       expect(decodeURIComponent(url)).toContain("Sonstiges | Betreff");
@@ -394,7 +398,9 @@ describe("ContactScreen", () => {
 
     it("shows an error when no mail app can be opened", async () => {
       mockParameters = { category: "other" };
-      (Linking.openURL as jest.Mock<any>).mockRejectedValue(new Error("none"));
+      (Linking.openURL as jest.Mock<AsyncMock>).mockRejectedValue(
+        new Error("none"),
+      );
       const { getByText, getAllByPlaceholderText } = await render(
         <ContactScreen />,
       );

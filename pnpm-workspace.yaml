@@ -1,7 +1,9 @@
 overrides:
-  react-test-renderer: 19.2.3 # must match react version; @testing-library/react-native enforces exact match at runtime
+  "expo-atlas>expo-server": 58.0.6 # expo-atlas 0.5.0 still asks for ^57; keep it on the SDK 58 copy (same adapter/http API), bump together with expo
+  react-test-renderer: 19.3.0 # must match react version; @testing-library/react-native enforces exact match at runtime
 allowBuilds:
   dtrace-provider: true # required by eas-cli; pnpm v11 blocks its build scripts otherwise
+  "@parcel/watcher": false # pulled in by jest-haste-map 30; prebuilt binary ships via optional deps, install script only builds from source
   esbuild: true
   msgpackr-extract: true
   unrs-resolver: true
@@ -9,4 +11,32 @@ nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 packages:
   - .
 patchedDependencies:
+  react-native-modal@14.0.0-rc.1: patches/react-native-modal@14.0.0-rc.1.patch
   react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
+minimumReleaseAgeExclude:
+  - "@expo/cli@58.1.19"
+  - "@expo/config-plugins@58.0.12"
+  - "@expo/config@58.0.11"
+  - "@expo/env@2.5.4"
+  - "@expo/fingerprint@0.21.9"
+  - "@expo/inline-modules@0.2.9"
+  - "@expo/local-build-cache-provider@58.0.11"
+  - "@expo/log-box@58.0.15"
+  - "@expo/metro-config@58.0.21"
+  - "@expo/prebuild-config@58.0.19"
+  - "@expo/router-server@58.0.21"
+  - babel-preset-expo@58.0.24
+  - expo-asset@58.0.20
+  - expo-constants@58.0.15
+  - expo-modules-autolinking@58.0.17
+  - expo-modules-core@58.0.30
+  - expo-modules-jsi@58.0.22
+  - expo@58.0.23
+  - "@expo/metro-runtime@58.0.17"
+  - expo-linking@58.0.16
+  - expo-notifications@58.1.8
+  - expo-router@58.0.30
+  - expo-sharing@58.0.22
+  - expo-splash-screen@58.0.13
+  - expo-updates@58.0.21
+  - jest-expo@58.0.14

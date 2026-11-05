@@ -7,7 +7,7 @@ import type {
   ImageSourcePropType,
   ImageStyle,
   StyleProp,
-  View,
+  ViewInstance,
 } from "react-native";
 
 import UiText from "#/components/ui/UiText";
@@ -32,7 +32,7 @@ interface AnimatedSuccessProperties {
    * animation. When given, Android 12+ renders a real blur; without it
    * (or on older Androids) Android falls back to a translucent tint.
    */
-  blurTargetRef?: RefObject<View | null>;
+  blurTargetRef?: RefObject<ViewInstance | null>;
 }
 
 const AnimatedSuccess = (properties: AnimatedSuccessProperties) => {

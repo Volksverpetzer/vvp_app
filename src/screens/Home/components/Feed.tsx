@@ -2,11 +2,11 @@ import { useRouter, useScrollToTop } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   ListRenderItem,
+  ListViewToken,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleProp,
   ViewStyle,
-  ViewToken,
 } from "react-native";
 import { FlatList, RefreshControl, View } from "react-native";
 
@@ -180,7 +180,7 @@ const Feed = (properties: FeedProperties) => {
   }, [loadmore, page, getPosts, posts]);
 
   const onViewableItemsChanged = useCallback(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+    ({ viewableItems }: { viewableItems: ListViewToken[] }) => {
       let changed = false;
       for (const item of viewableItems) {
         if (item.isViewable && !inViewRef.current.has(item.item.id)) {
