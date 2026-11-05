@@ -75,7 +75,7 @@ export default {
     licenseUrl:
       "https://github.com/rive-app/rive-nitro-react-native/raw/HEAD/LICENSE",
   },
-  "@stripe/stripe-react-native@0.81.0": {
+  "@stripe/stripe-react-native@0.82.0": {
     licenses: "MIT",
     repository: "https://github.com/stripe/stripe-react-native",
     licenseUrl:
