@@ -79,6 +79,23 @@ describe("RenderWhenNearViewport", () => {
     expect(queryByText("card")).toBeTruthy();
   });
 
+  it("renders children when there is no content view to measure against", async () => {
+    // e.g. a ref react-native-web never attached — must not stay empty forever.
+    const viewport = createScrollViewport({ current: null }, SCREEN);
+    const screen = await render(
+      <ScrollViewportContext.Provider value={viewport}>
+        <RenderWhenNearViewport testID="placeholder">
+          <Text>card</Text>
+        </RenderWhenNearViewport>
+      </ScrollViewportContext.Provider>,
+    );
+    expect(screen.queryByText("card")).toBeNull();
+    await fireEvent(screen.getByTestId("placeholder"), "layout", {
+      nativeEvent: { layout: { x: 0, y: 0, width: 300, height: 450 } },
+    });
+    expect(screen.getByText("card")).toBeTruthy();
+  });
+
   it("does not render children the reader has jumped far past", async () => {
     const { queryByText, viewport } = await renderAt(10_000);
     await act(() => {

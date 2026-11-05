@@ -85,8 +85,13 @@ export const useNearViewport = (
 
   const onLayout = useCallback(
     (event: LayoutChangeEvent) => {
-      const content = viewport?.contentRef.current;
-      if (near || !content || !ref.current) return;
+      if (near || !viewport || !ref.current) return;
+      const content = viewport.contentRef.current;
+      // No content view to measure against — render rather than never.
+      if (!content) {
+        setNear(true);
+        return;
+      }
       const { height } = event.nativeEvent.layout;
       ref.current.measureLayout(
         content,
