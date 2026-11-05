@@ -62,8 +62,11 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const scrollProgress = useRef(new Animated.Value(0)).current;
   const scrollReference = useRef<ScrollView>(null);
-  // Ref to the ScrollView's inner content view; anchor positions are
-  // measured against it (see scrollToAnchor).
+  // Ref to the view wrapping all of the ScrollView's content, which starts at
+  // y=0 of the scrollable content; anchor and embed positions are measured
+  // against it (see scrollToAnchor and useNearViewport). A plain View rather
+  // than ScrollView's innerViewRef prop, which react-native-web ignores —
+  // that left the ref null on web, so embedded article cards never loaded.
   const innerViewReference = useRef<View>(null);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
@@ -334,7 +337,6 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             { useNativeDriver: false, listener: scrollListener },
           )}
           ref={scrollReference}
-          innerViewRef={innerViewReference}
           scrollEventThrottle={16}
           onContentSizeChange={(_width, contentHeight) => {
             // Re-align the pending anchor whenever async content (images,
@@ -352,7 +354,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             cancelPositionRestore();
           }}
         >
-          <View style={{ paddingBottom: 100 }}>
+          <View ref={innerViewReference} style={{ paddingBottom: 100 }}>
             <Header
               article={article}
               article_image={article_image}
