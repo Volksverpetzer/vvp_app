@@ -21,7 +21,7 @@ export default {
     repository: "https://github.com/expo/google-fonts",
     licenseUrl: "https://github.com/expo/google-fonts/raw/HEAD/LICENSE",
   },
-  "@expo/config@58.0.6": {
+  "@expo/config@58.0.11": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -36,7 +36,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "@expo/require-utils@58.0.4": {
+  "@expo/require-utils@58.0.5": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -274,9 +274,10 @@ export default {
     licenseUrl:
       "https://github.com/react-native-modal/react-native-modal/raw/HEAD/LICENSE.md",
   },
-  "react-native-nitro-modules@0.37.1": {
+  "react-native-nitro-modules@0.37.2": {
     licenses: "MIT",
-    repository: "https://github.com/mrousavy/nitro",
+    repository: "https://github.com/margelo/nitro",
+    licenseUrl: "https://github.com/margelo/nitro/raw/HEAD/LICENSE",
   },
   "react-native-reanimated-carousel@5.1.1": {
     licenses: "MIT",
