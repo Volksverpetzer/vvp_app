@@ -1,0 +1,3 @@
+- Prüfpunkt articles now show matching recommendations under "Passend dazu"
+- Updated technical foundation – the app is ready for iOS 27
+- Bug fixes and small improvements
