@@ -14,6 +14,21 @@ export default defineConfig([
   expoConfig,
   reactNativeA11y.configs.flat.all,
   cspellESLintPluginRecommended,
+  {
+    // Share the word list and German dictionary with `pnpm check:spelling`;
+    // the plugin doesn't pick up cspell.config.json on its own.
+    rules: {
+      "@cspell/spellchecker": [
+        "warn",
+        {
+          configFile: new URL(
+            "./cspell.config.json",
+            import.meta.url,
+          ).toString(),
+        },
+      ],
+    },
+  },
   eslintPluginPrettierRecommended,
   {
     // Cherry-picked unicorn rules — the recommended preset is too noisy for

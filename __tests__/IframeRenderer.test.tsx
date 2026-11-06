@@ -862,6 +862,7 @@ describe("IframeRenderer YouTube facade", () => {
 
 describe("youTubeVideoId", () => {
   it.each([
+    // cspell:disable-next-line -- YouTube video ID
     ["https://www.youtube.com/embed/Fh-mJhfrvJo?enablejsapi=1", "Fh-mJhfrvJo"],
     ["https://www.youtube-nocookie.com/embed/abc_123", "abc_123"],
     ["https://youtu.be/short123?t=4", "short123"],
