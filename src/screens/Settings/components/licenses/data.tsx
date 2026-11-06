@@ -11,7 +11,7 @@ export default {
     licenseUrl:
       "https://github.com/bluesky-social/atproto/raw/HEAD/LICENSE.txt",
   },
-  "@babel/runtime@7.29.10": {
+  "@babel/runtime@7.29.13": {
     licenses: "MIT",
     repository: "https://github.com/babel/babel",
     licenseUrl: "https://github.com/babel/babel/raw/HEAD/LICENSE",
@@ -279,7 +279,7 @@ export default {
     repository: "https://github.com/margelo/nitro",
     licenseUrl: "https://github.com/margelo/nitro/raw/HEAD/LICENSE",
   },
-  "react-native-reanimated-carousel@5.1.1": {
+  "react-native-reanimated-carousel@5.2.1": {
     licenses: "MIT",
     repository: "https://github.com/dohooo/react-native-reanimated-carousel",
     licenseUrl:

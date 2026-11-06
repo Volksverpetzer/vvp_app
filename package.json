@@ -10,7 +10,7 @@
       ]
     }
   },
-  "packageManager": "pnpm@12.16.1",
+  "packageManager": "pnpm@12.18.0",
   "engines": {
     "node": "24.x"
   },
@@ -54,7 +54,7 @@
   "dependencies": {
     "@algolia/client-search": "5.61.0",
     "@atproto/api": "0.30.0",
-    "@babel/runtime": "7.29.10",
+    "@babel/runtime": "7.29.13",
     "@expo-google-fonts/source-sans-3": "0.4.2",
     "@expo/config": "58.0.11",
     "@expo/dom-webview": "58.0.2",
@@ -109,7 +109,7 @@
     "react-native-modal": "14.0.0-rc.1",
     "react-native-nitro-modules": "0.37.2",
     "react-native-reanimated": "4.7.1",
-    "react-native-reanimated-carousel": "5.1.1",
+    "react-native-reanimated-carousel": "5.2.1",
     "react-native-safe-area-context": "5.11.1",
     "react-native-screens": "4.30.1",
     "react-native-svg": "15.16.0",
