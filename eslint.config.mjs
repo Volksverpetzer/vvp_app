@@ -63,6 +63,16 @@ export default defineConfig([
     },
   },
   {
+    // jest.mock() factories are hoisted above imports and may not reference
+    // out-of-scope bindings, so they must require() what they need; the same
+    // goes for re-requiring modules after jest.resetModules(). That's the
+    // idiomatic Jest pattern, not a style problem.
+    files: ["__tests__/**/*.{ts,tsx}", "jest-setup.ts"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+  {
     ignores: [
       "**/pnpm-lock.yaml",
       "android/**",
