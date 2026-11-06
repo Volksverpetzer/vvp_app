@@ -17,7 +17,6 @@ const mockFocus: {
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(() => ({ push: jest.fn(), back: jest.fn() })),
   useFocusEffect: (callback: () => void | (() => void)) => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require("react").useEffect(() => {
       mockFocus.callback = callback;
       mockFocus.cleanup = callback();
