@@ -104,7 +104,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.1",
-    "react-native-gesture-handler": "3.3.0",
+    "react-native-gesture-handler": "3.5.0",
     "react-native-hyperlink": "0.1.2",
     "react-native-modal": "14.0.0-rc.1",
     "react-native-nitro-modules": "0.37.2",
