@@ -168,7 +168,6 @@ overrides:
 
 patchedDependencies:
   react-native-modal@14.0.0-rc.1: cfb941674365778b17c2d0d3aea786078cca3a7f2099f51a9eceb18dc47cd97f
-  react-native-reanimated-carousel@5.1.1: 82cc4042cca7eea642f82f9e433e61fd7b3c760484c84481402758da1f5ffe19
 
 importers:
 
@@ -346,8 +345,8 @@ importers:
         specifier: 4.7.1
         version: 4.7.1(react-native-worklets@0.13.0(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1))(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       react-native-reanimated-carousel:
-        specifier: 5.1.1
-        version: 5.1.1(patch_hash=82cc4042cca7eea642f82f9e433e61fd7b3c760484c84481402758da1f5ffe19)(5c3f5a19058b7a9baedbafd3009d91c0)
+        specifier: 5.2.1
+        version: 5.2.1(5c3f5a19058b7a9baedbafd3009d91c0)
       react-native-safe-area-context:
         specifier: 5.11.1
         version: 5.11.1(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -5931,8 +5930,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-reanimated-carousel@5.1.1:
-    resolution: {integrity: sha512-PDt//04VF3PXUlHT9+l1LvBX11srYcdzqE33SPd+nZUvoID2o9jvn7eNBEQHgSYfl1/4KWP5KJdib0LMEUT8wA==}
+  react-native-reanimated-carousel@5.2.1:
+    resolution: {integrity: sha512-726Uo38zj32F9QKQwaNi5H/nk1lYiFBxVP6CNJ6k88furGSC9Iqra698N8qNGnKSaZRDPv7OfI3dJBE6yPGcOg==}
     hasBin: true
     peerDependencies:
       react: '>=18.0.0'
@@ -13700,7 +13699,7 @@ snapshots:
       react: 19.3.0
       react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
 
-  react-native-reanimated-carousel@5.1.1(patch_hash=82cc4042cca7eea642f82f9e433e61fd7b3c760484c84481402758da1f5ffe19)(5c3f5a19058b7a9baedbafd3009d91c0):
+  react-native-reanimated-carousel@5.2.1(5c3f5a19058b7a9baedbafd3009d91c0):
     dependencies:
       react: 19.3.0
       react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)

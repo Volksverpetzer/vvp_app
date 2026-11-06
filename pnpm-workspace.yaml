@@ -12,4 +12,3 @@ packages:
   - .
 patchedDependencies:
   react-native-modal@14.0.0-rc.1: patches/react-native-modal@14.0.0-rc.1.patch
-  react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
