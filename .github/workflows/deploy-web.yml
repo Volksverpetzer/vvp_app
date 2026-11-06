@@ -45,9 +45,11 @@ jobs:
           echo "Uploading $COUNT files to $HOST/$STORAGE_ZONE"
           # Filenames are passed as positional parameters, never interpolated
           # into the script text, so they cannot be executed as shell code
+          # --globoff: route chunks are named like "[gameId]-<hash>.js", and
+          # curl would otherwise parse the brackets as a URL glob range
           find . -type f -print0 | xargs -0 -P 8 -n 1 sh -c '
             f="${1#./}"
-            curl --fail --silent --show-error --retry 3 --retry-all-errors \
+            curl --globoff --fail --silent --show-error --retry 3 --retry-all-errors \
               -H "AccessKey: $STORAGE_KEY" \
               -H "Content-Type: application/octet-stream" \
               --upload-file "$1" \
