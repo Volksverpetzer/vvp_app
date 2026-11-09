@@ -3,13 +3,10 @@ import { Platform } from "react-native";
 import type { TextStyle, ViewStyle } from "react-native";
 
 const RING_WIDTH = 2;
-const isWeb = Platform.OS === "web";
 // Chrome draws `outline-style: auto` regardless of outline width or color,
 // so the style has to be "none". react-native-web passes it through, but
 // RN's outlineStyle type only lists solid/dotted/dashed, hence the cast.
-const inputStyle: TextStyle | undefined = isWeb
-  ? ({ outlineStyle: "none" } as unknown as TextStyle)
-  : undefined;
+const webInputStyle = { outlineStyle: "none" } as unknown as TextStyle;
 
 /**
  * On web, browsers draw their focus outline on the bare <input>. When the
@@ -20,6 +17,7 @@ const inputStyle: TextStyle | undefined = isWeb
  */
 export const useWebFocusRing = (color: string) => {
   const [focused, setFocused] = useState(false);
+  const isWeb = Platform.OS === "web";
 
   const containerStyle: ViewStyle | undefined =
     isWeb && focused
@@ -33,7 +31,7 @@ export const useWebFocusRing = (color: string) => {
 
   return {
     containerStyle,
-    inputStyle,
+    inputStyle: isWeb ? webInputStyle : undefined,
     onFocus: () => setFocused(true),
     onBlur: () => setFocused(false),
   };
