@@ -114,7 +114,6 @@ const GameScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <NavBar />
       <ScrollView contentContainerStyle={styles.container}>
         <UiText size="xl" bold style={styles.title}>
           Desinformations-Memory
@@ -143,6 +142,7 @@ const GameScreen = () => {
           </>
         )}
       </ScrollView>
+      <NavBar />
       <UnicornEasterEgg
         visible={showLevelComplete}
         onHide={handleLevelCompleteHide}
