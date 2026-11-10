@@ -1,5 +1,3 @@
 - Prüfpunkt articles now show matching recommendations under "Passend dazu"
-- Your chosen appearance (light/dark) now also applies to the tab bar, keyboard and system dialogs
-- The map under "Aktionen" has a clearer legend with four levels
 - Updated technical foundation – the app is ready for iOS 27
 - Bug fixes and small improvements

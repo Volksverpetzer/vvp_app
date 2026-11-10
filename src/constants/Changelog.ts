@@ -3,7 +3,7 @@ const Changelog = {
   version: "2.5.6",
   versionCode: 2611101,
   notes:
-    "- Prüfpunkt-Artikel zeigen jetzt passende Empfehlungen unter „Passend dazu“\n- Die gewählte Darstellung (Hell/Dunkel) gilt jetzt auch für Tableiste, Tastatur und Systemdialoge\n- Die Karte unter „Aktionen“ hat eine klarere Legende mit vier Stufen\n- Technische Grundlage aktualisiert – die App ist bereit für iOS 27\n- Fehlerbehebungen und kleine Verbesserungen",
+    "- Prüfpunkt-Artikel zeigen jetzt passende Empfehlungen unter „Passend dazu“\n- Technische Grundlage aktualisiert – die App ist bereit für iOS 27\n- Fehlerbehebungen und kleine Verbesserungen",
 };
 
 export default Changelog;
