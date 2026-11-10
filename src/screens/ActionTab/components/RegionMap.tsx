@@ -28,7 +28,7 @@ const weekNumber = Math.floor(Date.now() / WEEK_IN_MS);
 // is a fixed PNG independent of app theme/variant, so these must mirror the
 // server's hex values rather than theme tokens.
 const MAP_LEGEND = [
-  { text: "Vorreiter", color: "#D31C74" },
+  { text: "Vorreiter", color: "#EE8FBE" },
   { text: "Überdurchschnittlich", color: "#DB2685" },
   { text: "Unterdurchschnittlich", color: "#3893C0" },
   { text: "Schlusslicht", color: "#1B7194" },
