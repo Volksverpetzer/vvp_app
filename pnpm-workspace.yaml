@@ -1,7 +1,9 @@
 overrides:
-  react-test-renderer: 19.2.3 # must match react version; @testing-library/react-native enforces exact match at runtime
+  "expo-atlas>expo-server": 58.0.6 # expo-atlas 0.5.0 still asks for ^57; keep it on the SDK 58 copy (same adapter/http API), bump together with expo
+  react-test-renderer: 19.3.0 # must match react version; @testing-library/react-native enforces exact match at runtime
 allowBuilds:
   dtrace-provider: true # required by eas-cli; pnpm v11 blocks its build scripts otherwise
+  "@parcel/watcher": false # pulled in by jest-haste-map 30; prebuilt binary ships via optional deps, install script only builds from source
   esbuild: true
   msgpackr-extract: true
   unrs-resolver: true
@@ -9,4 +11,4 @@ nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 packages:
   - .
 patchedDependencies:
-  react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
+  react-native-modal@14.0.0-rc.1: patches/react-native-modal@14.0.0-rc.1.patch

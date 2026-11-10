@@ -130,14 +130,18 @@ describe("FeedFetcher", () => {
 
   it("should create the primary wp fetchers without a source name", () => {
     expect(WordPressFetcher.createFetchers).toHaveBeenCalledWith(
-      (WordPressAPI.create as jest.Mock).mock.results[0].value,
+      (WordPressAPI.create as jest.Mock).mock.results[0].value as ReturnType<
+        typeof WordPressAPI.create
+      >,
       undefined,
     );
   });
 
   it("should create the Prüfpunkt fetchers with its source name", () => {
     expect(WordPressFetcher.createFetchers).toHaveBeenCalledWith(
-      (WordPressAPI.create as jest.Mock).mock.results[1].value,
+      (WordPressAPI.create as jest.Mock).mock.results[1].value as ReturnType<
+        typeof WordPressAPI.create
+      >,
       "Prüfpunkt",
     );
   });

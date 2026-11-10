@@ -1,10 +1,11 @@
 import { TextInput as DefaultTextInput } from "react-native";
+import type { TextInputProps } from "react-native";
 
 import Colors from "#/constants/Colors";
 import { fontFamily } from "#/constants/FontFamily";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-type UiTextInputProperties = DefaultTextInput["props"];
+type UiTextInputProperties = TextInputProps;
 
 const UiTextInput = (properties: UiTextInputProperties) => {
   const { style, ...otherProperties } = properties;

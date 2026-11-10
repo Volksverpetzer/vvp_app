@@ -2,7 +2,6 @@ import type { Config } from "@jest/types";
 
 const config: Config.InitialOptions = {
   preset: "jest-expo",
-  testEnvironment: "node",
   testEnvironmentOptions: {},
   transformIgnorePatterns: [],
   transform: {

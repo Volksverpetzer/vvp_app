@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react-native";
 
 import TabLayout from "#/app/(tabs)/_layout";
+import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { useBadge } from "#/helpers/provider/BadgeProvider";
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -66,4 +67,15 @@ describe("TabsNavigation", () => {
     await render(<TabLayout />);
     expect(getPersonalTriggerProps()?.hidden).toBe(false);
   });
+
+  it.each([ColorScheme.light, ColorScheme.dark])(
+    "should pass the %s scheme and corporate tint to the native tab bar",
+    async (scheme) => {
+      (useAppColorScheme as jest.Mock).mockReturnValue(scheme);
+      await render(<TabLayout />);
+      const props = (NativeTabs as jest.Mock).mock.calls.at(-1)?.[0];
+      expect(props.unstable_nativeProps).toEqual({ colorScheme: scheme });
+      expect(props.tintColor).toBe(Colors[scheme].primary);
+    },
+  );
 });

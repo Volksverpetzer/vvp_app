@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import type { RefObject } from "react";
-import type { LayoutChangeEvent, View } from "react-native";
+import type { LayoutChangeEvent, ViewInstance } from "react-native";
 
 /**
  * The visible window of a scroll view, in its content's coordinates, for
@@ -16,7 +16,7 @@ import type { LayoutChangeEvent, View } from "react-native";
  */
 export interface ScrollViewport {
   /** The scroll view's content view; element positions are measured against it. */
-  contentRef: RefObject<View | null>;
+  contentRef: RefObject<ViewInstance | null>;
   /** Top edge and height of the visible window. */
   get: () => { top: number; height: number };
   /** Called by the scroll view whenever it scrolls or resizes. */
@@ -25,7 +25,7 @@ export interface ScrollViewport {
 }
 
 export const createScrollViewport = (
-  contentRef: RefObject<View | null>,
+  contentRef: RefObject<ViewInstance | null>,
   initialHeight: number,
 ): ScrollViewport => {
   let top = 0;
@@ -64,12 +64,12 @@ export const useNearViewport = (
   margin: number,
 ): {
   near: boolean;
-  ref: RefObject<View | null>;
+  ref: RefObject<ViewInstance | null>;
   onLayout: (event: LayoutChangeEvent) => void;
 } => {
   const viewport = useContext(ScrollViewportContext);
   const [near, setNear] = useState(!viewport);
-  const ref = useRef<View>(null);
+  const ref = useRef<ViewInstance>(null);
   const bounds = useRef<{ top: number; bottom: number } | undefined>(undefined);
 
   const check = useCallback(() => {
@@ -85,8 +85,13 @@ export const useNearViewport = (
 
   const onLayout = useCallback(
     (event: LayoutChangeEvent) => {
-      const content = viewport?.contentRef.current;
-      if (near || !content || !ref.current) return;
+      if (near || !viewport || !ref.current) return;
+      const content = viewport.contentRef.current;
+      // No content view to measure against — render rather than never.
+      if (!content) {
+        setNear(true);
+        return;
+      }
       const { height } = event.nativeEvent.layout;
       ref.current.measureLayout(
         content,

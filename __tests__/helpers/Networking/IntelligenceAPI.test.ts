@@ -268,6 +268,19 @@ describe("IntelligenceAPI", () => {
       expect(result).toEqual(mockResponse);
     });
 
+    it("adds the site filter when given", async () => {
+      const url = "https://pruefpunkt.org/forschung/a/" as any;
+      jest.mocked(Networking.get).mockResolvedValue({ results: [] });
+
+      await RealIntelligenceAPI.recommendations(url, undefined, "pp");
+
+      expect(Networking.get).toHaveBeenCalledWith(
+        expect.anything(),
+        `/api/recommend/?url=${encodeURIComponent(url)}&site=pp`,
+        { signal: undefined, silentStatuses: [404] },
+      );
+    });
+
     it("returns no results when the backend has not indexed the url (404)", async () => {
       jest.mocked(Networking.get).mockRejectedValue(
         new Networking.FetchError("Request failed with status 404", {

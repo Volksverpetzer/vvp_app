@@ -11,7 +11,7 @@ import { toast } from "#/helpers/toast";
 import BackupView from "#/screens/Settings/components/BackupView";
 
 // ── expo-file-system ────────────────────────────────────────────────────────
-const mockFileWrite = jest.fn();
+const mockFileWrite = jest.fn<(content: string) => Promise<void>>();
 const mockFileText = jest.fn<() => Promise<string>>();
 const mockFileUri = "file://docs/vvp_data_2026-01-01.json";
 
@@ -142,6 +142,41 @@ describe("BackupView", () => {
           "Deine Daten wurden exportiert.",
         );
       });
+    });
+
+    it("only opens the share sheet once the file is written", async () => {
+      // File.write() is async in SDK 58; sharing before it settles would
+      // hand the share sheet a missing or half-written file
+      let finishWrite: () => void = () => {};
+      mockFileWrite.mockImplementationOnce(
+        () => new Promise<void>((resolve) => (finishWrite = resolve)),
+      );
+
+      const { getByText } = await render(<BackupView />);
+      // Not awaited yet: the press only settles once the export finishes
+      const press = fireEvent.press(getByText("Sammlung exportieren"));
+
+      await waitFor(() => expect(mockFileWrite).toHaveBeenCalledTimes(1));
+      expect(Sharing.shareAsync).not.toHaveBeenCalled();
+
+      finishWrite();
+      await press;
+      expect(Sharing.shareAsync).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not share when writing the file fails", async () => {
+      mockFileWrite.mockRejectedValueOnce(new Error("disk full"));
+
+      const { getByText } = await render(<BackupView />);
+      await fireEvent.press(getByText("Sammlung exportieren"));
+
+      await waitFor(() =>
+        expect(toast.error).toHaveBeenCalledWith(
+          "Export fehlgeschlagen",
+          "Versuche es erneut.",
+        ),
+      );
+      expect(Sharing.shareAsync).not.toHaveBeenCalled();
     });
 
     it("shows an error toast when export fails", async () => {

@@ -1,6 +1,7 @@
 import { act, fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 import { Text, View } from "react-native";
+import type { ViewInstance } from "react-native";
 
 import RenderWhenNearViewport from "#/components/views/RenderWhenNearViewport";
 import {
@@ -12,9 +13,17 @@ import {
 const SCREEN = 1334;
 
 const renderAt = async (elementTop: number) => {
-  const viewport = createScrollViewport({ current: {} as View }, SCREEN);
+  const viewport = createScrollViewport(
+    { current: {} as ViewInstance },
+    SCREEN,
+  );
   const measureLayout = jest
-    .spyOn(View.prototype, "measureLayout")
+    // RN 0.88 types View as a function component; at runtime its host
+    // instances still inherit measureLayout from this prototype
+    .spyOn(
+      (View as unknown as { prototype: ViewInstance }).prototype,
+      "measureLayout",
+    )
     .mockImplementation((_relativeTo, onSuccess) => {
       onSuccess(0, elementTop, 300, 450);
     });
@@ -68,6 +77,23 @@ describe("RenderWhenNearViewport", () => {
       viewport.update(0, SCREEN);
     });
     expect(queryByText("card")).toBeTruthy();
+  });
+
+  it("renders children when there is no content view to measure against", async () => {
+    // e.g. a ref react-native-web never attached — must not stay empty forever.
+    const viewport = createScrollViewport({ current: null }, SCREEN);
+    const screen = await render(
+      <ScrollViewportContext.Provider value={viewport}>
+        <RenderWhenNearViewport testID="placeholder">
+          <Text>card</Text>
+        </RenderWhenNearViewport>
+      </ScrollViewportContext.Provider>,
+    );
+    expect(screen.queryByText("card")).toBeNull();
+    await fireEvent(screen.getByTestId("placeholder"), "layout", {
+      nativeEvent: { layout: { x: 0, y: 0, width: 300, height: 450 } },
+    });
+    expect(screen.getByText("card")).toBeTruthy();
   });
 
   it("does not render children the reader has jumped far past", async () => {

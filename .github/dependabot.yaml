@@ -1,7 +1,11 @@
 version: 2
 updates:
   - package-ecosystem: github-actions
-    directory: /
+    # "/" only covers .github/workflows; the composite actions under
+    # .github/actions need their own entry or their pins never get updated
+    directories:
+      - /
+      - /.github/actions/*
     commit-message:
       prefix: chore
       prefix-development: chore

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { act, fireEvent, render } from "@testing-library/react-native";
 import React, { createRef } from "react";
 import { Animated, StyleSheet } from "react-native";
-import type { TextInput } from "react-native";
+import type { TextInputInstance } from "react-native";
 
 import { toast } from "#/helpers/toast";
 import SearchHeader from "#/screens/Search/components/SearchHeader";
@@ -61,7 +61,7 @@ const baseProps = {
   search: "",
   setSearch: jest.fn(),
   setSearchParams: jest.fn(),
-  searchRef: createRef<TextInput>(),
+  searchRef: createRef<TextInputInstance>(),
   isLoading: false,
 };
 

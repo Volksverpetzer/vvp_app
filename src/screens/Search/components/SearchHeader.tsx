@@ -1,6 +1,7 @@
 import type { RefObject } from "react";
 import { useCallback, useMemo } from "react";
 import { Animated, Keyboard, TextInput, View } from "react-native";
+import type { TextInputInstance } from "react-native";
 
 import { SearchIcon } from "#/components/Icons";
 import FaktenBot from "#/components/animations/FaktenBot";
@@ -14,12 +15,13 @@ import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useWebFocusRing } from "#/hooks/useWebFocusRing";
 
 interface SearchHeaderProperties {
   search: string;
   setSearch: (value: string) => void;
   setSearchParams: (value: string) => void;
-  searchRef: RefObject<TextInput>;
+  searchRef: RefObject<TextInputInstance>;
   resultsLength?: number;
   isLoading: boolean;
   showFaktenBot?: boolean;
@@ -44,6 +46,7 @@ const SearchHeader = ({
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
+  const focusRing = useWebFocusRing(corporate);
 
   // Show no reaction while loading so we don't display a stale previous result
   const faktenBotReaction =
@@ -137,6 +140,7 @@ const SearchHeader = ({
               backgroundColor: corporate,
               marginBottom: spacing.huge,
             },
+            focusRing.containerStyle,
           ]}
         >
           <TextInput
@@ -155,7 +159,10 @@ const SearchHeader = ({
                 fontSize: INPUT_FONT_SIZE,
                 width: "100%",
               },
+              focusRing.inputStyle,
             ]}
+            onFocus={focusRing.onFocus}
+            onBlur={focusRing.onBlur}
             onChangeText={setSearch}
             returnKeyType="search"
           />

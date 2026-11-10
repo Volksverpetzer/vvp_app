@@ -58,7 +58,7 @@ describe("UiPressable", () => {
   });
 
   it("calls a style function with the pressed state", async () => {
-    const styleFn = jest.fn(() => ({ backgroundColor: "blue" }));
+    const styleFn = jest.fn((_state: unknown) => ({ backgroundColor: "blue" }));
     await render(
       <UiPressable style={styleFn}>
         <Text>child</Text>
@@ -74,7 +74,7 @@ describe("UiPressable", () => {
     "applies opacity feedback on %s (non-Android)",
     async (os) => {
       Object.defineProperty(Platform, "OS", { value: os, configurable: true });
-      const styleFn = jest.fn(() => ({}));
+      const styleFn = jest.fn((_state: unknown) => ({}));
       await render(
         <UiPressable style={styleFn}>
           <Text>child</Text>

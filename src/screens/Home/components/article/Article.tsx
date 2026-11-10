@@ -5,6 +5,8 @@ import type {
   GestureResponderEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  ScrollViewInstance,
+  ViewInstance,
 } from "react-native";
 import { Animated, ScrollView, View, useWindowDimensions } from "react-native";
 
@@ -61,10 +63,13 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const { article, anchor } = properties;
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const scrollProgress = useRef(new Animated.Value(0)).current;
-  const scrollReference = useRef<ScrollView>(null);
-  // Ref to the ScrollView's inner content view; anchor positions are
-  // measured against it (see scrollToAnchor).
-  const innerViewReference = useRef<View>(null);
+  const scrollReference = useRef<ScrollViewInstance>(null);
+  // Ref to the view wrapping all of the ScrollView's content, which starts at
+  // y=0 of the scrollable content; anchor and embed positions are measured
+  // against it (see scrollToAnchor and useNearViewport). A plain View rather
+  // than ScrollView's innerViewRef prop, which react-native-web ignores —
+  // that left the ref null on web, so embedded article cards never loaded.
+  const innerViewReference = useRef<ViewInstance>(null);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backToTop = useBackToTop();
@@ -93,7 +98,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
   const bodyRendered = useRef(false);
   // Refs to rendered headers by their HTML id, registered by HeaderRenderer.
   // Used both for in-article anchor links and for deep links with a fragment.
-  const headerReferences = useRef<Record<string, RefObject<View>>>({});
+  const headerReferences = useRef<Record<string, RefObject<ViewInstance>>>({});
   // The anchor still waiting to be aligned. Content height keeps changing
   // while images load in, so we re-align on every content size change until
   // the user takes over scrolling (a one-shot scroll would land wrong).
@@ -334,7 +339,6 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             { useNativeDriver: false, listener: scrollListener },
           )}
           ref={scrollReference}
-          innerViewRef={innerViewReference}
           scrollEventThrottle={16}
           onContentSizeChange={(_width, contentHeight) => {
             // Re-align the pending anchor whenever async content (images,
@@ -352,7 +356,7 @@ const ArticleScreen = (properties: ArticleScreenProperties) => {
             cancelPositionRestore();
           }}
         >
-          <View style={{ paddingBottom: 100 }}>
+          <View ref={innerViewReference} style={{ paddingBottom: 100 }}>
             <Header
               article={article}
               article_image={article_image}

@@ -11,7 +11,7 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import type { View as ViewType } from "react-native";
+import type { ViewInstance } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import AnimatedHeader from "#/components/animations/AnimatedHeader";
@@ -129,7 +129,7 @@ const ContactScreen = () => {
     undefined,
   );
   // Screen content behind the success overlay, blurred on Android 12+
-  const blurTargetRef = useRef<ViewType>(null);
+  const blurTargetRef = useRef<ViewInstance>(null);
   const colorScheme = useAppColorScheme();
   const {
     error: errorColor,

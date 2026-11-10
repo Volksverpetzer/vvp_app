@@ -10,7 +10,7 @@ jest.mock("expo-router", () => ({
 
 // Stable mock for expo-image, so the finish screen's mascot Image can be
 // asserted on directly.
-const MockImage = jest.fn(() => null);
+const MockImage = jest.fn((_props: unknown, _ref?: unknown) => null);
 jest.mock("expo-image", () => ({ Image: MockImage }));
 
 const mascotSource = { uri: "einhorn.webp" };
@@ -23,6 +23,12 @@ jest.mock("#/helpers/AppImages", () => ({
 }));
 
 jest.mock("#/components/bars/NavBar", () => jest.fn(() => null));
+
+// Gesture Handler 3 throws when its ScrollView renders outside a
+// GestureHandlerRootView, so render a plain passthrough instead.
+jest.mock("react-native-gesture-handler", () => ({
+  ScrollView: jest.fn(({ children }: any) => children),
+}));
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
@@ -85,6 +91,11 @@ describe("GameScreen", () => {
   it("shows the fixed game title", async () => {
     const { getByText } = await render(<GameScreen />);
     expect(getByText("Desinformations-Memory")).toBeTruthy();
+  });
+
+  it("explains how to play above the board", async () => {
+    const { getByText } = await render(<GameScreen />);
+    expect(getByText(/^Finde die Paare/)).toBeTruthy();
   });
 
   it("starts on level 1 with 3 pairs", async () => {
