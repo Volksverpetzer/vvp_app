@@ -17,12 +17,22 @@ import { spacing } from "#/constants/Spacing";
 import { getApiUrl } from "#/helpers/apiUrl";
 import { getRegions } from "#/helpers/network/Action";
 import { WEEK_IN_MS } from "#/helpers/utils/time";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { Region, RegionsByCode } from "#/types";
 
 import Legend from "./Legend";
 
 const weekNumber = Math.floor(Date.now() / WEEK_IN_MS);
+
+// Quartile colors of the server-rendered map (vvp_app_server
+// proxycache/services/analytics.py `map`), highest quartile first. The image
+// is a fixed PNG independent of app theme/variant, so these must mirror the
+// server's hex values rather than theme tokens.
+const MAP_LEGEND = [
+  { text: "Vorreiter", color: "#EE8FBE" },
+  { text: "Überdurchschnittlich", color: "#DB2685" },
+  { text: "Unterdurchschnittlich", color: "#3893C0" },
+  { text: "Schlusslicht", color: "#1B7194" },
+] as const;
 
 const parseRegionsData = async (): Promise<Region[]> => {
   const csv = await getRegions();
@@ -65,11 +75,8 @@ const RegionMap = () => {
       current = false;
     };
   }, [apiUrl]);
-  const colorScheme = useAppColorScheme();
   const corporate = Colors.light.primary;
-  const corporateColor = Colors.dark.primary;
   const primaryMuted = Colors.dark.primaryMuted;
-  const highlight = Colors[colorScheme].accent;
 
   return (
     <View
@@ -106,11 +113,11 @@ const RegionMap = () => {
           }}
         />
         <UiSpace size={spacing.xl} />
-        <Legend text="Vorreiter" color={highlight} />
-        <UiSpace size={spacing.sm} />
-        <Legend text="Durchschnitt" color={corporateColor} />
-        <UiSpace size={spacing.sm} />
-        <Legend text="Schlusslicht" color={corporate} />
+        <View style={{ gap: spacing.sm }}>
+          {MAP_LEGEND.map(({ text, color }) => (
+            <Legend key={text} text={text} color={color} />
+          ))}
+        </View>
         <UiSpace size={spacing.sm} />
         <View>
           <UiText
