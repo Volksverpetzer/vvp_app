@@ -1,3 +1,5 @@
 - Prüfpunkt-Artikel zeigen jetzt passende Empfehlungen unter „Passend dazu“
+- Die gewählte Darstellung (Hell/Dunkel) gilt jetzt auch für Tableiste, Tastatur und Systemdialoge
+- Die Karte unter „Aktionen“ hat eine klarere Legende mit vier Stufen
 - Technische Grundlage aktualisiert – die App ist bereit für iOS 27
 - Fehlerbehebungen und kleine Verbesserungen
