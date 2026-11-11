@@ -28,6 +28,7 @@ import FlatBoard from "#/screens/Onboarding/components/Flatboard";
 import type { OnBoardingData } from "#/screens/Onboarding/components/Flatboard";
 import type { NotificationSettingType, SettingType } from "#/types";
 
+import WelcomeVVPDark from "#assets/images/welcome-dark.webp";
 import WelcomeVVP from "#assets/images/welcome.webp";
 
 const NOTIFICATION_STEP_ID = 7;
@@ -189,7 +190,7 @@ const Onboarding = () => {
       // The VVP welcome artwork carries its own greeting; Mimikama has no
       // image, so it keeps the text.
       ...(isVolksverpetzer
-        ? { icon: WelcomeVVP }
+        ? { icon: colorScheme === "dark" ? WelcomeVVPDark : WelcomeVVP }
         : {
             title: "Willkommen",
             description: `Willkommen bei der ${appName}-App!`,

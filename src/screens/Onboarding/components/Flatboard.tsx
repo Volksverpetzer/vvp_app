@@ -100,7 +100,13 @@ const Slide = ({
         showsVerticalScrollIndicator={false}
       >
         <View style={globalStyles.centered}>
-          {icon && <Image style={{ width, aspectRatio: 1 }} source={icon} />}
+          {icon && (
+            <Image
+              style={{ width, aspectRatio: 1 }}
+              source={icon}
+              contentFit="contain"
+            />
+          )}
           {TopComponent && height > 600 && (
             <View
               style={[

@@ -102,6 +102,21 @@ describe("FlatBoard", () => {
     expect(getByText("Step 1")).toBeTruthy();
   });
 
+  it("renders an image-only slide full width without heading or description", async () => {
+    const data: OnBoardingData[] = [{ id: 1, icon: 1 }, ...makeData(1)];
+    const { toJSON, queryByText } = await render(
+      <FlatBoard data={data} onFinish={jest.fn()} />,
+    );
+
+    const tree = JSON.stringify(toJSON());
+    expect(tree).toContain('"aspectRatio":1');
+    expect(tree).toContain('"width":400');
+    // Only the second slide contributes text.
+    expect(queryByText("Step 1")).toBeTruthy();
+    expect(queryByText("Description 1")).toBeTruthy();
+    expect(tree.match(/Step \d|Description \d/g)).toHaveLength(2);
+  });
+
   it("returns nothing while the window width is not yet measured", async () => {
     mockUseWindowDimensions.mockReturnValue({
       width: 0,
