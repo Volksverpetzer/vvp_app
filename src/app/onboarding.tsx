@@ -186,9 +186,14 @@ const Onboarding = () => {
   const data = [
     {
       id: 1,
-      title: "Willkommen",
-      description: `Willkommen bei der ${appName}-App!`,
-      icon: isVolksverpetzer ? WelcomeVVP : undefined,
+      // The VVP welcome artwork carries its own greeting; Mimikama has no
+      // image, so it keeps the text.
+      ...(isVolksverpetzer
+        ? { icon: WelcomeVVP }
+        : {
+            title: "Willkommen",
+            description: `Willkommen bei der ${appName}-App!`,
+          }),
     },
     {
       id: 3,

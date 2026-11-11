@@ -23,8 +23,8 @@ import Stepper from "./Stepper";
 
 export type OnBoardingData = {
   id: number;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   icon?: ImageRequireSource;
   Component?: FC;
   TopComponent?: FC | undefined;
@@ -75,19 +75,21 @@ const Slide = ({
           <Logo color={corporate} />
         </View>
       )}
-      <UiText
-        size="xxl"
-        style={{
-          textAlign: "center",
-          width,
-          marginTop: isVolksverpetzer ? 0 : height / 20,
-          ...headingStyle,
-          paddingVertical: spacing.md,
-          color: corporate,
-        }}
-      >
-        {title}
-      </UiText>
+      {title && (
+        <UiText
+          size="xxl"
+          style={{
+            textAlign: "center",
+            width,
+            marginTop: isVolksverpetzer ? 0 : height / 20,
+            ...headingStyle,
+            paddingVertical: spacing.md,
+            color: corporate,
+          }}
+        >
+          {title}
+        </UiText>
+      )}
       <ScrollView
         style={{ flex: 1, width }}
         contentContainerStyle={{
@@ -98,12 +100,7 @@ const Slide = ({
         showsVerticalScrollIndicator={false}
       >
         <View style={globalStyles.centered}>
-          {icon && (
-            <Image
-              style={{ height: height / 3, width: height / 3 }}
-              source={icon}
-            />
-          )}
+          {icon && <Image style={{ width, aspectRatio: 1 }} source={icon} />}
           {TopComponent && height > 600 && (
             <View
               style={[
@@ -114,17 +111,19 @@ const Slide = ({
               <TopComponent />
             </View>
           )}
-          <UiText
-            size="lg"
-            style={{
-              paddingVertical: spacing.md,
-              ...descriptionStyle,
-              textAlign: "center",
-              paddingHorizontal: spacing.xxxl,
-            }}
-          >
-            {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
-          </UiText>
+          {description && (
+            <UiText
+              size="lg"
+              style={{
+                paddingVertical: spacing.md,
+                ...descriptionStyle,
+                textAlign: "center",
+                paddingHorizontal: spacing.xxxl,
+              }}
+            >
+              {description.replace("\n", "").replaceAll(/\s+/g, " ").trim()}
+            </UiText>
+          )}
         </View>
         {Component && height > 600 && (
           <View style={{ width: 300, height: "auto" }}>
