@@ -163,7 +163,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  expo-atlas>expo-server: 58.0.6
+  expo-atlas>expo-server: 58.1.0
   react-test-renderer: 19.3.0
 
 patchedDependencies:
@@ -3982,10 +3982,6 @@ packages:
         optional: true
       react-server-dom-webpack:
         optional: true
-
-  expo-server@58.0.6:
-    resolution: {integrity: sha512-6DBlSZwxk3J0y1j2s4XebAWNiwGaMp32NcWX7b2kJC2+EFf1g+pCcVmx8ylawt2tyLmbDHswm4MHOfrd4bqfvA==}
-    engines: {node: ^22.13.0 || ^24.3.0 || ^26.0.0 || >=27.0.0}
 
   expo-server@58.1.0:
     resolution: {integrity: sha512-jo7I6uHnP5OQYKx3+7lbpdVVnOEwFj2ryDkQdauUQSwgh2HuMUkiFXWUIVe01ts6DLRoff5U0Tv+uNb3CMq/kw==}
@@ -10901,7 +10897,7 @@ snapshots:
     dependencies:
       connect: 3.7.0(supports-color@8.1.1)
       expo: 58.0.24(d71f4c5a9a1de21323c6a80a26827b24)
-      expo-server: 58.0.6
+      expo-server: 58.1.0
       morgan: 1.12.1(supports-color@8.1.1)
       open: 8.4.2
       serve-static: 2.2.1(supports-color@8.1.1)
@@ -11145,8 +11141,6 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
-
-  expo-server@58.0.6: {}
 
   expo-server@58.1.0: {}
 
