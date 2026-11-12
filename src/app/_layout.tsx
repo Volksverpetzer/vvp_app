@@ -6,11 +6,17 @@ import {
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
 import LucideFont from "@react-native-vector-icons/lucide/fonts/Lucide.ttf";
-import { Stack, useSegments } from "expo-router";
+import {
+  DarkTheme,
+  DefaultTheme,
+  Stack,
+  ThemeProvider,
+  useSegments,
+} from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
-import { type PropsWithChildren, useEffect, useState } from "react";
+import { type PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { LogBox, Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
@@ -59,6 +65,18 @@ const AppFrame = ({ children }: PropsWithChildren) => {
     ? Colors[colorScheme].surface
     : Colors[colorScheme].background;
 
+  // React Navigation paints its screen containers (stack cards, the view
+  // around each native tab) with the theme background. Without a theme that
+  // is the light default (#F2F2F2), which showed as a light strip behind the
+  // iPad/macOS top tab bar in dark mode, so follow the in-app theme instead.
+  const navigationTheme = useMemo(() => {
+    const base = isDarkMode(colorScheme) ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: { ...base.colors, background: Colors[colorScheme].background },
+    };
+  }, [colorScheme]);
+
   useEffect(() => {
     if (Platform.OS === "web") return;
     SystemUI.setBackgroundColorAsync(backgroundColor).catch((error) => {
@@ -75,7 +93,7 @@ const AppFrame = ({ children }: PropsWithChildren) => {
       }}
     >
       <StatusBar style={isDarkMode(colorScheme) ? "light" : "dark"} />
-      {children}
+      <ThemeProvider value={navigationTheme}>{children}</ThemeProvider>
     </View>
   );
 };
