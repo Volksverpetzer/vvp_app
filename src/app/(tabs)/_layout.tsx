@@ -1,5 +1,6 @@
 import Lucide from "@react-native-vector-icons/lucide/static";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
+import { Platform } from "react-native";
 
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
@@ -32,17 +33,19 @@ const TabLayout = () => {
       disableTransparentOnScrollEdge
       iconColor={{
         default: textMuted,
-        selected: onPrimary,
+        // Android draws the selected icon on the corporate-colored indicator,
+        // so it needs the on-primary color. The iPhone tab bar draws its own
+        // light glass pill instead, on which on-primary (white) is invisible.
+        selected: Platform.OS === "ios" ? corporate : onPrimary,
       }}
       indicatorColor={corporate}
       labelVisibilityMode="unlabeled"
       shadowColor={surfaceDisabled}
       // iOS 26+ draws the tab bar itself (backgroundColor/iconColor are
-      // ignored by the iPad top tab bar), so force its trait to the in-app
-      // theme and use the corporate color for the selected item instead of
-      // the system tint.
+      // ignored by the iPad top tab bar), so use the corporate color for the
+      // selected item instead of the system tint. Its light/dark look follows
+      // the in-app theme via Appearance.setColorScheme in SettingsProvider.
       tintColor={corporate}
-      unstable_nativeProps={{ colorScheme }}
     >
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Icon
