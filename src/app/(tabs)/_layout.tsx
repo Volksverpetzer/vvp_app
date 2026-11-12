@@ -42,15 +42,7 @@ const TabLayout = () => {
       // theme and use the corporate color for the selected item instead of
       // the system tint.
       tintColor={corporate}
-      unstable_nativeProps={{
-        colorScheme,
-        // The tab screens are transparent, so where the iPad/Mac top tab bar
-        // floats (the inset TabScreenView pads) the controller's own view
-        // shows through. It defaults to systemBackgroundColor, which follows
-        // the system trait instead of the in-app theme, so paint it with the
-        // app background explicitly.
-        nativeContainerStyle: { backgroundColor: background },
-      }}
+      unstable_nativeProps={{ colorScheme }}
     >
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Icon
