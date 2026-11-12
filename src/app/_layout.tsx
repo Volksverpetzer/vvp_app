@@ -6,12 +6,10 @@ import {
   useFonts,
 } from "@expo-google-fonts/source-sans-3";
 import LucideFont from "@react-native-vector-icons/lucide/fonts/Lucide.ttf";
-import { Stack, useSegments } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
-import * as SystemUI from "expo-system-ui";
-import { type PropsWithChildren, useEffect, useState } from "react";
-import { LogBox, Platform, View } from "react-native";
+import { useEffect, useState } from "react";
+import { LogBox, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   SafeAreaProvider,
@@ -23,8 +21,8 @@ import Toast from "react-native-toast-message";
 import ChangelogModal from "#/components/popups/ChangelogModal";
 import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
+import AppFrame from "#/components/views/AppFrame";
 import Changelog from "#/constants/Changelog";
-import Colors from "#/constants/Colors";
 import { fontFamily } from "#/constants/FontFamily";
 import NotificationManager from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -32,8 +30,6 @@ import { AudioProvider } from "#/helpers/provider/AudioProvider";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import { toastConfig } from "#/helpers/toastConfig";
-import { isDarkMode } from "#/helpers/utils/color";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
 
 // Hide warning for new native event emitter
@@ -41,44 +37,6 @@ LogBox.ignoreLogs(["new NativeEventEmitter"]);
 
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
-
-const SECONDARY_BG_SCREENS = new Set(["action", "support"]);
-
-/**
- * Manages the background color for the app shell — including the notch/status bar
- * area — based on the current screen and color scheme. Lives inside all providers
- * so a forced light/dark theme is respected.
- */
-const AppFrame = ({ children }: PropsWithChildren) => {
-  const colorScheme = useAppColorScheme();
-  const insets = useSafeAreaInsets();
-  const segments = useSegments() as string[];
-
-  const isSecondaryBg = segments.some((s) => SECONDARY_BG_SCREENS.has(s));
-  const backgroundColor = isSecondaryBg
-    ? Colors[colorScheme].surface
-    : Colors[colorScheme].background;
-
-  useEffect(() => {
-    if (Platform.OS === "web") return;
-    SystemUI.setBackgroundColorAsync(backgroundColor).catch((error) => {
-      console.warn("Failed to set system background color", error);
-    });
-  }, [backgroundColor]);
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        paddingTop: insets.top,
-        backgroundColor,
-      }}
-    >
-      <StatusBar style={isDarkMode(colorScheme) ? "light" : "dark"} />
-      {children}
-    </View>
-  );
-};
 
 /**
  * Wraps Toast so its bottom offset clears the Android nav bar, matching the

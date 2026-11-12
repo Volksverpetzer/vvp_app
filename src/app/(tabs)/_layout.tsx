@@ -38,11 +38,10 @@ const TabLayout = () => {
       labelVisibilityMode="unlabeled"
       shadowColor={surfaceDisabled}
       // iOS 26+ draws the tab bar itself (backgroundColor/iconColor are
-      // ignored by the iPad top tab bar), so force its trait to the in-app
-      // theme and use the corporate color for the selected item instead of
-      // the system tint.
+      // ignored by the iPad top tab bar), so use the corporate color for the
+      // selected item instead of the system tint. Its light/dark look follows
+      // the in-app theme via Appearance.setColorScheme in SettingsProvider.
       tintColor={corporate}
-      unstable_nativeProps={{ colorScheme }}
     >
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Icon
