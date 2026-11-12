@@ -43,8 +43,11 @@ jest.mock("react-native-reanimated-carousel", () => {
   return { __esModule: true, Carousel };
 });
 
+let mockIsVolksverpetzer = false;
 jest.mock("#/helpers/utils/variant", () => ({
-  isVolksverpetzer: false,
+  get isVolksverpetzer() {
+    return mockIsVolksverpetzer;
+  },
 }));
 
 const makeData = (count: number): OnBoardingData[] =>
@@ -66,6 +69,7 @@ describe("FlatBoard", () => {
     jest.clearAllMocks();
     capturedOnSnapToItem = null;
     capturedCarouselProps = null;
+    mockIsVolksverpetzer = false;
     originalOS = Platform.OS;
     Object.defineProperty(Platform, "OS", { value: "ios", configurable: true });
     mockUseWindowDimensions.mockReturnValue({
@@ -115,6 +119,18 @@ describe("FlatBoard", () => {
     expect(queryByText("Step 1")).toBeTruthy();
     expect(queryByText("Description 1")).toBeTruthy();
     expect(tree.match(/Step \d|Description \d/g)).toHaveLength(2);
+  });
+
+  it("renders the logo and headings on the Volksverpetzer variant", async () => {
+    mockIsVolksverpetzer = true;
+    const data: OnBoardingData[] = [{ id: 1, icon: 1 }, ...makeData(1)];
+    const { getByText, toJSON } = await render(
+      <FlatBoard data={data} onFinish={jest.fn()} />,
+    );
+
+    expect(getByText("Step 1")).toBeTruthy();
+    // Heading sits directly under the logo, without the extra top margin.
+    expect(JSON.stringify(toJSON())).toContain('"marginTop":0');
   });
 
   it("returns nothing while the window width is not yet measured", async () => {
