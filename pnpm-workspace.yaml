@@ -58,3 +58,5 @@ minimumReleaseAgeExclude:
   - expo-web-browser@58.0.8
   - "@atproto/api@0.31.1"
   - prettier@3.10.1
+  # expo-doctor 1.21.7 crashes with "Cannot find module '@expo/env'"; 1.21.8 fixes it
+  - expo-doctor@1.21.8
