@@ -35,7 +35,7 @@ import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
 import { decodeAnchor } from "#/helpers/utils/anchors";
-import { getTagStyles } from "#/helpers/utils/articleTagStyles";
+import { getClassStyles, getTagStyles } from "#/helpers/utils/articleTagStyles";
 import { isSameHost } from "#/helpers/utils/host";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -47,13 +47,7 @@ import IframeRenderer from "#/screens/Home/components/article/renderer/IframeRen
 import ImageRenderer from "#/screens/Home/components/article/renderer/ImageRenderer";
 import type { HttpsUrl } from "#/types";
 
-import {
-  handleContainerElements,
-  handleEmbeddedContent,
-  handleImageElements,
-  handleRemovableElements,
-  handleSpecialElements,
-} from "./ElementHandlers";
+import { handleArticleElement } from "./ElementHandlers";
 import {
   BodyChunkOffsetContext,
   chunkIndexOfId,
@@ -244,6 +238,10 @@ const Body = (properties: BodyProperties) => {
     () => getTagStyles(colorScheme),
     [colorScheme],
   );
+  const articleClassStyles = useMemo(
+    () => getClassStyles(colorScheme),
+    [colorScheme],
+  );
 
   // Memoized like renderersProperties below: @native-html/render can
   // remount custom-rendered elements when this prop's identity changes,
@@ -337,14 +335,8 @@ const Body = (properties: BodyProperties) => {
    */
   const domVisitors = useMemo(
     () => ({
-      onElement: (element: ChildNode & Element) => {
-        const domElement = element;
-        if (handleEmbeddedContent(domElement)) return;
-        if (handleRemovableElements(domElement)) return;
-        if (handleSpecialElements(domElement)) return;
-        if (handleContainerElements(domElement)) return;
-        handleImageElements(domElement);
-      },
+      onElement: (element: ChildNode & Element) =>
+        handleArticleElement(element),
     }),
     [],
   );
@@ -363,6 +355,7 @@ const Body = (properties: BodyProperties) => {
   return (
     <TRenderEngineProvider
       tagsStyles={articleTagStyles}
+      classesStyles={articleClassStyles}
       ignoredDomTags={IGNORED_DOM_TAGS}
       systemFonts={SOURCE_SANS_FONTS}
       customHTMLElementModels={customHTMLElementModels}

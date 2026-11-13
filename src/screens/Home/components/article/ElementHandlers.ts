@@ -1,6 +1,54 @@
 import type { ChildNode, Element } from "domhandler";
 import { isTag } from "domhandler";
-import { append, removeElement, replaceElement } from "domutils";
+import { append, prepend, removeElement, replaceElement } from "domutils";
+
+const LEGACY_MESSAGE_TYPES = new Set(["info", "warning", "success", "danger"]);
+
+/**
+ * Handles the legacy WPBakery message boxes that the vvp_wp_patches plugin
+ * renders as `<div class="vvp-legacy-message vvp-legacy-message--danger">`
+ * (from `[vc_message]` shortcodes and from box HTML left in old posts).
+ * The website styles them with an inline <style> block and an SVG icon, but
+ * the app drops both, and handleContainerElements would unwrap the box
+ * div. So:
+ *   - the icon div is removed (the app doesn't render inline SVG);
+ *   - the content div is unwrapped into the box;
+ *   - the box keeps only its two vvp-legacy-message classes, so the
+ *     classesStyles from getClassStyles apply and nothing else does.
+ * Children are visited before their parent, so the box sees its final
+ * children.
+ * @param element The element to process
+ * @returns True if the element was handled
+ */
+export const handleLegacyMessageBoxes = (element: Element): boolean => {
+  if (element.tagName !== "div") return false;
+  const classes = element.attribs.class?.split(/\s+/) ?? [];
+
+  if (classes.includes("vvp-legacy-message__icon")) {
+    removeElement(element);
+    return true;
+  }
+
+  if (classes.includes("vvp-legacy-message__content")) {
+    for (const child of element.children) {
+      prepend(element as unknown as ChildNode, child);
+    }
+    removeElement(element);
+    return true;
+  }
+
+  if (classes.includes("vvp-legacy-message")) {
+    const modifier = classes
+      .map((name) => /^vvp-legacy-message--(\w+)$/.exec(name)?.[1])
+      .find((type) => type !== undefined && LEGACY_MESSAGE_TYPES.has(type));
+    element.attribs = {
+      class: `vvp-legacy-message vvp-legacy-message--${modifier ?? "info"}`,
+    };
+    return true;
+  }
+
+  return false;
+};
 
 /**
  * Handles elements that should be immediately removed
@@ -82,6 +130,20 @@ export const handleEmbeddedContent = (element: Element): boolean => {
   }
 
   return false;
+};
+
+/**
+ * Runs every handler on an article element, in order. Used as the render
+ * engine's onElement DOM visitor.
+ * @param element The element to process
+ */
+export const handleArticleElement = (element: Element): void => {
+  if (handleEmbeddedContent(element)) return;
+  if (handleRemovableElements(element)) return;
+  if (handleSpecialElements(element)) return;
+  if (handleLegacyMessageBoxes(element)) return;
+  if (handleContainerElements(element)) return;
+  handleImageElements(element);
 };
 
 /**

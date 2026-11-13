@@ -169,3 +169,47 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     },
   };
 };
+
+/**
+ * Accents for the legacy message box types the design tokens have no color
+ * for. Light/dark values are readable as a border on background and surface.
+ */
+const LEGACY_MESSAGE_ACCENTS = {
+  light: { warning: "#B7791F", success: "#2E7D32" },
+  dark: { warning: "#E0A84A", success: "#66BB6A" },
+} as const;
+
+/**
+ * Returns the class styles for the given color scheme: the legacy WPBakery
+ * message boxes (`vvp-legacy-message`, see handleLegacyMessageBoxes), styled
+ * like blockquotes (colored left border, light tint of the same color) so
+ * they read as callouts in both color schemes. Their <p> children bring the
+ * side and bottom padding.
+ * @param colorScheme The color scheme to use
+ * @returns The class styles
+ */
+export const getClassStyles = (colorScheme: AppColorScheme) => {
+  const accents = {
+    info: Colors[colorScheme].primary,
+    danger: Colors[colorScheme].error,
+    ...LEGACY_MESSAGE_ACCENTS[colorScheme],
+  };
+  const box = (accent: string | undefined) => ({
+    borderLeftColor: accent,
+    backgroundColor: `${accent}1A`, // 10% opacity
+  });
+
+  return {
+    "vvp-legacy-message": {
+      marginLeft: spacing.md,
+      marginRight: spacing.md,
+      marginBottom: spacing.xl,
+      paddingTop: spacing.xl,
+      borderLeftWidth: 4,
+    },
+    "vvp-legacy-message--info": box(accents.info),
+    "vvp-legacy-message--warning": box(accents.warning),
+    "vvp-legacy-message--success": box(accents.success),
+    "vvp-legacy-message--danger": box(accents.danger),
+  };
+};
