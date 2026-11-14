@@ -25,7 +25,13 @@ const HeaderRenderer = (properties: HeaderRendererProperties) => {
 
   useEffect(() => {
     if (!id) return;
-    componentRefs.current[id] = thisReference;
+    const references = componentRefs.current;
+    references[id] = thisReference;
+    // Unregister when the header goes away (e.g. the article switches to
+    // another page), unless another header has taken over the id since.
+    return () => {
+      if (references[id] === thisReference) delete references[id];
+    };
   }, [componentRefs, id]);
 
   const thisReference = useRef(null);
