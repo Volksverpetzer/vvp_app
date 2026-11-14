@@ -5,13 +5,13 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.31.1": {
+  "@atproto/api@0.31.2": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
       "https://github.com/bluesky-social/atproto/raw/HEAD/LICENSE.txt",
   },
-  "@babel/runtime@7.29.13": {
+  "@babel/runtime@7.29.14": {
     licenses: "MIT",
     repository: "https://github.com/babel/babel",
     licenseUrl: "https://github.com/babel/babel/raw/HEAD/LICENSE",
@@ -81,7 +81,7 @@ export default {
     licenseUrl:
       "https://github.com/stripe/stripe-react-native/raw/HEAD/LICENSE",
   },
-  "@volksverpetzer/design-tokens@0.9.1": {
+  "@volksverpetzer/design-tokens@0.10.0": {
     licenses: "MIT",
     repository: "https://github.com/Volksverpetzer/vvp_design_system",
     licenseUrl:
@@ -142,7 +142,7 @@ export default {
     licenseUrl:
       "https://github.com/malaa-tech/expo-custom-assets/raw/HEAD/LICENSE",
   },
-  "expo-dev-client@58.0.19": {
+  "expo-dev-client@58.0.20": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -235,7 +235,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@58.0.24": {
+  "expo@58.0.25": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -303,7 +303,7 @@ export default {
     licenseUrl:
       "https://github.com/software-mansion/react-native-screens/raw/HEAD/LICENSE",
   },
-  "react-native-svg@15.16.1": {
+  "react-native-svg@15.16.0": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-svg",
     licenseUrl:
@@ -332,7 +332,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-webview/react-native-webview/raw/HEAD/LICENSE",
   },
-  "react-native-worklets@0.13.1": {
+  "react-native-worklets@0.13.0": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-reanimated",
     licenseUrl:

@@ -14,6 +14,8 @@ packages:
 patchedDependencies:
   react-native-modal@14.0.0-rc.1: patches/react-native-modal@14.0.0-rc.1.patch
 minimumReleaseAgeExclude:
+  # Temporary: our own release from 2026-11-14 07:05 UTC (warning/success tokens). Delete after 2026-11-15 07:05 UTC.
+  - "@volksverpetzer/design-tokens@0.10.0"
   - "@expo/cli@58.1.20"
   - "@expo/config-plugins@58.0.13"
   - "@expo/config@58.0.12"

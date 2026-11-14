@@ -169,3 +169,42 @@ export const getTagStyles = (colorScheme: AppColorScheme) => {
     },
   };
 };
+
+/**
+ * Returns the class styles for the given color scheme: the legacy WPBakery
+ * message boxes (`vvp-legacy-message`, see handleLegacyMessageBoxes), styled
+ * like the design system's Callout (ui-web), which the website uses for the
+ * same boxes: colored left border, light tint of the same color. Info uses
+ * linkText, like the Callout: it is the blue guaranteed to reach WCAG AA on
+ * background and surface in every brand and scheme. Their <p> children
+ * bring the side and bottom padding.
+ * @param colorScheme The color scheme to use
+ * @returns The class styles
+ */
+export const getClassStyles = (colorScheme: AppColorScheme) => {
+  const colors = Colors[colorScheme];
+  const accents = {
+    info: colors.linkText,
+    warning: colors.warning,
+    success: colors.success,
+    danger: colors.error,
+  };
+  const box = (accent: string | undefined) => ({
+    borderLeftColor: accent,
+    backgroundColor: `${accent}1A`, // 10% opacity
+  });
+
+  return {
+    "vvp-legacy-message": {
+      marginLeft: spacing.md,
+      marginRight: spacing.md,
+      marginBottom: spacing.xl,
+      paddingTop: spacing.xl,
+      borderLeftWidth: 4,
+    },
+    "vvp-legacy-message--info": box(accents.info),
+    "vvp-legacy-message--warning": box(accents.warning),
+    "vvp-legacy-message--success": box(accents.success),
+    "vvp-legacy-message--danger": box(accents.danger),
+  };
+};
