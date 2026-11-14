@@ -220,8 +220,8 @@ importers:
         specifier: 0.82.0
         version: 0.82.0(expo@58.0.25)(react-native-webview@14.0.1(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       '@volksverpetzer/design-tokens':
-        specifier: 0.9.1
-        version: 0.9.1
+        specifier: 0.10.0
+        version: 0.10.0
       buffer:
         specifier: 6.0.3
         version: 6.0.3
@@ -2691,8 +2691,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@volksverpetzer/design-tokens@0.9.1':
-    resolution: {integrity: sha512-GcY3bGIPB9aUKEqnZMd5igDNpZctwaEbuHkvr8UGsLWyHk9A/jPutGMz4Ju5NlSj92Ivj2dHKmLUD5HusFz9Sg==}
+  '@volksverpetzer/design-tokens@0.10.0':
+    resolution: {integrity: sha512-OwU4rB5snUi7rl4QkZAhICVQ0ddl7x6cjj8XKA+PINbBtlWoUnhU7OiCJv4Jb7x9uhMhdovn3+KCLPXh6NYFLg==}
 
   '@volksverpetzer/eslint-plugin-react-native-a11y@3.6.0':
     resolution: {integrity: sha512-QiGKkNmTUFa9NSEWunYE0wP2wUO6vDQGw3qNAbh56sxLe4noGdTyUgUVsTfZlR7kDNq3DtCRC+qFwhwDli76Sw==}
@@ -9567,7 +9567,7 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
     optional: true
 
-  '@volksverpetzer/design-tokens@0.9.1': {}
+  '@volksverpetzer/design-tokens@0.10.0': {}
 
   '@volksverpetzer/eslint-plugin-react-native-a11y@3.6.0(eslint@9.39.5(supports-color@8.1.1))':
     dependencies:

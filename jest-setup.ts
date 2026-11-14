@@ -68,6 +68,8 @@ jest.mock("expo-constants", () => ({
             linkText: "#1B7194",
             pruefpunkt: "#442674",
             error: "#C62828",
+            warning: "#9A5B00",
+            success: "#2B7330",
           },
           dark: {
             text: "#111",
@@ -84,6 +86,8 @@ jest.mock("expo-constants", () => ({
             linkText: "#4A9CC7",
             pruefpunkt: "#8B5CF6",
             error: "#EF5350",
+            warning: "#E0A84A",
+            success: "#66BB6A",
           },
         },
       },
