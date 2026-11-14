@@ -33,7 +33,7 @@ const SVG =
 describe("legacy message boxes", () => {
   it("keeps a shortcode box, drops its icon and unwraps its content", () => {
     const document = parse(
-      `<p>Vorher</p><div class="vvp-legacy-message vvp-legacy-message--danger foo" role="note"><div class="vvp-legacy-message__icon" aria-hidden="true">${SVG}</div><div class="vvp-legacy-message__content"><p>Update: Eins</p>\n<p>Zwei</p>\n</div></div><p>Nachher</p>`,
+      `<p>Vorher</p><div class="vvp-legacy-message vvp-legacy-message--danger foo" role="note"><div class="vvp-legacy-message__icon" aria-hidden="true">${SVG}</div><div class="vvp-legacy-message__content"><p>Update: Eins</p>\n<p>Zwei</p>\n<p>Drei</p>\n</div></div><p>Nachher</p>`,
     );
 
     const [box] = boxes(document);
@@ -43,8 +43,10 @@ describe("legacy message boxes", () => {
     });
     expect(
       box.children.filter(isTag).map((node) => (node as Element).tagName),
-    ).toEqual(["p", "p"]);
-    expect(textContent(box).trim()).toBe("Update: Eins\nZwei");
+    ).toEqual(["p", "p", "p"]);
+    // Every node moves, in order (a for-of over the live children array
+    // skipped every other one).
+    expect(textContent(box).trim()).toBe("Update: Eins\nZwei\nDrei");
     expect(elements(document).some((node) => node.tagName === "svg")).toBe(
       false,
     );

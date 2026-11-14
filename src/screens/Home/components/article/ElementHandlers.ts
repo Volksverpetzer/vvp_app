@@ -7,10 +7,10 @@ const LEGACY_MESSAGE_TYPES = new Set(["info", "warning", "success", "danger"]);
 /**
  * Handles the legacy WPBakery message boxes that the vvp_wp_patches plugin
  * renders as `<div class="vvp-legacy-message vvp-legacy-message--danger">`
- * (from `[vc_message]` shortcodes and from box HTML left in old posts).
- * The website styles them with an inline <style> block and an SVG icon, but
- * the app drops both, and handleContainerElements would unwrap the box
- * div. So:
+ * (from `[vc_message]` shortcodes and from box HTML left in old posts),
+ * also carrying ui-web's `vvp-ui-callout` classes. The website styles them
+ * with the Callout CSS and shows an SVG icon, but the app has neither, and
+ * handleContainerElements would unwrap the box div. So:
  *   - the icon div is removed (the app doesn't render inline SVG);
  *   - the content div is unwrapped into the box;
  *   - the box keeps only its two vvp-legacy-message classes, so the
@@ -30,8 +30,11 @@ export const handleLegacyMessageBoxes = (element: Element): boolean => {
   }
 
   if (classes.includes("vvp-legacy-message__content")) {
-    for (const child of element.children) {
-      prepend(element as unknown as ChildNode, child);
+    // Move children out one by one from the front: prepend() detaches each
+    // from element.children, so a for-of over that live array would skip
+    // every other node.
+    while (element.firstChild) {
+      prepend(element as unknown as ChildNode, element.firstChild);
     }
     removeElement(element);
     return true;
