@@ -66,7 +66,7 @@
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-vector-icons/lucide": "14.0.0",
     "@rive-app/react-native": "0.4.21",
-    "@stripe/stripe-react-native": "0.82.0",
+    "@stripe/stripe-react-native": "0.85.1",
     "@volksverpetzer/design-tokens": "0.9.1",
     "buffer": "6.0.3",
     "domhandler": "6.0.1",
