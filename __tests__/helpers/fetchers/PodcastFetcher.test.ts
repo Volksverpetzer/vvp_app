@@ -36,8 +36,8 @@ describe("PodcastFetcher", () => {
     expect(API.getPodcastFeed).toHaveBeenCalled();
     expect(result.length).toBe(1);
     expect(result[0].id).toBe("abc123");
-    // Naive-UTC ISO shape used by the other fetchers (no trailing Z)
-    expect(result[0].datetime).toBe("2026-06-26T04:00:00.000");
+    // The shared feed datetime format (UTC, no suffix or milliseconds)
+    expect(result[0].datetime).toBe("2026-06-26T04:00:00");
     expect(result[0].data).toHaveProperty("audio_url");
     expect(result[0].shareable).toEqual([
       { url: mockEpisode.link, title: "Podcast Folge teilen" },

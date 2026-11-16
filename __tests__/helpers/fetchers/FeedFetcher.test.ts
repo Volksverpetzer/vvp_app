@@ -134,6 +134,7 @@ describe("FeedFetcher", () => {
         typeof WordPressAPI.create
       >,
       undefined,
+      "wp:volksverpetzer.de",
     );
   });
 
@@ -143,6 +144,7 @@ describe("FeedFetcher", () => {
         typeof WordPressAPI.create
       >,
       "Prüfpunkt",
+      "wp:pruefpunkt.org",
     );
   });
 

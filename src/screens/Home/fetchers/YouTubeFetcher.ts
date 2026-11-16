@@ -10,20 +10,21 @@ export const YouTubeFetcher = {
       () => API.getYouTubeFeed(signal),
       "yt",
     );
-    return data.map(
-      (post) =>
-        new Post(
-          post.snippet.publishedAt.replace("Z", ""),
-          post.id,
-          YouTubePost,
-          post,
-          [
-            {
-              url: `https://www.youtube.com/watch/${post.id}`,
-              title: "YouTube Video teilen",
-            },
-          ],
+    return FetcherUtilities.mapItems(data, "yt", (post) => {
+      const datetime = FetcherUtilities.toFeedDatetime(
+        post.snippet?.publishedAt,
+      );
+      if (!datetime) return null;
+      return new Post(
+        datetime,
+        post.id,
+        YouTubePost,
+        post,
+        FetcherUtilities.shareLink(
+          `https://www.youtube.com/watch/${post.id}`,
+          "YouTube Video teilen",
         ),
-    );
+      );
+    });
   },
 };

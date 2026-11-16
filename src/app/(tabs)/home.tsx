@@ -55,6 +55,7 @@ const HomeScreen = () => {
         .filter((feed) => contentSettings[feed]?.value)
         .map((feed) => ({
           fetcher: Fetcher[feed],
+          name: feed,
         })),
     });
   }, [contentSettings]);
