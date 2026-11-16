@@ -38,6 +38,8 @@ export interface FeedProperties {
   fetchers: {
     fetcher: (properties: FeedFetcherProperties) => Promise<Post<unknown>[]>;
     props?: FeedFetcherProperties;
+    /** Feed key, used in log messages. */
+    name?: string;
   }[];
   prioSort?: boolean;
   cutoffDate?: boolean;

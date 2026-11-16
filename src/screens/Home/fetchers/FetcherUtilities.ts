@@ -1,4 +1,8 @@
-import type { Post, SafeFetchFunction } from "#/types";
+import { isHttpsUrl } from "#/helpers/utils/networking";
+import type { Post, SafeFetchFunction, ShareableType } from "#/types";
+
+// A trailing timezone designator: Z, +02:00 or +0200.
+const TIMEZONE_SUFFIX = /(Z|[+-]\d{2}:?\d{2})$/i;
 
 const FetcherUtilities = {
   isAbortError(error: unknown): boolean {
@@ -12,24 +16,98 @@ const FetcherUtilities = {
   },
 
   /**
-   * Safely fetches data from a fetch function.
+   * Safely fetches data from a fetch function. Every feed fetcher goes
+   * through this, so all sources treat errors the same way.
    * @param fetchFunction The fetch function to use.
-   * @param fetcher The name of the fetcher.
-   * @returns The fetched data, or an empty array if an error occurs.
+   * @param fetcher The name of the fetcher, used in log messages.
+   * @returns The fetched data, or an empty array on errors or a response
+   *   that isn't a list. Aborts are rethrown so the caller can keep the
+   *   posts it already has.
    */
   async safeFetch<T>(
     fetchFunction: SafeFetchFunction<T>,
     fetcher: string,
   ): Promise<T[]> {
     try {
-      return await fetchFunction();
-    } catch (error) {
-      if (FetcherUtilities.isAbortError(error)) {
+      const data = await fetchFunction();
+      if (!Array.isArray(data)) {
+        console.error(`Fetch error in ${fetcher}: response is not a list`);
         return [];
       }
-      console.error("Fetch error in " + fetcher + " :", error);
+      return data;
+    } catch (error) {
+      if (FetcherUtilities.isAbortError(error)) throw error;
+      console.error(`Fetch error in ${fetcher}:`, error);
       return [];
     }
+  },
+
+  /**
+   * Maps raw feed items to posts one by one. An item whose mapping throws
+   * or returns nothing, or a post without id or datetime, is skipped and
+   * logged, so one malformed item never drops the rest of its feed.
+   * @param items The raw items from the API.
+   * @param fetcher The name of the fetcher, used in log messages.
+   * @param map Builds the post for one item, or returns null to skip it.
+   */
+  mapItems<T, R extends Post<unknown>>(
+    items: T[],
+    fetcher: string,
+    map: (item: T, index: number) => R | null | undefined,
+  ): R[] {
+    const posts: R[] = [];
+    let skipped = 0;
+    items.forEach((item, index) => {
+      try {
+        const post = map(item, index);
+        if (post && post.id !== undefined && post.datetime !== undefined) {
+          posts.push(post);
+        } else {
+          skipped++;
+        }
+      } catch (error) {
+        skipped++;
+        console.warn(`Skipping malformed item in ${fetcher}:`, error);
+      }
+    });
+    if (skipped > 0) {
+      console.warn(`Skipped ${skipped} unusable item(s) in ${fetcher}`);
+    }
+    return posts;
+  },
+
+  /**
+   * Normalizes a timestamp to the one datetime format all feed posts use:
+   * UTC without a suffix or milliseconds, e.g. "2026-11-01T10:00:00". The
+   * feed is sorted by comparing these strings, so every source must use it.
+   * A string without a timezone (WordPress date_gmt) is read as UTC.
+   * @returns The normalized datetime, or undefined if it can't be parsed.
+   */
+  toFeedDatetime(value: string | number | Date | undefined | null) {
+    if (value === undefined || value === null || value === "") return;
+    let date: Date;
+    if (value instanceof Date || typeof value === "number") {
+      date = new Date(value);
+    } else if (typeof value === "string") {
+      const withZone = TIMEZONE_SUFFIX.test(value)
+        ? // Hermes only parses offsets with a colon (+02:00, not +0200).
+          value.replace(/([+-]\d{2})(\d{2})$/, "$1:$2")
+        : `${value}Z`;
+      date = new Date(withZone);
+    } else {
+      return;
+    }
+    if (Number.isNaN(date.getTime())) return;
+    return date.toISOString().replace(/\.\d{3}Z$/, "");
+  },
+
+  /**
+   * The share entry for a post, or undefined when the URL isn't https.
+   */
+  shareLink(url: unknown, title: string): ShareableType[] | undefined {
+    return typeof url === "string" && isHttpsUrl(url)
+      ? [{ url, title }]
+      : undefined;
   },
 
   /**
@@ -75,6 +153,8 @@ const FetcherUtilities = {
         properties: Record<string, unknown>,
       ) => Promise<Post<unknown>[]>;
       props?: Record<string, unknown>;
+      /** Feed key, used in log messages. */
+      name?: string;
     }[],
     fetcherProperties: {
       page?: number;
@@ -95,7 +175,10 @@ const FetcherUtilities = {
             return await item.fetcher(itemProperties);
           } catch (error) {
             if (FetcherUtilities.isAbortError(error)) throw error;
-            console.error(`Error in feed fetcher #${index}:`, error);
+            console.error(
+              `Error in feed fetcher ${item.name ?? `#${index}`}:`,
+              error,
+            );
             return [];
           }
         }),
