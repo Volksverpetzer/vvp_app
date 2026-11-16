@@ -16,6 +16,15 @@ describe("DeepLinkFilter", () => {
       ).toBe(true);
     });
 
+    it("should exclude upload paths without a leading slash (expo-linking parse output)", () => {
+      expect(
+        shouldExcludeFromDeepLink("wp-content/uploads/2024/11/file.pdf"),
+      ).toBe(true);
+      expect(shouldExcludeFromDeepLink("politik/wp-content/uploads/x")).toBe(
+        false,
+      );
+    });
+
     it("should not exclude regular article paths", () => {
       expect(shouldExcludeFromDeepLink("/politik/article-title")).toBe(false);
       expect(shouldExcludeFromDeepLink("/aktuelles/news")).toBe(false);
