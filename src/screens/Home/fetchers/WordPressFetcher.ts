@@ -29,7 +29,7 @@ export const WordPressFetcher = {
       article.slug,
       ArticlePost,
       { article: formattedArticle },
-      [{ url: article.link, title: "Artikel teilen" }],
+      FetcherUtilities.shareLink(article.link, "Artikel teilen"),
       index === 0 ? 2 : 1,
       article.slug,
       "article",
@@ -49,9 +49,10 @@ export const WordPressFetcher = {
 
   /**
    * Creates a feed/search fetcher pair for any WordPress-compatible API.
-   * Pass sourceName to stamp a source label on every returned article.
+   * Pass sourceName to stamp a source label on every returned article, and
+   * feedKey (e.g. "wp:pruefpunkt.org") to name the source in log messages.
    */
-  createFetchers(api: WpApi, sourceName?: string) {
+  createFetchers(api: WpApi, sourceName?: string, feedKey = "wp") {
     const stamp = (posts: Post<{ article: ArticleProperties }>[]) => {
       if (sourceName) {
         posts.forEach((p) => {
@@ -70,7 +71,7 @@ export const WordPressFetcher = {
           await WordPressFetcher.wpBaseFetcher(
             (sig) => api.getPosts(page, sig),
             signal,
-            sourceName ?? "wp",
+            feedKey,
           ),
         ),
       searchFetcher: async ({
@@ -82,7 +83,7 @@ export const WordPressFetcher = {
           await WordPressFetcher.wpBaseFetcher(
             (sig) => api.searchPosts(parameter, page, sig),
             signal,
-            `${sourceName ?? "wp"}:search`,
+            `${feedKey}:search`,
           ),
         ),
     };

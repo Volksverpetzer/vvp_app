@@ -150,6 +150,17 @@ describe("WordPressFetcher", () => {
     });
   });
 
+  it("only adds a share link for https article URLs", () => {
+    (Post as jest.Mock).mockClear();
+    WordPressFetcher.mapArticleToPost(
+      makeArticle({
+        link: "http://example.com/a" as LoadArticlePostProperties["link"],
+      }) as LoadArticlePostProperties,
+      0,
+    );
+    expect((Post as jest.Mock).mock.calls[0][4]).toBeUndefined();
+  });
+
   describe("createFetchers", () => {
     const mockApi = {
       getPosts: jest.fn(),
@@ -215,6 +226,22 @@ describe("WordPressFetcher", () => {
       expect(
         result.every((p) => p.data.article.sourceName === "TestSource"),
       ).toBe(true);
+    });
+
+    it("logs failures under the feed key, not the display label", async () => {
+      const error = new Error("fail");
+      mockApi.getPosts.mockRejectedValue(error);
+      const spy = jest.spyOn(console, "error").mockImplementation();
+      const { feedFetcher } = WordPressFetcher.createFetchers(
+        mockApi,
+        "Prüfpunkt",
+        "wp:pruefpunkt.org",
+      );
+      await feedFetcher({ page: 1 });
+      expect(spy).toHaveBeenCalledWith(
+        "Fetch error in wp:pruefpunkt.org:",
+        error,
+      );
     });
 
     it("does not set sourceName when not provided", async () => {
