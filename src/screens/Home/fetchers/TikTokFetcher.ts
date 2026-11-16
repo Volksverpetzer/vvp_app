@@ -15,18 +15,28 @@ export const TikTokFetcher = {
       () => API.getTikTokFeed(signal),
       "tiktok",
     );
-    return data.map((post) => {
-      const shareUrl = post.share_url.split("?")[0];
-      const shareable = isHttpsUrl(shareUrl)
-        ? [{ url: shareUrl, title: "TikTok Video teilen" }]
-        : undefined;
-      return new Post(
-        new Date(post.create_time * 1000).toISOString().replace(".000Z", ""),
-        post.id,
-        TiktokPost,
-        post,
-        shareable,
-      );
+    return data.flatMap((post) => {
+      // Skip items without a usable timestamp: new Date(NaN).toISOString()
+      // throws and would take the whole TikTok feed down with it.
+      const created = new Date(post?.create_time * 1000);
+      if (!post?.id || Number.isNaN(created.getTime())) return [];
+      const shareUrl =
+        typeof post.share_url === "string"
+          ? post.share_url.split("?")[0]
+          : undefined;
+      const shareable =
+        shareUrl && isHttpsUrl(shareUrl)
+          ? [{ url: shareUrl, title: "TikTok Video teilen" }]
+          : undefined;
+      return [
+        new Post(
+          created.toISOString().replace(".000Z", ""),
+          post.id,
+          TiktokPost,
+          post,
+          shareable,
+        ),
+      ];
     });
   },
 };

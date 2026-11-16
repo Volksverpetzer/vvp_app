@@ -275,7 +275,7 @@ describe("FetcherUtils", () => {
       expect(result.map((p) => p.id)).toEqual(["4", "3", "2", "1", "0"]);
     });
 
-    it("returns empty array and logs error when a fetcher throws", async () => {
+    it("keeps the other feeds and logs when one fetcher throws", async () => {
       const fetcher1 = jest.fn(() => Promise.reject(new Error("oops")));
       const fetcher2 = jest.fn(() => Promise.resolve([p1]));
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
@@ -285,10 +285,29 @@ describe("FetcherUtils", () => {
         { fetcher: fetcher2, props: {} },
       ]);
 
-      expect(result).toEqual([]);
+      expect(result).toEqual([p1]);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Error in feed fetcher #0"),
+        expect.any(Error),
+      );
+    });
+
+    it("returns the old posts instead of wiping them when processing fails", async () => {
+      const broken = { id: "x", datetime: {} } as unknown as Post<unknown>;
+      const fetcher1 = jest.fn(() => Promise.resolve([broken, p1]));
+      const oldPosts = [p2];
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+      const result = await FetcherUtilities.fetchAndProcessPosts(
+        [{ fetcher: fetcher1, props: {} }],
+        {},
+        oldPosts,
+      );
+
+      expect(result).toBe(oldPosts);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         expect.stringContaining("Error processing posts:"),
-        expect.any(Error),
+        expect.anything(),
       );
     });
 

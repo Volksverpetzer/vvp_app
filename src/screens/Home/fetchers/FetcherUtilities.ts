@@ -85,10 +85,19 @@ const FetcherUtilities = {
     options: { prioSort?: boolean; cutoffDate?: boolean } = {},
   ): Promise<Post<unknown>[]> {
     try {
+      // Isolate each fetcher: one feed throwing (e.g. a malformed item in
+      // its mapping) must only drop that feed, not blank the whole feed.
+      // Aborts still propagate so the caller keeps its old posts.
       const data = await Promise.all(
-        fetchers.map((item) => {
+        fetchers.map(async (item, index) => {
           const itemProperties = { ...item.props, ...fetcherProperties };
-          return item.fetcher(itemProperties);
+          try {
+            return await item.fetcher(itemProperties);
+          } catch (error) {
+            if (FetcherUtilities.isAbortError(error)) throw error;
+            console.error(`Error in feed fetcher #${index}:`, error);
+            return [];
+          }
         }),
       );
 
@@ -126,7 +135,8 @@ const FetcherUtilities = {
         return oldPosts;
       }
       console.error("Error processing posts:", error);
-      return [];
+      // Keep what is already on screen rather than wiping it.
+      return oldPosts;
     }
   },
 };
