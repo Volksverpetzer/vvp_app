@@ -82,7 +82,15 @@ const FetcherUtilities = {
       signal?: AbortSignal;
     } = {},
     oldPosts: Post<unknown>[] = [],
-    options: { prioSort?: boolean; cutoffDate?: boolean } = {},
+    options: {
+      prioSort?: boolean;
+      cutoffDate?: boolean;
+      /**
+       * Receives the posts the cutoff hid, so a caller that pages can show
+       * them on the next load-more instead of losing them.
+       */
+      onCutoff?: (dropped: Post<unknown>[]) => void;
+    } = {},
   ): Promise<Post<unknown>[]> {
     try {
       const data = await Promise.all(
@@ -109,11 +117,20 @@ const FetcherUtilities = {
         // (e.g. Prüfpunkt) are not entirely hidden by the cutoff of busier feeds.
         const newestPerFeed = new Set(sortedFeeds.map((_posts) => _posts[0]));
 
-        allPosts = allPosts.filter(
-          (post) =>
+        const kept: Post<unknown>[] = [];
+        const dropped: Post<unknown>[] = [];
+        for (const post of allPosts) {
+          if (
             newestPerFeed.has(post) ||
-            post.datetime?.localeCompare(minDate) >= 0,
-        );
+            post.datetime?.localeCompare(minDate) >= 0
+          ) {
+            kept.push(post);
+          } else {
+            dropped.push(post);
+          }
+        }
+        allPosts = kept;
+        options.onCutoff?.(dropped);
       }
 
       return FetcherUtilities.removeDuplicates([...allPosts, ...oldPosts]).sort(

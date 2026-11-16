@@ -250,6 +250,24 @@ describe("FetcherUtils", () => {
       expect(result.map((p) => p.id)).toEqual(["4", "3", "sparse-new"]);
     });
 
+    it("reports the posts hidden by the cutoff via onCutoff", async () => {
+      const fetcher1 = jest.fn(() => Promise.resolve([p1, p2]));
+      const fetcher2 = jest.fn(() => Promise.resolve([p3, p4]));
+      const onCutoff = jest.fn();
+
+      await FetcherUtilities.fetchAndProcessPosts(
+        [
+          { fetcher: fetcher1, props: {} },
+          { fetcher: fetcher2, props: {} },
+        ],
+        {},
+        [],
+        { onCutoff },
+      );
+
+      expect(onCutoff).toHaveBeenCalledWith([p1]);
+    });
+
     it("applies prioSort and disables cutoffDate when specified", async () => {
       const fetcher1 = jest.fn(() => Promise.resolve([p1, p2]));
       const fetcher2 = jest.fn(() => Promise.resolve([p3, p4]));
