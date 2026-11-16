@@ -81,7 +81,7 @@ export default {
     licenseUrl:
       "https://github.com/stripe/stripe-react-native/raw/HEAD/LICENSE",
   },
-  "@volksverpetzer/design-tokens@0.10.0": {
+  "@volksverpetzer/design-tokens@0.11.0": {
     licenses: "MIT",
     repository: "https://github.com/Volksverpetzer/vvp_design_system",
     licenseUrl:
