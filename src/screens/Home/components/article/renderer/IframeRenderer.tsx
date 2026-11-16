@@ -3,7 +3,7 @@ import type { CustomRendererProps, TBlock } from "@native-html/render";
 import { Image } from "expo-image";
 import * as Linking from "expo-linking";
 import { useCallback, useState } from "react";
-import { Dimensions, View } from "react-native";
+import { Dimensions, Platform, View } from "react-native";
 import { WebView } from "react-native-webview";
 import type {
   WebViewErrorEvent,
@@ -270,6 +270,8 @@ interface WebViewRequest {
   url?: string;
   isTopFrame?: boolean;
   navigationType?: string;
+  /** False once the page finished loading (Android: progress === 100). */
+  loading?: boolean;
 }
 
 /**
@@ -328,10 +330,17 @@ const prepareWebViewSource = (
   return { uri: u.toString() };
 };
 
-const shouldStartRequest = (
+/**
+ * Whether the embed WebView may load a navigation itself. Cross-site
+ * navigations the user started (a tapped link in a tweet, chart, …) open
+ * via onLinkPress instead, since the embed is a small, non-scrollable box.
+ * Exported for tests.
+ */
+export const shouldStartRequest = (
   request: WebViewRequest,
   iframeSource: string,
   onLinkPress: (event: unknown, href: HttpsUrl) => void,
+  platform: string = Platform.OS,
 ): boolean => {
   const requestUrl = request.url;
   if (!requestUrl) return true;
@@ -339,9 +348,15 @@ const shouldStartRequest = (
     return true;
   }
   if (request.isTopFrame === false) return true;
+  // Android always reports navigationType "other" (react-native-webview has
+  // no gesture info there), so the iOS check never matched and tapped links
+  // loaded inside the embed. Android doesn't raise this callback for the
+  // initial source load, so a navigation once the embed has finished loading
+  // is a user tap; redirects while it is still loading stay in the embed.
   const isUserNavigation =
     request.navigationType === "click" ||
-    request.navigationType === "formsubmit";
+    request.navigationType === "formsubmit" ||
+    (platform === "android" && request.loading === false);
   if (!isUserNavigation) return true;
 
   const { hostname: requestHost } = Linking.parse(requestUrl);
