@@ -5,6 +5,11 @@
  * handler instead of being handled by the app.
  */
 
+// Matches the uploads directory at the start of the path. expo-linking's
+// parse() strips the leading slash while new URL().pathname keeps it, so
+// accept both forms.
+const UPLOADS_PATH_REGEX = /^\/?wp-content\/uploads\//;
+
 // Matches a "feed" path segment on its own, e.g. /feed, /feed/, /feed/rss2/,
 // /category/politik/feed/, /comments/feed/ - but not slugs like /feed-my-family.
 const FEED_PATH_REGEX = /(^|\/)feed(\/|$)/;
@@ -21,9 +26,9 @@ export const shouldExcludeFromDeepLink = (
     return false;
   }
 
-  // Exclude paths that start with /wp-content/uploads/
+  // Exclude paths that start with (/)wp-content/uploads/
   // This ensures we only match actual upload paths and not paths that merely contain this string
-  if (path.startsWith("/wp-content/uploads/")) {
+  if (UPLOADS_PATH_REGEX.test(path)) {
     return true;
   }
 
