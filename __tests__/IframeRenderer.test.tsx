@@ -1,7 +1,7 @@
 import type { CustomRendererProps, TBlock } from "@native-html/render";
 import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import * as Linking from "expo-linking";
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import IframeRenderer, {
@@ -1231,6 +1231,32 @@ describe("shouldStartRequest (embed navigation)", () => {
       "ios",
     );
     expect(allowed).toBe(true);
+    expect(onLinkPress).not.toHaveBeenCalled();
+  });
+
+  it("defaults to the current Platform.OS", () => {
+    const onLinkPress = jest.fn();
+    const request = {
+      url: external,
+      isTopFrame: true,
+      navigationType: "other",
+      loading: false,
+    };
+    const expected = shouldStartRequest(request, frame, jest.fn(), Platform.OS);
+    expect(shouldStartRequest(request, frame, onLinkPress)).toBe(expected);
+  });
+
+  it("lets about:/data: URLs and subframe navigations load in the embed", () => {
+    const onLinkPress = jest.fn();
+    for (const request of [
+      { url: "about:blank", isTopFrame: true, loading: false },
+      { url: "data:text/html,hi", isTopFrame: true, loading: false },
+      { url: external, isTopFrame: false, loading: false },
+    ]) {
+      expect(shouldStartRequest(request, frame, onLinkPress, "android")).toBe(
+        true,
+      );
+    }
     expect(onLinkPress).not.toHaveBeenCalled();
   });
 });
