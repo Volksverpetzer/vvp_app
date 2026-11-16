@@ -15,6 +15,8 @@ export const TikTokFetcher = {
       "tiktok",
     );
     return FetcherUtilities.mapItems(data, "tiktok", (post) => {
+      // `null * 1000` would be 0, a valid 1970 date; skip instead.
+      if (!Number.isFinite(post.create_time)) return null;
       const datetime = FetcherUtilities.toFeedDatetime(post.create_time * 1000);
       if (!datetime) return null;
       const shareUrl =
