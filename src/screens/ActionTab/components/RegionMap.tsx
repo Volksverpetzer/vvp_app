@@ -1,3 +1,4 @@
+import { regionMapColors } from "@volksverpetzer/design-tokens/rn/shared";
 import { Image } from "expo-image";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -25,13 +26,13 @@ const weekNumber = Math.floor(Date.now() / WEEK_IN_MS);
 
 // Quartile colors of the server-rendered map (vvp_app_server
 // proxycache/services/analytics.py `map`), highest quartile first. The image
-// is a fixed PNG independent of app theme/variant, so these must mirror the
-// server's hex values rather than theme tokens.
+// is a fixed PNG independent of app theme/variant, so the legend uses the
+// fixed region-map tokens rather than the color scheme.
 const MAP_LEGEND = [
-  { text: "Vorreiter", color: "#DB2685" },
-  { text: "Überdurchschnittlich", color: "#EE8FBE" },
-  { text: "Unterdurchschnittlich", color: "#3893C0" },
-  { text: "Schlusslicht", color: "#1B7194" },
+  { text: "Vorreiter", color: regionMapColors.top },
+  { text: "Überdurchschnittlich", color: regionMapColors.aboveAverage },
+  { text: "Unterdurchschnittlich", color: regionMapColors.belowAverage },
+  { text: "Schlusslicht", color: regionMapColors.bottom },
 ] as const;
 
 const parseRegionsData = async (): Promise<Region[]> => {

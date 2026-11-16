@@ -63,3 +63,4 @@ minimumReleaseAgeExclude:
   - prettier@3.10.1
   # expo-doctor 1.21.7 crashes with "Cannot find module '@expo/env'"; 1.21.8 fixes it
   - expo-doctor@1.21.8
+  - "@volksverpetzer/design-tokens@0.11.0" # our own release; drop after 2026-11-17 08:42 UTC (24h cooldown)
