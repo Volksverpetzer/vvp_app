@@ -13,6 +13,10 @@ const displayablePosts = (data: InstaPostProperties[]) =>
       post?.media_type === "IMAGE" || post?.media_type === "CAROUSEL_ALBUM",
   );
 
+// The meme feed is registered under the historic "reddit" key in FeedFetcher;
+// log under that key so failures match the feed name.
+const MEME_FEED_KEY = "reddit";
+
 const share = (post: InstaPostProperties) =>
   FetcherUtilities.shareLink(post.permalink, "Instagram Post teilen");
 
@@ -52,12 +56,16 @@ export const InstagramFetcher = {
   memeFetcher: async ({ signal }: { signal?: AbortSignal } = {}) => {
     const data = await FetcherUtilities.safeFetch(
       () => API.getInstaMemeFeed(signal),
-      "meme",
+      MEME_FEED_KEY,
     );
-    return FetcherUtilities.mapItems(displayablePosts(data), "meme", (post) => {
-      const datetime = FetcherUtilities.toFeedDatetime(post.timestamp);
-      if (!datetime) return null;
-      return new Post(datetime, post.id, InstaPostCard, post, share(post));
-    });
+    return FetcherUtilities.mapItems(
+      displayablePosts(data),
+      MEME_FEED_KEY,
+      (post) => {
+        const datetime = FetcherUtilities.toFeedDatetime(post.timestamp);
+        if (!datetime) return null;
+        return new Post(datetime, post.id, InstaPostCard, post, share(post));
+      },
+    );
   },
 };
