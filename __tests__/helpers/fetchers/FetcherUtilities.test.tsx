@@ -112,12 +112,15 @@ describe("FetcherUtils", () => {
     it("skips items that throw, return null or lack id/datetime", () => {
       jest.spyOn(console, "warn").mockImplementation();
       const result = FetcherUtilities.mapItems(
-        ["a", "throw", "null", "nodate", "b"],
+        ["a", "throw", "null", "nodate", "null-id", "empty-date", "b"],
         "test",
         (item) => {
           if (item === "throw") throw new Error("bad item");
           if (item === "null") return null;
           if (item === "nodate") return { id: "x", datetime: undefined } as any;
+          if (item === "null-id")
+            return { id: null, datetime: "2021-01-01T00:00:00" } as any;
+          if (item === "empty-date") return { id: "y", datetime: "" } as any;
           return ok(item);
         },
       );

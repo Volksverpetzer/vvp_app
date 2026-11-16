@@ -44,7 +44,8 @@ const FetcherUtilities = {
 
   /**
    * Maps raw feed items to posts one by one. An item whose mapping throws
-   * or returns nothing, or a post without id or datetime, is skipped and
+   * or returns nothing, or a post without a non-empty id or datetime, is
+   * skipped and
    * logged, so one malformed item never drops the rest of its feed.
    * @param items The raw items from the API.
    * @param fetcher The name of the fetcher, used in log messages.
@@ -60,7 +61,13 @@ const FetcherUtilities = {
     items.forEach((item, index) => {
       try {
         const post = map(item, index);
-        if (post && post.id !== undefined && post.datetime !== undefined) {
+        // Runtime data can carry null/"" despite the types; those posts have
+        // no usable identity (dedupe, list keys) or sort position.
+        const hasId =
+          post?.id !== undefined && post.id !== null && post.id !== "";
+        const hasDatetime =
+          typeof post?.datetime === "string" && post.datetime !== "";
+        if (hasId && hasDatetime) {
           posts.push(post);
         } else {
           skipped++;
