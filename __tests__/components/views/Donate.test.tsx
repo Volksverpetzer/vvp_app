@@ -93,6 +93,20 @@ describe("Donate amount picker", () => {
     expect(mockScrollTo).toHaveBeenCalledWith({ x: 160, animated: true });
   });
 
+  it("does not jump back to the selection when the amount changes", async () => {
+    const { getByTestId, getByLabelText } = await render(<Donate />);
+    await fireEvent(getByTestId("amount-picker").parent, "layout", {
+      nativeEvent: { layout: { width: 320 } },
+    });
+    mockScrollTo.mockClear();
+
+    await fireEvent.press(getByLabelText("20 Euro"));
+
+    // Only the animated scroll from the tap, no instant re-centring after it
+    expect(mockScrollTo).toHaveBeenCalledTimes(1);
+    expect(mockScrollTo).toHaveBeenCalledWith({ x: 160, animated: true });
+  });
+
   it("follows the scroll position on web, where momentum events never fire", async () => {
     const original = Platform.OS;
     Platform.OS = "web";

@@ -1,6 +1,12 @@
 import Constants from "expo-constants";
 import { LinearGradient } from "expo-linear-gradient";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+} from "react";
 import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import type { ScrollViewInstance } from "react-native";
 
@@ -77,17 +83,22 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
     setAmount(value);
     scrollRef.current?.scrollTo({ x: index * ITEM_WIDTH, animated: true });
   };
-  const initialIndex = validAmounts.indexOf(amount);
-
-  // Scroll to the default amount once the picker has measured its width
-  useEffect(() => {
-    if (pickerWidth > 0 && initialIndex !== -1) {
-      scrollRef.current?.scrollTo({
-        x: initialIndex * ITEM_WIDTH,
-        animated: false,
-      });
+  // Jump to the selected amount without animation. An effect event, so the
+  // effect below reads the current amount without re-running on every
+  // selection: that would snap the picker back mid-scroll on web and cut off
+  // the animated scroll a tap starts.
+  const centreSelected = useEffectEvent(() => {
+    const index = validAmounts.indexOf(amount);
+    if (index !== -1) {
+      scrollRef.current?.scrollTo({ x: index * ITEM_WIDTH, animated: false });
     }
-  }, [pickerWidth, initialIndex]);
+  });
+
+  // Centre the selected amount once the picker has measured its width (and
+  // again if that width changes)
+  useEffect(() => {
+    if (pickerWidth > 0) centreSelected();
+  }, [pickerWidth]);
 
   const background = properties?.background ?? Colors[colorScheme].background;
   const pickerColor =
