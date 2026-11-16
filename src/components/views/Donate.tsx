@@ -164,10 +164,7 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
           />
         )}
         {(!showPlatformPay || paypalAlways || !isPlatformPaySupported) && (
-          <PaypalButton
-            amount={amount}
-            onSuccess={() => logSuccess("Paypal")}
-          />
+          <PaypalButton amount={amount} article_link={article_link} />
         )}
         <SteadyButton article_link={article_link} />
         <ShopButton article_link={article_link} />
