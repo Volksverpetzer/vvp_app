@@ -9,9 +9,11 @@ import PaypalButton from "#/components/buttons/PaypalButton";
 import ShopButton from "#/components/buttons/ShopButton";
 import SteadyButton from "#/components/buttons/SteadyButton";
 import StripeButton from "#/components/buttons/StripeButton";
+import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
+import { fontFamily } from "#/constants/FontFamily";
 import { spacing } from "#/constants/Spacing";
 import NotificationManager from "#/helpers/Notifications";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -62,6 +64,19 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
     .filter((a): a is number => Number.isFinite(a) && a > 0);
 
   const padding = Math.max(0, (pickerWidth - ITEM_WIDTH) / 2);
+
+  // Pick the amount centred at this scroll offset.
+  const selectAtOffset = (offsetX: number) => {
+    const selected = validAmounts[Math.round(offsetX / ITEM_WIDTH)];
+    if (selected !== undefined) setAmount(selected);
+  };
+
+  // Tapping an amount selects it and centres it; works everywhere and is the
+  // only way to pick one with a screen reader.
+  const selectAmount = (value: number, index: number) => {
+    setAmount(value);
+    scrollRef.current?.scrollTo({ x: index * ITEM_WIDTH, animated: true });
+  };
   const initialIndex = validAmounts.indexOf(amount);
 
   // Scroll to the default amount once the picker has measured its width
@@ -80,6 +95,9 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
       ? background
       : background + background.replace("#", "");
   const pickerColorText = Colors[colorScheme].text;
+  // Highlight the chosen amount: on wide screens (web, tablets) every amount
+  // fits, nothing scrolls, so the centre gradient gives no feedback.
+  const pickerColorSelected = Colors[colorScheme].primary;
 
   return (
     <>
@@ -106,17 +124,27 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
               snapToInterval={ITEM_WIDTH}
               decelerationRate="fast"
               contentContainerStyle={{ paddingHorizontal: padding }}
-              onMomentumScrollEnd={(e) => {
-                const index = Math.round(
-                  e.nativeEvent.contentOffset.x / ITEM_WIDTH,
-                );
-                const selected = validAmounts[index];
-                if (selected !== undefined) setAmount(selected);
-              }}
+              onMomentumScrollEnd={(e) =>
+                selectAtOffset(e.nativeEvent.contentOffset.x)
+              }
+              // react-native-web never fires onMomentumScrollEnd (and has no
+              // snapToInterval), so the amount stayed at the 10€ default on
+              // web; follow the scroll position there instead.
+              onScroll={
+                Platform.OS === "web"
+                  ? (e) => selectAtOffset(e.nativeEvent.contentOffset.x)
+                  : undefined
+              }
+              scrollEventThrottle={Platform.OS === "web" ? 16 : undefined}
             >
-              {validAmounts.map((item) => (
-                <View
+              {validAmounts.map((item, index) => (
+                <UiPressable
                   key={item}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${item} Euro`}
+                  accessibilityHint="Wählt diesen Spendenbetrag aus"
+                  accessibilityState={{ selected: item === amount }}
+                  onPress={() => selectAmount(item, index)}
                   style={{
                     width: ITEM_WIDTH,
                     height: 50,
@@ -128,12 +156,15 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
                     size="lg"
                     style={{
                       textAlign: "center",
-                      color: pickerColorText,
+                      color:
+                        item === amount ? pickerColorSelected : pickerColorText,
+                      fontFamily:
+                        item === amount ? fontFamily.bold : fontFamily.regular,
                     }}
                   >
                     {item}€
                   </UiText>
-                </View>
+                </UiPressable>
               ))}
             </ScrollView>
             <LinearGradient
