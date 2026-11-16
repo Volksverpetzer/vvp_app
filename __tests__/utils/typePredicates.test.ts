@@ -54,6 +54,12 @@ describe("isValidStoredFav", () => {
     expect(isValidStoredFav({ contentType: "video" })).toBe(false);
   });
 
+  it("accepts podcast favorites", () => {
+    // Saved by useFavorite on podcast episodes; a backup containing one
+    // must still import.
+    expect(isValidStoredFav({ contentType: "podcast" })).toBe(true);
+  });
+
   it("rejects non-object", () => {
     expect(isValidStoredFav(null)).toBe(false);
     expect(isValidStoredFav("article")).toBe(false);
