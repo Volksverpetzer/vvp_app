@@ -67,6 +67,11 @@ const Feed = (properties: FeedProperties) => {
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
   const fetchControllerRef = useRef<AbortController | null>(null);
+  // Posts the date cutoff hid on the first page. Non-paginated feeds
+  // (Bluesky, YouTube, …) return the same list on every page, so applying the
+  // cutoff again on load-more would keep discarding older WordPress articles;
+  // instead load-more skips the cutoff and releases these held-back posts.
+  const heldBackRef = useRef<Post<unknown>[]>([]);
   const [dismissedAnnouncements, setDismissedAnnouncements] = useState<
     string[]
   >([]);
@@ -113,19 +118,28 @@ const Feed = (properties: FeedProperties) => {
     async (
       fetcherProperties?: { page?: number; param?: string },
       oldPosts: Post<unknown>[] = [],
+      { loadMore = false }: { loadMore?: boolean } = {},
     ) => {
       const controller = new AbortController();
       fetchControllerRef.current?.abort();
       fetchControllerRef.current = controller;
 
+      let heldBack: Post<unknown>[] = [];
       try {
         const newPosts = await FetcherUtilities.fetchAndProcessPosts(
           properties.fetchers,
           { ...fetcherProperties, signal: controller.signal },
-          oldPosts,
-          { prioSort: properties.prioSort, cutoffDate: properties.cutoffDate },
+          loadMore ? [...oldPosts, ...heldBackRef.current] : oldPosts,
+          {
+            prioSort: properties.prioSort,
+            cutoffDate: loadMore ? false : properties.cutoffDate,
+            onCutoff: (dropped) => {
+              heldBack = dropped;
+            },
+          },
         );
         if (controller.signal.aborted) return false;
+        heldBackRef.current = heldBack;
         setPosts(newPosts);
         updateLoadingStates();
         return oldPosts.length < newPosts.length;
@@ -176,7 +190,9 @@ const Feed = (properties: FeedProperties) => {
     if (loadmore) return;
     setLoadmore(true);
     const nextPage = page + 1;
-    const received = await getPosts({ page: nextPage }, posts);
+    const received = await getPosts({ page: nextPage }, posts, {
+      loadMore: true,
+    });
     if (received) setPage(nextPage);
     else setIsLoadingMore(false);
   }, [loadmore, page, getPosts, posts]);
