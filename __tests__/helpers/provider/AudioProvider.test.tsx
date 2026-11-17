@@ -35,6 +35,11 @@ const mockPlayer = {
   replace: jest.fn(),
   seekTo: jest.fn().mockResolvedValue(undefined),
   setActiveForLockScreen: jest.fn(),
+  // Native state of the item the player currently holds (read synchronously).
+  isLoaded: true,
+  duration: 120,
+  playing: false,
+  currentTime: 0,
 };
 
 const loadedStatus: Partial<AudioStatus> = {
@@ -47,6 +52,7 @@ const loadedStatus: Partial<AudioStatus> = {
 };
 
 const TRACK_URL = "https://audio.example.com/ep.mp3";
+const OTHER_URL = "https://audio.example.com/other.mp3";
 
 const Consumer = () => {
   const audio = useAudio();
@@ -62,6 +68,14 @@ const Consumer = () => {
         }
       >
         play
+      </Text>
+      <Text
+        testID="play-other"
+        onPress={() =>
+          audio.playTrack({ audioUrl: OTHER_URL, resumeKey: OTHER_URL })
+        }
+      >
+        play other
       </Text>
       <Text testID="toggle" onPress={() => audio.toggle()}>
         toggle
@@ -80,6 +94,10 @@ const renderProvider = () =>
 describe("AudioProvider", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockPlayer.isLoaded = true;
+    mockPlayer.duration = 120;
+    mockPlayer.playing = false;
+    mockPlayer.currentTime = 0;
     mockGetAudioPosition.mockResolvedValue(0);
     jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as never);
     jest
@@ -123,6 +141,166 @@ describe("AudioProvider", () => {
     await fireEvent.press(getByTestId("play"));
     expect(mockPlayer.replace).not.toHaveBeenCalled();
     expect(mockPlayer.play).toHaveBeenCalledTimes(2);
+  });
+
+  it("restores the next track's position against its own duration, not the previous track's", async () => {
+    // Track A: 600 s long, nothing stored.
+    mockPlayer.duration = 600;
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue({ ...loadedStatus, duration: 600 } as AudioStatus);
+    const { getByTestId, rerender } = await renderProvider();
+    await fireEvent.press(getByTestId("play"));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalled());
+    jest.clearAllMocks();
+
+    // Switch to B (stored at 1200 s). The status hook still reports A until
+    // B's load event arrives; the player itself is already loading B.
+    mockGetAudioPosition.mockResolvedValue(1200);
+    mockPlayer.isLoaded = false;
+    mockPlayer.duration = 0;
+    await fireEvent.press(getByTestId("play-other"));
+    expect(mockPlayer.replace).toHaveBeenCalledWith({ uri: OTHER_URL });
+    expect(mockGetAudioPosition).not.toHaveBeenCalled();
+    expect(mockPlayer.seekTo).not.toHaveBeenCalled();
+    expect(mockPlayer.play).not.toHaveBeenCalled();
+
+    // B finishes loading: 3600 s long.
+    mockPlayer.isLoaded = true;
+    mockPlayer.duration = 3600;
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue({ ...loadedStatus, duration: 3600 } as AudioStatus);
+    await rerender(
+      <AudioProvider>
+        <Consumer />
+      </AudioProvider>,
+    );
+    await waitFor(() => {
+      expect(mockGetAudioPosition).toHaveBeenCalledWith(OTHER_URL);
+      expect(mockPlayer.seekTo).toHaveBeenCalledWith(1200);
+      expect(mockPlayer.play).toHaveBeenCalled();
+    });
+  });
+
+  it("does not save the previous track's position under the next track's key", async () => {
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 300,
+    } as AudioStatus);
+    const { getByTestId, rerender } = await renderProvider();
+    await fireEvent.press(getByTestId("play"));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalled());
+    // A status tick after A's restore settled saves A's position.
+    mockPlayer.playing = true;
+    mockPlayer.currentTime = 310;
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 310,
+    } as AudioStatus);
+    await rerender(
+      <AudioProvider>
+        <Consumer />
+      </AudioProvider>,
+    );
+    await waitFor(() =>
+      expect(mockSetAudioPosition).toHaveBeenCalledWith(TRACK_URL, 310),
+    );
+
+    mockPlayer.isLoaded = false;
+    mockPlayer.playing = false;
+    mockPlayer.currentTime = 0;
+    await fireEvent.press(getByTestId("play-other"));
+    expect(mockSetAudioPosition).not.toHaveBeenCalledWith(
+      OTHER_URL,
+      expect.anything(),
+    );
+  });
+
+  it("does not save the previous track's position while the next track loads, even if it was ready at once", async () => {
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 300,
+    } as AudioStatus);
+    const { getByTestId, rerender } = await renderProvider();
+    await fireEvent.press(getByTestId("play"));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalled());
+    // A status tick after A's restore settled saves A's position.
+    mockPlayer.playing = true;
+    mockPlayer.currentTime = 310;
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 310,
+    } as AudioStatus);
+    await rerender(
+      <AudioProvider>
+        <Consumer />
+      </AudioProvider>,
+    );
+    await waitFor(() =>
+      expect(mockSetAudioPosition).toHaveBeenCalledWith(TRACK_URL, 310),
+    );
+
+    // B is ready right after replace() (player.isLoaded stays true, at 0 s)
+    // while the status hook still reports A playing; B's restore is pending.
+    mockPlayer.currentTime = 0;
+    let resolvePosition: (value: number) => void = () => {};
+    mockGetAudioPosition.mockReturnValue(
+      new Promise<number>((resolve) => {
+        resolvePosition = resolve;
+      }),
+    );
+    await fireEvent.press(getByTestId("play-other"));
+    expect(mockGetAudioPosition).toHaveBeenCalledWith(OTHER_URL);
+    expect(mockSetAudioPosition).not.toHaveBeenCalledWith(
+      OTHER_URL,
+      expect.anything(),
+    );
+
+    resolvePosition(0);
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalledTimes(2));
+    expect(mockSetAudioPosition).not.toHaveBeenCalledWith(
+      OTHER_URL,
+      expect.anything(),
+    );
+
+    // A late status tick still from A (playing at 320 s) arrives after B's
+    // restore settled; B itself is only 1 s in.
+    mockPlayer.currentTime = 1;
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 320,
+    } as AudioStatus);
+    await rerender(
+      <AudioProvider>
+        <Consumer />
+      </AudioProvider>,
+    );
+    expect(mockSetAudioPosition).not.toHaveBeenCalledWith(
+      OTHER_URL,
+      expect.anything(),
+    );
+
+    // Once B is far enough in, its own position is saved under its key.
+    mockPlayer.currentTime = 30;
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 30,
+    } as AudioStatus);
+    await rerender(
+      <AudioProvider>
+        <Consumer />
+      </AudioProvider>,
+    );
+    await waitFor(() =>
+      expect(mockSetAudioPosition).toHaveBeenCalledWith(OTHER_URL, 30),
+    );
   });
 
   it("enables background playback and lock-screen controls while playing", async () => {

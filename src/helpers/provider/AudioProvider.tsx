@@ -75,6 +75,10 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   const status = useAudioPlayerStatus(player);
   const [track, setTrack] = useState<AudioTrack | null>(null);
   const hasRestored = useRef(false);
+  // Set once the restore (incl. its seek) has settled; saving waits for it.
+  const restoreSettled = useRef(false);
+  // Bumped per playTrack, so a late restore of a previous track is ignored.
+  const loadId = useRef(0);
   const lastSavedTime = useRef(0);
   const wantPlay = useRef(false);
 
@@ -87,6 +91,8 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       hasRestored.current = false;
+      restoreSettled.current = false;
+      loadId.current += 1;
       lastSavedTime.current = 0;
       wantPlay.current = true;
       setTrack(next);
@@ -96,11 +102,20 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   );
 
   // Restore the stored position once the new track is loaded, then start it.
+  // `status` carries no source id: right after playTrack swaps A → B, the
+  // render still sees A's last status (isLoaded, A's duration). So check the
+  // player's own native state, which already describes B's item once
+  // replace() ran, and use B's duration from it.
   useEffect(() => {
     if (!track || hasRestored.current || !status.isLoaded) return;
+    if (!player.isLoaded) return;
     hasRestored.current = true;
-    const { duration } = status;
+    const { duration } = player;
+    const id = loadId.current;
+    const isStale = () => id !== loadId.current;
     const startIfWanted = () => {
+      if (isStale()) return;
+      restoreSettled.current = true;
       if (wantPlay.current) {
         wantPlay.current = false;
         player.play();
@@ -110,6 +125,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       PersonalStore.getAudioPosition(track.resumeKey)
         .then((position) => {
           if (
+            !isStale() &&
             position > RESUME_MIN_SECONDS &&
             (duration === 0 || position < duration - RESUME_END_MARGIN_SECONDS)
           ) {
@@ -138,16 +154,30 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   }, [status.playing, player, track?.title, track?.artworkUrl]);
 
   // Persist the position every few seconds so it survives an app restart.
+  // Status updates only trigger the check; the values come from the player's
+  // own native state. `status` has no source id and may still describe the
+  // previous track (even after this track's restore settled), whose position
+  // must not land under this track's key. Not before the restore has settled
+  // either, or the pre-seek position would overwrite the saved one.
   useEffect(() => {
     if (!track?.resumeKey || !status.isLoaded || !status.playing) return;
+    if (!restoreSettled.current) return;
+    if (!player.isLoaded || !player.playing) return;
+    const { currentTime } = player;
     if (
-      Math.abs(status.currentTime - lastSavedTime.current) >=
+      Math.abs(currentTime - lastSavedTime.current) >=
       RESUME_SAVE_INTERVAL_SECONDS
     ) {
-      lastSavedTime.current = status.currentTime;
-      void PersonalStore.setAudioPosition(track.resumeKey, status.currentTime);
+      lastSavedTime.current = currentTime;
+      void PersonalStore.setAudioPosition(track.resumeKey, currentTime);
     }
-  }, [track?.resumeKey, status.isLoaded, status.playing, status.currentTime]);
+  }, [
+    track?.resumeKey,
+    status.isLoaded,
+    status.playing,
+    status.currentTime,
+    player,
+  ]);
 
   // On finish: rewind and clear the stored position so the next play starts fresh.
   useEffect(() => {
