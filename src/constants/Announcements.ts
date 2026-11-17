@@ -33,15 +33,6 @@ export interface AnnouncementEntry {
  * picked below. A variant with no entries yet gets an empty list.
  */
 const volksverpetzerAnnouncements: AnnouncementEntry[] = [
-  // Time-limited (public vote) — listed first so it isn't queued behind
-  // older entries. Delete once voting has closed.
-  {
-    id: "grimme-preis-voting-2026-10",
-    message:
-      "**Wir sind für den Grimme Online Award nominiert!**\nHilf uns mit deiner Stimme beim Publikumspreis – das Voting läuft nur für kurze Zeit:",
-    actionLabel: "Jetzt abstimmen",
-    route: "https://www.grimme-online-award.de/voting",
-  },
   {
     id: "podcast-pruefpunkt-2026-08",
     message:
