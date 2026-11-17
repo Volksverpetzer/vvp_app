@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { Platform, StyleSheet, Text } from "react-native";
 
 import UiModal, {
   SWIPE_CLOSE_DISTANCE,
@@ -92,6 +92,45 @@ describe.each(["sheet", "dialog"] as const)("UiModal (%s)", (variant) => {
     const screen = await renderModal(true, variant, onClose);
     await screen.rerender(modal(false, onClose, variant));
     expect(screen.queryByText("Inhalt")).toBeNull();
+  });
+});
+
+describe("UiModal onClosed", () => {
+  const withOnClosed = (isVisible: boolean, onClosed: () => void) => (
+    <UiModal isVisible={isVisible} onClose={jest.fn()} onClosed={onClosed}>
+      <Text>Inhalt</Text>
+    </UiModal>
+  );
+
+  it("does not fire for a modal that was never open", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    const onClosed = jest.fn();
+    await render(withOnClosed(false, onClosed));
+    expect(onClosed).not.toHaveBeenCalled();
+  });
+
+  it("fires once the closing animation has finished outside iOS", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    const onClosed = jest.fn();
+    const screen = await render(withOnClosed(true, onClosed));
+    expect(onClosed).not.toHaveBeenCalled();
+    await screen.rerender(withOnClosed(false, onClosed));
+    await waitFor(() => expect(onClosed).toHaveBeenCalledTimes(1));
+  });
+
+  it("waits for the native dismissal on iOS", async () => {
+    jest.replaceProperty(Platform, "OS", "ios");
+    const onClosed = jest.fn();
+    const screen = await render(withOnClosed(true, onClosed));
+    // The test renderer drops a hidden Modal from the tree, so keep a handle
+    // on its native dismissal callback from while it was open
+    const { onDismiss } = screen.getByTestId("ui-modal").props;
+    await screen.rerender(withOnClosed(false, onClosed));
+    expect(onClosed).not.toHaveBeenCalled();
+    await act(() => {
+      onDismiss();
+    });
+    expect(onClosed).toHaveBeenCalledTimes(1);
   });
 });
 

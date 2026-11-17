@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { StyleProp, ViewStyle } from "react-native";
-import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { Modal, Platform, Pressable, StyleSheet, View } from "react-native";
 import {
   GestureDetector,
   GestureHandlerRootView,
@@ -53,6 +53,11 @@ interface UiModalProperties {
   containerStyle?: StyleProp<ViewStyle>;
   /** Base for the testIDs of the modal and its backdrop. */
   testID?: string;
+  /**
+   * Called once the modal is fully gone after closing, i.e. when it is safe
+   * to present something native on top (like the system share sheet).
+   */
+  onClosed?: () => void;
 }
 
 /**
@@ -69,6 +74,7 @@ const UiModal = ({
   children,
   containerStyle,
   testID = "ui-modal",
+  onClosed,
 }: UiModalProperties) => {
   const colorScheme = useAppColorScheme();
   const insets = useSafeAreaInsets();
@@ -86,8 +92,25 @@ const UiModal = ({
   const sheetHeight = useSharedValue(HIDDEN_OFFSET);
   const offset = useSharedValue(HIDDEN_OFFSET);
 
+  // Kept in a ref so a new callback identity doesn't restart the animation
+  const onClosedReference = useRef(onClosed);
+  onClosedReference.current = onClosed;
+  // The closing branch also runs on first render while hidden; only a modal
+  // that was actually open may report being closed
+  const wasOpen = useRef(false);
+  // iOS reports the end of the native dismissal via onDismiss (iOS only);
+  // everywhere else the modal is gone once it unmounts
+  const handleHidden = useCallback(() => {
+    setMounted(false);
+    if (Platform.OS !== "ios" && wasOpen.current) {
+      wasOpen.current = false;
+      onClosedReference.current?.();
+    }
+  }, []);
+
   useEffect(() => {
     if (isVisible) {
+      wasOpen.current = true;
       setMounted(true);
       progress.value = withTiming(1, { duration: ANIMATION_DURATION });
       offset.value = withTiming(0, { duration: ANIMATION_DURATION });
@@ -99,11 +122,11 @@ const UiModal = ({
         0,
         { duration: ANIMATION_DURATION },
         (finished) => {
-          if (finished) scheduleOnRN(setMounted, false);
+          if (finished) scheduleOnRN(handleHidden);
         },
       );
     }
-  }, [isVisible, progress, offset, sheetHeight]);
+  }, [isVisible, progress, offset, sheetHeight, handleHidden]);
 
   const panConfig = useMemo(
     () => ({
@@ -175,6 +198,10 @@ const UiModal = ({
       statusBarTranslucent
       navigationBarTranslucent
       onRequestClose={onClose}
+      onDismiss={() => {
+        wasOpen.current = false;
+        onClosedReference.current?.();
+      }}
       testID={testID}
     >
       {/* Gestures inside a Modal need their own root view on Android */}
@@ -247,8 +274,12 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
   },
   dialog: {
+    alignSelf: "center",
     borderRadius: radii.lg,
+    // Keeps the card readable on tablets and wide web windows
+    maxWidth: 480,
     padding: spacing.xl,
+    width: "100%",
   },
   transparent: {
     backgroundColor: "transparent",
