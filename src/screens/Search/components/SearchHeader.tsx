@@ -144,7 +144,7 @@ const SearchHeader = ({
           ]}
         >
           <TextInput
-            accessibilityLabel="Text input field"
+            accessibilityLabel="Suchbegriff"
             accessibilityHint="Füge Text ein und drücke Enter um zu suchen"
             clearButtonMode="always"
             value={search}

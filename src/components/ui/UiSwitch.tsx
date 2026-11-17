@@ -21,6 +21,7 @@ interface UiSwitchProperties {
   disabled?: boolean;
   testID?: string;
   accessibilityLabel?: string;
+  accessibilityHint?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -35,6 +36,7 @@ const UiSwitch = ({
   disabled,
   testID,
   accessibilityLabel,
+  accessibilityHint,
   style,
 }: UiSwitchProperties) => {
   const colorScheme = useAppColorScheme();
@@ -52,6 +54,7 @@ const UiSwitch = ({
   const switchProps: ExtendedSwitchProps = {
     testID,
     accessibilityLabel,
+    accessibilityHint,
     activeTrackColor: primaryMuted,
     activeThumbColor: onPrimary,
     ios_backgroundColor: isDarkMode(colorScheme) // ios only
