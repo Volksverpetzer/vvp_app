@@ -106,22 +106,25 @@ const UiModal = ({
   // The transition whose close has unmounted the modal; iOS's late native
   // dismissal only counts if it still belongs to that close
   const hiddenTransition = useRef(-1);
-  // iOS reports the end of the native dismissal via onDismiss (iOS only);
-  // everywhere else the modal is gone once it unmounts
   const handleHidden = useCallback((closeTransition: number) => {
     if (closeTransition !== transition.current) return;
     hiddenTransition.current = closeTransition;
     setMounted(false);
-    if (Platform.OS !== "ios" && wasOpen.current) {
-      wasOpen.current = false;
-      onClosedReference.current?.();
-    }
   }, []);
-  const handleDismiss = () => {
+  const reportClosed = () => {
+    // Nothing may have opened or closed it since that close unmounted it
     if (hiddenTransition.current !== transition.current) return;
+    if (!wasOpen.current) return;
     wasOpen.current = false;
     onClosedReference.current?.();
   };
+  // iOS reports the end of the native dismissal via onDismiss (iOS only).
+  // Everywhere else the modal is gone once the render that unmounts it has
+  // been committed, so report from an effect rather than right after
+  // setMounted(false), which has only scheduled that render.
+  useEffect(() => {
+    if (!mounted && Platform.OS !== "ios") reportClosed();
+  }, [mounted]);
 
   useEffect(() => {
     const currentTransition = ++transition.current;
@@ -214,7 +217,7 @@ const UiModal = ({
       statusBarTranslucent
       navigationBarTranslucent
       onRequestClose={onClose}
-      onDismiss={handleDismiss}
+      onDismiss={reportClosed}
       testID={testID}
     >
       {/* Gestures inside a Modal need their own root view on Android */}

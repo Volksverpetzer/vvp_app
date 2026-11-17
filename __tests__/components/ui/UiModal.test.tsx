@@ -185,6 +185,23 @@ describe("UiModal onClosed", () => {
     expect(onClosed).not.toHaveBeenCalled();
   });
 
+  it("reports closed only after the unmount has been committed", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    let contentWhenClosed: unknown = "not called";
+    const screen = await render(
+      withOnClosed(true, () => {
+        contentWhenClosed = screen.queryByText("Inhalt");
+      }),
+    );
+    await screen.rerender(
+      withOnClosed(false, () => {
+        contentWhenClosed = screen.queryByText("Inhalt");
+      }),
+    );
+    await waitFor(() => expect(contentWhenClosed).not.toBe("not called"));
+    expect(contentWhenClosed).toBeNull();
+  });
+
   it("waits for the native dismissal on iOS", async () => {
     jest.replaceProperty(Platform, "OS", "ios");
     const onClosed = jest.fn();
