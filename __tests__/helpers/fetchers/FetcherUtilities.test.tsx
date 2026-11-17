@@ -416,11 +416,13 @@ describe("FetcherUtils", () => {
       const fetcher1 = jest.fn(() => Promise.resolve([broken, p1]));
       const oldPosts = [p2];
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+      const onFetchError = jest.fn();
 
       const result = await FetcherUtilities.fetchAndProcessPosts(
         [{ fetcher: fetcher1, props: {} }],
         {},
         oldPosts,
+        { onFetchError },
       );
 
       expect(result).toBe(oldPosts);
@@ -428,6 +430,8 @@ describe("FetcherUtils", () => {
         expect.stringContaining("Error processing posts:"),
         expect.anything(),
       );
+      // Reported as a failure, so Feed offers a retry instead of ending.
+      expect(onFetchError).toHaveBeenCalledTimes(1);
     });
 
     it("returns old posts and does not log when processing is canceled", async () => {
