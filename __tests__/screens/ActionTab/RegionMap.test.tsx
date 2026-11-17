@@ -22,6 +22,14 @@ const flatten = (style: unknown): Record<string, unknown> => {
   return Object.assign({}, ...parts.filter(Boolean));
 };
 
+// Asserts every text appears in the rendered tree, in the given order.
+const expectRenderedInOrder = (tree: unknown, texts: string[]) => {
+  const json = JSON.stringify(tree);
+  const positions = texts.map((text) => json.indexOf(JSON.stringify(text)));
+  expect(positions.every((position) => position >= 0)).toBe(true);
+  expect([...positions].sort((a, b) => a - b)).toEqual(positions);
+};
+
 // region,name,pageviews — five DE regions so both the top-3 ranking and the
 // "rest" list render.
 const csv = [
@@ -41,6 +49,51 @@ describe("RegionMap", () => {
     expect(await findByText(" Bayern")).toBeTruthy();
     expect(await findByText("4. Nordrhein-Westfalen")).toBeTruthy();
     expect(await findByText("5. Hessen")).toBeTruthy();
+  });
+
+  // Regression guard: values are per-capita floats. parseInt truncated them,
+  // so 12.1 and 12.9 tied (CSV order won), everything below 1 became 0 and
+  // "5e-05" became 5.
+  it("ranks by the full decimal value, including small and scientific ones", async () => {
+    mockGetRegions.mockResolvedValue(
+      [
+        "DE-HB,Bremen,12.1",
+        "DE-SL,Saarland,5e-05",
+        "DE-BE,Berlin,12.9",
+        "DE-SN,Sachsen,0.2",
+        "DE-TH,Thüringen,0.7",
+      ].join("\n"),
+    );
+    const { findByText, toJSON } = await render(<RegionMap />);
+    await findByText("5. Saarland");
+    expectRenderedInOrder(toJSON(), [
+      " Berlin",
+      " Bremen",
+      " Thüringen",
+      "4. Sachsen",
+      "5. Saarland",
+    ]);
+  });
+
+  it("orders exact ties by region code and sinks unusable values", async () => {
+    mockGetRegions.mockResolvedValue(
+      [
+        "DE-NW,Nordrhein-Westfalen,abc",
+        "DE-HH,Hamburg,3.5",
+        "DE-BY,Bayern,",
+        "DE-BE,Berlin,3.5",
+        "DE-HE,Hessen,1",
+      ].join("\n"),
+    );
+    const { findByText, toJSON } = await render(<RegionMap />);
+    await findByText("5. Nordrhein-Westfalen");
+    expectRenderedInOrder(toJSON(), [
+      " Berlin",
+      " Hamburg",
+      " Hessen",
+      "4. Bayern",
+      "5. Nordrhein-Westfalen",
+    ]);
   });
 
   it("renders nothing extra when the feed returns no regions", async () => {
