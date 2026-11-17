@@ -15,6 +15,7 @@ import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useWebFocusRing } from "#/hooks/useWebFocusRing";
 
 interface SearchHeaderProperties {
   search: string;
@@ -45,6 +46,7 @@ const SearchHeader = ({
 }: SearchHeaderProperties) => {
   const colorScheme = useAppColorScheme();
   const corporate = Colors[colorScheme].primary;
+  const focusRing = useWebFocusRing(corporate);
 
   // Show no reaction while loading so we don't display a stale previous result
   const faktenBotReaction =
@@ -138,10 +140,11 @@ const SearchHeader = ({
               backgroundColor: corporate,
               marginBottom: spacing.huge,
             },
+            focusRing.containerStyle,
           ]}
         >
           <TextInput
-            accessibilityLabel="Text input field"
+            accessibilityLabel="Suchbegriff"
             accessibilityHint="Füge Text ein und drücke Enter um zu suchen"
             clearButtonMode="always"
             value={search}
@@ -156,7 +159,10 @@ const SearchHeader = ({
                 fontSize: INPUT_FONT_SIZE,
                 width: "100%",
               },
+              focusRing.inputStyle,
             ]}
+            onFocus={focusRing.onFocus}
+            onBlur={focusRing.onBlur}
             onChangeText={setSearch}
             returnKeyType="search"
           />

@@ -52,6 +52,21 @@ const settings = {
 };
 
 describe("SettingsList", () => {
+  it("names each switch after its setting for screen readers", async () => {
+    const saveSettings = jest.fn(() => {});
+    const { getByLabelText } = await render(
+      <SettingsList saveSettings={saveSettings} settings={settings} />,
+    );
+
+    for (const { name } of Object.values(settings)) {
+      const switchElement = getByLabelText(name);
+      expect(switchElement.props.accessibilityHint).toBe(
+        "Schaltet diese Einstellung ein oder aus",
+      );
+      expect(switchElement.props.value).toBe(true);
+    }
+  });
+
   it("only disables the toggled switch while its save is pending, not the others", async () => {
     let resolveSave: () => void = () => {};
     const saveSettings = jest.fn(

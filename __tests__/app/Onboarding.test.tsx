@@ -7,9 +7,11 @@ import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent } from "#/helpers/network/Analytics";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
+import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
-// Controlled isFoss flag — changed per test
+// Controlled isFoss / variant flags — changed per test
 let mockIsFoss = false;
+let mockIsVolksverpetzer = false;
 
 jest.mock("expo-constants", () => ({
   __esModule: true,
@@ -106,7 +108,9 @@ jest.mock("#/hooks/useAppColorScheme", () => ({
 }));
 
 jest.mock("#/helpers/utils/variant", () => ({
-  isVolksverpetzer: false,
+  get isVolksverpetzer() {
+    return mockIsVolksverpetzer;
+  },
 }));
 
 jest.mock("#/components/Icons", () => ({
@@ -124,6 +128,7 @@ jest.mock("#/components/ui/UiText", () => {
 jest.mock("#/components/views/SettingsList", () => jest.fn(() => null));
 jest.mock("#/constants/Colors", () => ({
   light: { primary: "#333", background: "#fff" },
+  dark: { primary: "#ccc", background: "#000" },
 }));
 jest.mock("#/constants/GlobalStyles", () => ({
   globalStyles: { heading: {}, centered: {}, whiteText: {}, content: {} },
@@ -143,6 +148,7 @@ describe("Onboarding", () => {
     capturedData = [];
     capturedOnFinish = null;
     capturedOnStepChange = null;
+    mockIsVolksverpetzer = false;
     jest.spyOn(React, "useContext").mockReturnValue({
       contentSettings: {},
       setContentSettings: jest.fn(),
@@ -174,6 +180,41 @@ describe("Onboarding", () => {
       expect(ids).toContain(1); // Welcome
       expect(ids).toContain(3); // Content settings
       expect(ids).toContain(8); // Privacy
+    });
+  });
+
+  describe("welcome step", () => {
+    const welcomeStep = () =>
+      capturedData.find((s) => s.id === 1) as {
+        title?: string;
+        description?: string;
+        icon?: { testUri?: string };
+      };
+
+    it("shows the welcome text without an image for Mimikama", async () => {
+      await render(<Onboarding />);
+
+      expect(welcomeStep().title).toBe("Willkommen");
+      expect(welcomeStep().description).toContain("Willkommen bei der");
+      expect(welcomeStep().icon).toBeUndefined();
+    });
+
+    it("shows only the light artwork for Volksverpetzer in light mode", async () => {
+      mockIsVolksverpetzer = true;
+      await render(<Onboarding />);
+
+      expect(welcomeStep().title).toBeUndefined();
+      expect(welcomeStep().description).toBeUndefined();
+      expect(welcomeStep().icon.testUri).toMatch(/welcome\.webp$/);
+    });
+
+    it("shows the dark artwork for Volksverpetzer in dark mode", async () => {
+      mockIsVolksverpetzer = true;
+      (useAppColorScheme as jest.Mock).mockReturnValue("dark");
+      await render(<Onboarding />);
+
+      expect(welcomeStep().icon.testUri).toMatch(/welcome-dark\.webp$/);
+      (useAppColorScheme as jest.Mock).mockReturnValue("light");
     });
   });
 

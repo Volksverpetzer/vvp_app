@@ -14,6 +14,21 @@ export default defineConfig([
   expoConfig,
   reactNativeA11y.configs.flat.all,
   cspellESLintPluginRecommended,
+  {
+    // Share the word list and German dictionary with `pnpm check:spelling`;
+    // the plugin doesn't pick up cspell.config.json on its own.
+    rules: {
+      "@cspell/spellchecker": [
+        "warn",
+        {
+          configFile: new URL(
+            "./cspell.config.json",
+            import.meta.url,
+          ).toString(),
+        },
+      ],
+    },
+  },
   eslintPluginPrettierRecommended,
   {
     // Cherry-picked unicorn rules — the recommended preset is too noisy for
@@ -60,6 +75,16 @@ export default defineConfig([
       "import/namespace": "off",
       "import/no-named-as-default": "off",
       "import/no-named-as-default-member": "off",
+    },
+  },
+  {
+    // jest.mock() factories are hoisted above imports and may not reference
+    // out-of-scope bindings, so they must require() what they need; the same
+    // goes for re-requiring modules after jest.resetModules(). That's the
+    // idiomatic Jest pattern, not a style problem.
+    files: ["__tests__/**/*.{ts,tsx}", "jest-setup.ts"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
   {

@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react";
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
-import NotificationManager from "#/helpers/Notifications";
 import Statistics from "#/helpers/Statistics";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -19,9 +18,12 @@ const Index = () => {
   const router = useRouter();
   const didNavigate = useRef(false);
 
+  // Notification registration is not refreshed here: _layout's
+  // checkAndRequestOnLaunch does it once onboarding is done. Calling it here
+  // too ran before the onboarding check (prompting fresh installs at launch)
+  // and sent a second /register for everyone else.
   const appOpenRoutine = () => {
     Statistics.countAppOpened();
-    NotificationManager.refreshServer();
     ContentStore.clear();
   };
 

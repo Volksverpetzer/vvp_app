@@ -1,6 +1,8 @@
 import { render } from "@testing-library/react-native";
+import { Platform } from "react-native";
 
 import TabLayout from "#/app/(tabs)/_layout";
+import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { useBadge } from "#/helpers/provider/BadgeProvider";
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -66,4 +68,47 @@ describe("TabsNavigation", () => {
     await render(<TabLayout />);
     expect(getPersonalTriggerProps()?.hidden).toBe(false);
   });
+
+  it.each([ColorScheme.light, ColorScheme.dark])(
+    "should pass the %s corporate tint to the native tab bar",
+    async (scheme) => {
+      (useAppColorScheme as jest.Mock).mockReturnValue(scheme);
+      await render(<TabLayout />);
+      const props = (NativeTabs as jest.Mock).mock.calls.at(-1)?.[0];
+      expect(props.tintColor).toBe(Colors[scheme].primary);
+    },
+  );
+
+  describe.each([ColorScheme.light, ColorScheme.dark])(
+    "selected icon color in %s mode",
+    (scheme) => {
+      let platform: jest.ReplaceProperty<typeof Platform.OS> | undefined;
+
+      beforeEach(() => {
+        (useAppColorScheme as jest.Mock).mockReturnValue(scheme);
+      });
+
+      afterEach(() => {
+        platform?.restore();
+        platform = undefined;
+      });
+
+      const renderOn = async (os: typeof Platform.OS) => {
+        platform = jest.replaceProperty(Platform, "OS", os);
+        await render(<TabLayout />);
+        return (NativeTabs as jest.Mock).mock.calls.at(-1)?.[0].iconColor;
+      };
+
+      it("uses the corporate color on iOS, where the system draws a light pill", async () => {
+        const iconColor = await renderOn("ios");
+        expect(iconColor.selected).toBe(Colors[scheme].primary);
+        expect(iconColor.selected).not.toBe(Colors[scheme].onPrimary);
+      });
+
+      it("uses on-primary on Android, on top of the corporate indicator", async () => {
+        const iconColor = await renderOn("android");
+        expect(iconColor.selected).toBe(Colors[scheme].onPrimary);
+      });
+    },
+  );
 });

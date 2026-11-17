@@ -21,7 +21,6 @@ describe("app.config extra", () => {
   });
 
   function loadConfig(): { extra: Record<string, unknown> } {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { default: fn } = require("../app.config") as { default: ConfigFn };
     return fn({ config: {} });
   }

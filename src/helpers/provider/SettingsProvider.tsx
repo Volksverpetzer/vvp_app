@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import type { ReactNode } from "react";
+import { Appearance, Platform } from "react-native";
 
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { loadApiUrlOverride } from "#/helpers/apiUrl";
@@ -71,6 +72,16 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       .catch(console.error)
       .finally(() => setSettingsLoaded(true));
   }, []);
+
+  // Apply the in-app theme to the native side too, so system-drawn chrome
+  // (e.g. the iPad top tab bar, alerts, keyboards) matches the app instead of
+  // following the device theme.
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    Appearance.setColorScheme(
+      themePreference === "system" ? "auto" : themePreference,
+    );
+  }, [themePreference]);
 
   //propagate state changes to storage:
   useEffect(() => {

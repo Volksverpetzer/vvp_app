@@ -1,5 +1,6 @@
 overrides:
-  "expo-atlas>expo-server": 58.0.6 # expo-atlas 0.5.0 still asks for ^57; keep it on the SDK 58 copy (same adapter/http API), bump together with expo
+  "expo-atlas>expo-server": 58.1.0 # expo-atlas 0.5.0 still asks for ^57; keep it on the SDK 58 copy (same adapter/http API), bump together with expo
+  "zod@^4": 4.6.7 # GHSA memory exhaustion < 4.6.6; dev-only via eslint-plugin-react-hooks, drop once it ships a fixed zod
   react-test-renderer: 19.3.0 # must match react version; @testing-library/react-native enforces exact match at runtime
 allowBuilds:
   dtrace-provider: true # required by eas-cli; pnpm v11 blocks its build scripts otherwise
@@ -10,32 +11,24 @@ allowBuilds:
 nodeLinker: hoisted # see https://pnpm.io/settings#nodelinker
 packages:
   - .
-patchedDependencies:
-  react-native-reanimated-carousel@5.1.1: patches/react-native-reanimated-carousel@5.1.1.patch
 minimumReleaseAgeExclude:
-  - "@expo/cli@58.1.19"
-  - "@expo/config-plugins@58.0.12"
-  - "@expo/config@58.0.11"
-  - "@expo/env@2.5.4"
-  - "@expo/fingerprint@0.21.9"
-  - "@expo/inline-modules@0.2.9"
-  - "@expo/local-build-cache-provider@58.0.11"
-  - "@expo/log-box@58.0.15"
-  - "@expo/metro-config@58.0.21"
-  - "@expo/prebuild-config@58.0.19"
-  - "@expo/router-server@58.0.21"
-  - babel-preset-expo@58.0.24
-  - expo-asset@58.0.20
-  - expo-constants@58.0.15
-  - expo-modules-autolinking@58.0.17
-  - expo-modules-core@58.0.30
-  - expo-modules-jsi@58.0.22
-  - expo@58.0.23
-  - "@expo/metro-runtime@58.0.17"
-  - expo-linking@58.0.16
-  - expo-notifications@58.1.8
-  - expo-router@58.0.30
-  - expo-sharing@58.0.22
-  - expo-splash-screen@58.0.13
-  - expo-updates@58.0.21
-  - jest-expo@58.0.14
+  - "@expo/cli@58.1.21"
+  - "@expo/metro-config@58.0.23"
+  - "@expo/router-server@58.0.23"
+  - "@noxcturnal/noxcturnal-darwin-arm64@0.1.14"
+  - "@noxcturnal/noxcturnal-darwin-x64@0.1.14"
+  - "@noxcturnal/noxcturnal-linux-arm64-gnu@0.1.14"
+  - "@noxcturnal/noxcturnal-linux-arm64-musl@0.1.14"
+  - "@noxcturnal/noxcturnal-linux-x64-gnu@0.1.14"
+  - "@noxcturnal/noxcturnal-linux-x64-musl@0.1.14"
+  - "@noxcturnal/noxcturnal-win32-arm64-msvc@0.1.14"
+  - "@noxcturnal/noxcturnal-win32-x64-msvc@0.1.14"
+  - babel-preset-expo@58.0.26
+  - expo-dev-client@58.0.21
+  - expo-dev-launcher@58.0.21
+  - expo-file-system@58.0.14
+  - expo-router@58.0.32
+  - expo-web-browser@58.1.0
+  - expo@58.0.26
+  - jest-expo@58.0.15
+  - noxcturnal@0.1.14
