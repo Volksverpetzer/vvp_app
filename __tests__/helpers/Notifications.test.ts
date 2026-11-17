@@ -740,6 +740,23 @@ describe("NotificationManager", () => {
       expect(registerSpy).not.toHaveBeenCalled();
     });
 
+    it("refreshServer never asks for permission when it is undetermined", async () => {
+      jest
+        .spyOn(NotificationManager, "getPermissions")
+        .mockResolvedValue({ status: "undetermined" } as any);
+      const requestSpy = jest.spyOn(Notifications, "requestPermissionsAsync");
+      const registerSpy = jest.spyOn(
+        NotificationManager,
+        "registerForPushNotifications",
+      );
+      jest.spyOn(console, "warn").mockImplementation(() => {});
+
+      await NotificationManager.refreshServer();
+
+      expect(requestSpy).not.toHaveBeenCalled();
+      expect(registerSpy).not.toHaveBeenCalled();
+    });
+
     it("should refresh server when permissions are granted", async () => {
       jest
         .spyOn(Notifications, "getPermissionsAsync")

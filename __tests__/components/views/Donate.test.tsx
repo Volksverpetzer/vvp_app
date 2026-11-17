@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
 import React, { forwardRef, useImperativeHandle } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 
 import PaypalButton from "#/components/buttons/PaypalButton";
 import Donate from "#/components/views/Donate";
@@ -82,5 +82,44 @@ describe("Donate amount picker", () => {
     });
 
     expect(lastPaypalAmount()).toBe(20);
+  });
+
+  it("selects an amount when it is tapped", async () => {
+    const { getByLabelText } = await render(<Donate />);
+
+    await fireEvent.press(getByLabelText("20 Euro"));
+
+    expect(lastPaypalAmount()).toBe(20);
+    expect(mockScrollTo).toHaveBeenCalledWith({ x: 160, animated: true });
+  });
+
+  it("does not jump back to the selection when the amount changes", async () => {
+    const { getByTestId, getByLabelText } = await render(<Donate />);
+    await fireEvent(getByTestId("amount-picker").parent, "layout", {
+      nativeEvent: { layout: { width: 320 } },
+    });
+    mockScrollTo.mockClear();
+
+    await fireEvent.press(getByLabelText("20 Euro"));
+
+    // Only the animated scroll from the tap, no instant re-centring after it
+    expect(mockScrollTo).toHaveBeenCalledTimes(1);
+    expect(mockScrollTo).toHaveBeenCalledWith({ x: 160, animated: true });
+  });
+
+  it("follows the scroll position on web, where momentum events never fire", async () => {
+    const original = Platform.OS;
+    Platform.OS = "web";
+    try {
+      const { getByTestId } = await render(<Donate />);
+
+      await fireEvent.scroll(getByTestId("amount-picker"), {
+        nativeEvent: { contentOffset: { x: 0 } },
+      });
+
+      expect(lastPaypalAmount()).toBe(5);
+    } finally {
+      Platform.OS = original;
+    }
   });
 });
