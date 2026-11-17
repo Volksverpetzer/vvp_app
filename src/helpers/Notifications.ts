@@ -161,6 +161,9 @@ const NotificationManager = {
 
   /**
    * Refreshes the server with the current notification settings.
+   * Never asks for permission: it only re-registers when permission is
+   * already granted. Prompting is left to onboarding,
+   * checkAndRequestOnLaunch (after onboarding) and the settings screen.
    */
   async refreshServer() {
     if (Config.isFoss) return;
@@ -171,9 +174,6 @@ const NotificationManager = {
       await NotificationManager.ensureAndroidChannelsConfigured(Notifications);
 
       const permissions = await NotificationManager.getPermissions();
-      if (permissions.status === Notifications.PermissionStatus.UNDETERMINED) {
-        await NotificationManager.registerForPushNotifications();
-      }
 
       // Only proceed if we have permission
       if (permissions.status !== Notifications.PermissionStatus.GRANTED) {
