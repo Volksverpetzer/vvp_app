@@ -38,6 +38,8 @@ export interface FeedProperties {
   fetchers: {
     fetcher: (properties: FeedFetcherProperties) => Promise<Post<unknown>[]>;
     props?: FeedFetcherProperties;
+    /** Feed key, used in log messages. */
+    name?: string;
   }[];
   prioSort?: boolean;
   cutoffDate?: boolean;
@@ -58,6 +60,9 @@ const Feed = (properties: FeedProperties) => {
   const [rerender, setRerender] = useState(0);
   const [initialLoad, setInitialLoad] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(true);
+  // The last load-more failed (e.g. network down): show a retry instead of
+  // the end-of-feed prompt, which would claim there are no more posts.
+  const [loadMoreFailed, setLoadMoreFailed] = useState(false);
   const [page, setPage] = useState(1);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
@@ -65,6 +70,18 @@ const Feed = (properties: FeedProperties) => {
   const [loadmore, setLoadmore] = useState(false);
   const [refreshing, setRefresh] = useState(false);
   const fetchControllerRef = useRef<AbortController | null>(null);
+  // Synchronous guard against a second onEndReached firing before the
+  // `loadmore` state update has re-rendered.
+  const loadingMoreRef = useRef(false);
+  // Bumped by every load-more and by reload(), so a superseded load-more that
+  // settles late (e.g. a fetcher ignoring the abort signal) does not clear the
+  // guard of the request that replaced it.
+  const loadMoreGenerationRef = useRef(0);
+  // Posts the date cutoff hid on the first page. Non-paginated feeds
+  // (Bluesky, YouTube, …) return the same list on every page, so applying the
+  // cutoff again on load-more would keep discarding older WordPress articles;
+  // instead load-more skips the cutoff and releases these held-back posts.
+  const heldBackRef = useRef<Post<unknown>[]>([]);
   const [dismissedAnnouncements, setDismissedAnnouncements] = useState<
     string[]
   >([]);
@@ -108,29 +125,50 @@ const Feed = (properties: FeedProperties) => {
   }, []);
 
   const getPosts = useCallback(
+    /**
+     * @returns "grew" if the list grew, "unchanged" if every feed loaded but
+     *   brought nothing new, "failed" if nothing new came because a feed
+     *   failed to load, and undefined if the request was aborted
+     *   (superseded). Only "unchanged" means the feed is exhausted.
+     */
     async (
       fetcherProperties?: { page?: number; param?: string },
       oldPosts: Post<unknown>[] = [],
-    ) => {
+      { loadMore = false }: { loadMore?: boolean } = {},
+    ): Promise<"grew" | "unchanged" | "failed" | undefined> => {
       const controller = new AbortController();
       fetchControllerRef.current?.abort();
       fetchControllerRef.current = controller;
 
+      let heldBack: Post<unknown>[] = [];
+      let fetchFailed = false;
       try {
         const newPosts = await FetcherUtilities.fetchAndProcessPosts(
           properties.fetchers,
           { ...fetcherProperties, signal: controller.signal },
-          oldPosts,
-          { prioSort: properties.prioSort, cutoffDate: properties.cutoffDate },
+          loadMore ? [...oldPosts, ...heldBackRef.current] : oldPosts,
+          {
+            prioSort: properties.prioSort,
+            cutoffDate: loadMore ? false : properties.cutoffDate,
+            onCutoff: (dropped) => {
+              heldBack = dropped;
+            },
+            onFetchError: () => {
+              fetchFailed = true;
+            },
+          },
         );
-        if (controller.signal.aborted) return false;
+        if (controller.signal.aborted) return undefined;
+        heldBackRef.current = heldBack;
         setPosts(newPosts);
         updateLoadingStates();
-        return oldPosts.length < newPosts.length;
+        if (oldPosts.length < newPosts.length) return "grew";
+        return fetchFailed ? "failed" : "unchanged";
       } catch (error) {
-        if (controller.signal.aborted) return false;
+        if (controller.signal.aborted) return undefined;
         console.error("Error fetching posts:", error);
         updateLoadingStates();
+        return "failed";
       } finally {
         if (fetchControllerRef.current === controller) {
           fetchControllerRef.current = null;
@@ -145,38 +183,69 @@ const Feed = (properties: FeedProperties) => {
     ],
   );
 
+  // Start over from page 1: used for the initial load, for a reload after the
+  // fetchers changed (e.g. a content setting was toggled) and for
+  // pull-to-refresh. Without resetting the page, the next load-more after a
+  // settings change skipped straight to the old page + 1.
+  const reload = useCallback(() => {
+    setInitialLoad(false);
+    setRefresh(true);
+    setPage(1);
+    setIsLoadingMore(true);
+    setLoadMoreFailed(false);
+    setPosts([]);
+    heldBackRef.current = [];
+    loadingMoreRef.current = false;
+    loadMoreGenerationRef.current += 1;
+    getPosts(undefined, []);
+  }, [getPosts]);
+
   useEffect(() => {
     if (properties.fetchers.length === 0) {
       updateLoadingStates();
       return;
     }
-    getPosts(undefined, []);
-    setInitialLoad(false);
-    setRefresh(true);
+    reload();
 
     return () => {
       fetchControllerRef.current?.abort();
       fetchControllerRef.current = null;
     };
-  }, [properties.fetchers.length, getPosts, updateLoadingStates]);
+  }, [properties.fetchers.length, reload, updateLoadingStates]);
 
   const onRefresh = useCallback(() => {
     if (refreshing) return;
-    setInitialLoad(false);
-    setRefresh(true);
-    setPage(1);
-    setPosts([]);
-    getPosts(undefined, []);
-  }, [refreshing, getPosts]);
+    reload();
+  }, [refreshing, reload]);
 
   // Load-more handler: wrapped in useCallback.
   const onLoadMore = useCallback(async () => {
-    if (loadmore) return;
+    if (loadmore || loadingMoreRef.current) return;
+    loadingMoreRef.current = true;
+    const generation = ++loadMoreGenerationRef.current;
     setLoadmore(true);
     const nextPage = page + 1;
-    const received = await getPosts({ page: nextPage }, posts);
-    if (received) setPage(nextPage);
-    else setIsLoadingMore(false);
+    try {
+      const received = await getPosts({ page: nextPage }, posts, {
+        loadMore: true,
+      });
+      // Only an actual "nothing new" ends the feed. An aborted load (e.g.
+      // superseded by pull-to-refresh) keeps the spinner footer, and a failed
+      // one keeps the page so the retry asks for it again.
+      if (received === "grew") {
+        setPage(nextPage);
+        setLoadMoreFailed(false);
+      } else if (received === "failed") {
+        setLoadMoreFailed(true);
+      } else if (received === "unchanged") {
+        setLoadMoreFailed(false);
+        setIsLoadingMore(false);
+      }
+    } finally {
+      if (loadMoreGenerationRef.current === generation) {
+        loadingMoreRef.current = false;
+      }
+    }
   }, [loadmore, page, getPosts, posts]);
 
   const onViewableItemsChanged = useCallback(
@@ -284,7 +353,27 @@ const Feed = (properties: FeedProperties) => {
         }
         ListFooterComponent={
           posts.length > 0 &&
-          (isLoadingMore ? (
+          (loadMoreFailed && !loadmore ? (
+            <View style={{ paddingBottom: spacing.xxxl, alignItems: "center" }}>
+              <UiPressable
+                accessibilityRole="button"
+                style={globalStyles.centered}
+                onPress={onLoadMore}
+              >
+                <UiText
+                  size="lg"
+                  style={{
+                    textAlign: "center",
+                    paddingVertical: spacing.xxxl,
+                    color: corporate,
+                  }}
+                >
+                  Weitere Beiträge konnten nicht geladen werden. Tippe, um es
+                  erneut zu versuchen.
+                </UiText>
+              </UiPressable>
+            </View>
+          ) : isLoadingMore ? (
             <UiSpinner size="large" />
           ) : (
             <View style={{ paddingBottom: spacing.xxxl, alignItems: "center" }}>

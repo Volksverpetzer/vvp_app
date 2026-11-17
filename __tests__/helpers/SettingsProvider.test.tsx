@@ -1,7 +1,14 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  jest,
+} from "@jest/globals";
 import { act, render, waitFor } from "@testing-library/react-native";
 import { useContext } from "react";
-import { Text } from "react-native";
+import { Appearance, Platform, Text } from "react-native";
 
 import SettingsStore from "#/helpers/Stores/SettingsStore";
 import { loadApiUrlOverride } from "#/helpers/apiUrl";
@@ -9,7 +16,11 @@ import {
   SettingsContext,
   SettingsProvider,
 } from "#/helpers/provider/SettingsProvider";
-import type { AdvancedSettingType, ContentSettingType } from "#/types";
+import type {
+  AdvancedSettingType,
+  ContentSettingType,
+  ThemePreference,
+} from "#/types";
 
 jest.mock("#/helpers/Stores/SettingsStore", () => ({
   __esModule: true,
@@ -246,5 +257,85 @@ describe("SettingsProvider", () => {
 
     await waitFor(() => getByTestId("child"));
     expect(getByTestId("child")).toBeTruthy();
+  });
+
+  describe("native color scheme", () => {
+    const originalOS = Platform.OS;
+    let setColorScheme: jest.SpiedFunction<typeof Appearance.setColorScheme>;
+
+    beforeEach(() => {
+      mockSettingsStore.getContentSettings.mockResolvedValue(
+        {} as ContentSettingType,
+      );
+      mockSettingsStore.getAdvancedSettings.mockResolvedValue(
+        {} as AdvancedSettingType,
+      );
+      setColorScheme = jest
+        .spyOn(Appearance, "setColorScheme")
+        .mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      Platform.OS = originalOS;
+      setColorScheme.mockRestore();
+    });
+
+    it.each([
+      ["light", "light"],
+      ["dark", "dark"],
+      ["system", "auto"],
+    ] as [ThemePreference, Parameters<typeof Appearance.setColorScheme>[0]][])(
+      "applies the %s preference natively as %s",
+      async (preference, expected) => {
+        mockSettingsStore.getThemePreference.mockResolvedValue(preference);
+
+        const { getByTestId } = await render(
+          <SettingsProvider>
+            <ConsumerComponent />
+          </SettingsProvider>,
+        );
+
+        await waitFor(() => getByTestId("theme"));
+        expect(setColorScheme).toHaveBeenLastCalledWith(expected);
+      },
+    );
+
+    it("updates the native color scheme when the preference changes", async () => {
+      const ThemeSetter = () => {
+        const { setThemePreference } = useContext(SettingsContext);
+        return (
+          <Text testID="theme" onPress={() => setThemePreference("dark")} />
+        );
+      };
+
+      const { getByTestId } = await render(
+        <SettingsProvider>
+          <ThemeSetter />
+        </SettingsProvider>,
+      );
+
+      await waitFor(() => getByTestId("theme"));
+      expect(setColorScheme).toHaveBeenLastCalledWith("auto");
+
+      await act(() => {
+        getByTestId("theme").props.onPress();
+      });
+
+      expect(setColorScheme).toHaveBeenLastCalledWith("dark");
+    });
+
+    it("does not touch the native color scheme on web", async () => {
+      Platform.OS = "web";
+      mockSettingsStore.getThemePreference.mockResolvedValue("dark");
+
+      const { getByTestId } = await render(
+        <SettingsProvider>
+          <ConsumerComponent />
+        </SettingsProvider>,
+      );
+
+      await waitFor(() => getByTestId("theme"));
+      expect(setColorScheme).not.toHaveBeenCalled();
+    });
   });
 });

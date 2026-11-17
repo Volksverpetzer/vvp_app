@@ -19,6 +19,7 @@ import {
 } from "#/helpers/apiUrl";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useWebFocusRing } from "#/hooks/useWebFocusRing";
 
 /**
  * Lets FOSS users point the app at a different (e.g. self-hosted) app
@@ -32,6 +33,7 @@ import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 const ApiUrlSetting = () => {
   const colorScheme = useAppColorScheme();
   const { primary, surfaceInput, text, textMuted } = Colors[colorScheme];
+  const focusRing = useWebFocusRing(primary);
   const [value, setValue] = useState<string>(getApiUrl());
   const [editing, setEditing] = useState(false);
   const [isCustom, setIsCustom] = useState(!!getApiUrlOverride());
@@ -68,7 +70,13 @@ const ApiUrlSetting = () => {
   return (
     <View style={styles.container}>
       <UiText size="base">App-Server</UiText>
-      <View style={[styles.field, { backgroundColor: surfaceInput }]}>
+      <View
+        style={[
+          styles.field,
+          { backgroundColor: surfaceInput },
+          focusRing.containerStyle,
+        ]}
+      >
         <UiTextInput
           accessibilityLabel="App-Server-Adresse"
           accessibilityHint="Adresse des Servers, von dem die App Inhalte lädt"
@@ -82,7 +90,13 @@ const ApiUrlSetting = () => {
           autoCorrect={false}
           keyboardType="url"
           onSubmitEditing={save}
-          style={[styles.input, { color: editing ? text : textMuted }]}
+          onFocus={focusRing.onFocus}
+          onBlur={focusRing.onBlur}
+          style={[
+            styles.input,
+            { color: editing ? text : textMuted },
+            focusRing.inputStyle,
+          ]}
         />
         {editing ? (
           <>

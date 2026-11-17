@@ -6,7 +6,6 @@ import BackToTopButton from "#/components/buttons/BackToTopButton";
 jest.mock("react-native-reanimated", () => ({
   __esModule: true,
   default: {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     View: require("react-native").View,
   },
   FadeInDown: {},

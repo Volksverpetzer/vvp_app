@@ -1,0 +1,3 @@
+- Prüfpunkt-Artikel zeigen jetzt passende Empfehlungen unter „Passend dazu“
+- Technische Grundlage aktualisiert – die App ist bereit für iOS 27
+- Fehlerbehebungen und kleine Verbesserungen

@@ -113,6 +113,9 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
           backgroundColor: variableConfig.extraConfig.themeColor,
         },
       ],
+      // Dev builds only: skip the dev menu's first-launch intro, which blocks
+      // the app on every fresh simulator/device install.
+      ["expo-dev-client", { skipOnboarding: true }],
       "expo-font",
       "expo-image",
       "expo-mail-composer",

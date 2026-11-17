@@ -1,7 +1,6 @@
 import TiktokPost from "#/components/posts/TiktokPost";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
-import { isHttpsUrl } from "#/helpers/utils/networking";
 
 import FetcherUtilities from "./FetcherUtilities";
 
@@ -15,17 +14,21 @@ export const TikTokFetcher = {
       () => API.getTikTokFeed(signal),
       "tiktok",
     );
-    return data.map((post) => {
-      const shareUrl = post.share_url.split("?")[0];
-      const shareable = isHttpsUrl(shareUrl)
-        ? [{ url: shareUrl, title: "TikTok Video teilen" }]
-        : undefined;
+    return FetcherUtilities.mapItems(data, "tiktok", (post) => {
+      // `null * 1000` would be 0, a valid 1970 date; skip instead.
+      if (!Number.isFinite(post.create_time)) return null;
+      const datetime = FetcherUtilities.toFeedDatetime(post.create_time * 1000);
+      if (!datetime) return null;
+      const shareUrl =
+        typeof post.share_url === "string"
+          ? post.share_url.split("?")[0]
+          : undefined;
       return new Post(
-        new Date(post.create_time * 1000).toISOString().replace(".000Z", ""),
+        datetime,
         post.id,
         TiktokPost,
         post,
-        shareable,
+        FetcherUtilities.shareLink(shareUrl, "TikTok Video teilen"),
       );
     });
   },

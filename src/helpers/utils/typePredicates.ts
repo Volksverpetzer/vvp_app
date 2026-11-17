@@ -1,6 +1,7 @@
 import {
   FAV_TYPE_ARTICLE,
   FAV_TYPE_INSTA,
+  FAV_TYPE_PODCAST,
   type StoredFav,
   type StoredFavs,
   type StoredSource,
@@ -27,7 +28,9 @@ export const hasText = (value: unknown) => hasStringProperty(value, "text");
 
 export const isValidStoredFav = (v: unknown): v is StoredFav =>
   isObjectRecord(v) &&
-  (v.contentType === FAV_TYPE_ARTICLE || v.contentType === FAV_TYPE_INSTA);
+  (v.contentType === FAV_TYPE_ARTICLE ||
+    v.contentType === FAV_TYPE_INSTA ||
+    v.contentType === FAV_TYPE_PODCAST);
 
 export const isValidStoredSource = (v: unknown): v is StoredSource =>
   isObjectRecord(v) &&

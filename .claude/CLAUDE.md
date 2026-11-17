@@ -120,6 +120,7 @@ After updating `package.json`, write the release notes and regenerate the in-app
 
 1. Create `fastlane/metadata/android/de-DE/changelogs/{versionCode}.txt` with the German release notes
 2. Run `pnpm prepare:changelog` — copies to `en-US` (kept as-is if an English translation already exists) and regenerates `src/constants/Changelog.ts`
+   - The in-app notes are per variant: Mimikama's come from `fastlane/mimikama/metadata/android/de-DE/changelogs/{versionCode}.txt` (see "Releasing Mimikama"), so create that file first too. Without it Mimikama shows no in-app dialog for this version.
 3. Commit all three files before triggering the EAS build
 
 > Note: EAS uses `appVersionSource: "remote"` with `autoIncrement`, so the actual APK versionCode is managed by EAS independently of `package.json`. The `Changelog.versionCode` in `Changelog.ts` uses the `package.json` value as a monotonic release marker for the in-app "what's new" check — this is intentional and correct.

@@ -1,10 +1,11 @@
 import type { CustomRendererProps, TBlock } from "@native-html/render";
 import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import * as Linking from "expo-linking";
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 
 import { ColorScheme, useAppColorScheme } from "#/hooks/useAppColorScheme";
 import IframeRenderer, {
+  shouldStartRequest,
   youTubeVideoId,
 } from "#/screens/Home/components/article/renderer/IframeRenderer";
 
@@ -862,6 +863,7 @@ describe("IframeRenderer YouTube facade", () => {
 
 describe("youTubeVideoId", () => {
   it.each([
+    // cspell:disable-next-line -- YouTube video ID
     ["https://www.youtube.com/embed/Fh-mJhfrvJo?enablejsapi=1", "Fh-mJhfrvJo"],
     ["https://www.youtube-nocookie.com/embed/abc_123", "abc_123"],
     ["https://youtu.be/short123?t=4", "short123"],
@@ -1144,5 +1146,134 @@ describe("IframeRenderer wp-embedded-content fallback", () => {
     ).toBeTruthy();
     expect(mockFetchOpenGraphPreview).not.toHaveBeenCalled();
     expect(queryByText("Landtagswahl Sachsen Anhalt")).toBeNull();
+  });
+});
+
+describe("shouldStartRequest (embed navigation)", () => {
+  const frame = "https://datawrapper.dwcdn.net/abc/1/";
+  const external = "https://www.example.org/source";
+
+  it("opens a tapped cross-site link externally on iOS", () => {
+    const onLinkPress = jest.fn();
+    const allowed = shouldStartRequest(
+      { url: external, isTopFrame: true, navigationType: "click" },
+      frame,
+      onLinkPress,
+      "ios",
+    );
+    expect(allowed).toBe(false);
+    expect(onLinkPress).toHaveBeenCalledWith(undefined, external);
+  });
+
+  it("opens a cross-site navigation after load externally on Android", () => {
+    // Android always reports navigationType "other" and isTopFrame true.
+    const onLinkPress = jest.fn();
+    const allowed = shouldStartRequest(
+      {
+        url: external,
+        isTopFrame: true,
+        navigationType: "other",
+        loading: false,
+      },
+      frame,
+      onLinkPress,
+      "android",
+    );
+    expect(allowed).toBe(false);
+    expect(onLinkPress).toHaveBeenCalledWith(undefined, external);
+  });
+
+  it("upgrades a tapped plain-http link to https on Android", () => {
+    const onLinkPress = jest.fn();
+    const allowed = shouldStartRequest(
+      {
+        url: "http://www.example.org/source",
+        isTopFrame: true,
+        navigationType: "other",
+        loading: false,
+      },
+      frame,
+      onLinkPress,
+      "android",
+    );
+    expect(allowed).toBe(false);
+    expect(onLinkPress).toHaveBeenCalledWith(undefined, external);
+  });
+
+  it("keeps redirects during the initial load inside the embed on Android", () => {
+    const onLinkPress = jest.fn();
+    const allowed = shouldStartRequest(
+      {
+        url: external,
+        isTopFrame: true,
+        navigationType: "other",
+        loading: true,
+      },
+      frame,
+      onLinkPress,
+      "android",
+    );
+    expect(allowed).toBe(true);
+    expect(onLinkPress).not.toHaveBeenCalled();
+  });
+
+  it("keeps same-site navigations inside the embed on Android", () => {
+    const onLinkPress = jest.fn();
+    const allowed = shouldStartRequest(
+      {
+        url: "https://datawrapper.dwcdn.net/abc/2/",
+        isTopFrame: true,
+        navigationType: "other",
+        loading: false,
+      },
+      frame,
+      onLinkPress,
+      "android",
+    );
+    expect(allowed).toBe(true);
+    expect(onLinkPress).not.toHaveBeenCalled();
+  });
+
+  it("still ignores 'other' navigations on iOS", () => {
+    const onLinkPress = jest.fn();
+    const allowed = shouldStartRequest(
+      {
+        url: external,
+        isTopFrame: true,
+        navigationType: "other",
+        loading: false,
+      },
+      frame,
+      onLinkPress,
+      "ios",
+    );
+    expect(allowed).toBe(true);
+    expect(onLinkPress).not.toHaveBeenCalled();
+  });
+
+  it("defaults to the current Platform.OS", () => {
+    const onLinkPress = jest.fn();
+    const request = {
+      url: external,
+      isTopFrame: true,
+      navigationType: "other",
+      loading: false,
+    };
+    const expected = shouldStartRequest(request, frame, jest.fn(), Platform.OS);
+    expect(shouldStartRequest(request, frame, onLinkPress)).toBe(expected);
+  });
+
+  it("lets about:/data: URLs and subframe navigations load in the embed", () => {
+    const onLinkPress = jest.fn();
+    for (const request of [
+      { url: "about:blank", isTopFrame: true, loading: false },
+      { url: "data:text/html,hi", isTopFrame: true, loading: false },
+      { url: external, isTopFrame: false, loading: false },
+    ]) {
+      expect(shouldStartRequest(request, frame, onLinkPress, "android")).toBe(
+        true,
+      );
+    }
+    expect(onLinkPress).not.toHaveBeenCalled();
   });
 });

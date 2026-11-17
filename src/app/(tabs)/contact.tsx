@@ -408,7 +408,7 @@ const ContactScreen = () => {
             <View style={{ gap: spacing.md }}>
               <Typography type="heading">{texts.titleLabel}</Typography>
               <UiTextInput
-                accessibilityLabel="Text input field"
+                accessibilityLabel={texts.titleLabel}
                 accessibilityHint={texts.titleHint}
                 placeholder="..."
                 placeholderTextColor={textColor}
@@ -426,7 +426,7 @@ const ContactScreen = () => {
             <View style={{ gap: spacing.md }}>
               <Typography type="heading">{texts.messageLabel}</Typography>
               <UiTextInput
-                accessibilityLabel="Text input field"
+                accessibilityLabel={texts.messageLabel}
                 accessibilityHint="Gib deine Nachricht ein"
                 placeholder="..."
                 placeholderTextColor={textColor}
@@ -449,7 +449,7 @@ const ContactScreen = () => {
                   E-Mail für Rückfragen (optional)
                 </Typography>
                 <UiTextInput
-                  accessibilityLabel="Text input field"
+                  accessibilityLabel="E-Mail für Rückfragen (optional)"
                   accessibilityHint="Gib deine E-Mail-Adresse ein"
                   placeholder="..."
                   placeholderTextColor={textColor}

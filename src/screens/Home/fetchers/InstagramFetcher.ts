@@ -5,11 +5,20 @@ import type { InstaPostProperties } from "#/types";
 
 import FetcherUtilities from "./FetcherUtilities";
 
+// Videos and reels aren't shown; filtered before mapping so they don't count
+// as skipped items.
 const displayablePosts = (data: InstaPostProperties[]) =>
   data.filter(
     (post) =>
-      post.media_type === "IMAGE" || post.media_type === "CAROUSEL_ALBUM",
+      post?.media_type === "IMAGE" || post?.media_type === "CAROUSEL_ALBUM",
   );
+
+// The meme feed is registered under the historic "reddit" key in FeedFetcher;
+// log under that key so failures match the feed name.
+const MEME_FEED_KEY = "reddit";
+
+const share = (post: InstaPostProperties) =>
+  FetcherUtilities.shareLink(post.permalink, "Instagram Post teilen");
 
 export const InstagramFetcher = {
   /**
@@ -23,18 +32,23 @@ export const InstagramFetcher = {
         () => API.getInstaFeed(account, signal),
         `insta:${account}`,
       );
-      return displayablePosts(data).map(
-        (post) =>
-          new Post(
-            post.timestamp,
+      return FetcherUtilities.mapItems(
+        displayablePosts(data),
+        `insta:${account}`,
+        (post) => {
+          const datetime = FetcherUtilities.toFeedDatetime(post.timestamp);
+          if (!datetime) return null;
+          return new Post(
+            datetime,
             post.id,
             InstaPostCard,
             post,
-            [{ url: post.permalink, title: "Instagram Post teilen" }],
+            share(post),
             1,
             post.id,
             "insta",
-          ),
+          );
+        },
       );
     };
   },
@@ -42,13 +56,16 @@ export const InstagramFetcher = {
   memeFetcher: async ({ signal }: { signal?: AbortSignal } = {}) => {
     const data = await FetcherUtilities.safeFetch(
       () => API.getInstaMemeFeed(signal),
-      "meme",
+      MEME_FEED_KEY,
     );
-    return displayablePosts(data).map(
-      (post) =>
-        new Post(post.timestamp, post.id, InstaPostCard, post, [
-          { url: post.permalink, title: "Instagram Post teilen" },
-        ]),
+    return FetcherUtilities.mapItems(
+      displayablePosts(data),
+      MEME_FEED_KEY,
+      (post) => {
+        const datetime = FetcherUtilities.toFeedDatetime(post.timestamp);
+        if (!datetime) return null;
+        return new Post(datetime, post.id, InstaPostCard, post, share(post));
+      },
     );
   },
 };

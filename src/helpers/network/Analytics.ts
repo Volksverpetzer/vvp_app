@@ -22,6 +22,7 @@ export type AnalyticsEvent =
   | "search"
   | "Shop"
   | "Steady"
+  | "Paypal"
   | "DonateConversion"
   | "Outbound Link: Click"
   | "Contact Submitted"

@@ -93,6 +93,11 @@ describe("GameScreen", () => {
     expect(getByText("Desinformations-Memory")).toBeTruthy();
   });
 
+  it("explains how to play above the board", async () => {
+    const { getByText } = await render(<GameScreen />);
+    expect(getByText(/^Finde die Paare/)).toBeTruthy();
+  });
+
   it("starts on level 1 with 3 pairs", async () => {
     const { getByText } = await render(<GameScreen />);
     expect(getByText("pairs:3")).toBeTruthy();

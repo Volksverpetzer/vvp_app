@@ -1,7 +1,6 @@
 import PodcastPost from "#/components/posts/PodcastPost";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
-import { isHttpsUrl } from "#/helpers/utils/networking";
 import type { PodcastEpisodeProperties } from "#/types";
 import { FAV_TYPE_PODCAST } from "#/types";
 
@@ -14,22 +13,15 @@ import FetcherUtilities from "./FetcherUtilities";
 export const mapPodcastEpisode = (
   episode: PodcastEpisodeProperties,
 ): Post<PodcastEpisodeProperties> | null => {
-  if (!episode.audio_url || !episode.published_at) return null;
-  // Guard against unparseable dates: a throw here would propagate past
-  // safeFetch and blank the whole combined feed, not just this episode.
-  const parsedDate = new Date(episode.published_at);
-  if (Number.isNaN(parsedDate.getTime())) return null;
-  // Normalize to the naive-UTC ISO shape the other fetchers use so the
-  // string-based datetime sort in FetcherUtilities stays consistent.
-  const datetime = parsedDate.toISOString().replace("Z", "");
+  if (!episode.audio_url) return null;
+  const datetime = FetcherUtilities.toFeedDatetime(episode.published_at);
+  if (!datetime) return null;
   return new Post<PodcastEpisodeProperties>(
     datetime,
     episode.id,
     PodcastPost,
     episode,
-    isHttpsUrl(episode.link)
-      ? [{ url: episode.link, title: "Podcast Folge teilen" }]
-      : undefined,
+    FetcherUtilities.shareLink(episode.link, "Podcast Folge teilen"),
     1,
     episode.id,
     FAV_TYPE_PODCAST,
@@ -42,9 +34,6 @@ export const PodcastFetcher = {
       () => API.getPodcastFeed(signal),
       "podcast",
     );
-    return episodes.flatMap((episode) => {
-      const post = mapPodcastEpisode(episode);
-      return post ? [post] : [];
-    });
+    return FetcherUtilities.mapItems(episodes, "podcast", mapPodcastEpisode);
   },
 };

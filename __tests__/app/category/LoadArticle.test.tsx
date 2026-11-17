@@ -23,6 +23,8 @@ jest.mock("#/constants/Config", () => ({
 
 jest.mock("#/helpers/utils/feeds", () => ({
   findSecondaryWpFeed: jest.fn(() => undefined),
+  getInternalWpHosts: jest.requireActual("#/helpers/utils/feeds")
+    .getInternalWpHosts,
 }));
 
 jest.mock("#/helpers/Stores/ContentStore", () => ({
@@ -94,6 +96,40 @@ describe("LoadArticle single-segment page (no slug)", () => {
 
 describe("LoadArticle article fallback (slug not found)", () => {
   beforeEach(() => jest.clearAllMocks());
+
+  it.each([
+    "https://evil.example/spenden",
+    "https://volksverpetzer.de.evil.example/x",
+    "http://volksverpetzer.de/stellenausschreibung-redaktion/",
+    "javascript:alert(1)",
+  ])("ignores an untrusted originalUrl (%s)", async (originalUrl) => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "stellenausschreibung-redaktion",
+      originalUrl,
+    });
+
+    await render(<LoadArticle />);
+
+    expect(webviewUri()).toBe(
+      "https://volksverpetzer.de/stellenausschreibung-redaktion/",
+    );
+  });
+
+  it("ignores an untrusted originalUrl in the failed-fetch fallback", async () => {
+    const { useLocalSearchParams } = jest.requireMock("expo-router");
+    useLocalSearchParams.mockReturnValue({
+      category: "analyse",
+      slug: "foo",
+      originalUrl: "https://evil.example/analyse/foo/",
+    });
+
+    await render(<LoadArticle />);
+
+    await waitFor(() =>
+      expect(webviewUri()).toBe("https://volksverpetzer.de/analyse/foo/"),
+    );
+  });
 
   it("builds a trailing-slash /category/slug/ URL when the API has no post", async () => {
     const { useLocalSearchParams } = jest.requireMock("expo-router");

@@ -3,6 +3,8 @@ import Post from "#/helpers/Post";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import type { ArticleProperties, LoadArticlePostProperties } from "#/types";
 
+import FetcherUtilities from "./FetcherUtilities";
+
 type WpApi = {
   getPosts(
     page?: number,
@@ -23,11 +25,11 @@ export const WordPressFetcher = {
     const formattedArticle = WordPressAPI.convertLoadProps(article);
 
     return new Post<{ article: ArticleProperties }>(
-      article.date_gmt,
+      FetcherUtilities.toFeedDatetime(article.date_gmt),
       article.slug,
       ArticlePost,
       { article: formattedArticle },
-      [{ url: article.link, title: "Artikel teilen" }],
+      FetcherUtilities.shareLink(article.link, "Artikel teilen"),
       index === 0 ? 2 : 1,
       article.slug,
       "article",
@@ -37,28 +39,20 @@ export const WordPressFetcher = {
   async wpBaseFetcher(
     api: (signal?: AbortSignal) => Promise<LoadArticlePostProperties[]>,
     signal?: AbortSignal,
+    name = "wp",
   ): Promise<Post<{ article: ArticleProperties }>[]> {
-    try {
-      const data = await api(signal);
-      return data.map((article, index) =>
-        WordPressFetcher.mapArticleToPost(
-          article as LoadArticlePostProperties,
-          index,
-        ),
-      );
-    } catch (error) {
-      if (!signal?.aborted) {
-        console.error("WP Error:", error);
-      }
-      return [];
-    }
+    const data = await FetcherUtilities.safeFetch(() => api(signal), name);
+    return FetcherUtilities.mapItems(data, name, (article, index) =>
+      WordPressFetcher.mapArticleToPost(article, index),
+    );
   },
 
   /**
    * Creates a feed/search fetcher pair for any WordPress-compatible API.
-   * Pass sourceName to stamp a source label on every returned article.
+   * Pass sourceName to stamp a source label on every returned article, and
+   * feedKey (e.g. "wp:pruefpunkt.org") to name the source in log messages.
    */
-  createFetchers(api: WpApi, sourceName?: string) {
+  createFetchers(api: WpApi, sourceName?: string, feedKey = "wp") {
     const stamp = (posts: Post<{ article: ArticleProperties }>[]) => {
       if (sourceName) {
         posts.forEach((p) => {
@@ -77,6 +71,7 @@ export const WordPressFetcher = {
           await WordPressFetcher.wpBaseFetcher(
             (sig) => api.getPosts(page, sig),
             signal,
+            feedKey,
           ),
         ),
       searchFetcher: async ({
@@ -88,6 +83,7 @@ export const WordPressFetcher = {
           await WordPressFetcher.wpBaseFetcher(
             (sig) => api.searchPosts(parameter, page, sig),
             signal,
+            `${feedKey}:search`,
           ),
         ),
     };

@@ -114,7 +114,6 @@ const GameScreen = () => {
         { backgroundColor: Colors[colorScheme].background },
       ]}
     >
-      <NavBar />
       <ScrollView contentContainerStyle={styles.container}>
         <UiText size="xl" bold style={styles.title}>
           Desinformations-Memory
@@ -133,9 +132,17 @@ const GameScreen = () => {
             </UiText>
           </View>
         ) : (
-          <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
+          <>
+            <UiText size="base" style={styles.tutorial}>
+              Finde die Paare: Jede Technik gehört zu einem passenden Beispiel.
+              Decke immer zwei Karten auf – passen sie zusammen, bleiben sie
+              offen.
+            </UiText>
+            <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
+          </>
         )}
       </ScrollView>
+      <NavBar />
       <UnicornEasterEgg
         visible={showLevelComplete}
         onHide={handleLevelCompleteHide}
@@ -162,7 +169,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     textAlign: "center",
   },
-  title: { marginBottom: spacing.xl, textAlign: "center" },
+  title: { marginBottom: spacing.md, textAlign: "center" },
+  tutorial: { marginBottom: spacing.md, textAlign: "center" },
 });
 
 export default GameScreen;
