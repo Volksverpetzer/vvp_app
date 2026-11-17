@@ -127,6 +127,20 @@ describe("ContactScreen", () => {
     expect(getByText("Was ist daran falsch?")).toBeTruthy();
   });
 
+  it("labels each input with its own visible field name", async () => {
+    const { getByLabelText, getByText, queryByLabelText } = await render(
+      <ContactScreen />,
+    );
+    expect(getByLabelText("Betreff")).toBeTruthy();
+    expect(getByLabelText("Dein Feedback")).toBeTruthy();
+    expect(getByLabelText("E-Mail für Rückfragen (optional)")).toBeTruthy();
+
+    await fireEvent.press(getByText("Fake reporten"));
+    expect(getByLabelText("Link zum Fake")).toBeTruthy();
+    expect(getByLabelText("Was ist daran falsch?")).toBeTruthy();
+    expect(queryByLabelText("Betreff")).toBeNull();
+  });
+
   it("pre-selects the category from route params", async () => {
     mockParameters = { category: "other" };
     const { getByText } = await render(<ContactScreen />);
