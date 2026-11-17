@@ -61,19 +61,20 @@ describe("FetcherUtils", () => {
       expect(fetchFunction).toHaveBeenCalled();
     });
 
-    it("returns empty array and logs error when fetchFn throws", async () => {
+    it("logs and rethrows a FeedFetchError when fetchFn throws", async () => {
       const error = new Error("fail");
       const fetchFunction: SafeFetchFunction<string> = jest.fn(() =>
         Promise.reject(error),
       );
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
 
-      const result = await FetcherUtilities.safeFetch(
+      const thrown = await FetcherUtilities.safeFetch(
         fetchFunction,
         "fetcherName",
-      );
+      ).catch((caught: unknown) => caught);
 
-      expect(result).toEqual([]);
+      expect(FetcherUtilities.isFeedFetchError(thrown)).toBe(true);
+      expect((thrown as { cause?: unknown }).cause).toBe(error);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         expect.stringContaining("Fetch error in fetcherName"),
         error,
@@ -95,13 +96,13 @@ describe("FetcherUtils", () => {
       expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
 
-    it("returns empty array for a response that is not a list", async () => {
+    it("rethrows a FeedFetchError for a response that is not a list", async () => {
       jest.spyOn(console, "error").mockImplementation();
-      const result = await FetcherUtilities.safeFetch(
+      const thrown = await FetcherUtilities.safeFetch(
         () => Promise.resolve({ error: "proxy" } as any),
         "fetcherName",
-      );
-      expect(result).toEqual([]);
+      ).catch((caught: unknown) => caught);
+      expect(FetcherUtilities.isFeedFetchError(thrown)).toBe(true);
     });
   });
 
@@ -310,6 +311,44 @@ describe("FetcherUtils", () => {
       // Cutoff is p3 ('2021-01-03'); the sparse feed's newest post is kept
       // anyway, only its older posts are dropped.
       expect(result.map((p) => p.id)).toEqual(["4", "3", "sparse-new"]);
+    });
+
+    it("reports a failed feed via onFetchError and keeps the other feeds", async () => {
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+      const ok = jest.fn(() => Promise.resolve([p3, p4]));
+      const failing = jest.fn(() =>
+        FetcherUtilities.safeFetch<Post<unknown>>(
+          () => Promise.reject(new Error("offline")),
+          "wp",
+        ),
+      );
+      const onFetchError = jest.fn();
+
+      const result = await FetcherUtilities.fetchAndProcessPosts(
+        [
+          { fetcher: ok, props: {} },
+          { fetcher: failing, props: {}, name: "wp" },
+        ],
+        {},
+        [],
+        { onFetchError },
+      );
+
+      expect(result.map((p) => p.id)).toEqual(["4", "3"]);
+      expect(onFetchError).toHaveBeenCalledTimes(1);
+      // Logged once by safeFetch, not again by fetchAndProcessPosts.
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not call onFetchError when every feed loads, even if empty", async () => {
+      const onFetchError = jest.fn();
+      await FetcherUtilities.fetchAndProcessPosts(
+        [{ fetcher: jest.fn(() => Promise.resolve([])), props: {} }],
+        {},
+        [],
+        { onFetchError },
+      );
+      expect(onFetchError).not.toHaveBeenCalled();
     });
 
     it("reports the posts hidden by the cutoff via onCutoff", async () => {

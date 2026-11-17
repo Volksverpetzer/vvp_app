@@ -1,5 +1,6 @@
 import Post from "#/helpers/Post";
 import type WordPressAPIClass from "#/helpers/network/WordPressAPI";
+import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { LoadArticlePostProperties } from "#/types";
 
@@ -64,14 +65,14 @@ describe("WordPressFetcher", () => {
       });
     });
 
-    it("returns empty array and logs error on failure", async () => {
+    it("logs and rethrows on failure", async () => {
       const error = new Error("fail");
       const api = jest.fn().mockRejectedValue(error);
       const spy = jest.spyOn(console, "error").mockImplementation();
 
-      const result = await base(api);
+      const thrown = await base(api).catch((caught: unknown) => caught);
 
-      expect(result).toEqual([]);
+      expect(FetcherUtilities.isFeedFetchError(thrown)).toBe(true);
       expect(spy).toHaveBeenCalledWith("Fetch error in wp:", error);
     });
 
@@ -237,7 +238,7 @@ describe("WordPressFetcher", () => {
         "Prüfpunkt",
         "wp:pruefpunkt.org",
       );
-      await feedFetcher({ page: 1 });
+      await expect(feedFetcher({ page: 1 })).rejects.toThrow();
       expect(spy).toHaveBeenCalledWith(
         "Fetch error in wp:pruefpunkt.org:",
         error,

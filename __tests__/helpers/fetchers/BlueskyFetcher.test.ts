@@ -77,9 +77,8 @@ describe("BlueskyFetcher", () => {
       .mockRejectedValue(new Error("Network error"));
 
     // Execute
-    const result = await BlueskyFetcher.feedFetcher();
-
-    // Assert
-    expect(result).toEqual([]);
+    // The error propagates so fetchAndProcessPosts can report the feed as
+    // failed rather than empty.
+    await expect(BlueskyFetcher.feedFetcher()).rejects.toThrow();
   });
 });

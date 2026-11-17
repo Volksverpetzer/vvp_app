@@ -4,6 +4,16 @@ import type { Post, SafeFetchFunction, ShareableType } from "#/types";
 // A trailing timezone designator: Z, +02:00 or +0200.
 const TIMEZONE_SUFFIX = /(Z|[+-]\d{2}:?\d{2})$/i;
 
+// Marks an error safeFetch already logged, so fetchAndProcessPosts counts the
+// failed feed without logging it a second time.
+const FEED_FETCH_ERROR = "FeedFetchError";
+
+const feedFetchError = (fetcher: string, cause?: unknown) =>
+  Object.assign(new Error(`Fetch failed in ${fetcher}`), {
+    name: FEED_FETCH_ERROR,
+    cause,
+  });
+
 const FetcherUtilities = {
   isAbortError(error: unknown): boolean {
     if (!error || typeof error !== "object") return false;
@@ -20,26 +30,37 @@ const FetcherUtilities = {
    * through this, so all sources treat errors the same way.
    * @param fetchFunction The fetch function to use.
    * @param fetcher The name of the fetcher, used in log messages.
-   * @returns The fetched data, or an empty array on errors or a response
-   *   that isn't a list. Aborts are rethrown so the caller can keep the
-   *   posts it already has.
+   * @returns The fetched data.
+   * @throws The abort error for an aborted request, so the caller can keep
+   *   the posts it already has. Any other failure, or a response that isn't
+   *   a list, is logged and rethrown as a FeedFetchError, so
+   *   fetchAndProcessPosts can tell a failed feed apart from an empty one.
    */
   async safeFetch<T>(
     fetchFunction: SafeFetchFunction<T>,
     fetcher: string,
   ): Promise<T[]> {
+    let data: T[];
     try {
-      const data = await fetchFunction();
-      if (!Array.isArray(data)) {
-        console.error(`Fetch error in ${fetcher}: response is not a list`);
-        return [];
-      }
-      return data;
+      data = await fetchFunction();
     } catch (error) {
       if (FetcherUtilities.isAbortError(error)) throw error;
       console.error(`Fetch error in ${fetcher}:`, error);
-      return [];
+      throw feedFetchError(fetcher, error);
     }
+    if (!Array.isArray(data)) {
+      console.error(`Fetch error in ${fetcher}: response is not a list`);
+      throw feedFetchError(fetcher);
+    }
+    return data;
+  },
+
+  isFeedFetchError(error: unknown): boolean {
+    return (
+      !!error &&
+      typeof error === "object" &&
+      (error as { name?: string }).name === FEED_FETCH_ERROR
+    );
   },
 
   /**
@@ -177,12 +198,19 @@ const FetcherUtilities = {
        * them on the next load-more instead of losing them.
        */
       onCutoff?: (dropped: Post<unknown>[]) => void;
+      /**
+       * Called when a feed failed to load (or processing failed), so a
+       * caller can tell "nothing new" apart from "couldn't load". The
+       * returned list then only holds what the other feeds delivered.
+       */
+      onFetchError?: () => void;
     } = {},
   ): Promise<Post<unknown>[]> {
     try {
       // Isolate each fetcher: one feed throwing (e.g. a malformed item in
       // its mapping) must only drop that feed, not blank the whole feed.
       // Aborts still propagate so the caller keeps its old posts.
+      let failed = false;
       const data = await Promise.all(
         fetchers.map(async (item, index) => {
           const itemProperties = { ...item.props, ...fetcherProperties };
@@ -190,14 +218,18 @@ const FetcherUtilities = {
             return await item.fetcher(itemProperties);
           } catch (error) {
             if (FetcherUtilities.isAbortError(error)) throw error;
-            console.error(
-              `Error in feed fetcher ${item.name ?? `#${index}`}:`,
-              error,
-            );
+            failed = true;
+            if (!FetcherUtilities.isFeedFetchError(error)) {
+              console.error(
+                `Error in feed fetcher ${item.name ?? `#${index}`}:`,
+                error,
+              );
+            }
             return [];
           }
         }),
       );
+      if (failed) options.onFetchError?.();
 
       let allPosts = data.flat();
 
@@ -242,6 +274,7 @@ const FetcherUtilities = {
         return oldPosts;
       }
       console.error("Error processing posts:", error);
+      options.onFetchError?.();
       // Keep what is already on screen rather than wiping it.
       return oldPosts;
     }
