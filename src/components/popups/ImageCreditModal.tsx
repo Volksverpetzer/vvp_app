@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import BottomSheetModal from "#/components/popups/BottomSheetModal";
+import UiModal from "#/components/ui/UiModal";
 import UiPressable from "#/components/ui/UiPressable";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
@@ -33,7 +33,8 @@ const ImageCreditModal = ({
     : undefined;
 
   return (
-    <BottomSheetModal
+    <UiModal
+      variant="sheet"
       isVisible={isVisible}
       onClose={onClose}
       title="Bildquelle"
@@ -60,7 +61,7 @@ const ImageCreditModal = ({
           </UiPressable>
         </>
       ) : null}
-    </BottomSheetModal>
+    </UiModal>
   );
 };
 

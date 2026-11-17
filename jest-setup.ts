@@ -9,6 +9,42 @@ declare global {
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
+// Worklets has no native module under Jest, and Reanimated 4.7 throws on
+// import under the native preset (even through its own mock), so stand in
+// for the parts the app uses. Animations finish immediately. Tests that need
+// more still override this with their own jest.mock.
+jest.mock("react-native-worklets", () =>
+  require("react-native-worklets/src/mock"),
+);
+jest.mock("react-native-reanimated", () => {
+  const { View } = require("react-native");
+  return {
+    __esModule: true,
+    // Gesture Handler checks for createAnimatedComponent when it loads
+    default: {
+      View,
+      createAnimatedComponent: (component: unknown) => component,
+    },
+    // Gesture Handler's gesture hooks check config values with isSharedValue
+    isSharedValue: () => false,
+    // Shared values keep their identity across renders, like the real ones
+    useSharedValue: (initial: unknown) =>
+      require("react").useRef({ value: initial }).current,
+    useAnimatedStyle: (factory: () => object) => factory(),
+    withTiming: (
+      toValue: unknown,
+      _config?: unknown,
+      callback?: (finished: boolean) => void,
+    ) => {
+      callback?.(true);
+      return toValue;
+    },
+  };
+});
+// Gesture Handler's own Jest mocks; with Worklets mocked it otherwise calls
+// native methods that jest-expo's generic module mock lacks
+require("react-native-gesture-handler/jestSetup");
+
 jest.mock("@react-native-vector-icons/lucide/static", () => ({
   default: jest.fn(),
   __esModule: true,

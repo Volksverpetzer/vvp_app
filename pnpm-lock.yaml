@@ -176,9 +176,6 @@ overrides:
   zod@^4: 4.6.7
   react-test-renderer: 19.3.0
 
-patchedDependencies:
-  react-native-modal@14.0.0-rc.1: cfb941674365778b17c2d0d3aea786078cca3a7f2099f51a9eceb18dc47cd97f
-
 importers:
 
   .:
@@ -345,9 +342,6 @@ importers:
       react-native-hyperlink:
         specifier: 0.1.2
         version: 0.1.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
-      react-native-modal:
-        specifier: 14.0.0-rc.1
-        version: 14.0.0-rc.1(patch_hash=cfb941674365778b17c2d0d3aea786078cca3a7f2099f51a9eceb18dc47cd97f)(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       react-native-nitro-modules:
         specifier: 0.37.2
         version: 0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -5858,9 +5852,6 @@ packages:
   react-is@19.3.1:
     resolution: {integrity: sha512-RRieF6IyxQBkcK6pP8xOHprLTPW6QjRkbGdImtqNme+/hYVwCZkLQLdlZGOhUqXwkS9IEynaGvPJtv6XB/cz0Q==}
 
-  react-native-animatable@1.4.0:
-    resolution: {integrity: sha512-DZwaDVWm2NBvBxf7I0wXKXLKb/TxDnkV53sWhCvei1pRyTX3MVFpkvdYBknNBqPrxYuAIlPxEp7gJOidIauUkw==}
-
   react-native-drawer-layout@4.2.12:
     resolution: {integrity: sha512-qYmntEctkMSodN7pnC2llV21nswImLFPHJeT3PJXSJqZdU4jzDATR8iVi66sXkrtoOLJ2+EvXxgd7sMMpV4ViA==}
     peerDependencies:
@@ -5886,12 +5877,6 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
-
-  react-native-modal@14.0.0-rc.1:
-    resolution: {integrity: sha512-v5pvGyx1FlmBzdHyPqBsYQyS2mIJhVmuXyNo5EarIzxicKhuoul6XasXMviGcXboEUT0dTYWs88/VendojPiVw==}
-    peerDependencies:
-      react: '*'
-      react-native: '>=0.70.0'
 
   react-native-nitro-modules@0.37.2:
     resolution: {integrity: sha512-Odnrq/p6/q0R01qZlkqeXu9VHHMuGEnZZmyxMvehEu6QiACNHhBCmAHgyBDqOSo9Lb3G0TscFAT+HG0uxsR/GA==}
@@ -13581,10 +13566,6 @@ snapshots:
 
   react-is@19.3.1: {}
 
-  react-native-animatable@1.4.0:
-    dependencies:
-      prop-types: 15.8.1
-
   react-native-drawer-layout@4.2.12(6f6470d0ad8e8d8d55b6757eb846427d):
     dependencies:
       color: 4.2.3
@@ -13614,12 +13595,6 @@ snapshots:
     dependencies:
       react: 19.3.0
       react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-
-  react-native-modal@14.0.0-rc.1(patch_hash=cfb941674365778b17c2d0d3aea786078cca3a7f2099f51a9eceb18dc47cd97f)(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0):
-    dependencies:
-      react: 19.3.0
-      react-native: 0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      react-native-animatable: 1.4.0
 
   react-native-nitro-modules@0.37.2(react-native@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(@react-native/metro-config@0.88.1(@babel/core@7.29.13(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0):
     dependencies:
