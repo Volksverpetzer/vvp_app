@@ -5,7 +5,7 @@ import { popupStore, popups } from "#/helpers/popups";
 // Settles the store between tests so a leftover popup can't leak over
 const reset = () => {
   popupStore.answer(null);
-  popupStore.closed();
+  popupStore.closed(popupStore.getState().id);
 };
 
 describe("popups", () => {
@@ -17,7 +17,7 @@ describe("popups", () => {
       message: "Text",
       confirmLabel: "Ja",
     });
-    expect(popupStore.getState()).toEqual({
+    expect(popupStore.getState()).toMatchObject({
       request: {
         kind: "confirm",
         title: "Sicher?",
@@ -32,7 +32,7 @@ describe("popups", () => {
     expect(popupStore.getState().visible).toBe(false);
     expect(popupStore.getState().request?.kind).toBe("confirm");
 
-    popupStore.closed();
+    popupStore.closed(popupStore.getState().id);
     await expect(answer).resolves.toBe(true);
   });
 
@@ -49,7 +49,7 @@ describe("popups", () => {
   it("resolves a choose request with the picked index", async () => {
     const answer = popups.choose({ title: "Teilen", options: ["A", "B"] });
     popupStore.answer(1);
-    popupStore.closed();
+    popupStore.closed(popupStore.getState().id);
     await expect(answer).resolves.toBe(1);
   });
 
@@ -65,8 +65,27 @@ describe("popups", () => {
     expect(popupStore.getState().request?.title).toBe("Zwei");
 
     popupStore.answer(null);
-    popupStore.closed();
+    popupStore.closed(popupStore.getState().id);
     await expect(second).resolves.toBeNull();
+  });
+
+  it("ignores a late close report from a popup that was replaced", async () => {
+    popups.confirm({ title: "Eins", message: "", confirmLabel: "OK" });
+    popupStore.answer(true);
+    const replacedId = popupStore.getState().id;
+    // A new popup opens while the first is still animating out
+    let settled = false;
+    const second = popups.choose({ title: "Zwei", options: ["A", "B"] });
+    second.then(() => (settled = true));
+
+    popupStore.closed(replacedId);
+    await Promise.resolve();
+    expect(settled).toBe(false);
+    expect(popupStore.getState().visible).toBe(true);
+
+    popupStore.answer(1);
+    popupStore.closed(popupStore.getState().id);
+    await expect(second).resolves.toBe(1);
   });
 
   it("ignores a second answer while the popup is closing", async () => {
@@ -77,7 +96,7 @@ describe("popups", () => {
     });
     popupStore.answer(false);
     popupStore.answer(true);
-    popupStore.closed();
+    popupStore.closed(popupStore.getState().id);
     await expect(answer).resolves.toBe(false);
   });
 
@@ -87,7 +106,7 @@ describe("popups", () => {
     popups.choose({ title: "Teilen", options: ["A"] });
     popupStore.answer(0);
     unsubscribe();
-    popupStore.closed();
+    popupStore.closed(popupStore.getState().id);
     expect(calls).toBe(2);
   });
 });

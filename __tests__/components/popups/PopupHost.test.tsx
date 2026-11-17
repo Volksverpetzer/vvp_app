@@ -10,7 +10,7 @@ jest.mock("#/components/Icons", () => ({
 
 const reset = () => {
   popupStore.answer(null);
-  popupStore.closed();
+  popupStore.closed(popupStore.getState().id);
 };
 
 describe("PopupHost", () => {
@@ -40,7 +40,7 @@ describe("PopupHost", () => {
     expect(popupStore.getState().visible).toBe(false);
 
     await act(() => {
-      popupStore.closed();
+      popupStore.closed(popupStore.getState().id);
     });
     await expect(answer).resolves.toBe(true);
   });
@@ -58,7 +58,7 @@ describe("PopupHost", () => {
 
     await fireEvent.press(getByText("Abbrechen"));
     await act(() => {
-      popupStore.closed();
+      popupStore.closed(popupStore.getState().id);
     });
     await expect(answer).resolves.toBe(false);
   });
@@ -76,7 +76,7 @@ describe("PopupHost", () => {
     expect(getByTestId("popup-choose")).toBeTruthy();
     await fireEvent.press(getByText("Faktencheck"));
     await act(() => {
-      popupStore.closed();
+      popupStore.closed(popupStore.getState().id);
     });
     await expect(answer).resolves.toBe(1);
   });
@@ -90,7 +90,7 @@ describe("PopupHost", () => {
 
     await fireEvent.press(getByLabelText("Schließen"));
     await act(() => {
-      popupStore.closed();
+      popupStore.closed(popupStore.getState().id);
     });
     await expect(answer).resolves.toBeNull();
   });

@@ -19,7 +19,7 @@ const dismiss = () => popupStore.answer(null);
  * in the root layout.
  */
 const PopupHost = () => {
-  const { request, visible } = useSyncExternalStore(
+  const { request, id, visible } = useSyncExternalStore(
     popupStore.subscribe,
     popupStore.getState,
   );
@@ -27,13 +27,14 @@ const PopupHost = () => {
   const background = Colors[colorScheme].background;
 
   if (!request) return null;
+  const onClosed = () => popupStore.closed(id);
 
   if (request.kind === "confirm") {
     return (
       <UiModal
         isVisible={visible}
         onClose={() => popupStore.answer(false)}
-        onClosed={popupStore.closed}
+        onClosed={onClosed}
         variant="dialog"
         title={request.title}
         testID="popup-confirm"
@@ -63,7 +64,7 @@ const PopupHost = () => {
     <UiModal
       isVisible={visible}
       onClose={dismiss}
-      onClosed={popupStore.closed}
+      onClosed={onClosed}
       variant="sheet"
       title={request.title}
       testID="popup-choose"

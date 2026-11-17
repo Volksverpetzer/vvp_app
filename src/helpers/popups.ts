@@ -32,13 +32,18 @@ export type PopupRequest =
 
 export interface PopupState {
   request: PopupRequest | null;
+  /**
+   * Increases with every popup; the host passes it back to `closed`, so a
+   * late close report from a replaced popup can't settle the current one.
+   */
+  id: number;
   /** False while the popup animates out; the request stays for that. */
   visible: boolean;
 }
 
 type Answer = boolean | number | null;
 
-let state: PopupState = { request: null, visible: false };
+let state: PopupState = { request: null, id: 0, visible: false };
 // The answer given by the user, delivered once the popup has closed
 let pendingAnswer: Answer = null;
 let pendingResolve: ((answer: Answer) => void) | null = null;
@@ -58,7 +63,7 @@ const open = (request: PopupRequest): Promise<Answer> => {
   return new Promise((resolve) => {
     pendingResolve = resolve;
     pendingAnswer = cancelValue(request);
-    setState({ request, visible: true });
+    setState({ request, id: state.id + 1, visible: true });
   });
 };
 
@@ -76,8 +81,9 @@ export const popupStore = {
     pendingAnswer = value;
     setState({ ...state, visible: false });
   },
-  /** Called by the host once the popup is fully gone. */
-  closed() {
+  /** Called by the host once the popup with this id is fully gone. */
+  closed(id: number) {
+    if (id !== state.id) return;
     const resolve = pendingResolve;
     pendingResolve = null;
     resolve?.(pendingAnswer);
