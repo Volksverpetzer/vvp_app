@@ -146,6 +146,49 @@ describe("Feed paging", () => {
     expect(screen.queryByText(/Nicht gefunden/)).toBeNull();
   });
 
+  it("keeps the load-more guard when a superseded load-more settles late", async () => {
+    const releases: ((value: any[]) => void)[] = [];
+    const wp = jest.fn(({ page = 1 }: any) =>
+      page === 2
+        ? new Promise<any[]>((resolve) => {
+            releases.push(resolve);
+          })
+        : Promise.resolve([0, 1, 2].map((i) => post(`p1-${i}`, 20 - i))),
+    );
+    await render(<Feed fetchers={[{ fetcher: wp }]} />);
+    await waitFor(() => expect(list().data).toHaveLength(3));
+
+    // Load-more A, superseded by a refresh; its fetcher ignores the abort.
+    let staleLoadMore!: Promise<unknown>;
+    await act(() => {
+      staleLoadMore = list().onEndReached();
+    });
+    await act(() => {
+      list().refreshControl.props.onRefresh();
+    });
+    await waitFor(() =>
+      expect(list().refreshControl.props.refreshing).toBe(false),
+    );
+
+    // Load-more B starts; keep a handler from before B re-rendered, as a
+    // second onEndReached arriving before the state update would use.
+    const onEndReached = list().onEndReached;
+    await act(() => {
+      void onEndReached();
+    });
+    // A settles late: it must not clear B's guard.
+    await act(async () => {
+      releases[0]([]);
+      await staleLoadMore;
+    });
+    await act(() => {
+      void onEndReached();
+    });
+
+    const page2Calls = wp.mock.calls.filter(([props]: any) => props.page === 2);
+    expect(page2Calls).toHaveLength(2);
+  });
+
   it("shows the end-of-feed prompt once a load-more brings nothing new", async () => {
     const wp = jest.fn(({ page = 1 }: any) =>
       Promise.resolve(

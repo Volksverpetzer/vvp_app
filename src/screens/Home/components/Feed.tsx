@@ -70,6 +70,10 @@ const Feed = (properties: FeedProperties) => {
   // Synchronous guard against a second onEndReached firing before the
   // `loadmore` state update has re-rendered.
   const loadingMoreRef = useRef(false);
+  // Bumped by every load-more and by reload(), so a superseded load-more that
+  // settles late (e.g. a fetcher ignoring the abort signal) does not clear the
+  // guard of the request that replaced it.
+  const loadMoreGenerationRef = useRef(0);
   // Posts the date cutoff hid on the first page. Non-paginated feeds
   // (Bluesky, YouTube, …) return the same list on every page, so applying the
   // cutoff again on load-more would keep discarding older WordPress articles;
@@ -182,6 +186,7 @@ const Feed = (properties: FeedProperties) => {
     setPosts([]);
     heldBackRef.current = [];
     loadingMoreRef.current = false;
+    loadMoreGenerationRef.current += 1;
     getPosts(undefined, []);
   }, [getPosts]);
 
@@ -207,6 +212,7 @@ const Feed = (properties: FeedProperties) => {
   const onLoadMore = useCallback(async () => {
     if (loadmore || loadingMoreRef.current) return;
     loadingMoreRef.current = true;
+    const generation = ++loadMoreGenerationRef.current;
     setLoadmore(true);
     const nextPage = page + 1;
     try {
@@ -218,7 +224,9 @@ const Feed = (properties: FeedProperties) => {
       // superseded by pull-to-refresh) must keep the spinner footer.
       else if (received === false) setIsLoadingMore(false);
     } finally {
-      loadingMoreRef.current = false;
+      if (loadMoreGenerationRef.current === generation) {
+        loadingMoreRef.current = false;
+      }
     }
   }, [loadmore, page, getPosts, posts]);
 
