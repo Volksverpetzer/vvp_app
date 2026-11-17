@@ -98,23 +98,33 @@ const UiModal = ({
   // The closing branch also runs on first render while hidden; only a modal
   // that was actually open may report being closed
   const wasOpen = useRef(false);
-  // Read by the close callbacks, which can arrive after the modal has been
-  // reopened: the animation's completion is queued to the JS thread, and
-  // iOS reports the old native dismissal late. Those must not close it again.
-  const isVisibleReference = useRef(isVisible);
-  isVisibleReference.current = isVisible;
+  // Bumped on every open and close. Each close hands its number to its own
+  // completion callback, which only acts if nothing has happened since: the
+  // callback is queued to the JS thread, so it can arrive after a reopen (or
+  // a reopen and another close) and must not end that newer transition.
+  const transition = useRef(0);
+  // The transition whose close has unmounted the modal; iOS's late native
+  // dismissal only counts if it still belongs to that close
+  const hiddenTransition = useRef(-1);
   // iOS reports the end of the native dismissal via onDismiss (iOS only);
   // everywhere else the modal is gone once it unmounts
-  const handleHidden = useCallback(() => {
-    if (isVisibleReference.current) return;
+  const handleHidden = useCallback((closeTransition: number) => {
+    if (closeTransition !== transition.current) return;
+    hiddenTransition.current = closeTransition;
     setMounted(false);
     if (Platform.OS !== "ios" && wasOpen.current) {
       wasOpen.current = false;
       onClosedReference.current?.();
     }
   }, []);
+  const handleDismiss = () => {
+    if (hiddenTransition.current !== transition.current) return;
+    wasOpen.current = false;
+    onClosedReference.current?.();
+  };
 
   useEffect(() => {
+    const currentTransition = ++transition.current;
     if (isVisible) {
       wasOpen.current = true;
       setMounted(true);
@@ -128,7 +138,7 @@ const UiModal = ({
         0,
         { duration: ANIMATION_DURATION },
         (finished) => {
-          if (finished) scheduleOnRN(handleHidden);
+          if (finished) scheduleOnRN(handleHidden, currentTransition);
         },
       );
     }
@@ -204,11 +214,7 @@ const UiModal = ({
       statusBarTranslucent
       navigationBarTranslucent
       onRequestClose={onClose}
-      onDismiss={() => {
-        if (isVisibleReference.current) return;
-        wasOpen.current = false;
-        onClosedReference.current?.();
-      }}
+      onDismiss={handleDismiss}
       testID={testID}
     >
       {/* Gestures inside a Modal need their own root view on Android */}

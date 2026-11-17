@@ -142,6 +142,36 @@ describe("UiModal onClosed", () => {
     expect(screen.getByText("Inhalt")).toBeTruthy();
   });
 
+  it("lets only the latest close finish after close, reopen, close", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    const onClosed = jest.fn();
+    const worklets = jest.requireMock<any>("react-native-worklets");
+    const queued: (() => void)[] = [];
+    const spy = jest
+      .spyOn(worklets, "scheduleOnRN")
+      .mockImplementation((callback: any, ...callbackArguments: any[]) => {
+        queued.push(() => callback(...callbackArguments));
+      });
+    const screen = await render(withOnClosed(true, onClosed));
+    await screen.rerender(withOnClosed(false, onClosed));
+    await screen.rerender(withOnClosed(true, onClosed));
+    await screen.rerender(withOnClosed(false, onClosed));
+    spy.mockRestore();
+
+    // The first close's callback arrives during the second close
+    await act(() => {
+      queued[0]();
+    });
+    expect(onClosed).not.toHaveBeenCalled();
+    expect(screen.getByText("Inhalt")).toBeTruthy();
+
+    await act(() => {
+      queued[1]();
+    });
+    expect(onClosed).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText("Inhalt")).toBeNull();
+  });
+
   it("ignores a late iOS dismissal once reopened", async () => {
     jest.replaceProperty(Platform, "OS", "ios");
     const onClosed = jest.fn();
