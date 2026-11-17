@@ -1183,6 +1183,23 @@ describe("shouldStartRequest (embed navigation)", () => {
     expect(onLinkPress).toHaveBeenCalledWith(undefined, external);
   });
 
+  it("upgrades a tapped plain-http link to https on Android", () => {
+    const onLinkPress = jest.fn();
+    const allowed = shouldStartRequest(
+      {
+        url: "http://www.example.org/source",
+        isTopFrame: true,
+        navigationType: "other",
+        loading: false,
+      },
+      frame,
+      onLinkPress,
+      "android",
+    );
+    expect(allowed).toBe(false);
+    expect(onLinkPress).toHaveBeenCalledWith(undefined, external);
+  });
+
   it("keeps redirects during the initial load inside the embed on Android", () => {
     const onLinkPress = jest.fn();
     const allowed = shouldStartRequest(

@@ -365,8 +365,13 @@ export const shouldStartRequest = (
   const frameParts = frameHost?.split(".") || [];
   if (requestHost && requestHost?.includes("platform.twitter")) return true;
   if (requestParts.at(-2) !== frameParts.at(-2)) {
-    if (isHttpsUrl(requestUrl)) {
-      onLinkPress(undefined, requestUrl);
+    // Upgrade a plain-http link (as onLinkPress in helpers/Linking does)
+    // rather than blocking the tap silently.
+    const href = requestUrl.startsWith("http://")
+      ? `https://${requestUrl.slice("http://".length)}`
+      : requestUrl;
+    if (isHttpsUrl(href)) {
+      onLinkPress(undefined, href);
     }
     return false;
   }
