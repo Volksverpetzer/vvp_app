@@ -92,9 +92,8 @@ describe("TikTokFetcher", () => {
       .mockRejectedValue(new Error("Network error"));
 
     // Execute
-    const result = await TikTokFetcher.feedFetcher();
-
-    // Assert
-    expect(result).toEqual([]);
+    // The error propagates so fetchAndProcessPosts can report the feed as
+    // failed rather than empty.
+    await expect(TikTokFetcher.feedFetcher()).rejects.toThrow();
   });
 });

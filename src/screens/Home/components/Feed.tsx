@@ -60,6 +60,9 @@ const Feed = (properties: FeedProperties) => {
   const [rerender, setRerender] = useState(0);
   const [initialLoad, setInitialLoad] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(true);
+  // The last load-more failed (e.g. network down): show a retry instead of
+  // the end-of-feed prompt, which would claim there are no more posts.
+  const [loadMoreFailed, setLoadMoreFailed] = useState(false);
   const [page, setPage] = useState(1);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
@@ -123,20 +126,22 @@ const Feed = (properties: FeedProperties) => {
 
   const getPosts = useCallback(
     /**
-     * @returns true if the list grew, false if it didn't, and undefined if
-     *   the request was aborted (superseded), so callers can tell "no more
-     *   posts" apart from "this load was cancelled".
+     * @returns "grew" if the list grew, "unchanged" if every feed loaded but
+     *   brought nothing new, "failed" if nothing new came because a feed
+     *   failed to load, and undefined if the request was aborted
+     *   (superseded). Only "unchanged" means the feed is exhausted.
      */
     async (
       fetcherProperties?: { page?: number; param?: string },
       oldPosts: Post<unknown>[] = [],
       { loadMore = false }: { loadMore?: boolean } = {},
-    ): Promise<boolean | undefined> => {
+    ): Promise<"grew" | "unchanged" | "failed" | undefined> => {
       const controller = new AbortController();
       fetchControllerRef.current?.abort();
       fetchControllerRef.current = controller;
 
       let heldBack: Post<unknown>[] = [];
+      let fetchFailed = false;
       try {
         const newPosts = await FetcherUtilities.fetchAndProcessPosts(
           properties.fetchers,
@@ -148,18 +153,22 @@ const Feed = (properties: FeedProperties) => {
             onCutoff: (dropped) => {
               heldBack = dropped;
             },
+            onFetchError: () => {
+              fetchFailed = true;
+            },
           },
         );
         if (controller.signal.aborted) return undefined;
         heldBackRef.current = heldBack;
         setPosts(newPosts);
         updateLoadingStates();
-        return oldPosts.length < newPosts.length;
+        if (oldPosts.length < newPosts.length) return "grew";
+        return fetchFailed ? "failed" : "unchanged";
       } catch (error) {
         if (controller.signal.aborted) return undefined;
         console.error("Error fetching posts:", error);
         updateLoadingStates();
-        return false;
+        return "failed";
       } finally {
         if (fetchControllerRef.current === controller) {
           fetchControllerRef.current = null;
@@ -183,6 +192,7 @@ const Feed = (properties: FeedProperties) => {
     setRefresh(true);
     setPage(1);
     setIsLoadingMore(true);
+    setLoadMoreFailed(false);
     setPosts([]);
     heldBackRef.current = [];
     loadingMoreRef.current = false;
@@ -219,10 +229,18 @@ const Feed = (properties: FeedProperties) => {
       const received = await getPosts({ page: nextPage }, posts, {
         loadMore: true,
       });
-      if (received) setPage(nextPage);
-      // Only an actual "nothing new" ends the feed; an aborted load (e.g.
-      // superseded by pull-to-refresh) must keep the spinner footer.
-      else if (received === false) setIsLoadingMore(false);
+      // Only an actual "nothing new" ends the feed. An aborted load (e.g.
+      // superseded by pull-to-refresh) keeps the spinner footer, and a failed
+      // one keeps the page so the retry asks for it again.
+      if (received === "grew") {
+        setPage(nextPage);
+        setLoadMoreFailed(false);
+      } else if (received === "failed") {
+        setLoadMoreFailed(true);
+      } else if (received === "unchanged") {
+        setLoadMoreFailed(false);
+        setIsLoadingMore(false);
+      }
     } finally {
       if (loadMoreGenerationRef.current === generation) {
         loadingMoreRef.current = false;
@@ -335,7 +353,27 @@ const Feed = (properties: FeedProperties) => {
         }
         ListFooterComponent={
           posts.length > 0 &&
-          (isLoadingMore ? (
+          (loadMoreFailed && !loadmore ? (
+            <View style={{ paddingBottom: spacing.xxxl, alignItems: "center" }}>
+              <UiPressable
+                accessibilityRole="button"
+                style={globalStyles.centered}
+                onPress={onLoadMore}
+              >
+                <UiText
+                  size="lg"
+                  style={{
+                    textAlign: "center",
+                    paddingVertical: spacing.xxxl,
+                    color: corporate,
+                  }}
+                >
+                  Weitere Beiträge konnten nicht geladen werden. Tippe, um es
+                  erneut zu versuchen.
+                </UiText>
+              </UiPressable>
+            </View>
+          ) : isLoadingMore ? (
             <UiSpinner size="large" />
           ) : (
             <View style={{ paddingBottom: spacing.xxxl, alignItems: "center" }}>

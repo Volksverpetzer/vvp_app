@@ -94,8 +94,8 @@ describe("PodcastFetcher", () => {
       .spyOn(API, "getPodcastFeed")
       .mockRejectedValue(new Error("Network error"));
 
-    const result = await PodcastFetcher.feedFetcher();
-
-    expect(result).toEqual([]);
+    // The error propagates so fetchAndProcessPosts can report the feed as
+    // failed rather than empty.
+    await expect(PodcastFetcher.feedFetcher()).rejects.toThrow();
   });
 });

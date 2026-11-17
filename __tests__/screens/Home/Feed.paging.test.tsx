@@ -189,6 +189,34 @@ describe("Feed paging", () => {
     expect(page2Calls).toHaveLength(2);
   });
 
+  it("offers a retry instead of the end-of-feed prompt when a load-more fails", async () => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    let offline = false;
+    const wp = jest.fn(({ page = 1 }: any) =>
+      offline
+        ? Promise.reject(new Error("offline"))
+        : Promise.resolve([0, 1, 2].map((i) => post(`p${page}-${i}`, 20 - i))),
+    );
+    await render(<Feed fetchers={[{ fetcher: wp, name: "wp" }]} />);
+    await waitFor(() => expect(list().data).toHaveLength(3));
+
+    offline = true;
+    await act(async () => {
+      await list().onEndReached();
+    });
+    expect(screen.queryByText(/Nicht gefunden/)).toBeNull();
+    expect(screen.queryByText(/nicht geladen werden/)).not.toBeNull();
+
+    // Back online: the retry asks for the same page again.
+    offline = false;
+    await act(async () => {
+      await list().onEndReached();
+    });
+    expect(wp).toHaveBeenLastCalledWith(expect.objectContaining({ page: 2 }));
+    expect(list().data).toHaveLength(6);
+    expect(screen.queryByText(/nicht geladen werden/)).toBeNull();
+  });
+
   it("shows the end-of-feed prompt once a load-more brings nothing new", async () => {
     const wp = jest.fn(({ page = 1 }: any) =>
       Promise.resolve(
