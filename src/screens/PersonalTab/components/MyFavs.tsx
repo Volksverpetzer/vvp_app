@@ -113,10 +113,21 @@ const loadFavoritePodcast = async (
   try {
     // Prefer the snapshot stored with the favorite; Podigee has no by-id
     // endpoint, so otherwise search the (server-cached) feed for the episode.
-    const episode =
-      payload ?? (await API.getPodcastFeed()).find((e) => e.id === id);
+    if (payload) return mapPodcastEpisode(payload) ?? undefined;
+
+    // getPodcastFeed throws on a malformed response, which lands in the catch
+    // below and keeps the favorite. Only purge when the feed loaded with
+    // episodes and this one is genuinely gone — an empty list is more likely
+    // an upstream hiccup than every episode being deleted.
+    const episodes = await API.getPodcastFeed();
+    const episode = episodes.find((e) => e.id === id);
     if (!episode) {
-      await FavoritesStore.removeFavorite(id);
+      if (episodes.length > 0) {
+        console.warn(
+          `Podcast episode not found for id: ${id}, removing from favorites`,
+        );
+        await FavoritesStore.removeFavorite(id);
+      }
       return undefined;
     }
     return mapPodcastEpisode(episode) ?? undefined;

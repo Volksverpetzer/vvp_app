@@ -80,6 +80,7 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
   default: {
     getInstaPost: jest.fn(),
+    getPodcastFeed: jest.fn(),
   },
 }));
 
@@ -356,6 +357,92 @@ describe("MyFavs", () => {
         contentType: FAV_TYPE_PODCAST,
       }),
     );
+  });
+
+  describe("podcast favorite without a stored snapshot", () => {
+    const episode = {
+      id: "ep-in-feed",
+      title: "Folge 25",
+      description: "Beschreibung",
+      published_at: "2026-01-06T12:00:00Z",
+      link: "https://volksverpetzer.podigee.io/26-folge-25",
+      audio_url: "https://audio.example.com/ep25.mp3",
+      image_url: "https://example.com/cover.png",
+      duration: 1800,
+    };
+
+    beforeEach(() => {
+      (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+        "ep-legacy": { contentType: FAV_TYPE_PODCAST },
+      });
+    });
+
+    it("keeps the favorite when the feed request fails (malformed body)", async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      (API.getPodcastFeed as jest.Mock).mockRejectedValue(
+        new Error("Podcast feed response has no episodes list"),
+      );
+
+      await render(<MyFavs />);
+
+      await waitFor(() => {
+        expect(API.getPodcastFeed).toHaveBeenCalled();
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          "Failed to load podcast favorite ep-legacy:",
+          expect.any(Error),
+        );
+      });
+      expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+      expect(GenericPost).not.toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("keeps the favorite when the feed has no episodes at all", async () => {
+      (API.getPodcastFeed as jest.Mock).mockResolvedValue([]);
+
+      await render(<MyFavs />);
+
+      await waitFor(() => {
+        expect(API.getPodcastFeed).toHaveBeenCalled();
+      });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+    });
+
+    it("removes the favorite when a valid feed no longer contains the episode", async () => {
+      const consoleWarnSpy = jest
+        .spyOn(console, "warn")
+        .mockImplementation(() => {});
+      (API.getPodcastFeed as jest.Mock).mockResolvedValue([episode]);
+      (FavoritesStore.removeFavorite as jest.Mock).mockResolvedValue(undefined);
+
+      await render(<MyFavs />);
+
+      await waitFor(() => {
+        expect(FavoritesStore.removeFavorite).toHaveBeenCalledWith("ep-legacy");
+      });
+      expect(GenericPost).not.toHaveBeenCalled();
+
+      consoleWarnSpy.mockRestore();
+    });
+
+    it("rebuilds the favorite from the feed when the episode is present", async () => {
+      (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+        "ep-in-feed": { contentType: FAV_TYPE_PODCAST },
+      });
+      (API.getPodcastFeed as jest.Mock).mockResolvedValue([episode]);
+
+      await render(<MyFavs />);
+
+      await waitFor(() => {
+        expect(GenericPost).toHaveBeenCalledTimes(1);
+      });
+      expect(mockMapPodcastEpisode).toHaveBeenCalledWith(episode);
+      expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+    });
   });
 
   it("skips a failing Instagram favorite without aborting the rest of the list", async () => {
