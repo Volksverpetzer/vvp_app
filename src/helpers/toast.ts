@@ -31,19 +31,4 @@ export const toast = {
       position: "bottom",
     });
   },
-
-  confirm(text1: string, text2: string, onConfirm: () => void) {
-    Toast.show({
-      type: "info",
-      text1,
-      text2,
-      position: "bottom",
-      visibilityTime: 5000,
-      autoHide: true,
-      onPress: () => {
-        Toast.hide();
-        onConfirm();
-      },
-    });
-  },
 };
