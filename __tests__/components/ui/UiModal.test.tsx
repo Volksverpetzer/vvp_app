@@ -118,6 +118,43 @@ describe("UiModal onClosed", () => {
     await waitFor(() => expect(onClosed).toHaveBeenCalledTimes(1));
   });
 
+  it("ignores a close that completes after the modal was reopened", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    const onClosed = jest.fn();
+    // Hold back the JS-thread callback of the closing animation, as if it
+    // were still queued when the modal is opened again
+    const worklets = jest.requireMock<any>("react-native-worklets");
+    const queued: (() => void)[] = [];
+    const spy = jest
+      .spyOn(worklets, "scheduleOnRN")
+      .mockImplementation((callback: any, ...callbackArguments: any[]) => {
+        queued.push(() => callback(...callbackArguments));
+      });
+    const screen = await render(withOnClosed(true, onClosed));
+    await screen.rerender(withOnClosed(false, onClosed));
+    await screen.rerender(withOnClosed(true, onClosed));
+    await act(() => {
+      for (const run of queued) run();
+    });
+    spy.mockRestore();
+
+    expect(onClosed).not.toHaveBeenCalled();
+    expect(screen.getByText("Inhalt")).toBeTruthy();
+  });
+
+  it("ignores a late iOS dismissal once reopened", async () => {
+    jest.replaceProperty(Platform, "OS", "ios");
+    const onClosed = jest.fn();
+    const screen = await render(withOnClosed(true, onClosed));
+    const { onDismiss } = screen.getByTestId("ui-modal").props;
+    await screen.rerender(withOnClosed(false, onClosed));
+    await screen.rerender(withOnClosed(true, onClosed));
+    await act(() => {
+      onDismiss();
+    });
+    expect(onClosed).not.toHaveBeenCalled();
+  });
+
   it("waits for the native dismissal on iOS", async () => {
     jest.replaceProperty(Platform, "OS", "ios");
     const onClosed = jest.fn();

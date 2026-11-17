@@ -98,9 +98,15 @@ const UiModal = ({
   // The closing branch also runs on first render while hidden; only a modal
   // that was actually open may report being closed
   const wasOpen = useRef(false);
+  // Read by the close callbacks, which can arrive after the modal has been
+  // reopened: the animation's completion is queued to the JS thread, and
+  // iOS reports the old native dismissal late. Those must not close it again.
+  const isVisibleReference = useRef(isVisible);
+  isVisibleReference.current = isVisible;
   // iOS reports the end of the native dismissal via onDismiss (iOS only);
   // everywhere else the modal is gone once it unmounts
   const handleHidden = useCallback(() => {
+    if (isVisibleReference.current) return;
     setMounted(false);
     if (Platform.OS !== "ios" && wasOpen.current) {
       wasOpen.current = false;
@@ -199,6 +205,7 @@ const UiModal = ({
       navigationBarTranslucent
       onRequestClose={onClose}
       onDismiss={() => {
+        if (isVisibleReference.current) return;
         wasOpen.current = false;
         onClosedReference.current?.();
       }}
