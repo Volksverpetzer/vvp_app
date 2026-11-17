@@ -75,6 +75,10 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   const status = useAudioPlayerStatus(player);
   const [track, setTrack] = useState<AudioTrack | null>(null);
   const hasRestored = useRef(false);
+  // Set once the restore (incl. its seek) has settled; saving waits for it.
+  const restoreSettled = useRef(false);
+  // Bumped per playTrack, so a late restore of a previous track is ignored.
+  const loadId = useRef(0);
   const lastSavedTime = useRef(0);
   const wantPlay = useRef(false);
 
@@ -87,6 +91,8 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       hasRestored.current = false;
+      restoreSettled.current = false;
+      loadId.current += 1;
       lastSavedTime.current = 0;
       wantPlay.current = true;
       setTrack(next);
@@ -105,7 +111,11 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
     if (!player.isLoaded) return;
     hasRestored.current = true;
     const { duration } = player;
+    const id = loadId.current;
+    const isStale = () => id !== loadId.current;
     const startIfWanted = () => {
+      if (isStale()) return;
+      restoreSettled.current = true;
       if (wantPlay.current) {
         wantPlay.current = false;
         player.play();
@@ -115,6 +125,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       PersonalStore.getAudioPosition(track.resumeKey)
         .then((position) => {
           if (
+            !isStale() &&
             position > RESUME_MIN_SECONDS &&
             (duration === 0 || position < duration - RESUME_END_MARGIN_SECONDS)
           ) {
@@ -143,11 +154,11 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   }, [status.playing, player, track?.title, track?.artworkUrl]);
 
   // Persist the position every few seconds so it survives an app restart.
-  // Not before the restore ran: until then `status` may still describe the
-  // previous track, whose position must not land under this track's key.
+  // Not before the restore has settled: until then `status` may still describe
+  // the previous track, whose position must not land under this track's key.
   useEffect(() => {
     if (!track?.resumeKey || !status.isLoaded || !status.playing) return;
-    if (!hasRestored.current) return;
+    if (!restoreSettled.current) return;
     if (
       Math.abs(status.currentTime - lastSavedTime.current) >=
       RESUME_SAVE_INTERVAL_SECONDS

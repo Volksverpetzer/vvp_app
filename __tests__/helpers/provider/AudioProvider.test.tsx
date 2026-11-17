@@ -185,14 +185,73 @@ describe("AudioProvider", () => {
       playing: true,
       currentTime: 300,
     } as AudioStatus);
-    const { getByTestId } = await renderProvider();
+    const { getByTestId, rerender } = await renderProvider();
     await fireEvent.press(getByTestId("play"));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalled());
+    // A status tick after A's restore settled saves A's position.
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 310,
+    } as AudioStatus);
+    await rerender(
+      <AudioProvider>
+        <Consumer />
+      </AudioProvider>,
+    );
     await waitFor(() =>
-      expect(mockSetAudioPosition).toHaveBeenCalledWith(TRACK_URL, 300),
+      expect(mockSetAudioPosition).toHaveBeenCalledWith(TRACK_URL, 310),
     );
 
     mockPlayer.isLoaded = false;
     await fireEvent.press(getByTestId("play-other"));
+    expect(mockSetAudioPosition).not.toHaveBeenCalledWith(
+      OTHER_URL,
+      expect.anything(),
+    );
+  });
+
+  it("does not save the previous track's position while the next track's restore is pending, even if it loaded at once", async () => {
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 300,
+    } as AudioStatus);
+    const { getByTestId, rerender } = await renderProvider();
+    await fireEvent.press(getByTestId("play"));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalled());
+    // A status tick after A's restore settled saves A's position.
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: 310,
+    } as AudioStatus);
+    await rerender(
+      <AudioProvider>
+        <Consumer />
+      </AudioProvider>,
+    );
+    await waitFor(() =>
+      expect(mockSetAudioPosition).toHaveBeenCalledWith(TRACK_URL, 310),
+    );
+
+    // B is ready right after replace() (player.isLoaded stays true) while the
+    // status hook still reports A playing at 300 s; B's restore is pending.
+    let resolvePosition: (value: number) => void = () => {};
+    mockGetAudioPosition.mockReturnValue(
+      new Promise<number>((resolve) => {
+        resolvePosition = resolve;
+      }),
+    );
+    await fireEvent.press(getByTestId("play-other"));
+    expect(mockGetAudioPosition).toHaveBeenCalledWith(OTHER_URL);
+    expect(mockSetAudioPosition).not.toHaveBeenCalledWith(
+      OTHER_URL,
+      expect.anything(),
+    );
+
+    resolvePosition(0);
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalledTimes(2));
     expect(mockSetAudioPosition).not.toHaveBeenCalledWith(
       OTHER_URL,
       expect.anything(),
