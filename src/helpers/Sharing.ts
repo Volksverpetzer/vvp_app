@@ -3,10 +3,10 @@ import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
 import * as Sharing from "expo-sharing";
 import { Platform, Share } from "react-native";
-import Toast from "react-native-toast-message";
 
 import Config from "#/constants/Config";
 import { registerEvent } from "#/helpers/network/Analytics";
+import { popups } from "#/helpers/popups";
 import type { ShareableType } from "#/types";
 
 import { Achievements } from "./Achievements";
@@ -175,7 +175,7 @@ const onShare = async (
 };
 
 /**
- * multishare is a wrapper for onShare. It will show an alert with the given shareable items.
+ * multishare is a wrapper for onShare. With several items it first lets the user pick one in a bottom sheet.
  * @returns : Promise<boolean> - true if the user shared something, false if the user cancelled the sharing
  * On Android Sharing will always be registered if the Share Sheet opens, on iOS only if the user actually shared the content.
  * @param shareable ShareableType[] - Array of ShareableType objects
@@ -189,28 +189,12 @@ const multishare = async (
   if (shareable.length === 1) {
     return await onShare(shareable[0].url, properties);
   } else {
-    return new Promise((resolve) => {
-      Toast.show({
-        type: "share",
-        position: "bottom",
-        autoHide: false,
-        onHide: () => {},
-        props: {
-          items: shareable.map((item) => ({
-            title: item.title,
-            onPress: async () => {
-              Toast.hide();
-              const result: boolean = await onShare(item.url, properties);
-              resolve(result);
-            },
-          })),
-          onCancel: () => {
-            Toast.hide();
-            resolve(false);
-          },
-        },
-      });
+    const choice = await popups.choose({
+      title: "Teilen",
+      options: shareable.map((item) => item.title),
     });
+    if (choice === null) return false;
+    return await onShare(shareable[choice].url, properties);
   }
 };
 

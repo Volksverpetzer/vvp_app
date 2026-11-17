@@ -2,7 +2,6 @@ import type { ToastConfig } from "react-native-toast-message";
 import { BaseToast, ErrorToast } from "react-native-toast-message";
 
 import MissionPopup from "#/components/popups/MissionPopup";
-import ToastShareSheet from "#/components/popups/ToastShareSheet";
 import { fontSizes } from "#/constants/FontSizes";
 
 const TOAST_TEXT_STYLES = {
@@ -22,8 +21,5 @@ export const toastConfig: ToastConfig = {
   ),
   achievement: ({ text1, text2 }) => (
     <MissionPopup text1={text1} text2={text2} />
-  ),
-  share: ({ props }) => (
-    <ToastShareSheet items={props.items} onCancel={props.onCancel} />
   ),
 };

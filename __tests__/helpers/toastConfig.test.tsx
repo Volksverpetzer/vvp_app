@@ -46,22 +46,4 @@ describe("toastConfig", () => {
     expect(getByText("Erfolg")).toBeTruthy();
     expect(getByText("Yay")).toBeTruthy();
   });
-
-  it("renders the share toast's items via ToastShareSheet", async () => {
-    const onCancel = jest.fn();
-    const { getByText } = await render(
-      <>
-        {toastConfig.share(
-          makeParams({
-            type: "share",
-            props: {
-              items: [{ title: "Link kopieren", onPress: jest.fn() }],
-              onCancel,
-            },
-          }),
-        )}
-      </>,
-    );
-    expect(getByText("Link kopieren")).toBeTruthy();
-  });
 });

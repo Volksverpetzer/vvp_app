@@ -19,6 +19,7 @@ import type { ToastConfig } from "react-native-toast-message";
 import Toast from "react-native-toast-message";
 
 import ChangelogModal from "#/components/popups/ChangelogModal";
+import PopupHost from "#/components/popups/PopupHost";
 import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
 import AppFrame from "#/components/views/AppFrame";
@@ -146,6 +147,7 @@ const RootLayout = () => {
                   />
                 </Stack>
                 <AppToast config={toastConfig} />
+                <PopupHost />
                 <ChangelogModal
                   isVisible={showChangelog}
                   onClose={dismissChangelog}

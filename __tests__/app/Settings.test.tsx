@@ -11,6 +11,7 @@ import { useFocusEffect } from "expo-router";
 import React, { useEffect } from "react";
 
 import SettingsScreen from "#/app/(tabs)/settings";
+import { popups } from "#/helpers/popups";
 import { toast } from "#/helpers/toast";
 
 import type { AsyncMock } from "#tests/mocks/jestTypes";
@@ -150,8 +151,10 @@ jest.mock("#/helpers/toast", () => ({
     success: jest.fn(),
     error: jest.fn(),
     info: jest.fn(),
-    confirm: jest.fn(),
   },
+}));
+jest.mock("#/helpers/popups", () => ({
+  popups: { confirm: jest.fn(() => Promise.resolve(true)), choose: jest.fn() },
 }));
 jest.mock("#/screens/Settings/components/BackupView", () => {
   const { Text } = require("react-native");
@@ -292,27 +295,38 @@ describe("SettingsScreen", () => {
   });
 
   describe("notification reset button confirmation flow", () => {
-    it("shows a confirm toast when pressed", async () => {
+    it("asks for confirmation in a dialog when pressed", async () => {
       const { getByText } = await render(<SettingsScreen />);
       await fireEvent.press(getByText("Benachrichtigungen zurücksetzen"));
-      expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
-        "Benachrichtigungen zurücksetzen?",
-        expect.any(String),
-        expect.any(Function),
+      expect(jest.mocked(popups.confirm)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Benachrichtigungen zurücksetzen?",
+          confirmLabel: "Zurücksetzen",
+        }),
       );
     });
 
-    it("calls registerForPushNotifications and shows success toast on confirm", async () => {
+    it("does nothing when the dialog is cancelled", async () => {
+      jest.mocked(popups.confirm).mockResolvedValueOnce(false);
+      const { getByText } = await render(<SettingsScreen />);
+      await fireEvent.press(getByText("Benachrichtigungen zurücksetzen"));
+      await waitFor(() =>
+        expect(jest.mocked(popups.confirm)).toHaveBeenCalled(),
+      );
+      expect(jest.mocked(toast.success)).not.toHaveBeenCalled();
+    });
+
+    it("calls registerForPushNotifications and shows success toast once confirmed", async () => {
       const Notifications = jest.requireMock("#/helpers/Notifications") as {
         default: { registerForPushNotifications: jest.Mock };
       };
       const { getByText } = await render(<SettingsScreen />);
       await fireEvent.press(getByText("Benachrichtigungen zurücksetzen"));
-      const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
-      onConfirm();
-      expect(
-        Notifications.default.registerForPushNotifications,
-      ).toHaveBeenCalled();
+      await waitFor(() =>
+        expect(
+          Notifications.default.registerForPushNotifications,
+        ).toHaveBeenCalled(),
+      );
       expect(jest.mocked(toast.success)).toHaveBeenCalled();
     });
   });
@@ -332,41 +346,63 @@ describe("SettingsScreen", () => {
   });
 
   describe("achievements reset button confirmation flow", () => {
-    it("shows a confirm toast when pressed", async () => {
+    it("asks for confirmation in a dialog when pressed", async () => {
       const { getByText } = await render(<SettingsScreen />);
       await fireEvent.press(getByText("Alle Erfolge zurücksetzen"));
-      expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
-        "Erfolge zurücksetzen?",
-        expect.any(String),
-        expect.any(Function),
+      expect(jest.mocked(popups.confirm)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Erfolge zurücksetzen?",
+          confirmLabel: "Zurücksetzen",
+        }),
       );
     });
 
-    it("resets achievements and shows success toast on confirm", async () => {
+    it("does nothing when the dialog is cancelled", async () => {
+      jest.mocked(popups.confirm).mockResolvedValueOnce(false);
+      const { getByText } = await render(<SettingsScreen />);
+      await fireEvent.press(getByText("Alle Erfolge zurücksetzen"));
+      await waitFor(() =>
+        expect(jest.mocked(popups.confirm)).toHaveBeenCalled(),
+      );
+      expect(jest.mocked(toast.success)).not.toHaveBeenCalled();
+    });
+
+    it("resets achievements and shows success toast once confirmed", async () => {
       const { Achievements } = jest.requireMock("#/helpers/Achievements") as {
         Achievements: { resetEverything: jest.Mock };
       };
       const { getByText } = await render(<SettingsScreen />);
       await fireEvent.press(getByText("Alle Erfolge zurücksetzen"));
-      const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
-      onConfirm();
-      expect(Achievements.resetEverything).toHaveBeenCalled();
+      await waitFor(() =>
+        expect(Achievements.resetEverything).toHaveBeenCalled(),
+      );
       expect(jest.mocked(toast.success)).toHaveBeenCalled();
     });
   });
 
   describe("intro reset button confirmation flow", () => {
-    it("shows a confirm toast when pressed", async () => {
+    it("asks for confirmation in a dialog when pressed", async () => {
       const { getByText } = await render(<SettingsScreen />);
       await fireEvent.press(getByText("Intro zurücksetzen"));
-      expect(jest.mocked(toast.confirm)).toHaveBeenCalledWith(
-        "Intro zurücksetzen?",
-        "Drücke hier, um das Intro zurückzusetzen",
-        expect.any(Function),
+      expect(jest.mocked(popups.confirm)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Intro zurücksetzen?",
+          confirmLabel: "Zurücksetzen",
+        }),
       );
     });
 
-    it("resets onboarding state and shows success toast on confirm", async () => {
+    it("does nothing when the dialog is cancelled", async () => {
+      jest.mocked(popups.confirm).mockResolvedValueOnce(false);
+      const { getByText } = await render(<SettingsScreen />);
+      await fireEvent.press(getByText("Intro zurücksetzen"));
+      await waitFor(() =>
+        expect(jest.mocked(popups.confirm)).toHaveBeenCalled(),
+      );
+      expect(jest.mocked(toast.success)).not.toHaveBeenCalled();
+    });
+
+    it("resets onboarding state and shows success toast once confirmed", async () => {
       const mock = jest.requireMock("#/helpers/Stores/PersonalStore") as {
         default: {
           setOnboardingDone: jest.Mock;
@@ -375,9 +411,9 @@ describe("SettingsScreen", () => {
       };
       const { getByText } = await render(<SettingsScreen />);
       await fireEvent.press(getByText("Intro zurücksetzen"));
-      const onConfirm = jest.mocked(toast.confirm).mock.calls[0][2];
-      onConfirm();
-      expect(mock.default.setOnboardingDone).toHaveBeenCalledWith(false);
+      await waitFor(() =>
+        expect(mock.default.setOnboardingDone).toHaveBeenCalledWith(false),
+      );
       expect(mock.default.setLastSeenChangelogVersionCode).toHaveBeenCalledWith(
         0,
       );

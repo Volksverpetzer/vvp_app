@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { Platform, StyleSheet, Text } from "react-native";
 
 import UiModal, {
   SWIPE_CLOSE_DISTANCE,
@@ -92,6 +92,129 @@ describe.each(["sheet", "dialog"] as const)("UiModal (%s)", (variant) => {
     const screen = await renderModal(true, variant, onClose);
     await screen.rerender(modal(false, onClose, variant));
     expect(screen.queryByText("Inhalt")).toBeNull();
+  });
+});
+
+describe("UiModal onClosed", () => {
+  const withOnClosed = (isVisible: boolean, onClosed: () => void) => (
+    <UiModal isVisible={isVisible} onClose={jest.fn()} onClosed={onClosed}>
+      <Text>Inhalt</Text>
+    </UiModal>
+  );
+
+  it("does not fire for a modal that was never open", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    const onClosed = jest.fn();
+    await render(withOnClosed(false, onClosed));
+    expect(onClosed).not.toHaveBeenCalled();
+  });
+
+  it("fires once the closing animation has finished outside iOS", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    const onClosed = jest.fn();
+    const screen = await render(withOnClosed(true, onClosed));
+    expect(onClosed).not.toHaveBeenCalled();
+    await screen.rerender(withOnClosed(false, onClosed));
+    await waitFor(() => expect(onClosed).toHaveBeenCalledTimes(1));
+  });
+
+  it("ignores a close that completes after the modal was reopened", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    const onClosed = jest.fn();
+    // Hold back the JS-thread callback of the closing animation, as if it
+    // were still queued when the modal is opened again
+    const worklets = jest.requireMock<any>("react-native-worklets");
+    const queued: (() => void)[] = [];
+    const spy = jest
+      .spyOn(worklets, "scheduleOnRN")
+      .mockImplementation((callback: any, ...callbackArguments: any[]) => {
+        queued.push(() => callback(...callbackArguments));
+      });
+    const screen = await render(withOnClosed(true, onClosed));
+    await screen.rerender(withOnClosed(false, onClosed));
+    await screen.rerender(withOnClosed(true, onClosed));
+    await act(() => {
+      for (const run of queued) run();
+    });
+    spy.mockRestore();
+
+    expect(onClosed).not.toHaveBeenCalled();
+    expect(screen.getByText("Inhalt")).toBeTruthy();
+  });
+
+  it("lets only the latest close finish after close, reopen, close", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    const onClosed = jest.fn();
+    const worklets = jest.requireMock<any>("react-native-worklets");
+    const queued: (() => void)[] = [];
+    const spy = jest
+      .spyOn(worklets, "scheduleOnRN")
+      .mockImplementation((callback: any, ...callbackArguments: any[]) => {
+        queued.push(() => callback(...callbackArguments));
+      });
+    const screen = await render(withOnClosed(true, onClosed));
+    await screen.rerender(withOnClosed(false, onClosed));
+    await screen.rerender(withOnClosed(true, onClosed));
+    await screen.rerender(withOnClosed(false, onClosed));
+    spy.mockRestore();
+
+    // The first close's callback arrives during the second close
+    await act(() => {
+      queued[0]();
+    });
+    expect(onClosed).not.toHaveBeenCalled();
+    expect(screen.getByText("Inhalt")).toBeTruthy();
+
+    await act(() => {
+      queued[1]();
+    });
+    expect(onClosed).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText("Inhalt")).toBeNull();
+  });
+
+  it("ignores a late iOS dismissal once reopened", async () => {
+    jest.replaceProperty(Platform, "OS", "ios");
+    const onClosed = jest.fn();
+    const screen = await render(withOnClosed(true, onClosed));
+    const { onDismiss } = screen.getByTestId("ui-modal").props;
+    await screen.rerender(withOnClosed(false, onClosed));
+    await screen.rerender(withOnClosed(true, onClosed));
+    await act(() => {
+      onDismiss();
+    });
+    expect(onClosed).not.toHaveBeenCalled();
+  });
+
+  it("reports closed only after the unmount has been committed", async () => {
+    jest.replaceProperty(Platform, "OS", "android");
+    let contentWhenClosed: unknown = "not called";
+    const screen = await render(
+      withOnClosed(true, () => {
+        contentWhenClosed = screen.queryByText("Inhalt");
+      }),
+    );
+    await screen.rerender(
+      withOnClosed(false, () => {
+        contentWhenClosed = screen.queryByText("Inhalt");
+      }),
+    );
+    await waitFor(() => expect(contentWhenClosed).not.toBe("not called"));
+    expect(contentWhenClosed).toBeNull();
+  });
+
+  it("waits for the native dismissal on iOS", async () => {
+    jest.replaceProperty(Platform, "OS", "ios");
+    const onClosed = jest.fn();
+    const screen = await render(withOnClosed(true, onClosed));
+    // The test renderer drops a hidden Modal from the tree, so keep a handle
+    // on its native dismissal callback from while it was open
+    const { onDismiss } = screen.getByTestId("ui-modal").props;
+    await screen.rerender(withOnClosed(false, onClosed));
+    expect(onClosed).not.toHaveBeenCalled();
+    await act(() => {
+      onDismiss();
+    });
+    expect(onClosed).toHaveBeenCalledTimes(1);
   });
 });
 
