@@ -184,8 +184,8 @@ importers:
         specifier: 5.64.0
         version: 5.64.0
       '@atproto/api':
-        specifier: 0.32.0
-        version: 0.32.0
+        specifier: 0.32.1
+        version: 0.32.1
       '@babel/runtime':
         specifier: 7.29.14
         version: 7.29.14
@@ -522,8 +522,8 @@ packages:
   '@asamuzakjp/css-color@3.2.0':
     resolution: {integrity: sha512-K1A6z8tS3XsmCMM86xoWdn7Fkdn9m6RSVtocUrJYIwZnFVkng/PvkEoWtOWmP+Scc6saYWHWZYbndEEXxl24jw==}
 
-  '@atproto/api@0.32.0':
-    resolution: {integrity: sha512-2wsISZ1Gkh38aN9LLnlJXREbqkDyrMxKaaei2poTZRE75aZ068xRkSGRY7aczfKr7Gz6Vvz5ZPIAzHLrtNYeHA==}
+  '@atproto/api@0.32.1':
+    resolution: {integrity: sha512-T04XWeeO3hpCE2vhEZc6jwDcV47E4o1yGrq67rf5rGtObfmZYFwa53/y5On7NrLtpihIZs5FgvplIRb2Aye3Rw==}
     engines: {node: '>=22'}
 
   '@atproto/common-web@0.5.17':
@@ -6956,7 +6956,7 @@ snapshots:
       '@csstools/css-tokenizer': 3.0.4
       lru-cache: 10.4.3
 
-  '@atproto/api@0.32.0':
+  '@atproto/api@0.32.1':
     dependencies:
       '@atproto/common-web': 0.5.17
       '@atproto/lexicon': 0.7.19
