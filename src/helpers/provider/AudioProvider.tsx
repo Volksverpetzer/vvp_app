@@ -154,19 +154,30 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   }, [status.playing, player, track?.title, track?.artworkUrl]);
 
   // Persist the position every few seconds so it survives an app restart.
-  // Not before the restore has settled: until then `status` may still describe
-  // the previous track, whose position must not land under this track's key.
+  // Status updates only trigger the check; the values come from the player's
+  // own native state. `status` has no source id and may still describe the
+  // previous track (even after this track's restore settled), whose position
+  // must not land under this track's key. Not before the restore has settled
+  // either, or the pre-seek position would overwrite the saved one.
   useEffect(() => {
     if (!track?.resumeKey || !status.isLoaded || !status.playing) return;
     if (!restoreSettled.current) return;
+    if (!player.isLoaded || !player.playing) return;
+    const { currentTime } = player;
     if (
-      Math.abs(status.currentTime - lastSavedTime.current) >=
+      Math.abs(currentTime - lastSavedTime.current) >=
       RESUME_SAVE_INTERVAL_SECONDS
     ) {
-      lastSavedTime.current = status.currentTime;
-      void PersonalStore.setAudioPosition(track.resumeKey, status.currentTime);
+      lastSavedTime.current = currentTime;
+      void PersonalStore.setAudioPosition(track.resumeKey, currentTime);
     }
-  }, [track?.resumeKey, status.isLoaded, status.playing, status.currentTime]);
+  }, [
+    track?.resumeKey,
+    status.isLoaded,
+    status.playing,
+    status.currentTime,
+    player,
+  ]);
 
   // On finish: rewind and clear the stored position so the next play starts fresh.
   useEffect(() => {
