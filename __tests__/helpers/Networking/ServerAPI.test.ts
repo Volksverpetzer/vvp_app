@@ -194,12 +194,22 @@ describe("ServerAPI", () => {
       expect(result).toEqual(responseData.episodes);
     });
 
-    it("should return an empty array when the response has no episodes", async () => {
+    it("should throw when the response has no episodes list", async () => {
       getSpy.mockResolvedValue({});
 
-      const result = await API.getPodcastFeed();
+      await expect(API.getPodcastFeed()).rejects.toThrow(/episodes/);
+    });
 
-      expect(result).toEqual([]);
+    it("should throw on a non-JSON error body", async () => {
+      getSpy.mockResolvedValue("<html>502 Bad Gateway</html>");
+
+      await expect(API.getPodcastFeed()).rejects.toThrow(/episodes/);
+    });
+
+    it("should return a genuinely empty episodes list", async () => {
+      getSpy.mockResolvedValue({ episodes: [] });
+
+      await expect(API.getPodcastFeed()).resolves.toEqual([]);
     });
 
     it("should forward the abort signal", async () => {

@@ -180,6 +180,9 @@ class API {
 
   /**
    * Fetches the podcast feed (Podigee episodes, proxied by the server).
+   * Throws when the response has no `episodes` list (e.g. a proxy/CDN error
+   * body), so callers can tell a failed load apart from a feed that really
+   * lacks an episode — MyFavs would otherwise purge podcast favorites.
    */
   static async getPodcastFeed(
     signal?: AbortSignal,
@@ -189,7 +192,11 @@ class API {
       undefined,
       signal,
     );
-    return response.episodes ?? [];
+    const episodes = response?.episodes;
+    if (!Array.isArray(episodes)) {
+      throw new Error("Podcast feed response has no episodes list");
+    }
+    return episodes;
   }
 
   /**
