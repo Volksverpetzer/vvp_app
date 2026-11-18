@@ -18,6 +18,9 @@ jest.mock("expo-router", () => ({
 
 jest.mock("#/components/Icons", () => ({
   SuccessIcon: jest.fn(() => null),
+  ErrorIcon: jest.fn(() => null),
+  InfoIcon: jest.fn(() => null),
+  TrophyIcon: jest.fn(() => null),
 }));
 
 const renderPopup = () =>
