@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import Loader from "#/components/loader/Loader";
 import InstaPostCard from "#/components/posts/insta/InstaPostCard";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import API from "#/helpers/network/ServerAPI";
+import { fetchInstaPostFromAnyAccount } from "#/helpers/utils/instaPost";
 import type { InstaPostProperties } from "#/types";
 
 interface LoadProperties {
@@ -20,7 +20,7 @@ const LoadInstaPost = (properties: LoadProperties) => {
   const { id, inView = true } = properties;
 
   const loadInstaPost = useCallback(
-    (postId: string) => API.getInstaPost(postId),
+    (postId: string) => fetchInstaPostFromAnyAccount(postId),
     [],
   );
 

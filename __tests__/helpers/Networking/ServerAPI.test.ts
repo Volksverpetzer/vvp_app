@@ -105,6 +105,19 @@ describe("ServerAPI", () => {
       );
       expect(result).toEqual(responseData);
     });
+
+    it("asks for the post's account when one is given", async () => {
+      getSpy.mockResolvedValue({ id: "1" });
+
+      await API.getInstaPost("1", undefined, "pruefpunkt");
+
+      expect(getSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        "/proxy/instaById/1?account=pruefpunkt",
+        undefined,
+        undefined,
+      );
+    });
   });
 
   describe("getInstaMemeFeed", () => {

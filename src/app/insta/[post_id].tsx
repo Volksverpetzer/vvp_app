@@ -13,7 +13,7 @@ import { globalStyles } from "#/constants/GlobalStyles";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerViews } from "#/helpers/network/Engagement";
-import API from "#/helpers/network/ServerAPI";
+import { fetchInstaPostFromAnyAccount } from "#/helpers/utils/instaPost";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { InstaPostProperties } from "#/types";
 
@@ -51,7 +51,10 @@ const InstaScreen = () => {
         if (controller.signal.aborted) return;
 
         if (!post) {
-          post = await API.getInstaPost(parameters.post_id, controller.signal);
+          post = await fetchInstaPostFromAnyAccount(
+            parameters.post_id,
+            controller.signal,
+          );
           if (controller.signal.aborted) return;
           await ContentStore.setStoredInstaPost(parameters.post_id, post);
           if (controller.signal.aborted) return;

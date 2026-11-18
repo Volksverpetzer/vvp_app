@@ -95,16 +95,18 @@ class API {
 
   /**
    * Fetches a specific Instagram post by ID.
+   * @param account - Instagram account the post belongs to; the proxy can
+   * only read posts of the account it uses (its default account otherwise).
    */
   static async getInstaPost(
     id: string,
     signal?: AbortSignal,
+    account?: string,
   ): Promise<InstaPostProperties> {
-    return await API.get<InstaPostProperties>(
-      "/proxy/instaById/" + id,
-      undefined,
-      signal,
-    );
+    const path = account
+      ? `/proxy/instaById/${id}?account=${encodeURIComponent(account)}`
+      : `/proxy/instaById/${id}`;
+    return await API.get<InstaPostProperties>(path, undefined, signal);
   }
 
   /**
