@@ -17,11 +17,14 @@ jest.mock("react-native-worklets", () =>
   require("react-native-worklets/src/mock"),
 );
 jest.mock("react-native-reanimated", () => {
-  const { View } = require("react-native");
+  const { Image, ScrollView, Text, View } = require("react-native");
   return {
     __esModule: true,
     // Gesture Handler checks for createAnimatedComponent when it loads
     default: {
+      Image,
+      ScrollView,
+      Text,
       View,
       createAnimatedComponent: (component: unknown) => component,
     },
@@ -35,23 +38,33 @@ jest.mock("react-native-reanimated", () => {
     useAnimatedScrollHandler: () => () => {},
     scrollTo: () => {},
     Extrapolation: { CLAMP: "clamp", EXTEND: "extend", IDENTITY: "identity" },
-    // Linear interpolation over the first and last input points, clamped
-    // when asked to; enough for the page dots and swipe actions
+    // Piecewise linear like the real one: each value maps within the
+    // segment of adjacent input points it falls in. Outside the range it
+    // extends the outer segment unless clamped ("clamp" or per side).
     interpolate: (
       value: number,
       input: number[],
       output: number[],
-      extrapolation?: string,
+      extrapolation?:
+        string | { extrapolateLeft?: string; extrapolateRight?: string },
     ) => {
-      const [inStart, inEnd] = [input[0], input[input.length - 1]];
-      const [outStart, outEnd] = [output[0], output[output.length - 1]];
+      const left =
+        typeof extrapolation === "object"
+          ? extrapolation.extrapolateLeft
+          : extrapolation;
+      const right =
+        typeof extrapolation === "object"
+          ? extrapolation.extrapolateRight
+          : extrapolation;
+      const last = input.length - 1;
+      if (value <= input[0] && left === "clamp") return output[0];
+      if (value >= input[last] && right === "clamp") return output[last];
+      let i = 0;
+      while (i < last - 1 && value > input[i + 1]) i++;
+      const [inStart, inEnd] = [input[i], input[i + 1]];
       const progress =
         inEnd === inStart ? 0 : (value - inStart) / (inEnd - inStart);
-      const clamped =
-        extrapolation === "clamp"
-          ? Math.min(Math.max(progress, 0), 1)
-          : progress;
-      return outStart + clamped * (outEnd - outStart);
+      return output[i] + progress * (output[i + 1] - output[i]);
     },
     // Layout animations do nothing in the mock
     FadeInDown: {},
