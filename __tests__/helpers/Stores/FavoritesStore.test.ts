@@ -291,6 +291,19 @@ describe("FavoritesStore", () => {
       expect(read()).toEqual({ article3: { contentType: "article" } });
     });
 
+    it("queues a backup import behind a pending add", async () => {
+      const read = useAsyncMemoryStorage({});
+
+      await Promise.all([
+        FavoritesStore.addFavorite("article1", "article"),
+        FavoritesStore.replaceFavorites({
+          imported: { contentType: "article" },
+        }),
+      ]);
+
+      expect(read()).toEqual({ imported: { contentType: "article" } });
+    });
+
     it("keeps processing writes after one fails", async () => {
       const read = useAsyncMemoryStorage({});
       jest

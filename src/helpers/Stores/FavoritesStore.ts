@@ -1,7 +1,7 @@
 import BaseStore from "#/helpers/Storage";
 import type { FavPayload, FaveableType, HttpsUrl, StoredFavs } from "#/types";
 
-// Serializes the read-modify-write of addFavorite/removeFavorite: a quick
+// Serializes every favorites write (add, remove, backup import): a quick
 // double tap or several removals in MyFavs would otherwise read the same
 // stored object, and the later write would undo the earlier change.
 let pendingWrite: Promise<void> = Promise.resolve();
@@ -69,6 +69,15 @@ const FavoritesStore = {
       };
       await this.setStoredFavs(newStoredFavs);
     });
+  },
+
+  /**
+   * Replaces all favorites (e.g. on backup import), queued behind any pending
+   * add or remove so neither overwrites the other with stale data.
+   * @param {StoredFavs} favs The favorites object to store.
+   */
+  replaceFavorites(favs: StoredFavs): Promise<void> {
+    return enqueueWrite(() => this.setStoredFavs(favs));
   },
 
   /**
