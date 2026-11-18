@@ -59,6 +59,29 @@ describe("useFavorite", () => {
     expect(result.current.isFav).toBe(true);
   });
 
+  it("ignores an initial read that resolves after a tap", async () => {
+    let finishInitialRead: (value: boolean) => void = () => {};
+    jest.mocked(FavoritesStore.isFavorite).mockImplementation(
+      () =>
+        new Promise<boolean>((resolve) => {
+          finishInitialRead = resolve;
+        }),
+    );
+
+    const { result } = await renderHook(() => useFavorite("abc", "insta"));
+
+    await act(async () => {
+      await result.current.toggleFavorite();
+    });
+    // The read started before the tap and reports the old state.
+    await act(async () => {
+      finishInitialRead(false);
+      await Promise.resolve();
+    });
+
+    expect(result.current.isFav).toBe(true);
+  });
+
   it("removes on a tap that lands before the re-render after an add", async () => {
     const { result } = await renderHook(() => useFavorite("abc", "insta"));
     await waitFor(() =>

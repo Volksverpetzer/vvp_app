@@ -30,6 +30,9 @@ export const useFavorite = (
   // Drops taps while a toggle is still being written, so a quick double tap
   // can't leave the icon out of sync with what is stored.
   const isTogglingRef = useRef(false);
+  // Bumped on every toggle, so the initial isFavorite read can tell that a
+  // tap already changed the state and must not overwrite it.
+  const toggleCountRef = useRef(0);
 
   const updateIsFav = (value: boolean) => {
     isFavRef.current = value;
@@ -37,9 +40,17 @@ export const useFavorite = (
   };
 
   useEffect(() => {
-    if (contentFavIdentifier) {
-      FavoritesStore.isFavorite(contentFavIdentifier).then(updateIsFav);
-    }
+    if (!contentFavIdentifier) return;
+    let isCurrent = true;
+    const toggleCountAtStart = toggleCountRef.current;
+    FavoritesStore.isFavorite(contentFavIdentifier).then((value) => {
+      if (isCurrent && toggleCountRef.current === toggleCountAtStart) {
+        updateIsFav(value);
+      }
+    });
+    return () => {
+      isCurrent = false;
+    };
   }, [contentFavIdentifier]);
 
   const toggleFavorite = async () => {
@@ -47,6 +58,7 @@ export const useFavorite = (
 
     if (isFavRef.current) {
       isTogglingRef.current = true;
+      toggleCountRef.current += 1;
       try {
         await FavoritesStore.removeFavorite(contentFavIdentifier);
         updateIsFav(false);
@@ -60,6 +72,7 @@ export const useFavorite = (
       // when the type is missing rather than corrupting storage.
       if (!contentType) return;
       isTogglingRef.current = true;
+      toggleCountRef.current += 1;
       try {
         updateIsFav(true);
         Achievements.setAchievementValue("favorite");
