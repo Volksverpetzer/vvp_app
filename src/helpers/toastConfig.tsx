@@ -1,23 +1,20 @@
 import type { ToastConfig } from "react-native-toast-message";
-import { BaseToast, ErrorToast } from "react-native-toast-message";
 
+import AppToast from "#/components/popups/AppToast";
 import MissionPopup from "#/components/popups/MissionPopup";
-import { fontSizes } from "#/constants/FontSizes";
 
-const TOAST_TEXT_STYLES = {
-  text1Style: { fontSize: fontSizes.base },
-  text2Style: { fontSize: fontSizes.sm },
-};
-
+// Every toast type renders the app's own AppToast, so all toasts look alike
+// and follow the app's light/dark colors. The library always passes a no-op
+// onPress; it is left out so plain messages aren't announced as buttons.
 export const toastConfig: ToastConfig = {
-  success: (props) => (
-    <BaseToast {...props} testID="toast.success" {...TOAST_TEXT_STYLES} />
+  success: ({ text1, text2 }) => (
+    <AppToast variant="success" text1={text1} text2={text2} />
   ),
-  info: (props) => (
-    <BaseToast {...props} testID="toast.info" {...TOAST_TEXT_STYLES} />
+  info: ({ text1, text2 }) => (
+    <AppToast variant="info" text1={text1} text2={text2} />
   ),
-  error: (props) => (
-    <ErrorToast {...props} testID="toast.error" {...TOAST_TEXT_STYLES} />
+  error: ({ text1, text2 }) => (
+    <AppToast variant="error" text1={text1} text2={text2} />
   ),
   achievement: ({ text1, text2 }) => (
     <MissionPopup text1={text1} text2={text2} />

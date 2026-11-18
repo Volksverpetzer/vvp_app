@@ -6,7 +6,6 @@ export const toast = {
       type: "success",
       text1,
       text2,
-      position: "bottom",
       visibilityTime: 3000,
       autoHide: true,
     });
@@ -17,7 +16,6 @@ export const toast = {
       type: "error",
       text1,
       text2,
-      position: "bottom",
       visibilityTime: 4000,
       autoHide: true,
     });
@@ -28,7 +26,6 @@ export const toast = {
       type: "info",
       text1,
       text2,
-      position: "bottom",
     });
   },
 };

@@ -3,21 +3,20 @@ import { fireEvent, render } from "@testing-library/react-native";
 
 import MissionPopup from "#/components/popups/MissionPopup";
 
-const mockCanGoBack = jest.fn(() => true);
-const mockDismissTo = jest.fn();
-const mockReplace = jest.fn();
+const mockNavigate = jest.fn();
 
 jest.mock("expo-router", () => ({
   __esModule: true,
   useRouter: () => ({
-    canGoBack: () => mockCanGoBack(),
-    dismissTo: (...args: unknown[]) => mockDismissTo(...args),
-    replace: (...args: unknown[]) => mockReplace(...args),
+    navigate: (...args: unknown[]) => mockNavigate(...args),
   }),
 }));
 
 jest.mock("#/components/Icons", () => ({
   SuccessIcon: jest.fn(() => null),
+  ErrorIcon: jest.fn(() => null),
+  InfoIcon: jest.fn(() => null),
+  TrophyIcon: jest.fn(() => null),
 }));
 
 const renderPopup = () =>
@@ -25,9 +24,7 @@ const renderPopup = () =>
 
 describe("MissionPopup", () => {
   beforeEach(() => {
-    mockCanGoBack.mockReturnValue(true);
-    mockDismissTo.mockClear();
-    mockReplace.mockClear();
+    mockNavigate.mockClear();
   });
 
   it("renders both texts", async () => {
@@ -36,21 +33,12 @@ describe("MissionPopup", () => {
     expect(getByText("Weiter zur Mission")).toBeTruthy();
   });
 
-  // Dismissing an existing stack keeps the action tab's scroll position;
-  // replacing would rebuild it, so the two branches are not interchangeable.
-  it("dismisses back to the action tab when there is a stack to pop", async () => {
+  // dismissTo only popped a stack: from another tab it did nothing.
+  // navigate switches tabs and also pops screens pushed above the tabs.
+  it("opens the action tab on tap", async () => {
     const { getByTestId } = await renderPopup();
     await fireEvent.press(getByTestId("mission-popup"));
-    expect(mockDismissTo).toHaveBeenCalledWith("/(tabs)/action");
-    expect(mockReplace).not.toHaveBeenCalled();
-  });
-
-  it("replaces the route when there is nothing to go back to", async () => {
-    mockCanGoBack.mockReturnValue(false);
-    const { getByTestId } = await renderPopup();
-    await fireEvent.press(getByTestId("mission-popup"));
-    expect(mockReplace).toHaveBeenCalledWith("/(tabs)/action");
-    expect(mockDismissTo).not.toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith("/(tabs)/action");
   });
 
   it("is exposed as a button to screen readers", async () => {

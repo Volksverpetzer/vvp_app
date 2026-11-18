@@ -1,58 +1,28 @@
 import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
 
-import { SuccessIcon } from "#/components/Icons";
-import UiPressable from "#/components/ui/UiPressable";
-import UiText from "#/components/ui/UiText";
-import { radii } from "#/constants/BorderRadius";
-import Colors from "#/constants/Colors";
-import { iconSizes } from "#/constants/IconSizes";
-import { spacing } from "#/constants/Spacing";
-import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import AppToast from "#/components/popups/AppToast";
 
 interface MissionPopupProperties {
   text1: string;
   text2: string;
 }
 
+/**
+ * The achievement toast: an `AppToast` that opens the action tab on tap.
+ */
 const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
-  const colorScheme = useAppColorScheme();
-  const backgroundColor = Colors[colorScheme].background;
-  const corporate = Colors[colorScheme].primary;
   const router = useRouter();
   return (
-    <UiPressable
-      accessibilityRole="button"
+    <AppToast
+      variant="achievement"
+      text1={text1}
+      text2={text2}
       testID="mission-popup"
-      onPress={() => {
-        if (router.canGoBack()) {
-          router.dismissTo("/(tabs)/action");
-        } else {
-          router.replace("/(tabs)/action");
-        }
-      }}
-      style={[missionStyles.rectanglePressable, { backgroundColor }]}
-    >
-      <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
-        <SuccessIcon size={iconSizes.md} color={corporate} />
-        <UiText bold style={{ paddingLeft: spacing.md, color: corporate }}>
-          {text1}
-        </UiText>
-      </View>
-      <UiText>{text2}</UiText>
-    </UiPressable>
+      // navigate (not dismissTo) also switches tabs when another tab is
+      // focused; from a screen pushed above the tabs it pops back to them
+      onPress={() => router.navigate("/(tabs)/action")}
+    />
   );
 };
-
-const missionStyles = StyleSheet.create({
-  rectanglePressable: {
-    borderRadius: radii.xl,
-    flex: 1,
-    gap: spacing.md,
-    margin: spacing.xl,
-    padding: spacing.xl,
-    width: "90%",
-  },
-});
 
 export default MissionPopup;
