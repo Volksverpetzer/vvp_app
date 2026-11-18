@@ -225,6 +225,92 @@ describe("Feed paging", () => {
     expect(screen.queryByText(/nicht geladen werden/)).toBeNull();
   });
 
+  it("keeps the page when one feed fails a load-more the others grew", async () => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    const a = pagedFetcher();
+    let bOffline = false;
+    const b = jest.fn(({ page = 1 }: any) =>
+      bOffline
+        ? Promise.reject(new Error("offline"))
+        : Promise.resolve(
+            [0, 1].map((i) => post(`b${page}-${i}`, 27 - page * 3 - i)),
+          ),
+    );
+    await render(
+      <Feed
+        fetchers={[
+          { fetcher: a, name: "a" },
+          { fetcher: b, name: "b" },
+        ]}
+      />,
+    );
+    await waitFor(() => expect(list().data).toHaveLength(5));
+
+    bOffline = true;
+    await act(async () => {
+      await list().onEndReached();
+    });
+    // Feed a's page 2 shows, but b's is missing, so offer the retry.
+    expect(ids(list().data)).toEqual(
+      expect.arrayContaining(["p2-0", "p2-1", "p2-2"]),
+    );
+    expect(list().data).toHaveLength(8);
+    expect(screen.queryByText(/nicht geladen werden/)).not.toBeNull();
+
+    // The retry asks for page 2 again instead of skipping b's page 2.
+    bOffline = false;
+    fireEvent.press(screen.getByText(/nicht geladen werden/));
+    await waitFor(() => expect(list().data).toHaveLength(10));
+    expect(b).toHaveBeenLastCalledWith(expect.objectContaining({ page: 2 }));
+    expect(screen.queryByText(/nicht geladen werden/)).toBeNull();
+
+    await act(async () => {
+      await list().onEndReached();
+    });
+    expect(a).toHaveBeenLastCalledWith(expect.objectContaining({ page: 3 }));
+  });
+
+  it("moves on after a partly failed page once its retry only brings duplicates", async () => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    const a = pagedFetcher();
+    let bOffline = false;
+    // b only has a first page.
+    const b = jest.fn(({ page = 1 }: any) =>
+      bOffline
+        ? Promise.reject(new Error("offline"))
+        : Promise.resolve(page === 1 ? [post("b1", 1)] : []),
+    );
+    await render(
+      <Feed
+        fetchers={[
+          { fetcher: a, name: "a" },
+          { fetcher: b, name: "b" },
+        ]}
+      />,
+    );
+    await waitFor(() => expect(list().data).toHaveLength(4));
+
+    bOffline = true;
+    await act(async () => {
+      await list().onEndReached();
+    });
+    expect(list().data).toHaveLength(7);
+
+    bOffline = false;
+    fireEvent.press(screen.getByText(/nicht geladen werden/));
+    // Page 2 already grew the list, so this is not the end of the feed.
+    await waitFor(() =>
+      expect(screen.queryByText(/nicht geladen werden/)).toBeNull(),
+    );
+    expect(screen.queryByText(/am Ende deines Feeds/)).toBeNull();
+
+    await act(async () => {
+      await list().onEndReached();
+    });
+    expect(a).toHaveBeenLastCalledWith(expect.objectContaining({ page: 3 }));
+    expect(list().data).toHaveLength(10);
+  });
+
   it("shows the end-of-feed prompt once a load-more brings nothing new", async () => {
     const wp = jest.fn(({ page = 1 }: any) =>
       Promise.resolve(
