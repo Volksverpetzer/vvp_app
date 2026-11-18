@@ -2,6 +2,7 @@ import { decode } from "html-entities";
 
 import Config from "#/constants/Config";
 import {
+  FetchError,
   createClient,
   getCacheBusterHeaders,
   get as netGet,
@@ -13,6 +14,37 @@ import type {
   LoadArticlePostProperties,
   MediaResponse,
 } from "#/types";
+
+type NetGetArguments = Parameters<typeof netGet>;
+
+/**
+ * Fetches one page of the posts collection. WordPress answers a page past the
+ * last one with 400 rest_post_invalid_page_number instead of an empty list;
+ * treat that as the end of the list, otherwise the feed's load-more counts
+ * every reached end as a failed load and offers a retry forever.
+ */
+const getPostsPage = async (
+  client: NetGetArguments[0],
+  config: NetGetArguments[2],
+): Promise<LoadArticlePostProperties[]> => {
+  try {
+    return await netGet<LoadArticlePostProperties[]>(
+      client,
+      `/wp-json/wp/v2/posts`,
+      { ...config, silentStatuses: [400] },
+    );
+  } catch (error) {
+    if (
+      error instanceof FetchError &&
+      error.status === 400 &&
+      (error.body as { code?: string } | undefined)?.code ===
+        "rest_post_invalid_page_number"
+    ) {
+      return [];
+    }
+    throw error;
+  }
+};
 
 export default class WordPressAPI {
   static readonly client = createClient(Config.wpUrl);
@@ -63,22 +95,18 @@ export default class WordPressAPI {
     // Add a timestamp to prevent caching issues
     const timestamp = Date.now();
 
-    return await netGet<LoadArticlePostProperties[]>(
-      WordPressAPI.client,
-      `/wp-json/wp/v2/posts`,
-      {
-        params: {
-          per_page: 10,
-          page: page || 1,
-          orderby: "date",
-          order: "desc", // descending order (newest first)
-          _: timestamp, // Cache-busting parameter
-          _embed: "author",
-        },
-        headers: getCacheBusterHeaders(),
-        signal,
+    return await getPostsPage(WordPressAPI.client, {
+      params: {
+        per_page: 10,
+        page: page || 1,
+        orderby: "date",
+        order: "desc", // descending order (newest first)
+        _: timestamp, // Cache-busting parameter
+        _embed: "author",
       },
-    );
+      headers: getCacheBusterHeaders(),
+      signal,
+    });
   }
 
   /**
@@ -89,19 +117,15 @@ export default class WordPressAPI {
     page: number = 10,
     signal?: AbortSignal,
   ): Promise<LoadArticlePostProperties[]> {
-    return await netGet<LoadArticlePostProperties[]>(
-      WordPressAPI.client,
-      `/wp-json/wp/v2/posts`,
-      {
-        params: {
-          orderby: "relevance",
-          search,
-          page: page,
-          _embed: "author",
-        },
-        signal,
+    return await getPostsPage(WordPressAPI.client, {
+      params: {
+        orderby: "relevance",
+        search,
+        page: page,
+        _embed: "author",
       },
-    );
+      signal,
+    });
   }
 
   /**
@@ -279,36 +303,28 @@ export default class WordPressAPI {
         page = 1,
         signal?: AbortSignal,
       ): Promise<LoadArticlePostProperties[]> {
-        return netGet<LoadArticlePostProperties[]>(
-          client,
-          `/wp-json/wp/v2/posts`,
-          {
-            params: {
-              per_page: 10,
-              page,
-              orderby: "date",
-              order: "desc",
-              _: Date.now(),
-              _embed: "author",
-            },
-            headers: getCacheBusterHeaders(),
-            signal,
+        return getPostsPage(client, {
+          params: {
+            per_page: 10,
+            page,
+            orderby: "date",
+            order: "desc",
+            _: Date.now(),
+            _embed: "author",
           },
-        );
+          headers: getCacheBusterHeaders(),
+          signal,
+        });
       },
       searchPosts(
         search: string,
         page = 1,
         signal?: AbortSignal,
       ): Promise<LoadArticlePostProperties[]> {
-        return netGet<LoadArticlePostProperties[]>(
-          client,
-          `/wp-json/wp/v2/posts`,
-          {
-            params: { orderby: "relevance", search, page, _embed: "author" },
-            signal,
-          },
-        );
+        return getPostsPage(client, {
+          params: { orderby: "relevance", search, page, _embed: "author" },
+          signal,
+        });
       },
       getPost(
         slug: string,
