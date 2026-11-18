@@ -238,5 +238,6 @@ describe("Feed paging", () => {
       await list().onEndReached();
     });
     expect(screen.queryByText(/Nicht gefunden/)).not.toBeNull();
+    expect(screen.queryByText(/am Ende deines Feeds/)).not.toBeNull();
   });
 });

@@ -387,7 +387,16 @@ const Feed = (properties: FeedProperties) => {
               containerStyle={{ paddingVertical: spacing.xl }}
             />
           ) : (
-            <View style={{ paddingBottom: spacing.xxxl, alignItems: "center" }}>
+            <View
+              style={{
+                paddingTop: spacing.xxxl,
+                paddingBottom: spacing.xxxl,
+                alignItems: "center",
+              }}
+            >
+              <UiText size="lg" style={{ textAlign: "center" }}>
+                Du bist am Ende deines Feeds angekommen.
+              </UiText>
               <UiPressable
                 accessibilityRole="button"
                 style={globalStyles.centered}
@@ -397,7 +406,8 @@ const Feed = (properties: FeedProperties) => {
                   size="lg"
                   style={{
                     textAlign: "center",
-                    paddingVertical: spacing.xxxl,
+                    paddingTop: spacing.xl,
+                    paddingBottom: spacing.xxxl,
                     color: corporate,
                   }}
                 >
