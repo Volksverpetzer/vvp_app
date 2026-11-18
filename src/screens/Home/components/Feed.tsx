@@ -344,9 +344,13 @@ const Feed = (properties: FeedProperties) => {
         // spinner for the retry text changes the content height while the
         // list is still within the threshold, which re-fires onEndReached:
         // with a feed that keeps failing that looped spinner → retry text →
-        // spinner forever.
+        // spinner forever. Likewise once the feed is exhausted: the taller
+        // end-of-feed footer would re-fire it and keep requesting pages.
+        // reload() resets both flags.
         onEndReached={
-          posts.length > 0 && !loadMoreFailed ? onLoadMore : undefined
+          posts.length > 0 && isLoadingMore && !loadMoreFailed
+            ? onLoadMore
+            : undefined
         }
         // Rendered as header (not a data item) so ListEmptyComponent still
         // appears when the feed itself is empty.

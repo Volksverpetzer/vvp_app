@@ -239,5 +239,7 @@ describe("Feed paging", () => {
     });
     expect(screen.queryByText(/Nicht gefunden/)).not.toBeNull();
     expect(screen.queryByText(/am Ende deines Feeds/)).not.toBeNull();
+    // The taller end-of-feed footer must not request further pages.
+    expect(list().onEndReached).toBeUndefined();
   });
 });
