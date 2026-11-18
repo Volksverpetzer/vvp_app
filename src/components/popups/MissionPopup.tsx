@@ -18,13 +18,9 @@ const MissionPopup = ({ text1, text2 }: MissionPopupProperties) => {
       text1={text1}
       text2={text2}
       testID="mission-popup"
-      onPress={() => {
-        if (router.canGoBack()) {
-          router.dismissTo("/(tabs)/action");
-        } else {
-          router.replace("/(tabs)/action");
-        }
-      }}
+      // navigate (not dismissTo) also switches tabs when another tab is
+      // focused; from a screen pushed above the tabs it pops back to them
+      onPress={() => router.navigate("/(tabs)/action")}
     />
   );
 };
