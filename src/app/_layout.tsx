@@ -11,15 +11,11 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { LogBox, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
-import type { ToastConfig } from "react-native-toast-message";
-import Toast from "react-native-toast-message";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import ChangelogModal from "#/components/popups/ChangelogModal";
 import PopupHost from "#/components/popups/PopupHost";
+import ToastHost from "#/components/popups/ToastHost";
 import StripeWrapper from "#/components/providers/StripeWrapper";
 import UiSpinner from "#/components/ui/UiSpinner";
 import AppFrame from "#/components/views/AppFrame";
@@ -30,7 +26,6 @@ import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { AudioProvider } from "#/helpers/provider/AudioProvider";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
-import { toastConfig } from "#/helpers/toastConfig";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
 
 // Hide warning for new native event emitter
@@ -38,15 +33,6 @@ LogBox.ignoreLogs(["new NativeEventEmitter"]);
 
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
-
-/**
- * Wraps Toast so its bottom offset clears the Android nav bar, matching the
- * padding approach used by the UiModal sheet.
- */
-const AppToast = ({ config }: { config: ToastConfig }) => {
-  const insets = useSafeAreaInsets();
-  return <Toast config={config} bottomOffset={40 + insets.bottom} />;
-};
 
 const RootLayout = () => {
   useNotificationObserver();
@@ -146,7 +132,7 @@ const RootLayout = () => {
                     options={{ title: "Lizenzen" }}
                   />
                 </Stack>
-                <AppToast config={toastConfig} />
+                <ToastHost />
                 <PopupHost />
                 <ChangelogModal
                   isVisible={showChangelog}
