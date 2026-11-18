@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Achievements } from "#/helpers/Achievements";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
@@ -24,38 +24,60 @@ export const useFavorite = (
   favPayload?: FavPayload,
 ) => {
   const [isFav, setIsFav] = useState(false);
+  // Mirrors isFav for toggleFavorite, so a tap that lands before the re-render
+  // still sees the latest value instead of a stale closure.
+  const isFavRef = useRef(false);
+  // Drops taps while a toggle is still being written, so a quick double tap
+  // can't leave the icon out of sync with what is stored.
+  const isTogglingRef = useRef(false);
+
+  const updateIsFav = (value: boolean) => {
+    isFavRef.current = value;
+    setIsFav(value);
+  };
 
   useEffect(() => {
     if (contentFavIdentifier) {
-      FavoritesStore.isFavorite(contentFavIdentifier).then(setIsFav);
+      FavoritesStore.isFavorite(contentFavIdentifier).then(updateIsFav);
     }
   }, [contentFavIdentifier]);
 
   const toggleFavorite = async () => {
-    if (!contentFavIdentifier) return;
+    if (!contentFavIdentifier || isTogglingRef.current) return;
 
-    if (isFav) {
-      await FavoritesStore.removeFavorite(contentFavIdentifier);
-      setIsFav(false);
+    if (isFavRef.current) {
+      isTogglingRef.current = true;
+      try {
+        await FavoritesStore.removeFavorite(contentFavIdentifier);
+        updateIsFav(false);
+      } finally {
+        isTogglingRef.current = false;
+      }
     } else {
       // A favorite without a content type would be persisted as an invalid
       // StoredFav (contentType is required) and fail isValidStoredFav, which
       // can discard the entire favorites set on the next read. Skip the add
       // when the type is missing rather than corrupting storage.
       if (!contentType) return;
-      setIsFav(true);
-      Achievements.setAchievementValue("favorite");
-      // Articles are re-fetched by URL, so persist the source URL to reload them
-      // from the right site (e.g. a secondary Prüfpunkt feed). Instagram posts
-      // can't be re-fetched by id across accounts, so snapshot the post instead.
-      await FavoritesStore.addFavorite(
-        contentFavIdentifier,
-        contentType,
-        contentType === FAV_TYPE_ARTICLE ? registerUrl : undefined,
-        contentType === FAV_TYPE_INSTA || contentType === FAV_TYPE_PODCAST
-          ? favPayload
-          : undefined,
-      );
+      isTogglingRef.current = true;
+      try {
+        updateIsFav(true);
+        Achievements.setAchievementValue("favorite");
+        // Articles are re-fetched by URL, so persist the source URL to reload
+        // them from the right site (e.g. a secondary Prüfpunkt feed). Instagram
+        // posts can't be re-fetched by id across accounts, so snapshot the
+        // post instead.
+        await FavoritesStore.addFavorite(
+          contentFavIdentifier,
+          contentType,
+          contentType === FAV_TYPE_ARTICLE ? registerUrl : undefined,
+          contentType === FAV_TYPE_INSTA || contentType === FAV_TYPE_PODCAST
+            ? favPayload
+            : undefined,
+        );
+      } finally {
+        isTogglingRef.current = false;
+      }
       updateBadgeState({ personal: true });
       if (registerUrl) await registerFav(registerUrl);
     }

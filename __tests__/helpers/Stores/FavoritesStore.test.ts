@@ -243,6 +243,74 @@ describe("FavoritesStore", () => {
     });
   });
 
+  describe("concurrent writes", () => {
+    // In-memory AsyncStorage whose reads and writes yield to the event loop,
+    // so read-modify-writes without a queue would interleave.
+    const useAsyncMemoryStorage = (initial: StoredFavs) => {
+      let stored = JSON.stringify(initial);
+      const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
+      jest.spyOn(BaseStore, "getItem").mockImplementation(async () => {
+        await tick();
+        return stored;
+      });
+      jest
+        .spyOn(BaseStore, "setItem")
+        .mockImplementation(async (_key: string, value: string) => {
+          await tick();
+          stored = value;
+        });
+      jest
+        .spyOn(BaseStore, "parseJSON")
+        .mockImplementation((json: string) => JSON.parse(json));
+      return () => JSON.parse(stored) as StoredFavs;
+    };
+
+    it("applies an add followed by a remove in call order", async () => {
+      const read = useAsyncMemoryStorage({});
+
+      await Promise.all([
+        FavoritesStore.addFavorite("article1", "article"),
+        FavoritesStore.removeFavorite("article1"),
+      ]);
+
+      expect(read()).toEqual({});
+    });
+
+    it("keeps every removal when several run at once", async () => {
+      const read = useAsyncMemoryStorage({
+        article1: { contentType: "article" },
+        article2: { contentType: "article" },
+        article3: { contentType: "article" },
+      });
+
+      await Promise.all([
+        FavoritesStore.removeFavorite("article1"),
+        FavoritesStore.removeFavorite("article2"),
+      ]);
+
+      expect(read()).toEqual({ article3: { contentType: "article" } });
+    });
+
+    it("keeps processing writes after one fails", async () => {
+      const read = useAsyncMemoryStorage({});
+      jest
+        .spyOn(FavoritesStore, "getStoredFavs")
+        .mockRejectedValueOnce(new Error("boom"));
+      const consoleErrorSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      await FavoritesStore.addFavorite("article1", "article");
+      await FavoritesStore.addFavorite("article2", "article");
+
+      expect(read()).toEqual({ article2: { contentType: "article" } });
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error updating favorites:",
+        expect.any(Error),
+      );
+    });
+  });
+
   describe("getAllFavorites", () => {
     it("should return all stored favorites", async () => {
       // Setup
