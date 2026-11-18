@@ -1,5 +1,5 @@
 import Lucide from "@react-native-vector-icons/lucide/static";
-import { NativeTabs } from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/native-tabs";
 import { Platform } from "react-native";
 
 import Colors from "#/constants/Colors";

@@ -340,7 +340,18 @@ const Feed = (properties: FeedProperties) => {
         data={posts}
         extraData={rerender}
         renderItem={renderItem}
-        onEndReached={posts.length > 0 ? onLoadMore : undefined}
+        // After a failed load-more only the retry footer retries. Swapping the
+        // spinner for the retry text changes the content height while the
+        // list is still within the threshold, which re-fires onEndReached:
+        // with a feed that keeps failing that looped spinner → retry text →
+        // spinner forever. Likewise once the feed is exhausted: the taller
+        // end-of-feed footer would re-fire it and keep requesting pages.
+        // reload() resets both flags.
+        onEndReached={
+          posts.length > 0 && isLoadingMore && !loadMoreFailed
+            ? onLoadMore
+            : undefined
+        }
         // Rendered as header (not a data item) so ListEmptyComponent still
         // appears when the feed itself is empty.
         ListHeaderComponent={
@@ -374,9 +385,22 @@ const Feed = (properties: FeedProperties) => {
               </UiPressable>
             </View>
           ) : isLoadingMore ? (
-            <UiSpinner size="large" />
+            <UiSpinner
+              size="large"
+              text="Lade weitere Beiträge..."
+              containerStyle={{ paddingVertical: spacing.xl }}
+            />
           ) : (
-            <View style={{ paddingBottom: spacing.xxxl, alignItems: "center" }}>
+            <View
+              style={{
+                paddingTop: spacing.xxxl,
+                paddingBottom: spacing.xxxl,
+                alignItems: "center",
+              }}
+            >
+              <UiText size="lg" style={{ textAlign: "center" }}>
+                Du bist am Ende deines Feeds angekommen.
+              </UiText>
               <UiPressable
                 accessibilityRole="button"
                 style={globalStyles.centered}
@@ -386,7 +410,8 @@ const Feed = (properties: FeedProperties) => {
                   size="lg"
                   style={{
                     textAlign: "center",
-                    paddingVertical: spacing.xxxl,
+                    paddingTop: spacing.xl,
+                    paddingBottom: spacing.xxxl,
                     color: corporate,
                   }}
                 >
