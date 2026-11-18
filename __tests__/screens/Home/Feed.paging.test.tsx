@@ -270,6 +270,41 @@ describe("Feed paging", () => {
     expect(a).toHaveBeenLastCalledWith(expect.objectContaining({ page: 3 }));
   });
 
+  it("retries page 1 when one feed fails the first load", async () => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    const a = pagedFetcher();
+    let bOffline = true;
+    const b = jest.fn(({ page = 1 }: any) =>
+      bOffline
+        ? Promise.reject(new Error("offline"))
+        : Promise.resolve([post(`b${page}`, 30 - page * 3)]),
+    );
+    await render(
+      <Feed
+        fetchers={[
+          { fetcher: a, name: "a" },
+          { fetcher: b, name: "b" },
+        ]}
+      />,
+    );
+    await waitFor(() => expect(list().data).toHaveLength(3));
+    expect(screen.queryByText(/nicht geladen werden/)).not.toBeNull();
+    expect(list().onEndReached).toBeUndefined();
+
+    // The retry asks for page 1 again instead of skipping b's first page.
+    bOffline = false;
+    fireEvent.press(screen.getByText(/nicht geladen werden/));
+    await waitFor(() => expect(ids(list().data)).toContain("b1"));
+    expect(b).toHaveBeenLastCalledWith(expect.objectContaining({ page: 1 }));
+    expect(screen.queryByText(/nicht geladen werden/)).toBeNull();
+
+    await act(async () => {
+      await list().onEndReached();
+    });
+    expect(b).toHaveBeenLastCalledWith(expect.objectContaining({ page: 2 }));
+    expect(ids(list().data)).toContain("b2");
+  });
+
   it("moves on after a partly failed page once its retry only brings duplicates", async () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     const a = pagedFetcher();

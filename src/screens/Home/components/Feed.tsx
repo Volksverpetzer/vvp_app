@@ -77,10 +77,10 @@ const Feed = (properties: FeedProperties) => {
   // settles late (e.g. a fetcher ignoring the abort signal) does not clear the
   // guard of the request that replaced it.
   const loadMoreGenerationRef = useRef(0);
-  // The page a load-more already grew the list with while another feed
-  // failed. The retry asks for that page again; if it then only brings
-  // duplicates of what the working feeds delivered, the page still counts
-  // as loaded instead of ending the feed.
+  // The page a load (the first one or a load-more) already grew the list
+  // with while another feed failed. The retry asks for that page again; if
+  // it then only brings duplicates of what the working feeds delivered, the
+  // page still counts as loaded instead of ending the feed.
   const partialPageRef = useRef<number | null>(null);
   // Posts the date cutoff hid on the first page. Non-paginated feeds
   // (Bluesky, YouTube, …) return the same list on every page, so applying the
@@ -205,8 +205,19 @@ const Feed = (properties: FeedProperties) => {
     heldBackRef.current = [];
     partialPageRef.current = null;
     loadingMoreRef.current = false;
-    loadMoreGenerationRef.current += 1;
-    getPosts(undefined, []);
+    const generation = ++loadMoreGenerationRef.current;
+    getPosts(undefined, []).then((received) => {
+      // Some feeds failed on page 1: offer the retry for page 1, or the
+      // next load-more would ask everyone for page 2 and skip the failed
+      // feeds' first page. Skipped if a later reload or load-more began.
+      if (
+        received === "partial" &&
+        loadMoreGenerationRef.current === generation
+      ) {
+        partialPageRef.current = 1;
+        setLoadMoreFailed(true);
+      }
+    });
   }, [getPosts]);
 
   useEffect(() => {
@@ -233,7 +244,8 @@ const Feed = (properties: FeedProperties) => {
     loadingMoreRef.current = true;
     const generation = ++loadMoreGenerationRef.current;
     setLoadmore(true);
-    const nextPage = page + 1;
+    // A partly failed page is asked for again before paging on.
+    const nextPage = partialPageRef.current ?? page + 1;
     try {
       const received = await getPosts({ page: nextPage }, posts, {
         loadMore: true,
