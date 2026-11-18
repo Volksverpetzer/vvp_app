@@ -67,6 +67,12 @@ describe("hasStaleMediaUrls", () => {
     ).toBe(true);
     expect(hasStaleMediaUrls(post("not a url"))).toBe(true);
   });
+
+  it("flags a missing link and an empty post_id", () => {
+    expect(hasStaleMediaUrls(post(undefined as any))).toBe(true);
+    expect(hasStaleMediaUrls(post(proxy("&post_id=")))).toBe(true);
+    expect(hasStaleMediaUrls(post(proxy("&post_id")))).toBe(true);
+  });
 });
 
 describe("fetchInstaPostFromAnyAccount", () => {

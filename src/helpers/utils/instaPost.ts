@@ -9,14 +9,16 @@ const PROXY_MEDIA_PATH = "/proxy/media_url";
  * Whether the server can still serve this image link once Instagram's own
  * link inside it has expired. Only proxy links that carry their post_id can
  * be refreshed (vvp_app_server#41); older proxy links and raw Instagram CDN
- * links stop loading for good once expired.
+ * links stop loading for good once expired. A missing link or an empty
+ * post_id can't be refreshed either.
  */
 const isRefreshableMediaUrl = (url: string | undefined): boolean => {
-  if (!url) return true;
+  if (!url) return false;
   try {
     const parsed = new URL(url);
     return (
-      parsed.pathname === PROXY_MEDIA_PATH && parsed.searchParams.has("post_id")
+      parsed.pathname === PROXY_MEDIA_PATH &&
+      !!parsed.searchParams.get("post_id")
     );
   } catch {
     return false;
