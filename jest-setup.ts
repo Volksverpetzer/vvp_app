@@ -31,6 +31,31 @@ jest.mock("react-native-reanimated", () => {
     useSharedValue: (initial: unknown) =>
       require("react").useRef({ value: initial }).current,
     useAnimatedStyle: (factory: () => object) => factory(),
+    useAnimatedRef: () => require("react").useRef(null),
+    useAnimatedScrollHandler: () => () => {},
+    scrollTo: () => {},
+    Extrapolation: { CLAMP: "clamp", EXTEND: "extend", IDENTITY: "identity" },
+    // Linear interpolation over the first and last input points, clamped
+    // when asked to; enough for the page dots and swipe actions
+    interpolate: (
+      value: number,
+      input: number[],
+      output: number[],
+      extrapolation?: string,
+    ) => {
+      const [inStart, inEnd] = [input[0], input[input.length - 1]];
+      const [outStart, outEnd] = [output[0], output[output.length - 1]];
+      const progress =
+        inEnd === inStart ? 0 : (value - inStart) / (inEnd - inStart);
+      const clamped =
+        extrapolation === "clamp"
+          ? Math.min(Math.max(progress, 0), 1)
+          : progress;
+      return outStart + clamped * (outEnd - outStart);
+    },
+    // Layout animations do nothing in the mock
+    FadeInDown: {},
+    FadeOutDown: {},
     withTiming: (
       toValue: unknown,
       _config?: unknown,
