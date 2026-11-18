@@ -52,7 +52,7 @@
     "update:deps": "pnpx npm-check-updates -c 1d -i --format group"
   },
   "dependencies": {
-    "@algolia/client-search": "5.64.0",
+    "@algolia/client-search": "5.65.0",
     "@atproto/api": "0.32.1",
     "@babel/runtime": "7.29.14",
     "@expo-google-fonts/source-sans-3": "0.4.2",
