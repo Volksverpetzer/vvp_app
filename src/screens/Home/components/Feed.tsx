@@ -77,6 +77,11 @@ const Feed = (properties: FeedProperties) => {
   // settles late (e.g. a fetcher ignoring the abort signal) does not clear the
   // guard of the request that replaced it.
   const loadMoreGenerationRef = useRef(0);
+  // The page a load (the first one or a load-more) already grew the list
+  // with while another feed failed. The retry asks for that page again; if
+  // it then only brings duplicates of what the working feeds delivered, the
+  // page still counts as loaded instead of ending the feed.
+  const partialPageRef = useRef<number | null>(null);
   // Posts the date cutoff hid on the first page. Non-paginated feeds
   // (Bluesky, YouTube, …) return the same list on every page, so applying the
   // cutoff again on load-more would keep discarding older WordPress articles;
@@ -126,16 +131,17 @@ const Feed = (properties: FeedProperties) => {
 
   const getPosts = useCallback(
     /**
-     * @returns "grew" if the list grew, "unchanged" if every feed loaded but
-     *   brought nothing new, "failed" if nothing new came because a feed
-     *   failed to load, and undefined if the request was aborted
-     *   (superseded). Only "unchanged" means the feed is exhausted.
+     * @returns "grew" if the list grew, "partial" if it grew but a feed
+     *   failed to load, "unchanged" if every feed loaded but brought nothing
+     *   new, "failed" if nothing new came because a feed failed to load, and
+     *   undefined if the request was aborted (superseded). Only "unchanged"
+     *   means the feed is exhausted.
      */
     async (
       fetcherProperties?: { page?: number; param?: string },
       oldPosts: Post<unknown>[] = [],
       { loadMore = false }: { loadMore?: boolean } = {},
-    ): Promise<"grew" | "unchanged" | "failed" | undefined> => {
+    ): Promise<"grew" | "partial" | "unchanged" | "failed" | undefined> => {
       const controller = new AbortController();
       fetchControllerRef.current?.abort();
       fetchControllerRef.current = controller;
@@ -162,7 +168,9 @@ const Feed = (properties: FeedProperties) => {
         heldBackRef.current = heldBack;
         setPosts(newPosts);
         updateLoadingStates();
-        if (oldPosts.length < newPosts.length) return "grew";
+        if (oldPosts.length < newPosts.length) {
+          return fetchFailed ? "partial" : "grew";
+        }
         return fetchFailed ? "failed" : "unchanged";
       } catch (error) {
         if (controller.signal.aborted) return undefined;
@@ -195,9 +203,21 @@ const Feed = (properties: FeedProperties) => {
     setLoadMoreFailed(false);
     setPosts([]);
     heldBackRef.current = [];
+    partialPageRef.current = null;
     loadingMoreRef.current = false;
-    loadMoreGenerationRef.current += 1;
-    getPosts(undefined, []);
+    const generation = ++loadMoreGenerationRef.current;
+    getPosts(undefined, []).then((received) => {
+      // Some feeds failed on page 1: offer the retry for page 1, or the
+      // next load-more would ask everyone for page 2 and skip the failed
+      // feeds' first page. Skipped if a later reload or load-more began.
+      if (
+        received === "partial" &&
+        loadMoreGenerationRef.current === generation
+      ) {
+        partialPageRef.current = 1;
+        setLoadMoreFailed(true);
+      }
+    });
   }, [getPosts]);
 
   useEffect(() => {
@@ -224,17 +244,27 @@ const Feed = (properties: FeedProperties) => {
     loadingMoreRef.current = true;
     const generation = ++loadMoreGenerationRef.current;
     setLoadmore(true);
-    const nextPage = page + 1;
+    // A partly failed page is asked for again before paging on.
+    const nextPage = partialPageRef.current ?? page + 1;
     try {
       const received = await getPosts({ page: nextPage }, posts, {
         loadMore: true,
       });
       // Only an actual "nothing new" ends the feed. An aborted load (e.g.
       // superseded by pull-to-refresh) keeps the spinner footer, and a failed
-      // one keeps the page so the retry asks for it again.
-      if (received === "grew") {
+      // one keeps the page so the retry asks for it again. All feeds share
+      // one page number, so a partly failed load keeps the page too:
+      // advancing would skip that page of the failed feed for good.
+      if (
+        received === "grew" ||
+        (received === "unchanged" && partialPageRef.current === nextPage)
+      ) {
+        partialPageRef.current = null;
         setPage(nextPage);
         setLoadMoreFailed(false);
+      } else if (received === "partial") {
+        partialPageRef.current = nextPage;
+        setLoadMoreFailed(true);
       } else if (received === "failed") {
         setLoadMoreFailed(true);
       } else if (received === "unchanged") {
