@@ -6,7 +6,7 @@ const mimikamaNotes = "Jede Menge Fehlerbehebungen.";
 
 const Changelog = {
   version: "2.5.8",
-  versionCode: 2611171,
+  versionCode: 2611181,
   notes: isMimikama ? mimikamaNotes : volksverpetzerNotes,
 };
 
