@@ -340,7 +340,14 @@ const Feed = (properties: FeedProperties) => {
         data={posts}
         extraData={rerender}
         renderItem={renderItem}
-        onEndReached={posts.length > 0 ? onLoadMore : undefined}
+        // After a failed load-more only the retry footer retries. Swapping the
+        // spinner for the retry text changes the content height while the
+        // list is still within the threshold, which re-fires onEndReached:
+        // with a feed that keeps failing that looped spinner → retry text →
+        // spinner forever.
+        onEndReached={
+          posts.length > 0 && !loadMoreFailed ? onLoadMore : undefined
+        }
         // Rendered as header (not a data item) so ListEmptyComponent still
         // appears when the feed itself is empty.
         ListHeaderComponent={

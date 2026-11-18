@@ -1,5 +1,11 @@
 import { describe, expect, it, jest } from "@jest/globals";
-import { act, render, screen, waitFor } from "@testing-library/react-native";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react-native";
 
 import Feed from "#/screens/Home/components/Feed";
 
@@ -206,12 +212,14 @@ describe("Feed paging", () => {
     });
     expect(screen.queryByText(/Nicht gefunden/)).toBeNull();
     expect(screen.queryByText(/nicht geladen werden/)).not.toBeNull();
+    // Reaching the end again must not retry on its own: the footer swap
+    // re-fires onEndReached, which looped spinner ↔ retry text.
+    expect(list().onEndReached).toBeUndefined();
 
-    // Back online: the retry asks for the same page again.
+    // Back online: tapping the retry asks for the same page again.
     offline = false;
-    await act(async () => {
-      await list().onEndReached();
-    });
+    fireEvent.press(screen.getByText(/nicht geladen werden/));
+    await waitFor(() => expect(list().data).toHaveLength(6));
     expect(wp).toHaveBeenLastCalledWith(expect.objectContaining({ page: 2 }));
     expect(list().data).toHaveLength(6);
     expect(screen.queryByText(/nicht geladen werden/)).toBeNull();
