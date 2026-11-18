@@ -381,7 +381,11 @@ const Feed = (properties: FeedProperties) => {
               </UiPressable>
             </View>
           ) : isLoadingMore ? (
-            <UiSpinner size="large" />
+            <UiSpinner
+              size="large"
+              text="Lade weitere Beiträge..."
+              containerStyle={{ paddingVertical: spacing.xl }}
+            />
           ) : (
             <View style={{ paddingBottom: spacing.xxxl, alignItems: "center" }}>
               <UiPressable
