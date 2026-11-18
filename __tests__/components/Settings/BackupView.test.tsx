@@ -49,7 +49,9 @@ jest.mock("#/helpers/Stores/FavoritesStore", () => ({
   __esModule: true,
   default: {
     getAllFavorites: jest.fn(),
-    setStoredFavs: jest.fn<() => Promise<void>>().mockResolvedValue(undefined),
+    replaceFavorites: jest
+      .fn<() => Promise<void>>()
+      .mockResolvedValue(undefined),
   },
 }));
 jest.mock("#/helpers/Stores/SourcesStore", () => ({
@@ -209,7 +211,7 @@ describe("BackupView", () => {
       await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(FavoritesStore.setStoredFavs).toHaveBeenCalledTimes(1);
+        expect(FavoritesStore.replaceFavorites).toHaveBeenCalledTimes(1);
         expect(SourcesStore.setStoredSources).toHaveBeenCalledTimes(1);
         expect(toast.success).toHaveBeenCalledWith(
           "Import erfolgreich",
@@ -232,7 +234,7 @@ describe("BackupView", () => {
           "Ungültige Backup-Datei",
           "Das Format der Datei konnte nicht erkannt werden.",
         );
-        expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
+        expect(FavoritesStore.replaceFavorites).not.toHaveBeenCalled();
       });
     });
 
@@ -246,7 +248,7 @@ describe("BackupView", () => {
       await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
+        expect(FavoritesStore.replaceFavorites).not.toHaveBeenCalled();
         expect(SourcesStore.setStoredSources).not.toHaveBeenCalled();
       });
     });
@@ -266,7 +268,7 @@ describe("BackupView", () => {
           "Ungültige Backup-Datei",
           "Das Format der Datei konnte nicht erkannt werden.",
         );
-        expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
+        expect(FavoritesStore.replaceFavorites).not.toHaveBeenCalled();
       });
     });
 
@@ -287,7 +289,7 @@ describe("BackupView", () => {
           "Ungültige Backup-Datei",
           "Das Format der Datei konnte nicht erkannt werden.",
         );
-        expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
+        expect(FavoritesStore.replaceFavorites).not.toHaveBeenCalled();
       });
     });
 
@@ -340,7 +342,7 @@ describe("BackupView", () => {
       await fireEvent.press(getByText("Sammlung importieren"));
 
       await waitFor(() => {
-        expect(FavoritesStore.setStoredFavs).toHaveBeenCalledTimes(1);
+        expect(FavoritesStore.replaceFavorites).toHaveBeenCalledTimes(1);
         expect(SourcesStore.setStoredSources).not.toHaveBeenCalled();
         expect(toast.success).toHaveBeenCalledWith(
           "Import erfolgreich",
@@ -365,7 +367,7 @@ describe("BackupView", () => {
 
       await waitFor(() => {
         expect(SourcesStore.setStoredSources).toHaveBeenCalledTimes(1);
-        expect(FavoritesStore.setStoredFavs).not.toHaveBeenCalled();
+        expect(FavoritesStore.replaceFavorites).not.toHaveBeenCalled();
         expect(toast.success).toHaveBeenCalledWith(
           "Import erfolgreich",
           "Deine Daten wurden wiederhergestellt.",

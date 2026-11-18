@@ -4,12 +4,12 @@ import * as Haptics from "expo-haptics";
 import * as Linking from "expo-linking";
 import * as ExpoSharing from "expo-sharing";
 import { Platform, Share } from "react-native";
-import Toast from "react-native-toast-message";
 
 import { Achievements } from "#/helpers/Achievements";
 import { multishare, onShare } from "#/helpers/Sharing";
 import Statistics from "#/helpers/Statistics";
 import { registerEvent } from "#/helpers/network/Analytics";
+import { popups } from "#/helpers/popups";
 import type { ShareableType } from "#/types";
 
 type DownloadResult = { uri: string };
@@ -20,6 +20,10 @@ type DownloadFileAsync = (
 ) => Promise<DownloadResult>;
 
 // Mock dependencies
+jest.mock("#/helpers/popups", () => ({
+  popups: { confirm: jest.fn(), choose: jest.fn() },
+}));
+
 jest.mock("react-native", () => ({
   Share: {
     share: jest.fn(),
@@ -478,33 +482,41 @@ describe("Sharing helpers", () => {
   });
 
   describe("multishare", () => {
-    it.skip("should directly call onShare for a single shareable item", async () => {
-      // This test is skipped due to issues with global.onShare mock
-    });
-
-    it.skip("should show toast with options for multiple shareable items", async () => {
-      // This test is skipped due to issues with global.onShare mock
-    });
-
-    it("should handle cancel action for multiple shareable items", async () => {
-      // Setup
+    it("lets the user pick one of several items in a sheet", async () => {
       const shareable: ShareableType[] = [
         { url: "https://example.com/article1", title: "Article 1" },
         { url: "https://example.com/article2", title: "Article 2" },
       ];
+      jest.mocked(popups.choose).mockResolvedValueOnce(1);
+      jest.spyOn(Share, "share").mockResolvedValue({
+        action: Share.sharedAction,
+      } as never);
 
-      // Execute
-      const promise = multishare(shareable);
+      const result = await multishare(shareable);
 
-      // Simulate user canceling
-      const toastProps = jest.spyOn(Toast, "show").mock.calls[0][0].props;
-      toastProps.onCancel();
+      expect(popups.choose).toHaveBeenCalledWith({
+        title: "Teilen",
+        options: ["Article 1", "Article 2"],
+      });
+      expect(Share.share).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining("https://example.com/article2"),
+        }),
+      );
+      expect(result).toBe(true);
+    });
 
-      // Assert
-      expect(Toast.hide).toHaveBeenCalled();
+    it("shares nothing when the sheet is dismissed", async () => {
+      const shareable: ShareableType[] = [
+        { url: "https://example.com/article1", title: "Article 1" },
+        { url: "https://example.com/article2", title: "Article 2" },
+      ];
+      jest.mocked(popups.choose).mockResolvedValueOnce(null);
+      const shareSpy = jest.spyOn(Share, "share");
 
-      // Resolve the promise
-      const result = await promise;
+      const result = await multishare(shareable);
+
+      expect(shareSpy).not.toHaveBeenCalled();
       expect(result).toBe(false);
     });
   });

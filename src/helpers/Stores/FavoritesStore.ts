@@ -1,6 +1,18 @@
 import BaseStore from "#/helpers/Storage";
 import type { FavPayload, FaveableType, HttpsUrl, StoredFavs } from "#/types";
 
+// Serializes every favorites write (add, remove, backup import): a quick
+// double tap or several removals in MyFavs would otherwise read the same
+// stored object, and the later write would undo the earlier change.
+let pendingWrite: Promise<void> = Promise.resolve();
+
+const enqueueWrite = (write: () => Promise<void>): Promise<void> => {
+  pendingWrite = pendingWrite.then(write).catch((error) => {
+    console.error("Error updating favorites:", error);
+  });
+  return pendingWrite;
+};
+
 const FavoritesStore = {
   favKey: "favs",
 
@@ -39,22 +51,33 @@ const FavoritesStore = {
    * @param {InstaPostProperties} [payload] Snapshot of an Instagram post so it
    *   can be rebuilt without the account-scoped by-id proxy (see StoredFav).
    */
-  async addFavorite(
+  addFavorite(
     contentFavIdentifier: string,
     contentType: FaveableType,
     originalUrl?: HttpsUrl,
     payload?: FavPayload,
   ): Promise<void> {
-    const storedFavs = await this.getStoredFavs();
-    const newStoredFavs = {
-      ...storedFavs,
-      [contentFavIdentifier]: {
-        contentType,
-        ...(originalUrl && { originalUrl }),
-        ...(payload && { payload }),
-      },
-    };
-    await this.setStoredFavs(newStoredFavs);
+    return enqueueWrite(async () => {
+      const storedFavs = await this.getStoredFavs();
+      const newStoredFavs = {
+        ...storedFavs,
+        [contentFavIdentifier]: {
+          contentType,
+          ...(originalUrl && { originalUrl }),
+          ...(payload && { payload }),
+        },
+      };
+      await this.setStoredFavs(newStoredFavs);
+    });
+  },
+
+  /**
+   * Replaces all favorites (e.g. on backup import), queued behind any pending
+   * add or remove so neither overwrites the other with stale data.
+   * @param {StoredFavs} favs The favorites object to store.
+   */
+  replaceFavorites(favs: StoredFavs): Promise<void> {
+    return enqueueWrite(() => this.setStoredFavs(favs));
   },
 
   /**
@@ -71,12 +94,14 @@ const FavoritesStore = {
    * Removes a favorite from storage.
    * @param {string} contentFavIdentifier The unique identifier for the content.
    */
-  async removeFavorite(contentFavIdentifier: string): Promise<void> {
-    const storedFavs = await this.getStoredFavs();
-    if (contentFavIdentifier in storedFavs) {
-      delete storedFavs[contentFavIdentifier];
-      await this.setStoredFavs(storedFavs);
-    }
+  removeFavorite(contentFavIdentifier: string): Promise<void> {
+    return enqueueWrite(async () => {
+      const storedFavs = await this.getStoredFavs();
+      if (contentFavIdentifier in storedFavs) {
+        delete storedFavs[contentFavIdentifier];
+        await this.setStoredFavs(storedFavs);
+      }
+    });
   },
 
   /**

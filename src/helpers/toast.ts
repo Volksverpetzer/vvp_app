@@ -6,7 +6,6 @@ export const toast = {
       type: "success",
       text1,
       text2,
-      position: "bottom",
       visibilityTime: 3000,
       autoHide: true,
     });
@@ -17,7 +16,6 @@ export const toast = {
       type: "error",
       text1,
       text2,
-      position: "bottom",
       visibilityTime: 4000,
       autoHide: true,
     });
@@ -28,22 +26,6 @@ export const toast = {
       type: "info",
       text1,
       text2,
-      position: "bottom",
-    });
-  },
-
-  confirm(text1: string, text2: string, onConfirm: () => void) {
-    Toast.show({
-      type: "info",
-      text1,
-      text2,
-      position: "bottom",
-      visibilityTime: 5000,
-      autoHide: true,
-      onPress: () => {
-        Toast.hide();
-        onConfirm();
-      },
     });
   },
 };

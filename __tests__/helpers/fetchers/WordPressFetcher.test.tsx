@@ -1,5 +1,6 @@
 import Post from "#/helpers/Post";
 import type WordPressAPIClass from "#/helpers/network/WordPressAPI";
+import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
 import type { LoadArticlePostProperties } from "#/types";
 
@@ -17,10 +18,17 @@ jest.mock("#/helpers/network/WordPressAPI", () => {
   };
 });
 
-jest.mock("#/helpers/Post", () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
+// Spy on the constructor but keep real instances (mapItems drops posts
+// without id/datetime).
+jest.mock("#/helpers/Post", () => {
+  const ActualPost = jest.requireActual<{ default: any }>(
+    "#/helpers/Post",
+  ).default;
+  return {
+    __esModule: true,
+    default: jest.fn((...args: any[]) => new ActualPost(...args)),
+  };
+});
 
 jest.mock("#/components/posts/ArticlePost", () => ({
   __esModule: true,
@@ -51,31 +59,49 @@ describe("WordPressFetcher", () => {
       const result = await base(api);
       expect(api).toHaveBeenCalled();
       expect(result).toHaveLength(2);
-      expect(result[0]).toBeInstanceOf(Post);
+      expect(result[0]).toMatchObject({
+        id: "example-article",
+        datetime: "2021-02-03T04:05:06",
+      });
     });
 
-    it("returns empty array and logs error on failure", async () => {
+    it("logs and rethrows on failure", async () => {
       const error = new Error("fail");
       const api = jest.fn().mockRejectedValue(error);
       const spy = jest.spyOn(console, "error").mockImplementation();
 
-      const result = await base(api);
+      const thrown = await base(api).catch((caught: unknown) => caught);
 
-      expect(result).toEqual([]);
-      expect(spy).toHaveBeenCalledWith("WP Error:", error);
+      expect(FetcherUtilities.isFeedFetchError(thrown)).toBe(true);
+      expect(spy).toHaveBeenCalledWith("Fetch error in wp:", error);
     });
 
-    it("returns empty array and suppresses logging when signal is aborted", async () => {
+    it("rethrows aborts without logging, like every other fetcher", async () => {
       const controller = new AbortController();
-      const error = new Error("canceled");
+      const error = Object.assign(new Error("canceled"), {
+        code: "ERR_CANCELED",
+      });
       const api = jest.fn().mockRejectedValue(error);
       const spy = jest.spyOn(console, "error").mockImplementation();
 
       controller.abort();
-      const result = await base(api, controller.signal);
-
-      expect(result).toEqual([]);
+      await expect(base(api, controller.signal)).rejects.toBe(error);
       expect(spy).not.toHaveBeenCalled();
+    });
+
+    it("normalizes date_gmt and skips articles without a usable date", async () => {
+      const api = jest
+        .fn()
+        .mockResolvedValue([
+          makeArticle({ slug: "ok", date_gmt: "2021-02-03T04:05:06" }),
+          makeArticle({ slug: "no-date", date_gmt: undefined }),
+        ]);
+      jest.spyOn(console, "warn").mockImplementation();
+
+      const result = await base(api);
+
+      expect(result.map((p: Post<unknown>) => p.id)).toEqual(["ok"]);
+      expect(result[0].datetime).toBe("2021-02-03T04:05:06");
     });
 
     it("passes signal to the api function", async () => {
@@ -125,6 +151,17 @@ describe("WordPressFetcher", () => {
     });
   });
 
+  it("only adds a share link for https article URLs", () => {
+    (Post as jest.Mock).mockClear();
+    WordPressFetcher.mapArticleToPost(
+      makeArticle({
+        link: "http://example.com/a" as LoadArticlePostProperties["link"],
+      }) as LoadArticlePostProperties,
+      0,
+    );
+    expect((Post as jest.Mock).mock.calls[0][4]).toBeUndefined();
+  });
+
   describe("createFetchers", () => {
     const mockApi = {
       getPosts: jest.fn(),
@@ -134,11 +171,14 @@ describe("WordPressFetcher", () => {
     beforeEach(() => {
       jest.clearAllMocks();
       // Make mapArticleToPost return a post with a real data.article so stamp() can write sourceName.
-      jest
-        .spyOn(WordPressFetcher, "mapArticleToPost")
-        .mockImplementation(
-          (article) => ({ data: { article: { ...article } } }) as any,
-        );
+      jest.spyOn(WordPressFetcher, "mapArticleToPost").mockImplementation(
+        (article) =>
+          ({
+            id: article.slug,
+            datetime: article.date_gmt,
+            data: { article: { ...article } },
+          }) as any,
+      );
     });
 
     afterEach(() => {
@@ -183,9 +223,26 @@ describe("WordPressFetcher", () => {
         "TestSource",
       );
       const result = await feedFetcher({ page: 1 });
+      expect(result).toHaveLength(2);
       expect(
         result.every((p) => p.data.article.sourceName === "TestSource"),
       ).toBe(true);
+    });
+
+    it("logs failures under the feed key, not the display label", async () => {
+      const error = new Error("fail");
+      mockApi.getPosts.mockRejectedValue(error);
+      const spy = jest.spyOn(console, "error").mockImplementation();
+      const { feedFetcher } = WordPressFetcher.createFetchers(
+        mockApi,
+        "Prüfpunkt",
+        "wp:pruefpunkt.org",
+      );
+      await expect(feedFetcher({ page: 1 })).rejects.toThrow();
+      expect(spy).toHaveBeenCalledWith(
+        "Fetch error in wp:pruefpunkt.org:",
+        error,
+      );
     });
 
     it("does not set sourceName when not provided", async () => {

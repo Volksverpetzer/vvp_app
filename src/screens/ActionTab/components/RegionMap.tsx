@@ -1,3 +1,4 @@
+import { regionMapColors } from "@volksverpetzer/design-tokens/rn/shared";
 import { Image } from "expo-image";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
@@ -25,14 +26,36 @@ const weekNumber = Math.floor(Date.now() / WEEK_IN_MS);
 
 // Quartile colors of the server-rendered map (vvp_app_server
 // proxycache/services/analytics.py `map`), highest quartile first. The image
-// is a fixed PNG independent of app theme/variant, so these must mirror the
-// server's hex values rather than theme tokens.
+// is a fixed PNG independent of app theme/variant, so the legend uses the
+// fixed region-map tokens rather than the color scheme.
 const MAP_LEGEND = [
-  { text: "Vorreiter", color: "#EE8FBE" },
-  { text: "Überdurchschnittlich", color: "#DB2685" },
-  { text: "Unterdurchschnittlich", color: "#3893C0" },
-  { text: "Schlusslicht", color: "#1B7194" },
+  { text: "Vorreiter", color: regionMapColors.top },
+  { text: "Überdurchschnittlich", color: regionMapColors.aboveAverage },
+  { text: "Unterdurchschnittlich", color: regionMapColors.belowAverage },
+  { text: "Schlusslicht", color: regionMapColors.bottom },
 ] as const;
+
+// The server sends per-capita floats (`pageviews / (population / 1e5)`),
+// possibly in scientific notation for tiny values ("5e-05"). Parse them as
+// full decimals so close values (12.9 vs 12.1) and values below 1 keep their
+// order; anything that isn't a finite number becomes NaN and is sunk.
+const parsePageviews = (value: string | undefined): number => {
+  const trimmed = value?.trim() ?? "";
+  return trimmed === "" ? Number.NaN : Number(trimmed);
+};
+
+// Highest value first; regions without a usable value go last. Exact ties
+// (and the unusable tail) are ordered by region code so the ranking doesn't
+// depend on the CSV row order.
+const compareRegions = (a: Region, b: Region): number => {
+  const aFinite = Number.isFinite(a.pageviews);
+  const bFinite = Number.isFinite(b.pageviews);
+  if (aFinite !== bFinite) return aFinite ? -1 : 1;
+  if (aFinite && a.pageviews !== b.pageviews) {
+    return b.pageviews - a.pageviews;
+  }
+  return a.region < b.region ? -1 : a.region > b.region ? 1 : 0;
+};
 
 const parseRegionsData = async (): Promise<Region[]> => {
   const csv = await getRegions();
@@ -44,11 +67,11 @@ const parseRegionsData = async (): Promise<Region[]> => {
     regions[region] = {
       region,
       name,
-      pageviews: Number.parseInt(pageviews),
+      pageviews: parsePageviews(pageviews),
     };
   }
 
-  return Object.values(regions).sort((a, b) => b.pageviews - a.pageviews);
+  return Object.values(regions).sort(compareRegions);
 };
 
 const RegionMap = () => {

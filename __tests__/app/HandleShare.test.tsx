@@ -45,13 +45,6 @@ jest.mock("#/constants/Config", () => ({
   },
 }));
 
-jest.mock("#/helpers/DeepLinkFilter", () => ({
-  __esModule: true,
-  shouldExcludeFromDeepLink: (path: string) =>
-    path.startsWith("/wp-content/uploads/") ||
-    path.startsWith("wp-content/uploads/"),
-}));
-
 jest.mock("#/helpers/Linking", () => ({
   openExternalDownload: jest.fn(() => Promise.resolve()),
 }));

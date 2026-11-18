@@ -61,26 +61,27 @@ describe("FetcherUtils", () => {
       expect(fetchFunction).toHaveBeenCalled();
     });
 
-    it("returns empty array and logs error when fetchFn throws", async () => {
+    it("logs and rethrows a FeedFetchError when fetchFn throws", async () => {
       const error = new Error("fail");
       const fetchFunction: SafeFetchFunction<string> = jest.fn(() =>
         Promise.reject(error),
       );
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
 
-      const result = await FetcherUtilities.safeFetch(
+      const thrown = await FetcherUtilities.safeFetch(
         fetchFunction,
         "fetcherName",
-      );
+      ).catch((caught: unknown) => caught);
 
-      expect(result).toEqual([]);
+      expect(FetcherUtilities.isFeedFetchError(thrown)).toBe(true);
+      expect((thrown as { cause?: unknown }).cause).toBe(error);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         expect.stringContaining("Fetch error in fetcherName"),
         error,
       );
     });
 
-    it("returns empty array and does not log for canceled fetch errors", async () => {
+    it("rethrows canceled fetch errors without logging", async () => {
       const canceled = Object.assign(new Error("canceled"), {
         code: "ERR_CANCELED",
       });
@@ -89,13 +90,75 @@ describe("FetcherUtils", () => {
       });
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
 
-      const result = await FetcherUtilities.safeFetch(
-        fetchFunction,
-        "fetcherName",
-      );
-
-      expect(result).toEqual([]);
+      await expect(
+        FetcherUtilities.safeFetch(fetchFunction, "fetcherName"),
+      ).rejects.toBe(canceled);
       expect(consoleErrorSpy).not.toHaveBeenCalled();
+    });
+
+    it("rethrows a FeedFetchError for a response that is not a list", async () => {
+      jest.spyOn(console, "error").mockImplementation();
+      const thrown = await FetcherUtilities.safeFetch(
+        () => Promise.resolve({ error: "proxy" } as any),
+        "fetcherName",
+      ).catch((caught: unknown) => caught);
+      expect(FetcherUtilities.isFeedFetchError(thrown)).toBe(true);
+    });
+  });
+
+  describe("mapItems", () => {
+    const ok = (id: string) =>
+      ({ id, datetime: "2021-01-01T00:00:00" }) as unknown as Post<unknown>;
+
+    it("skips items that throw, return null or lack id/datetime", () => {
+      jest.spyOn(console, "warn").mockImplementation();
+      const result = FetcherUtilities.mapItems(
+        ["a", "throw", "null", "nodate", "null-id", "empty-date", "b"],
+        "test",
+        (item) => {
+          if (item === "throw") throw new Error("bad item");
+          if (item === "null") return null;
+          if (item === "nodate") return { id: "x", datetime: undefined } as any;
+          if (item === "null-id")
+            return { id: null, datetime: "2021-01-01T00:00:00" } as any;
+          if (item === "empty-date") return { id: "y", datetime: "" } as any;
+          return ok(item);
+        },
+      );
+      expect(result.map((p) => p.id)).toEqual(["a", "b"]);
+    });
+  });
+
+  describe("toFeedDatetime", () => {
+    it.each([
+      ["2026-11-01T10:00:00Z", "2026-11-01T10:00:00"],
+      ["2026-11-01T10:00:00.123Z", "2026-11-01T10:00:00"],
+      ["2026-11-01T12:00:00+02:00", "2026-11-01T10:00:00"],
+      ["2026-11-01T10:00:00+0000", "2026-11-01T10:00:00"],
+      // No timezone (WordPress date_gmt) is UTC, not local time
+      ["2026-11-01T10:00:00", "2026-11-01T10:00:00"],
+      [1793527200000, "2026-11-01T10:00:00"],
+    ])("normalizes %p", (input, expected) => {
+      expect(FetcherUtilities.toFeedDatetime(input)).toBe(expected);
+    });
+
+    it.each([undefined, null, "", "kein Datum", Number.NaN])(
+      "returns undefined for %p",
+      (input) => {
+        expect(FetcherUtilities.toFeedDatetime(input)).toBeUndefined();
+      },
+    );
+  });
+
+  describe("shareLink", () => {
+    it("returns a share entry only for https URLs", () => {
+      expect(FetcherUtilities.shareLink("https://a.de/x", "Teilen")).toEqual([
+        { url: "https://a.de/x", title: "Teilen" },
+      ]);
+      expect(
+        FetcherUtilities.shareLink("http://a.de/x", "Teilen"),
+      ).toBeUndefined();
+      expect(FetcherUtilities.shareLink(undefined, "Teilen")).toBeUndefined();
     });
   });
 
@@ -250,6 +313,62 @@ describe("FetcherUtils", () => {
       expect(result.map((p) => p.id)).toEqual(["4", "3", "sparse-new"]);
     });
 
+    it("reports a failed feed via onFetchError and keeps the other feeds", async () => {
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+      const ok = jest.fn(() => Promise.resolve([p3, p4]));
+      const failing = jest.fn(() =>
+        FetcherUtilities.safeFetch<Post<unknown>>(
+          () => Promise.reject(new Error("offline")),
+          "wp",
+        ),
+      );
+      const onFetchError = jest.fn();
+
+      const result = await FetcherUtilities.fetchAndProcessPosts(
+        [
+          { fetcher: ok, props: {} },
+          { fetcher: failing, props: {}, name: "wp" },
+        ],
+        {},
+        [],
+        { onFetchError },
+      );
+
+      expect(result.map((p) => p.id)).toEqual(["4", "3"]);
+      expect(onFetchError).toHaveBeenCalledTimes(1);
+      // Logged once by safeFetch, not again by fetchAndProcessPosts.
+      expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not call onFetchError when every feed loads, even if empty", async () => {
+      const onFetchError = jest.fn();
+      await FetcherUtilities.fetchAndProcessPosts(
+        [{ fetcher: jest.fn(() => Promise.resolve([])), props: {} }],
+        {},
+        [],
+        { onFetchError },
+      );
+      expect(onFetchError).not.toHaveBeenCalled();
+    });
+
+    it("reports the posts hidden by the cutoff via onCutoff", async () => {
+      const fetcher1 = jest.fn(() => Promise.resolve([p1, p2]));
+      const fetcher2 = jest.fn(() => Promise.resolve([p3, p4]));
+      const onCutoff = jest.fn();
+
+      await FetcherUtilities.fetchAndProcessPosts(
+        [
+          { fetcher: fetcher1, props: {} },
+          { fetcher: fetcher2, props: {} },
+        ],
+        {},
+        [],
+        { onCutoff },
+      );
+
+      expect(onCutoff).toHaveBeenCalledWith([p1]);
+    });
+
     it("applies prioSort and disables cutoffDate when specified", async () => {
       const fetcher1 = jest.fn(() => Promise.resolve([p1, p2]));
       const fetcher2 = jest.fn(() => Promise.resolve([p3, p4]));
@@ -275,7 +394,7 @@ describe("FetcherUtils", () => {
       expect(result.map((p) => p.id)).toEqual(["4", "3", "2", "1", "0"]);
     });
 
-    it("returns empty array and logs error when a fetcher throws", async () => {
+    it("keeps the other feeds and logs when one fetcher throws", async () => {
       const fetcher1 = jest.fn(() => Promise.reject(new Error("oops")));
       const fetcher2 = jest.fn(() => Promise.resolve([p1]));
       const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
@@ -285,11 +404,34 @@ describe("FetcherUtils", () => {
         { fetcher: fetcher2, props: {} },
       ]);
 
-      expect(result).toEqual([]);
+      expect(result).toEqual([p1]);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        expect.stringContaining("Error processing posts:"),
+        expect.stringContaining("Error in feed fetcher #0"),
         expect.any(Error),
       );
+    });
+
+    it("returns the old posts instead of wiping them when processing fails", async () => {
+      const broken = { id: "x", datetime: {} } as unknown as Post<unknown>;
+      const fetcher1 = jest.fn(() => Promise.resolve([broken, p1]));
+      const oldPosts = [p2];
+      const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+      const onFetchError = jest.fn();
+
+      const result = await FetcherUtilities.fetchAndProcessPosts(
+        [{ fetcher: fetcher1, props: {} }],
+        {},
+        oldPosts,
+        { onFetchError },
+      );
+
+      expect(result).toBe(oldPosts);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Error processing posts:"),
+        expect.anything(),
+      );
+      // Reported as a failure, so Feed offers a retry instead of ending.
+      expect(onFetchError).toHaveBeenCalledTimes(1);
     });
 
     it("returns old posts and does not log when processing is canceled", async () => {

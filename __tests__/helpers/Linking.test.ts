@@ -135,7 +135,8 @@ describe("Linking helpers", () => {
         if (url === uploadUrl) {
           return {
             hostname: "www.volksverpetzer.de",
-            path: "/wp-content/uploads/2024/11/file.pdf",
+            // expo-linking's parse() strips the leading slash
+            path: "wp-content/uploads/2024/11/file.pdf",
           };
         } else {
           return { hostname: "www.volksverpetzer.de", path: "" };

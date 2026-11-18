@@ -5,7 +5,7 @@ import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
 import { hasCreatedAt, hasUri } from "#/helpers/utils/typePredicates";
-import type { BlueskyPostProperties, HttpsUrl } from "#/types";
+import type { BlueskyPostProperties } from "#/types";
 
 import FetcherUtilities from "./FetcherUtilities";
 
@@ -15,10 +15,13 @@ export const BotFetcher = {
    * @returns An array of posts.
    */
   feedFetcher: async ({ signal }: { signal?: AbortSignal } = {}) => {
-    const feed = await FetcherUtilities.safeFetch(
+    const rawFeed = await FetcherUtilities.safeFetch(
       () => API.getBotFeed(signal),
       "bot",
     );
+    // The threading below indexes items by post.uri; drop anything without
+    // one instead of throwing on it.
+    const feed = rawFeed.filter((item) => typeof item?.post?.uri === "string");
     const postsByUri: {
       [uri: string]: {
         post: AppBskyFeedDefs.FeedViewPost;
@@ -57,24 +60,26 @@ export const BotFetcher = {
         // 3rd party links SHOULD always be in the thread as replies
         post.post.post?.embed === null &&
         // make sure it's us that is posting here
-        post.post.post.author.handle === Config.feeds.bot.handle &&
+        post.post.post.author?.handle === Config.feeds.bot.handle &&
         post.post.reply === null
       );
     });
 
-    return topLevelPosts.flatMap((item) => {
-      if (!hasCreatedAt(item.post.post.record)) return [];
+    return FetcherUtilities.mapItems(topLevelPosts, "bot", (item) => {
+      if (!hasCreatedAt(item.post.post.record)) return null;
+      const datetime = FetcherUtilities.toFeedDatetime(
+        item.post.post.record.created_at,
+      );
+      if (!datetime) return null;
       const postId = item.uri.split("/app.bsky.feed.post/")[1];
       const handle = item.post.post.author.handle;
-      const url =
-        `https://bsky.app/profile/${handle}/post/${postId}` satisfies HttpsUrl;
-      const createdAt = item.post.post.record.created_at;
+      const url = `https://bsky.app/profile/${handle}/post/${postId}`;
       return new Post<BlueskyPostProperties>(
-        createdAt.replace("Z", ""),
+        datetime,
         item.uri,
         BlueskyPostCard,
         item,
-        [{ url: url, title: "Bot Feed Post teilen" }],
+        FetcherUtilities.shareLink(url, "Bot Feed Post teilen"),
       );
     });
   },

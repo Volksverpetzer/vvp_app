@@ -9,6 +9,80 @@ declare global {
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
+// Worklets has no native module under Jest, and Reanimated 4.7 throws on
+// import under the native preset (even through its own mock), so stand in
+// for the parts the app uses. Animations finish immediately. Tests that need
+// more still override this with their own jest.mock.
+jest.mock("react-native-worklets", () =>
+  require("react-native-worklets/src/mock"),
+);
+jest.mock("react-native-reanimated", () => {
+  const { Image, ScrollView, Text, View } = require("react-native");
+  return {
+    __esModule: true,
+    // Gesture Handler checks for createAnimatedComponent when it loads
+    default: {
+      Image,
+      ScrollView,
+      Text,
+      View,
+      createAnimatedComponent: (component: unknown) => component,
+    },
+    // Gesture Handler's gesture hooks check config values with isSharedValue
+    isSharedValue: () => false,
+    // Shared values keep their identity across renders, like the real ones
+    useSharedValue: (initial: unknown) =>
+      require("react").useRef({ value: initial }).current,
+    useAnimatedStyle: (factory: () => object) => factory(),
+    useAnimatedRef: () => require("react").useRef(null),
+    useAnimatedScrollHandler: () => () => {},
+    scrollTo: () => {},
+    Extrapolation: { CLAMP: "clamp", EXTEND: "extend", IDENTITY: "identity" },
+    // Piecewise linear like the real one: each value maps within the
+    // segment of adjacent input points it falls in. Outside the range it
+    // extends the outer segment unless clamped ("clamp" or per side).
+    interpolate: (
+      value: number,
+      input: number[],
+      output: number[],
+      extrapolation?:
+        string | { extrapolateLeft?: string; extrapolateRight?: string },
+    ) => {
+      const left =
+        typeof extrapolation === "object"
+          ? extrapolation.extrapolateLeft
+          : extrapolation;
+      const right =
+        typeof extrapolation === "object"
+          ? extrapolation.extrapolateRight
+          : extrapolation;
+      const last = input.length - 1;
+      if (value <= input[0] && left === "clamp") return output[0];
+      if (value >= input[last] && right === "clamp") return output[last];
+      let i = 0;
+      while (i < last - 1 && value > input[i + 1]) i++;
+      const [inStart, inEnd] = [input[i], input[i + 1]];
+      const progress =
+        inEnd === inStart ? 0 : (value - inStart) / (inEnd - inStart);
+      return output[i] + progress * (output[i + 1] - output[i]);
+    },
+    // Layout animations do nothing in the mock
+    FadeInDown: {},
+    FadeOutDown: {},
+    withTiming: (
+      toValue: unknown,
+      _config?: unknown,
+      callback?: (finished: boolean) => void,
+    ) => {
+      callback?.(true);
+      return toValue;
+    },
+  };
+});
+// Gesture Handler's own Jest mocks; with Worklets mocked it otherwise calls
+// native methods that jest-expo's generic module mock lacks
+require("react-native-gesture-handler/jestSetup");
+
 jest.mock("@react-native-vector-icons/lucide/static", () => ({
   default: jest.fn(),
   __esModule: true,
@@ -67,6 +141,9 @@ jest.mock("expo-constants", () => ({
             primaryMuted: "#3893C0",
             linkText: "#1B7194",
             pruefpunkt: "#442674",
+            error: "#C62828",
+            warning: "#9A5B00",
+            success: "#2B7330",
           },
           dark: {
             text: "#111",
@@ -82,6 +159,9 @@ jest.mock("expo-constants", () => ({
             primaryMuted: "#3893C0",
             linkText: "#4A9CC7",
             pruefpunkt: "#8B5CF6",
+            error: "#EF5350",
+            warning: "#E0A84A",
+            success: "#66BB6A",
           },
         },
       },

@@ -5,8 +5,8 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
-import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
-import { normalizedHostOf } from "#/helpers/utils/host";
+import { findSecondaryWpFeed, getInternalWpHosts } from "#/helpers/utils/feeds";
+import { normalizeHost, normalizedHostOf } from "#/helpers/utils/host";
 import EdgelessWebview from "#/screens/Home/components/EdgelessWebview";
 import ArticleScreen from "#/screens/Home/components/article/Article";
 import type { ArticleProperties, HttpsUrl, ImageCredit } from "#/types";
@@ -21,6 +21,26 @@ type LoadArticleParameters = {
 };
 
 /**
+ * `originalUrl` is a plain query param that anyone can put on a deep link
+ * (…/x?originalUrl=https://evil.example), and it is loaded verbatim in the
+ * in-app webview. Only trust it when it is https on one of our own WordPress
+ * hosts; otherwise drop it and rebuild the URL from the route.
+ */
+const trustedOriginalUrl = (url?: string): string | undefined => {
+  if (!url) return undefined;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:") return undefined;
+    const internalHosts = getInternalWpHosts(Config.wpUrl, Config.feeds?.wp);
+    return internalHosts.includes(normalizeHost(parsed.hostname))
+      ? url
+      : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+/**
  * Loads an article based on the provided slug.
  */
 const LoadArticle = () => {
@@ -29,7 +49,8 @@ const LoadArticle = () => {
   // useLocalSearchParams already ran decodeURIComponent on every param, so
   // `anchor` is the decoded fragment — decoding again here would corrupt ids
   // that legitimately contain `%`. Re-encode only when rebuilding a URL.
-  const { originalUrl, "#": anchor } = parameters;
+  const { "#": anchor } = parameters;
+  const originalUrl = trustedOriginalUrl(parameters.originalUrl);
   // With flat permalinks (/{slug}/) the article's slug is the only path
   // segment, which Expo Router hands us as `category`.
   const isFlatArticle =

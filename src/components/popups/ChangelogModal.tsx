@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet } from "react-native";
 
-import BottomSheetModal from "#/components/popups/BottomSheetModal";
 import UiButton from "#/components/ui/UiButton";
+import UiModal from "#/components/ui/UiModal";
 import UiSpace from "#/components/ui/UiSpace";
 import UiText from "#/components/ui/UiText";
 import Changelog from "#/constants/Changelog";
@@ -20,7 +20,8 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
   const textMuted = Colors[colorScheme].textMuted;
 
   return (
-    <BottomSheetModal
+    <UiModal
+      variant="sheet"
       isVisible={isVisible}
       onClose={onClose}
       title="Was ist neu?"
@@ -37,7 +38,7 @@ const ChangelogModal = ({ isVisible, onClose }: ChangelogModalProperties) => {
       </ScrollView>
       <UiSpace size={spacing.xl} />
       <UiButton label="Alles klar" variant="primary" onPress={onClose} />
-    </BottomSheetModal>
+    </UiModal>
   );
 };
 

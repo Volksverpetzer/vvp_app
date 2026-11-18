@@ -26,12 +26,24 @@ const makeParams = (
 
 describe("toastConfig", () => {
   it.each(["success", "info", "error"] as const)(
-    "prefixes the %s toast's testID so it can be queried independently",
+    "renders the %s toast as an AppToast with its own testID",
     async (type) => {
-      const { getByTestId } = await render(
+      const { getByTestId, getByText } = await render(
         <>{toastConfig[type](makeParams({ type }))}</>,
       );
-      expect(getByTestId(`toast.${type}TouchableContainer`)).toBeTruthy();
+      expect(getByTestId(`toast.${type}`)).toBeTruthy();
+      expect(getByText("Title")).toBeTruthy();
+      expect(getByText("Details")).toBeTruthy();
+    },
+  );
+
+  it.each(["success", "info", "error"] as const)(
+    "does not turn the %s toast into a button for the library's no-op onPress",
+    async (type) => {
+      const { queryByRole } = await render(
+        <>{toastConfig[type](makeParams({ type }))}</>,
+      );
+      expect(queryByRole("button")).toBeNull();
     },
   );
 
@@ -45,23 +57,5 @@ describe("toastConfig", () => {
     );
     expect(getByText("Erfolg")).toBeTruthy();
     expect(getByText("Yay")).toBeTruthy();
-  });
-
-  it("renders the share toast's items via ToastShareSheet", async () => {
-    const onCancel = jest.fn();
-    const { getByText } = await render(
-      <>
-        {toastConfig.share(
-          makeParams({
-            type: "share",
-            props: {
-              items: [{ title: "Link kopieren", onPress: jest.fn() }],
-              onCancel,
-            },
-          }),
-        )}
-      </>,
-    );
-    expect(getByText("Link kopieren")).toBeTruthy();
   });
 });

@@ -12,7 +12,7 @@ jest.mock("@react-native-vector-icons/lucide/static", () => ({
   __esModule: true,
 }));
 
-jest.mock("expo-router/unstable-native-tabs", () => ({
+jest.mock("expo-router/native-tabs", () => ({
   NativeTabs: Object.assign(
     jest.fn(({ children }) => children),
     {
@@ -39,7 +39,7 @@ jest.mock("#/constants/Config", () => ({
 }));
 
 describe("TabsNavigation", () => {
-  const { NativeTabs } = jest.requireMock("expo-router/unstable-native-tabs");
+  const { NativeTabs } = jest.requireMock("expo-router/native-tabs");
 
   const getPersonalTriggerProps = (): { hidden?: boolean } | undefined => {
     const call = (NativeTabs.Trigger as jest.Mock).mock.calls.find(

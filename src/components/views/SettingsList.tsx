@@ -114,6 +114,8 @@ const SettingsList = (properties: SettingsListProperties) => {
               </UiText>
               <UiSwitch
                 testID="settingSwitch"
+                accessibilityLabel={setting.name}
+                accessibilityHint="Schaltet diese Einstellung ein oder aus"
                 value={disabled ? false : setting.value}
                 disabled={disabled || pendingKeys.has(key)}
                 onValueChange={(value) => {

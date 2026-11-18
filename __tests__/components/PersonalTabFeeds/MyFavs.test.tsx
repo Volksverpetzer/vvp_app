@@ -22,6 +22,10 @@ jest.mock("#/constants/Config", () => ({
     wpUrl: "https://www.volksverpetzer.de",
     feeds: {
       wp: [{ handle: "https://www.pruefpunkt.org", enabled: true }],
+      insta: [
+        { handle: "volksverpetzer", enabled: true },
+        { handle: "pruefpunkt", enabled: true },
+      ],
     },
   },
 }));
@@ -80,6 +84,7 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
   __esModule: true,
   default: {
     getInstaPost: jest.fn(),
+    getPodcastFeed: jest.fn(),
   },
 }));
 
@@ -185,7 +190,11 @@ describe("MyFavs", () => {
       articleApiResponse,
       1,
     );
-    expect(API.getInstaPost).toHaveBeenCalledWith("abc123");
+    expect(API.getInstaPost).toHaveBeenCalledWith(
+      "abc123",
+      undefined,
+      "volksverpetzer",
+    );
 
     const genericPostCalls = (
       GenericPost as unknown as jest.Mock
@@ -279,7 +288,9 @@ describe("MyFavs", () => {
     const snapshot = {
       id: "18100522658117977",
       media_type: "IMAGE",
-      media_url: "https://example.com/pp.jpg",
+      // Current-style proxy link: the server refreshes it itself.
+      media_url:
+        "https://volksverpetzer-app.de/proxy/media_url?hash=h&url=u&post_id=18100522658117977&account=pruefpunkt",
       caption: "Prüfpunkt insta caption",
       timestamp: "2026-01-04T12:00:00Z",
       permalink: "https://www.instagram.com/p/ppShortcode/",
@@ -356,6 +367,92 @@ describe("MyFavs", () => {
         contentType: FAV_TYPE_PODCAST,
       }),
     );
+  });
+
+  describe("podcast favorite without a stored snapshot", () => {
+    const episode = {
+      id: "ep-in-feed",
+      title: "Folge 25",
+      description: "Beschreibung",
+      published_at: "2026-01-06T12:00:00Z",
+      link: "https://volksverpetzer.podigee.io/26-folge-25",
+      audio_url: "https://audio.example.com/ep25.mp3",
+      image_url: "https://example.com/cover.png",
+      duration: 1800,
+    };
+
+    beforeEach(() => {
+      (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+        "ep-legacy": { contentType: FAV_TYPE_PODCAST },
+      });
+    });
+
+    it("keeps the favorite when the feed request fails (malformed body)", async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      (API.getPodcastFeed as jest.Mock).mockRejectedValue(
+        new Error("Podcast feed response has no episodes list"),
+      );
+
+      await render(<MyFavs />);
+
+      await waitFor(() => {
+        expect(API.getPodcastFeed).toHaveBeenCalled();
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          "Failed to load podcast favorite ep-legacy:",
+          expect.any(Error),
+        );
+      });
+      expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+      expect(GenericPost).not.toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it("keeps the favorite when the feed has no episodes at all", async () => {
+      (API.getPodcastFeed as jest.Mock).mockResolvedValue([]);
+
+      await render(<MyFavs />);
+
+      await waitFor(() => {
+        expect(API.getPodcastFeed).toHaveBeenCalled();
+      });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+    });
+
+    it("removes the favorite when a valid feed no longer contains the episode", async () => {
+      const consoleWarnSpy = jest
+        .spyOn(console, "warn")
+        .mockImplementation(() => {});
+      (API.getPodcastFeed as jest.Mock).mockResolvedValue([episode]);
+      (FavoritesStore.removeFavorite as jest.Mock).mockResolvedValue(undefined);
+
+      await render(<MyFavs />);
+
+      await waitFor(() => {
+        expect(FavoritesStore.removeFavorite).toHaveBeenCalledWith("ep-legacy");
+      });
+      expect(GenericPost).not.toHaveBeenCalled();
+
+      consoleWarnSpy.mockRestore();
+    });
+
+    it("rebuilds the favorite from the feed when the episode is present", async () => {
+      (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+        "ep-in-feed": { contentType: FAV_TYPE_PODCAST },
+      });
+      (API.getPodcastFeed as jest.Mock).mockResolvedValue([episode]);
+
+      await render(<MyFavs />);
+
+      await waitFor(() => {
+        expect(GenericPost).toHaveBeenCalledTimes(1);
+      });
+      expect(mockMapPodcastEpisode).toHaveBeenCalledWith(episode);
+      expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+    });
   });
 
   it("skips a failing Instagram favorite without aborting the rest of the list", async () => {
@@ -487,6 +584,76 @@ describe("MyFavs", () => {
     );
 
     consoleWarnSpy.mockRestore();
+  });
+
+  it("re-fetches an Instagram favorite whose snapshot has links the server can't refresh", async () => {
+    // Saved before vvp_app_server#41: the proxy link has no post_id.
+    const snapshot = {
+      id: "pp-old",
+      media_type: "CAROUSEL_ALBUM",
+      media_url:
+        "https://volksverpetzer-app.de/proxy/media_url?hash=h&url=u&account=pruefpunkt",
+      caption: "old caption",
+      timestamp: "2026-01-04T12:00:00Z",
+      permalink: "https://www.instagram.com/p/ppOld/",
+    };
+    const fresh = {
+      ...snapshot,
+      media_url: "https://scontent.cdninstagram.com/fresh.jpg",
+      caption: "fresh caption",
+    };
+    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+      "pp-old": { contentType: FAV_TYPE_INSTA, payload: snapshot },
+    });
+    // Not a post of the main account: the proxy fails, so the next one is tried.
+    (API.getInstaPost as jest.Mock).mockImplementation(
+      (_id: string, _signal: unknown, account: string) =>
+        account === "pruefpunkt"
+          ? Promise.resolve(fresh)
+          : Promise.reject(new Error("502")),
+    );
+
+    await render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+    expect((API.getInstaPost as jest.Mock).mock.calls).toEqual([
+      ["pp-old", undefined, "volksverpetzer"],
+      ["pp-old", undefined, "pruefpunkt"],
+    ]);
+    expect((GenericPost as unknown as jest.Mock).mock.calls[0][0].data).toEqual(
+      expect.objectContaining({ caption: "fresh caption" }),
+    );
+    expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+  });
+
+  it("keeps the snapshot when a stale Instagram favorite can't be re-fetched", async () => {
+    const warnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+    const snapshot = {
+      id: "gone",
+      media_type: "IMAGE",
+      media_url: "https://scontent.cdninstagram.com/expired.jpg",
+      caption: "snapshot caption",
+      timestamp: "2026-01-04T12:00:00Z",
+      permalink: "https://www.instagram.com/p/gone/",
+    };
+    (FavoritesStore.getAllFavorites as jest.Mock).mockResolvedValue({
+      gone: { contentType: FAV_TYPE_INSTA, payload: snapshot },
+    });
+    (API.getInstaPost as jest.Mock).mockRejectedValue(new Error("502"));
+
+    await render(<MyFavs />);
+
+    await waitFor(() => {
+      expect(GenericPost).toHaveBeenCalledTimes(1);
+    });
+    expect(API.getInstaPost).toHaveBeenCalledTimes(2);
+    expect((GenericPost as unknown as jest.Mock).mock.calls[0][0].data).toEqual(
+      expect.objectContaining({ caption: "snapshot caption" }),
+    );
+    expect(FavoritesStore.removeFavorite).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
   });
 
   it("does not refresh favorites while the screen is unfocused", async () => {

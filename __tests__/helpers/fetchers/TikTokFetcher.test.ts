@@ -69,6 +69,22 @@ describe("TikTokFetcher", () => {
     expect(result).toEqual([]);
   });
 
+  it("skips malformed items instead of throwing", async () => {
+    jest.spyOn(API, "getTikTokFeed").mockResolvedValue([
+      { id: "ok", create_time: 1672574400, share_url: "https://t.co/1?x" },
+      { id: "no-time", share_url: "https://t.co/2" },
+      { id: "null-time", create_time: null },
+      { id: "empty-time", create_time: "" },
+      { id: "false-time", create_time: false },
+      { id: "no-share", create_time: 1672660800 },
+    ] as any);
+
+    const result = await TikTokFetcher.feedFetcher();
+
+    expect(result.map((p) => p.id)).toEqual(["ok", "no-share"]);
+    expect(result[1].shareable).toBeUndefined();
+  });
+
   it("should handle API errors gracefully", async () => {
     // Mock API error
     jest
@@ -76,9 +92,8 @@ describe("TikTokFetcher", () => {
       .mockRejectedValue(new Error("Network error"));
 
     // Execute
-    const result = await TikTokFetcher.feedFetcher();
-
-    // Assert
-    expect(result).toEqual([]);
+    // The error propagates so fetchAndProcessPosts can report the feed as
+    // failed rather than empty.
+    await expect(TikTokFetcher.feedFetcher()).rejects.toThrow();
   });
 });

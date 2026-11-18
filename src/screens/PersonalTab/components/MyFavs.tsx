@@ -17,6 +17,10 @@ import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
+import {
+  fetchInstaPostFromAnyAccount,
+  hasStaleMediaUrls,
+} from "#/helpers/utils/instaPost";
 import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import { mapPodcastEpisode } from "#/screens/Home/fetchers/PodcastFetcher";
 import { WordPressFetcher } from "#/screens/Home/fetchers/WordPressFetcher";
@@ -80,9 +84,20 @@ const loadFavoriteInstaPost = async (
   payload?: InstaPostProperties,
 ): Promise<Post<InstaPostProperties> | undefined> => {
   try {
-    // Prefer the snapshot stored with the favorite (works for any account and
-    // without the backend); otherwise re-fetch from the by-id proxy.
-    const post = payload ?? (await API.getInstaPost(id));
+    // Prefer the snapshot stored with the favorite (works without the
+    // backend). Re-fetch when there is none, or when its image links can't be
+    // refreshed once Instagram's expire (saved before vvp_app_server#41):
+    // those would never load again.
+    let post = payload;
+    if (!post || hasStaleMediaUrls(post)) {
+      try {
+        post = await fetchInstaPostFromAnyAccount(id);
+      } catch (error) {
+        // Keep the snapshot: its caption and link still work.
+        if (!payload) throw error;
+        console.warn(`Could not refresh Instagram favorite ${id}:`, error);
+      }
+    }
     if (
       !post ||
       (post.media_type !== "IMAGE" && post.media_type !== "CAROUSEL_ALBUM")
@@ -113,10 +128,21 @@ const loadFavoritePodcast = async (
   try {
     // Prefer the snapshot stored with the favorite; Podigee has no by-id
     // endpoint, so otherwise search the (server-cached) feed for the episode.
-    const episode =
-      payload ?? (await API.getPodcastFeed()).find((e) => e.id === id);
+    if (payload) return mapPodcastEpisode(payload) ?? undefined;
+
+    // getPodcastFeed throws on a malformed response, which lands in the catch
+    // below and keeps the favorite. Only purge when the feed loaded with
+    // episodes and this one is genuinely gone — an empty list is more likely
+    // an upstream hiccup than every episode being deleted.
+    const episodes = await API.getPodcastFeed();
+    const episode = episodes.find((e) => e.id === id);
     if (!episode) {
-      await FavoritesStore.removeFavorite(id);
+      if (episodes.length > 0) {
+        console.warn(
+          `Podcast episode not found for id: ${id}, removing from favorites`,
+        );
+        await FavoritesStore.removeFavorite(id);
+      }
       return undefined;
     }
     return mapPodcastEpisode(episode) ?? undefined;

@@ -19,11 +19,12 @@ import { YouTubeFetcher } from "./YouTubeFetcher";
 // misconfigured handle.
 const perFeedFetcherMap: Record<string, FeedFetcherType<unknown>> = {};
 for (const entry of (Config.feeds?.wp ?? []).filter((e) => !!e.enabled)) {
+  const key = getWpFeedKey(entry);
   const { feedFetcher, searchFetcher } = WordPressFetcher.createFetchers(
     WordPressAPI.create(entry.handle),
     entry.sourceName,
+    key,
   );
-  const key = getWpFeedKey(entry);
   perFeedFetcherMap[key] = feedFetcher;
   perFeedFetcherMap[`${key}:search`] = searchFetcher;
 }

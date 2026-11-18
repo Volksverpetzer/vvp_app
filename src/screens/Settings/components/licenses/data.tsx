@@ -5,13 +5,13 @@ export default {
     licenseUrl:
       "https://github.com/algolia/algoliasearch-client-javascript/raw/HEAD/LICENSE",
   },
-  "@atproto/api@0.31.1": {
+  "@atproto/api@0.32.1": {
     licenses: "MIT",
     repository: "https://github.com/bluesky-social/atproto",
     licenseUrl:
       "https://github.com/bluesky-social/atproto/raw/HEAD/LICENSE.txt",
   },
-  "@babel/runtime@7.29.13": {
+  "@babel/runtime@7.29.14": {
     licenses: "MIT",
     repository: "https://github.com/babel/babel",
     licenseUrl: "https://github.com/babel/babel/raw/HEAD/LICENSE",
@@ -81,7 +81,7 @@ export default {
     licenseUrl:
       "https://github.com/stripe/stripe-react-native/raw/HEAD/LICENSE",
   },
-  "@volksverpetzer/design-tokens@0.9.1": {
+  "@volksverpetzer/design-tokens@0.11.0": {
     licenses: "MIT",
     repository: "https://github.com/Volksverpetzer/vvp_design_system",
     licenseUrl:
@@ -142,7 +142,7 @@ export default {
     licenseUrl:
       "https://github.com/malaa-tech/expo-custom-assets/raw/HEAD/LICENSE",
   },
-  "expo-dev-client@58.0.19": {
+  "expo-dev-client@58.0.21": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -157,7 +157,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-file-system@58.0.13": {
+  "expo-file-system@58.0.14": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -202,7 +202,7 @@ export default {
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo-router@58.0.31": {
+  "expo-router@58.0.32": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
@@ -230,12 +230,12 @@ export default {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
   },
-  "expo-web-browser@58.0.8": {
+  "expo-web-browser@58.1.0": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
   },
-  "expo@58.0.24": {
+  "expo@58.0.26": {
     licenses: "MIT",
     repository: "https://github.com/expo/expo",
     licenseUrl: "https://github.com/expo/expo/raw/HEAD/LICENSE",
@@ -268,12 +268,6 @@ export default {
     licenseUrl:
       "https://github.com/obipawan/react-native-hyperlink/raw/HEAD/LICENSE",
   },
-  "react-native-modal@14.0.0-rc.1": {
-    licenses: "MIT",
-    repository: "https://github.com/react-native-modal/react-native-modal",
-    licenseUrl:
-      "https://github.com/react-native-modal/react-native-modal/raw/HEAD/LICENSE.md",
-  },
   "react-native-nitro-modules@0.37.2": {
     licenses: "MIT",
     repository: "https://github.com/margelo/nitro",
@@ -303,7 +297,7 @@ export default {
     licenseUrl:
       "https://github.com/software-mansion/react-native-screens/raw/HEAD/LICENSE",
   },
-  "react-native-svg@15.16.1": {
+  "react-native-svg@15.16.0": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-svg",
     licenseUrl:
@@ -332,7 +326,7 @@ export default {
     licenseUrl:
       "https://github.com/react-native-webview/react-native-webview/raw/HEAD/LICENSE",
   },
-  "react-native-worklets@0.13.1": {
+  "react-native-worklets@0.13.0": {
     licenses: "MIT",
     repository: "https://github.com/software-mansion/react-native-reanimated",
     licenseUrl:

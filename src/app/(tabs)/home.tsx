@@ -19,6 +19,7 @@ import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { getEnabledFeeds } from "#/helpers/utils/feeds";
 import { isVolksverpetzer } from "#/helpers/utils/variant";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
+import { useTabBarClearance } from "#/hooks/useTabBarClearance";
 import type { FeedProperties } from "#/screens/Home/components/Feed";
 import Feed from "#/screens/Home/components/Feed";
 import Fetcher from "#/screens/Home/fetchers/FeedFetcher";
@@ -40,6 +41,9 @@ const HomeScreen = () => {
   const color = Colors[colorScheme].text;
   const corporate = Colors[colorScheme].primary;
   const backgroundColor = Colors[colorScheme].surface;
+  // The feed scrolls under the native tab bar: without this the end of the
+  // list (load-more spinner text, end-of-feed prompt) stays hidden behind it.
+  const tabBarClearance = useTabBarClearance();
 
   const HEADER_HEIGHT = 220;
   const HEADER_MIN_HEIGHT = 110;
@@ -55,6 +59,7 @@ const HomeScreen = () => {
         .filter((feed) => contentSettings[feed]?.value)
         .map((feed) => ({
           fetcher: Fetcher[feed],
+          name: feed,
         })),
     });
   }, [contentSettings]);
@@ -98,7 +103,11 @@ const HomeScreen = () => {
           {...feedprops}
           key={0}
           showAnnouncements
-          style={{ paddingTop: HEADER_HEIGHT, gap: spacing.xl }}
+          style={{
+            paddingTop: HEADER_HEIGHT,
+            paddingBottom: tabBarClearance,
+            gap: spacing.xl,
+          }}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
             {

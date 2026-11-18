@@ -67,9 +67,41 @@ describe("WordPressAPI", () => {
             page: 10,
             _embed: "author",
           },
+          silentStatuses: [400],
         },
       );
       expect(result).toEqual([{ id: 2 }]);
+      spy.mockRestore();
+    });
+  });
+
+  describe("page past the last one", () => {
+    const pageError = (code: string) =>
+      new Networking.FetchError("Request failed with status 400", {
+        status: 400,
+        statusText: "Bad Request",
+        url: "https://example.org/wp-json/wp/v2/posts",
+        body: { code, data: { status: 400 } },
+      });
+
+    it("returns an empty list instead of failing (end of the feed)", async () => {
+      const spy = jest
+        .spyOn(Networking, "get")
+        .mockRejectedValue(pageError("rest_post_invalid_page_number"));
+      await expect(WordPressAPI.getPosts(6)).resolves.toEqual([]);
+      await expect(
+        WordPressAPI.create("https://example.org").getPosts(6),
+      ).resolves.toEqual([]);
+      await expect(
+        WordPressAPI.create("https://example.org").searchPosts("foo", 6),
+      ).resolves.toEqual([]);
+      spy.mockRestore();
+    });
+
+    it("still fails on other 400 errors", async () => {
+      const error = pageError("rest_invalid_param");
+      const spy = jest.spyOn(Networking, "get").mockRejectedValue(error);
+      await expect(WordPressAPI.getPosts(2)).rejects.toBe(error);
       spy.mockRestore();
     });
   });
@@ -387,6 +419,7 @@ describe("WordPressAPI", () => {
             page: 1,
             _embed: "author",
           },
+          silentStatuses: [400],
         },
       );
       expect(result).toEqual([{ id: 2 }]);
@@ -409,6 +442,7 @@ describe("WordPressAPI", () => {
             page: 5,
             _embed: "author",
           },
+          silentStatuses: [400],
         },
       );
       spy.mockRestore();

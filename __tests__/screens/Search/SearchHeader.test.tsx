@@ -129,7 +129,7 @@ describe("SearchHeader", () => {
       });
       expect(titleBlockHeight(getByTestId)).toBe(0);
       // The search input stays available
-      expect(getByLabelText("Text input field")).toBeTruthy();
+      expect(getByLabelText("Suchbegriff")).toBeTruthy();
     });
   });
 
@@ -138,7 +138,7 @@ describe("SearchHeader", () => {
       const { getByLabelText } = await render(
         <SearchHeader {...baseProps} search="a" />,
       );
-      await fireEvent(getByLabelText("Text input field"), "submitEditing");
+      await fireEvent(getByLabelText("Suchbegriff"), "submitEditing");
       expect(toast.info).toHaveBeenCalledWith(
         "Bitte mindestens 2 Zeichen eingeben",
       );
@@ -148,7 +148,7 @@ describe("SearchHeader", () => {
       const { getByLabelText } = await render(
         <SearchHeader {...baseProps} search="ab" />,
       );
-      await fireEvent(getByLabelText("Text input field"), "submitEditing");
+      await fireEvent(getByLabelText("Suchbegriff"), "submitEditing");
       expect(toast.info).not.toHaveBeenCalled();
     });
   });

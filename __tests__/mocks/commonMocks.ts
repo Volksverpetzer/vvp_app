@@ -11,19 +11,3 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
     getYouTubeFeed: jest.fn(),
   },
 }));
-
-jest.mock("#/screens/Home/fetchers/FetcherUtilities", () => ({
-  __esModule: true,
-  default: {
-    formatDate: jest.fn((_date) => "2023-01-01"),
-    getImageFromPost: jest.fn(),
-    getVideoFromPost: jest.fn(),
-    safeFetch: jest.fn(async (fetchFn: () => Promise<any>) => {
-      try {
-        return await fetchFn();
-      } catch {
-        return [];
-      }
-    }),
-  },
-}));

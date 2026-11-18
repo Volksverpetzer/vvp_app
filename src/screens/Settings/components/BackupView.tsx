@@ -107,7 +107,7 @@ const BackupView = () => {
       }
 
       if (isValidFavorites(favorites)) {
-        await FavoritesStore.setStoredFavs(favorites);
+        await FavoritesStore.replaceFavorites(favorites);
       }
       if (isValidSources(sources)) {
         await SourcesStore.setStoredSources(sources);

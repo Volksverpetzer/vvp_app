@@ -34,6 +34,7 @@ import { Achievements } from "#/helpers/Achievements";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import SettingsStore from "#/helpers/Stores/SettingsStore";
+import { popups } from "#/helpers/popups";
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import { toast } from "#/helpers/toast";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -282,16 +283,17 @@ const SettingsScreen = () => {
           </UiPressable>
           <UiPressable
             accessibilityRole="button"
-            onPress={() => {
-              toast.confirm(
-                "Intro zurücksetzen?",
-                "Drücke hier, um das Intro zurückzusetzen",
-                () => {
-                  PersonalStore.setOnboardingDone(false);
-                  PersonalStore.setLastSeenChangelogVersionCode(0);
-                  toast.success("Intro zurückgesetzt");
-                },
-              );
+            onPress={async () => {
+              const confirmed = await popups.confirm({
+                title: "Intro zurücksetzen?",
+                message:
+                  "Beim nächsten App-Start siehst du das Intro und die Neuigkeiten wieder.",
+                confirmLabel: "Zurücksetzen",
+              });
+              if (!confirmed) return;
+              PersonalStore.setOnboardingDone(false);
+              PersonalStore.setLastSeenChangelogVersionCode(0);
+              toast.success("Intro zurückgesetzt");
             }}
           >
             <UiText>Intro zurücksetzen</UiText>
@@ -299,15 +301,16 @@ const SettingsScreen = () => {
           {!Config.isFoss && (
             <UiPressable
               accessibilityRole="button"
-              onPress={() => {
-                toast.confirm(
-                  "Benachrichtigungen zurücksetzen?",
-                  "Drücke hier, um sie zurückzusetzen",
-                  () => {
-                    Notifications.registerForPushNotifications();
-                    toast.success("Benachrichtigungen zurückgesetzt");
-                  },
-                );
+              onPress={async () => {
+                const confirmed = await popups.confirm({
+                  title: "Benachrichtigungen zurücksetzen?",
+                  message:
+                    "Die App meldet dein Gerät neu für Benachrichtigungen an.",
+                  confirmLabel: "Zurücksetzen",
+                });
+                if (!confirmed) return;
+                Notifications.registerForPushNotifications();
+                toast.success("Benachrichtigungen zurückgesetzt");
               }}
             >
               <UiText>Benachrichtigungen zurücksetzen</UiText>
@@ -316,15 +319,16 @@ const SettingsScreen = () => {
           {Config.enableActions && (
             <UiPressable
               accessibilityRole="button"
-              onPress={() => {
-                toast.confirm(
-                  "Erfolge zurücksetzen?",
-                  "Drücke hier, um alle Erfolge zurückzusetzen",
-                  () => {
-                    Achievements.resetEverything();
-                    toast.success("Erfolge zurückgesetzt");
-                  },
-                );
+              onPress={async () => {
+                const confirmed = await popups.confirm({
+                  title: "Erfolge zurücksetzen?",
+                  message:
+                    "Alle Erfolge und dein Level gehen verloren. Das lässt sich nicht rückgängig machen.",
+                  confirmLabel: "Zurücksetzen",
+                });
+                if (!confirmed) return;
+                Achievements.resetEverything();
+                toast.success("Erfolge zurückgesetzt");
               }}
             >
               <UiText>Alle Erfolge zurücksetzen</UiText>

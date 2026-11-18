@@ -24,8 +24,10 @@ type styleColors = {
   accent: CSSProperties["color"];
   // Prüfpunkt fact-check sub-brand
   pruefpunkt: CSSProperties["color"];
-  // Feedback: error color readable as text/border on background and surface
+  // Feedback colors, readable as text/border on background and surface
   error: CSSProperties["color"];
+  warning: CSSProperties["color"];
+  success: CSSProperties["color"];
 };
 
 export type colorSchemeType = {
