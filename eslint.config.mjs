@@ -90,6 +90,7 @@ export default defineConfig([
   {
     ignores: [
       "**/pnpm-lock.yaml",
+      ".claude/**",
       "android/**",
       "ios/**",
       "expo-env.d.ts",

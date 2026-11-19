@@ -12,13 +12,19 @@ const config: Config.InitialOptions = {
   // a cold cache and the 1-vCPU ubuntu-slim release runner that alone can
   // exceed the default 5 s.
   testTimeout: 15000,
-  testPathIgnorePatterns: ["<rootDir>/__tests__/mocks/"],
+  // Claude Code sessions keep git worktrees (each a full checkout with its own
+  // __tests__ and node_modules) under .claude/worktrees/. Without these
+  // ignores, `pnpm test` in the main checkout also runs every worktree's
+  // copy of the suite, which fails against the wrong node_modules.
+  testPathIgnorePatterns: ["<rootDir>/__tests__/mocks/", "<rootDir>/.claude/"],
+  modulePathIgnorePatterns: ["<rootDir>/.claude/"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   collectCoverage: true,
   collectCoverageFrom: [
     "**/*.{ts,tsx}",
     "!**/coverage/**",
     "!**/node_modules/**",
+    "!**/.claude/**",
     "!**/babel.config.cts",
     "!**/jest-setup.ts",
   ],
