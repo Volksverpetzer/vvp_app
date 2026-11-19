@@ -12,6 +12,7 @@ import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import UiText from "#/components/ui/UiText";
 import SettingsList from "#/components/views/SettingsList";
+import Changelog from "#/constants/Changelog";
 import Colors from "#/constants/Colors";
 import Config from "#/constants/Config";
 import { iconSizes } from "#/constants/IconSizes";
@@ -128,6 +129,14 @@ const Onboarding = () => {
   const agreeToTerms = async () => {
     registerEvent(Config.wpUrl, "Onboarding Completed");
     await PersonalStore.setOnboardingDone();
+    // A fresh install already has the current release, so its "what's new"
+    // notes must not pop up on the next launch. Skipped after "Intro
+    // zurücksetzen", which stores 0 on purpose so the news show again.
+    if (!(await PersonalStore.hasLastSeenChangelogVersionCode())) {
+      await PersonalStore.setLastSeenChangelogVersionCode(
+        Changelog.versionCode,
+      );
+    }
     updateBadgeState({ personal: false, action: true });
     router.replace("/");
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
