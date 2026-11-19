@@ -85,6 +85,32 @@ describe("BaseStore", () => {
     });
   });
 
+  describe("hasItem", () => {
+    it("should return true when a value is stored", async () => {
+      AsyncStorage.getItem = jest.fn().mockResolvedValue("0" as never) as never;
+
+      await expect(BaseStore.hasItem("testKey")).resolves.toBe(true);
+    });
+
+    it("should return false when the key is missing", async () => {
+      AsyncStorage.getItem = jest
+        .fn()
+        .mockResolvedValue(null as never) as never;
+
+      await expect(BaseStore.hasItem("testKey")).resolves.toBe(false);
+    });
+
+    it("should reject when the storage read fails", async () => {
+      AsyncStorage.getItem = jest
+        .fn()
+        .mockRejectedValue(new Error("Storage error") as never) as never;
+
+      await expect(BaseStore.hasItem("testKey")).rejects.toThrow(
+        "Storage error",
+      );
+    });
+  });
+
   describe("parseJSON", () => {
     it("should parse a valid JSON string correctly", () => {
       const json = '{"name": "John", "age": 30}';

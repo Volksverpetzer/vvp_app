@@ -8,6 +8,7 @@ jest.mock("#/helpers/Storage", () => ({
   __esModule: true,
   default: {
     getItem: jest.fn(),
+    hasItem: jest.fn(),
     setItem: jest.fn(),
     removeItem: jest.fn(),
     parseJSON: jest.fn(),
@@ -288,24 +289,28 @@ describe("PersonalStore", () => {
 
   describe("hasLastSeenChangelogVersionCode", () => {
     it("should return false when nothing is stored", async () => {
-      getItemSpy.mockResolvedValue(undefined);
+      const hasItemSpy = jest
+        .spyOn(BaseStore, "hasItem")
+        .mockResolvedValue(false);
 
       const result = await PersonalStore.hasLastSeenChangelogVersionCode();
 
-      expect(getItemSpy).toHaveBeenCalledWith("lastSeenChangelog");
+      expect(hasItemSpy).toHaveBeenCalledWith("lastSeenChangelog");
       expect(result).toBe(false);
     });
 
     it("should return true when 0 was stored by a reset", async () => {
-      getItemSpy.mockResolvedValue("0");
+      jest.spyOn(BaseStore, "hasItem").mockResolvedValue(true);
 
       const result = await PersonalStore.hasLastSeenChangelogVersionCode();
 
       expect(result).toBe(true);
     });
 
-    it("should handle errors and return true", async () => {
-      getItemSpy.mockRejectedValue(new Error("Storage error"));
+    it("should return true when the storage read fails", async () => {
+      jest
+        .spyOn(BaseStore, "hasItem")
+        .mockRejectedValue(new Error("Storage error"));
 
       const result = await PersonalStore.hasLastSeenChangelogVersionCode();
 

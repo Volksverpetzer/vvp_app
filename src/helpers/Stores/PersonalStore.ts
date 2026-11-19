@@ -79,8 +79,7 @@ const PersonalStore = {
    */
   async hasLastSeenChangelogVersionCode(): Promise<boolean> {
     try {
-      const value = await BaseStore.getItem(this.keys.lastSeenChangelog);
-      return value !== undefined;
+      return await BaseStore.hasItem(this.keys.lastSeenChangelog);
     } catch (error) {
       console.error("Error checking last seen changelog version code:", error);
       // Err on the side of not overwriting a reset.
