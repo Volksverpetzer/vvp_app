@@ -50,6 +50,7 @@ const config = ({ config }: ConfigContext): ExpoConfig => {
       "@react-native-vector-icons/lucide",
       ["expo-router"],
       ["expo-asset"],
+      "./plugins/withOptionalScreenFeatures.plugin.ts",
       [
         "expo-audio",
         // `enableBackgroundPlayback` already defaults to true in expo-audio
