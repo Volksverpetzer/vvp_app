@@ -130,8 +130,13 @@ const Onboarding = () => {
     registerEvent(Config.wpUrl, "Onboarding Completed");
     await PersonalStore.setOnboardingDone();
     // A fresh install already has the current release, so its "what's new"
-    // notes must not pop up on the next launch.
-    await PersonalStore.setLastSeenChangelogVersionCode(Changelog.versionCode);
+    // notes must not pop up on the next launch. Skipped after "Intro
+    // zurücksetzen", which stores 0 on purpose so the news show again.
+    if (!(await PersonalStore.hasLastSeenChangelogVersionCode())) {
+      await PersonalStore.setLastSeenChangelogVersionCode(
+        Changelog.versionCode,
+      );
+    }
     updateBadgeState({ personal: false, action: true });
     router.replace("/");
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

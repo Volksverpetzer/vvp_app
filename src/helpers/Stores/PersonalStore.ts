@@ -71,6 +71,23 @@ const PersonalStore = {
     }
   },
 
+  /**
+   * Whether a last-seen changelog version was ever stored. False only on a
+   * fresh install; "Intro zurücksetzen" stores 0 explicitly so the news
+   * show again.
+   * @returns {Promise<boolean>} True if a value is stored (or on error).
+   */
+  async hasLastSeenChangelogVersionCode(): Promise<boolean> {
+    try {
+      const value = await BaseStore.getItem(this.keys.lastSeenChangelog);
+      return value !== undefined;
+    } catch (error) {
+      console.error("Error checking last seen changelog version code:", error);
+      // Err on the side of not overwriting a reset.
+      return true;
+    }
+  },
+
   async setLastSeenChangelogVersionCode(versionCode: number): Promise<void> {
     try {
       await BaseStore.setItem(

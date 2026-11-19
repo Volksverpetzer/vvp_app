@@ -286,6 +286,39 @@ describe("PersonalStore", () => {
     });
   });
 
+  describe("hasLastSeenChangelogVersionCode", () => {
+    it("should return false when nothing is stored", async () => {
+      getItemSpy.mockResolvedValue(undefined);
+
+      const result = await PersonalStore.hasLastSeenChangelogVersionCode();
+
+      expect(getItemSpy).toHaveBeenCalledWith("lastSeenChangelog");
+      expect(result).toBe(false);
+    });
+
+    it("should return true when 0 was stored by a reset", async () => {
+      getItemSpy.mockResolvedValue("0");
+
+      const result = await PersonalStore.hasLastSeenChangelogVersionCode();
+
+      expect(result).toBe(true);
+    });
+
+    it("should handle errors and return true", async () => {
+      getItemSpy.mockRejectedValue(new Error("Storage error"));
+
+      const result = await PersonalStore.hasLastSeenChangelogVersionCode();
+
+      expect(result).toBe(true);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Error checking last seen changelog version code:",
+        expect.any(Error),
+      );
+
+      consoleErrorSpy.mockRestore();
+    });
+  });
+
   describe("setLastSeenChangelogVersionCode", () => {
     it("should store the version code as JSON under the correct key", async () => {
       // Execute

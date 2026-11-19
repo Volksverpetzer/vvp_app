@@ -65,6 +65,7 @@ jest.mock("#/helpers/Stores/PersonalStore", () => ({
   __esModule: true,
   default: {
     setOnboardingDone: jest.fn(() => Promise.resolve()),
+    hasLastSeenChangelogVersionCode: jest.fn(() => Promise.resolve(false)),
     setLastSeenChangelogVersionCode: jest.fn(() => Promise.resolve()),
   },
 }));
@@ -438,7 +439,7 @@ describe("Onboarding", () => {
   });
 
   describe("agreeToTerms (onFinish callback)", () => {
-    it("marks the current changelog as seen so it doesn't show on the next launch", async () => {
+    it("marks the current changelog as seen on a fresh install", async () => {
       await render(<Onboarding />);
 
       await capturedOnFinish!();
@@ -446,6 +447,19 @@ describe("Onboarding", () => {
       expect(
         PersonalStore.setLastSeenChangelogVersionCode,
       ).toHaveBeenCalledWith(Changelog.versionCode);
+    });
+
+    it("keeps the changelog unseen after Intro zurücksetzen", async () => {
+      (
+        PersonalStore.hasLastSeenChangelogVersionCode as jest.Mock
+      ).mockImplementationOnce(() => Promise.resolve(true));
+      await render(<Onboarding />);
+
+      await capturedOnFinish!();
+
+      expect(
+        PersonalStore.setLastSeenChangelogVersionCode,
+      ).not.toHaveBeenCalled();
     });
 
     it("calls registerForPushNotifications when IS_FOSS is false", async () => {
