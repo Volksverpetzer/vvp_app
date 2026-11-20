@@ -7,6 +7,7 @@ import {
   jest,
 } from "@jest/globals";
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { router } from "expo-router";
 import { Linking } from "react-native";
 
 import ContactScreen from "#/app/(tabs)/contact";
@@ -19,6 +20,15 @@ import type { AsyncMock } from "#tests/mocks/jestTypes";
 let mockParameters: Record<string, string> = {};
 
 jest.mock("expo-router", () => ({
+  router: {
+    setParams: jest.fn((parameters: Record<string, string | undefined>) => {
+      mockParameters = Object.fromEntries(
+        Object.entries({ ...mockParameters, ...parameters }).filter(
+          ([, value]) => value !== undefined,
+        ),
+      ) as Record<string, string>;
+    }),
+  },
   useLocalSearchParams: jest.fn(() => mockParameters),
   useFocusEffect: jest.fn((callback: () => void) => callback()),
 }));
@@ -164,6 +174,36 @@ describe("ContactScreen", () => {
     };
     const { getByText, getByDisplayValue } = await render(<ContactScreen />);
     expect(getByText("Feedback")).toBeTruthy();
+    expect(getByDisplayValue("Artikel: Ein echter Titel")).toBeTruthy();
+    expect(
+      getByDisplayValue("https://example.com/artikel\nAbsatz 3\n\n"),
+    ).toBeTruthy();
+  });
+
+  it("prefills the form again when re-entered with the same params after a submit", async () => {
+    const articleParameters = {
+      category: "app_feedback",
+      url: "https://example.com/artikel",
+      title: "Ein echter Titel",
+      index: "3",
+    };
+    mockParameters = { ...articleParameters };
+    const { getByText, getByDisplayValue, queryByDisplayValue, rerender } =
+      await render(<ContactScreen />);
+    await fireEvent.press(getByText("Senden"));
+
+    await waitFor(() => expect(postContact).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(queryByDisplayValue("Artikel: Ein echter Titel")).toBeNull(),
+    );
+    expect(router.setParams).toHaveBeenCalled();
+    expect(mockParameters).toEqual({});
+
+    // The params-cleared render, then the same entry point again
+    await rerender(<ContactScreen />);
+    mockParameters = { ...articleParameters };
+    await rerender(<ContactScreen />);
+
     expect(getByDisplayValue("Artikel: Ein echter Titel")).toBeTruthy();
     expect(
       getByDisplayValue("https://example.com/artikel\nAbsatz 3\n\n"),

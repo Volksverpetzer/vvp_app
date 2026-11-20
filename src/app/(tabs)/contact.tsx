@@ -1,7 +1,7 @@
 import * as Application from "expo-application";
 import { BlurTargetView } from "expo-blur";
 import * as Haptics from "expo-haptics";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
@@ -324,6 +324,15 @@ const ContactScreen = () => {
     setTitle("");
     setMessage("");
     setEmail("");
+    // Drop the prefill params too: the prefill effect only runs when they
+    // change, so re-entering from the same article would otherwise leave the
+    // form empty
+    router.setParams({
+      url: undefined,
+      index: undefined,
+      category: undefined,
+      title: undefined,
+    });
     clearError();
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     clearTimeout(resetTimeout.current);
