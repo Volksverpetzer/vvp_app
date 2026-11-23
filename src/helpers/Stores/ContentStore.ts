@@ -7,6 +7,15 @@ import type {
   InstaPostProperties,
 } from "#/types";
 
+/**
+ * The latest clear() still in flight. Reads and writes wait for it, so a
+ * clear started at launch (fire-and-forget from the app-open routine) can't
+ * race the first screen: a read can't see entries about to be dropped, and a
+ * write can't land between clear()'s getAllKeys() and multiRemove() and be
+ * deleted.
+ */
+let pendingClear: Promise<void> = Promise.resolve();
+
 const ContentStore = {
   contentKeyPrefix: "content_",
 
@@ -30,6 +39,7 @@ const ContentStore = {
     host?: string,
   ): Promise<ArticleProperties | undefined> {
     try {
+      await pendingClear;
       let storedArticleJson = await BaseStore.getItem(
         this.articleKey(slug, host),
       );
@@ -63,6 +73,7 @@ const ContentStore = {
     article: ArticleProperties,
   ): Promise<void> {
     try {
+      await pendingClear;
       await BaseStore.setItem(
         this.articleKey(slug, normalizedHostOf(article.link)),
         JSON.stringify(article),
@@ -81,6 +92,7 @@ const ContentStore = {
     post_id: string,
   ): Promise<InstaPostProperties | undefined> {
     try {
+      await pendingClear;
       const storedPostJson = await BaseStore.getItem(
         this.contentKeyPrefix + post_id,
       );
@@ -102,6 +114,7 @@ const ContentStore = {
     post: InstaPostProperties,
   ): Promise<void> {
     try {
+      await pendingClear;
       await BaseStore.setItem(
         this.contentKeyPrefix + post_id,
         JSON.stringify(post),
@@ -122,6 +135,7 @@ const ContentStore = {
     post: BlueskyPostProperties,
   ): Promise<void> {
     try {
+      await pendingClear;
       await BaseStore.setItem(
         this.contentKeyPrefix + post_id,
         JSON.stringify(post),
@@ -140,6 +154,7 @@ const ContentStore = {
     post_id: string,
   ): Promise<BlueskyPostProperties | undefined> {
     try {
+      await pendingClear;
       const storedPostJson = await BaseStore.getItem(
         this.contentKeyPrefix + post_id,
       );
@@ -165,12 +180,17 @@ const ContentStore = {
   /**
    * Clear all stored content.
    */
-  async clear(): Promise<void> {
-    try {
-      await BaseStore.removePrefixedItems(this.contentKeyPrefix);
-    } catch (error) {
-      console.error("Error clearing stored content:", error);
-    }
+  clear(): Promise<void> {
+    const previous = pendingClear;
+    pendingClear = (async () => {
+      await previous;
+      try {
+        await BaseStore.removePrefixedItems(this.contentKeyPrefix);
+      } catch (error) {
+        console.error("Error clearing stored content:", error);
+      }
+    })();
+    return pendingClear;
   },
 };
 

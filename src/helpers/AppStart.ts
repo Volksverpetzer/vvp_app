@@ -32,6 +32,8 @@ export const claimAppLaunch = (): boolean => {
 export const appOpenRoutine = (): void => {
   // Notification registration is not refreshed here: _layout's
   // checkAndRequestOnLaunch does it once onboarding is done.
+  // Not awaited: ContentStore reads and writes wait for a pending clear, so
+  // the first screen can't race it.
   void Statistics.countAppOpened();
   void ContentStore.clear();
 };
