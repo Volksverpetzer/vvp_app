@@ -244,4 +244,54 @@ describe("ContentStore", () => {
       consoleSpy.mockRestore();
     });
   });
+
+  describe("reads and writes during a pending clear", () => {
+    // Hold clear() between its key listing and removal until release().
+    const holdClear = () => {
+      let release!: () => void;
+      const calls: string[] = [];
+      jest.spyOn(BaseStore, "removePrefixedItems").mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            release = () => {
+              calls.push("clear");
+              resolve();
+            };
+          }),
+      );
+      jest.spyOn(BaseStore, "setItem").mockImplementation(() => {
+        calls.push("set");
+        return Promise.resolve();
+      });
+      jest.spyOn(BaseStore, "getItem").mockImplementation(() => {
+        calls.push("get");
+        return Promise.resolve(null);
+      });
+      return { calls, release: () => release() };
+    };
+
+    it("waits for the clear before writing, so the new entry survives", async () => {
+      const { calls, release } = holdClear();
+      const clearing = ContentStore.clear();
+      const writing = ContentStore.setStoredBskyPostById("xyz", mockBskyPost);
+      await Promise.resolve();
+      expect(calls).toEqual([]);
+
+      release();
+      await Promise.all([clearing, writing]);
+      expect(calls).toEqual(["clear", "set"]);
+    });
+
+    it("waits for the clear before reading, so stale entries aren't returned", async () => {
+      const { calls, release } = holdClear();
+      const clearing = ContentStore.clear();
+      const reading = ContentStore.getStoredArticle("test-article");
+      await Promise.resolve();
+      expect(calls).toEqual([]);
+
+      release();
+      await Promise.all([clearing, reading]);
+      expect(calls).toEqual(["clear", "get"]);
+    });
+  });
 });

@@ -4,9 +4,8 @@ import { useEffect, useRef } from "react";
 
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
+import { appOpenRoutine, claimAppLaunch } from "#/helpers/AppStart";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
-import Statistics from "#/helpers/Statistics";
-import ContentStore from "#/helpers/Stores/ContentStore";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { normalizeHost } from "#/helpers/utils/host";
 
@@ -18,15 +17,6 @@ const Index = () => {
   const router = useRouter();
   const didNavigate = useRef(false);
 
-  // Notification registration is not refreshed here: _layout's
-  // checkAndRequestOnLaunch does it once onboarding is done. Calling it here
-  // too ran before the onboarding check (prompting fresh installs at launch)
-  // and sent a second /register for everyone else.
-  const appOpenRoutine = () => {
-    Statistics.countAppOpened();
-    ContentStore.clear();
-  };
-
   useEffect(() => {
     if (didNavigate.current) return;
     didNavigate.current = true;
@@ -35,6 +25,17 @@ const Index = () => {
     // Avoid overriding the initial URL by redirecting to onboarding/home here.
     (async () => {
       try {
+        // getInitialURL() keeps returning the cold-start URL for the whole
+        // process, but Index mounts again (or for the first time, after a
+        // deep-link cold start) whenever something navigates to "/". Only the
+        // launch claimant handles it (see AppStart); here, just go on to
+        // home/onboarding.
+        if (!claimAppLaunch()) {
+          const onboarded = await PersonalStore.isOnboardingDone();
+          router.dismissTo(onboarded ? "/home" : "/onboarding");
+          return;
+        }
+
         const initialUrl = await Linking.getInitialURL();
         if (initialUrl) {
           const { hostname, path } = Linking.parse(initialUrl);
