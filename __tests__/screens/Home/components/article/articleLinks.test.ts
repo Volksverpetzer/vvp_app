@@ -12,6 +12,17 @@ describe("classifyArticleLink", () => {
     });
   });
 
+  it("accepts http(s) schemes in any case", () => {
+    expect(classifyArticleLink("HTTPS://example.org/source", ARTICLE)).toEqual({
+      kind: "web",
+      href: "https://example.org/source",
+    });
+    expect(classifyArticleLink("Http://example.org/source", ARTICLE)).toEqual({
+      kind: "web",
+      href: "https://example.org/source",
+    });
+  });
+
   it("upgrades http links to https instead of ignoring them", () => {
     expect(classifyArticleLink("http://example.org/source", ARTICLE)).toEqual({
       kind: "web",

@@ -64,7 +64,8 @@ export const classifyArticleLink = (
       : { kind: "none" };
   }
   if (SYSTEM_SCHEMES.test(href)) return { kind: "system", href };
-  const upgraded = href.replace(/^http:\/\//i, "https://");
+  // Schemes are case-insensitive: normalize HTTP(S):// to lowercase https://.
+  const upgraded = href.replace(/^https?:\/\//i, "https://");
   if (isHttpsUrl(upgraded)) return { kind: "web", href: upgraded };
   return null;
 };
