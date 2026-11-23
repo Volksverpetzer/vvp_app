@@ -16,6 +16,7 @@ import {
   useAmbientTRenderEngine,
 } from "@native-html/render";
 import type { ChildNode, Document } from "domhandler";
+import * as Linking from "expo-linking";
 import type { RefObject } from "react";
 import React, {
   startTransition,
@@ -34,10 +35,8 @@ import { fontFamily } from "#/constants/FontFamily";
 import { SOURCE_SANS_FONTS } from "#/constants/GlobalStyles";
 import Statistics from "#/helpers/Statistics";
 import SourcesStore from "#/helpers/Stores/SourcesStore";
-import { decodeAnchor } from "#/helpers/utils/anchors";
 import { getClassStyles, getTagStyles } from "#/helpers/utils/articleTagStyles";
 import { isSameHost } from "#/helpers/utils/host";
-import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import BlockRenderer from "#/screens/Home/components/article/renderer/BlockRenderer";
 import EmRenderer from "#/screens/Home/components/article/renderer/EmRenderer";
@@ -48,6 +47,7 @@ import ImageRenderer from "#/screens/Home/components/article/renderer/ImageRende
 import type { HttpsUrl } from "#/types";
 
 import { handleArticleElement } from "./ElementHandlers";
+import { classifyArticleLink } from "./articleLinks";
 import {
   BodyChunkOffsetContext,
   chunkIndexOfId,
@@ -306,23 +306,27 @@ const Body = (properties: BodyProperties) => {
          * @param {string} href - The URL of the link
          */
         onPress: (event: GestureResponderEvent, href: string) => {
-          if (
-            href.includes(article_link) ||
-            href.startsWith("about:///blank#")
-          ) {
-            if (href.includes("#")) {
-              // Fragments in hrefs may be percent-encoded (e.g. a trailing
-              // %20), while header ids are raw text — decode once to match.
-              handleAnchorPress(decodeAnchor(href.split("#")[1] ?? ""));
-            }
-            return;
+          const action = classifyArticleLink(href, article_link);
+          switch (action?.kind) {
+            case "anchor":
+              handleAnchorPress(action.id);
+              return;
+            case "system":
+              Linking.openURL(action.href).catch((error) =>
+                console.warn("Failed to open link:", action.href, error),
+              );
+              return;
+            case "web":
+              if (
+                !isSameHost(action.href, Config.wpUrl) &&
+                Config.enableEngagement
+              ) {
+                SourcesStore.onAddSource(action.href, slug, article_title);
+                Statistics.countSourceChecked();
+              }
+              onLinkPress(event, action.href);
+              return;
           }
-          if (!isHttpsUrl(href)) return;
-          if (!isSameHost(href, Config.wpUrl) && Config.enableEngagement) {
-            SourcesStore.onAddSource(href, slug, article_title);
-            Statistics.countSourceChecked();
-          }
-          onLinkPress(event, href);
         },
       },
     }),
