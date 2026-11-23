@@ -19,18 +19,18 @@ describe("classifyArticleLink", () => {
     });
   });
 
-  it("hands mailto: and tel: links to the OS", () => {
+  it("hands mailto: links to the OS", () => {
     expect(
       classifyArticleLink("mailto:redaktion@example.org", ARTICLE),
     ).toEqual({ kind: "system", href: "mailto:redaktion@example.org" });
-    expect(classifyArticleLink("tel:+49301234567", ARTICLE)).toEqual({
-      kind: "system",
-      href: "tel:+49301234567",
-    });
   });
 
   it("ignores other schemes and empty hrefs", () => {
+    expect(classifyArticleLink("tel:+49301234567", ARTICLE)).toBeNull();
     expect(classifyArticleLink("javascript:void(0)", ARTICLE)).toBeNull();
+    expect(
+      classifyArticleLink("file:///C:/Users/x/Downloads/a.pdf", ARTICLE),
+    ).toBeNull();
     expect(classifyArticleLink("about:///blank", ARTICLE)).toBeNull();
     expect(classifyArticleLink("", ARTICLE)).toBeNull();
   });

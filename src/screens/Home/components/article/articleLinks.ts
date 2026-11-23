@@ -9,12 +9,14 @@ export type ArticleLinkAction =
   | { kind: "anchor"; id: string }
   /** A link to the current article itself, without an anchor: do nothing. */
   | { kind: "none" }
-  /** mailto: / tel: — hand to the OS. */
+  /** mailto: — hand to the OS (mail app). */
   | { kind: "system"; href: string }
   /** Any other web link (http upgraded to https). */
   | { kind: "web"; href: HttpsUrl };
 
-const SYSTEM_SCHEMES = /^(mailto|tel):/i;
+// Only mailto: — articles use it for calls to action (e.g. writing to
+// officials); tel: is deliberately left out, no article uses it.
+const SYSTEM_SCHEMES = /^mailto:/i;
 
 /**
  * Host (normalized, without `www.` and port) and path (without trailing
@@ -46,7 +48,7 @@ const fragmentOf = (href: string): string | undefined => {
  * Links to the current article (also written with or without `www.`, http
  * or a trailing slash) and bare `#anchor` links scroll within the article
  * instead of opening it again. `http://` links are upgraded to https, and
- * mailto:/tel: are passed to the OS; anything else is ignored.
+ * mailto: is passed to the OS; anything else (incl. tel:) is ignored.
  */
 export const classifyArticleLink = (
   href: string,
