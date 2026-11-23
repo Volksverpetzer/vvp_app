@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 import UiSpinner from "#/components/ui/UiSpinner";
 import Config from "#/constants/Config";
+import { claimAppLaunch } from "#/helpers/AppStart";
 import { shouldExcludeFromDeepLink } from "#/helpers/DeepLinkFilter";
 import Statistics from "#/helpers/Statistics";
 import ContentStore from "#/helpers/Stores/ContentStore";
@@ -35,6 +36,16 @@ const Index = () => {
     // Avoid overriding the initial URL by redirecting to onboarding/home here.
     (async () => {
       try {
+        // Index remounts whenever something navigates to "/" later on, but
+        // getInitialURL() keeps returning the cold-start URL for the whole
+        // process. Only the first mount handles the launch; later ones just
+        // go to home/onboarding.
+        if (!claimAppLaunch()) {
+          const onboarded = await PersonalStore.isOnboardingDone();
+          router.dismissTo(onboarded ? "/home" : "/onboarding");
+          return;
+        }
+
         const initialUrl = await Linking.getInitialURL();
         if (initialUrl) {
           const { hostname, path } = Linking.parse(initialUrl);
