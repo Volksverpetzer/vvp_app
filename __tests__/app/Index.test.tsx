@@ -2,7 +2,7 @@ import { render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import Index from "#/app/index";
-import { resetAppLaunchForTests } from "#/helpers/AppStart";
+import { claimAppLaunch, resetAppLaunchForTests } from "#/helpers/AppStart";
 
 const mockDismissTo = jest.fn();
 const mockReplace = jest.fn();
@@ -105,5 +105,20 @@ describe("Index start URL handling", () => {
     await waitFor(() => expect(mockDismissTo).toHaveBeenCalledTimes(2));
     expect(mockCountAppOpened).toHaveBeenCalledTimes(1);
     expect(mockClear).toHaveBeenCalledTimes(1);
+  });
+
+  it("goes home on its first mount when native-intent already claimed the launch", async () => {
+    // Deep-link cold start: the router opened the article directly, so Index
+    // first mounts only when something later navigates to "/".
+    mockGetInitialURL.mockResolvedValue(
+      "https://volksverpetzer.de/analyse/some-article/",
+    );
+    claimAppLaunch();
+
+    await render(<Index />);
+    await waitFor(() => expect(mockDismissTo).toHaveBeenCalledWith("/home"));
+    expect(mockGetInitialURL).not.toHaveBeenCalled();
+    expect(mockCountAppOpened).not.toHaveBeenCalled();
+    expect(mockClear).not.toHaveBeenCalled();
   });
 });
