@@ -268,6 +268,80 @@ describe("SettingsScreen", () => {
       expect(Linking.openSettings).toHaveBeenCalledTimes(1);
     });
 
+    it("disables the switches right away when the toggle's permission prompt is denied", async () => {
+      // Undetermined at focus (iOS): the switches start enabled, toggling one
+      // on shows the system prompt, and the user taps "Don't Allow".
+      const Notifications = jest.requireMock("#/helpers/Notifications") as {
+        default: {
+          getPermissions: jest.Mock<AsyncMock>;
+          registerForPushNotifications: jest.Mock<AsyncMock>;
+        };
+      };
+      Notifications.default.getPermissions.mockResolvedValue({
+        status: "undetermined",
+      });
+      Notifications.default.registerForPushNotifications.mockResolvedValueOnce({
+        status: "denied",
+        notificationSettings: {},
+      });
+
+      await render(<SettingsScreen />);
+      await waitFor(() => {
+        expect(Notifications.default.getPermissions).toHaveBeenCalledTimes(1);
+      });
+      expect(getNotificationListProps()?.disabled).toBe(false);
+
+      const props = getNotificationListProps() as unknown as {
+        saveSettings: (
+          value: boolean,
+          key: string,
+          setting: { value: boolean },
+        ) => Promise<void>;
+      };
+      await props.saveSettings(true, "new_post", { value: false });
+
+      await waitFor(() => {
+        expect(getNotificationListProps()?.disabled).toBe(true);
+      });
+      // No focus change needed: the permission check ran only once.
+      expect(Notifications.default.getPermissions).toHaveBeenCalledTimes(1);
+    });
+
+    it("keeps the switches enabled when the toggle's registration succeeds", async () => {
+      const Notifications = jest.requireMock("#/helpers/Notifications") as {
+        default: {
+          getPermissions: jest.Mock<AsyncMock>;
+          registerForPushNotifications: jest.Mock<AsyncMock>;
+        };
+      };
+      Notifications.default.getPermissions.mockResolvedValue({
+        status: "undetermined",
+      });
+      Notifications.default.registerForPushNotifications.mockResolvedValueOnce({
+        status: "ok",
+        notificationSettings: {},
+      });
+
+      await render(<SettingsScreen />);
+      await waitFor(() => {
+        expect(Notifications.default.getPermissions).toHaveBeenCalledTimes(1);
+      });
+
+      const props = getNotificationListProps() as unknown as {
+        saveSettings: (
+          value: boolean,
+          key: string,
+          setting: { value: boolean },
+        ) => Promise<void>;
+      };
+      await props.saveSettings(true, "new_post", { value: false });
+
+      expect(
+        Notifications.default.registerForPushNotifications,
+      ).toHaveBeenCalledTimes(1);
+      expect(getNotificationListProps()?.disabled).toBe(false);
+    });
+
     it("does not check permissions in FOSS mode", async () => {
       mockIsFoss = true;
       const Notifications = jest.requireMock("#/helpers/Notifications") as {
