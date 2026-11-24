@@ -13,9 +13,14 @@ const plausibleClient = createClient("https://plausible.io");
  * Every event name the app reports to Plausible. Kept as a closed union so the
  * set of events stays a single, discoverable catalog and typos (e.g.
  * "pageview" vs "pageviews") are caught at compile time. Add new names here.
+ *
+ * "pageview" is Plausible's built-in page view event, so app reads count in
+ * Top Pages, bounce rate etc. like website reads. App versions before this
+ * sent a custom "pageviews" event instead; vvp_app_server's /proxy/stats/
+ * counts both names, and Plausible can't rename past events.
  */
 export type AnalyticsEvent =
-  | "pageviews"
+  | "pageview"
   | "favorite"
   | "Share"
   | "FullRead"

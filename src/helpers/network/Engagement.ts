@@ -119,7 +119,7 @@ const registerViews = (permalink: string): Promise<unknown> => {
     return Promise.resolve(undefined);
   }
 
-  return registerEvent(permalink, "pageviews");
+  return registerEvent(permalink, "pageview");
 };
 
 /**
