@@ -1,5 +1,6 @@
 import { Buffer } from "buffer";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Platform } from "react-native";
 
 import type { FaktenBotReaction } from "#/components/animations/FaktenBot";
 import IntelligenceAPI from "#/helpers/network/IntelligenceAPI";
@@ -19,6 +20,54 @@ interface UseAISearchResultProperties {
   reactionValue: FaktenBotReaction;
   reload: () => void;
 }
+
+/**
+ * Upper bound for the text sent to the vector search. Pasted links used to
+ * send the whole page (menus, footers, often hundreds of KB); the article
+ * topic is well covered by the first few thousand characters.
+ */
+export const MAX_QUERY_LENGTH = 4000;
+
+/** Collapses whitespace and cuts the text to {@link MAX_QUERY_LENGTH}. */
+export const limitQueryText = (text: string): string =>
+  text.replaceAll(/\s+/g, " ").trim().slice(0, MAX_QUERY_LENGTH);
+
+/** Strips scripts, styles and tags from a page and returns its plain text. */
+export const htmlToQueryText = (html: string): string =>
+  limitQueryText(
+    html
+      .replaceAll(/<script[\s\S]*?<\/script>/gi, "")
+      .replaceAll(/<style[\s\S]*?<\/style>/gi, "")
+      .replaceAll(/<[^>]+>/g, " "),
+  );
+
+/**
+ * Turns a URL into search words without loading the page: the host name
+ * (minus "www.") and the words of its path slug. Used on web, where the
+ * browser can't fetch foreign news sites because of CORS. Falls back to the
+ * URL itself when it can't be parsed or has no usable words.
+ */
+export const urlToQueryText = (url: string): string => {
+  try {
+    const { hostname, pathname } = new URL(url);
+    const words = pathname
+      .split("/")
+      .map((segment) => {
+        try {
+          return decodeURIComponent(segment);
+        } catch {
+          return segment;
+        }
+      })
+      .map((segment) => segment.replace(/\.[a-z0-9]+$/i, ""))
+      .flatMap((segment) => segment.split(/[-_+\s]+/))
+      .filter((word) => word && !/^\d+$/.test(word));
+    if (words.length === 0) return limitQueryText(url);
+    return limitQueryText([hostname.replace(/^www\./, ""), ...words].join(" "));
+  } catch {
+    return limitQueryText(url);
+  }
+};
 
 /**
  * Custom hook to manage the AI search functionality.
@@ -56,7 +105,7 @@ export const useAISearch = ({
           const json = await r.json();
           if (signal?.aborted) return;
           const html_p = json.html || "";
-          queryText = html_p.replaceAll(/<[^>]+>/g, " ");
+          queryText = limitQueryText(html_p.replaceAll(/<[^>]+>/g, " "));
         } catch {
           if (signal?.aborted) return;
           setError("Fehler beim Laden der Vorschau");
@@ -65,14 +114,16 @@ export const useAISearch = ({
           return;
         }
         setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
+      } else if (search.startsWith("http") && Platform.OS === "web") {
+        // Browsers block cross-origin page loads (CORS), so search on the
+        // words in the URL instead of failing.
+        queryText = urlToQueryText(search);
       } else if (search.startsWith("http")) {
         try {
           const response = await fetch(search, { signal });
-          let html = await response.text();
+          const html = await response.text();
           if (signal?.aborted) return;
-          html = html.replaceAll(/<script[\s\S]*?<\/script>/gi, "");
-          html = html.replaceAll(/<style[\s\S]*?<\/style>/gi, "");
-          queryText = html.replaceAll(/<[^>]+>/g, " "); //
+          queryText = htmlToQueryText(html);
         } catch {
           if (signal?.aborted) return;
           setError("Fehler beim Laden der Seite");
