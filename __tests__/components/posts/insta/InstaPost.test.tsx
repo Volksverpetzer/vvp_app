@@ -1,10 +1,16 @@
-import { fireEvent, render } from "@testing-library/react-native";
+import { act, fireEvent, render } from "@testing-library/react-native";
 import type { ReactNode } from "react";
 import { StyleSheet } from "react-native";
 
 import InstaPostCard from "#/components/posts/insta/InstaPostCard";
 import InstaPostDetail from "#/components/posts/insta/InstaPostDetail";
+import InstaPostImage from "#/components/posts/insta/InstaPostImage";
+import Config from "#/constants/Config";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
+import {
+  registerInstaImpression,
+  registerViews,
+} from "#/helpers/network/Engagement";
 import type { InstaPostProperties } from "#/types";
 
 const mockRouter = { push: jest.fn(), back: jest.fn() };
@@ -42,7 +48,21 @@ jest.mock("#/helpers/network/Analytics", () => ({
 
 jest.mock("#/helpers/network/Engagement", () => ({
   registerInstaImpression: jest.fn(),
+  registerViews: jest.fn(),
 }));
+
+jest.mock("#/helpers/Stores/ContentStore", () => ({
+  __esModule: true,
+  default: { setStoredInstaPost: jest.fn() },
+}));
+
+/** Fires the mocked image's onFirstLoad, as the real image does once loaded. */
+const loadImage = async () => {
+  const { onFirstLoad } = (
+    InstaPostImage as unknown as jest.Mock
+  ).mock.calls.at(-1)[0];
+  await act(() => onFirstLoad());
+};
 
 const post: InstaPostProperties = {
   id: "insta1",
@@ -72,6 +92,30 @@ describe("InstaPostCard", () => {
       "open",
     );
     expect(mockRouter.push).toHaveBeenCalledWith("/insta/insta1");
+  });
+
+  // Feed impressions must stay off Plausible's "pageview" (registerViews),
+  // or they'd land in Top Pages and skew bounce rate.
+  it("registers an impression, not a page view, once in view and loaded", async () => {
+    const view = await render(<InstaPostCard {...post} inView />);
+    expect(registerInstaImpression).not.toHaveBeenCalled();
+
+    await loadImage();
+    await view.rerender(<InstaPostCard {...post} inView />);
+
+    expect(registerInstaImpression).toHaveBeenCalledTimes(1);
+    expect(registerInstaImpression).toHaveBeenCalledWith(
+      `${Config.wpUrl}/insta/abc/`,
+    );
+    expect(registerViews).not.toHaveBeenCalled();
+  });
+
+  it("doesn't register an impression while out of view", async () => {
+    await render(<InstaPostCard {...post} inView={false} />);
+    await loadImage();
+
+    expect(registerInstaImpression).not.toHaveBeenCalled();
+    expect(registerViews).not.toHaveBeenCalled();
   });
 });
 

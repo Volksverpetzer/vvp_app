@@ -187,6 +187,20 @@ describe("Analytics (Plausible)", () => {
       expect(body.name).toBe("pageviews");
     });
 
+    it("registerInstaImpression should send nothing when engagements are disabled", async () => {
+      const originalEnableEngagement = Config.enableEngagement;
+      Config.enableEngagement = false;
+
+      const result = await registerInstaImpression(
+        "https://www.volksverpetzer.de/insta/abc/",
+      );
+
+      expect(postSpy).not.toHaveBeenCalled();
+      expect(result).toBeUndefined();
+
+      Config.enableEngagement = originalEnableEngagement;
+    });
+
     it("registerFav should forward to registerEvent", async () => {
       parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
       postSpy.mockResolvedValue({ success: true });
