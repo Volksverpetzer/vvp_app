@@ -11,7 +11,11 @@ import {
   registerEvent,
   registerPostInteraction,
 } from "#/helpers/network/Analytics";
-import { registerFav, registerViews } from "#/helpers/network/Engagement";
+import {
+  registerFav,
+  registerFavsOpened,
+  registerViews,
+} from "#/helpers/network/Engagement";
 import * as Networking from "#/helpers/utils/networking";
 
 jest.mock("react-native", () => ({
@@ -170,6 +174,17 @@ describe("Analytics (Plausible)", () => {
 
       const [, , body] = postSpy.mock.calls[0];
       expect(body.name).toBe("pageview");
+    });
+
+    it("registerFavsOpened should send a Favs Opened event for /favs", async () => {
+      parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
+      postSpy.mockResolvedValue({ success: true });
+
+      await registerFavsOpened();
+
+      const [, , body] = postSpy.mock.calls[0];
+      expect(body.name).toBe("Favs Opened");
+      expect(body.url).toMatch(/\/favs\?utm_source=app/);
     });
 
     it("registerFav should forward to registerEvent", async () => {
