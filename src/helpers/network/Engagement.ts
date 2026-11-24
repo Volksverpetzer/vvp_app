@@ -135,26 +135,4 @@ const registerFav = (permalink: string): Promise<unknown> => {
   return registerEvent(permalink, "favorite");
 };
 
-/**
- * Records that the favourites tab was opened. A custom event rather than a
- * page view: /favs only exists in the app, so a page view would show up in
- * Plausible's Top Pages as a page the website doesn't have.
- * @returns Promise<unknown> - Response data
- */
-const registerFavsOpened = (): Promise<unknown> => {
-  if (!Config.enableEngagement) {
-    return Promise.resolve(undefined);
-  }
-
-  return registerEvent(`${Config.wpUrl}/favs`, "Favs Opened");
-};
-
-export {
-  getViews,
-  getShares,
-  getFavs,
-  getLinks,
-  registerFav,
-  registerFavsOpened,
-  registerViews,
-};
+export { getViews, getShares, getFavs, getLinks, registerFav, registerViews };

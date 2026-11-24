@@ -22,7 +22,6 @@ const plausibleClient = createClient("https://plausible.io");
 export type AnalyticsEvent =
   | "pageview"
   | "favorite"
-  | "Favs Opened"
   | "Share"
   | "FullRead"
   | "search"

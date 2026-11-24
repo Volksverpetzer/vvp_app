@@ -12,7 +12,7 @@ import Config from "#/constants/Config";
 import { spacing } from "#/constants/Spacing";
 import Post from "#/helpers/Post";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import { registerFavsOpened } from "#/helpers/network/Engagement";
+import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
@@ -211,7 +211,8 @@ const MyFavs = () => {
 
     if (focused) {
       updateBadgeState({ personal: false });
-      registerFavsOpened();
+      // Register page view for /favs
+      registerViews(`${Config.wpUrl}/favs`);
       loadFavorites().catch((error) => {
         console.error("Failed to load favorites:", error);
         if (isMounted && currentRequestId === requestIdRef.current) {

@@ -2,7 +2,7 @@ import { act, render, waitFor } from "@testing-library/react-native";
 
 import GenericPost from "#/components/posts/GenericPost";
 import FavoritesStore from "#/helpers/Stores/FavoritesStore";
-import { registerFavsOpened } from "#/helpers/network/Engagement";
+import { registerViews } from "#/helpers/network/Engagement";
 import API from "#/helpers/network/ServerAPI";
 import WordPressAPI from "#/helpers/network/WordPressAPI";
 import { updateBadgeState } from "#/helpers/provider/BadgeProvider";
@@ -77,7 +77,7 @@ jest.mock("#/helpers/Stores/FavoritesStore", () => ({
 }));
 
 jest.mock("#/helpers/network/Engagement", () => ({
-  registerFavsOpened: jest.fn(),
+  registerViews: jest.fn(),
 }));
 
 jest.mock("#/helpers/network/ServerAPI", () => ({
@@ -182,7 +182,9 @@ describe("MyFavs", () => {
     });
 
     expect(updateBadgeState).toHaveBeenCalledWith({ personal: false });
-    expect(registerFavsOpened).toHaveBeenCalledTimes(1);
+    expect(registerViews).toHaveBeenCalledWith(
+      "https://www.volksverpetzer.de/favs",
+    );
     expect(WordPressAPI.getPost).toHaveBeenCalledWith("example-article");
     expect(WordPressFetcher.mapArticleToPost).toHaveBeenCalledWith(
       articleApiResponse,
@@ -664,7 +666,7 @@ describe("MyFavs", () => {
     });
 
     expect(updateBadgeState).not.toHaveBeenCalled();
-    expect(registerFavsOpened).not.toHaveBeenCalled();
+    expect(registerViews).not.toHaveBeenCalled();
     expect(WordPressAPI.getPost).not.toHaveBeenCalled();
     expect(API.getInstaPost).not.toHaveBeenCalled();
   });
