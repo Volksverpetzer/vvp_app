@@ -41,7 +41,7 @@ jest.mock("#/helpers/network/Analytics", () => ({
 }));
 
 jest.mock("#/helpers/network/Engagement", () => ({
-  registerViews: jest.fn(),
+  registerInstaImpression: jest.fn(),
 }));
 
 const post: InstaPostProperties = {

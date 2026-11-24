@@ -16,7 +16,7 @@ import { Achievements } from "#/helpers/Achievements";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
-import { registerViews } from "#/helpers/network/Engagement";
+import { registerInstaImpression } from "#/helpers/network/Engagement";
 import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { InstaPostProperties } from "#/types";
@@ -60,7 +60,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
 
   useEffect(() => {
     if (inView && loaded && !registered) {
-      registerViews(computedPermalink);
+      registerInstaImpression(computedPermalink);
       setRegistered(true);
     }
   }, [inView, loaded, registered, computedPermalink]);

@@ -21,6 +21,8 @@ const plausibleClient = createClient("https://plausible.io");
  */
 export type AnalyticsEvent =
   | "pageview"
+  // Legacy name; now only Instagram feed impressions (registerInstaImpression).
+  | "pageviews"
   | "favorite"
   | "Share"
   | "FullRead"
