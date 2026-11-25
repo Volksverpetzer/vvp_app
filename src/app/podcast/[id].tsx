@@ -18,6 +18,7 @@ import {
 } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { onShare } from "#/helpers/Sharing";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import { usePodcastEpisode } from "#/helpers/provider/AudioProvider";
 import {
@@ -36,7 +37,8 @@ const COVER_PADDING_HORIZONTAL = POST_PADDING_HORIZONTAL + 16;
  * description and the audio player. Reached from the podcast feed card.
  *
  * Podigee has no per-episode endpoint, so the episode is located by id in the
- * (server-cached) podcast feed.
+ * (server-cached) podcast feed. Opening it sends a "Post Interaction" open
+ * for the episode.
  */
 const PodcastScreen = () => {
   const [episode, setEpisode] = useState<
@@ -79,6 +81,12 @@ const PodcastScreen = () => {
       controller.abort();
     };
   }, [id, router]);
+
+  // Keyed on the URL so a re-run of the load effect doesn't count it again.
+  const openedUrl = episode ? (episode.link ?? episode.audio_url) : undefined;
+  useEffect(() => {
+    if (openedUrl) registerPostInteraction(openedUrl, "podcast", "open");
+  }, [openedUrl]);
 
   if (isLoading || !episode) {
     return <UiSpinner text="Lade Podcast Folge..." />;
@@ -131,6 +139,15 @@ const PodcastScreen = () => {
           artworkUrl={episode.image_url ?? undefined}
           horizontalPadding={POST_PADDING_HORIZONTAL}
           durationSeconds={episode.duration ?? undefined}
+          // Same event as the feed card's play button, so plays from the card
+          // and from this screen add up under one goal.
+          onPlay={() =>
+            registerPostInteraction(
+              episode.link ?? episode.audio_url,
+              "podcast",
+              "play",
+            )
+          }
         />
         <UiSpace size={spacing.md} />
 

@@ -18,7 +18,7 @@ import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { registerPostInteraction } from "#/helpers/network/Analytics";
+import { getBskyPostId, getBskyPostUrl } from "#/helpers/utils/bskyPost";
 import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { BlueskyPostProperties, HttpsUrl } from "#/types";
@@ -35,18 +35,15 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   const colorScheme = useAppColorScheme();
   const linkColor = Colors[colorScheme].linkText;
   const grey = Colors[colorScheme].textMuted;
-  const postId = uri.split("/app.bsky.feed.post/")[1];
+  const postId = getBskyPostId(uri);
+  const url = getBskyPostUrl(author.handle, uri);
 
   useEffect(() => {
     ContentStore.setStoredBskyPostById(postId, properties);
   }, [inView, postId, properties]);
 
   const navigateToPost = () => {
-    registerPostInteraction(
-      `https://bsky.app/profile/${author.handle}/post/${postId}`,
-      "bluesky",
-      "open",
-    );
+    // The open is counted by the detail screen, also for outside links.
     router.push(`/bsky/${postId}`);
   };
 
@@ -68,9 +65,6 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   const isTruncated = excerpt.length < fulltext.length;
 
   const createdAt = hasCreatedAt(record) ? record.created_at : "";
-  const handle = author.handle;
-  const url: HttpsUrl = `https://bsky.app/profile/${handle}/post/${postId}`;
-
   return (
     <UiPressable
       accessibilityRole="button"
@@ -94,7 +88,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
             right: 20,
             zIndex: layers.raised,
           }}
-          onPress={() => onLinkPress(url, router)}
+          onPress={() => onLinkPress(url, router, url)}
           hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
         >
           <ExternalLinkIcon color={Colors[colorScheme].textMuted} />
@@ -104,7 +98,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
 
         <Hyperlink
           linkStyle={{ color: linkColor }}
-          onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
+          onPress={(href: HttpsUrl) => onLinkPress(href, router, url)}
         >
           <Typography type="body">
             {isTruncated ? `${excerpt}…` : excerpt}

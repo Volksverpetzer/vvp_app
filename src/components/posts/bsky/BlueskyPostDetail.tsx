@@ -10,11 +10,11 @@ import { PostText } from "#/components/posts/bsky/PostText";
 import Typography from "#/components/ui/Typography";
 import UiPressable from "#/components/ui/UiPressable";
 import Colors from "#/constants/Colors";
-import Config from "#/constants/Config";
 import { POST_PADDING_HORIZONTAL } from "#/constants/GlobalStyles";
 import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
+import { getBskyPostUrl } from "#/helpers/utils/bskyPost";
 import { hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { BlueskyPostProperties, HttpsUrl } from "#/types";
@@ -24,11 +24,9 @@ import type { BlueskyPostProperties, HttpsUrl } from "#/types";
  */
 const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
   const { record, author, uri } = post.post;
-  const { wpUrl } = Config;
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const linkColor = Colors[colorScheme].linkText;
-  const postId = uri.split("/app.bsky.feed.post/")[1];
   const htmlPattern = /<[^>]+>/g;
 
   const textRaw = hasText(record) ? record.text : "";
@@ -36,8 +34,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
     textRaw.replaceAll("</p>", "\n").replaceAll(htmlPattern, ""),
   );
 
-  const handle = author.handle;
-  const url: HttpsUrl = `https://bsky.app/profile/${handle}/post/${postId}`;
+  const url = getBskyPostUrl(author.handle, uri);
 
   return (
     <ScrollView
@@ -58,7 +55,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
           right: 20,
           zIndex: layers.raised,
         }}
-        onPress={() => onLinkPress(url, router, wpUrl)}
+        onPress={() => onLinkPress(url, router, url)}
         hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
       >
         <ExternalLinkIcon color={Colors[colorScheme].textMuted} />
@@ -69,7 +66,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
       <Hyperlink
         linkStyle={{ color: linkColor }}
         style={{ flex: 1 }}
-        onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
+        onPress={(href: HttpsUrl) => onLinkPress(href, router, url)}
       >
         <Typography type="body">{fulltext}</Typography>
       </Hyperlink>
@@ -80,7 +77,7 @@ const BlueskyPostDetail = ({ post, replies }: BlueskyPostProperties) => {
           <PostText
             key={reply.post.uri ?? index}
             feedViewPost={reply}
-            uri={uri}
+            contextUrl={url}
           />
         ))}
     </ScrollView>

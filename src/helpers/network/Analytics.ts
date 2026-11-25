@@ -21,8 +21,6 @@ const plausibleClient = createClient("https://plausible.io");
  */
 export type AnalyticsEvent =
   | "pageview"
-  // Legacy name; now only Instagram feed impressions (registerInstaImpression).
-  | "pageviews"
   | "favorite"
   | "Share"
   | "FullRead"
@@ -47,6 +45,11 @@ export type AnalyticsEvent =
   | "Announcement Shown"
   | "Announcement Action"
   | "Announcement Dismissed"
+  // Playback of an article's audio version started (AudioPlayer in the
+  // article header). Same name as the web article player in
+  // vvp_wp_audio_converter, which plays the same MP3s. Podcast plays go
+  // through "Post Interaction" instead.
+  | "Audio Play"
   // Once per screen per app session, see useScreenViewTracking.
   | "Screen View";
 
@@ -127,12 +130,15 @@ const registerEvent = async <T extends Record<string, unknown>>(
 };
 
 type PostPlatform = "youtube" | "tiktok" | "instagram" | "bluesky" | "podcast";
-type PostAction = "play" | "open";
+type PostAction = "play" | "open" | "swipe";
 
 /**
- * Records a real interaction with a social post in the feed, beyond the fav and
- * share buttons that are already tracked: playing a video, opening a thread, or
- * expanding a card. All such interactions share one Plausible event so feed
+ * Records a real interaction with a social post, beyond the fav and share
+ * buttons that are already tracked: playing a video in the feed, or opening a
+ * post. "open" is sent by the detail screens (insta/, bsky/, podcast/) when
+ * the post has loaded, so it also counts opens via a link from outside the
+ * app and counts nothing when the post can't be loaded. "swipe" is an
+ * Instagram card in the feed swiped to another photo, once per card. All such interactions share one Plausible event so feed
  * engagement can be compared across post types, broken down by the
  * `post_platform` and `action` props. The key is `post_platform` rather than
  * `platform` to avoid overwriting the OS `platform` prop set by registerEvent.
