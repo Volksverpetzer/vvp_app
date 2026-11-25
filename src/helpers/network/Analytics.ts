@@ -51,7 +51,18 @@ export type AnalyticsEvent =
   // through "Post Interaction" instead.
   | "Audio Play"
   // Once per screen per app session, see useScreenViewTracking.
-  | "Screen View";
+  | "Screen View"
+  // A push or local notification tapped (useNotificationObserver), once per
+  // notification. The URL is the notification's link, if it has one.
+  | "Notification Opened"
+  // Memory game: first card turned in level 1, and each level finished
+  // (`game`, `level` props). Finishing the last level is the last
+  // "Game Level Completed", so Started → level 1 → level 2 is a funnel.
+  | "Game Started"
+  | "Game Level Completed"
+  // The Apple Pay donate button tapped, before the payment sheet. Same URL
+  // and props as "DonateConversion", so the two form a funnel.
+  | "Donate Started";
 
 /**
  * Props that registerEvent always sets on every event. Callers must not pass
@@ -138,8 +149,9 @@ type PostAction = "play" | "open" | "swipe";
  * post. "open" is sent by the detail screens (insta/, bsky/, podcast/) when
  * the post has loaded, so it also counts opens via a link from outside the
  * app and counts nothing when the post can't be loaded. "swipe" is an
- * Instagram card in the feed swiped to another photo, once per card. All such interactions share one Plausible event so feed
- * engagement can be compared across post types, broken down by the
+ * Instagram post swiped to another photo: once per post per app run on the
+ * feed card, and once per visit on the detail screen. All such interactions
+ * share one Plausible event so feed engagement can be compared across post types, broken down by the
  * `post_platform` and `action` props. The key is `post_platform` rather than
  * `platform` to avoid overwriting the OS `platform` prop set by registerEvent.
  */

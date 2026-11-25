@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 });
 
 const StripeButton = (props: StripeButtonProperties) => {
-  const { amount, onSuccess, onSupportChecked } = props;
+  const { amount, onStart, onSuccess, onSupportChecked } = props;
   const [isLoading, setIsLoading] = useState(true);
   const [isSupported, setIsSupported] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -79,6 +79,7 @@ const StripeButton = (props: StripeButtonProperties) => {
     }
 
     setIsProcessing(true);
+    onStart?.();
     try {
       const clientSecret = await fetchPaymentIntentClientSecret();
       const applePay: PlatformPay.ApplePayBaseParams = {

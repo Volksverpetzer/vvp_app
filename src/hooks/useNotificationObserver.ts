@@ -7,10 +7,33 @@ import { Platform } from "react-native";
 
 import { redirectSystemPath } from "#/app/+native-intent";
 import Config from "#/constants/Config";
+import { registerEvent } from "#/helpers/network/Analytics";
+
+/**
+ * Notifications already counted as opened in this app run. On a cold start
+ * the launching tap can arrive both through getLastNotificationResponseAsync
+ * and the response listener, so opens are counted per notification id.
+ */
+const reportedOpens = new Set<string>();
+
+/** Test helper: forget which notification opens were already counted. */
+export const resetReportedNotificationOpens = () => reportedOpens.clear();
+
+const reportOpen = (response: ExpoNotifications.NotificationResponse) => {
+  const { identifier, content } = response.notification.request;
+  if (reportedOpens.has(identifier)) return;
+  reportedOpens.add(identifier);
+  const url = content.data?.url;
+  // Local notifications (e.g. the donation reminder) have no link; they are
+  // counted under the primary site.
+  void registerEvent(typeof url === "string" ? url : "", "Notification Opened");
+};
 
 /**
  * Hook to handle initial and response-based notification redirects.
  * On mount, checks last notification response and listens for new ones.
+ * Each tapped notification is also sent to Plausible as "Notification
+ * Opened", once per notification.
  * Note: This hook is a no-op on web as notifications are not fully supported.
  */
 export const useNotificationObserver = () => {
@@ -32,6 +55,7 @@ export const useNotificationObserver = () => {
      * @param response - The notification response containing the URL.
      */
     const redirect = (response: ExpoNotifications.NotificationResponse) => {
+      reportOpen(response);
       const url = response.notification.request.content.data?.url;
       if (!url || typeof url !== "string") return;
       // delay redirect to allow router to be mounted

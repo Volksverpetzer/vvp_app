@@ -179,6 +179,36 @@ describe("MemoryGame", () => {
     expect(onAllMatched).toHaveBeenCalledTimes(1);
   });
 
+  it("calls onFirstFlip once, on the first card turned", async () => {
+    mockGenerateDeck.mockReturnValue(mismatchedDeck);
+    const onFirstFlip = jest.fn();
+    const { getAllByRole } = await render(
+      <MemoryGame pairs={pairs} onFirstFlip={onFirstFlip} />,
+    );
+    expect(onFirstFlip).not.toHaveBeenCalled();
+
+    const buttons = getAllByRole("button");
+    await fireEvent.press(buttons[0]);
+    await fireEvent.press(buttons[2]);
+    await fireEvent.press(buttons[1]);
+
+    expect(onFirstFlip).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onFirstFlip again for a new set of pairs", async () => {
+    mockGenerateDeck.mockReturnValue(fixedDeck);
+    const onFirstFlip = jest.fn();
+    const { getAllByRole, rerender } = await render(
+      <MemoryGame pairs={pairs} onFirstFlip={onFirstFlip} />,
+    );
+    await fireEvent.press(getAllByRole("button")[0]);
+
+    await rerender(<MemoryGame pairs={[...pairs]} onFirstFlip={onFirstFlip} />);
+    await fireEvent.press(getAllByRole("button")[0]);
+
+    expect(onFirstFlip).toHaveBeenCalledTimes(2);
+  });
+
   it("does not call onAllMatched while pairs remain unmatched", async () => {
     mockGenerateDeck.mockReturnValue(mismatchedDeck);
     const onAllMatched = jest.fn();

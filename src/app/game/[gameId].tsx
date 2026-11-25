@@ -11,6 +11,7 @@ import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { AppImages } from "#/helpers/AppImages";
+import { registerEvent } from "#/helpers/network/Analytics";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import MemoryGame from "#/screens/Games/Memory";
 import type { DisinfoPair } from "#/types";
@@ -88,9 +89,16 @@ const GameScreen = () => {
     return level === 1 ? allPairs.slice(0, 3) : allPairs;
   }, [gameId, level]);
 
+  // Plausible: "Game Started" on the first card of level 1 (just opening the
+  // screen is already its Screen View), "Game Level Completed" per level.
+  const handleFirstFlip = useCallback(() => {
+    if (level === 1) registerEvent("", "Game Started", { game: gameId });
+  }, [gameId, level]);
+
   const handleAllMatched = useCallback(() => {
+    registerEvent("", "Game Level Completed", { game: gameId, level });
     setShowLevelComplete(true);
-  }, []);
+  }, [gameId, level]);
 
   // Advance to the next level only once the celebration popup has finished
   // hiding itself, so the completed board stays visible underneath it
@@ -138,7 +146,11 @@ const GameScreen = () => {
               Decke immer zwei Karten auf – passen sie zusammen, bleiben sie
               offen.
             </UiText>
-            <MemoryGame pairs={memoryPairs} onAllMatched={handleAllMatched} />
+            <MemoryGame
+              pairs={memoryPairs}
+              onAllMatched={handleAllMatched}
+              onFirstFlip={handleFirstFlip}
+            />
           </>
         )}
       </ScrollView>

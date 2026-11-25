@@ -17,9 +17,15 @@ interface MemoryGameProperties {
   pairs: DisinfoPair[];
   /** Fired once, the moment the last pair is matched. */
   onAllMatched?: () => void;
+  /** Fired once per set of pairs, when the first card is turned. */
+  onFirstFlip?: () => void;
 }
 
-const MemoryGame = ({ pairs, onAllMatched }: MemoryGameProperties) => {
+const MemoryGame = ({
+  pairs,
+  onAllMatched,
+  onFirstFlip,
+}: MemoryGameProperties) => {
   const colorScheme = useAppColorScheme();
   const { accent, background, error, surfaceInput, text } = Colors[colorScheme];
   const [deck, setDeck] = useState<MemoryCard[]>([]);
@@ -28,9 +34,11 @@ const MemoryGame = ({ pairs, onAllMatched }: MemoryGameProperties) => {
   // Guards against firing onAllMatched more than once for the same deck —
   // reset whenever a new set of pairs (e.g. the next level) comes in.
   const hasCompletedRef = useRef(false);
+  const hasFlippedRef = useRef(false);
 
   useEffect(() => {
     hasCompletedRef.current = false;
+    hasFlippedRef.current = false;
     setDeck(generateDeck(pairs));
     // A new set of pairs (e.g. the next level) starts with a clean
     // selection — otherwise the header would still show the previous
@@ -82,6 +90,10 @@ const MemoryGame = ({ pairs, onAllMatched }: MemoryGameProperties) => {
 
   const handleCardPress = (card: MemoryCard) => {
     if (card.isFlipped || card.isMatched) return;
+    if (!hasFlippedRef.current) {
+      hasFlippedRef.current = true;
+      onFirstFlip?.();
+    }
     // Falls bereits zwei Karten ausgewählt sind, Auswahl zurücksetzen.
     if (firstCard && secondCard) {
       resetSelection();
