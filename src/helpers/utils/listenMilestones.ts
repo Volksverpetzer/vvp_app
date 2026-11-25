@@ -1,14 +1,18 @@
 /**
- * Listening milestones (percent of the episode) reported as "Podcast Listened",
- * the podcast counterpart of the article "FullRead" event. One milestone keeps
- * the custom-event volume low; add values here for a drop-off curve.
+ * Listening milestones (percent of the track) reported as "Podcast Listened"
+ * (podcasts, the counterpart of the article "FullRead" event) and as "Audio
+ * Complete" (article audio). One milestone keeps the custom-event volume low;
+ * more values here give podcasts a drop-off curve via the `progress` prop, but
+ * would also need "Audio Complete" restricted to the last one.
  */
-export const PODCAST_LISTENED_MILESTONES = [90] as const;
+export const LISTEN_MILESTONES = [90] as const;
 
 /**
  * Largest position change between two status ticks (250 ms apart) that still
  * counts as playback: covers faster playback rates and a stalled JS thread,
- * but not a seek, the 15 s skip buttons or restoring a saved resume position.
+ * but not the 15 s skip buttons or restoring a saved resume position. A last
+ * line of defence for jumps the app doesn't see (e.g. lock-screen seeks);
+ * in-app seeks are excluded by AudioProvider.seekTo.
  */
 export const MAX_PLAYBACK_STEP_SECONDS = 3;
 
@@ -23,7 +27,7 @@ export const crossedMilestones = (
   previousTime: number | null,
   currentTime: number,
   duration: number,
-  milestones: readonly number[] = PODCAST_LISTENED_MILESTONES,
+  milestones: readonly number[] = LISTEN_MILESTONES,
 ): number[] => {
   if (previousTime === null || !(duration > 0)) return [];
   const step = currentTime - previousTime;

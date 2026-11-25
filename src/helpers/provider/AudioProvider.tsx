@@ -37,6 +37,17 @@ export interface AudioTrack {
   resumeKey?: string;
 }
 
+/**
+ * What a track is for the listening analytics: a podcast episode reports
+ * "Podcast Listened", an article's read-aloud version "Audio Complete" (the
+ * name the web article player on audio.volksverpetzer.de uses). `url` is the
+ * event URL: the episode's `link ?? audioUrl` or the article link.
+ */
+export interface TrackAnalytics {
+  kind: "podcast" | "article";
+  url: string;
+}
+
 export interface AudioContextValue {
   /** URL of the track the single global player currently holds, or null. */
   currentUrl: string | null;
@@ -53,10 +64,10 @@ export interface AudioContextValue {
   seekTo: (seconds: number) => void;
   isCurrent: (audioUrl: string) => boolean;
   /**
-   * Marks an audio URL as a podcast episode, so listening to it reports
-   * "Podcast Listened" under `link ?? audioUrl` (see usePodcastEpisode).
+   * Marks an audio URL as a podcast episode or article audio, so listening to
+   * it is reported (see usePodcastEpisode, useArticleAudio).
    */
-  registerPodcastEpisode: (audioUrl: string, link?: string | null) => void;
+  registerTrackAnalytics: (audioUrl: string, analytics: TrackAnalytics) => void;
 }
 
 const AudioContext = createContext<AudioContextValue | null>(null);
@@ -88,13 +99,17 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   const loadId = useRef(0);
   const lastSavedTime = useRef(0);
   const wantPlay = useRef(false);
-  // Podcast episodes by audio URL → analytics URL. Article audio is never
-  // registered, so it reports no "Podcast Listened".
-  const podcastLinks = useRef(new Map<string, string>());
+  // Analytics info by audio URL; unregistered tracks report nothing.
+  const trackAnalytics = useRef(new Map<string, TrackAnalytics>());
   // `${audioUrl}|${milestone}` already reported in this app run.
   const reportedMilestones = useRef(new Set<string>());
-  // Position at the previous playing tick, to tell playback from jumps.
+  // Position at the previous tick, to tell playback from jumps. Null when
+  // unknown; then the next tick only sets it.
   const lastListenTime = useRef<number | null>(null);
+  // While an in-app seek runs, ticks may show the old or the new position;
+  // none of them may count. Bumped per seek so only the latest one clears it.
+  const seekId = useRef(0);
+  const isSeeking = useRef(false);
 
   const currentUrl = track?.audioUrl ?? null;
 
@@ -109,6 +124,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       loadId.current += 1;
       lastSavedTime.current = 0;
       lastListenTime.current = null;
+      isSeeking.current = false;
       wantPlay.current = true;
       setTrack(next);
       player.replace({ uri: next.audioUrl });
@@ -131,6 +147,9 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
     const startIfWanted = () => {
       if (isStale()) return;
       restoreSettled.current = true;
+      // Baseline at the restored position, so a milestone just after it
+      // counts from the first playing tick on.
+      lastListenTime.current = player.currentTime;
       if (wantPlay.current) {
         wantPlay.current = false;
         player.play();
@@ -194,43 +213,68 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
     player,
   ]);
 
-  // Report listening milestones of podcast episodes ("Podcast Listened", the
-  // counterpart of the article FullRead), once per episode and milestone per
-  // app run. Only positions reached by playback count: crossedMilestones
-  // ignores jumps, and tracking starts after the resume restore has settled.
-  // Like the save effect, values come from the player's own native state.
+  // Report listening milestones of registered tracks, once per track and
+  // milestone per app run: "Podcast Listened" for podcast episodes (the
+  // counterpart of the article FullRead), "Audio Complete" for article audio.
+  // Only positions reached by playback count: crossedMilestones ignores
+  // jumps, in-app seeks reset the baseline, and tracking starts after the
+  // resume restore has settled. Like the save effect, values come from the
+  // player's own native state.
   useEffect(() => {
-    const url = track ? podcastLinks.current.get(track.audioUrl) : undefined;
+    const analytics = track
+      ? trackAnalytics.current.get(track.audioUrl)
+      : undefined;
     if (
       !track ||
-      !url ||
+      !analytics ||
       !restoreSettled.current ||
       !player.isLoaded ||
-      !player.playing
+      isSeeking.current
     ) {
-      lastListenTime.current = null;
       return;
     }
     const { currentTime, duration } = player;
-    const crossed = crossedMilestones(
-      lastListenTime.current,
-      currentTime,
-      duration,
-    );
+    // Paused: keep the position as the baseline for when playback resumes.
+    const crossed = player.playing
+      ? crossedMilestones(lastListenTime.current, currentTime, duration)
+      : [];
     lastListenTime.current = currentTime;
     for (const milestone of crossed) {
       const key = `${track.audioUrl}|${milestone}`;
       if (reportedMilestones.current.has(key)) continue;
       reportedMilestones.current.add(key);
-      void registerEvent(url, "Podcast Listened", { progress: milestone });
+      if (analytics.kind === "podcast") {
+        void registerEvent(analytics.url, "Podcast Listened", {
+          progress: milestone,
+        });
+      } else {
+        void registerEvent(analytics.url, "Audio Complete");
+      }
     }
   }, [track, status.playing, status.currentTime, player]);
 
-  const registerPodcastEpisode = useCallback(
-    (audioUrl: string, link?: string | null) => {
-      podcastLinks.current.set(audioUrl, link || audioUrl);
+  const registerTrackAnalytics = useCallback(
+    (audioUrl: string, analytics: TrackAnalytics) => {
+      trackAnalytics.current.set(audioUrl, analytics);
     },
     [],
+  );
+
+  // In-app seek (progress bar, skip buttons): not listening, so the position
+  // after it becomes the new baseline instead of a step to count.
+  const seekTo = useCallback(
+    (seconds: number) => {
+      seekId.current += 1;
+      const id = seekId.current;
+      isSeeking.current = true;
+      lastListenTime.current = null;
+      void player.seekTo(seconds).finally(() => {
+        if (id !== seekId.current) return;
+        isSeeking.current = false;
+        lastListenTime.current = player.currentTime;
+      });
+    },
+    [player],
   );
 
   // On finish: rewind and clear the stored position so the next play starts fresh.
@@ -254,11 +298,11 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       playTrack,
       toggle: () => void (status.playing ? player.pause() : player.play()),
       pause: () => void player.pause(),
-      seekTo: (seconds: number) => void player.seekTo(seconds),
+      seekTo,
       isCurrent: (audioUrl: string) => currentUrl === audioUrl,
-      registerPodcastEpisode,
+      registerTrackAnalytics,
     }),
-    [currentUrl, status, player, playTrack, registerPodcastEpisode],
+    [currentUrl, status, player, playTrack, seekTo, registerTrackAnalytics],
   );
 
   return (
@@ -285,8 +329,27 @@ export const usePodcastEpisode = (
   audioUrl: string | undefined,
   link?: string | null,
 ) => {
-  const { registerPodcastEpisode } = useAudio();
+  const { registerTrackAnalytics } = useAudio();
   useEffect(() => {
-    if (audioUrl) registerPodcastEpisode(audioUrl, link);
-  }, [registerPodcastEpisode, audioUrl, link]);
+    if (!audioUrl) return;
+    registerTrackAnalytics(audioUrl, {
+      kind: "podcast",
+      url: link || audioUrl,
+    });
+  }, [registerTrackAnalytics, audioUrl, link]);
+};
+
+/**
+ * Marks an article's read-aloud audio for the "Audio Complete" analytics
+ * event, reported under the article link like FullRead.
+ */
+export const useArticleAudio = (
+  audioUrl: string | undefined,
+  articleLink: string,
+) => {
+  const { registerTrackAnalytics } = useAudio();
+  useEffect(() => {
+    if (!audioUrl) return;
+    registerTrackAnalytics(audioUrl, { kind: "article", url: articleLink });
+  }, [registerTrackAnalytics, audioUrl, articleLink]);
 };

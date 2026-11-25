@@ -5,6 +5,7 @@ import { Text } from "react-native";
 
 import {
   AudioProvider,
+  useArticleAudio,
   useAudio,
   usePodcastEpisode,
 } from "#/helpers/provider/AudioProvider";
@@ -350,28 +351,50 @@ describe("AudioProvider", () => {
   });
 });
 
-describe("AudioProvider podcast listening milestones", () => {
+describe("AudioProvider listening milestones", () => {
   const EPISODE_LINK = "https://www.volksverpetzer.de/podcast/folge-1/";
+  const ARTICLE_LINK = "https://www.volksverpetzer.de/analyse/artikel/";
 
-  const PodcastConsumer = ({ link }: { link?: string }) => {
-    usePodcastEpisode(TRACK_URL, link);
+  type Kind = "podcast" | "article" | "none";
+
+  const PodcastConsumer = () => {
+    usePodcastEpisode(TRACK_URL, EPISODE_LINK);
     return <Consumer />;
   };
 
-  const tree = (podcast: boolean) => (
+  const ArticleConsumer = () => {
+    useArticleAudio(TRACK_URL, ARTICLE_LINK);
+    return <Consumer />;
+  };
+
+  // Seeks like the progress bar does, through the context's seekTo.
+  const SeekConsumer = () => {
+    const audio = useAudio();
+    return (
+      <Text testID="seek" onPress={() => audio.seekTo(mockSeekTarget)}>
+        seek
+      </Text>
+    );
+  };
+  let mockSeekTarget = 0;
+
+  const tree = (kind: Kind) => (
     <AudioProvider>
-      {podcast ? <PodcastConsumer link={EPISODE_LINK} /> : <Consumer />}
+      {kind === "podcast" && <PodcastConsumer />}
+      {kind === "article" && <ArticleConsumer />}
+      {kind === "none" && <Consumer />}
+      <SeekConsumer />
     </AudioProvider>
   );
 
   // Starts TRACK_URL and waits until its restore settled.
-  const start = async (podcast = true) => {
-    const utils = await render(tree(podcast));
+  const start = async (kind: Kind = "podcast") => {
+    const utils = await render(tree(kind));
     await fireEvent.press(utils.getByTestId("play"));
     await waitFor(() => expect(mockPlayer.play).toHaveBeenCalled());
     mockPlayer.playing = true;
     // One render after the restore so the effects see it as settled.
-    await utils.rerender(tree(podcast));
+    await utils.rerender(tree(kind));
     return utils;
   };
 
@@ -379,7 +402,7 @@ describe("AudioProvider podcast listening milestones", () => {
   const tick = async (
     rerender: (el: React.ReactElement) => Promise<void> | void,
     time: number,
-    podcast = true,
+    kind: Kind = "podcast",
   ) => {
     mockPlayer.currentTime = time;
     jest.mocked(useAudioPlayerStatus).mockReturnValue({
@@ -387,11 +410,14 @@ describe("AudioProvider podcast listening milestones", () => {
       playing: true,
       currentTime: time,
     } as AudioStatus);
-    await rerender(tree(podcast));
+    await rerender(tree(kind));
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // clearAllMocks keeps implementations; some tests make seeks move the
+    // native position.
+    mockPlayer.seekTo.mockReset().mockResolvedValue(undefined);
     mockPlayer.isLoaded = true;
     mockPlayer.duration = 120;
     mockPlayer.playing = false;
@@ -439,10 +465,54 @@ describe("AudioProvider podcast listening milestones", () => {
     expect(mockRegisterEvent).not.toHaveBeenCalled();
   });
 
-  it("does not report audio that isn't a registered podcast episode", async () => {
-    const { rerender } = await start(false);
-    await tick(rerender, 107.75, false);
-    await tick(rerender, 108, false);
+  it("reports a milestone on the first playing tick after resuming just below it", async () => {
+    mockPlayer.duration = 600;
+    // 90 % of 600 s is 540 s.
+    mockGetAudioPosition.mockResolvedValue(539.9);
+    mockPlayer.seekTo.mockImplementation((seconds: number) => {
+      mockPlayer.currentTime = seconds;
+      return Promise.resolve();
+    });
+    const { rerender } = await start();
+    await tick(rerender, 540.1);
+    expect(mockRegisterEvent).toHaveBeenCalledWith(
+      EPISODE_LINK,
+      "Podcast Listened",
+      { progress: 90 },
+    );
+  });
+
+  it("does not report a short in-app seek across the milestone", async () => {
+    mockPlayer.seekTo.mockImplementation((seconds: number) => {
+      mockPlayer.currentTime = seconds;
+      return Promise.resolve();
+    });
+    const { getByTestId, rerender } = await start();
+    await tick(rerender, 107);
+    // A 2 s seek: within the playback step bound, but not listening.
+    mockSeekTarget = 109;
+    await fireEvent.press(getByTestId("seek"));
+    await waitFor(() => expect(mockPlayer.seekTo).toHaveBeenCalledWith(109));
+    await tick(rerender, 109);
+    await tick(rerender, 109.25);
+    expect(mockRegisterEvent).not.toHaveBeenCalled();
+  });
+
+  it("reports article audio as Audio Complete under the article link", async () => {
+    const { rerender } = await start("article");
+    await tick(rerender, 107.75, "article");
+    await tick(rerender, 108, "article");
+    expect(mockRegisterEvent).toHaveBeenCalledTimes(1);
+    expect(mockRegisterEvent).toHaveBeenCalledWith(
+      ARTICLE_LINK,
+      "Audio Complete",
+    );
+  });
+
+  it("does not report audio that isn't registered", async () => {
+    const { rerender } = await start("none");
+    await tick(rerender, 107.75, "none");
+    await tick(rerender, 108, "none");
     expect(mockRegisterEvent).not.toHaveBeenCalled();
   });
 });

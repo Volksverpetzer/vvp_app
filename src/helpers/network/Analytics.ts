@@ -28,6 +28,9 @@ export type AnalyticsEvent =
   | "FullRead"
   // A podcast episode played past a milestone (`progress` prop, percent).
   | "Podcast Listened"
+  // Article read-aloud audio played past 90 %. Same name as the web article
+  // player on audio.volksverpetzer.de, which sends it on `ended`.
+  | "Audio Complete"
   | "search"
   | "Shop"
   | "Steady"
