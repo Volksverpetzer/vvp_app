@@ -17,7 +17,9 @@ import type { HttpsUrl, InstaPostProperties } from "#/types";
 
 const InstaPostDetail = (properties: InstaPostProperties) => {
   const { id, permalink, media_url, caption, children } = properties;
-  const [swipeRegistered, setSwipeRegistered] = useState(false);
+  // URL of the post whose swipe was sent: the screen can switch to another
+  // post without remounting, which then has to count again.
+  const [swipedUrl, setSwipedUrl] = useState<string>();
 
   const router = useRouter();
   const corporate = useCorporateColor();
@@ -48,12 +50,12 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
   }, []);
 
   // Like the feed card: the first swipe to another photo counts once per
-  // screen visit as "Post Interaction" swipe.
+  // screen visit and post as "Post Interaction" swipe.
   const handlePageChange = useCallback(() => {
-    if (swipeRegistered) return;
+    if (swipedUrl === computedPermalink) return;
     registerPostInteraction(computedPermalink, "instagram", "swipe");
-    setSwipeRegistered(true);
-  }, [swipeRegistered, computedPermalink]);
+    setSwipedUrl(computedPermalink);
+  }, [swipedUrl, computedPermalink]);
 
   return (
     <View style={{ gap: CARD_CONTENT_GAP }}>

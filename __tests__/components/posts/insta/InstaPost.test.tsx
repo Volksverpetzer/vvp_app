@@ -182,6 +182,26 @@ describe("InstaPostDetail", () => {
     expect(registerPostInteraction).toHaveBeenCalledTimes(3);
   });
 
+  it("counts a swipe again when the screen switches to another post", async () => {
+    const other: InstaPostProperties = {
+      ...post,
+      id: "insta2",
+      permalink: "https://www.instagram.com/p/def/",
+    };
+    const screen = await render(<InstaPostDetail {...post} />);
+    await swipe();
+    await screen.rerender(<InstaPostDetail {...other} />);
+    await swipe();
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(2);
+    expect(registerPostInteraction).toHaveBeenLastCalledWith(
+      `${Config.wpUrl}/insta/def/`,
+      "instagram",
+      "swipe",
+    );
+  });
+
   it("colors caption links with the link color", async () => {
     const { getByText } = await render(<InstaPostDetail {...post} />);
     expect(getByText(post.caption)).toBeTruthy();
