@@ -26,6 +26,7 @@ type SearchTab = "artikel" | "ai";
 interface SearchContentProperties {
   search: string;
   searchParams: string;
+  searchNonce: number;
   resultsLength: number | undefined;
   isLoading: boolean;
   setSearch: (value: string) => void;
@@ -39,6 +40,7 @@ interface SearchContentProperties {
 const SearchContent = ({
   search,
   searchParams,
+  searchNonce,
   resultsLength,
   isLoading,
   setSearch,
@@ -146,6 +148,7 @@ const SearchContent = ({
           (hasResults ? (
             <ArticleSearchResults
               searchString={searchParams}
+              searchNonce={searchNonce}
               onResultsLength={setResultsLength}
               scrollOffsetY={scrollOffsetY}
             />
@@ -206,6 +209,7 @@ const SearchScreen = () => {
       {({
         search,
         searchParams,
+        searchNonce,
         resultsLength,
         isLoading,
         setSearch,
@@ -217,6 +221,7 @@ const SearchScreen = () => {
         <SearchContent
           search={search}
           searchParams={searchParams}
+          searchNonce={searchNonce}
           resultsLength={resultsLength}
           isLoading={isLoading}
           setSearch={setSearch}

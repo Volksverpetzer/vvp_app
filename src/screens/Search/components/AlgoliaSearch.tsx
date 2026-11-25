@@ -10,6 +10,7 @@ import type {
 
 import { SearchIcon } from "#/components/Icons";
 import BackToTopButton from "#/components/buttons/BackToTopButton";
+import UiButton from "#/components/ui/UiButton";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -33,6 +34,8 @@ const getAlgoliaClient = () => {
 
 interface AlgoliaSearchProperties {
   searchString: string;
+  /** Changes on every submit, so resending the same query searches again. */
+  searchNonce?: number;
   maxResults?: number;
   onResultsLength?: (
     count: number,
@@ -42,6 +45,7 @@ interface AlgoliaSearchProperties {
 
 const AlgoliaSearchResults = ({
   searchString,
+  searchNonce,
   maxResults = 10,
   onResultsLength,
   scrollOffsetY,
@@ -49,6 +53,7 @@ const AlgoliaSearchResults = ({
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const router = useRouter();
   const listReference = useRef<FlatList>(null);
   const backToTop = useBackToTop();
@@ -98,7 +103,8 @@ const AlgoliaSearchResults = ({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [searchString, maxResults, onResultsLength]);
+    // searchNonce and retryCount re-run an unchanged query after a failure
+  }, [searchString, maxResults, onResultsLength, searchNonce, retryCount]);
 
   const handleResultPress = useCallback(
     (item) => {
@@ -134,8 +140,12 @@ const AlgoliaSearchResults = ({
 
   if (hasError) {
     return (
-      <View style={itemStyles.emptyContainer}>
+      <View style={[itemStyles.emptyContainer, { gap: spacing.lg }]}>
         <UiErrorCard text="Suche fehlgeschlagen. Bitte versuche es erneut." />
+        <UiButton
+          label="Erneut versuchen"
+          onPress={() => setRetryCount((count) => count + 1)}
+        />
       </View>
     );
   }

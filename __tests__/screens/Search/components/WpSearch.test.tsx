@@ -48,6 +48,14 @@ jest.mock("#/components/ui/UiEmptyState", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children }: any) => <Text testID="empty">{children}</Text>);
 });
+jest.mock("#/components/ui/UiButton", () => {
+  const { Pressable, Text } = require("react-native");
+  return jest.fn(({ label, onPress }: any) => (
+    <Pressable testID="retry" accessibilityRole="button" onPress={onPress}>
+      <Text>{label}</Text>
+    </Pressable>
+  ));
+});
 jest.mock("#/components/ui/UiErrorCard", () => {
   const { Text } = require("react-native");
   return jest.fn(({ text }: any) => <Text testID="error">{text}</Text>);
@@ -214,6 +222,46 @@ describe("WpSearchResults", () => {
     await flushDebounce();
     await waitFor(() => expect(getByTestId("error")).toBeTruthy());
     expect(onResultsLength).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
+  it("searches again when the retry button is pressed", async () => {
+    const consoleError = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    searchPosts
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValueOnce([post()]);
+    const { getByTestId, getAllByTestId, onResultsLength } =
+      await renderSearch("fehler");
+    await flushDebounce();
+    await waitFor(() => expect(getByTestId("error")).toBeTruthy());
+
+    await fireEvent.press(getByTestId("retry"));
+    await flushDebounce();
+    await waitFor(() => expect(getAllByTestId("result")).toHaveLength(1));
+    expect(searchPosts).toHaveBeenCalledTimes(2);
+    expect(onResultsLength).toHaveBeenCalledWith(1);
+    consoleError.mockRestore();
+  });
+
+  it("searches again when the same query is resubmitted", async () => {
+    const consoleError = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    searchPosts
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValueOnce([post()]);
+    const { getByTestId, getAllByTestId, rerender } = await render(
+      <WpSearchResults searchString="fehler" searchNonce={1} />,
+    );
+    await flushDebounce();
+    await waitFor(() => expect(getByTestId("error")).toBeTruthy());
+
+    await rerender(<WpSearchResults searchString="fehler" searchNonce={2} />);
+    await flushDebounce();
+    await waitFor(() => expect(getAllByTestId("result")).toHaveLength(1));
+    expect(searchPosts).toHaveBeenCalledTimes(2);
     consoleError.mockRestore();
   });
 
