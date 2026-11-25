@@ -144,7 +144,10 @@ describe("InstaPostCard", () => {
 });
 
 describe("InstaPostDetail", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    resetReportedSwipes();
+  });
 
   it("sends nothing before the user swipes", async () => {
     await render(<InstaPostDetail {...post} />);
@@ -162,6 +165,21 @@ describe("InstaPostDetail", () => {
       "instagram",
       "swipe",
     );
+  });
+
+  it("counts a swipe on each visit, apart from the feed card's", async () => {
+    // The feed card's once-per-post rule doesn't apply here: each visit counts.
+    for (const element of [
+      <InstaPostCard key="card" {...post} inView />,
+      <InstaPostDetail key="visit1" {...post} />,
+      <InstaPostDetail key="visit2" {...post} />,
+    ]) {
+      const screen = await render(element);
+      await swipe();
+      await screen.unmount();
+    }
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(3);
   });
 
   it("colors caption links with the link color", async () => {
