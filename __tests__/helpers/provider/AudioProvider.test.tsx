@@ -354,11 +354,13 @@ describe("AudioProvider", () => {
 describe("AudioProvider listening milestones", () => {
   const EPISODE_LINK = "https://www.volksverpetzer.de/podcast/folge-1/";
   const ARTICLE_LINK = "https://www.volksverpetzer.de/analyse/artikel/";
+  const OTHER_LINK = "https://www.volksverpetzer.de/podcast/folge-2/";
 
   type Kind = "podcast" | "article" | "none";
 
   const PodcastConsumer = () => {
     usePodcastEpisode(TRACK_URL, EPISODE_LINK);
+    usePodcastEpisode(OTHER_URL, OTHER_LINK);
     return <Consumer />;
   };
 
@@ -496,6 +498,35 @@ describe("AudioProvider listening milestones", () => {
     await tick(rerender, 109);
     await tick(rerender, 109.25);
     expect(mockRegisterEvent).not.toHaveBeenCalled();
+  });
+
+  it("ignores a seek still pending on the previous track once the next one loads", async () => {
+    let resolveSeek: () => void = () => {};
+    const { getByTestId, rerender } = await start();
+    // A seek on track A that hasn't finished yet.
+    mockPlayer.seekTo.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveSeek = resolve;
+        }),
+    );
+    mockSeekTarget = 50;
+    await fireEvent.press(getByTestId("seek"));
+    // Switch to episode B; its restore settles with the baseline at 107.75 s.
+    mockPlayer.currentTime = 107.75;
+    await fireEvent.press(getByTestId("play-other"));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalledTimes(2));
+    // A's seek finishes now. Were it still valid, B's baseline would become
+    // 0 and the step to 108 s below would look like a jump.
+    mockPlayer.currentTime = 0;
+    resolveSeek();
+    await waitFor(() => Promise.resolve());
+    await tick(rerender, 108);
+    expect(mockRegisterEvent).toHaveBeenCalledWith(
+      OTHER_LINK,
+      "Podcast Listened",
+      { progress: 90 },
+    );
   });
 
   it("reports article audio as Audio Complete under the article link", async () => {

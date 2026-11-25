@@ -124,6 +124,9 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       loadId.current += 1;
       lastSavedTime.current = 0;
       lastListenTime.current = null;
+      // Invalidate a seek still pending on the previous track, so its
+      // completion doesn't set this track's baseline.
+      seekId.current += 1;
       isSeeking.current = false;
       wantPlay.current = true;
       setTrack(next);
