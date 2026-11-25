@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { render } from "@testing-library/react-native";
+import { act, render } from "@testing-library/react-native";
 import React from "react";
 
 import { Achievements } from "#/helpers/Achievements";
@@ -80,5 +80,24 @@ describe("SearchManager rechercheur achievement", () => {
     expect(Achievements.setAchievementValue).not.toHaveBeenCalledWith(
       "rechercheur",
     );
+  });
+});
+
+describe("SearchManager searchNonce", () => {
+  it("changes when the same query is submitted again", async () => {
+    let latest: any;
+    await render(
+      <SearchManager>
+        {(properties) => {
+          latest = properties;
+          return null;
+        }}
+      </SearchManager>,
+    );
+    await act(() => latest.setSearchParams("fehler"));
+    const first = latest.searchNonce;
+    await act(() => latest.setSearchParams("fehler"));
+    expect(latest.searchParams).toBe("fehler");
+    expect(latest.searchNonce).not.toBe(first);
   });
 });

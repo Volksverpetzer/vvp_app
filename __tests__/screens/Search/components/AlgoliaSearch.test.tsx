@@ -1,4 +1,4 @@
-import { act, render, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import AlgoliaSearchResults from "#/screens/Search/components/AlgoliaSearch";
@@ -41,6 +41,14 @@ jest.mock("#/components/ui/UiSpinner", () => {
 jest.mock("#/components/ui/UiEmptyState", () => {
   const { Text } = require("react-native");
   return jest.fn(({ children }: any) => <Text testID="empty">{children}</Text>);
+});
+jest.mock("#/components/ui/UiButton", () => {
+  const { Pressable, Text } = require("react-native");
+  return jest.fn(({ label, onPress }: any) => (
+    <Pressable testID="retry" accessibilityRole="button" onPress={onPress}>
+      <Text>{label}</Text>
+    </Pressable>
+  ));
 });
 jest.mock("#/components/ui/UiErrorCard", () => {
   const { Text } = require("react-native");
@@ -103,6 +111,52 @@ describe("AlgoliaSearchResults", () => {
     );
     await flushDebounce();
     await waitFor(() => expect(getByTestId("error")).toBeTruthy());
+    consoleError.mockRestore();
+  });
+
+  it("searches again when the retry button is pressed", async () => {
+    const consoleError = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    mockSearchSingleIndex
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValueOnce({
+        hits: [{ objectID: "1", post_title: "Treffer", post_date: 1 }],
+      });
+    const { getByTestId, getAllByTestId } = await render(
+      <AlgoliaSearchResults searchString="fehler" />,
+    );
+    await flushDebounce();
+    await waitFor(() => expect(getByTestId("error")).toBeTruthy());
+
+    await fireEvent.press(getByTestId("retry"));
+    await flushDebounce();
+    await waitFor(() => expect(getAllByTestId("result")).toHaveLength(1));
+    expect(mockSearchSingleIndex).toHaveBeenCalledTimes(2);
+    consoleError.mockRestore();
+  });
+
+  it("searches again when the same query is resubmitted", async () => {
+    const consoleError = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    mockSearchSingleIndex
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValueOnce({
+        hits: [{ objectID: "1", post_title: "Treffer", post_date: 1 }],
+      });
+    const { getByTestId, getAllByTestId, rerender } = await render(
+      <AlgoliaSearchResults searchString="fehler" searchNonce={1} />,
+    );
+    await flushDebounce();
+    await waitFor(() => expect(getByTestId("error")).toBeTruthy());
+
+    await rerender(
+      <AlgoliaSearchResults searchString="fehler" searchNonce={2} />,
+    );
+    await flushDebounce();
+    await waitFor(() => expect(getAllByTestId("result")).toHaveLength(1));
+    expect(mockSearchSingleIndex).toHaveBeenCalledTimes(2);
     consoleError.mockRestore();
   });
 
