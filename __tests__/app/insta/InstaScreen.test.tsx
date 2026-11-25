@@ -23,10 +23,6 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
   default: { getInstaPost: jest.fn() },
 }));
 
-jest.mock("#/helpers/network/Engagement", () => ({
-  registerViews: jest.fn(),
-}));
-
 jest.mock("#/helpers/Sharing", () => ({
   onShare: jest.fn(),
 }));

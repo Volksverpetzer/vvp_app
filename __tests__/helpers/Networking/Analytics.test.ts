@@ -176,7 +176,7 @@ describe("Analytics (Plausible)", () => {
       expect(body.name).toBe("pageview");
     });
 
-    it("registerInstaImpression should keep the legacy pageviews event", async () => {
+    it("registerInstaImpression should send the Insta Impression event", async () => {
       parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
       postSpy.mockResolvedValue({ success: true });
 
@@ -184,7 +184,7 @@ describe("Analytics (Plausible)", () => {
 
       const [, , body] = postSpy.mock.calls[0];
       // Feed impressions must not become Plausible pageviews.
-      expect(body.name).toBe("pageviews");
+      expect(body.name).toBe("Insta Impression");
     });
 
     it("registerInstaImpression should send nothing when engagements are disabled", async () => {

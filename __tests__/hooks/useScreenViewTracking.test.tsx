@@ -41,6 +41,7 @@ describe("screenNameFromSegments", () => {
     [["game"], "game"],
     [["game", "[gameId]"], "game"],
     [["bsky", "[post_id]"], "bsky"],
+    [["insta", "[post_id]"], "insta"],
     [["podcast", "[id]"], "podcast"],
     [["+not-found"], "not-found"],
   ])("maps %j to %s", (segments, expected) => {
@@ -51,7 +52,6 @@ describe("screenNameFromSegments", () => {
     [[]],
     [["[category]"]],
     [["[category]", "[slug]"]],
-    [["insta", "[post_id]"]],
     [["handle-share"]],
     [["external-link"]],
   ])("skips %j", (segments) => {
