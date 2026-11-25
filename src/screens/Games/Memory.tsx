@@ -35,6 +35,16 @@ const MemoryGame = ({
   // reset whenever a new set of pairs (e.g. the next level) comes in.
   const hasCompletedRef = useRef(false);
   const hasFlippedRef = useRef(false);
+  // The callbacks are read through refs, so a parent passing a new function
+  // (e.g. one that depends on the level) can't re-run the completion check
+  // below: on a level change that check would still see the previous
+  // level's fully matched deck and report it as solved again.
+  const onAllMatchedRef = useRef(onAllMatched);
+  const onFirstFlipRef = useRef(onFirstFlip);
+  useEffect(() => {
+    onAllMatchedRef.current = onAllMatched;
+    onFirstFlipRef.current = onFirstFlip;
+  }, [onAllMatched, onFirstFlip]);
 
   useEffect(() => {
     hasCompletedRef.current = false;
@@ -54,9 +64,9 @@ const MemoryGame = ({
       deck.every((card) => card.isMatched)
     ) {
       hasCompletedRef.current = true;
-      onAllMatched?.();
+      onAllMatchedRef.current?.();
     }
-  }, [deck, onAllMatched]);
+  }, [deck]);
 
   useEffect(() => {
     if (firstCard && secondCard && firstCard.pairId === secondCard.pairId) {
@@ -92,7 +102,7 @@ const MemoryGame = ({
     if (card.isFlipped || card.isMatched) return;
     if (!hasFlippedRef.current) {
       hasFlippedRef.current = true;
-      onFirstFlip?.();
+      onFirstFlipRef.current?.();
     }
     // Falls bereits zwei Karten ausgewählt sind, Auswahl zurücksetzen.
     if (firstCard && secondCard) {
