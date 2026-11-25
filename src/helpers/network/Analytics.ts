@@ -43,8 +43,10 @@ export type AnalyticsEvent =
   | "Announcement Action"
   | "Announcement Dismissed"
   // Playback of an article's audio version started (AudioPlayer in the
-  // article header). Podcast plays go through "Post Interaction" instead.
-  | "Article Audio Play"
+  // article header). Same name as the web article player in
+  // vvp_wp_audio_converter, which plays the same MP3s. Podcast plays go
+  // through "Post Interaction" instead.
+  | "Audio Play"
   // Once per screen per app session, see useScreenViewTracking.
   | "Screen View";
 

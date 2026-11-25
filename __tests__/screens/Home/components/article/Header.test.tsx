@@ -281,7 +281,7 @@ describe("Header — AudioPlayer integration", () => {
     expect(queryByText(/keine Audioversion verfügbar/)).toBeNull();
   });
 
-  it("records an Article Audio Play event when playback starts", async () => {
+  it("records an Audio Play event when playback starts", async () => {
     mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
     fetchMock.mockResolvedValue({ ok: true });
     await render(<Header {...defaultProps} />);
@@ -292,7 +292,7 @@ describe("Header — AudioPlayer integration", () => {
     expect(registerEvent).toHaveBeenCalledTimes(1);
     expect(registerEvent).toHaveBeenCalledWith(
       defaultProps.article_link,
-      "Article Audio Play",
+      "Audio Play",
     );
   });
 

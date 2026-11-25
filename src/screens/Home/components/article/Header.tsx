@@ -222,7 +222,7 @@ const Header = (properties: HeaderProperties) => {
           audioUrl={audioUrl}
           title={article_title}
           artworkUrl={article_image}
-          onPlay={() => registerEvent(article_link, "Article Audio Play")}
+          onPlay={() => registerEvent(article_link, "Audio Play")}
         />
       )}
       {audioUrl && audioAvailability === "unavailable" && (
