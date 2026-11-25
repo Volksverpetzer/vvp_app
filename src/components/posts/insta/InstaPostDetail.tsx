@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import { Hyperlink } from "react-native-hyperlink";
 
@@ -11,11 +11,13 @@ import { spacing } from "#/constants/Spacing";
 import { Achievements } from "#/helpers/Achievements";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import type { HttpsUrl, InstaPostProperties } from "#/types";
 
 const InstaPostDetail = (properties: InstaPostProperties) => {
   const { id, permalink, media_url, caption, children } = properties;
+  const [swipeRegistered, setSwipeRegistered] = useState(false);
 
   const router = useRouter();
   const corporate = useCorporateColor();
@@ -45,6 +47,14 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
     Achievements.setAchievementValue("instashare", true);
   }, []);
 
+  // Like the feed card: the first swipe to another photo counts once per
+  // screen visit as "Post Interaction" swipe.
+  const handlePageChange = useCallback(() => {
+    if (swipeRegistered) return;
+    registerPostInteraction(computedPermalink, "instagram", "swipe");
+    setSwipeRegistered(true);
+  }, [swipeRegistered, computedPermalink]);
+
   return (
     <View style={{ gap: CARD_CONTENT_GAP }}>
       <InstaPostImage
@@ -54,6 +64,7 @@ const InstaPostDetail = (properties: InstaPostProperties) => {
         inView={true}
         id={id}
         onLongPress={handleLongPress}
+        onPageChange={handlePageChange}
       />
       <Hyperlink linkStyle={{ color: linkColor }} onPress={handleLinkPress}>
         <Typography
