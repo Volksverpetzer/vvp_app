@@ -6,8 +6,8 @@ import { registerEvent } from "#/helpers/network/Analytics";
 
 /**
  * Routes that never send a "Screen View":
- * - Articles and the Instagram detail view already send a Plausible
- *   "pageview" for their own path, so counting them here would count twice.
+ * - Articles already send a Plausible "pageview" for their own path, so
+ *   counting them here would count twice.
  *   `[category]` alone is the article loader too (it re-exports
  *   `[category]/[slug]` for flat permalinks), not a category screen.
  * - The entry route and the redirect-only routes are never seen by the user.
@@ -16,7 +16,6 @@ const SKIPPED_ROUTES = new Set([
   "",
   "[category]",
   "[category]/[slug]",
-  "insta/[post_id]",
   "index",
   "handle-share",
   "external-link",
@@ -35,7 +34,7 @@ const isDynamic = (segment: string) => segment.startsWith("[");
  * Plausible screen name for the current Expo Router route, or null when the
  * route isn't tracked. Built from the route pattern, never the URL, so no
  * slugs, IDs or search terms end up in analytics: `(tabs)/personal` →
- * "personal", `game/[gameId]` → "game", `bsky/[post_id]` → "bsky".
+ * "personal", `game/[gameId]` → "game", `bsky/[post_id]` → "bsky", `insta/[post_id]` → "insta".
  */
 export const screenNameFromSegments = (segments: string[]): string | null => {
   const routeSegments = segments.filter((segment) => !isGroup(segment));

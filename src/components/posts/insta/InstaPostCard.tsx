@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { View } from "react-native";
 
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
@@ -16,15 +16,22 @@ import { Achievements } from "#/helpers/Achievements";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
-import { registerInstaImpression } from "#/helpers/network/Engagement";
 import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { InstaPostProperties } from "#/types";
 
+/**
+ * Posts whose swipe was already reported in this app run. Kept outside the
+ * component because feed cards sit in a virtualized list: a card that
+ * scrolls far away unmounts and would otherwise report its swipe again.
+ */
+const reportedSwipes = new Set<string>();
+
+/** Forgets the reported swipes; for tests. */
+export const resetReportedSwipes = () => reportedSwipes.clear();
+
 const InstaPostCard = (properties: InstaPostProperties) => {
   const { id, permalink, media_url, caption, children, inView } = properties;
-  const [registered, setRegistered] = useState(false);
-  const [loaded, setLoaded] = useState(false);
 
   const router = useRouter();
   const corporate = useCorporateColor();
@@ -44,9 +51,9 @@ const InstaPostCard = (properties: InstaPostProperties) => {
   );
 
   const handlePress = useCallback(() => {
-    registerPostInteraction(computedPermalink, "instagram", "open");
+    // The open is counted by the detail screen, also for outside links.
     router.push(`/insta/${id}`);
-  }, [computedPermalink, id, router]);
+  }, [id, router]);
 
   const handleLongPress = useCallback((source: string) => {
     onShare(source, { location: "longPressImage" });
@@ -55,15 +62,16 @@ const InstaPostCard = (properties: InstaPostProperties) => {
 
   const handleFirstLoad = useCallback(() => {
     ContentStore.setStoredInstaPost(id, properties);
-    setLoaded(true);
   }, [id, properties]);
 
-  useEffect(() => {
-    if (inView && loaded && !registered) {
-      registerInstaImpression(computedPermalink);
-      setRegistered(true);
-    }
-  }, [inView, loaded, registered, computedPermalink]);
+  // Swiping to another photo is a real interaction with the post, unlike
+  // merely scrolling past it, so that is what the feed card counts: once per
+  // post per app run, as "Post Interaction" swipe.
+  const handlePageChange = useCallback(() => {
+    if (reportedSwipes.has(id)) return;
+    reportedSwipes.add(id);
+    registerPostInteraction(computedPermalink, "instagram", "swipe");
+  }, [id, computedPermalink]);
 
   return (
     <View style={{ gap: CARD_CONTENT_GAP }}>
@@ -76,6 +84,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         onPress={handlePress}
         onLongPress={handleLongPress}
         onFirstLoad={handleFirstLoad}
+        onPageChange={handlePageChange}
       />
       <UiPressable
         accessibilityRole="button"

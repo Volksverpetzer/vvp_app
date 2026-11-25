@@ -114,17 +114,13 @@ describe("BlueskyPostCard", () => {
     expect(StyleSheet.flatten(label.props.style).color).toBe("#4A9CC7");
   });
 
-  it("navigates to the thread and tracks the open when pressed", async () => {
+  it("navigates to the thread when pressed, leaving the open to the detail screen", async () => {
     const { getByText } = await render(
       <BlueskyPostCard post={makeFeedPost(longText)} />,
     );
     await fireEvent.press(getByText("mehr"));
-    expect(registerPostInteraction).toHaveBeenCalledWith(
-      "https://bsky.app/profile/tester.bsky.social/post/abc123",
-      "bluesky",
-      "open",
-    );
     expect(mockRouter.push).toHaveBeenCalledWith("/bsky/abc123");
+    expect(registerPostInteraction).not.toHaveBeenCalled();
   });
 
   it("passes the post's bsky.app URL as context for links in the text", async () => {

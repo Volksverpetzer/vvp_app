@@ -18,7 +18,6 @@ import { layers } from "#/constants/Layers";
 import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { getBskyPostId, getBskyPostUrl } from "#/helpers/utils/bskyPost";
 import { hasCreatedAt, hasText } from "#/helpers/utils/typePredicates";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
@@ -44,7 +43,7 @@ const BlueskyPostCard = (properties: BlueskyPostProperties) => {
   }, [inView, postId, properties]);
 
   const navigateToPost = () => {
-    registerPostInteraction(url, "bluesky", "open");
+    // The open is counted by the detail screen, also for outside links.
     router.push(`/bsky/${postId}`);
   };
 
