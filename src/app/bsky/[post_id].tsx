@@ -9,14 +9,9 @@ import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import ContentStore from "#/helpers/Stores/ContentStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
+import { getBskyPostUrl } from "#/helpers/utils/bskyPost";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { type BlueskyPostProperties, type HttpsUrl } from "#/types";
-
-const postUrl = (post: BlueskyPostProperties): HttpsUrl => {
-  const postId = post.post.post.uri.split("/app.bsky.feed.post/")[1];
-  const handle = post.post.post.author.handle;
-  return `https://bsky.app/profile/${handle}/post/${postId}`;
-};
+import { type BlueskyPostProperties } from "#/types";
 
 /**
  * Loads a Bluesky post based on the provided post ID.
@@ -41,7 +36,9 @@ const BskyScreen = () => {
   }, [parameters.post_id, router]);
 
   // Keyed on the URL so a re-run of the load effect doesn't count it again.
-  const openedUrl = post ? postUrl(post) : undefined;
+  const openedUrl = post
+    ? getBskyPostUrl(post.post.post.author.handle, post.post.post.uri)
+    : undefined;
   useEffect(() => {
     if (openedUrl) registerPostInteraction(openedUrl, "bluesky", "open");
   }, [openedUrl]);
