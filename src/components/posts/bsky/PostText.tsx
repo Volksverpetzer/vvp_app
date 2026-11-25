@@ -12,10 +12,11 @@ import type { HttpsUrl } from "#/types";
 
 interface PostTextProps {
   feedViewPost: AppBskyFeedDefs.FeedViewPost;
-  uri?: string;
+  /** Web URL of the thread shown, sent as page URL of link-click events. */
+  contextUrl?: HttpsUrl;
 }
 
-export const PostText = ({ feedViewPost, uri }: PostTextProps) => {
+export const PostText = ({ feedViewPost, contextUrl }: PostTextProps) => {
   const router = useRouter();
   const record = feedViewPost?.post?.record;
 
@@ -52,7 +53,7 @@ export const PostText = ({ feedViewPost, uri }: PostTextProps) => {
     <Hyperlink
       linkStyle={{ color: linkColor }}
       linkText={(url) => linkTextToUrlMap[url]}
-      onPress={(url: HttpsUrl) => onLinkPress(url, router, uri)}
+      onPress={(url: HttpsUrl) => onLinkPress(url, router, contextUrl)}
     >
       <Typography type="body">{decodedText}</Typography>
     </Hyperlink>

@@ -1,7 +1,8 @@
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import type { ReactNode } from "react";
 
 import { PostText } from "#/components/posts/bsky/PostText";
+import { onLinkPress } from "#/helpers/Linking";
 
 // RichText from @atproto/api pulls in ESM-only deps (multiformats) that
 // Jest cannot transform. Mock the whole package with a minimal stub.
@@ -22,13 +23,36 @@ jest.mock("@atproto/api", () => {
   return { RichText };
 });
 
+const mockRouter = { push: jest.fn() };
+
 jest.mock("expo-router", () => ({
-  useRouter: jest.fn(() => ({ push: jest.fn() })),
+  useRouter: jest.fn(() => mockRouter),
 }));
 
-jest.mock("react-native-hyperlink", () => ({
-  Hyperlink: ({ children }: { children: ReactNode }) => <>{children}</>,
-}));
+// Renders the children plus a pressable stand-in that fires the Hyperlink's
+// onPress with a fixed link, so tests can check the analytics context.
+jest.mock("react-native-hyperlink", () => {
+  const { Pressable, Text } = jest.requireActual("react-native");
+  return {
+    Hyperlink: ({
+      children,
+      onPress,
+    }: {
+      children: ReactNode;
+      onPress?: (url: string) => void;
+    }) => (
+      <>
+        {children}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => onPress?.("https://example.com/linked")}
+        >
+          <Text>hyperlink-stub</Text>
+        </Pressable>
+      </>
+    ),
+  };
+});
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
@@ -71,5 +95,23 @@ describe("PostText", () => {
       />,
     );
     expect(getByText("Hello Bluesky")).toBeTruthy();
+  });
+
+  it("passes the given context URL to onLinkPress for links", async () => {
+    const { getByText } = await render(
+      <PostText
+        feedViewPost={makePost({
+          $type: "app.bsky.feed.post",
+          text: "Hello Bluesky",
+        })}
+        contextUrl="https://bsky.app/profile/tester.bsky.social/post/root"
+      />,
+    );
+    await fireEvent.press(getByText("hyperlink-stub"));
+    expect(onLinkPress).toHaveBeenCalledWith(
+      "https://example.com/linked",
+      mockRouter,
+      "https://bsky.app/profile/tester.bsky.social/post/root",
+    );
   });
 });
