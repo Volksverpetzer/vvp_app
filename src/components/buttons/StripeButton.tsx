@@ -1,6 +1,8 @@
 export interface StripeButtonProperties {
   amount: number;
   onSuccess: () => void;
+  /** Fired when the button is tapped, before the payment sheet opens. */
+  onStart?: () => void;
   onSupportChecked?: (isSupported: boolean) => void;
 }
 
