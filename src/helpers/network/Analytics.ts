@@ -42,6 +42,9 @@ export type AnalyticsEvent =
   | "Announcement Shown"
   | "Announcement Action"
   | "Announcement Dismissed"
+  // Playback of an article's audio version started (AudioPlayer in the
+  // article header). Podcast plays go through "Post Interaction" instead.
+  | "Article Audio Play"
   // Once per screen per app session, see useScreenViewTracking.
   | "Screen View";
 

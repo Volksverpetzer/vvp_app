@@ -18,6 +18,7 @@ import {
 } from "#/constants/GlobalStyles";
 import { spacing } from "#/constants/Spacing";
 import { onShare } from "#/helpers/Sharing";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 import API from "#/helpers/network/ServerAPI";
 import {
   useAppColorScheme,
@@ -129,6 +130,15 @@ const PodcastScreen = () => {
           artworkUrl={episode.image_url ?? undefined}
           horizontalPadding={POST_PADDING_HORIZONTAL}
           durationSeconds={episode.duration ?? undefined}
+          // Same event as the feed card's play button, so plays from the card
+          // and from this screen add up under one goal.
+          onPlay={() =>
+            registerPostInteraction(
+              episode.link ?? episode.audio_url,
+              "podcast",
+              "play",
+            )
+          }
         />
         <UiSpace size={spacing.md} />
 

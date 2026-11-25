@@ -26,6 +26,7 @@ import {
 import { spacing } from "#/constants/Spacing";
 import { onLinkPress } from "#/helpers/Linking";
 import { onShare } from "#/helpers/Sharing";
+import { registerEvent } from "#/helpers/network/Analytics";
 import { findSecondaryWpFeed } from "#/helpers/utils/feeds";
 import { useLinkColor } from "#/hooks/useAppColorScheme";
 import { useAudioAvailability } from "#/hooks/useAudioAvailability";
@@ -221,6 +222,7 @@ const Header = (properties: HeaderProperties) => {
           audioUrl={audioUrl}
           title={article_title}
           artworkUrl={article_image}
+          onPlay={() => registerEvent(article_link, "Article Audio Play")}
         />
       )}
       {audioUrl && audioAvailability === "unavailable" && (

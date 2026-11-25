@@ -2,6 +2,8 @@ import { render, waitFor } from "@testing-library/react-native";
 import type React from "react";
 
 import PodcastScreen from "#/app/podcast/[id]";
+import AudioPlayer from "#/components/audio/AudioPlayer";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 
 const mockRouterBack = jest.fn();
 const mockGetPodcastFeed = jest.fn();
@@ -19,6 +21,10 @@ jest.mock("#/helpers/network/ServerAPI", () => ({
 }));
 
 jest.mock("#/helpers/Sharing", () => ({ onShare: jest.fn() }));
+
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerPostInteraction: jest.fn(),
+}));
 
 jest.mock("#/hooks/useAppColorScheme", () => ({
   useAppColorScheme: jest.fn(() => "light"),
@@ -93,5 +99,46 @@ describe("PodcastScreen", () => {
     mockGetPodcastFeed.mockRejectedValue(new Error("network"));
     await render(<PodcastScreen />);
     await waitFor(() => expect(mockRouterBack).toHaveBeenCalled());
+  });
+
+  describe("play tracking", () => {
+    const startPlayback = async (
+      props: Omit<typeof episode, "link"> & { link: string | null },
+    ) => {
+      mockGetPodcastFeed.mockResolvedValue([props]);
+      await render(<PodcastScreen />);
+      const MockAudioPlayer = jest.mocked(AudioPlayer);
+      await waitFor(() => expect(MockAudioPlayer).toHaveBeenCalled());
+      const { onPlay } = MockAudioPlayer.mock.lastCall[0] as {
+        onPlay?: () => void;
+      };
+      onPlay?.();
+    };
+
+    it("records a podcast play with the episode link, like the feed card", async () => {
+      await startPlayback(episode);
+      expect(registerPostInteraction).toHaveBeenCalledTimes(1);
+      expect(registerPostInteraction).toHaveBeenCalledWith(
+        episode.link,
+        "podcast",
+        "play",
+      );
+    });
+
+    it("falls back to the audio URL when the episode has no link", async () => {
+      await startPlayback({ ...episode, link: null });
+      expect(registerPostInteraction).toHaveBeenCalledWith(
+        episode.audio_url,
+        "podcast",
+        "play",
+      );
+    });
+
+    it("records nothing just by opening the episode", async () => {
+      mockGetPodcastFeed.mockResolvedValue([episode]);
+      await render(<PodcastScreen />);
+      await waitFor(() => expect(jest.mocked(AudioPlayer)).toHaveBeenCalled());
+      expect(registerPostInteraction).not.toHaveBeenCalled();
+    });
   });
 });
