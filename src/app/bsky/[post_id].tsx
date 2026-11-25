@@ -8,8 +8,9 @@ import UiSpinner from "#/components/ui/UiSpinner";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import ContentStore from "#/helpers/Stores/ContentStore";
+import { getBskyPostUrl } from "#/helpers/utils/bskyPost";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import { type BlueskyPostProperties, type HttpsUrl } from "#/types";
+import { type BlueskyPostProperties } from "#/types";
 
 /**
  * Loads a Bluesky post based on the provided post ID.
@@ -36,10 +37,7 @@ const BskyScreen = () => {
     return <UiSpinner text="Lade Bluesky Beitrag..." size="large" />;
   }
 
-  const postId = post.post.post.uri.split("/app.bsky.feed.post/")[1];
-  const handle = post.post.post.author.handle;
-  const url =
-    `https://bsky.app/profile/${handle}/post/${postId}` satisfies HttpsUrl;
+  const url = getBskyPostUrl(post.post.post.author.handle, post.post.post.uri);
 
   return (
     <View style={[globalStyles.container, { backgroundColor }]}>

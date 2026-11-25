@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { StyleSheet } from "react-native";
 
 import BlueskyPostCard from "#/components/posts/bsky/BlueskyPostCard";
+import { onLinkPress } from "#/helpers/Linking";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
 
 const mockRouter = { push: jest.fn(), back: jest.fn() };
@@ -12,9 +13,30 @@ jest.mock("expo-router", () => ({
   useRouter: jest.fn(() => mockRouter),
 }));
 
-jest.mock("react-native-hyperlink", () => ({
-  Hyperlink: ({ children }: { children: ReactNode }) => <>{children}</>,
-}));
+// Renders the children plus a pressable stand-in that fires the Hyperlink's
+// onPress with a fixed link, so tests can check the analytics context.
+jest.mock("react-native-hyperlink", () => {
+  const { Pressable, Text } = jest.requireActual("react-native");
+  return {
+    Hyperlink: ({
+      children,
+      onPress,
+    }: {
+      children: ReactNode;
+      onPress?: (url: string) => void;
+    }) => (
+      <>
+        {children}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => onPress?.("https://example.com/linked")}
+        >
+          <Text>hyperlink-stub</Text>
+        </Pressable>
+      </>
+    ),
+  };
+});
 
 jest.mock("#/components/posts/bsky/BlueskyPostHeader", () => ({
   BlueskyPostHeader: jest.fn(() => null),
@@ -103,5 +125,30 @@ describe("BlueskyPostCard", () => {
       "open",
     );
     expect(mockRouter.push).toHaveBeenCalledWith("/bsky/abc123");
+  });
+
+  it("passes the post's bsky.app URL as context for links in the text", async () => {
+    const { getByText } = await render(
+      <BlueskyPostCard post={makeFeedPost("Short post")} />,
+    );
+    await fireEvent.press(getByText("hyperlink-stub"));
+    expect(onLinkPress).toHaveBeenCalledWith(
+      "https://example.com/linked",
+      mockRouter,
+      "https://bsky.app/profile/tester.bsky.social/post/abc123",
+    );
+  });
+
+  it("passes the post's bsky.app URL as context for the open-in-Bluesky button", async () => {
+    const { getAllByRole } = await render(
+      <BlueskyPostCard post={makeFeedPost("Short post")} />,
+    );
+    // [0] is the card itself, [1] the external-link icon button
+    await fireEvent.press(getAllByRole("button")[1]);
+    expect(onLinkPress).toHaveBeenCalledWith(
+      "https://bsky.app/profile/tester.bsky.social/post/abc123",
+      mockRouter,
+      "https://bsky.app/profile/tester.bsky.social/post/abc123",
+    );
   });
 });

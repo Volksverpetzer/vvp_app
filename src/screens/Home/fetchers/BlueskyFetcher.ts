@@ -4,6 +4,7 @@ import BlueskyPostCard from "#/components/posts/bsky/BlueskyPostCard";
 import Config from "#/constants/Config";
 import Post from "#/helpers/Post";
 import API from "#/helpers/network/ServerAPI";
+import { getBskyPostUrl } from "#/helpers/utils/bskyPost";
 import { hasCreatedAt, hasUri } from "#/helpers/utils/typePredicates";
 import type { BlueskyPostProperties } from "#/types";
 
@@ -85,9 +86,7 @@ export const BlueskyFetcher = {
         item.post.post.record.created_at,
       );
       if (!datetime) return null;
-      const postId = item.uri.split("/app.bsky.feed.post/")[1];
-      const handle = item.post.post.author.handle;
-      const url = `https://bsky.app/profile/${handle}/post/${postId}`;
+      const url = getBskyPostUrl(item.post.post.author.handle, item.uri);
       return new Post<BlueskyPostProperties>(
         datetime,
         item.uri,
