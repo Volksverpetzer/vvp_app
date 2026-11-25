@@ -2,6 +2,11 @@ import { render, waitFor } from "@testing-library/react-native";
 import type React from "react";
 
 import PodcastScreen from "#/app/podcast/[id]";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
+
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerPostInteraction: jest.fn(),
+}));
 
 const mockRouterBack = jest.fn();
 const mockGetPodcastFeed = jest.fn();
@@ -82,10 +87,36 @@ describe("PodcastScreen", () => {
     });
   });
 
+  it("tracks the open once the episode is loaded", async () => {
+    mockGetPodcastFeed.mockResolvedValue([episode]);
+    await render(<PodcastScreen />);
+    await waitFor(() =>
+      expect(registerPostInteraction).toHaveBeenCalledTimes(1),
+    );
+    expect(registerPostInteraction).toHaveBeenCalledWith(
+      episode.link,
+      "podcast",
+      "open",
+    );
+  });
+
+  it("falls back to the audio url for the open when link is null", async () => {
+    mockGetPodcastFeed.mockResolvedValue([{ ...episode, link: null }]);
+    await render(<PodcastScreen />);
+    await waitFor(() =>
+      expect(registerPostInteraction).toHaveBeenCalledWith(
+        episode.audio_url,
+        "podcast",
+        "open",
+      ),
+    );
+  });
+
   it("navigates back when the episode is not in the feed", async () => {
     mockGetPodcastFeed.mockResolvedValue([{ ...episode, id: "other" }]);
     await render(<PodcastScreen />);
     await waitFor(() => expect(mockRouterBack).toHaveBeenCalled());
+    expect(registerPostInteraction).not.toHaveBeenCalled();
   });
 
   it("navigates back when the feed request fails", async () => {

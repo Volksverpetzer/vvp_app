@@ -15,7 +15,6 @@ import { spacing } from "#/constants/Spacing";
 import { Achievements } from "#/helpers/Achievements";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { registerInstaImpression } from "#/helpers/network/Engagement";
 import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
@@ -44,9 +43,9 @@ const InstaPostCard = (properties: InstaPostProperties) => {
   );
 
   const handlePress = useCallback(() => {
-    registerPostInteraction(computedPermalink, "instagram", "open");
+    // The open is counted by the detail screen, also for outside links.
     router.push(`/insta/${id}`);
-  }, [computedPermalink, id, router]);
+  }, [id, router]);
 
   const handleLongPress = useCallback((source: string) => {
     onShare(source, { location: "longPressImage" });

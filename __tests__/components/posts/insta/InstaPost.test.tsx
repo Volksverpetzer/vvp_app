@@ -83,15 +83,11 @@ describe("InstaPostCard", () => {
     );
   });
 
-  it("opens the post and tracks the open when pressed", async () => {
+  it("opens the post when pressed, leaving the open to the detail screen", async () => {
     const { getByText } = await render(<InstaPostCard {...post} />);
     await fireEvent.press(getByText("mehr"));
-    expect(registerPostInteraction).toHaveBeenCalledWith(
-      expect.stringContaining("/insta/abc/"),
-      "instagram",
-      "open",
-    );
     expect(mockRouter.push).toHaveBeenCalledWith("/insta/insta1");
+    expect(registerPostInteraction).not.toHaveBeenCalled();
   });
 
   // Feed impressions must stay off Plausible's "pageview" (registerViews),

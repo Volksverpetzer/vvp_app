@@ -2,6 +2,11 @@ import { render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import InstaScreen from "#/app/insta/[post_id]";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
+
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerPostInteraction: jest.fn(),
+}));
 
 const mockRouterBack = jest.fn();
 
@@ -91,6 +96,21 @@ describe("InstaScreen", () => {
     });
   });
 
+  it("tracks the open once the post is loaded", async () => {
+    ContentStore.getStoredInstaPost.mockResolvedValue(makeMockInstaPost());
+
+    await render(<InstaScreen />);
+
+    await waitFor(() => {
+      expect(registerPostInteraction).toHaveBeenCalledTimes(1);
+    });
+    expect(registerPostInteraction).toHaveBeenCalledWith(
+      "https://example.com/insta/abc123/",
+      "instagram",
+      "open",
+    );
+  });
+
   it("calls router.back() when post is not found", async () => {
     ContentStore.getStoredInstaPost.mockResolvedValue(null);
     jest
@@ -102,5 +122,6 @@ describe("InstaScreen", () => {
     await waitFor(() => {
       expect(mockRouterBack).toHaveBeenCalledTimes(1);
     });
+    expect(registerPostInteraction).not.toHaveBeenCalled();
   });
 });
