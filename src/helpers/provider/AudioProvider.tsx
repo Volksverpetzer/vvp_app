@@ -16,11 +16,13 @@ import {
 } from "react";
 
 import PersonalStore from "#/helpers/Stores/PersonalStore";
+import { registerEvent } from "#/helpers/network/Analytics";
 import {
   RESUME_END_MARGIN_SECONDS,
   RESUME_MIN_SECONDS,
   RESUME_SAVE_INTERVAL_SECONDS,
 } from "#/helpers/utils/audio";
+import { crossedMilestones } from "#/helpers/utils/listenMilestones";
 
 export interface AudioTrack {
   audioUrl: string;
@@ -50,6 +52,11 @@ export interface AudioContextValue {
   pause: () => void;
   seekTo: (seconds: number) => void;
   isCurrent: (audioUrl: string) => boolean;
+  /**
+   * Marks an audio URL as a podcast episode, so listening to it reports
+   * "Podcast Listened" under `link ?? audioUrl` (see usePodcastEpisode).
+   */
+  registerPodcastEpisode: (audioUrl: string, link?: string | null) => void;
 }
 
 const AudioContext = createContext<AudioContextValue | null>(null);
@@ -81,6 +88,13 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
   const loadId = useRef(0);
   const lastSavedTime = useRef(0);
   const wantPlay = useRef(false);
+  // Podcast episodes by audio URL → analytics URL. Article audio is never
+  // registered, so it reports no "Podcast Listened".
+  const podcastLinks = useRef(new Map<string, string>());
+  // `${audioUrl}|${milestone}` already reported in this app run.
+  const reportedMilestones = useRef(new Set<string>());
+  // Position at the previous playing tick, to tell playback from jumps.
+  const lastListenTime = useRef<number | null>(null);
 
   const currentUrl = track?.audioUrl ?? null;
 
@@ -94,6 +108,7 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       restoreSettled.current = false;
       loadId.current += 1;
       lastSavedTime.current = 0;
+      lastListenTime.current = null;
       wantPlay.current = true;
       setTrack(next);
       player.replace({ uri: next.audioUrl });
@@ -179,6 +194,45 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
     player,
   ]);
 
+  // Report listening milestones of podcast episodes ("Podcast Listened", the
+  // counterpart of the article FullRead), once per episode and milestone per
+  // app run. Only positions reached by playback count: crossedMilestones
+  // ignores jumps, and tracking starts after the resume restore has settled.
+  // Like the save effect, values come from the player's own native state.
+  useEffect(() => {
+    const url = track ? podcastLinks.current.get(track.audioUrl) : undefined;
+    if (
+      !track ||
+      !url ||
+      !restoreSettled.current ||
+      !player.isLoaded ||
+      !player.playing
+    ) {
+      lastListenTime.current = null;
+      return;
+    }
+    const { currentTime, duration } = player;
+    const crossed = crossedMilestones(
+      lastListenTime.current,
+      currentTime,
+      duration,
+    );
+    lastListenTime.current = currentTime;
+    for (const milestone of crossed) {
+      const key = `${track.audioUrl}|${milestone}`;
+      if (reportedMilestones.current.has(key)) continue;
+      reportedMilestones.current.add(key);
+      void registerEvent(url, "Podcast Listened", { progress: milestone });
+    }
+  }, [track, status.playing, status.currentTime, player]);
+
+  const registerPodcastEpisode = useCallback(
+    (audioUrl: string, link?: string | null) => {
+      podcastLinks.current.set(audioUrl, link || audioUrl);
+    },
+    [],
+  );
+
   // On finish: rewind and clear the stored position so the next play starts fresh.
   useEffect(() => {
     if (!status.didJustFinish) return;
@@ -202,8 +256,9 @@ export const AudioProvider = ({ children }: { children: ReactNode }) => {
       pause: () => void player.pause(),
       seekTo: (seconds: number) => void player.seekTo(seconds),
       isCurrent: (audioUrl: string) => currentUrl === audioUrl,
+      registerPodcastEpisode,
     }),
-    [currentUrl, status, player, playTrack],
+    [currentUrl, status, player, playTrack, registerPodcastEpisode],
   );
 
   return (
@@ -218,4 +273,20 @@ export const useAudio = (): AudioContextValue => {
     throw new Error("useAudio must be used within an AudioProvider");
   }
   return ctx;
+};
+
+/**
+ * Marks the given episode as a podcast for the "Podcast Listened" analytics
+ * event, reported under `link ?? audioUrl` like the podcast Post Interaction
+ * events. Call it wherever an episode can be played; the registration
+ * outlives the screen, as playback does.
+ */
+export const usePodcastEpisode = (
+  audioUrl: string | undefined,
+  link?: string | null,
+) => {
+  const { registerPodcastEpisode } = useAudio();
+  useEffect(() => {
+    if (audioUrl) registerPodcastEpisode(audioUrl, link);
+  }, [registerPodcastEpisode, audioUrl, link]);
 };

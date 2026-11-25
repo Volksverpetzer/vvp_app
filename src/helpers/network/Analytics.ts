@@ -26,6 +26,8 @@ export type AnalyticsEvent =
   | "favorite"
   | "Share"
   | "FullRead"
+  // A podcast episode played past a milestone (`progress` prop, percent).
+  | "Podcast Listened"
   | "search"
   | "Shop"
   | "Steady"

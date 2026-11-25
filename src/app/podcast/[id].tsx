@@ -19,6 +19,7 @@ import {
 import { spacing } from "#/constants/Spacing";
 import { onShare } from "#/helpers/Sharing";
 import API from "#/helpers/network/ServerAPI";
+import { usePodcastEpisode } from "#/helpers/provider/AudioProvider";
 import {
   useAppColorScheme,
   useCorporateColor,
@@ -48,6 +49,7 @@ const PodcastScreen = () => {
   const colorScheme = useAppColorScheme();
   const corporate = useCorporateColor();
   const backgroundColor = Colors[colorScheme].background;
+  usePodcastEpisode(episode?.audio_url, episode?.link);
 
   useEffect(() => {
     const controller = new AbortController();

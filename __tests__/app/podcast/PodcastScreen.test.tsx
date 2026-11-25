@@ -39,6 +39,9 @@ jest.mock("react-native-gesture-handler", () => ({
 
 jest.mock("expo-image", () => ({ __esModule: true, Image: () => null }));
 jest.mock("#/components/audio/AudioPlayer", () => jest.fn(() => null));
+jest.mock("#/helpers/provider/AudioProvider", () => ({
+  usePodcastEpisode: jest.fn(),
+}));
 jest.mock("#/components/bars/NavBar", () => jest.fn(() => null));
 jest.mock("#/components/views/Footer", () => jest.fn(() => null));
 jest.mock("#/components/ui/UiSpinner", () => {

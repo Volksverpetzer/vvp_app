@@ -3,7 +3,11 @@ import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import type { AudioStatus } from "expo-audio";
 import { Text } from "react-native";
 
-import { AudioProvider, useAudio } from "#/helpers/provider/AudioProvider";
+import {
+  AudioProvider,
+  useAudio,
+  usePodcastEpisode,
+} from "#/helpers/provider/AudioProvider";
 
 jest.mock("expo-audio", () => ({
   useAudioPlayer: jest.fn(),
@@ -26,6 +30,11 @@ jest.mock("#/helpers/Stores/PersonalStore", () => ({
     setAudioPosition: (...a: unknown[]) => mockSetAudioPosition(...a),
     clearAudioPosition: (...a: unknown[]) => mockClearAudioPosition(...a),
   },
+}));
+
+const mockRegisterEvent = jest.fn().mockResolvedValue(undefined);
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerEvent: (...a: unknown[]) => mockRegisterEvent(...a),
 }));
 
 const mockPlayer = {
@@ -338,5 +347,102 @@ describe("AudioProvider", () => {
       expect(mockPlayer.seekTo).toHaveBeenCalledWith(0);
       expect(mockClearAudioPosition).toHaveBeenCalledWith(TRACK_URL);
     });
+  });
+});
+
+describe("AudioProvider podcast listening milestones", () => {
+  const EPISODE_LINK = "https://www.volksverpetzer.de/podcast/folge-1/";
+
+  const PodcastConsumer = ({ link }: { link?: string }) => {
+    usePodcastEpisode(TRACK_URL, link);
+    return <Consumer />;
+  };
+
+  const tree = (podcast: boolean) => (
+    <AudioProvider>
+      {podcast ? <PodcastConsumer link={EPISODE_LINK} /> : <Consumer />}
+    </AudioProvider>
+  );
+
+  // Starts TRACK_URL and waits until its restore settled.
+  const start = async (podcast = true) => {
+    const utils = await render(tree(podcast));
+    await fireEvent.press(utils.getByTestId("play"));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalled());
+    mockPlayer.playing = true;
+    // One render after the restore so the effects see it as settled.
+    await utils.rerender(tree(podcast));
+    return utils;
+  };
+
+  // A playing status tick at the given native position.
+  const tick = async (
+    rerender: (el: React.ReactElement) => Promise<void> | void,
+    time: number,
+    podcast = true,
+  ) => {
+    mockPlayer.currentTime = time;
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: time,
+    } as AudioStatus);
+    await rerender(tree(podcast));
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockPlayer.isLoaded = true;
+    mockPlayer.duration = 120;
+    mockPlayer.playing = false;
+    mockPlayer.currentTime = 0;
+    mockGetAudioPosition.mockResolvedValue(0);
+    jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as never);
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue(loadedStatus as AudioStatus);
+  });
+
+  it("reports 90 % once when playback crosses it, under the episode link", async () => {
+    const { rerender } = await start();
+    // 90 % of 120 s is 108 s.
+    await tick(rerender, 107.75);
+    await tick(rerender, 108);
+    expect(mockRegisterEvent).toHaveBeenCalledTimes(1);
+    expect(mockRegisterEvent).toHaveBeenCalledWith(
+      EPISODE_LINK,
+      "Podcast Listened",
+      { progress: 90 },
+    );
+    // Listening past it again in the same app run doesn't report twice.
+    await tick(rerender, 100);
+    await tick(rerender, 107.75);
+    await tick(rerender, 108);
+    expect(mockRegisterEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not report seeking past the milestone", async () => {
+    const { rerender } = await start();
+    await tick(rerender, 30);
+    await tick(rerender, 115);
+    await tick(rerender, 115.25);
+    expect(mockRegisterEvent).not.toHaveBeenCalled();
+  });
+
+  it("does not report a restored resume position beyond the milestone", async () => {
+    mockPlayer.duration = 600;
+    mockGetAudioPosition.mockResolvedValue(560);
+    const { rerender } = await start();
+    expect(mockPlayer.seekTo).toHaveBeenCalledWith(560);
+    await tick(rerender, 560);
+    await tick(rerender, 560.25);
+    expect(mockRegisterEvent).not.toHaveBeenCalled();
+  });
+
+  it("does not report audio that isn't a registered podcast episode", async () => {
+    const { rerender } = await start(false);
+    await tick(rerender, 107.75, false);
+    await tick(rerender, 108, false);
+    expect(mockRegisterEvent).not.toHaveBeenCalled();
   });
 });
