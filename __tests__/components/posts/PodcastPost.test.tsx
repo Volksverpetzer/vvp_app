@@ -46,6 +46,7 @@ const mockPlayTrack = jest.fn();
 const mockIsCurrent = jest.fn<(url: string) => boolean>();
 jest.mock("#/helpers/provider/AudioProvider", () => ({
   useAudio: () => ({ isCurrent: mockIsCurrent, playTrack: mockPlayTrack }),
+  usePodcastEpisode: jest.fn(),
 }));
 
 jest.mock("#/hooks/useAppColorScheme", () => ({

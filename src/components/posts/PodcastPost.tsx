@@ -20,7 +20,7 @@ import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
-import { useAudio } from "#/helpers/provider/AudioProvider";
+import { useAudio, usePodcastEpisode } from "#/helpers/provider/AudioProvider";
 import { RESUME_MIN_SECONDS, formatTime } from "#/helpers/utils/audio";
 import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import type { PodcastEpisodeProperties } from "#/types";
@@ -40,6 +40,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
   const linkColor = useLinkColor();
   const router = useRouter();
   const audio = useAudio();
+  usePodcastEpisode(audio_url, link);
 
   // This episode is "active" once it's the track loaded in the global player;
   // then the card shows live controls instead of the play button.
