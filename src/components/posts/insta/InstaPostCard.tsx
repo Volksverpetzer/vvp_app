@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { View } from "react-native";
 
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
@@ -20,9 +20,18 @@ import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { InstaPostProperties } from "#/types";
 
+/**
+ * Posts whose swipe was already reported in this app run. Kept outside the
+ * component because feed cards sit in a virtualized list: a card that
+ * scrolls far away unmounts and would otherwise report its swipe again.
+ */
+const reportedSwipes = new Set<string>();
+
+/** Forgets the reported swipes; for tests. */
+export const resetReportedSwipes = () => reportedSwipes.clear();
+
 const InstaPostCard = (properties: InstaPostProperties) => {
   const { id, permalink, media_url, caption, children, inView } = properties;
-  const [swipeRegistered, setSwipeRegistered] = useState(false);
 
   const router = useRouter();
   const corporate = useCorporateColor();
@@ -57,12 +66,12 @@ const InstaPostCard = (properties: InstaPostProperties) => {
 
   // Swiping to another photo is a real interaction with the post, unlike
   // merely scrolling past it, so that is what the feed card counts: once per
-  // card, as "Post Interaction" swipe.
+  // post per app run, as "Post Interaction" swipe.
   const handlePageChange = useCallback(() => {
-    if (swipeRegistered) return;
+    if (reportedSwipes.has(id)) return;
+    reportedSwipes.add(id);
     registerPostInteraction(computedPermalink, "instagram", "swipe");
-    setSwipeRegistered(true);
-  }, [swipeRegistered, computedPermalink]);
+  }, [id, computedPermalink]);
 
   return (
     <View style={{ gap: CARD_CONTENT_GAP }}>

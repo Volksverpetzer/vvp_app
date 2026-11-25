@@ -2,7 +2,9 @@ import { act, fireEvent, render } from "@testing-library/react-native";
 import type { ReactNode } from "react";
 import { StyleSheet } from "react-native";
 
-import InstaPostCard from "#/components/posts/insta/InstaPostCard";
+import InstaPostCard, {
+  resetReportedSwipes,
+} from "#/components/posts/insta/InstaPostCard";
 import InstaPostDetail from "#/components/posts/insta/InstaPostDetail";
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import Config from "#/constants/Config";
@@ -70,7 +72,10 @@ const post: InstaPostProperties = {
 };
 
 describe("InstaPostCard", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    resetReportedSwipes();
+  });
 
   it("shows the 'mehr' label in the link color", async () => {
     const { getByText } = await render(<InstaPostCard {...post} />);
@@ -114,6 +119,27 @@ describe("InstaPostCard", () => {
       "swipe",
     );
     expect(registerViews).not.toHaveBeenCalled();
+  });
+
+  // Feed cards sit in a virtualized list and unmount when scrolled far away.
+  it("doesn't count the same post again after the card remounts", async () => {
+    const first = await render(<InstaPostCard {...post} inView />);
+    await swipe();
+    await first.unmount();
+
+    await render(<InstaPostCard {...post} inView />);
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(1);
+  });
+
+  it("counts a swipe on a different post", async () => {
+    await render(<InstaPostCard {...post} inView />);
+    await swipe();
+    await render(<InstaPostCard {...post} id="insta2" inView />);
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(2);
   });
 });
 
