@@ -1,5 +1,5 @@
 import { render, waitFor } from "@testing-library/react-native";
-import React from "react";
+import type React from "react";
 
 import PodcastScreen from "#/app/podcast/[id]";
 

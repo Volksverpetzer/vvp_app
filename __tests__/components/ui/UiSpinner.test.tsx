@@ -1,6 +1,6 @@
 import { describe, expect, it, jest } from "@jest/globals";
 import { render } from "@testing-library/react-native";
-import React from "react";
+import type React from "react";
 
 // Stable mock for expo-image — persists through jest.resetModules() so the
 // component and test share the same MockImage reference.

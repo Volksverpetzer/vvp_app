@@ -1,5 +1,5 @@
 import { act, fireEvent, render } from "@testing-library/react-native";
-import React from "react";
+import type React from "react";
 
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import Body from "#/screens/Home/components/article/Body";
