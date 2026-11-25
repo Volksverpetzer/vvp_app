@@ -62,6 +62,14 @@ const loadImage = async () => {
   await act(() => onFirstLoad());
 };
 
+/** Fires the mocked image's onPageChange, as a swipe to another photo does. */
+const swipe = async () => {
+  const { onPageChange } = (
+    InstaPostImage as unknown as jest.Mock
+  ).mock.calls.at(-1)[0];
+  await act(() => onPageChange());
+};
+
 const post: InstaPostProperties = {
   id: "insta1",
   permalink: "https://www.instagram.com/p/abc/",
@@ -90,14 +98,6 @@ describe("InstaPostCard", () => {
     expect(mockRouter.push).toHaveBeenCalledWith("/insta/insta1");
     expect(registerPostInteraction).not.toHaveBeenCalled();
   });
-
-  /** Fires the mocked image's onPageChange, as a swipe to another photo does. */
-  const swipe = async () => {
-    const { onPageChange } = (
-      InstaPostImage as unknown as jest.Mock
-    ).mock.calls.at(-1)[0];
-    await act(() => onPageChange());
-  };
 
   it("sends nothing when the card is only scrolled into view", async () => {
     await render(<InstaPostCard {...post} inView />);
@@ -144,6 +144,64 @@ describe("InstaPostCard", () => {
 });
 
 describe("InstaPostDetail", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    resetReportedSwipes();
+  });
+
+  it("sends nothing before the user swipes", async () => {
+    await render(<InstaPostDetail {...post} />);
+    expect(registerPostInteraction).not.toHaveBeenCalled();
+  });
+
+  it("counts a swipe to another photo once per screen visit", async () => {
+    await render(<InstaPostDetail {...post} />);
+    await swipe();
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(1);
+    expect(registerPostInteraction).toHaveBeenCalledWith(
+      `${Config.wpUrl}/insta/abc/`,
+      "instagram",
+      "swipe",
+    );
+  });
+
+  it("counts a swipe on each visit, apart from the feed card's", async () => {
+    // The feed card's once-per-post rule doesn't apply here: each visit counts.
+    for (const element of [
+      <InstaPostCard key="card" {...post} inView />,
+      <InstaPostDetail key="visit1" {...post} />,
+      <InstaPostDetail key="visit2" {...post} />,
+    ]) {
+      const screen = await render(element);
+      await swipe();
+      await screen.unmount();
+    }
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(3);
+  });
+
+  it("counts a swipe again when the screen switches to another post", async () => {
+    const other: InstaPostProperties = {
+      ...post,
+      id: "insta2",
+      permalink: "https://www.instagram.com/p/def/",
+    };
+    const screen = await render(<InstaPostDetail {...post} />);
+    await swipe();
+    await screen.rerender(<InstaPostDetail {...other} />);
+    await swipe();
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(2);
+    expect(registerPostInteraction).toHaveBeenLastCalledWith(
+      `${Config.wpUrl}/insta/def/`,
+      "instagram",
+      "swipe",
+    );
+  });
+
   it("colors caption links with the link color", async () => {
     const { getByText } = await render(<InstaPostDetail {...post} />);
     expect(getByText(post.caption)).toBeTruthy();
