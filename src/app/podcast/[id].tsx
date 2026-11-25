@@ -36,7 +36,8 @@ const COVER_PADDING_HORIZONTAL = POST_PADDING_HORIZONTAL + 16;
  * description and the audio player. Reached from the podcast feed card.
  *
  * Podigee has no per-episode endpoint, so the episode is located by id in the
- * (server-cached) podcast feed.
+ * (server-cached) podcast feed. Opening it sends a "Post Interaction" open
+ * for the episode.
  */
 const PodcastScreen = () => {
   const [episode, setEpisode] = useState<
@@ -78,6 +79,12 @@ const PodcastScreen = () => {
       controller.abort();
     };
   }, [id, router]);
+
+  // Keyed on the URL so a re-run of the load effect doesn't count it again.
+  const openedUrl = episode ? (episode.link ?? episode.audio_url) : undefined;
+  useEffect(() => {
+    if (openedUrl) registerPostInteraction(openedUrl, "podcast", "open");
+  }, [openedUrl]);
 
   if (isLoading || !episode) {
     return <UiSpinner text="Lade Podcast Folge..." />;

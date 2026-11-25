@@ -48,7 +48,7 @@ const PodcastPost = (properties: PodcastEpisodeProperties) => {
   // Tapping the card body opens the full episode screen (like articles/Insta);
   // the play control below stays on the card for quick inline playback.
   const openEpisode = () => {
-    registerPostInteraction(link ?? audio_url, "podcast", "open");
+    // The open is counted by the episode screen, also for outside links.
     router.push(`/podcast/${encodeURIComponent(id)}`);
   };
 

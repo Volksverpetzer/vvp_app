@@ -11,9 +11,30 @@ jest.mock("expo-router", () => ({
   useRouter: jest.fn(() => mockRouter),
 }));
 
-jest.mock("react-native-hyperlink", () => ({
-  Hyperlink: ({ children }: { children: ReactNode }) => <>{children}</>,
-}));
+// Renders the children plus a pressable stand-in that fires the Hyperlink's
+// onPress with a fixed link, so tests can check the analytics context.
+jest.mock("react-native-hyperlink", () => {
+  const { Pressable, Text } = jest.requireActual("react-native");
+  return {
+    Hyperlink: ({
+      children,
+      onPress,
+    }: {
+      children: ReactNode;
+      onPress?: (url: string) => void;
+    }) => (
+      <>
+        {children}
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => onPress?.("https://example.com/linked")}
+        >
+          <Text>hyperlink-stub</Text>
+        </Pressable>
+      </>
+    ),
+  };
+});
 
 jest.mock("#/components/posts/bsky/BlueskyPostHeader", () => ({
   BlueskyPostHeader: jest.fn(() => null),
@@ -25,11 +46,6 @@ jest.mock("#/components/posts/bsky/PostText", () => ({
 
 jest.mock("#/components/Icons", () => ({
   ExternalLinkIcon: () => null,
-}));
-
-jest.mock("#/constants/Config", () => ({
-  __esModule: true,
-  default: { wpUrl: "https://www.volksverpetzer.de" },
 }));
 
 jest.mock("#/helpers/Linking", () => ({
@@ -79,7 +95,19 @@ describe("BlueskyPostDetail", () => {
     expect(onLinkPress).toHaveBeenCalledWith(
       "https://bsky.app/profile/tester.bsky.social/post/abc123",
       mockRouter,
-      "https://www.volksverpetzer.de",
+      "https://bsky.app/profile/tester.bsky.social/post/abc123",
+    );
+  });
+
+  it("passes the post's bsky.app URL as context for links in the text", async () => {
+    const { getByText } = await render(
+      <BlueskyPostDetail post={makeFeedPost("Some text")} />,
+    );
+    await fireEvent.press(getByText("hyperlink-stub"));
+    expect(onLinkPress).toHaveBeenCalledWith(
+      "https://example.com/linked",
+      mockRouter,
+      "https://bsky.app/profile/tester.bsky.social/post/abc123",
     );
   });
 
@@ -101,8 +129,14 @@ describe("BlueskyPostDetail", () => {
     const calledWithProps = PostText.mock.calls.map(([props]) => props);
     expect(calledWithProps).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ feedViewPost: reply1 }),
-        expect.objectContaining({ feedViewPost: reply2 }),
+        expect.objectContaining({
+          feedViewPost: reply1,
+          contextUrl: "https://bsky.app/profile/tester.bsky.social/post/abc123",
+        }),
+        expect.objectContaining({
+          feedViewPost: reply2,
+          contextUrl: "https://bsky.app/profile/tester.bsky.social/post/abc123",
+        }),
       ]),
     );
   });

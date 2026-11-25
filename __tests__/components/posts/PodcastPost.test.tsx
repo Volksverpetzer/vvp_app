@@ -150,17 +150,13 @@ describe("PodcastPost", () => {
     );
   });
 
-  it("opens the episode screen and tracks the open when the card is tapped", async () => {
+  it("opens the episode screen when the card is tapped, leaving the open to it", async () => {
     const { getByLabelText } = await render(<PodcastPost {...episode} />);
     await fireEvent.press(
       getByLabelText(`Podcast Folge öffnen: ${episode.title}`),
     );
     expect(mockPush).toHaveBeenCalledWith("/podcast/abc123");
-    expect(mockRegisterPostInteraction).toHaveBeenCalledWith(
-      episode.link,
-      "podcast",
-      "open",
-    );
+    expect(mockRegisterPostInteraction).not.toHaveBeenCalled();
   });
 
   it("url-encodes the id when navigating", async () => {
