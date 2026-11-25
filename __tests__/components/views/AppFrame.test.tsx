@@ -9,7 +9,7 @@ import {
 import { render, waitFor } from "@testing-library/react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
-import React from "react";
+import type React from "react";
 import { Platform, Text } from "react-native";
 import type { ReactTestRendererJSON } from "react-test-renderer";
 

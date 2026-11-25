@@ -11,7 +11,11 @@ import {
   registerEvent,
   registerPostInteraction,
 } from "#/helpers/network/Analytics";
-import { registerFav, registerViews } from "#/helpers/network/Engagement";
+import {
+  registerFav,
+  registerInstaImpression,
+  registerViews,
+} from "#/helpers/network/Engagement";
 import * as Networking from "#/helpers/utils/networking";
 
 jest.mock("react-native", () => ({
@@ -169,7 +173,32 @@ describe("Analytics (Plausible)", () => {
       await registerViews("https://example.com/page");
 
       const [, , body] = postSpy.mock.calls[0];
+      expect(body.name).toBe("pageview");
+    });
+
+    it("registerInstaImpression should keep the legacy pageviews event", async () => {
+      parseSpy.mockReturnValue({ hostname: "www.volksverpetzer.de" });
+      postSpy.mockResolvedValue({ success: true });
+
+      await registerInstaImpression("https://www.volksverpetzer.de/insta/abc/");
+
+      const [, , body] = postSpy.mock.calls[0];
+      // Feed impressions must not become Plausible pageviews.
       expect(body.name).toBe("pageviews");
+    });
+
+    it("registerInstaImpression should send nothing when engagements are disabled", async () => {
+      const originalEnableEngagement = Config.enableEngagement;
+      Config.enableEngagement = false;
+
+      const result = await registerInstaImpression(
+        "https://www.volksverpetzer.de/insta/abc/",
+      );
+
+      expect(postSpy).not.toHaveBeenCalled();
+      expect(result).toBeUndefined();
+
+      Config.enableEngagement = originalEnableEngagement;
     });
 
     it("registerFav should forward to registerEvent", async () => {
