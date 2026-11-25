@@ -265,6 +265,18 @@ describe("WpSearchResults", () => {
     consoleError.mockRestore();
   });
 
+  it("sends one request when the nonce changes within the debounce", async () => {
+    // SearchManager bumps the nonce right after mount for a tagged search
+    searchPosts.mockResolvedValue([post()]);
+    const { getAllByTestId, rerender } = await render(
+      <WpSearchResults searchString="tag" searchNonce={0} />,
+    );
+    await rerender(<WpSearchResults searchString="tag" searchNonce={1} />);
+    await flushDebounce();
+    await waitFor(() => expect(getAllByTestId("result")).toHaveLength(1));
+    expect(searchPosts).toHaveBeenCalledTimes(1);
+  });
+
   it("aborts the in-flight request when the query changes", async () => {
     searchPosts.mockImplementation(
       (_q: string, _p: number, signal: AbortSignal) =>
