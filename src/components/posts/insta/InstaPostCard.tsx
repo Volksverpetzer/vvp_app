@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { View } from "react-native";
 
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
@@ -15,15 +15,14 @@ import { spacing } from "#/constants/Spacing";
 import { Achievements } from "#/helpers/Achievements";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { registerInstaImpression } from "#/helpers/network/Engagement";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { useCorporateColor, useLinkColor } from "#/hooks/useAppColorScheme";
 import { useFeedDimensions } from "#/hooks/useFeedDimensions";
 import type { InstaPostProperties } from "#/types";
 
 const InstaPostCard = (properties: InstaPostProperties) => {
   const { id, permalink, media_url, caption, children, inView } = properties;
-  const [registered, setRegistered] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [swipeRegistered, setSwipeRegistered] = useState(false);
 
   const router = useRouter();
   const corporate = useCorporateColor();
@@ -54,15 +53,16 @@ const InstaPostCard = (properties: InstaPostProperties) => {
 
   const handleFirstLoad = useCallback(() => {
     ContentStore.setStoredInstaPost(id, properties);
-    setLoaded(true);
   }, [id, properties]);
 
-  useEffect(() => {
-    if (inView && loaded && !registered) {
-      registerInstaImpression(computedPermalink);
-      setRegistered(true);
-    }
-  }, [inView, loaded, registered, computedPermalink]);
+  // Swiping to another photo is a real interaction with the post, unlike
+  // merely scrolling past it, so that is what the feed card counts: once per
+  // card, as "Post Interaction" swipe.
+  const handlePageChange = useCallback(() => {
+    if (swipeRegistered) return;
+    registerPostInteraction(computedPermalink, "instagram", "swipe");
+    setSwipeRegistered(true);
+  }, [swipeRegistered, computedPermalink]);
 
   return (
     <View style={{ gap: CARD_CONTENT_GAP }}>
@@ -75,6 +75,7 @@ const InstaPostCard = (properties: InstaPostProperties) => {
         onPress={handlePress}
         onLongPress={handleLongPress}
         onFirstLoad={handleFirstLoad}
+        onPageChange={handlePageChange}
       />
       <UiPressable
         accessibilityRole="button"

@@ -7,10 +7,7 @@ import InstaPostDetail from "#/components/posts/insta/InstaPostDetail";
 import InstaPostImage from "#/components/posts/insta/InstaPostImage";
 import Config from "#/constants/Config";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
-import {
-  registerInstaImpression,
-  registerViews,
-} from "#/helpers/network/Engagement";
+import { registerViews } from "#/helpers/network/Engagement";
 import type { InstaPostProperties } from "#/types";
 
 const mockRouter = { push: jest.fn(), back: jest.fn() };
@@ -47,7 +44,6 @@ jest.mock("#/helpers/network/Analytics", () => ({
 }));
 
 jest.mock("#/helpers/network/Engagement", () => ({
-  registerInstaImpression: jest.fn(),
   registerViews: jest.fn(),
 }));
 
@@ -90,27 +86,33 @@ describe("InstaPostCard", () => {
     expect(registerPostInteraction).not.toHaveBeenCalled();
   });
 
-  // Feed impressions must stay off Plausible's "pageview" (registerViews),
-  // or they'd land in Top Pages and skew bounce rate.
-  it("registers an impression, not a page view, once in view and loaded", async () => {
-    const view = await render(<InstaPostCard {...post} inView />);
-    expect(registerInstaImpression).not.toHaveBeenCalled();
+  /** Fires the mocked image's onPageChange, as a swipe to another photo does. */
+  const swipe = async () => {
+    const { onPageChange } = (
+      InstaPostImage as unknown as jest.Mock
+    ).mock.calls.at(-1)[0];
+    await act(() => onPageChange());
+  };
 
+  it("sends nothing when the card is only scrolled into view", async () => {
+    await render(<InstaPostCard {...post} inView />);
     await loadImage();
-    await view.rerender(<InstaPostCard {...post} inView />);
 
-    expect(registerInstaImpression).toHaveBeenCalledTimes(1);
-    expect(registerInstaImpression).toHaveBeenCalledWith(
-      `${Config.wpUrl}/insta/abc/`,
-    );
+    expect(registerPostInteraction).not.toHaveBeenCalled();
     expect(registerViews).not.toHaveBeenCalled();
   });
 
-  it("doesn't register an impression while out of view", async () => {
-    await render(<InstaPostCard {...post} inView={false} />);
-    await loadImage();
+  it("counts a swipe to another photo once per card", async () => {
+    await render(<InstaPostCard {...post} inView />);
+    await swipe();
+    await swipe();
 
-    expect(registerInstaImpression).not.toHaveBeenCalled();
+    expect(registerPostInteraction).toHaveBeenCalledTimes(1);
+    expect(registerPostInteraction).toHaveBeenCalledWith(
+      `${Config.wpUrl}/insta/abc/`,
+      "instagram",
+      "swipe",
+    );
     expect(registerViews).not.toHaveBeenCalled();
   });
 });

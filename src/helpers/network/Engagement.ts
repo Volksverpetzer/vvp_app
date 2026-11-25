@@ -123,24 +123,6 @@ const registerViews = (permalink: string): Promise<unknown> => {
 };
 
 /**
- * Records that an Instagram card scrolled into view in the feed. That's an
- * impression, not an open, so it must not be a Plausible "pageview" (it would
- * land in Top Pages and skew bounce rate). App versions before this sent the
- * legacy custom "pageviews" event for it. Opens are the "Post Interaction"
- * event (post_platform instagram, action open), so the impression-to-open
- * rate is "Insta Impression" vs. those.
- * @param permalink - Link of the Instagram post (`<wpUrl>/insta/<id>/`)
- * @returns Promise<unknown> - Response data
- */
-const registerInstaImpression = (permalink: string): Promise<unknown> => {
-  if (!Config.enableEngagement) {
-    return Promise.resolve(undefined);
-  }
-
-  return registerEvent(permalink, "Insta Impression");
-};
-
-/**
  * Register Favorite
  * @param permalink - Link of the current Resource
  * @returns Promise<unknown> - Response data
@@ -153,12 +135,4 @@ const registerFav = (permalink: string): Promise<unknown> => {
   return registerEvent(permalink, "favorite");
 };
 
-export {
-  getViews,
-  getShares,
-  getFavs,
-  getLinks,
-  registerFav,
-  registerInstaImpression,
-  registerViews,
-};
+export { getViews, getShares, getFavs, getLinks, registerFav, registerViews };
