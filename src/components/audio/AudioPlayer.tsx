@@ -39,6 +39,12 @@ interface AudioPlayerProps {
   horizontalPadding?: number;
   /** Known total length in seconds, shown before playback starts (podcast). */
   durationSeconds?: number;
+  /**
+   * Called when the user starts this track from the play button, i.e. when it
+   * wasn't the current one yet. Not called for pause/resume or seeks, so it
+   * counts one play per start (e.g. for analytics).
+   */
+  onPlay?: () => void;
 }
 
 /**
@@ -55,6 +61,7 @@ const AudioPlayer = ({
   showFeedback = false,
   horizontalPadding = 20,
   durationSeconds,
+  onPlay,
 }: AudioPlayerProps) => {
   const audio = useAudio();
   const corporate = useCorporateColor();
@@ -72,8 +79,10 @@ const AudioPlayer = ({
     duration > 0 ? Math.min(1, Math.max(0, currentTime / duration)) : 0;
   const remaining = Math.max(0, duration - currentTime);
 
-  const play = () =>
+  const play = () => {
+    onPlay?.();
     audio.playTrack({ audioUrl, title, artworkUrl, resumeKey });
+  };
 
   const onToggle = () => (isCurrent ? audio.toggle() : play());
 

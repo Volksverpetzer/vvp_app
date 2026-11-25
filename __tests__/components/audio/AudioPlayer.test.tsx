@@ -90,6 +90,30 @@ describe("AudioPlayer (provider-bound controls)", () => {
     expect(mockToggle).not.toHaveBeenCalled();
   });
 
+  it("calls onPlay once when starting a track that is not current", async () => {
+    const onPlay = jest.fn();
+    const { getByLabelText } = await render(
+      <AudioPlayer audioUrl={URL} onPlay={onPlay} />,
+    );
+    await fireEvent.press(getByLabelText("Abspielen"));
+    expect(onPlay).toHaveBeenCalledTimes(1);
+    expect(mockPlayTrack).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call onPlay when pausing or resuming the current track", async () => {
+    const onPlay = jest.fn();
+    setCurrent({ playing: true, duration: 120 });
+    const { getByLabelText, rerender } = await render(
+      <AudioPlayer audioUrl={URL} onPlay={onPlay} />,
+    );
+    await fireEvent.press(getByLabelText("Pause"));
+    setCurrent({ playing: false, duration: 120 });
+    await rerender(<AudioPlayer audioUrl={URL} onPlay={onPlay} />);
+    await fireEvent.press(getByLabelText("Abspielen"));
+    expect(mockToggle).toHaveBeenCalledTimes(2);
+    expect(onPlay).not.toHaveBeenCalled();
+  });
+
   it("shows pause and toggles when the current track is playing", async () => {
     setCurrent({ playing: true, duration: 120, currentTime: 30 });
     const { getByLabelText } = await render(<AudioPlayer audioUrl={URL} />);
