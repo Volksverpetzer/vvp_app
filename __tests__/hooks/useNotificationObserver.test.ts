@@ -37,6 +37,7 @@ jest.mock("#/constants/Config", () => ({
 
 jest.mock("expo-notifications", () => ({
   getLastNotificationResponseAsync: jest.fn(() => Promise.resolve(null)),
+  clearLastNotificationResponse: jest.fn(),
   addNotificationResponseReceivedListener: jest.fn(() => ({
     remove: jest.fn(),
   })),
@@ -147,6 +148,27 @@ describe("useNotificationObserver", () => {
       listener(makeResponse("launch", { url }));
 
       expect(registerEvent).toHaveBeenCalledTimes(1);
+    });
+
+    it("clears the handled response so a JS reload doesn't replay it", async () => {
+      await openNotification("https://www.volksverpetzer.de/analyse/slug/");
+
+      expect(Notifications.clearLastNotificationResponse).toHaveBeenCalledTimes(
+        1,
+      );
+    });
+
+    it("still redirects and reports when clearing the response fails", async () => {
+      (
+        Notifications.clearLastNotificationResponse as jest.Mock
+      ).mockImplementationOnce(() => {
+        throw new Error("unavailable");
+      });
+      const url = "https://www.volksverpetzer.de/analyse/slug/";
+      await openNotification(url);
+
+      expect(registerEvent).toHaveBeenCalledWith(url, "Notification Opened");
+      expect(router.push).toHaveBeenCalledWith("/analyse/slug/");
     });
 
     it("reports each further notification tapped while running", async () => {

@@ -56,6 +56,16 @@ export const useNotificationObserver = () => {
      */
     const redirect = (response: ExpoNotifications.NotificationResponse) => {
       reportOpen(response);
+      // Mark the tap as handled on the native side too. Native keeps the last
+      // response for the life of the process, so without this a JS reload
+      // (Android recreating the activity, an OTA reload) would get it back
+      // from getLastNotificationResponseAsync, count it again (the set above
+      // is JS memory) and redirect to it a second time.
+      try {
+        Notifications?.clearLastNotificationResponse();
+      } catch (error) {
+        console.info("Notifications: failed to clear last response", error);
+      }
       const url = response.notification.request.content.data?.url;
       if (!url || typeof url !== "string") return;
       // delay redirect to allow router to be mounted
