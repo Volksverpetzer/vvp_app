@@ -41,7 +41,9 @@ export type AnalyticsEvent =
   | "Onboarding Completed"
   | "Announcement Shown"
   | "Announcement Action"
-  | "Announcement Dismissed";
+  | "Announcement Dismissed"
+  // Once per screen per app session, see useScreenViewTracking.
+  | "Screen View";
 
 /**
  * Props that registerEvent always sets on every event. Callers must not pass
