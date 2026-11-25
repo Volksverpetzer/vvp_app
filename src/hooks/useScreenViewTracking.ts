@@ -8,10 +8,13 @@ import { registerEvent } from "#/helpers/network/Analytics";
  * Routes that never send a "Screen View":
  * - Articles and the Instagram detail view already send a Plausible
  *   "pageview" for their own path, so counting them here would count twice.
+ *   `[category]` alone is the article loader too (it re-exports
+ *   `[category]/[slug]` for flat permalinks), not a category screen.
  * - The entry route and the redirect-only routes are never seen by the user.
  */
 const SKIPPED_ROUTES = new Set([
   "",
+  "[category]",
   "[category]/[slug]",
   "insta/[post_id]",
   "index",
@@ -22,7 +25,6 @@ const SKIPPED_ROUTES = new Set([
 
 /** Routes whose name can't be derived from their static segments. */
 const ROUTE_SCREEN_NAMES: Record<string, string> = {
-  "[category]": "category",
   "+not-found": "not-found",
 };
 

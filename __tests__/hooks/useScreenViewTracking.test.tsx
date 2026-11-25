@@ -42,7 +42,6 @@ describe("screenNameFromSegments", () => {
     [["game", "[gameId]"], "game"],
     [["bsky", "[post_id]"], "bsky"],
     [["podcast", "[id]"], "podcast"],
-    [["[category]"], "category"],
     [["+not-found"], "not-found"],
   ])("maps %j to %s", (segments, expected) => {
     expect(screenNameFromSegments(segments)).toBe(expected);
@@ -50,6 +49,7 @@ describe("screenNameFromSegments", () => {
 
   it.each([
     [[]],
+    [["[category]"]],
     [["[category]", "[slug]"]],
     [["insta", "[post_id]"]],
     [["handle-share"]],
