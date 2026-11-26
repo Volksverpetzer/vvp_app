@@ -98,6 +98,9 @@ export const useAISearch = ({
       setIsLoading(true);
       setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
       let queryText = search;
+      // Case-insensitive, so "HTTPS://…" also goes through a URL branch below
+      // and never reaches vectorSearch with its query string.
+      const isHttpUrl = /^https?:\/\//i.test(search.trim());
       if (search.includes("x.com")) {
         setLoadingMessage("Lade Vorschau von x.com...");
         try {
@@ -116,11 +119,11 @@ export const useAISearch = ({
           return;
         }
         setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
-      } else if (search.startsWith("http") && Platform.OS === "web") {
+      } else if (isHttpUrl && Platform.OS === "web") {
         // Browsers block cross-origin page loads (CORS), so search on the
         // words in the URL instead of failing.
         queryText = urlToQueryText(search);
-      } else if (search.startsWith("http")) {
+      } else if (isHttpUrl) {
         try {
           const response = await fetch(search, { signal });
           const html = await response.text();

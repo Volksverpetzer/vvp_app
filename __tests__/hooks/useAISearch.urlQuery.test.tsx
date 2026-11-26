@@ -86,6 +86,18 @@ describe("useAISearch — pasted URLs", () => {
       "tagesschau.de inland afd verbot antrag",
     );
   });
+
+  it("treats an upper-case scheme as a URL and drops its query string on web", async () => {
+    setPlatformOS("web");
+    vectorSearch.mockResolvedValue([] as AISearchResponse[]);
+
+    await render(
+      <Harness search="HTTPS://www.example.org/inland/report?token=secret" />,
+    );
+
+    await waitFor(() => expect(vectorSearch).toHaveBeenCalled());
+    expect(vectorSearch.mock.calls[0][0]).toBe("example.org inland report");
+  });
 });
 
 describe("urlToQueryText", () => {
