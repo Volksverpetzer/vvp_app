@@ -2,13 +2,13 @@
 import { isMimikama } from "#/helpers/utils/variant";
 
 const volksverpetzerNotes =
-  "- Die App lässt sich jetzt auch auf Tablets und Chromebooks aus dem Play Store installieren\n- Stabilere Unterstützung für neue Android-Geräte\n- Technische Aktualisierungen und kleine Fehlerbehebungen";
+  "- Die App lässt sich jetzt auch auf Tablets und Chromebooks aus dem Play Store installieren\n- Quellen-Links mit http:// und E-Mail-Links in Artikeln öffnen sich jetzt\n- Das Kontaktformular ist für denselben Artikel wieder vorausgefüllt\n- Suche: nach einem Fehler einfach erneut versuchen, KI-Suche mit eingefügten Links verbessert\n- Onboarding auf kleinen Bildschirmen: Schalter und Datenschutz-Link wieder sichtbar\n- Technische Aktualisierungen und kleine Fehlerbehebungen";
 const mimikamaNotes =
-  "Die App lässt sich jetzt auch auf Tablets und Chromebooks aus dem Play Store installieren. Stabilere Unterstützung für neue Android-Geräte, technische Aktualisierungen und kleine Fehlerbehebungen.";
+  "Die App lässt sich jetzt auch auf Tablets und Chromebooks aus dem Play Store installieren. Quellen-Links mit http:// und E-Mail-Links in Artikeln öffnen sich jetzt, das Kontaktformular ist für denselben Artikel wieder vorausgefüllt und die Suche lässt sich nach einem Fehler erneut starten. Dazu technische Aktualisierungen und kleine Fehlerbehebungen.";
 
 const Changelog = {
   version: "2.5.9",
-  versionCode: 2611191,
+  versionCode: 2611261,
   notes: isMimikama ? mimikamaNotes : volksverpetzerNotes,
 };
 

@@ -1,3 +1,0 @@
-- The app can now also be installed from the Play Store on tablets and Chromebooks
-- More stable support for new Android devices
-- Technical updates and small bug fixes
