@@ -252,6 +252,33 @@ describe("FlatBoard", () => {
     expect(getByText("Bottom")).toBeTruthy();
   });
 
+  it("keeps a step's Component on short containers and only drops the decorative TopComponent", async () => {
+    mockUseWindowDimensions.mockReturnValue({
+      width: 360,
+      height: 590,
+      scale: 2,
+      fontScale: 1,
+    });
+    const TopComponent = () => <Text>Top</Text>;
+    const Component = () => <Text>Bottom</Text>;
+    const data: OnBoardingData[] = [
+      {
+        id: 1,
+        title: "Step 1",
+        description: "Description 1",
+        TopComponent,
+        Component,
+      },
+    ];
+
+    const { getByText, queryByText } = await render(
+      <FlatBoard {...defaultProps} data={data} />,
+    );
+
+    expect(getByText("Bottom")).toBeTruthy();
+    expect(queryByText("Top")).toBeNull();
+  });
+
   it("calls onFinish when the finish button on the last step is pressed", async () => {
     const onFinish = jest.fn();
     const { getByText } = await render(

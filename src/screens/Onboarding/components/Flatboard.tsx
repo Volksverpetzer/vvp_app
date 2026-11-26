@@ -107,6 +107,7 @@ const Slide = ({
               contentFit="contain"
             />
           )}
+          {/* TopComponent is decorative, so it may be dropped to save space. */}
           {TopComponent && height > 600 && (
             <View
               style={[
@@ -131,7 +132,9 @@ const Slide = ({
             </UiText>
           )}
         </View>
-        {Component && height > 600 && (
+        {/* Always render: Component holds the step's controls (switches,
+            privacy link). The ScrollView lets it scroll on short screens. */}
+        {Component && (
           <View style={{ width: 300, height: "auto" }}>
             <Component />
           </View>
