@@ -102,9 +102,9 @@ describe("urlToQueryText", () => {
   it("never sends the query string or fragment", () => {
     expect(
       urlToQueryText(
-        "https://www.example.org/download/bericht.pdf?token=geheim&mail=a%40b.de#seite-2",
+        "https://www.example.org/download/report.pdf?token=secret&mail=a%40b.de#page-2",
       ),
-    ).toBe("example.org download bericht");
+    ).toBe("example.org download report");
   });
 
   it("falls back to the input when it isn't a valid URL", () => {
