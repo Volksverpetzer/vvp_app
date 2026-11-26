@@ -58,7 +58,7 @@ describe("Donate analytics", () => {
     Platform.OS = "ios";
   });
 
-  it("sends Donate Started when the Apple Pay button is tapped", async () => {
+  it("sends Checkout Attempted when the Apple Pay button is tapped", async () => {
     const { getByText } = await render(<Donate />);
 
     await fireEvent.press(getByText("start payment"));
@@ -66,8 +66,8 @@ describe("Donate analytics", () => {
     expect(mockRegisterEvent).toHaveBeenCalledTimes(1);
     expect(mockRegisterEvent).toHaveBeenCalledWith(
       DONATE_URL,
-      "Donate Started",
-      { method: "Stripe", amount: 10 },
+      "Checkout Attempted",
+      { method: "Stripe", provider: "stripe", amount: 10 },
     );
   });
 
@@ -78,8 +78,16 @@ describe("Donate analytics", () => {
     await fireEvent.press(getByText("finish payment"));
 
     expect(mockRegisterEvent.mock.calls).toEqual([
-      [DONATE_URL, "Donate Started", { method: "Stripe", amount: 10 }],
-      [DONATE_URL, "DonateConversion", { method: "Stripe", amount: 10 }],
+      [
+        DONATE_URL,
+        "Checkout Attempted",
+        { method: "Stripe", provider: "stripe", amount: 10 },
+      ],
+      [
+        DONATE_URL,
+        "DonateConversion",
+        { method: "Stripe", provider: "stripe", amount: 10 },
+      ],
     ]);
   });
 });
