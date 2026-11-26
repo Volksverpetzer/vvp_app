@@ -61,8 +61,10 @@ export type AnalyticsEvent =
   | "Game Started"
   | "Game Level Completed"
   // The Apple Pay donate button tapped, before the payment sheet. Same URL
-  // and props as "DonateConversion", so the two form a funnel.
-  | "Donate Started";
+  // and props as "DonateConversion", so the two form a funnel. Named like
+  // the web donation forms' event for the same step, so they add up in
+  // Plausible. Was "Donate Started" in 2.5.9-beta.2.
+  | "Checkout Attempted";
 
 /**
  * Props that registerEvent always sets on every event. Callers must not pass

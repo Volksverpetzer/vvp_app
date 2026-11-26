@@ -51,15 +51,26 @@ const Donate = ({ article_link, ...properties }: DonateProperties) => {
     setIsPlatformPaySupported(isSupported);
   }, []);
 
-  // "Donate Started" and "DonateConversion" share URL and props, so they
-  // form a funnel in Plausible (taps that end in a payment).
+  // "Checkout Attempted" and "DonateConversion" share URL and props, so they
+  // form a funnel in Plausible (taps that end in a payment). "Checkout
+  // Attempted" and `provider` are named like the donation forms on
+  // volksverpetzer.de and crowdfunding.volksverpetzer.de, so app and web
+  // starts can be counted together; `method` stays for older dashboards.
   const donateUrl = Constants.expoConfig.extra.wpUrl + "/app";
   const logStart = (method: string) => {
-    registerEvent(donateUrl, "Donate Started", { method, amount });
+    registerEvent(donateUrl, "Checkout Attempted", {
+      method,
+      provider: method.toLowerCase(),
+      amount,
+    });
   };
 
   const logSuccess = (method: string) => {
-    registerEvent(donateUrl, "DonateConversion", { method, amount });
+    registerEvent(donateUrl, "DonateConversion", {
+      method,
+      provider: method.toLowerCase(),
+      amount,
+    });
     if (Platform.OS !== "web") {
       void NotificationManager.scheduleDonationReminder(
         new Date(Date.now() + WEEK_IN_MS * 3),
