@@ -86,6 +86,18 @@ describe("useAISearch — pasted URLs", () => {
       "tagesschau.de inland afd verbot antrag",
     );
   });
+
+  it("treats an upper-case scheme as a URL and drops its query string on web", async () => {
+    setPlatformOS("web");
+    vectorSearch.mockResolvedValue([] as AISearchResponse[]);
+
+    await render(
+      <Harness search="HTTPS://www.example.org/inland/report?token=secret" />,
+    );
+
+    await waitFor(() => expect(vectorSearch).toHaveBeenCalled());
+    expect(vectorSearch.mock.calls[0][0]).toBe("example.org inland report");
+  });
 });
 
 describe("urlToQueryText", () => {
@@ -95,10 +107,16 @@ describe("urlToQueryText", () => {
     );
   });
 
-  it("falls back to the URL when the path has no words", () => {
-    expect(urlToQueryText("https://example.org/?p=123")).toBe(
-      "https://example.org/?p=123",
-    );
+  it("uses only the host name when the path has no words", () => {
+    expect(urlToQueryText("https://example.org/?p=123")).toBe("example.org");
+  });
+
+  it("never sends the query string or fragment", () => {
+    expect(
+      urlToQueryText(
+        "https://www.example.org/download/report.pdf?token=secret&mail=a%40b.de#page-2",
+      ),
+    ).toBe("example.org download report");
   });
 
   it("falls back to the input when it isn't a valid URL", () => {

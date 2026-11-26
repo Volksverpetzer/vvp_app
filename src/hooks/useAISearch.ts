@@ -44,8 +44,10 @@ export const htmlToQueryText = (html: string): string =>
 /**
  * Turns a URL into search words without loading the page: the host name
  * (minus "www.") and the words of its path slug. Used on web, where the
- * browser can't fetch foreign news sites because of CORS. Falls back to the
- * URL itself when it can't be parsed or has no usable words.
+ * browser can't fetch foreign news sites because of CORS. The query string
+ * and fragment are never used, as they can hold tokens or personal data. A
+ * URL whose path has no usable words gives just the host name; input that
+ * can't be parsed as a URL is used as typed.
  */
 export const urlToQueryText = (url: string): string => {
   try {
@@ -62,8 +64,8 @@ export const urlToQueryText = (url: string): string => {
       .map((segment) => segment.replace(/\.[a-z0-9]+$/i, ""))
       .flatMap((segment) => segment.split(/[-_+\s]+/))
       .filter((word) => word && !/^\d+$/.test(word));
-    if (words.length === 0) return limitQueryText(url);
-    return limitQueryText([hostname.replace(/^www\./, ""), ...words].join(" "));
+    const host = hostname.replace(/^www\./, "");
+    return limitQueryText([host, ...words].join(" "));
   } catch {
     return limitQueryText(url);
   }
@@ -96,6 +98,9 @@ export const useAISearch = ({
       setIsLoading(true);
       setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
       let queryText = search;
+      // Case-insensitive, so "HTTPS://…" also goes through a URL branch below
+      // and never reaches vectorSearch with its query string.
+      const isHttpUrl = /^https?:\/\//i.test(search.trim());
       if (search.includes("x.com")) {
         setLoadingMessage("Lade Vorschau von x.com...");
         try {
@@ -114,11 +119,11 @@ export const useAISearch = ({
           return;
         }
         setLoadingMessage("KI-Suche aktiviert - kann kurz dauern");
-      } else if (search.startsWith("http") && Platform.OS === "web") {
+      } else if (isHttpUrl && Platform.OS === "web") {
         // Browsers block cross-origin page loads (CORS), so search on the
         // words in the URL instead of failing.
         queryText = urlToQueryText(search);
-      } else if (search.startsWith("http")) {
+      } else if (isHttpUrl) {
         try {
           const response = await fetch(search, { signal });
           const html = await response.text();

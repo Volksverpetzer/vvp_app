@@ -51,6 +51,10 @@ describe("classifyArticleLink", () => {
       kind: "anchor",
       id: "Fazit ",
     });
+    expect(classifyArticleLink("#Fazit%20", ARTICLE)).toEqual({
+      kind: "anchor",
+      id: "Fazit ",
+    });
   });
 
   it("matches the current article regardless of www, scheme and trailing slash", () => {

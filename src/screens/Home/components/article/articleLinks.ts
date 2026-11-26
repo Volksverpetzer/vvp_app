@@ -55,7 +55,13 @@ export const classifyArticleLink = (
   articleLink: string,
 ): ArticleLinkAction | null => {
   if (!href) return null;
-  if (href.startsWith("about:///blank#") || isSameArticle(href, articleLink)) {
+  // The renderer resolves bare `#anchor` hrefs to about:///blank#anchor; a raw
+  // `#anchor` is accepted too, in case one arrives unresolved.
+  if (
+    href.startsWith("#") ||
+    href.startsWith("about:///blank#") ||
+    isSameArticle(href, articleLink)
+  ) {
     const fragment = fragmentOf(href);
     // Fragments in hrefs may be percent-encoded (e.g. a trailing %20),
     // while header ids are raw text — decode once to match.
