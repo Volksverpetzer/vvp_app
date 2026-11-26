@@ -95,10 +95,16 @@ describe("urlToQueryText", () => {
     );
   });
 
-  it("falls back to the URL when the path has no words", () => {
-    expect(urlToQueryText("https://example.org/?p=123")).toBe(
-      "https://example.org/?p=123",
-    );
+  it("uses only the host name when the path has no words", () => {
+    expect(urlToQueryText("https://example.org/?p=123")).toBe("example.org");
+  });
+
+  it("never sends the query string or fragment", () => {
+    expect(
+      urlToQueryText(
+        "https://www.example.org/download/bericht.pdf?token=geheim&mail=a%40b.de#seite-2",
+      ),
+    ).toBe("example.org download bericht");
   });
 
   it("falls back to the input when it isn't a valid URL", () => {
