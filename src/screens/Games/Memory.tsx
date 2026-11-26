@@ -17,9 +17,15 @@ interface MemoryGameProperties {
   pairs: DisinfoPair[];
   /** Fired once, the moment the last pair is matched. */
   onAllMatched?: () => void;
+  /** Fired once per set of pairs, when the first card is turned. */
+  onFirstFlip?: () => void;
 }
 
-const MemoryGame = ({ pairs, onAllMatched }: MemoryGameProperties) => {
+const MemoryGame = ({
+  pairs,
+  onAllMatched,
+  onFirstFlip,
+}: MemoryGameProperties) => {
   const colorScheme = useAppColorScheme();
   const { accent, background, error, surfaceInput, text } = Colors[colorScheme];
   const [deck, setDeck] = useState<MemoryCard[]>([]);
@@ -28,9 +34,21 @@ const MemoryGame = ({ pairs, onAllMatched }: MemoryGameProperties) => {
   // Guards against firing onAllMatched more than once for the same deck —
   // reset whenever a new set of pairs (e.g. the next level) comes in.
   const hasCompletedRef = useRef(false);
+  const hasFlippedRef = useRef(false);
+  // The callbacks are read through refs, so a parent passing a new function
+  // (e.g. one that depends on the level) can't re-run the completion check
+  // below: on a level change that check would still see the previous
+  // level's fully matched deck and report it as solved again.
+  const onAllMatchedRef = useRef(onAllMatched);
+  const onFirstFlipRef = useRef(onFirstFlip);
+  useEffect(() => {
+    onAllMatchedRef.current = onAllMatched;
+    onFirstFlipRef.current = onFirstFlip;
+  }, [onAllMatched, onFirstFlip]);
 
   useEffect(() => {
     hasCompletedRef.current = false;
+    hasFlippedRef.current = false;
     setDeck(generateDeck(pairs));
     // A new set of pairs (e.g. the next level) starts with a clean
     // selection — otherwise the header would still show the previous
@@ -46,9 +64,9 @@ const MemoryGame = ({ pairs, onAllMatched }: MemoryGameProperties) => {
       deck.every((card) => card.isMatched)
     ) {
       hasCompletedRef.current = true;
-      onAllMatched?.();
+      onAllMatchedRef.current?.();
     }
-  }, [deck, onAllMatched]);
+  }, [deck]);
 
   useEffect(() => {
     if (firstCard && secondCard && firstCard.pairId === secondCard.pairId) {
@@ -82,6 +100,10 @@ const MemoryGame = ({ pairs, onAllMatched }: MemoryGameProperties) => {
 
   const handleCardPress = (card: MemoryCard) => {
     if (card.isFlipped || card.isMatched) return;
+    if (!hasFlippedRef.current) {
+      hasFlippedRef.current = true;
+      onFirstFlipRef.current?.();
+    }
     // Falls bereits zwei Karten ausgewählt sind, Auswahl zurücksetzen.
     if (firstCard && secondCard) {
       resetSelection();

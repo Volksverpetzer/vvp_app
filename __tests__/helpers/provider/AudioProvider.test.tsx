@@ -3,7 +3,12 @@ import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import type { AudioStatus } from "expo-audio";
 import { Text } from "react-native";
 
-import { AudioProvider, useAudio } from "#/helpers/provider/AudioProvider";
+import {
+  AudioProvider,
+  useArticleAudio,
+  useAudio,
+  usePodcastEpisode,
+} from "#/helpers/provider/AudioProvider";
 
 jest.mock("expo-audio", () => ({
   useAudioPlayer: jest.fn(),
@@ -26,6 +31,11 @@ jest.mock("#/helpers/Stores/PersonalStore", () => ({
     setAudioPosition: (...a: unknown[]) => mockSetAudioPosition(...a),
     clearAudioPosition: (...a: unknown[]) => mockClearAudioPosition(...a),
   },
+}));
+
+const mockRegisterEvent = jest.fn().mockResolvedValue(undefined);
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerEvent: (...a: unknown[]) => mockRegisterEvent(...a),
 }));
 
 const mockPlayer = {
@@ -338,5 +348,202 @@ describe("AudioProvider", () => {
       expect(mockPlayer.seekTo).toHaveBeenCalledWith(0);
       expect(mockClearAudioPosition).toHaveBeenCalledWith(TRACK_URL);
     });
+  });
+});
+
+describe("AudioProvider listening milestones", () => {
+  const EPISODE_LINK = "https://www.volksverpetzer.de/podcast/folge-1/";
+  const ARTICLE_LINK = "https://www.volksverpetzer.de/analyse/artikel/";
+  const OTHER_LINK = "https://www.volksverpetzer.de/podcast/folge-2/";
+
+  type Kind = "podcast" | "article" | "none";
+
+  const PodcastConsumer = () => {
+    usePodcastEpisode(TRACK_URL, EPISODE_LINK);
+    usePodcastEpisode(OTHER_URL, OTHER_LINK);
+    return <Consumer />;
+  };
+
+  const ArticleConsumer = () => {
+    useArticleAudio(TRACK_URL, ARTICLE_LINK);
+    return <Consumer />;
+  };
+
+  // Seeks like the progress bar does, through the context's seekTo.
+  const SeekConsumer = () => {
+    const audio = useAudio();
+    return (
+      <Text testID="seek" onPress={() => audio.seekTo(mockSeekTarget)}>
+        seek
+      </Text>
+    );
+  };
+  let mockSeekTarget = 0;
+
+  const tree = (kind: Kind) => (
+    <AudioProvider>
+      {kind === "podcast" && <PodcastConsumer />}
+      {kind === "article" && <ArticleConsumer />}
+      {kind === "none" && <Consumer />}
+      <SeekConsumer />
+    </AudioProvider>
+  );
+
+  // Starts TRACK_URL and waits until its restore settled.
+  const start = async (kind: Kind = "podcast") => {
+    const utils = await render(tree(kind));
+    await fireEvent.press(utils.getByTestId("play"));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalled());
+    mockPlayer.playing = true;
+    // One render after the restore so the effects see it as settled.
+    await utils.rerender(tree(kind));
+    return utils;
+  };
+
+  // A playing status tick at the given native position.
+  const tick = async (
+    rerender: (el: React.ReactElement) => Promise<void> | void,
+    time: number,
+    kind: Kind = "podcast",
+  ) => {
+    mockPlayer.currentTime = time;
+    jest.mocked(useAudioPlayerStatus).mockReturnValue({
+      ...loadedStatus,
+      playing: true,
+      currentTime: time,
+    } as AudioStatus);
+    await rerender(tree(kind));
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    // clearAllMocks keeps implementations; some tests make seeks move the
+    // native position.
+    mockPlayer.seekTo.mockReset().mockResolvedValue(undefined);
+    mockPlayer.isLoaded = true;
+    mockPlayer.duration = 120;
+    mockPlayer.playing = false;
+    mockPlayer.currentTime = 0;
+    mockGetAudioPosition.mockResolvedValue(0);
+    jest.mocked(useAudioPlayer).mockReturnValue(mockPlayer as never);
+    jest
+      .mocked(useAudioPlayerStatus)
+      .mockReturnValue(loadedStatus as AudioStatus);
+  });
+
+  it("reports 90 % once when playback crosses it, under the episode link", async () => {
+    const { rerender } = await start();
+    // 90 % of 120 s is 108 s.
+    await tick(rerender, 107.75);
+    await tick(rerender, 108);
+    expect(mockRegisterEvent).toHaveBeenCalledTimes(1);
+    expect(mockRegisterEvent).toHaveBeenCalledWith(
+      EPISODE_LINK,
+      "Podcast Listened",
+      { progress: 90 },
+    );
+    // Listening past it again in the same app run doesn't report twice.
+    await tick(rerender, 100);
+    await tick(rerender, 107.75);
+    await tick(rerender, 108);
+    expect(mockRegisterEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not report seeking past the milestone", async () => {
+    const { rerender } = await start();
+    await tick(rerender, 30);
+    await tick(rerender, 115);
+    await tick(rerender, 115.25);
+    expect(mockRegisterEvent).not.toHaveBeenCalled();
+  });
+
+  it("does not report a restored resume position beyond the milestone", async () => {
+    mockPlayer.duration = 600;
+    mockGetAudioPosition.mockResolvedValue(560);
+    const { rerender } = await start();
+    expect(mockPlayer.seekTo).toHaveBeenCalledWith(560);
+    await tick(rerender, 560);
+    await tick(rerender, 560.25);
+    expect(mockRegisterEvent).not.toHaveBeenCalled();
+  });
+
+  it("reports a milestone on the first playing tick after resuming just below it", async () => {
+    mockPlayer.duration = 600;
+    // 90 % of 600 s is 540 s.
+    mockGetAudioPosition.mockResolvedValue(539.9);
+    mockPlayer.seekTo.mockImplementation((seconds: number) => {
+      mockPlayer.currentTime = seconds;
+      return Promise.resolve();
+    });
+    const { rerender } = await start();
+    await tick(rerender, 540.1);
+    expect(mockRegisterEvent).toHaveBeenCalledWith(
+      EPISODE_LINK,
+      "Podcast Listened",
+      { progress: 90 },
+    );
+  });
+
+  it("does not report a short in-app seek across the milestone", async () => {
+    mockPlayer.seekTo.mockImplementation((seconds: number) => {
+      mockPlayer.currentTime = seconds;
+      return Promise.resolve();
+    });
+    const { getByTestId, rerender } = await start();
+    await tick(rerender, 107);
+    // A 2 s seek: within the playback step bound, but not listening.
+    mockSeekTarget = 109;
+    await fireEvent.press(getByTestId("seek"));
+    await waitFor(() => expect(mockPlayer.seekTo).toHaveBeenCalledWith(109));
+    await tick(rerender, 109);
+    await tick(rerender, 109.25);
+    expect(mockRegisterEvent).not.toHaveBeenCalled();
+  });
+
+  it("ignores a seek still pending on the previous track once the next one loads", async () => {
+    let resolveSeek: () => void = () => {};
+    const { getByTestId, rerender } = await start();
+    // A seek on track A that hasn't finished yet.
+    mockPlayer.seekTo.mockImplementationOnce(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveSeek = resolve;
+        }),
+    );
+    mockSeekTarget = 50;
+    await fireEvent.press(getByTestId("seek"));
+    // Switch to episode B; its restore settles with the baseline at 107.75 s.
+    mockPlayer.currentTime = 107.75;
+    await fireEvent.press(getByTestId("play-other"));
+    await waitFor(() => expect(mockPlayer.play).toHaveBeenCalledTimes(2));
+    // A's seek finishes now. Were it still valid, B's baseline would become
+    // 0 and the step to 108 s below would look like a jump.
+    mockPlayer.currentTime = 0;
+    resolveSeek();
+    await waitFor(() => Promise.resolve());
+    await tick(rerender, 108);
+    expect(mockRegisterEvent).toHaveBeenCalledWith(
+      OTHER_LINK,
+      "Podcast Listened",
+      { progress: 90 },
+    );
+  });
+
+  it("reports article audio as Audio Complete under the article link", async () => {
+    const { rerender } = await start("article");
+    await tick(rerender, 107.75, "article");
+    await tick(rerender, 108, "article");
+    expect(mockRegisterEvent).toHaveBeenCalledTimes(1);
+    expect(mockRegisterEvent).toHaveBeenCalledWith(
+      ARTICLE_LINK,
+      "Audio Complete",
+    );
+  });
+
+  it("does not report audio that isn't registered", async () => {
+    const { rerender } = await start("none");
+    await tick(rerender, 107.75, "none");
+    await tick(rerender, 108, "none");
+    expect(mockRegisterEvent).not.toHaveBeenCalled();
   });
 });

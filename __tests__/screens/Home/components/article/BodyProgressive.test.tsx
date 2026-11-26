@@ -1,5 +1,5 @@
 import { act, fireEvent, render } from "@testing-library/react-native";
-import React from "react";
+import type React from "react";
 
 import { SettingsContext } from "#/helpers/provider/SettingsProvider";
 import Body from "#/screens/Home/components/article/Body";
@@ -83,13 +83,21 @@ const renderBody = (properties: Parameters<typeof bodyElement>[0] = {}) =>
   render(bodyElement(properties));
 
 // The rest of the body renders a frame after the first chunk.
+// Fake timers, so the rest can't render before the first-chunk checks on
+// a slow CI runner, where rendering the first chunk alone outlasted the delay.
 const flushChunks = async () => {
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 50));
-  });
+  await act(() => jest.advanceTimersByTimeAsync(50));
 };
 
 describe("Body progressive rendering", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it("renders the first chunk right away and the rest afterwards", async () => {
     const onRendered = jest.fn();
     const { queryByText } = await renderBody({ onRendered });

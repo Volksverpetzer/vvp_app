@@ -2,6 +2,11 @@ import { render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import BskyScreen from "#/app/bsky/[post_id]";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
+
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerPostInteraction: jest.fn(),
+}));
 
 const mockRouterBack = jest.fn();
 
@@ -71,6 +76,21 @@ describe("BskyScreen", () => {
     });
   });
 
+  it("tracks the open once the post is loaded", async () => {
+    ContentStore.getStoredBskyPostById.mockResolvedValue(makeMockPost());
+
+    await render(<BskyScreen />);
+
+    await waitFor(() => {
+      expect(registerPostInteraction).toHaveBeenCalledTimes(1);
+    });
+    expect(registerPostInteraction).toHaveBeenCalledWith(
+      "https://bsky.app/profile/user.bsky.social/post/abc123",
+      "bluesky",
+      "open",
+    );
+  });
+
   it("calls router.back() when post is not found", async () => {
     ContentStore.getStoredBskyPostById.mockResolvedValue(null);
 
@@ -79,5 +99,6 @@ describe("BskyScreen", () => {
     await waitFor(() => {
       expect(mockRouterBack).toHaveBeenCalledTimes(1);
     });
+    expect(registerPostInteraction).not.toHaveBeenCalled();
   });
 });

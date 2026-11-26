@@ -13,12 +13,22 @@ const plausibleClient = createClient("https://plausible.io");
  * Every event name the app reports to Plausible. Kept as a closed union so the
  * set of events stays a single, discoverable catalog and typos (e.g.
  * "pageview" vs "pageviews") are caught at compile time. Add new names here.
+ *
+ * "pageview" is Plausible's built-in page view event, so app reads count in
+ * Top Pages, bounce rate etc. like website reads. App versions before this
+ * sent a custom "pageviews" event instead; vvp_app_server's /proxy/stats/
+ * counts both names, and Plausible can't rename past events.
  */
 export type AnalyticsEvent =
-  | "pageviews"
+  | "pageview"
   | "favorite"
   | "Share"
   | "FullRead"
+  // A podcast episode played past a milestone (`progress` prop, percent).
+  | "Podcast Listened"
+  // Article read-aloud audio played past 90 %. Same name as the web article
+  // player on audio.volksverpetzer.de, which sends it on `ended`.
+  | "Audio Complete"
   | "search"
   | "Shop"
   | "Steady"
@@ -34,7 +44,27 @@ export type AnalyticsEvent =
   | "Onboarding Completed"
   | "Announcement Shown"
   | "Announcement Action"
-  | "Announcement Dismissed";
+  | "Announcement Dismissed"
+  // Playback of an article's audio version started (AudioPlayer in the
+  // article header). Same name as the web article player in
+  // vvp_wp_audio_converter, which plays the same MP3s. Podcast plays go
+  // through "Post Interaction" instead.
+  | "Audio Play"
+  // Once per screen per app session, see useScreenViewTracking.
+  | "Screen View"
+  // A push or local notification tapped (useNotificationObserver), once per
+  // notification. The URL is the notification's link, if it has one.
+  | "Notification Opened"
+  // Memory game: first card turned in level 1, and each level finished
+  // (`game`, `level` props). Finishing the last level is the last
+  // "Game Level Completed", so Started → level 1 → level 2 is a funnel.
+  | "Game Started"
+  | "Game Level Completed"
+  // The Apple Pay donate button tapped, before the payment sheet. Same URL
+  // and props as "DonateConversion", so the two form a funnel. Named like
+  // the web donation forms' event for the same step, so they add up in
+  // Plausible. Was "Donate Started" in 2.5.9-beta.2.
+  | "Checkout Attempted";
 
 /**
  * Props that registerEvent always sets on every event. Callers must not pass
@@ -113,13 +143,17 @@ const registerEvent = async <T extends Record<string, unknown>>(
 };
 
 type PostPlatform = "youtube" | "tiktok" | "instagram" | "bluesky" | "podcast";
-type PostAction = "play" | "open";
+type PostAction = "play" | "open" | "swipe";
 
 /**
- * Records a real interaction with a social post in the feed, beyond the fav and
- * share buttons that are already tracked: playing a video, opening a thread, or
- * expanding a card. All such interactions share one Plausible event so feed
- * engagement can be compared across post types, broken down by the
+ * Records a real interaction with a social post, beyond the fav and share
+ * buttons that are already tracked: playing a video in the feed, or opening a
+ * post. "open" is sent by the detail screens (insta/, bsky/, podcast/) when
+ * the post has loaded, so it also counts opens via a link from outside the
+ * app and counts nothing when the post can't be loaded. "swipe" is an
+ * Instagram post swiped to another photo: once per post per app run on the
+ * feed card, and once per visit on the detail screen. All such interactions
+ * share one Plausible event so feed engagement can be compared across post types, broken down by the
  * `post_platform` and `action` props. The key is `post_platform` rather than
  * `platform` to avoid overwriting the OS `platform` prop set by registerEvent.
  */

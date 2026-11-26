@@ -2,6 +2,7 @@
   "import": ["@cspell/dict-de-de/cspell-ext.json"],
   "language": "de, de_DE, en, en_GB",
   "words": [
+    "androidx",
     "antippen",
     "armeabi",
     "atproto",
@@ -34,6 +35,7 @@
     "FOUC",
     "gdpr",
     "grimme",
+    "libandroidx",
     "lookaheads",
     "hrefs",
     "httpx",
@@ -47,6 +49,7 @@
     "mimikamaapp",
     "misinfo",
     "mlarge",
+    "okio",
     "podigee",
     "politik",
     "prio",

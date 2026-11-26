@@ -24,6 +24,11 @@ jest.mock("#/helpers/AppImages", () => ({
 
 jest.mock("#/components/bars/NavBar", () => jest.fn(() => null));
 
+const mockRegisterEvent = jest.fn();
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerEvent: (...args: unknown[]) => mockRegisterEvent(...args),
+}));
+
 // Gesture Handler 3 throws when its ScrollView renders outside a
 // GestureHandlerRootView, so render a plain passthrough instead.
 jest.mock("react-native-gesture-handler", () => ({
@@ -42,6 +47,7 @@ jest.mock("#/constants/Colors", () => ({
 interface MemoryGameMockProperties {
   pairs: DisinfoPair[];
   onAllMatched?: () => void;
+  onFirstFlip?: () => void;
 }
 
 // Stand-in for the real card grid: exposes the pair count it was given
@@ -49,12 +55,15 @@ interface MemoryGameMockProperties {
 // onAllMatched, without having to actually play the memory game.
 jest.mock("#/screens/Games/Memory", () => {
   const { Text } = require("react-native");
-  return jest.fn(({ pairs, onAllMatched }: MemoryGameMockProperties) => (
-    <>
-      <Text>{`pairs:${pairs.length}`}</Text>
-      <Text onPress={onAllMatched}>complete level</Text>
-    </>
-  ));
+  return jest.fn(
+    ({ pairs, onAllMatched, onFirstFlip }: MemoryGameMockProperties) => (
+      <>
+        <Text>{`pairs:${pairs.length}`}</Text>
+        <Text onPress={onFirstFlip}>flip first card</Text>
+        <Text onPress={onAllMatched}>complete level</Text>
+      </>
+    ),
+  );
 });
 
 interface UnicornEasterEggMockProperties {
@@ -85,6 +94,7 @@ const GameScreen = require("#/app/game/[gameId]").default as ComponentType;
 
 beforeEach(() => {
   MockImage.mockClear();
+  mockRegisterEvent.mockClear();
 });
 
 describe("GameScreen", () => {
@@ -148,5 +158,43 @@ describe("GameScreen", () => {
       expect.objectContaining({ source: mascotSource }),
       undefined,
     );
+  });
+
+  describe("analytics", () => {
+    it("sends Game Started on the first card of level 1, not on open", async () => {
+      const { getByText } = await render(<GameScreen />);
+      expect(mockRegisterEvent).not.toHaveBeenCalled();
+
+      await fireEvent.press(getByText("flip first card"));
+
+      expect(mockRegisterEvent).toHaveBeenCalledTimes(1);
+      expect(mockRegisterEvent).toHaveBeenCalledWith("", "Game Started", {
+        game: "DesinformationMemory",
+      });
+    });
+
+    it("sends Game Level Completed per level, and no second Game Started", async () => {
+      const { getByText } = await render(<GameScreen />);
+
+      await fireEvent.press(getByText("flip first card"));
+      await fireEvent.press(getByText("complete level"));
+      await fireEvent.press(getByText("hide popup"));
+      await fireEvent.press(getByText("flip first card"));
+      await fireEvent.press(getByText("complete level"));
+
+      expect(mockRegisterEvent.mock.calls).toEqual([
+        ["", "Game Started", { game: "DesinformationMemory" }],
+        [
+          "",
+          "Game Level Completed",
+          { game: "DesinformationMemory", level: 1 },
+        ],
+        [
+          "",
+          "Game Level Completed",
+          { game: "DesinformationMemory", level: 2 },
+        ],
+      ]);
+    });
   });
 });

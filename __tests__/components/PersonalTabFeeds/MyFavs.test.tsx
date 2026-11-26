@@ -182,9 +182,9 @@ describe("MyFavs", () => {
     });
 
     expect(updateBadgeState).toHaveBeenCalledWith({ personal: false });
-    expect(registerViews).toHaveBeenCalledWith(
-      "https://www.volksverpetzer.de/favs",
-    );
+    // No page view for the app-only /favs page (it would show up in
+    // Plausible's Top Pages); screens get their own tracking later.
+    expect(registerViews).not.toHaveBeenCalled();
     expect(WordPressAPI.getPost).toHaveBeenCalledWith("example-article");
     expect(WordPressFetcher.mapArticleToPost).toHaveBeenCalledWith(
       articleApiResponse,

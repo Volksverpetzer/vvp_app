@@ -1,10 +1,15 @@
-import { fireEvent, render } from "@testing-library/react-native";
+import { act, fireEvent, render } from "@testing-library/react-native";
 import type { ReactNode } from "react";
 import { StyleSheet } from "react-native";
 
-import InstaPostCard from "#/components/posts/insta/InstaPostCard";
+import InstaPostCard, {
+  resetReportedSwipes,
+} from "#/components/posts/insta/InstaPostCard";
 import InstaPostDetail from "#/components/posts/insta/InstaPostDetail";
+import InstaPostImage from "#/components/posts/insta/InstaPostImage";
+import Config from "#/constants/Config";
 import { registerPostInteraction } from "#/helpers/network/Analytics";
+import { registerViews } from "#/helpers/network/Engagement";
 import type { InstaPostProperties } from "#/types";
 
 const mockRouter = { push: jest.fn(), back: jest.fn() };
@@ -44,6 +49,27 @@ jest.mock("#/helpers/network/Engagement", () => ({
   registerViews: jest.fn(),
 }));
 
+jest.mock("#/helpers/Stores/ContentStore", () => ({
+  __esModule: true,
+  default: { setStoredInstaPost: jest.fn() },
+}));
+
+/** Fires the mocked image's onFirstLoad, as the real image does once loaded. */
+const loadImage = async () => {
+  const { onFirstLoad } = (
+    InstaPostImage as unknown as jest.Mock
+  ).mock.calls.at(-1)[0];
+  await act(() => onFirstLoad());
+};
+
+/** Fires the mocked image's onPageChange, as a swipe to another photo does. */
+const swipe = async () => {
+  const { onPageChange } = (
+    InstaPostImage as unknown as jest.Mock
+  ).mock.calls.at(-1)[0];
+  await act(() => onPageChange());
+};
+
 const post: InstaPostProperties = {
   id: "insta1",
   permalink: "https://www.instagram.com/p/abc/",
@@ -54,7 +80,10 @@ const post: InstaPostProperties = {
 };
 
 describe("InstaPostCard", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    resetReportedSwipes();
+  });
 
   it("shows the 'mehr' label in the link color", async () => {
     const { getByText } = await render(<InstaPostCard {...post} />);
@@ -63,19 +92,116 @@ describe("InstaPostCard", () => {
     );
   });
 
-  it("opens the post and tracks the open when pressed", async () => {
+  it("opens the post when pressed, leaving the open to the detail screen", async () => {
     const { getByText } = await render(<InstaPostCard {...post} />);
     await fireEvent.press(getByText("mehr"));
-    expect(registerPostInteraction).toHaveBeenCalledWith(
-      expect.stringContaining("/insta/abc/"),
-      "instagram",
-      "open",
-    );
     expect(mockRouter.push).toHaveBeenCalledWith("/insta/insta1");
+    expect(registerPostInteraction).not.toHaveBeenCalled();
+  });
+
+  it("sends nothing when the card is only scrolled into view", async () => {
+    await render(<InstaPostCard {...post} inView />);
+    await loadImage();
+
+    expect(registerPostInteraction).not.toHaveBeenCalled();
+    expect(registerViews).not.toHaveBeenCalled();
+  });
+
+  it("counts a swipe to another photo once per card", async () => {
+    await render(<InstaPostCard {...post} inView />);
+    await swipe();
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(1);
+    expect(registerPostInteraction).toHaveBeenCalledWith(
+      `${Config.wpUrl}/insta/abc/`,
+      "instagram",
+      "swipe",
+    );
+    expect(registerViews).not.toHaveBeenCalled();
+  });
+
+  // Feed cards sit in a virtualized list and unmount when scrolled far away.
+  it("doesn't count the same post again after the card remounts", async () => {
+    const first = await render(<InstaPostCard {...post} inView />);
+    await swipe();
+    await first.unmount();
+
+    await render(<InstaPostCard {...post} inView />);
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(1);
+  });
+
+  it("counts a swipe on a different post", async () => {
+    await render(<InstaPostCard {...post} inView />);
+    await swipe();
+    await render(<InstaPostCard {...post} id="insta2" inView />);
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(2);
   });
 });
 
 describe("InstaPostDetail", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    resetReportedSwipes();
+  });
+
+  it("sends nothing before the user swipes", async () => {
+    await render(<InstaPostDetail {...post} />);
+    expect(registerPostInteraction).not.toHaveBeenCalled();
+  });
+
+  it("counts a swipe to another photo once per screen visit", async () => {
+    await render(<InstaPostDetail {...post} />);
+    await swipe();
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(1);
+    expect(registerPostInteraction).toHaveBeenCalledWith(
+      `${Config.wpUrl}/insta/abc/`,
+      "instagram",
+      "swipe",
+    );
+  });
+
+  it("counts a swipe on each visit, apart from the feed card's", async () => {
+    // The feed card's once-per-post rule doesn't apply here: each visit counts.
+    for (const element of [
+      <InstaPostCard key="card" {...post} inView />,
+      <InstaPostDetail key="visit1" {...post} />,
+      <InstaPostDetail key="visit2" {...post} />,
+    ]) {
+      const screen = await render(element);
+      await swipe();
+      await screen.unmount();
+    }
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(3);
+  });
+
+  it("counts a swipe again when the screen switches to another post", async () => {
+    const other: InstaPostProperties = {
+      ...post,
+      id: "insta2",
+      permalink: "https://www.instagram.com/p/def/",
+    };
+    const screen = await render(<InstaPostDetail {...post} />);
+    await swipe();
+    await screen.rerender(<InstaPostDetail {...other} />);
+    await swipe();
+    await swipe();
+
+    expect(registerPostInteraction).toHaveBeenCalledTimes(2);
+    expect(registerPostInteraction).toHaveBeenLastCalledWith(
+      `${Config.wpUrl}/insta/def/`,
+      "instagram",
+      "swipe",
+    );
+  });
+
   it("colors caption links with the link color", async () => {
     const { getByText } = await render(<InstaPostDetail {...post} />);
     expect(getByText(post.caption)).toBeTruthy();

@@ -112,8 +112,17 @@ const SettingsScreen = () => {
     Haptics.selectionAsync();
     const syncId = ++settingsSyncSeqRef.current;
     try {
-      const { notificationSettings: updatedNotificationSettings } =
+      const { status, notificationSettings: updatedNotificationSettings } =
         await Notifications.registerForPushNotifications({ [key]: newSetting });
+      // The toggle may have just shown the OS prompt (permission still
+      // undetermined) and the user declined. Show the "disabled in system
+      // settings" state now instead of only on the next tab focus, so the
+      // switch doesn't suggest a working subscription. The stored choice is
+      // kept, so it takes effect once permission is granted later. This is
+      // the OS's current answer, so apply it even for a stale sync.
+      if (status === "denied") {
+        setNotificationPermissionDenied(true);
+      }
       if (syncId === settingsSyncSeqRef.current) {
         setNotificationSettings(updatedNotificationSettings);
       }

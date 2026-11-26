@@ -21,6 +21,14 @@ jest.mock("#/helpers/DeepLinkFilter", () => ({
     path.startsWith("/wp-content/uploads/"),
 }));
 
+const mockClaimAppLaunch = jest.fn(() => true);
+const mockAppOpenRoutine = jest.fn();
+jest.mock("#/helpers/AppStart", () => ({
+  __esModule: true,
+  claimAppLaunch: () => mockClaimAppLaunch(),
+  appOpenRoutine: () => mockAppOpenRoutine(),
+}));
+
 describe("redirectSystemPath", () => {
   it("routes the share-intent host to /handle-share", () => {
     expect(redirectSystemPath({ path: "myapp://expo-sharing" })).toBe(
@@ -93,5 +101,59 @@ describe("redirectSystemPath", () => {
     expect(
       redirectSystemPath({ path: "https://volksverpetzer.de/cat/slug/" }),
     ).toBe("/cat/slug/");
+  });
+
+  describe("launch claim", () => {
+    beforeEach(() => {
+      mockClaimAppLaunch.mockClear();
+      mockAppOpenRoutine.mockClear();
+    });
+
+    it.each([
+      ["an article", "https://volksverpetzer.de/cat/slug/"],
+      [
+        "a secondary-site article",
+        "https://www.pruefpunkt.org/faktencheck/slug/",
+      ],
+      [
+        "an upload",
+        "https://volksverpetzer.de/wp-content/uploads/2024/11/f.pdf",
+      ],
+      ["a share intent", "myapp://expo-sharing"],
+    ])(
+      "claims the launch and runs the app-open routine when the initial URL is %s",
+      (_label, path) => {
+        redirectSystemPath({ path, initial: true });
+        expect(mockClaimAppLaunch).toHaveBeenCalledTimes(1);
+        expect(mockAppOpenRoutine).toHaveBeenCalledTimes(1);
+      },
+    );
+
+    it("skips the routine when the launch was already claimed", () => {
+      mockClaimAppLaunch.mockReturnValueOnce(false);
+      redirectSystemPath({
+        path: "https://volksverpetzer.de/cat/slug/",
+        initial: true,
+      });
+      expect(mockAppOpenRoutine).not.toHaveBeenCalled();
+    });
+
+    it("leaves a bare-domain initial link to Index", () => {
+      expect(
+        redirectSystemPath({
+          path: "https://volksverpetzer.de/",
+          initial: true,
+        }),
+      ).toBe("/");
+      expect(mockClaimAppLaunch).not.toHaveBeenCalled();
+    });
+
+    it("does not claim for links that arrive while the app is running", () => {
+      redirectSystemPath({
+        path: "https://volksverpetzer.de/cat/slug/",
+        initial: false,
+      });
+      expect(mockClaimAppLaunch).not.toHaveBeenCalled();
+    });
   });
 });

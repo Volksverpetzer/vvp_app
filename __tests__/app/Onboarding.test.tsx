@@ -3,6 +3,7 @@ import { act, render } from "@testing-library/react-native";
 import React from "react";
 
 import Onboarding from "#/app/onboarding";
+import Changelog from "#/constants/Changelog";
 import Notifications from "#/helpers/Notifications";
 import PersonalStore from "#/helpers/Stores/PersonalStore";
 import { registerEvent } from "#/helpers/network/Analytics";
@@ -64,6 +65,8 @@ jest.mock("#/helpers/Stores/PersonalStore", () => ({
   __esModule: true,
   default: {
     setOnboardingDone: jest.fn(() => Promise.resolve()),
+    hasLastSeenChangelogVersionCode: jest.fn(() => Promise.resolve(false)),
+    setLastSeenChangelogVersionCode: jest.fn(() => Promise.resolve()),
   },
 }));
 
@@ -436,6 +439,29 @@ describe("Onboarding", () => {
   });
 
   describe("agreeToTerms (onFinish callback)", () => {
+    it("marks the current changelog as seen on a fresh install", async () => {
+      await render(<Onboarding />);
+
+      await capturedOnFinish!();
+
+      expect(
+        PersonalStore.setLastSeenChangelogVersionCode,
+      ).toHaveBeenCalledWith(Changelog.versionCode);
+    });
+
+    it("keeps the changelog unseen after Intro zurücksetzen", async () => {
+      (
+        PersonalStore.hasLastSeenChangelogVersionCode as jest.Mock
+      ).mockImplementationOnce(() => Promise.resolve(true));
+      await render(<Onboarding />);
+
+      await capturedOnFinish!();
+
+      expect(
+        PersonalStore.setLastSeenChangelogVersionCode,
+      ).not.toHaveBeenCalled();
+    });
+
     it("calls registerForPushNotifications when IS_FOSS is false", async () => {
       mockIsFoss = false;
       await render(<Onboarding />);

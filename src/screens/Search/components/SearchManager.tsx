@@ -20,6 +20,8 @@ interface SearchManagerProperties {
 interface SearchManagerState {
   search: string;
   searchParams: string;
+  /** Bumped on every submit so resending the same query searches again. */
+  searchNonce: number;
   resultsLength: number | undefined;
   isLoading: boolean;
   isAISearch: boolean;
@@ -46,6 +48,7 @@ const SearchManager = ({
   const [search, setSearch] = useState<string>(initialSearch || "");
   const [searchParameters, setSearchParameters] =
     useState<string>(initialSearch);
+  const [searchNonce, setSearchNonce] = useState(0);
   const [resultsLength, setResultsLength] = useState<number | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [searchType, setSearchType] = useState<"ai" | "artikel">(
@@ -55,9 +58,12 @@ const SearchManager = ({
 
   // Reset resultsLength synchronously so the analytics effect never sees a
   // stale count paired with a new query (useEffect-based reset fires too late).
+  // The nonce lets the result lists re-run an identical query, e.g. after a
+  // failed request, since setting the same string leaves the state unchanged.
   const handleSetSearchParams = useCallback((value: string) => {
     setResultsLength(undefined);
     setSearchParameters(value);
+    setSearchNonce((nonce) => nonce + 1);
   }, []);
 
   // Clear resultsLength on tab switch so the analytics effect doesn't re-fire
@@ -80,8 +86,11 @@ const SearchManager = ({
 
     // Register search analytics event when results are available
     if (resultsLength !== undefined) {
+      // `query` like the Divi fact-check search on volksverpetzer.de, which
+      // reports to the same Plausible site, so search terms from both land
+      // in one breakdown. Was `search` up to 2.5.9-beta.2.
       registerEvent(Config.wpUrl, "search", {
-        search: searchParameters,
+        query: searchParameters,
         search_source: "app",
         search_type: isAISearch ? "ai" : "standard",
         result_count: resultsLength,
@@ -114,6 +123,7 @@ const SearchManager = ({
       {children({
         search,
         searchParams: searchParameters,
+        searchNonce,
         resultsLength,
         isLoading,
         isAISearch,

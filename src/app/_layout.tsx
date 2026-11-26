@@ -27,6 +27,7 @@ import { AudioProvider } from "#/helpers/provider/AudioProvider";
 import { BadgeProvider } from "#/helpers/provider/BadgeProvider";
 import { SettingsProvider } from "#/helpers/provider/SettingsProvider";
 import { useNotificationObserver } from "#/hooks/useNotificationObserver";
+import { useScreenViewTracking } from "#/hooks/useScreenViewTracking";
 
 // Hide warning for new native event emitter
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
@@ -36,6 +37,7 @@ SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
   useNotificationObserver();
+  useScreenViewTracking();
 
   const [loaded] = useFonts({
     [fontFamily.regular]: SourceSans3_400Regular,

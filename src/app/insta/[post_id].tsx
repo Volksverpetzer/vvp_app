@@ -12,14 +12,16 @@ import Config from "#/constants/Config";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { onShare } from "#/helpers/Sharing";
 import ContentStore from "#/helpers/Stores/ContentStore";
-import { registerViews } from "#/helpers/network/Engagement";
+import { registerPostInteraction } from "#/helpers/network/Analytics";
 import { fetchInstaPostFromAnyAccount } from "#/helpers/utils/instaPost";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import type { InstaPostProperties } from "#/types";
 
 /**
- * InstaScreen renders an Instagram post and its caption,
- * tracks view analytics, and provides share functionality.
+ * InstaScreen renders an Instagram post and its caption and provides share
+ * functionality. Opening it sends a "Post Interaction" open for the post, and
+ * useScreenViewTracking counts the screen ("insta"). It sends no pageview:
+ * /insta/<id>/ exists only in the app, so it doesn't belong in Top Pages.
  *
  * Optimizations include:
  * - Memoizing computed values (like the replaced permalink)
@@ -35,13 +37,13 @@ const InstaScreen = () => {
   const parameters = useLocalSearchParams<{ post_id: string }>();
 
   // Get the WordPress URL from configuration and navigation router
-  const wpUrl = Config.wpUrl;
   const router = useRouter();
+  const wpUrl = Config.wpUrl;
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
 
   // Fetch the Instagram post data using a side effect.
-  // This effect runs when the post_id (from params) or the wpUrl changes.
+  // This effect runs when the post_id (from params) changes.
   useEffect(() => {
     const controller = new AbortController();
 
@@ -65,14 +67,6 @@ const InstaScreen = () => {
         }
         setData(post);
         setIsLoading(false);
-
-        // Register the view for analytics using the transformed permalink
-        registerViews(
-          post.permalink.replace(
-            "https://www.instagram.com/p/",
-            `${wpUrl}/insta/`,
-          ),
-        );
       } catch (error) {
         if (controller.signal.aborted) return;
         console.error("Error loading Instagram post:", error);
@@ -85,7 +79,18 @@ const InstaScreen = () => {
     return () => {
       controller.abort();
     };
-  }, [parameters.post_id, router, wpUrl]);
+  }, [parameters.post_id, router]);
+
+  // Counted here rather than on the feed card, so opens via a link from
+  // outside the app count too. Same URL as the card's impression. Keyed on
+  // the URL so a re-run of the load effect doesn't count the open again.
+  const openedUrl = data?.permalink.replace(
+    "https://www.instagram.com/p/",
+    `${wpUrl}/insta/`,
+  );
+  useEffect(() => {
+    if (openedUrl) registerPostInteraction(openedUrl, "instagram", "open");
+  }, [openedUrl]);
 
   // If still loading or data is not available, render a loading state.
   if (isLoading || !data) {

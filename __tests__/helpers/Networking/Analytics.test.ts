@@ -169,7 +169,7 @@ describe("Analytics (Plausible)", () => {
       await registerViews("https://example.com/page");
 
       const [, , body] = postSpy.mock.calls[0];
-      expect(body.name).toBe("pageviews");
+      expect(body.name).toBe("pageview");
     });
 
     it("registerFav should forward to registerEvent", async () => {

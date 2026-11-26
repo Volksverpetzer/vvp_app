@@ -1,6 +1,8 @@
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
 
 import AudioPlayer from "#/components/audio/AudioPlayer";
+import { registerEvent } from "#/helpers/network/Analytics";
+import { useArticleAudio } from "#/helpers/provider/AudioProvider";
 import Header, { getAuthorUrl } from "#/screens/Home/components/article/Header";
 import type { ArticleProperties, HttpsUrl } from "#/types";
 
@@ -54,6 +56,10 @@ jest.mock("#/helpers/Sharing", () => ({
   onShare: jest.fn(),
 }));
 
+jest.mock("#/helpers/network/Analytics", () => ({
+  registerEvent: jest.fn(),
+}));
+
 jest.mock("#/screens/Home/components/article/ArticleSourceList", () => ({
   ArticleSourceList: () => null,
 }));
@@ -66,6 +72,10 @@ jest.mock("#/screens/Home/components/article/ArticleStats", () => ({
 jest.mock("#/components/audio/AudioPlayer", () => ({
   __esModule: true,
   default: jest.fn(() => null),
+}));
+
+jest.mock("#/helpers/provider/AudioProvider", () => ({
+  useArticleAudio: jest.fn(),
 }));
 
 const baseArticle: ArticleProperties = {
@@ -274,6 +284,31 @@ describe("Header — AudioPlayer integration", () => {
       audioUrl: "https://vvpaudio.b-cdn.net/audio/test-article.mp3",
     });
     expect(queryByText(/keine Audioversion verfügbar/)).toBeNull();
+  });
+
+  it("registers the article audio for listening analytics under the article link", async () => {
+    mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
+    fetchMock.mockResolvedValue({ ok: true });
+    await render(<Header {...defaultProps} />);
+    expect(jest.mocked(useArticleAudio)).toHaveBeenCalledWith(
+      "https://vvpaudio.b-cdn.net/audio/test-article.mp3",
+      defaultProps.article_link,
+    );
+  });
+
+  it("records an Audio Play event when playback starts", async () => {
+    mockConfig.audioCdnUrl = "https://vvpaudio.b-cdn.net/audio";
+    fetchMock.mockResolvedValue({ ok: true });
+    await render(<Header {...defaultProps} />);
+    await waitFor(() => expect(MockAudioPlayer).toHaveBeenCalled());
+    expect(registerEvent).not.toHaveBeenCalled();
+    const { onPlay } = MockAudioPlayer.mock.lastCall[0];
+    onPlay?.();
+    expect(registerEvent).toHaveBeenCalledTimes(1);
+    expect(registerEvent).toHaveBeenCalledWith(
+      defaultProps.article_link,
+      "Audio Play",
+    );
   });
 
   it("strips a trailing slash from audioCdnUrl before building the URL", async () => {

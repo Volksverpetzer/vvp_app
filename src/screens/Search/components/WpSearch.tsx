@@ -10,6 +10,7 @@ import type {
 
 import { SearchIcon } from "#/components/Icons";
 import BackToTopButton from "#/components/buttons/BackToTopButton";
+import UiButton from "#/components/ui/UiButton";
 import UiEmptyState from "#/components/ui/UiEmptyState";
 import UiErrorCard from "#/components/ui/UiErrorCard";
 import UiSpinner from "#/components/ui/UiSpinner";
@@ -24,6 +25,8 @@ import type { LoadArticlePostProperties } from "#/types";
 
 interface WpSearchProperties {
   searchString: string;
+  /** Changes on every submit, so resending the same query searches again. */
+  searchNonce?: number;
   onResultsLength?: (
     count: number,
   ) => void; /** Receives the list's scroll offset so the search header can collapse. */
@@ -72,12 +75,14 @@ const formatDate = (iso: string) => {
  */
 const WpSearchResults = ({
   searchString,
+  searchNonce,
   onResultsLength,
   scrollOffsetY,
 }: WpSearchProperties) => {
   const [results, setResults] = useState<LoadArticlePostProperties[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const router = useRouter();
   const listReference = useRef<FlatList>(null);
   const backToTop = useBackToTop();
@@ -126,7 +131,8 @@ const WpSearchResults = ({
       controller.abort();
       clearTimeout(timer);
     };
-  }, [searchString, onResultsLength]);
+    // searchNonce and retryCount re-run an unchanged query after a failure
+  }, [searchString, onResultsLength, searchNonce, retryCount]);
 
   const renderItem = useCallback(
     ({ item }: { item: LoadArticlePostProperties }) => (
@@ -151,8 +157,12 @@ const WpSearchResults = ({
 
   if (hasError) {
     return (
-      <View style={styles.emptyContainer}>
+      <View style={[styles.emptyContainer, { gap: spacing.lg }]}>
         <UiErrorCard text="Suche fehlgeschlagen. Bitte versuche es erneut." />
+        <UiButton
+          label="Erneut versuchen"
+          onPress={() => setRetryCount((count) => count + 1)}
+        />
       </View>
     );
   }

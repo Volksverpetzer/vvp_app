@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react-native";
-import React from "react";
+import type React from "react";
 
 import GenericPost from "#/components/posts/GenericPost";
 
