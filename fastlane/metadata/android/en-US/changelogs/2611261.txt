@@ -1,0 +1,6 @@
+- The app can now also be installed from the Play Store on tablets and Chromebooks
+- Source links with http:// and email links in articles now open
+- The contact form is prefilled again for the same article
+- Search: simply try again after an error, better AI search with pasted links
+- Onboarding on small screens: switches and privacy policy link are visible again
+- Technical updates and small bug fixes

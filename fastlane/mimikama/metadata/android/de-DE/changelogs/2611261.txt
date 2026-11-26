@@ -1,0 +1,1 @@
+Die App lässt sich jetzt auch auf Tablets und Chromebooks aus dem Play Store installieren. Quellen-Links mit http:// und E-Mail-Links in Artikeln öffnen sich jetzt, das Kontaktformular ist für denselben Artikel wieder vorausgefüllt und die Suche lässt sich nach einem Fehler erneut starten. Dazu technische Aktualisierungen und kleine Fehlerbehebungen.

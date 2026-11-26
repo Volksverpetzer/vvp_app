@@ -1,0 +1,6 @@
+- Die App lässt sich jetzt auch auf Tablets und Chromebooks aus dem Play Store installieren
+- Quellen-Links mit http:// und E-Mail-Links in Artikeln öffnen sich jetzt
+- Das Kontaktformular ist für denselben Artikel wieder vorausgefüllt
+- Suche: nach einem Fehler einfach erneut versuchen, KI-Suche mit eingefügten Links verbessert
+- Onboarding auf kleinen Bildschirmen: Schalter und Datenschutz-Link wieder sichtbar
+- Technische Aktualisierungen und kleine Fehlerbehebungen
