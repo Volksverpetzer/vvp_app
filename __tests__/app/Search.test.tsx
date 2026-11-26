@@ -225,7 +225,7 @@ describe("SearchScreen", () => {
           "https://example.com",
           "search",
           {
-            search: "corona",
+            query: "corona",
             search_source: "app",
             search_type: "standard",
             result_count: 3,
@@ -245,7 +245,7 @@ describe("SearchScreen", () => {
           "https://example.com",
           "search",
           {
-            search: "corona",
+            query: "corona",
             search_source: "app",
             search_type: "ai",
             result_count: 3,

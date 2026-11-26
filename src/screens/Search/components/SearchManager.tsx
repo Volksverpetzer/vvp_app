@@ -86,8 +86,11 @@ const SearchManager = ({
 
     // Register search analytics event when results are available
     if (resultsLength !== undefined) {
+      // `query` like the Divi fact-check search on volksverpetzer.de, which
+      // reports to the same Plausible site, so search terms from both land
+      // in one breakdown. Was `search` up to 2.5.9-beta.2.
       registerEvent(Config.wpUrl, "search", {
-        search: searchParameters,
+        query: searchParameters,
         search_source: "app",
         search_type: isAISearch ? "ai" : "standard",
         result_count: resultsLength,
