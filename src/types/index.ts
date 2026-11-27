@@ -1,3 +1,4 @@
+export type * from "./announcements";
 export type * from "./colors";
 export type * from "./config";
 export type * from "./contacts";

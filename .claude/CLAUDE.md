@@ -101,6 +101,40 @@ Defined in `babel.config.cts` and `tsconfig.json`:
 - Run tests or targeted tests: `pnpm test -- path/to/changed.test.ts`
 - Ensure no secret files are added (CI runs Gitleaks); do not commit new `google-services.json` files.
 
+## Announcement Cards
+
+The one-time cards at the top of the home feed are **not in the app code**. They come from one JSON file per variant on the Bunny `vvpapps` storage zone (`announcementsUrl` in `config/*.config.ts`):
+
+- Volksverpetzer: `https://vvpapps.b-cdn.net/announcements/volksverpetzer.json`
+- Mimikama: `https://vvpapps.b-cdn.net/announcements/mimikama.json`
+
+To add or remove a card, edit that file and **purge the Bunny cache** for it. No release is needed. The app fetches the file when the home feed opens and caches the last good copy. If the fetch fails, it keeps using that copy.
+
+```json
+{
+  "announcements": [
+    {
+      "id": "grimme-preis-voting-2026-10",
+      "message": "**Wir sind nominiert!** Stimm jetzt [hier](https://example.org) ab.",
+      "actionLabel": "Abstimmen",
+      "route": "https://example.org/vote",
+      "minAppVersion": "4.3.0",
+      "startsAt": "2026-10-01T00:00:00+02:00",
+      "endsAt": "2026-10-31T23:59:59+01:00"
+    }
+  ]
+}
+```
+
+- `id`, `message`, `actionLabel` and `route` are required. `minAppVersion`, `startsAt` and `endsAt` are optional.
+- `id` is the permanent dismissal key: **never reuse one**, and don't change it on a live card, or users who dismissed it see it again.
+- `message` supports inline `**bold**`, `*italic*` and `[text](https://…)`.
+- `route` is an `https://` URL, an in-app path (`"/settings"`), or `{ "pathname": "/(tabs)/contact", "params": { "category": "app_feedback" } }`.
+- Only the first entry that is not dismissed and currently active is shown, in list order. Put a time-limited card first.
+- The app skips a malformed entry and still shows the others. If the whole document is invalid, the file is missing (404) or the fetch fails, the cached list stays in use. Without a cache, no cards are shown.
+- Use `minAppVersion` when a card points to a feature or route that older builds don't have.
+- To remove every card, publish `{ "announcements": [] }`. Deleting the file would leave the cached cards showing.
+
 ## Creating a New Release
 
 When bumping the app version for a new release, update **both** fields in `package.json`:

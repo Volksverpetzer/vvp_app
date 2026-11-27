@@ -6,7 +6,6 @@ import { View } from "react-native";
 import UiButton from "#/components/ui/UiButton";
 import UiCard from "#/components/ui/UiCard";
 import UiText from "#/components/ui/UiText";
-import type { AnnouncementEntry } from "#/constants/Announcements";
 import Colors from "#/constants/Colors";
 import { fontFamily } from "#/constants/FontFamily";
 import { LINE_HEIGHTS } from "#/constants/FontSizes";
@@ -16,7 +15,7 @@ import { onLinkPress } from "#/helpers/Linking";
 import { registerAnnouncementEvent } from "#/helpers/network/Analytics";
 import { parseInlineMarkdown } from "#/helpers/utils/inlineMarkdown";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
-import type { HttpsUrl } from "#/types";
+import type { AnnouncementEntry, HttpsUrl } from "#/types";
 
 // Designer spec: the mascot sits centered behind the card, with roughly its
 // top half — head and happily raised arms — peeking out above the tile, and

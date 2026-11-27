@@ -2,7 +2,7 @@ import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
 
 import AnnouncementCard from "#/components/posts/AnnouncementCard";
-import type { AnnouncementEntry } from "#/constants/Announcements";
+import type { AnnouncementEntry } from "#/types";
 
 const mockPush = jest.fn();
 jest.mock("expo-router", () => ({

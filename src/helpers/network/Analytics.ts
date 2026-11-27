@@ -1,11 +1,11 @@
 import * as Application from "expo-application";
 import { Dimensions, Platform } from "react-native";
 
-import type { AnnouncementEntry } from "#/constants/Announcements";
 import Config from "#/constants/Config";
 import { resolveAnalyticsSite } from "#/helpers/utils/analyticsSite";
 import { parseInlineMarkdown } from "#/helpers/utils/inlineMarkdown";
 import { createClient, post } from "#/helpers/utils/networking";
+import type { AnnouncementEntry } from "#/types";
 
 const plausibleClient = createClient("https://plausible.io");
 
@@ -189,7 +189,7 @@ const announcementTitle = ({ message }: AnnouncementEntry): string => {
 
 /**
  * Records the lifecycle of an in-feed announcement card (see
- * #/constants/Announcements): shown, its action taken (button or an inline
+ * useAnnouncements): shown, its action taken (button or an inline
  * link), or dismissed via "Alles klar!". Separate event names (rather than one
  * event with an action prop) so each can be a Plausible goal and Shown →
  * Action can be a funnel. `announcement_id` is the stable key to break them

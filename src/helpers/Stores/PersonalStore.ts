@@ -1,4 +1,5 @@
 import BaseStore from "#/helpers/Storage";
+import type { AnnouncementEntry } from "#/types";
 
 // Serializes dismissAnnouncement's read-modify-write: callers fire-and-forget
 // it, so two quick dismissals could otherwise both read the same stored list
@@ -13,6 +14,7 @@ const PersonalStore = {
     longPressTip: "longPressTip",
     lastSeenChangelog: "lastSeenChangelog",
     dismissedAnnouncements: "dismissedAnnouncements",
+    cachedAnnouncements: "cachedAnnouncements",
   },
 
   /**
@@ -109,6 +111,39 @@ const PersonalStore = {
     } catch (error) {
       console.error("Error retrieving dismissed announcements:", error);
       return [];
+    }
+  },
+
+  /**
+   * Retrieves the last successfully fetched announcement list, so cards can
+   * be shown immediately (and offline) before the next fetch completes.
+   * @returns {Promise<AnnouncementEntry[] | undefined>} The cached list, or undefined if none.
+   */
+  async getCachedAnnouncements(): Promise<AnnouncementEntry[] | undefined> {
+    try {
+      const value = await BaseStore.getItem(this.keys.cachedAnnouncements);
+      const parsed = BaseStore.parseJSON<AnnouncementEntry[]>(value);
+      return Array.isArray(parsed) ? parsed : undefined;
+    } catch (error) {
+      console.error("Error retrieving cached announcements:", error);
+      return undefined;
+    }
+  },
+
+  /**
+   * Stores the latest fetched announcement list.
+   * @param {AnnouncementEntry[]} announcements - The validated list.
+   */
+  async setCachedAnnouncements(
+    announcements: AnnouncementEntry[],
+  ): Promise<void> {
+    try {
+      await BaseStore.setItem(
+        this.keys.cachedAnnouncements,
+        JSON.stringify(announcements),
+      );
+    } catch (error) {
+      console.error("Error caching announcements:", error);
     }
   },
 

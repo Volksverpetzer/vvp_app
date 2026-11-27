@@ -13,6 +13,7 @@ const assets = {
 const extraConfig: ExtraConfigType = {
   apiUrl: "https://mimikama.volksverpetzer-app.de",
   wpUrl: "https://www.mimikama.org",
+  announcementsUrl: "https://vvpapps.b-cdn.net/announcements/mimikama.json",
   aboutUrl: "https://www.mimikama.org/ueber-uns/",
   hiddenNotifications: ["new_fact_check", "new_pruefpunkt"],
   // Native rendering flattens Mimikama's own custom layout components
