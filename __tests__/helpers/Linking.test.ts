@@ -4,6 +4,7 @@ import type { ImperativeRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 
 import {
+  isInAppRoute,
   isInternalUploadUrl,
   onLinkPress,
   openExternalDownload,
@@ -57,6 +58,9 @@ describe("Linking helpers", () => {
     push(_path?: any) {
       /* noop */
     },
+    replace(_path?: any) {
+      /* noop */
+    },
   } as unknown as ImperativeRouter;
 
   let pushSpy: ReturnType<typeof jest.spyOn>;
@@ -74,6 +78,27 @@ describe("Linking helpers", () => {
   });
 
   describe("onLinkPress", () => {
+    it("replaces instead of pushing an internal link when asked to", () => {
+      // EdgelessWebview follows a server redirect this way, so the screen
+      // that was redirected away from doesn't stay behind in the back stack.
+      const internalUrl = "https://www.volksverpetzer.de/analyse/foo/";
+      parseSpy.mockReturnValue({
+        hostname: "www.volksverpetzer.de",
+        path: "/analyse/foo/",
+      });
+      const replaceSpy: ReturnType<typeof jest.spyOn> = jest
+        .spyOn(router, "replace")
+        .mockImplementation(() => {});
+
+      onLinkPress(internalUrl, router, undefined, { replace: true });
+
+      expect(replaceSpy).toHaveBeenCalledWith({
+        pathname: "/analyse/foo",
+        params: { originalUrl: internalUrl },
+      });
+      expect(pushSpy).not.toHaveBeenCalled();
+    });
+
     it("should navigate to internal links with path", () => {
       // Setup
       const internalUrl = "https://www.volksverpetzer.de/politik/some-article";
@@ -496,6 +521,29 @@ describe("Linking helpers", () => {
 
     it("rejects unparseable input", () => {
       expect(isInternalUploadUrl("not a url")).toBe(false);
+    });
+  });
+
+  describe("isInAppRoute", () => {
+    beforeEach(() => {
+      parseSpy.mockImplementation((url: string) => {
+        const parsed = new URL(url);
+        return { hostname: parsed.hostname, path: parsed.pathname };
+      });
+    });
+
+    it("accepts internal non-upload paths, www-insensitively and over http", () => {
+      expect(isInAppRoute("https://www.volksverpetzer.de/analyse/foo/")).toBe(
+        true,
+      );
+      expect(isInAppRoute("http://pruefpunkt.org/some-article/")).toBe(true);
+    });
+
+    it("rejects uploads and foreign hosts", () => {
+      expect(
+        isInAppRoute("https://www.volksverpetzer.de/wp-content/uploads/a.pdf"),
+      ).toBe(false);
+      expect(isInAppRoute("https://example.com/analyse/foo/")).toBe(false);
     });
   });
 });

@@ -12,7 +12,7 @@ import type {
 import NavBar from "#/components/bars/NavBar";
 import Colors from "#/constants/Colors";
 import type { LinkHref } from "#/helpers/Linking";
-import { onLinkPress, parsePath } from "#/helpers/Linking";
+import { isInAppRoute, onLinkPress, parsePath } from "#/helpers/Linking";
 import { isHttpsUrl } from "#/helpers/utils/networking";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 
@@ -165,11 +165,25 @@ const EdgelessWebview = ({
   // guessing, retry once with the trailing slash toggled if the very first
   // request 404s.
   const hasRetriedSlash = useRef(false);
+  // The URL that 404ed and triggered the slash retry: its own onLoadEnd can
+  // still arrive after the retry has started, and must not count as the
+  // retried page having loaded (see hasLoadedPage below).
+  const retriedFromUrl = useRef<string | undefined>(undefined);
   const [effectiveUri, setEffectiveUri] = useState(uri);
   useEffect(() => {
     setEffectiveUri(uri);
     hasRetriedSlash.current = false;
+    retriedFromUrl.current = undefined;
   }, [uri]);
+  // Whether the page for effectiveUri has finished loading. A top-frame
+  // navigation to a different path before that is a server redirect (e.g. a
+  // Redirection-plugin shortlink like /ltw-lsa 301ing to /analyse/foo/), not
+  // a link the user tapped. Pushing it as a new screen (like a tap) would
+  // cancel this load and leave this screen behind, empty, in the back stack.
+  const hasLoadedPage = useRef(false);
+  useEffect(() => {
+    hasLoadedPage.current = false;
+  }, [effectiveUri]);
   const router = useRouter();
   const colorScheme = useAppColorScheme();
   const backgroundColor = Colors[colorScheme].background;
@@ -199,7 +213,12 @@ const EdgelessWebview = ({
         source={source}
         style={[styles.webview, { backgroundColor }]}
         onLoadStart={onLoadStart}
-        onLoadEnd={onLoadEnd}
+        onLoadEnd={({ nativeEvent }) => {
+          if (nativeEvent.url !== retriedFromUrl.current) {
+            hasLoadedPage.current = true;
+          }
+          onLoadEnd?.();
+        }}
         onError={onError}
         onHttpError={(syntheticEvent: WebViewHttpErrorEvent) => {
           // See hasRetriedSlash above. onHttpError also fires for failed
@@ -213,10 +232,11 @@ const EdgelessWebview = ({
             parsePath(nativeEvent.url) === parsePath(effectiveUri)
           ) {
             hasRetriedSlash.current = true;
+            retriedFromUrl.current = nativeEvent.url;
             setEffectiveUri(toggleTrailingSlash(effectiveUri));
           }
         }}
-        onShouldStartLoadWithRequest={({ url, isTopFrame }) => {
+        onShouldStartLoadWithRequest={({ url, isTopFrame, navigationType }) => {
           // react-native-webview's Android implementation never actually
           // sets isTopFrame on the native event (only iOS does), so it
           // comes through as undefined there — `!isTopFrame` would treat
@@ -239,6 +259,19 @@ const EdgelessWebview = ({
           // instead of looping back into native navigation.
           if (isWebUrl(url)) {
             if (parsePath(url) === parsePath(effectiveUri)) return true;
+            // See hasLoadedPage above. iOS reports a real tap as "click"
+            // even mid-load; Android always reports "other", so there only
+            // the load state tells the two apart.
+            const isRedirect =
+              !hasLoadedPage.current && navigationType !== "click";
+            if (isRedirect) {
+              // Replace this screen with the native route for the target;
+              // a redirect leaving the app's own routes (another host, an
+              // upload) just loads here instead.
+              if (!isInAppRoute(url)) return true;
+              onLinkPress(url, router, effectiveUri, { replace: true });
+              return false;
+            }
             // Route natively instead
             onLinkPress(url, router, effectiveUri);
             return false;
