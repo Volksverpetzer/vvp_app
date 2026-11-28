@@ -78,7 +78,9 @@ const X_HOSTS = ["x.com", "twitter.com"];
  * (incl. subdomains such as mobile.x.com), otherwise null. Matches the parsed
  * host name exactly, so domains that merely contain "x.com" (fox.com,
  * dropbox.com) are not treated as posts. A link typed without scheme
- * ("x.com/user/status/1") gets "https://" added.
+ * ("x.com/user/status/1") gets "https://" added. Such a link only gets here
+ * when the AI tab is already open: the search screen switches to the AI tab
+ * by itself only for input containing "://" (see getSearchType).
  */
 export const toXUrl = (input: string): string | null => {
   const trimmed = input.trim();
