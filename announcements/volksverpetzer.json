@@ -1,0 +1,10 @@
+{
+  "announcements": [
+    {
+      "id": "podcast-pruefpunkt-2026-08",
+      "message": "**Neu**: Der Volksverpetzer-Podcast ist jetzt in deinem Feed – und unsere Wissenschafts-Plattform Prüfpunkt ist ebenfalls mit dabei!\nWas du in deinem Feed siehst, kannst du selbst bestimmen:",
+      "actionLabel": "Feed-Einstellungen",
+      "route": "/settings"
+    }
+  ]
+}

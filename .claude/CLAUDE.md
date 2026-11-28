@@ -108,7 +108,7 @@ The one-time cards at the top of the home feed are **not in the app code**. They
 - Volksverpetzer: `https://vvpapps.b-cdn.net/announcements/volksverpetzer.json`
 - Mimikama: `https://vvpapps.b-cdn.net/announcements/mimikama.json`
 
-To add or remove a card, edit that file and **purge the Bunny cache** for it. No release is needed. The app fetches the file when the home feed opens and caches the last good copy. If the fetch fails, it keeps using that copy.
+Copies of both files are kept in `announcements/` in this repo. To add or remove a card, edit the copy here, upload it to Bunny under the same path, and **purge the Bunny cache** for it. Keep the two in sync: the app only ever reads the Bunny file. No release is needed. The app fetches the file when the home feed opens and caches the last good copy. If the fetch fails, it keeps using that copy.
 
 ```json
 {
