@@ -7,8 +7,8 @@ const mimikamaNotes =
   "Technische Aktualisierungen und kleine Fehlerbehebungen.";
 
 const Changelog = {
-  version: "2.5.9",
-  versionCode: 2611261,
+  version: "2.5.10",
+  versionCode: 2611281,
   notes: isMimikama ? mimikamaNotes : volksverpetzerNotes,
 };
 
