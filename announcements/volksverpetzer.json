@@ -1,10 +1,10 @@
 {
   "announcements": [
     {
-      "id": "podcast-pruefpunkt-2026-08",
-      "message": "**Neu**: Der Volksverpetzer-Podcast ist jetzt in deinem Feed – und unsere Wissenschafts-Plattform Prüfpunkt ist ebenfalls mit dabei!\nWas du in deinem Feed siehst, kannst du selbst bestimmen:",
-      "actionLabel": "Feed-Einstellungen",
-      "route": "/settings"
+      "id": "survey-shop-voucher-2026-11",
+      "message": "Hast du fünf Minuten Zeit für uns? Wir freuen uns, wenn ihr zahlreich an unserer Umfrage teilnehmt!\n\nSo helft ihr uns, noch besser zu werden. Als Dankeschön verlosen wir drei Volksverpetzer-Shop-Gutscheine im Wert von je 15€.\n\nTausend Dank für deine Hilfe 💯",
+      "actionLabel": "Zur Umfrage",
+      "route": "https://cryptpad.fr/form/#/2/form/view/GeQPM-cs+l7TiMslweWh4puHWJ4UMUIWXg9C+qT0DXY/"
     }
   ]
 }
