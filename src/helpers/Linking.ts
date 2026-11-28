@@ -64,12 +64,19 @@ const safeParseHostname = (url: string | undefined): string =>
  * @param href - The URL to handle; `http://` is upgraded to `https://`.
  * @param router - Expo Router instance for navigation.
  * @param article_link - Optional article URL for analytics context.
+ * @param options.replace - Replace the current screen instead of pushing a
+ *   new one for internal links (e.g. when following a server redirect, so
+ *   the screen that was redirected away from doesn't stay behind, empty, in
+ *   the back stack).
  */
 const onLinkPress = (
   href: LinkHref,
   router: ImperativeRouter,
   article_link?: string,
+  options?: { replace?: boolean },
 ) => {
+  const navigate = (target: Href) =>
+    options?.replace ? router.replace(target) : router.push(target);
   const normalizedHref = href.replace(/^http:\/\//, "https://") as HttpsUrl;
   const parsed = safeParse(normalizedHref);
   if (!parsed) {
@@ -91,7 +98,7 @@ const onLinkPress = (
   if (internalHostnames.includes(normalizedHostname)) {
     if (path) {
       const cleanPath = path.replace(/^\//, "").replace(/\/$/, "");
-      router.push({
+      navigate({
         pathname: `/${cleanPath}`,
         params: { originalUrl: normalizedHref },
       } as unknown as Href);
@@ -99,7 +106,7 @@ const onLinkPress = (
     }
     // Bare-domain internal link (no path) — open the app home instead of
     // pushing the raw hostname as a route, which never matches.
-    router.push("/");
+    navigate("/");
     return;
   }
   outBoundLinkPress(normalizedHref, article_link);
@@ -155,6 +162,22 @@ const openExternalDownload = (href: HttpsUrl, article_link?: string) =>
   openInAppBrowser(href, article_link);
 
 /**
+ * True when {@link onLinkPress} would route `href` natively inside the app
+ * (an internal WordPress host, not an upload/download path) rather than
+ * opening it outside the app.
+ * @param href - The candidate URL; `http://` is treated like `https://`.
+ */
+const isInAppRoute = (href: string): boolean => {
+  const parsed = safeParse(href.replace(/^http:\/\//, "https://"));
+  if (!parsed?.hostname) return false;
+  const internalHostnames = getInternalWpHosts(Config.wpUrl, Config.feeds?.wp);
+  return (
+    internalHostnames.includes(normalizeHost(parsed.hostname)) &&
+    !shouldExcludeFromDeepLink(parsed.path ?? "")
+  );
+};
+
+/**
  * True when `href` is an https URL on one of our WordPress hosts pointing at a
  * `/wp-content/uploads/` file — i.e. exactly the URLs the external-link screen
  * is meant to open. Used to reject arbitrary URLs passed via the
@@ -181,6 +204,7 @@ const isInternalUploadUrl = (href: string): href is HttpsUrl => {
 
 export type { LinkHref };
 export {
+  isInAppRoute,
   isInternalUploadUrl,
   onLinkPress,
   openExternalDownload,

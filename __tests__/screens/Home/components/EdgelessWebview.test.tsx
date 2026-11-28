@@ -56,6 +56,13 @@ jest.mock("react-native-webview", () => {
   };
 });
 
+const fireLoadEnd = async (url: string) => {
+  await act(async () => {
+    mockLastWebViewProps.onLoadEnd({ nativeEvent: { url } });
+    await Promise.resolve();
+  });
+};
+
 const fireHttpError = async (url: string, statusCode: number) => {
   await act(async () => {
     mockLastWebViewProps.onHttpError({ nativeEvent: { url, statusCode } });
@@ -366,6 +373,7 @@ describe("EdgelessWebview external schemes", () => {
     await render(
       <EdgelessWebview uri="https://volksverpetzer.de/impressum-volksverpetzer/" />,
     );
+    await fireLoadEnd("https://volksverpetzer.de/impressum-volksverpetzer/");
 
     const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
       url: "http://volksverpetzer.de/other-page/",
@@ -397,4 +405,134 @@ describe("EdgelessWebview external schemes", () => {
       expect(expoLinking.openURL).not.toHaveBeenCalled();
     },
   );
+});
+
+describe("EdgelessWebview redirects", () => {
+  const uri = "https://volksverpetzer.de/ltw-lsa";
+  const target = "https://volksverpetzer.de/analyse/foo/";
+
+  beforeEach(() => {
+    mockLastWebViewProps = null;
+    jest.clearAllMocks();
+  });
+
+  it("replaces the screen for a redirect to another path before the page loaded", async () => {
+    // Regression: a shortlink like /ltw-lsa 301s to the article. Pushing
+    // that as a new screen (like a tap) cancelled this load and left an
+    // empty WebView behind it in the back stack.
+    const linkingHelpers = jest.requireMock("#/helpers/Linking");
+    await render(<EdgelessWebview uri={uri} />);
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: target,
+      isTopFrame: true,
+      navigationType: "other",
+    });
+
+    expect(result).toBe(false);
+    expect(linkingHelpers.onLinkPress).toHaveBeenCalledWith(
+      target,
+      expect.anything(),
+      uri,
+      { replace: true },
+    );
+  });
+
+  it("lets a redirect leaving the app's routes load in place", async () => {
+    const linkingHelpers = jest.requireMock("#/helpers/Linking");
+    await render(<EdgelessWebview uri={uri} />);
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "https://example.com/somewhere/",
+      isTopFrame: true,
+      navigationType: "other",
+    });
+
+    expect(result).toBe(true);
+    expect(linkingHelpers.onLinkPress).not.toHaveBeenCalled();
+  });
+
+  it("pushes a link tapped after the page loaded", async () => {
+    const linkingHelpers = jest.requireMock("#/helpers/Linking");
+    await render(<EdgelessWebview uri={uri} />);
+    await fireLoadEnd(target);
+
+    const result = mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "https://volksverpetzer.de/other-page/",
+      isTopFrame: true,
+      navigationType: "other",
+    });
+
+    expect(result).toBe(false);
+    expect(linkingHelpers.onLinkPress).toHaveBeenCalledWith(
+      "https://volksverpetzer.de/other-page/",
+      expect.anything(),
+      uri,
+    );
+  });
+
+  it("pushes an iOS tap even while the page is still loading", async () => {
+    const linkingHelpers = jest.requireMock("#/helpers/Linking");
+    await render(<EdgelessWebview uri={uri} />);
+
+    mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: "https://volksverpetzer.de/other-page/",
+      isTopFrame: true,
+      navigationType: "click",
+    });
+
+    expect(linkingHelpers.onLinkPress).toHaveBeenCalledWith(
+      "https://volksverpetzer.de/other-page/",
+      expect.anything(),
+      uri,
+    );
+  });
+
+  it("still treats the slash retry's redirect as a redirect despite the 404 page's late load end", async () => {
+    // /ltw-lsa/ 404s, the retry loads /ltw-lsa, which then 301s. The 404
+    // page's own onLoadEnd can arrive after the retry started.
+    const linkingHelpers = jest.requireMock("#/helpers/Linking");
+    await render(<EdgelessWebview uri="https://volksverpetzer.de/ltw-lsa/" />);
+    await fireHttpError("https://volksverpetzer.de/ltw-lsa/", 404);
+    await fireLoadEnd("https://volksverpetzer.de/ltw-lsa/");
+
+    mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: target,
+      isTopFrame: true,
+      navigationType: "other",
+    });
+
+    expect(linkingHelpers.onLinkPress).toHaveBeenCalledWith(
+      target,
+      expect.anything(),
+      "https://volksverpetzer.de/ltw-lsa",
+      { replace: true },
+    );
+  });
+
+  it("treats navigations as redirects again after the uri prop changes", async () => {
+    const linkingHelpers = jest.requireMock("#/helpers/Linking");
+    const { rerender } = await render(
+      <EdgelessWebview uri="https://volksverpetzer.de/first/" />,
+    );
+    await fireLoadEnd("https://volksverpetzer.de/first/");
+
+    await act(async () => {
+      rerender(<EdgelessWebview uri={uri} />);
+      await Promise.resolve();
+    });
+
+    mockLastWebViewProps.onShouldStartLoadWithRequest({
+      url: target,
+      isTopFrame: true,
+      navigationType: "other",
+    });
+
+    expect(linkingHelpers.onLinkPress).toHaveBeenCalledWith(
+      target,
+      expect.anything(),
+      uri,
+      { replace: true },
+    );
+  });
 });
