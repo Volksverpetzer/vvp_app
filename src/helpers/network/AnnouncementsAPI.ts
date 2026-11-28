@@ -2,7 +2,7 @@ import type { Href } from "expo-router";
 
 import Config from "#/constants/Config";
 import { isAnnouncementDate } from "#/helpers/utils/announcements";
-import { createClient, get } from "#/helpers/utils/networking";
+import { FetchError, createClient, get } from "#/helpers/utils/networking";
 import type { AnnouncementEntry } from "#/types";
 
 const ANNOUNCEMENTS_TIMEOUT_MS = 10_000;
@@ -18,6 +18,16 @@ const isNonEmptyString = (value: unknown): value is string =>
 const isInAppPath = (value: unknown): value is string =>
   typeof value === "string" && value.startsWith("/") && !value.startsWith("//");
 
+/** An `https://` URL that actually parses and names a host. */
+const isHttpsUrlWithHost = (value: string): boolean => {
+  if (!value.startsWith("https://")) return false;
+  try {
+    return new URL(value).hostname.length > 0;
+  } catch {
+    return false;
+  }
+};
+
 /**
  * Accepts an external `https://` URL, an in-app path ("/settings"), or a
  * `{ pathname, params }` object with string/number params. Anything else
@@ -25,7 +35,7 @@ const isInAppPath = (value: unknown): value is string =>
  */
 const parseRoute = (value: unknown): Href | undefined => {
   if (typeof value === "string") {
-    return value.startsWith("https://") || isInAppPath(value)
+    return isHttpsUrlWithHost(value) || isInAppPath(value)
       ? (value as Href)
       : undefined;
   }
@@ -110,19 +120,27 @@ export const parseAnnouncements = (
 
 /**
  * Fetches the announcement list for this app variant. Resolves to undefined
- * when no URL is configured or the response is unusable, so callers can keep
- * their cached list; throws on network errors.
+ * when no URL is configured, the file is missing (404) or the response is
+ * unusable, so callers can keep their cached list; throws on network errors.
  */
 export const fetchAnnouncements = async (
   signal?: AbortSignal,
 ): Promise<AnnouncementEntry[] | undefined> => {
   const url = Config.announcementsUrl;
   if (!url) return undefined;
-  const data = await get<unknown>(
-    createClient(url),
-    url,
-    { signal, silentStatuses: [404] },
-    ANNOUNCEMENTS_TIMEOUT_MS,
-  );
+  let data: unknown;
+  try {
+    data = await get<unknown>(
+      createClient(url),
+      url,
+      { signal, silentStatuses: [404] },
+      ANNOUNCEMENTS_TIMEOUT_MS,
+    );
+  } catch (error) {
+    // Not uploaded (yet): same as an unusable document, and not worth a
+    // warning on every mount, foreground and refresh.
+    if (error instanceof FetchError && error.status === 404) return undefined;
+    throw error;
+  }
   return parseAnnouncements(data);
 };

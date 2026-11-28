@@ -85,6 +85,8 @@ describe("parseAnnouncements", () => {
     ["empty message", { ...valid, message: " " }],
     ["missing actionLabel", { ...valid, actionLabel: undefined }],
     ["http route", { ...valid, route: "http://example.com" }],
+    ["https route without host", { ...valid, route: "https://" }],
+    ["https route with only a query", { ...valid, route: "https://?" }],
     ["javascript route", { ...valid, route: "javascript:alert(1)" }],
     ["protocol-relative route", { ...valid, route: "//evil.example" }],
     ["relative route", { ...valid, route: "settings" }],
@@ -158,12 +160,20 @@ describe("fetchAnnouncements", () => {
     );
   });
 
-  it("throws on a missing file without logging it", async () => {
+  it("resolves to undefined for a missing file without logging it", async () => {
     Config.announcementsUrl = "https://cdn.example/announcements/vvp.json";
     const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     fetchMock.mockResolvedValue(new Response("", { status: 404 }));
-    await expect(fetchAnnouncements()).rejects.toThrow();
+    await expect(fetchAnnouncements()).resolves.toBeUndefined();
     expect(errorSpy).not.toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  it("still throws on other HTTP errors", async () => {
+    Config.announcementsUrl = "https://cdn.example/announcements/vvp.json";
+    const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    fetchMock.mockResolvedValue(new Response("", { status: 403 }));
+    await expect(fetchAnnouncements()).rejects.toThrow();
     errorSpy.mockRestore();
   });
 });

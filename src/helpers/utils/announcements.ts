@@ -5,7 +5,16 @@ const DATE_ONLY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 // instead of "T", German "31.10.2026") is parsed differently — or not at all —
 // depending on the JS engine, so it is rejected rather than guessed at.
 const DATE_TIME_PATTERN =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})$/;
+  /^(\d{4})-(\d{2})-(\d{2})T([01]\d|2[0-3]):[0-5]\d(:[0-5]\d(\.\d{1,3})?)?(Z|[+-]([01]\d|2[0-3]):[0-5]\d)$/;
+
+/**
+ * Whether year/month/day name a real calendar day. JS engines silently roll
+ * impossible dates over (2026-02-31 becomes March 3), so check explicitly.
+ */
+const isCalendarDay = (year: number, month: number, day: number): boolean => {
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+};
 
 /**
  * Parses an announcement `startsAt`/`endsAt` value to epoch milliseconds, or
@@ -21,14 +30,16 @@ export const parseAnnouncementDate = (
   const dateOnly = DATE_ONLY_PATTERN.exec(value);
   if (dateOnly) {
     const [year, month, day] = dateOnly.slice(1).map(Number);
+    if (!isCalendarDay(year, month, day)) return NaN;
     const date = new Date(year, month - 1, day);
-    // Reject dates that roll over, e.g. 2026-02-31.
-    if (date.getMonth() !== month - 1 || date.getDate() !== day) return NaN;
     return edge === "start"
       ? date.getTime()
       : new Date(year, month - 1, day + 1).getTime() - 1;
   }
-  return DATE_TIME_PATTERN.test(value) ? Date.parse(value) : NaN;
+  const dateTime = DATE_TIME_PATTERN.exec(value);
+  if (!dateTime) return NaN;
+  const [year, month, day] = dateTime.slice(1, 4).map(Number);
+  return isCalendarDay(year, month, day) ? Date.parse(value) : NaN;
 };
 
 /** Whether a value is a supported `startsAt`/`endsAt` date. */
