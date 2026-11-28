@@ -1,0 +1,2 @@
+- Notices in the feed can now be updated without an app update
+- Technical updates and small bug fixes

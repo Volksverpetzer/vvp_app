@@ -1,0 +1,2 @@
+- Hinweise im Feed lassen sich jetzt ohne App-Update aktualisieren
+- Technische Aktualisierungen und kleine Fehlerbehebungen
