@@ -403,6 +403,50 @@ describe("PersonalStore", () => {
     });
   });
 
+  describe("getCachedAnnouncements", () => {
+    it("returns the stored list", async () => {
+      const list = [
+        { id: "a", message: "m", actionLabel: "l", route: "/settings" },
+      ];
+      getItemSpy.mockResolvedValue(JSON.stringify(list));
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue(list);
+
+      const result = await PersonalStore.getCachedAnnouncements();
+
+      expect(getItemSpy).toHaveBeenCalledWith("cachedAnnouncements");
+      expect(result).toEqual(list);
+    });
+
+    it("returns undefined for a non-array value", async () => {
+      getItemSpy.mockResolvedValue("{}");
+      jest.spyOn(BaseStore, "parseJSON").mockReturnValue({});
+
+      expect(await PersonalStore.getCachedAnnouncements()).toBeUndefined();
+    });
+
+    it("returns undefined on storage errors", async () => {
+      getItemSpy.mockRejectedValue(new Error("Storage error"));
+
+      expect(await PersonalStore.getCachedAnnouncements()).toBeUndefined();
+      expect(consoleErrorSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe("setCachedAnnouncements", () => {
+    it("stores the list as JSON", async () => {
+      const list = [
+        { id: "a", message: "m", actionLabel: "l", route: "/settings" },
+      ];
+
+      await PersonalStore.setCachedAnnouncements(list);
+
+      expect(BaseStore.setItem).toHaveBeenCalledWith(
+        "cachedAnnouncements",
+        JSON.stringify(list),
+      );
+    });
+  });
+
   describe("dismissAnnouncement", () => {
     it("should append the id to the stored list", async () => {
       // Setup

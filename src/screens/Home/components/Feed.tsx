@@ -18,12 +18,11 @@ import UiPressable from "#/components/ui/UiPressable";
 import UiSpinner from "#/components/ui/UiSpinner";
 import UiText from "#/components/ui/UiText";
 import EmptyComponent from "#/components/views/EmptyComponent";
-import Announcements from "#/constants/Announcements";
 import Colors from "#/constants/Colors";
 import { globalStyles } from "#/constants/GlobalStyles";
 import { iconSizes } from "#/constants/IconSizes";
 import { spacing } from "#/constants/Spacing";
-import PersonalStore from "#/helpers/Stores/PersonalStore";
+import { useAnnouncements } from "#/hooks/useAnnouncements";
 import { useAppColorScheme } from "#/hooks/useAppColorScheme";
 import FetcherUtilities from "#/screens/Home/fetchers/FetcherUtilities";
 import type { Post } from "#/types";
@@ -45,7 +44,7 @@ export interface FeedProperties {
   cutoffDate?: boolean;
   style?: StyleProp<ViewStyle>;
   onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
-  /** Show the one-time in-feed announcement cards (see #/constants/Announcements). */
+  /** Show the one-time in-feed announcement cards (see useAnnouncements). */
   showAnnouncements?: boolean;
 }
 
@@ -87,41 +86,16 @@ const Feed = (properties: FeedProperties) => {
   // cutoff again on load-more would keep discarding older WordPress articles;
   // instead load-more skips the cutoff and releases these held-back posts.
   const heldBackRef = useRef<Post<unknown>[]>([]);
-  const [dismissedAnnouncements, setDismissedAnnouncements] = useState<
-    string[]
-  >([]);
-  const [dismissedLoaded, setDismissedLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!properties.showAnnouncements) return;
-    let cancelled = false;
-    PersonalStore.getDismissedAnnouncements().then((stored) => {
-      if (cancelled) return;
-      // Merge instead of replace: a dismissal made while this load was in
-      // flight must not be reverted by the (stale) stored value.
-      setDismissedAnnouncements((previous) => [
-        ...new Set([...previous, ...stored]),
-      ]);
-      setDismissedLoaded(true);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [properties.showAnnouncements]);
-
-  // Gate on dismissedLoaded so an already-dismissed announcement never flashes
-  // on first render before the stored dismissal state has been read.
-  const activeAnnouncement =
-    properties.showAnnouncements && dismissedLoaded
-      ? Announcements.find((a) => !dismissedAnnouncements.includes(a.id))
-      : undefined;
-
-  const dismissAnnouncement = useCallback((id: string) => {
-    setDismissedAnnouncements((previous) =>
-      previous.includes(id) ? previous : [...previous, id],
-    );
-    void PersonalStore.dismissAnnouncement(id);
-  }, []);
+  const {
+    activeAnnouncement,
+    dismissAnnouncement,
+    refresh: refreshAnnouncements,
+  } = useAnnouncements(!!properties.showAnnouncements, {
+    // Only before the posts are on screen (spinner) or during pull-to-refresh,
+    // when the list is at the top anyway: a card inserted later would push
+    // the posts down mid-read.
+    canInsert: !initialLoad || refreshing,
+  });
 
   const updateLoadingStates = useCallback(() => {
     setRefresh(false);
@@ -235,8 +209,9 @@ const Feed = (properties: FeedProperties) => {
 
   const onRefresh = useCallback(() => {
     if (refreshing) return;
+    refreshAnnouncements();
     reload();
-  }, [refreshing, reload]);
+  }, [refreshing, reload, refreshAnnouncements]);
 
   // Load-more handler: wrapped in useCallback.
   const onLoadMore = useCallback(async () => {

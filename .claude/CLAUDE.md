@@ -101,6 +101,41 @@ Defined in `babel.config.cts` and `tsconfig.json`:
 - Run tests or targeted tests: `pnpm test -- path/to/changed.test.ts`
 - Ensure no secret files are added (CI runs Gitleaks); do not commit new `google-services.json` files.
 
+## Announcement Cards
+
+The one-time cards at the top of the home feed are **not in the app code**. They come from one JSON file per variant on the Bunny `vvpapps` storage zone (`announcementsUrl` in `config/*.config.ts`):
+
+- Volksverpetzer: `https://vvpapps.b-cdn.net/announcements/volksverpetzer.json`
+- Mimikama: `https://vvpapps.b-cdn.net/announcements/mimikama.json`
+
+Copies of both files are kept in `announcements/` in this repo. To add or remove a card, edit the copy here, upload it to Bunny under the same path, and **purge the Bunny cache** for it. Keep the two in sync: the app only ever reads the Bunny file. No release is needed. The app fetches the file when the home feed opens, when the app returns to the foreground and on pull-to-refresh, and caches the last good copy. If the fetch fails, it keeps using that copy. A new card never pops in above posts that are already on screen: if it arrives after the feed has loaded, it shows on the next pull-to-refresh or app start.
+
+```json
+{
+  "announcements": [
+    {
+      "id": "grimme-preis-voting-2026-10",
+      "message": "**Wir sind nominiert!** Stimm jetzt [hier](https://example.org) ab.",
+      "actionLabel": "Abstimmen",
+      "route": "https://example.org/vote",
+      "minAppVersion": "4.3.0",
+      "startsAt": "2026-10-01T00:00:00+02:00",
+      "endsAt": "2026-10-31T23:59:59+01:00"
+    }
+  ]
+}
+```
+
+- `id`, `message`, `actionLabel` and `route` are required. `minAppVersion`, `startsAt` and `endsAt` are optional.
+- `startsAt` / `endsAt` take a date-time with offset (`"2026-10-01T00:00:00+02:00"`) or a plain date (`"2026-10-31"`, read in the device's time zone: from the start of that day for `startsAt`, to the end of that day for `endsAt`). Any other format, e.g. `"31.10.2026"` or a time without offset, makes the entry invalid.
+- `id` is the permanent dismissal key: **never reuse one**, and don't change it on a live card, or users who dismissed it see it again.
+- `message` supports inline `**bold**`, `*italic*` and `[text](https://…)`.
+- `route` is an `https://` URL, an in-app path (`"/settings"`), or `{ "pathname": "/(tabs)/contact", "params": { "category": "app_feedback" } }`.
+- Only the first entry that is not dismissed and currently active is shown, in list order. Put a time-limited card first.
+- The app skips a malformed entry and still shows the others. If the whole document is invalid, every entry in it is invalid, the file is missing (404) or the fetch fails, the cached list stays in use. Without a cache, no cards are shown.
+- Use `minAppVersion` when a card points to a feature or route that older builds don't have.
+- To remove every card, publish `{ "announcements": [] }`. Deleting the file would leave the cached cards showing.
+
 ## Creating a New Release
 
 When bumping the app version for a new release, update **both** fields in `package.json`:

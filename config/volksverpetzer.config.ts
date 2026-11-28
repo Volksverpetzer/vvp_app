@@ -118,6 +118,8 @@ const extraConfig: ExtraConfigType = {
     2934: "Satire",
   },
   audioCdnUrl: "https://vvpaudio.b-cdn.net/audio",
+  announcementsUrl:
+    "https://vvpapps.b-cdn.net/announcements/volksverpetzer.json",
 };
 
 const appName = "Volksverpetzer";

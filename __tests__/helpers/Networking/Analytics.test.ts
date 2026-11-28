@@ -3,7 +3,6 @@ import * as Application from "expo-application";
 import * as Linking from "expo-linking";
 import { Platform } from "react-native";
 
-import type { AnnouncementEntry } from "#/constants/Announcements";
 import Config from "#/constants/Config";
 import {
   announcementTitle,
@@ -13,6 +12,7 @@ import {
 } from "#/helpers/network/Analytics";
 import { registerFav, registerViews } from "#/helpers/network/Engagement";
 import * as Networking from "#/helpers/utils/networking";
+import type { AnnouncementEntry } from "#/types";
 
 jest.mock("react-native", () => ({
   Platform: {
