@@ -145,6 +145,31 @@ describe("useAISearch — fetching pasted links", () => {
     expect(mockSetResultsLength).toHaveBeenLastCalledWith(0);
   });
 
+  it.each([
+    ["empty", { html: "" }],
+    ["missing", {}],
+    ["tag-only", { html: "<blockquote><p> </p></blockquote>" }],
+  ])(
+    "shows an error instead of searching when the oEmbed html is %s",
+    async (_label, json) => {
+      globalThis.fetch = jest.fn(() =>
+        response({ ok: true, json }),
+      ) as unknown as typeof fetch;
+
+      const { getByTestId } = await render(
+        <Harness search="https://x.com/user/status/1" />,
+      );
+
+      await waitFor(() =>
+        expect(getByTestId("error").props.children).toBe(
+          "Fehler beim Laden der Vorschau",
+        ),
+      );
+      expect(vectorSearch).not.toHaveBeenCalled();
+      expect(mockSetResultsLength).toHaveBeenLastCalledWith(0);
+    },
+  );
+
   it("shows an error instead of searching an error page", async () => {
     setPlatformOS("ios");
     globalThis.fetch = jest.fn(() =>
