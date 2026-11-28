@@ -71,6 +71,31 @@ export const urlToQueryText = (url: string): string => {
   }
 };
 
+const X_HOSTS = ["x.com", "twitter.com"];
+
+/**
+ * Returns the input as an https URL if it links to x.com or twitter.com
+ * (incl. subdomains such as mobile.x.com), otherwise null. Matches the parsed
+ * host name exactly, so domains that merely contain "x.com" (fox.com,
+ * dropbox.com) are not treated as posts. A link typed without scheme
+ * ("x.com/user/status/1") gets "https://" added.
+ */
+export const toXUrl = (input: string): string | null => {
+  const trimmed = input.trim();
+  if (!trimmed || /\s/.test(trimmed)) return null;
+  const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(trimmed);
+  if (hasScheme && !/^https?:\/\//i.test(trimmed)) return null;
+  const url = hasScheme ? trimmed : `https://${trimmed}`;
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return X_HOSTS.some((x) => host === x || host.endsWith(`.${x}`))
+      ? url
+      : null;
+  } catch {
+    return null;
+  }
+};
+
 /**
  * Custom hook to manage the AI search functionality.
  *
@@ -101,16 +126,20 @@ export const useAISearch = ({
       // Case-insensitive, so "HTTPS://…" also goes through a URL branch below
       // and never reaches vectorSearch with its query string.
       const isHttpUrl = /^https?:\/\//i.test(search.trim());
-      if (search.includes("x.com")) {
+      const xUrl = toXUrl(search);
+      if (xUrl) {
         setLoadingMessage("Lade Vorschau von x.com...");
         try {
-          const r = await fetch(`https://publish.x.com/oembed?url=${search}`, {
-            signal,
-          });
+          const r = await fetch(
+            `https://publish.x.com/oembed?url=${encodeURIComponent(xUrl)}`,
+            { signal },
+          );
+          if (!r.ok) throw new Error(`oEmbed HTTP ${r.status}`);
           const json = await r.json();
           if (signal?.aborted) return;
           const html_p = json.html || "";
           queryText = limitQueryText(html_p.replaceAll(/<[^>]+>/g, " "));
+          if (!queryText) throw new Error("Empty oEmbed preview");
         } catch {
           if (signal?.aborted) return;
           setError("Fehler beim Laden der Vorschau");
@@ -126,6 +155,7 @@ export const useAISearch = ({
       } else if (isHttpUrl) {
         try {
           const response = await fetch(search, { signal });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const html = await response.text();
           if (signal?.aborted) return;
           queryText = htmlToQueryText(html);
@@ -180,9 +210,11 @@ export const useAISearch = ({
 
     return () => {
       controller.abort();
-      if (activeControllerRef.current === controller) {
-        activeControllerRef.current = null;
-      }
+      // Also cancel a request started by reload(), which replaced this
+      // effect's controller; otherwise it would still report its results
+      // after the search changed or the screen was left.
+      activeControllerRef.current?.abort();
+      activeControllerRef.current = null;
     };
   }, [fetchResults]);
 

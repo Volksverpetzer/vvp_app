@@ -57,7 +57,7 @@ describe("useAISearch — pasted URLs", () => {
     setPlatformOS("ios");
     const body = `<html><head><style>p{}</style><script>var x;</script></head><body>${"<p>Wort </p>".repeat(50_000)}</body></html>`;
     globalThis.fetch = jest.fn(() =>
-      Promise.resolve({ text: () => Promise.resolve(body) }),
+      Promise.resolve({ ok: true, text: () => Promise.resolve(body) }),
     ) as unknown as typeof fetch;
     vectorSearch.mockResolvedValue([] as AISearchResponse[]);
 
