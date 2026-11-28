@@ -103,6 +103,23 @@ describe("parseAnnouncements", () => {
     ).toEqual([{ ...valid, id: "b" }]);
   });
 
+  it("rejects a non-empty list where every entry is invalid", () => {
+    expect(
+      parseAnnouncements({
+        announcements: [{ ...valid, route: undefined, url: "/settings" }],
+      }),
+    ).toBeUndefined();
+  });
+
+  it.each([
+    ["date without offset", { ...valid, startsAt: "2026-10-01T00:00:00" }],
+    ["German date", { ...valid, endsAt: "31.10.2026" }],
+  ])("drops an entry with a %s", (_label, entry) => {
+    expect(
+      parseAnnouncements({ announcements: [entry, { ...valid, id: "b" }] }),
+    ).toEqual([{ ...valid, id: "b" }]);
+  });
+
   it("keeps only the first entry for a repeated id", () => {
     expect(
       parseAnnouncements({

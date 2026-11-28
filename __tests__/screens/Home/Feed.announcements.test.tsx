@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React from "react";
 
 import PersonalStore from "#/helpers/Stores/PersonalStore";
@@ -86,6 +86,9 @@ const mockGetCached = PersonalStore.getCachedAnnouncements as jest.Mock;
 const mockSetCached = PersonalStore.setCachedAnnouncements as jest.Mock;
 const mockFetchAnnouncements = fetchAnnouncements as jest.Mock;
 
+const later = <T,>(value: T) =>
+  new Promise<T>((resolve) => setTimeout(() => resolve(value), 50));
+
 const announcement = {
   id: "test-announcement",
   message: "Test message",
@@ -109,7 +112,9 @@ describe("Feed announcements", () => {
     mockGetDismissed.mockResolvedValue([]);
     mockGetCached.mockResolvedValue(undefined);
     mockFetchAnnouncements.mockResolvedValue([announcement]);
-    mockFetch.mockResolvedValue(posts);
+    // Posts arrive after the announcement, like a CDN file beating the
+    // feeds; a card arriving later is withheld (tested below).
+    mockFetch.mockImplementation(() => later(posts));
   });
 
   it("does not show an announcement when showAnnouncements is not set", async () => {
@@ -159,7 +164,7 @@ describe("Feed announcements", () => {
   });
 
   it("still shows the empty state alongside the announcement when the feed is empty", async () => {
-    mockFetch.mockResolvedValue([]);
+    mockFetch.mockImplementation(() => later([]));
     const { getByTestId } = await render(
       <Feed
         showAnnouncements
@@ -224,5 +229,25 @@ describe("Feed announcements", () => {
     );
     await waitFor(() => expect(getByText("Current")).toBeTruthy());
     expect(queryByText("Old")).toBeNull();
+  });
+
+  it("does not insert a card that arrives after the posts are on screen", async () => {
+    mockFetch.mockResolvedValue(posts);
+    let resolveAnnouncements!: (list: unknown) => void;
+    mockFetchAnnouncements.mockReturnValue(
+      new Promise((resolve) => (resolveAnnouncements = resolve)),
+    );
+    const { getByTestId, queryByTestId } = await render(
+      <Feed
+        showAnnouncements
+        fetchers={[{ fetcher: jest.fn().mockResolvedValue(posts) }]}
+      />,
+    );
+    await waitFor(() => expect(getByTestId("post-item")).toBeTruthy());
+
+    await act(() => resolveAnnouncements([announcement]));
+
+    expect(queryByTestId("announcement-card")).toBeNull();
+    expect(mockSetCached).toHaveBeenCalledWith([announcement]);
   });
 });

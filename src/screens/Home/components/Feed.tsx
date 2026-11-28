@@ -86,9 +86,16 @@ const Feed = (properties: FeedProperties) => {
   // cutoff again on load-more would keep discarding older WordPress articles;
   // instead load-more skips the cutoff and releases these held-back posts.
   const heldBackRef = useRef<Post<unknown>[]>([]);
-  const { activeAnnouncement, dismissAnnouncement } = useAnnouncements(
-    !!properties.showAnnouncements,
-  );
+  const {
+    activeAnnouncement,
+    dismissAnnouncement,
+    refresh: refreshAnnouncements,
+  } = useAnnouncements(!!properties.showAnnouncements, {
+    // Only before the posts are on screen (spinner) or during pull-to-refresh,
+    // when the list is at the top anyway: a card inserted later would push
+    // the posts down mid-read.
+    canInsert: !initialLoad || refreshing,
+  });
 
   const updateLoadingStates = useCallback(() => {
     setRefresh(false);
@@ -202,8 +209,9 @@ const Feed = (properties: FeedProperties) => {
 
   const onRefresh = useCallback(() => {
     if (refreshing) return;
+    refreshAnnouncements();
     reload();
-  }, [refreshing, reload]);
+  }, [refreshing, reload, refreshAnnouncements]);
 
   // Load-more handler: wrapped in useCallback.
   const onLoadMore = useCallback(async () => {

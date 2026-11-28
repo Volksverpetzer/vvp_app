@@ -1,6 +1,7 @@
 import type { Href } from "expo-router";
 
 import Config from "#/constants/Config";
+import { isAnnouncementDate } from "#/helpers/utils/announcements";
 import { createClient, get } from "#/helpers/utils/networking";
 import type { AnnouncementEntry } from "#/types";
 
@@ -41,9 +42,6 @@ const parseRoute = (value: unknown): Href | undefined => {
   return { pathname: value.pathname, params } as Href;
 };
 
-const isValidDate = (value: unknown): value is string =>
-  typeof value === "string" && Number.isFinite(Date.parse(value));
-
 /** Validates one entry; returns undefined for anything malformed. */
 const parseEntry = (value: unknown): AnnouncementEntry | undefined => {
   if (!isPlainObject(value)) return undefined;
@@ -68,11 +66,11 @@ const parseEntry = (value: unknown): AnnouncementEntry | undefined => {
     entry.minAppVersion = minAppVersion;
   }
   if (startsAt !== undefined) {
-    if (!isValidDate(startsAt)) return undefined;
+    if (!isAnnouncementDate(startsAt)) return undefined;
     entry.startsAt = startsAt;
   }
   if (endsAt !== undefined) {
-    if (!isValidDate(endsAt)) return undefined;
+    if (!isAnnouncementDate(endsAt)) return undefined;
     entry.endsAt = endsAt;
   }
   return entry;
@@ -82,7 +80,8 @@ const parseEntry = (value: unknown): AnnouncementEntry | undefined => {
  * Validates the announcements document (`{ "announcements": [...] }`).
  * Malformed entries and repeated ids are dropped individually, so one typo
  * doesn't take down the whole list. Returns undefined if the document itself
- * is not in the expected shape (e.g. a CDN error page).
+ * is not in the expected shape (e.g. a CDN error page) or none of its entries
+ * are valid; `{ "announcements": [] }` is the way to publish "no cards".
  */
 export const parseAnnouncements = (
   data: unknown,
@@ -102,6 +101,10 @@ export const parseAnnouncements = (
     seen.add(entry.id);
     entries.push(entry);
   }
+  // Every entry broken (e.g. a field renamed throughout) is an authoring
+  // mistake, not "no cards": treat it like an unusable document so the cached
+  // list survives instead of being wiped.
+  if (entries.length === 0 && data.announcements.length > 0) return undefined;
   return entries;
 };
 

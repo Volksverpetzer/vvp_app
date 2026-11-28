@@ -3,6 +3,8 @@ import { describe, expect, it } from "@jest/globals";
 import {
   compareVersions,
   isAnnouncementActive,
+  isAnnouncementDate,
+  parseAnnouncementDate,
 } from "#/helpers/utils/announcements";
 import type { AnnouncementEntry } from "#/types";
 
@@ -57,5 +59,55 @@ describe("isAnnouncementActive", () => {
     expect(
       isAnnouncementActive({ ...base, minAppVersion: "4.3.0" }, now, null),
     ).toBe(true);
+  });
+});
+
+describe("announcement dates", () => {
+  it.each([
+    "2026-10-01T00:00:00+02:00",
+    "2026-10-01T00:00+02:00",
+    "2026-10-01T00:00:00.000Z",
+    "2026-10-31",
+  ])("accepts %s", (value) => {
+    expect(isAnnouncementDate(value)).toBe(true);
+  });
+
+  it.each([
+    "1",
+    "2026-10-01 00:00:00",
+    "2026-10-01T00:00:00",
+    "2026-10-01T00:00:00+0200",
+    "31.10.2026",
+    "2026-02-31",
+    "2026-13-01",
+    "",
+    20261031,
+  ])("rejects %s", (value) => {
+    expect(isAnnouncementDate(value)).toBe(false);
+  });
+
+  it("reads a date-only value as the local start or end of that day", () => {
+    expect(parseAnnouncementDate("2026-10-31", "start")).toBe(
+      new Date(2026, 9, 31).getTime(),
+    );
+    expect(parseAnnouncementDate("2026-10-31", "end")).toBe(
+      new Date(2026, 10, 1).getTime() - 1,
+    );
+  });
+
+  it("keeps a date-only endsAt card active for the whole day", () => {
+    const entry = { ...base, endsAt: "2026-10-31" };
+    expect(
+      isAnnouncementActive(entry, new Date(2026, 9, 31, 23, 59), null),
+    ).toBe(true);
+    expect(isAnnouncementActive(entry, new Date(2026, 10, 1, 0, 0), null)).toBe(
+      false,
+    );
+  });
+
+  it("treats an unparseable stored date as inactive", () => {
+    expect(
+      isAnnouncementActive({ ...base, startsAt: "morgen" }, now, null),
+    ).toBe(false);
   });
 });
