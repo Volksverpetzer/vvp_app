@@ -2,9 +2,9 @@
 import { isMimikama } from "#/helpers/utils/variant";
 
 const volksverpetzerNotes =
-  "- Hinweise im Feed lassen sich jetzt ohne App-Update aktualisieren\n- Technische Aktualisierungen und kleine Fehlerbehebungen";
+  "- Technische Aktualisierungen und kleine Fehlerbehebungen";
 const mimikamaNotes =
-  "Hinweise im Feed lassen sich jetzt ohne App-Update aktualisieren. Dazu technische Aktualisierungen und kleine Fehlerbehebungen.";
+  "Technische Aktualisierungen und kleine Fehlerbehebungen.";
 
 const Changelog = {
   version: "2.5.10",
